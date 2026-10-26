@@ -115,7 +115,7 @@ jobs:
           Copy-Item 'docs/sideload-guide.txt' (Join-Path $sourceDir '安装说明.txt') -Force
           Copy-Item 'scripts/Install.ps1' (Join-Path $sourceDir 'Install.ps1') -Force
 
-          $zipName = "BiliCopilot_ViewPoints_" + $version + "_x64.zip"
+          $zipName = "BiliCopilot_" + $version + "_x64.zip"
           $zipPath = Join-Path $sourceDir $zipName
           Compress-Archive -Path (Join-Path $sourceDir '*') -DestinationPath $zipPath -Force
           Get-ChildItem $sourceDir -File | Where-Object { $_.Name -ne $zipName } | Remove-Item -Force
@@ -124,7 +124,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BiliCopilot-ViewPoints-x64
+          name: BiliCopilot-x64
           path: ${{ github.workspace }}\FinalPackages\*.zip
 
       - name: Create GitHub Release
@@ -132,9 +132,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.version }}
-          name: ViewPoints ${{ inputs.version }}
+          name: Bili.Copilot ${{ inputs.version }}
           body: |
-            基于 Bili.Copilot 的独立维护版本，包含视频章节（view_points）分段进度条。
+            Bili.Copilot 的独立维护版本。
 
             安装：解压后右键以 PowerShell 运行 Install.ps1。
           files: ${{ github.workspace }}\FinalPackages\*.zip
