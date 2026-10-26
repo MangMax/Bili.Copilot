@@ -10,20 +10,21 @@
   IgnorableNamespaces="uap rescap desktop com">
 
   <!--
-    本地维护分支的独立包身份.
-    Name 与 Publisher 共同决定 PackageFamilyName，因此与作者发布的
-    Richasy.BiliCopilot.Dev_2r5cjeccfggq0 并存，互不覆盖、各自保留本地数据.
+    独立维护版本的包身份.
+    Name 与 Publisher 共同决定 PackageFamilyName，因此与原项目发布的包并存，
+    互不覆盖、各自保留本地数据.
+    正式发布使用本文件；Debug 配置使用 Package.Dev.appxmanifest.
   -->
   <Identity
-    Name="Kokoro.BiliCopilot.ViewPoints"
-    Publisher="CN=Kokoro.BiliCopilot"
+    Name="Mang.BiliCopilot"
+    Publisher="CN=Mang"
     Version="2.2610.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="6f1b2a94-3c7d-4e58-9a06-1d2b8f0c4e73" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>ms-resource:AppName</DisplayName>
-    <PublisherDisplayName>Richasy</PublisherDisplayName>
+    <PublisherDisplayName>Mang</PublisherDisplayName>
     <Logo>Assets\Logo\StoreLogo.png</Logo>
   </Properties>
 
