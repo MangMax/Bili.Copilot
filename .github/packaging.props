@@ -1,0 +1,17 @@
+<Project>
+  <!--
+    CI 打包作用域：仅对主应用启用 MSIX 打包。
+
+    子模块 externals/bili-kernel 中的 WinUI 项目自带 EnableMsixTooling=true，
+    若把 GenerateAppxPackageOnBuild 作为全局属性传入，它们也会尝试打包，
+    但它们没有 AppxManifest.xml，会以 0x80080203 失败。
+
+    因此该属性必须在此按项目名收敛，而不能走命令行全局属性。
+  -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'BiliCopilot.UI'">
+    <UapAppxPackageBuildMode>SideloadOnly</UapAppxPackageBuildMode>
+    <AppxBundle>Never</AppxBundle>
+    <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
+    <AppxPackageDir>$(MSBuildThisFileDirectory)..\AppPackages\</AppxPackageDir>
+  </PropertyGroup>
+</Project>
