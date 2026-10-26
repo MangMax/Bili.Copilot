@@ -132,7 +132,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.version }}
-          name: "ViewPoints " + ${{ inputs.version }}
+          name: ViewPoints ${{ inputs.version }}
           body: |
             基于 Bili.Copilot 的独立维护版本，包含视频章节（view_points）分段进度条。
 
