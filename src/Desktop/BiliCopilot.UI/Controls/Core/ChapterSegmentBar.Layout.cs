@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Media;
@@ -93,7 +93,6 @@ public sealed partial class ChapterSegmentBar
     {
         var spans = new List<(double Start, double End, string? Title)>();
         var chapters = ViewModel?.Chapters;
-        _hasChapters = chapters is { Count: > 0 };
 
         if (chapters is { Count: > 0 })
         {
@@ -113,6 +112,10 @@ public sealed partial class ChapterSegmentBar
         {
             spans.Add((0, duration, null));
         }
+
+        // 只有真正分成多段时才存在“跳到章节起点”的语义.
+        // 章节数据缺失、或全部无效退化成单段时，都应视为无章节.
+        _hasChapters = spans.Count > 1;
 
         return spans;
     }
@@ -181,12 +184,29 @@ public sealed partial class ChapterSegmentBar
     }
 
     /// <summary>
-    /// 决定进度条应显示的位置：控件自身拖动 &gt; 播放器手势预览 &gt; 实际播放位置.
+    /// 决定进度条应显示的位置：控件自身拖动 &gt; 播放器手势预览 &gt; 待收敛的跳转目标 &gt; 实际播放位置.
     /// 播放器的 <c>PreviewPosition</c> 对应原版 <c>ProgressSliderFake</c> 的职责.
     /// </summary>
     private double ResolveDisplayPosition()
-        => _dragPosition
-            ?? (ViewModel?.IsPreviewProgressChanging == true ? ViewModel.PreviewPosition : Position);
+    {
+        if (_dragPosition is double drag)
+        {
+            return drag;
+        }
+
+        if (ViewModel?.IsPreviewProgressChanging == true)
+        {
+            return ViewModel.PreviewPosition;
+        }
+
+        // 跳转后播放器回报新位置前，继续显示目标位置，避免进度条瞬间弹回旧位置.
+        if (_pendingSeekPosition is double pending && Math.Abs(Position - pending) > SeekSettleThreshold)
+        {
+            return pending;
+        }
+
+        return Position;
+    }
 
     /// <summary>
     /// 刷新各分段的缓冲宽度。缓冲范围仅在 <see cref="OnCacheStateChanged"/> 时变化，
@@ -215,6 +235,13 @@ public sealed partial class ChapterSegmentBar
     /// <returns>是否位于上下边缘带.</returns>
     private bool IsOnVerticalEdge(double y)
     {
+        // 无章节时不存在“跳到章节起点”的语义，
+        // 此时整条进度条的上下区域都应视为精确跳转，光标也保持箭头.
+        if (!_hasChapters)
+        {
+            return false;
+        }
+
         var trackTop = (LayoutHeight - TrackHeight) / 2d;
         var trackBottom = trackTop + TrackHeight;
         return y < trackTop || y > trackBottom;
