@@ -1,0 +1,143 @@
+name: Build Sideload Package
+
+# 说明：
+#   上游的 build-sideload.yml 依赖 self-hosted runner 且限定 github.actor == 'Richasy'，
+#   在 fork 中不会执行；其签入的临时证书也已过期。
+#   本工作流改用 GitHub 托管 runner，并用 Secrets 中的证书签名。
+#
+# 需要的 Secrets：
+#   SIDELOAD_PFX_BASE64  - 代码签名证书 pfx 的 Base64
+#   SIDELOAD_PFX_PASSWORD - 该 pfx 的密码
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "版本号（如 2.2610.0.0）"
+        required: true
+        default: "2.2610.0.0"
+      publish_release:
+        description: "创建 GitHub Release"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      Project_Path: src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj
+      Manifest_Path: src/Desktop/BiliCopilot.UI/Package.appxmanifest
+      Solution_Path: src/Bili.Copilot.sln
+      Configuration: Release
+      Platform: x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+        with:
+          version: ${{ inputs.version }}
+          sideload: "true"
+          platform: ${{ env.Platform }}
+          configuration: ${{ env.Configuration }}
+          solution-name: ${{ env.Solution_Path }}
+          manifest-path: ${{ env.Manifest_Path }}
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare Signing Certificate
+        shell: pwsh
+        env:
+          PFX_BASE64: ${{ secrets.SIDELOAD_PFX_BASE64 }}
+          PFX_PASSWORD: ${{ secrets.SIDELOAD_PFX_PASSWORD }}
+        run: |
+          if (-not $env:PFX_BASE64) {
+            Write-Error "缺少机密 SIDELOAD_PFX_BASE64"
+            exit 1
+          }
+
+          $pfxPath = Join-Path $env:GITHUB_WORKSPACE 'signing.pfx'
+          $cerPath = Join-Path $env:GITHUB_WORKSPACE 'signing.cer'
+          [IO.File]::WriteAllBytes($pfxPath, [Convert]::FromBase64String($env:PFX_BASE64))
+
+          $sec = ConvertTo-SecureString $env:PFX_PASSWORD -AsPlainText -Force
+          $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new($pfxPath, $sec)
+          [IO.File]::WriteAllBytes($cerPath, $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert))
+
+          Write-Host "证书主体: " + $cert.Subject
+          Write-Host "证书到期: " + $cert.NotAfter
+
+          # 清单中的 Publisher 必须与证书主体完全一致，否则签名失败
+          $publisher = (Select-String -Path $env:Manifest_Path -Pattern 'Publisher="([^"]+)"' | Select-Object -First 1).Matches.Groups[1].Value
+          Write-Host "清单 Publisher: " + $publisher
+          if ($publisher -ne $cert.Subject) {
+            Write-Error "清单 Publisher 与证书主体不一致，签名会失败"
+            exit 1
+          }
+
+      - name: Build and Package
+        shell: pwsh
+        run: |
+          msbuild $env:Project_Path `
+            /t:Build `
+            /p:Configuration=$env:Configuration `
+            /p:Platform=$env:Platform `
+            /p:SolutionDir="${{ github.workspace }}\src\" `
+            /p:CustomAfterMicrosoftCommonProps="${{ github.workspace }}\.github\packaging.props" `
+            /p:PackageCertificateKeyFile="${{ github.workspace }}\signing.pfx" `
+            /p:PackageCertificatePassword="${{ secrets.SIDELOAD_PFX_PASSWORD }}" `
+            /v:m
+
+      - name: Collect and Compress
+        shell: pwsh
+        run: |
+          $version = "${{ inputs.version }}"
+          $appPackages = Join-Path $env:GITHUB_WORKSPACE 'AppPackages'
+          $sourceDir = Join-Path $env:GITHUB_WORKSPACE 'FinalPackages'
+          New-Item -ItemType Directory -Path $sourceDir -Force | Out-Null
+
+          $msix = Get-ChildItem $appPackages -Filter *.msix -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $msix) {
+            Write-Error "未找到 msix，构建可能失败"
+            Get-ChildItem $appPackages -Recurse -ErrorAction SilentlyContinue | Select-Object -First 20 FullName
+            exit 1
+          }
+
+          Copy-Item $msix.FullName $sourceDir -Force
+          Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'signing.cer') $sourceDir -Force
+          Copy-Item 'docs/sideload-guide.txt' (Join-Path $sourceDir '安装说明.txt') -Force
+          Copy-Item 'scripts/Install.ps1' (Join-Path $sourceDir 'Install.ps1') -Force
+
+          $zipName = "BiliCopilot_ViewPoints_" + $version + "_x64.zip"
+          $zipPath = Join-Path $sourceDir $zipName
+          Compress-Archive -Path (Join-Path $sourceDir '*') -DestinationPath $zipPath -Force
+          Get-ChildItem $sourceDir -File | Where-Object { $_.Name -ne $zipName } | Remove-Item -Force
+          Write-Host "已生成: " + $zipPath
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BiliCopilot-ViewPoints-x64
+          path: ${{ github.workspace }}\FinalPackages\*.zip
+
+      - name: Create GitHub Release
+        if: ${{ inputs.publish_release }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          name: "ViewPoints " + ${{ inputs.version }}
+          body: |
+            基于 Bili.Copilot 的独立维护版本，包含视频章节（view_points）分段进度条。
+
+            安装：解压后右键以 PowerShell 运行 Install.ps1。
+          files: ${{ github.workspace }}\FinalPackages\*.zip
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
