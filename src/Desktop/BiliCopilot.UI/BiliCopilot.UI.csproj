@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
@@ -17,6 +17,19 @@
     <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <AllowUnsafe>True</AllowUnsafe>
   </PropertyGroup>
+
+  <!--
+    dev / release 双包身份.
+    Debug 配置使用 Mang.BiliCopilot.Dev，其余（含 CI 的 Release）使用 Mang.BiliCopilot，
+    以便开发调试版与正式版并存、各自保留本地数据。
+    显式声明 AppxManifest 会跳过 SDK 对 Package.appxmanifest 的默认包含.
+  -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <AppxManifest Include="Package.Dev.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' != 'Debug'">
+    <AppxManifest Include="Package.appxmanifest" />
+  </ItemGroup>
   <ItemGroup>
   	<RdXmlFile Include="rd.xml" />
   </ItemGroup>
