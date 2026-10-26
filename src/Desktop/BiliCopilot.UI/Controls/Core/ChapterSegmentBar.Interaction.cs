@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -10,7 +10,7 @@ namespace BiliCopilot.UI.Controls.Core;
 /// </summary>
 public sealed partial class ChapterSegmentBar
 {
-    private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
+    private async void OnPointerPressed(object sender, PointerRoutedEventArgs e)
     {
         if (!IsInteractive)
         {
@@ -29,7 +29,8 @@ public sealed partial class ChapterSegmentBar
         _isDragging = false;
         _pressX = x;
 
-        // 上下边缘带代表“粗定位到轨道”，轨道本身才是精确跳转。
+        // 上下边缘带代表“粗定位到章节起点”，轨道本身才是精确跳转。
+        // 无章节时 IsOnVerticalEdge 恒为 false，整条高度都用于精确跳转。
         _pressOnEdge = IsOnVerticalEdge(point.Position.Y);
         if (_pressOnEdge)
         {
@@ -40,6 +41,17 @@ public sealed partial class ChapterSegmentBar
         e.Handled = true;
 
         UpdateThumbScale();
+
+        // 按下即跳转：不依赖 PointerReleased，
+        // 避免释放事件被吞（或先触发 PointerExited）时点击无效、需要再点一次.
+        if (_pressOnEdge)
+        {
+            await SeekAsync(_edgeChapterStart);
+        }
+        else
+        {
+            await SeekToXAsync(x);
+        }
     }
 
     private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
@@ -95,21 +107,10 @@ public sealed partial class ChapterSegmentBar
             return;
         }
 
-        if (!wasDragging)
-        {
-            // 落在轨道上下边缘带时跳到所在章节起点；落在轨道上则按点击位置精确跳转.
-            if (_pressOnEdge)
-            {
-                await SeekAsync(_edgeChapterStart);
-            }
-            else
-            {
-                await SeekToXAsync(_pressX);
-            }
-        }
-        else if (dragTarget is double target)
+        if (wasDragging && dragTarget is double target)
         {
             // 拖动结束再补一次精确落点，弥补节流期间的偏差.
+            // 单击的跳转已在按下时完成，这里不再重复，避免一次点击触发两次 seek.
             await SeekAsync(target);
         }
 
@@ -399,8 +400,15 @@ public sealed partial class ChapterSegmentBar
             return;
         }
 
+        var clamped = Math.Clamp(target, 0, Duration);
+
+        // 先记录目标位置并刷新填充，让点击立即有视觉反馈；
+        // 播放器回报新 Position 后，由 OnPlayerPropertyChanged 收敛掉该值.
+        _pendingSeekPosition = clamped;
+        UpdateFill();
+
         // PreviewPosition 属于播放器手势预览的语义，不用于传递进度条拖动位置.
-        await ViewModel.ChangePositionAsync(Math.Clamp(target, 0, Duration));
+        await ViewModel.ChangePositionAsync(clamped);
         UpdateFill();
     }
 }

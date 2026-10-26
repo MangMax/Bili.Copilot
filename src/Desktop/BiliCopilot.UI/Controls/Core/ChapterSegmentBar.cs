@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.UI.Input;
@@ -68,6 +68,12 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     /// 拖动时下发给播放器的跳转间隔（毫秒）。视觉填充逐帧跟随，但真实 seek 需节流.
     /// </summary>
     private const int SeekThrottleMs = 90;
+
+    /// <summary>
+    /// 判定播放器已抵达跳转目标的容差（秒）。
+    /// 到达该范围内才放弃"乐观显示位置"，改用播放器上报的真实位置.
+    /// </summary>
+    private const double SeekSettleThreshold = 1.5d;
 
     /// <summary>
     /// 控件总高：轨道在其中垂直居中，父级按中心对齐时与两侧时间文本齐平.
@@ -199,6 +205,12 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     /// 拖动期间的预览位置，让填充立即跟随光标而不必等待播放器回调.
     /// </summary>
     private double? _dragPosition;
+
+    /// <summary>
+    /// 跳转后的目标位置。播放器上报新 Position 之前先用它绘制填充，
+    /// 否则跳转瞬间会读到旧 Position 而把进度条弹回原位，看起来像是没跳到.
+    /// </summary>
+    private double? _pendingSeekPosition;
 
     /// <summary>
     /// 当前所在章节下标，用于避免每帧重算章节高亮.
@@ -438,6 +450,12 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     {
         if (e.PropertyName is "Position")
         {
+            // 播放器抵达跳转目标后，放弃乐观显示位置，改回真实位置.
+            if (_pendingSeekPosition is double pending && Math.Abs(Position - pending) <= SeekSettleThreshold)
+            {
+                _pendingSeekPosition = null;
+            }
+
             UpdateFill();
 
             // 只有跨过章节边界时才需要重新计算高亮，避免每帧遍历章节.
@@ -445,6 +463,11 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
             {
                 UpdateCurrentChapter();
             }
+        }
+        else if (e.PropertyName is "Duration")
+        {
+            // 切换视频后，上一个视频的跳转目标已无意义.
+            _pendingSeekPosition = null;
         }
     }
 
