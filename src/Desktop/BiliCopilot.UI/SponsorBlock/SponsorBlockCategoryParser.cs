@@ -13,19 +13,5 @@ public static class SponsorBlockCategoryParser
     /// <param name="value">接口返回的类别字符串.</param>
     /// <returns>类别枚举，未知类别返回 <see cref="SponsorBlockCategory.Unknown"/>.</returns>
     public static SponsorBlockCategory Parse(string? value)
-        => value?.Trim().ToLowerInvariant() switch
-        {
-            "sponsor" => SponsorBlockCategory.Sponsor,
-            "selfpromo" => SponsorBlockCategory.SelfPromo,
-            "exclusive_access" => SponsorBlockCategory.ExclusiveAccess,
-            "interaction" => SponsorBlockCategory.Interaction,
-            "poi_highlight" => SponsorBlockCategory.PoiHighlight,
-            "intro" => SponsorBlockCategory.Intro,
-            "outro" => SponsorBlockCategory.Outro,
-            "preview" => SponsorBlockCategory.Preview,
-            "padding" => SponsorBlockCategory.Padding,
-            "filler" => SponsorBlockCategory.Filler,
-            "music_offtopic" => SponsorBlockCategory.MusicOfftopic,
-            _ => SponsorBlockCategory.Unknown,
-        };
+        => SponsorBlockCategoryCatalog.FromApiName(value);
 }

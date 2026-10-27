@@ -13,8 +13,8 @@ namespace BiliCopilot.UI.Controls.Core;
 /// </summary>
 /// <remarks>
 /// 标记绘制在章节分段之上、轨道上半部，下半部仍可看到缓冲与已播放进度。
-/// 覆盖层不参与命中测试，控件只在标记矩形（横向为标记范围、纵向为轨道附近）
-/// 内拦截指针，因此轨道其余位置仍保持原有的跳转 / 拖拽行为。
+/// 覆盖层不参与命中测试，控件只在标记的视觉带（轨道上半部 + 少量 padding）内拦截指针，
+/// 因此轨道下半部与章节上下边缘带仍保持原有的跳转 / 拖拽行为。
 /// 迷你进度条为纯展示控件（<see cref="IsInteractive"/> 为 <c>false</c>），
 /// 只绘制标记，不提供悬浮与点击.
 /// </remarks>
@@ -26,7 +26,8 @@ public sealed partial class ChapterSegmentBar
     private const double MarkerHeight = TrackHeight / 2d;
 
     /// <summary>
-    /// 标记命中判定在轨道上下额外放宽的像素，让 4px 高的轨道也容易命中.
+    /// 标记命中带向上额外放宽的像素，让 4px 高的轨道也容易命中；
+    /// 下方不放宽，轨道下半部完整留给原有的精确定位 / 拖拽.
     /// </summary>
     private const double MarkerHitPadding = 4d;
 
@@ -34,6 +35,11 @@ public sealed partial class ChapterSegmentBar
     private readonly Dictionary<SponsorBlockCategory, Brush> _markerBrushes = [];
     private List<SponsorBlockMarker> _markers = [];
     private SponsorBlockMarker? _hoveredMarker;
+
+    /// <summary>
+    /// 按下标记后挂起的点击候选：只有指针未超过拖动阈值就释放时才算点击.
+    /// </summary>
+    private SponsorBlockMarker? _pendingMarker;
 
     /// <summary>
     /// 片段列表变化后重建标记。仅在加载完成、切换分 P、章节或尺寸变化时调用，
@@ -51,8 +57,9 @@ public sealed partial class ChapterSegmentBar
             Duration,
             width)];
 
-        // 列表变化后旧标记的下标可能失效，先收起悬浮态，下一次移动会重新判定.
+        // 列表变化后旧标记的下标可能失效，先收起悬浮态与挂起的点击，下一次移动会重新判定.
         _hoveredMarker = null;
+        _pendingMarker = null;
         _lastPopupTime = double.NaN;
         _lastPopupX = double.NaN;
 
@@ -92,6 +99,7 @@ public sealed partial class ChapterSegmentBar
 
         _markers = [];
         _hoveredMarker = null;
+        _pendingMarker = null;
         _lastPopupTime = double.NaN;
         _lastPopupX = double.NaN;
 
@@ -158,10 +166,15 @@ public sealed partial class ChapterSegmentBar
     }
 
     /// <summary>
-    /// 命中标记矩形。横向严格限制在标记范围内，纵向放宽到轨道附近，
-    /// 这样标记之外的位置仍由原有的按位置跳转逻辑处理.
+    /// 命中标记。横向严格限制在标记范围内，纵向限制在标记视觉带
+    ///（轨道上半部，向上放宽 <see cref="MarkerHitPadding"/>）；章节上下边缘带优先，
+    /// 这样标记之外的位置仍由原有的按位置跳转 / 章节跳转逻辑处理.
     /// </summary>
-    private SponsorBlockMarker? HitTestMarker(double x, double y)
+    /// <param name="x">相对画布的横坐标.</param>
+    /// <param name="y">相对画布的纵坐标.</param>
+    /// <param name="isOnVerticalEdge">指针是否位于章节边缘热区.</param>
+    /// <returns>命中的标记；没有时返回 <c>null</c>.</returns>
+    private SponsorBlockMarker? HitTestMarker(double x, double y, bool isOnVerticalEdge)
     {
         if (!IsInteractive || _markers.Count == 0)
         {
@@ -169,21 +182,14 @@ public sealed partial class ChapterSegmentBar
         }
 
         var trackTop = (LayoutHeight - TrackHeight) / 2d;
-        var trackBottom = trackTop + TrackHeight;
-        if (y < trackTop - MarkerHitPadding || y > trackBottom + MarkerHitPadding)
-        {
-            return null;
-        }
-
-        foreach (var marker in _markers)
-        {
-            if (x >= marker.Left && x <= marker.Left + marker.Width)
-            {
-                return marker;
-            }
-        }
-
-        return null;
+        return SponsorBlockProgressGeometry.HitTestMarker(
+            _markers,
+            x,
+            y,
+            trackTop,
+            TrackHeight,
+            MarkerHitPadding,
+            isOnVerticalEdge);
     }
 
     /// <summary>

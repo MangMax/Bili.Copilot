@@ -22,6 +22,11 @@ public sealed partial class VideoConnectorViewModel
     internal VideoPart? _part;
 
     /// <summary>
+    /// 当前分 P 的 cid；尚未选择分 P 时为空.
+    /// </summary>
+    internal string? CurrentPartId => _part?.Identifier.Id;
+
+    /// <summary>
     /// 区块加载完成.
     /// </summary>
     public event EventHandler SectionInitialized;
