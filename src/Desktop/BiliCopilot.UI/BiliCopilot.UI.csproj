@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" TreatAsLocalProperty="PackageCertificateKeyFile">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
@@ -30,6 +30,25 @@
   <ItemGroup Condition="'$(Configuration)' != 'Debug'">
     <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
+
+  <!--
+    本机签名证书.
+    仓库自带的 BiliCopilot.UI_TemporaryKey.pfx 属于上游，CN=richasy 且已过期，签出的包无法安装。
+    两个清单的 Publisher 都是 CN=Mang，因此只要本机存在自己的证书就用它，任意工作树都能直接出可安装的包。
+
+    覆盖条件有两类：未传 PackageCertificateKeyFile，或传的正是那个过期的临时证书
+    （上游 CI 的 build-app 动作就是这么传的，照着抄会踩坑）。
+    CI 的发布流程传 signing.pfx，路径存在、名字不匹配，不会被覆盖。
+
+    私钥不随仓库分发（fork 是公开仓库），所以用绝对路径引用本机证书；
+    上面的 TreatAsLocalProperty 让工程能覆盖命令行传入的全局属性，否则命令行永远优先.
+  -->
+  <PropertyGroup Condition="Exists('$(UserProfile)\t3work\bili\dev-nopw.pfx') and (!Exists('$(PackageCertificateKeyFile)') or $(PackageCertificateKeyFile.EndsWith('BiliCopilot.UI_TemporaryKey.pfx')))">
+    <PackageCertificateKeyFile>$(UserProfile)\t3work\bili\dev-nopw.pfx</PackageCertificateKeyFile>
+    <PackageCertificatePassword></PackageCertificatePassword>
+    <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+  </PropertyGroup>
+
   <ItemGroup>
   	<RdXmlFile Include="rd.xml" />
   </ItemGroup>
