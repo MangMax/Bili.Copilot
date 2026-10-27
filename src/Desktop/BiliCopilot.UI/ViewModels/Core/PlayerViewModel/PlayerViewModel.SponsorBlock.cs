@@ -30,6 +30,14 @@ public sealed partial class PlayerViewModel
     /// </summary>
     public SponsorBlockSegment? ActiveSponsorBlockSegment => _sponsorBlockController.ActiveSegment;
 
+    /// <summary>
+    /// 当前分 P 的空降片段列表已更新（异步加载完成或切换分 P 时重置）.
+    /// </summary>
+    /// <remarks>
+    /// 始终在 UI 线程触发，订阅方可以直接更新可视化元素.
+    /// </remarks>
+    public event EventHandler? SponsorBlockSegmentsChanged;
+
     private bool IsSponsorBlockEnabled
         => SettingsToolkit.ReadLocalSetting(SettingNames.SponsorBlockEnabled, true);
 
@@ -75,6 +83,7 @@ public sealed partial class PlayerViewModel
         }
 
         _sponsorBlockSegments = Array.Empty<SponsorBlockSegment>();
+        NotifySponsorBlockSegmentsChanged();
         var resetDecision = _sponsorBlockController.Reset();
         HideSponsorBlockTip();
         _isSponsorBlockSeeking = false;
@@ -163,6 +172,7 @@ public sealed partial class PlayerViewModel
             }
 
             _sponsorBlockSegments = segments;
+            NotifySponsorBlockSegmentsChanged();
             logger.LogDebug("空降助手已加载 {Count} 个片段", segments.Count);
         }
         catch (Exception ex)
@@ -226,6 +236,12 @@ public sealed partial class PlayerViewModel
             logger.LogDebug(ex, "空降助手静音状态切换失败");
         }
     }
+
+    /// <summary>
+    /// 通知界面片段列表已变化。加载完成发生在后台线程，必须切回 UI 线程.
+    /// </summary>
+    private void NotifySponsorBlockSegmentsChanged()
+        => queue.TryEnqueue(() => SponsorBlockSegmentsChanged?.Invoke(this, EventArgs.Empty));
 
     private void HideSponsorBlockTip()
     {
