@@ -25,6 +25,10 @@ runs:
 
         if ($sideload -eq "true") {
             Write-Host "Building for Sideload..."
+            # 签名证书由工程决定：本机走 BiliCopilot.UI.csproj 里的默认证书，
+            # 需要别的证书时显式传 -p:PackageCertificateKeyFile（见 build-sideload-latest.yml）.
+            # 上游曾在此写死 BiliCopilot.UI_TemporaryKey.pfx，该证书 CN=richasy 已过期，
+            # 签出的包无法安装，文件已从本仓库删除.
             msbuild ${{ inputs.project-path }} `
               /p:Configuration=${{ inputs.configuration }} `
               /p:Platform=${{ inputs.platform }} `
@@ -33,7 +37,6 @@ runs:
               /p:AppxBundle=Never `
               /p:GenerateAppxPackageOnBuild=true `
               /p:AppxPackageSigningEnabled=true `
-              /p:PackageCertificateKeyFile="BiliCopilot.UI_TemporaryKey.pfx" `
               /p:AppxPackageDir="${{ github.workspace }}\AppPackages\\"
         } else {
             Write-Host "Building for Store Upload..."

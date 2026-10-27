@@ -33,11 +33,11 @@
 
   <!--
     本机签名证书.
-    仓库自带的 BiliCopilot.UI_TemporaryKey.pfx 属于上游，CN=richasy 且已过期，签出的包无法安装。
+    上游曾提交 BiliCopilot.UI_TemporaryKey.pfx（CN=richasy，2026-09-29 过期），签出的包无法安装，
+    该文件已从本仓库删除；但上游文档和旧命令仍可能指向它，条件里保留按名覆盖。
     两个清单的 Publisher 都是 CN=Mang，因此只要本机存在自己的证书就用它，任意工作树都能直接出可安装的包。
 
-    覆盖条件有两类：未传 PackageCertificateKeyFile，或传的正是那个过期的临时证书
-    （上游 CI 的 build-app 动作就是这么传的，照着抄会踩坑）。
+    覆盖条件有两类：未传 PackageCertificateKeyFile，或传的正是那个已删除的临时证书。
     CI 的发布流程传 signing.pfx，路径存在、名字不匹配，不会被覆盖。
 
     私钥不随仓库分发（fork 是公开仓库），所以用绝对路径引用本机证书；
