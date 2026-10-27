@@ -277,6 +277,7 @@
     <None Remove="Controls\Settings\ScreenshotSettingControl.xaml" />
     <None Remove="Controls\Settings\ScrollSettingControl.xaml" />
     <None Remove="Controls\Settings\SearchRecommendSettingSection.xaml" />
+    <None Remove="Controls\Settings\SponsorBlockSettingControl.xaml" />
     <None Remove="Controls\Settings\ThemeSettingControl.xaml" />
     <None Remove="Controls\Users\FansBody.xaml" />
     <None Remove="Controls\Users\FansHeader.xaml" />
@@ -1507,7 +1508,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-    
+  <ItemGroup>
+    <Page Update="Controls\Settings\SponsorBlockSettingControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
   <!-- Publish Properties -->
   <PropertyGroup>
     <PublishReadyToRun>False</PublishReadyToRun>

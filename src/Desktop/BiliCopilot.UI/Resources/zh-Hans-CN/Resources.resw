@@ -3255,4 +3255,7 @@
   <data name="SponsorBlockMarkerTimeRange" xml:space="preserve">
     <value>{0} – {1}</value>
   </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>高级</value>
+  </data>
 </root>
