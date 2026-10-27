@@ -140,4 +140,5 @@ public enum SettingNames
     D3D11AdapterName,
     VulkanDeviceName,
     MaxBackCacheSize,
+    SponsorBlockEnabled,
 }

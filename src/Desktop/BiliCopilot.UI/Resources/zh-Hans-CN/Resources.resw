@@ -3189,4 +3189,49 @@
   <data name="MaxBackCacheSize" xml:space="preserve">
     <value>最大后向缓冲大小（MB）</value>
   </data>
+  <data name="SponsorBlock" xml:space="preserve">
+    <value>空降助手</value>
+  </data>
+  <data name="SponsorBlockDescription" xml:space="preserve">
+    <value>播放时自动跳过已收录的广告、片头等片段（数据来自 SponsorBlock，仅发送 BV 号与分 P ID）</value>
+  </data>
+  <data name="SponsorBlockSkippedTemplate" xml:space="preserve">
+    <value>已跳过：{0}</value>
+  </data>
+  <data name="SponsorBlockCategoryUnknown" xml:space="preserve">
+    <value>赞助片段</value>
+  </data>
+  <data name="SponsorBlockCategorySponsor" xml:space="preserve">
+    <value>赞助广告</value>
+  </data>
+  <data name="SponsorBlockCategorySelfPromo" xml:space="preserve">
+    <value>自我推广</value>
+  </data>
+  <data name="SponsorBlockCategoryExclusiveAccess" xml:space="preserve">
+    <value>独家内容</value>
+  </data>
+  <data name="SponsorBlockCategoryInteraction" xml:space="preserve">
+    <value>互动提示</value>
+  </data>
+  <data name="SponsorBlockCategoryPoiHighlight" xml:space="preserve">
+    <value>精彩时刻</value>
+  </data>
+  <data name="SponsorBlockCategoryIntro" xml:space="preserve">
+    <value>开场动画</value>
+  </data>
+  <data name="SponsorBlockCategoryOutro" xml:space="preserve">
+    <value>片尾动画</value>
+  </data>
+  <data name="SponsorBlockCategoryPreview" xml:space="preserve">
+    <value>预告回顾</value>
+  </data>
+  <data name="SponsorBlockCategoryPadding" xml:space="preserve">
+    <value>填充内容</value>
+  </data>
+  <data name="SponsorBlockCategoryFiller" xml:space="preserve">
+    <value>无关片段</value>
+  </data>
+  <data name="SponsorBlockCategoryMusicOfftopic" xml:space="preserve">
+    <value>音乐：非音乐部分</value>
+  </data>
 </root>
