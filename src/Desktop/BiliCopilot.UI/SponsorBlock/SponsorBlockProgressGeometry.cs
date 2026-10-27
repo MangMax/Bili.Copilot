@@ -46,9 +46,9 @@ public static class SponsorBlockProgressGeometry
     /// <summary>
     /// 判断指针纵坐标是否落在标记的视觉命中带内。
     /// <para>
-    /// 标记只绘制在轨道上半部，命中带因此也是「上半部」；为了在 4px 高的轨道上仍然好点，
+    /// 标记与轨道等高，命中带因此也是整条轨道；为了在 4px 高的轨道上仍然好点，
     /// 只向上方放宽 <paramref name="padding"/>，下方不再放宽，
-    /// 轨道下半部完整保留给原有的精确定位 / 拖拽.
+    /// 标记不会抢占轨道下方的指针位置，章节上下边缘带也照常优先.
     /// </para>
     /// </summary>
     /// <param name="y">相对画布的纵坐标.</param>
@@ -64,7 +64,7 @@ public static class SponsorBlockProgressGeometry
             return false;
         }
 
-        var bandBottom = trackTop + (trackHeight / 2d);
+        var bandBottom = trackTop + trackHeight;
         return y >= trackTop - padding && y <= bandBottom;
     }
 

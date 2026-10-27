@@ -42,7 +42,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorSponsor",
             "SponsorBlockMarkerSponsorBrush",
-            0xFF00D800,
+            0xFFD88CA8,
             "SponsorBlockCategorySponsor"),
         new(
             SponsorBlockCategory.SelfPromo,
@@ -50,7 +50,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorSelfPromo",
             "SponsorBlockMarkerSelfPromoBrush",
-            0xFFFFD400,
+            0xFFD9A06D,
             "SponsorBlockCategorySelfPromo"),
         new(
             SponsorBlockCategory.ExclusiveAccess,
@@ -58,7 +58,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorExclusiveAccess",
             "SponsorBlockMarkerExclusiveAccessBrush",
-            0xFF00A878,
+            0xFF73B39E,
             "SponsorBlockCategoryExclusiveAccess"),
         new(
             SponsorBlockCategory.Interaction,
@@ -66,7 +66,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.ShowButton,
             "SponsorBlockBehaviorInteraction",
             "SponsorBlockMarkerInteractionBrush",
-            0xFFCC00FF,
+            0xFFA996D6,
             "SponsorBlockCategoryInteraction"),
         new(
             SponsorBlockCategory.PoiHighlight,
@@ -74,7 +74,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.ShowButton,
             "SponsorBlockBehaviorPoiHighlight",
             "SponsorBlockMarkerPoiHighlightBrush",
-            0xFFFF3B8C,
+            0xFFD68FB5,
             "SponsorBlockCategoryPoiHighlight"),
         new(
             SponsorBlockCategory.Intro,
@@ -82,7 +82,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorIntro",
             "SponsorBlockMarkerIntroBrush",
-            0xFF00E5E5,
+            0xFF72ADBA,
             "SponsorBlockCategoryIntro"),
         new(
             SponsorBlockCategory.Outro,
@@ -90,7 +90,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorOutro",
             "SponsorBlockMarkerOutroBrush",
-            0xFF4C5BFF,
+            0xFF8798CF,
             "SponsorBlockCategoryOutro"),
         new(
             SponsorBlockCategory.Preview,
@@ -98,7 +98,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorPreview",
             "SponsorBlockMarkerPreviewBrush",
-            0xFF2AA0E0,
+            0xFF7DA8C1,
             "SponsorBlockCategoryPreview"),
         new(
             SponsorBlockCategory.Padding,
@@ -106,7 +106,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorPadding",
             "SponsorBlockMarkerPaddingBrush",
-            0xFF9E9E9E,
+            0xFFA4A4A4,
             "SponsorBlockCategoryPadding"),
         new(
             SponsorBlockCategory.Filler,
@@ -114,7 +114,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorFiller",
             "SponsorBlockMarkerFillerBrush",
-            0xFF8A4DFF,
+            0xFF9D8FBE,
             "SponsorBlockCategoryFiller"),
         new(
             SponsorBlockCategory.MusicOfftopic,
@@ -122,7 +122,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorMusicOfftopic",
             "SponsorBlockMarkerMusicOfftopicBrush",
-            0xFFFF9F1A,
+            0xFFCC9D62,
             "SponsorBlockCategoryMusicOfftopic"),
         new(
             SponsorBlockCategory.Unknown,
@@ -130,7 +130,7 @@ public static class SponsorBlockCategoryCatalog
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorUnknown",
             "SponsorBlockMarkerUnknownBrush",
-            0xFFE53935,
+            0xFFBC898B,
             "SponsorBlockCategoryUnknown"),
     ];
 

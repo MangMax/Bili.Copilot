@@ -17,7 +17,7 @@ namespace BiliCopilot.UI.Controls.Core;
 /// 轨道 / 缓存 / 已播放，因此缓冲进度天然按章节划分。
 /// 轨道在控件内垂直居中，与两侧时间文本对齐；悬浮层用负的 Canvas.Top 绘制在轨道上方.
 /// 空降片段以独立覆盖层绘制在章节分段之上（见 <c>ChapterSegmentBar.Markers.cs</c>），
-/// 只占轨道上半部，因此不会遮住缓冲与已播放进度.
+/// 与轨道等高、半透明，因此仍能看到下面的缓冲与已播放进度.
 /// </remarks>
 public sealed partial class ChapterSegmentBar : PlayerControlBase
 {

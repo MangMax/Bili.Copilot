@@ -164,21 +164,19 @@ public class SponsorBlockProgressGeometryTests
         // 与 ChapterSegmentBar.MarkerHitPadding 保持一致.
         const double padding = 4d;
 
-        // 标记视觉只占轨道上半部（15..17），命中带向上放宽 4px（11..17）.
+        // 标记与轨道等高（15..19），命中带向上放宽 4px（11..19）.
         Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
             markers, 15, 11, trackTop, trackHeight, padding, false));
         Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
-            markers, 15, 13, trackTop, trackHeight, padding, false));
-        Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
             markers, 15, 15, trackTop, trackHeight, padding, false));
         Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
-            markers, 15, 17, trackTop, trackHeight, padding, false));
-
-        // 轨道下半部（17..19）完整保留给原有的精确定位 / 拖拽.
-        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
             markers, 15, 17.5, trackTop, trackHeight, padding, false));
-        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
+        Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
             markers, 15, 19, trackTop, trackHeight, padding, false));
+
+        // 命中带不会向轨道下方扩展，轨道下方原有的定位 / 拖拽不受影响.
+        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 19.5, trackTop, trackHeight, padding, false));
 
         // 命中带之上也不再拦截.
         Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(

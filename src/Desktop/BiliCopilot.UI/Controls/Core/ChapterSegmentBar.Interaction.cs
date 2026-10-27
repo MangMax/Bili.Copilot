@@ -345,7 +345,10 @@ public sealed partial class ChapterSegmentBar
 
         _lastPopupX = double.NaN;
         _lastPopupTime = double.NaN;
+
+        // 直接清空悬浮标记时也要把高亮的标记视觉还原，否则它会停留在不透明状态.
         _hoveredMarker = null;
+        ApplyMarkerHighlight(null);
     }
 
     private void SetHovered(SegmentVisual? segment)
