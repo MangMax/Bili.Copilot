@@ -20,7 +20,7 @@
   <Identity
     Name="Mang.BiliCopilot.Dev"
     Publisher="CN=BiliCopilotDev"
-    Version="2.2610.0.0" />
+    Version="2.2610.0.1" />
 
   <mp:PhoneIdentity PhoneProductId="6f1b2a94-3c7d-4e58-9a06-1d2b8f0c4e73" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
