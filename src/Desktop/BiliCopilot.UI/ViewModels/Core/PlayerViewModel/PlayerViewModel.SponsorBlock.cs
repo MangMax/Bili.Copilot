@@ -3,6 +3,7 @@
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.Toolkits;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -13,15 +14,51 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class PlayerViewModel
 {
-    private readonly SponsorBlockSkipTracker _sponsorBlockSkipTracker = new();
+    private readonly SponsorBlockController _sponsorBlockController = new(SponsorBlockBehaviorSettings.Read);
     private IReadOnlyList<SponsorBlockSegment> _sponsorBlockSegments = Array.Empty<SponsorBlockSegment>();
     private CancellationTokenSource? _sponsorBlockLoadSource;
     private int _sponsorBlockGeneration;
-    private DateTimeOffset _lastSponsorBlockCheckAt;
     private bool _isSponsorBlockSeeking;
+
+    /// <summary>
+    /// 当前分 P 的空降助手片段列表，供进度条标记等界面复用.
+    /// </summary>
+    public IReadOnlyList<SponsorBlockSegment> SponsorBlockSegments => _sponsorBlockSegments;
+
+    /// <summary>
+    /// 当前播放位置所在的空降助手片段.
+    /// </summary>
+    public SponsorBlockSegment? ActiveSponsorBlockSegment => _sponsorBlockController.ActiveSegment;
 
     private bool IsSponsorBlockEnabled
         => SettingsToolkit.ReadLocalSetting(SettingNames.SponsorBlockEnabled, true);
+
+    /// <summary>
+    /// 点击跳过提示：跳到片段终点.
+    /// </summary>
+    [RelayCommand]
+    private async Task AcceptSponsorBlockPromptAsync()
+    {
+        var decision = _sponsorBlockController.AcceptActivePrompt(Player?.Duration ?? 0);
+        if (decision.IsActionable)
+        {
+            HideSponsorBlockTip();
+            await ApplySponsorBlockDecisionAsync(decision, _sponsorBlockGeneration);
+        }
+    }
+
+    /// <summary>
+    /// 关闭跳过提示.
+    /// </summary>
+    [RelayCommand]
+    private void DismissSponsorBlockPrompt()
+    {
+        var decision = _sponsorBlockController.DismissActivePrompt();
+        if (decision.Kind == SponsorBlockActionKind.HideButton)
+        {
+            HideSponsorBlockTip();
+        }
+    }
 
     /// <summary>
     /// 清空空降助手状态并取消尚未完成的片段请求.
@@ -38,9 +75,14 @@ public sealed partial class PlayerViewModel
         }
 
         _sponsorBlockSegments = Array.Empty<SponsorBlockSegment>();
-        _sponsorBlockSkipTracker.Reset();
-        _lastSponsorBlockCheckAt = default;
+        var resetDecision = _sponsorBlockController.Reset();
+        HideSponsorBlockTip();
         _isSponsorBlockSeeking = false;
+
+        if (resetDecision is { Kind: SponsorBlockActionKind.RestoreMute, MuteState: bool restoreState })
+        {
+            _ = ApplySponsorBlockMuteAsync(restoreState);
+        }
     }
 
     /// <summary>
@@ -68,7 +110,7 @@ public sealed partial class PlayerViewModel
     }
 
     /// <summary>
-    /// 检查当前进度是否需要跳过片段.
+    /// 检查当前进度需要执行的空降助手动作.
     /// </summary>
     /// <param name="position">当前播放位置（秒）.</param>
     private void CheckSponsorBlock(double position)
@@ -81,33 +123,33 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        // 进度事件很密集，先做低成本节流，再读取设置与匹配片段.
-        var now = DateTimeOffset.UtcNow;
-        if (now - _lastSponsorBlockCheckAt < SponsorBlockSkipTracker.MinimumCheckInterval)
-        {
-            return;
-        }
-
-        _lastSponsorBlockCheckAt = now;
-
         if (!IsSponsorBlockEnabled)
         {
+            // 播放中途关闭开关时，立刻放开控制器接管的静音并收起提示.
+            if (_sponsorBlockController.IsMuteApplied || _sponsorBlockController.IsPromptActive)
+            {
+                var resetDecision = _sponsorBlockController.Reset();
+                HideSponsorBlockTip();
+                if (resetDecision is { Kind: SponsorBlockActionKind.RestoreMute, MuteState: bool restoreState })
+                {
+                    _ = ApplySponsorBlockMuteAsync(restoreState);
+                }
+            }
+
             return;
         }
 
-        if (!_sponsorBlockSkipTracker.TryTakeSkip(
-                _sponsorBlockSegments,
-                position,
-                Player.Duration,
-                now,
-                out var segment,
-                out var targetPosition)
-            || segment is null)
+        var decision = _sponsorBlockController.Evaluate(
+            _sponsorBlockSegments,
+            position,
+            Player.Duration,
+            IsMute,
+            DateTimeOffset.UtcNow);
+
+        if (decision.IsActionable)
         {
-            return;
+            _ = ApplySponsorBlockDecisionAsync(decision, _sponsorBlockGeneration);
         }
-
-        _ = SkipSponsorSegmentAsync(segment, targetPosition, _sponsorBlockGeneration);
     }
 
     private async Task LoadSponsorBlockSegmentsAsync(string bvid, string cid, int generation, CancellationToken cancellationToken)
@@ -128,6 +170,67 @@ public sealed partial class PlayerViewModel
             // 网络或解析失败都静默降级，不影响播放.
             logger.LogDebug(ex, "加载空降助手片段失败");
         }
+    }
+
+    private async Task ApplySponsorBlockDecisionAsync(SponsorBlockDecision decision, int generation)
+    {
+        if (generation != _sponsorBlockGeneration)
+        {
+            return;
+        }
+
+        switch (decision.Kind)
+        {
+            case SponsorBlockActionKind.Skip when decision.Segment is not null:
+                await SkipSponsorSegmentAsync(decision.Segment, decision.TargetPosition, generation);
+                break;
+            case SponsorBlockActionKind.Mute
+                when decision.MuteState is bool muteState && _sponsorBlockController.IsMuteApplied:
+                // 用户恰好在进入片段时手动切换了静音，则放弃这次自动静音.
+                await ApplySponsorBlockMuteAsync(muteState);
+                break;
+            case SponsorBlockActionKind.RestoreMute:
+                if (decision.MuteState is bool restoreState)
+                {
+                    await ApplySponsorBlockMuteAsync(restoreState);
+                }
+
+                break;
+            case SponsorBlockActionKind.ShowButton when decision.Segment is not null:
+                SponsorBlockTipText = string.Format(
+                    ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockPromptTemplate),
+                    SponsorBlockCategoryHelper.GetDisplayName(decision.Segment.Category));
+                RequestShowSponsorBlockTip?.Invoke(this, EventArgs.Empty);
+                break;
+            case SponsorBlockActionKind.HideButton:
+                HideSponsorBlockTip();
+                break;
+        }
+    }
+
+    private async Task ApplySponsorBlockMuteAsync(bool isMuted)
+    {
+        if (Client is null)
+        {
+            return;
+        }
+
+        try
+        {
+            IsMute = isMuted;
+            await Client.SetMuteAsync(isMuted);
+        }
+        catch (Exception ex)
+        {
+            // 静音切换失败时保持静默，不打断播放.
+            logger.LogDebug(ex, "空降助手静音状态切换失败");
+        }
+    }
+
+    private void HideSponsorBlockTip()
+    {
+        SponsorBlockTipText = null;
+        RequestHideSponsorBlockTip?.Invoke(this, EventArgs.Empty);
     }
 
     private async Task SkipSponsorSegmentAsync(SponsorBlockSegment segment, double targetPosition, int generation)

@@ -3193,7 +3193,7 @@
     <value>空降助手</value>
   </data>
   <data name="SponsorBlockDescription" xml:space="preserve">
-    <value>播放时自动跳过已收录的广告、片头等片段（数据来自 SponsorBlock，仅发送 BV 号与分 P ID）</value>
+    <value>按片段类别自动跳过、静音或显示跳过提示（数据来自 SponsorBlock，仅发送 BV 号与分 P ID）</value>
   </data>
   <data name="SponsorBlockSkippedTemplate" xml:space="preserve">
     <value>已跳过：{0}</value>
@@ -3233,5 +3233,29 @@
   </data>
   <data name="SponsorBlockCategoryMusicOfftopic" xml:space="preserve">
     <value>音乐：非音乐部分</value>
+  </data>
+  <data name="SponsorBlockBehavior" xml:space="preserve">
+    <value>按类别设置行为</value>
+  </data>
+  <data name="SponsorBlockBehaviorDescription" xml:space="preserve">
+    <value>为不同片段类别选择自动跳过、仅静音、显示跳过按钮或不处理</value>
+  </data>
+  <data name="SponsorBlockBehaviorNone" xml:space="preserve">
+    <value>不处理</value>
+  </data>
+  <data name="SponsorBlockBehaviorSkip" xml:space="preserve">
+    <value>自动跳过</value>
+  </data>
+  <data name="SponsorBlockBehaviorMute" xml:space="preserve">
+    <value>仅静音</value>
+  </data>
+  <data name="SponsorBlockBehaviorShowButton" xml:space="preserve">
+    <value>显示跳过按钮</value>
+  </data>
+  <data name="SponsorBlockSkipButton" xml:space="preserve">
+    <value>跳过</value>
+  </data>
+  <data name="SponsorBlockPromptTemplate" xml:space="preserve">
+    <value>检测到{0}，点击跳过</value>
   </data>
 </root>
