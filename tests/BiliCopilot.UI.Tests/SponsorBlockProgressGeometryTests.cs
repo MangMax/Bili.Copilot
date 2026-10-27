@@ -160,9 +160,13 @@ public class SponsorBlockProgressGeometryTests
         SponsorBlockMarker[] markers = [new(0, SponsorBlockCategory.Sponsor, 10, 20)];
         const double trackTop = 15d;
         const double trackHeight = 4d;
-        const double padding = 2d;
 
-        // 标记视觉只占轨道上半部（15..17），命中带向上放宽 2px.
+        // 与 ChapterSegmentBar.MarkerHitPadding 保持一致.
+        const double padding = 4d;
+
+        // 标记视觉只占轨道上半部（15..17），命中带向上放宽 4px（11..17）.
+        Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 11, trackTop, trackHeight, padding, false));
         Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
             markers, 15, 13, trackTop, trackHeight, padding, false));
         Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
@@ -178,7 +182,7 @@ public class SponsorBlockProgressGeometryTests
 
         // 命中带之上也不再拦截.
         Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
-            markers, 15, 12.5, trackTop, trackHeight, padding, false));
+            markers, 15, 10.5, trackTop, trackHeight, padding, false));
     }
 
     [Fact]
