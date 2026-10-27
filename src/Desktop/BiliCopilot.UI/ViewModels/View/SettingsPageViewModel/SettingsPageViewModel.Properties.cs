@@ -88,6 +88,12 @@ public sealed partial class SettingsPageViewModel
     [ObservableProperty]
     private bool _noP2P;
 
+    /// <summary>
+    /// 是否启用空降助手.
+    /// </summary>
+    [ObservableProperty]
+    private bool _isSponsorBlockEnabled = true;
+
     [ObservableProperty]
     private string _defaultDownloadPath;
 

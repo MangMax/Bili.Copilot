@@ -467,6 +467,7 @@ public sealed partial class PlayerViewModel
             IsPreviewProgressChanging = false;
             PositionText = TimeSpan.FromSeconds(Player.Position).ToString(@"hh\:mm\:ss");
             ProgressChanged?.Invoke(this, Player.Position);
+            CheckSponsorBlock(Player.Position);
             Danmaku.UpdatePosition(Convert.ToInt32(Player.Position));
             // 按“当前时间落在哪个章节区间”判定正在播放的章节.
             // 旧实现用 |Position - 章节起点| < 2，只在经过起点前后两秒内为真，
