@@ -152,6 +152,12 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                <local:SponsorBlockSkipTip
+                    x:Name="SponsorBlockTip"
+                    Margin="0,16,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
             </Grid>
             <Grid
                 x:Name="TestRect"

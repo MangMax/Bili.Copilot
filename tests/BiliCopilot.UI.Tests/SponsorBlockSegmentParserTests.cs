@@ -29,6 +29,7 @@ public class SponsorBlockSegmentParserTests
         Assert.Equal(300.019, segment.Start, 3);
         Assert.Equal(600.014, segment.End, 3);
         Assert.Equal("d0f1e2a3", segment.Uuid);
+        Assert.Equal(SponsorBlockActionType.Skip, segment.ActionType);
     }
 
     [Fact]
@@ -50,10 +51,10 @@ public class SponsorBlockSegmentParserTests
     }
 
     [Theory]
-    [InlineData("mute")]
     [InlineData("poi")]
     [InlineData("full")]
-    public void Parse_IgnoresNonSkipActions(string actionType)
+    [InlineData("something_new")]
+    public void Parse_IgnoresOutOfScopeActions(string actionType)
     {
         var json = $$"""
             [
@@ -62,6 +63,36 @@ public class SponsorBlockSegmentParserTests
             """;
 
         Assert.Empty(SponsorBlockSegmentParser.Parse(json));
+    }
+
+    [Theory]
+    [InlineData("mute", SponsorBlockActionType.Mute)]
+    [InlineData("MUTE", SponsorBlockActionType.Mute)]
+    [InlineData("skip", SponsorBlockActionType.Skip)]
+    [InlineData("", SponsorBlockActionType.Skip)]
+    public void Parse_KeepsSupportedActionType(string actionType, SponsorBlockActionType expected)
+    {
+        var json = $$"""
+            [
+              { "category": "sponsor", "actionType": "{{actionType}}", "segment": [10, 20], "UUID": "a" }
+            ]
+            """;
+
+        var segment = Assert.Single(SponsorBlockSegmentParser.Parse(json));
+        Assert.Equal(expected, segment.ActionType);
+    }
+
+    [Fact]
+    public void Parse_MissingActionType_DefaultsToSkip()
+    {
+        const string json = """
+            [
+              { "category": "sponsor", "segment": [10, 20], "UUID": "a" }
+            ]
+            """;
+
+        var segment = Assert.Single(SponsorBlockSegmentParser.Parse(json));
+        Assert.Equal(SponsorBlockActionType.Skip, segment.ActionType);
     }
 
     [Fact]

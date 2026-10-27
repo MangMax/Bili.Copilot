@@ -48,7 +48,7 @@ public static class SponsorBlockSegmentParser
             var start = range[0];
             var end = range[1];
             if (!SponsorBlockSegment.IsValidRange(start, end)
-                || !IsSkipAction(item.ActionType)
+                || !TryParseActionType(item.ActionType, out var actionType)
                 || !MatchesCid(item.Cid, expectedCid))
             {
                 continue;
@@ -59,7 +59,8 @@ public static class SponsorBlockSegmentParser
                 start,
                 end,
                 item.Uuid,
-                item.VideoDuration));
+                item.VideoDuration,
+                actionType));
         }
 
         segments.Sort(static (left, right) =>
@@ -71,9 +72,29 @@ public static class SponsorBlockSegmentParser
         return segments;
     }
 
-    private static bool IsSkipAction(string? actionType)
-        => string.IsNullOrWhiteSpace(actionType)
-            || string.Equals(actionType.Trim(), "skip", StringComparison.OrdinalIgnoreCase);
+    private static bool TryParseActionType(string? actionType, out SponsorBlockActionType result)
+    {
+        if (string.IsNullOrWhiteSpace(actionType))
+        {
+            // 旧接口未返回 actionType 时按跳过处理.
+            result = SponsorBlockActionType.Skip;
+            return true;
+        }
+
+        switch (actionType.Trim().ToLowerInvariant())
+        {
+            case "skip":
+                result = SponsorBlockActionType.Skip;
+                return true;
+            case "mute":
+                result = SponsorBlockActionType.Mute;
+                return true;
+            default:
+                // poi / full 等动作不在自动处理范围内.
+                result = default;
+                return false;
+        }
+    }
 
     private static bool MatchesCid(JsonElement? cid, string? expectedCid)
     {
