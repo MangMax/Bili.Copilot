@@ -9,7 +9,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.Settings"
+    xmlns:sponsorblock="using:BiliCopilot.UI.SponsorBlock"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -17,6 +19,7 @@
         <converters:ExternalPlayerTypeConverter x:Key="ExternalPlayerTypeConverter" />
         <converters:DisplayModeConverter x:Key="DisplayModeConverter" />
         <converters:PreferDecodeTypeConverter x:Key="PreferDecodeConverter" />
+        <converters:SponsorBlockBehaviorConverter x:Key="SponsorBlockBehaviorConverter" />
     </UserControl.Resources>
 
     <base:SettingsExpander Description="{ext:Locale Name=PlayerBehaviorDescription}" Header="{ext:Locale Name=PlayerBehavior}">
@@ -99,6 +102,46 @@
             </base:SettingsCard>
             <base:SettingsCard Description="{ext:Locale Name=SponsorBlockDescription}" Header="{ext:Locale Name=SponsorBlock}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=TwoWay}" />
+            </base:SettingsCard>
+            <base:SettingsCard
+                ContentAlignment="Left"
+                Description="{ext:Locale Name=SponsorBlockBehaviorDescription}"
+                Header="{ext:Locale Name=SponsorBlockBehavior}"
+                HorizontalContentAlignment="Stretch"
+                Visibility="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=OneWay}">
+                <ItemsRepeater
+                    Margin="0,8,0,0"
+                    ItemsSource="{x:Bind ViewModel.SponsorBlockCategorySettings, Mode=OneWay}">
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout
+                            ItemsStretch="Fill"
+                            MinColumnSpacing="16"
+                            MinItemWidth="260"
+                            MinRowSpacing="6" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="items:SponsorBlockCategorySettingViewModel">
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{x:Bind DisplayName}" />
+                                <ComboBox
+                                    Grid.Column="1"
+                                    MinWidth="128"
+                                    ItemsSource="{x:Bind AvailableBehaviors}"
+                                    SelectedItem="{x:Bind Behavior, Mode=TwoWay}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="sponsorblock:SponsorBlockBehavior">
+                                            <TextBlock Text="{x:Bind Converter={StaticResource SponsorBlockBehaviorConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
             </base:SettingsCard>
         </base:SettingsExpander.Items>
     </base:SettingsExpander>

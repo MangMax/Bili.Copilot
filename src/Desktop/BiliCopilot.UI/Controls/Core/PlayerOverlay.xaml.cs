@@ -55,6 +55,8 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         ViewModel.WarningOccurred += OnWarningOccurred;
         ViewModel.RequestShowNextTip += OnRequestShowNextTip;
         ViewModel.RequestHideNextTip += OnRequestHideNextTip;
+        ViewModel.RequestShowSponsorBlockTip += OnRequestShowSponsorBlockTip;
+        ViewModel.RequestHideSponsorBlockTip += OnRequestHideSponsorBlockTip;
     }
 
     protected override void OnControlUnloaded()
@@ -63,6 +65,8 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         ViewModel.WarningOccurred -= OnWarningOccurred;
         ViewModel.RequestShowNextTip -= OnRequestShowNextTip;
         ViewModel.RequestHideNextTip -= OnRequestHideNextTip;
+        ViewModel.RequestShowSponsorBlockTip -= OnRequestShowSponsorBlockTip;
+        ViewModel.RequestHideSponsorBlockTip -= OnRequestHideSponsorBlockTip;
         _controlTimer.Tick -= OnControlTimerTick;
         _controlTimer.Stop();
         _cursorTimer.Tick -= OnCursorTimerTick;
@@ -75,6 +79,12 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     private void OnRequestShowNextTip(object? sender, EventArgs e)
         => NextTip?.Show();
+
+    private void OnRequestHideSponsorBlockTip(object? sender, EventArgs e)
+        => SponsorBlockTip?.Hide();
+
+    private void OnRequestShowSponsorBlockTip(object? sender, EventArgs e)
+        => SponsorBlockTip?.Show();
 
     private void OnWarningOccurred(object? sender, string e)
     {

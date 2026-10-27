@@ -15,18 +15,21 @@ public sealed class SponsorBlockSegment
     /// <param name="end">结束时间（秒）.</param>
     /// <param name="uuid">片段唯一标识.</param>
     /// <param name="videoDuration">提交时的视频时长（秒）.</param>
+    /// <param name="actionType">片段提交者声明的行为类型.</param>
     public SponsorBlockSegment(
         SponsorBlockCategory category,
         double start,
         double end,
         string? uuid = null,
-        double? videoDuration = null)
+        double? videoDuration = null,
+        SponsorBlockActionType actionType = SponsorBlockActionType.Skip)
     {
         Category = category;
         Start = start;
         End = end;
         Uuid = uuid;
         VideoDuration = videoDuration;
+        ActionType = actionType;
     }
 
     /// <summary>
@@ -53,6 +56,11 @@ public sealed class SponsorBlockSegment
     /// 提交时的视频时长（秒）.
     /// </summary>
     public double? VideoDuration { get; }
+
+    /// <summary>
+    /// 片段提交者声明的行为类型（跳过或静音）.
+    /// </summary>
+    public SponsorBlockActionType ActionType { get; }
 
     /// <summary>
     /// 片段时长（秒）.
