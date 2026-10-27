@@ -15,11 +15,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:PreferQualityTypeConverter x:Key="PreferQualityConverter" />
-        <converters:ExternalPlayerTypeConverter x:Key="ExternalPlayerTypeConverter" />
-        <converters:DisplayModeConverter x:Key="DisplayModeConverter" />
-        <converters:PreferDecodeTypeConverter x:Key="PreferDecodeConverter" />
-        <converters:SponsorBlockBehaviorConverter x:Key="SponsorBlockBehaviorConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  类别行复用设置面板自带的展开项样式（内边距、分隔线、行距）。
+                      该样式定义在控件库的 Generic.xaml 里，应用级字典查不到，必须在本地合并一次  -->
+                <ResourceDictionary Source="ms-appx:///Richasy.WinUIKernel.Share/Base/SettingsControls/SettingsExpander/SettingsExpander.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:PreferQualityTypeConverter x:Key="PreferQualityConverter" />
+            <converters:ExternalPlayerTypeConverter x:Key="ExternalPlayerTypeConverter" />
+            <converters:DisplayModeConverter x:Key="DisplayModeConverter" />
+            <converters:PreferDecodeTypeConverter x:Key="PreferDecodeConverter" />
+            <converters:SponsorBlockBehaviorConverter x:Key="SponsorBlockBehaviorConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <base:SettingsExpander Description="{ext:Locale Name=PlayerBehaviorDescription}" Header="{ext:Locale Name=PlayerBehavior}">
@@ -105,48 +112,40 @@
                     AutomationProperties.AutomationId="SponsorBlockEnabledToggle"
                     IsOn="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=TwoWay}" />
             </base:SettingsCard>
-            <base:SettingsCard
-                ContentAlignment="Left"
-                Description="{ext:Locale Name=SponsorBlockBehaviorDescription}"
-                Header="{ext:Locale Name=SponsorBlockBehavior}"
-                HorizontalContentAlignment="Stretch"
-                Visibility="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=OneWay}">
-                <ItemsRepeater
-                    Margin="0,8,0,0"
-                    ItemsSource="{x:Bind ViewModel.SponsorBlockCategorySettings, Mode=OneWay}">
-                    <ItemsRepeater.Layout>
-                        <UniformGridLayout
-                            ItemsStretch="Fill"
-                            MinColumnSpacing="16"
-                            MinItemWidth="260"
-                            MinRowSpacing="6" />
-                    </ItemsRepeater.Layout>
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="items:SponsorBlockCategorySettingViewModel">
-                            <Grid ColumnSpacing="12">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock VerticalAlignment="Center" Text="{x:Bind DisplayName}" />
-                                <ComboBox
-                                    AutomationProperties.AutomationId="{x:Bind Category}"
-                                    AutomationProperties.Name="{x:Bind DisplayName}"
-                                    Grid.Column="1"
-                                    MinWidth="128"
-                                    ItemsSource="{x:Bind AvailableBehaviors}"
-                                    SelectedItem="{x:Bind Behavior, Mode=TwoWay}">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate x:DataType="sponsorblock:SponsorBlockBehavior">
-                                            <TextBlock Text="{x:Bind Converter={StaticResource SponsorBlockBehaviorConverter}}" />
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-            </base:SettingsCard>
         </base:SettingsExpander.Items>
+        <!--
+            类别行为紧接在开关之后逐行排列，与上方其他设置行共用同一套展开项样式。
+            放进 ItemsFooter 而不是 Items，是因为这里每一行本身就是 SettingsCard：
+            作为 Item 会再套一层卡片，只能通过 ItemTemplate 才能保持原样，而标题又需要随开关联动隐藏。
+        -->
+        <base:SettingsExpander.ItemsFooter>
+            <ItemsRepeater
+                ItemsSource="{x:Bind ViewModel.SponsorBlockCategorySettings, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=OneWay}">
+                <ItemsRepeater.Layout>
+                    <StackLayout Orientation="Vertical" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="items:SponsorBlockCategorySettingViewModel">
+                        <base:SettingsCard
+                            Header="{x:Bind DisplayName}"
+                            Style="{StaticResource DefaultSettingsExpanderItemStyle}">
+                            <ComboBox
+                                AutomationProperties.AutomationId="{x:Bind Category}"
+                                AutomationProperties.Name="{x:Bind DisplayName}"
+                                MinWidth="140"
+                                ItemsSource="{x:Bind AvailableBehaviors}"
+                                SelectedItem="{x:Bind Behavior, Mode=TwoWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="sponsorblock:SponsorBlockBehavior">
+                                        <TextBlock Text="{x:Bind Converter={StaticResource SponsorBlockBehaviorConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </base:SettingsCard>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </base:SettingsExpander.ItemsFooter>
     </base:SettingsExpander>
 </local:SettingsPageControlBase>

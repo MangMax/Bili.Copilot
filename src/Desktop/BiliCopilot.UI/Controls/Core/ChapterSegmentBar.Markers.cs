@@ -12,22 +12,28 @@ namespace BiliCopilot.UI.Controls.Core;
 /// 分段式播放进度条：空降片段标记.
 /// </summary>
 /// <remarks>
-/// 标记绘制在章节分段之上、轨道上半部，下半部仍可看到缓冲与已播放进度。
-/// 覆盖层不参与命中测试，控件只在标记的视觉带（轨道上半部 + 少量 padding）内拦截指针，
-/// 因此轨道下半部与章节上下边缘带仍保持原有的跳转 / 拖拽行为。
+/// 标记完全覆盖轨道高度，按时间区间整段染色，重叠处仍能透过半透明看到缓冲与已播放进度。
+/// 覆盖层不参与命中测试，控件只在标记的视觉带（整条轨道 + 向上少量 padding）内拦截指针，
+/// 不会向轨道下方扩展，章节上下边缘带仍保持原有的跳转 / 拖拽行为。
 /// 迷你进度条为纯展示控件（<see cref="IsInteractive"/> 为 <c>false</c>），
 /// 只绘制标记，不提供悬浮与点击.
 /// </remarks>
 public sealed partial class ChapterSegmentBar
 {
     /// <summary>
-    /// 标记高度：只占轨道上半部，避免遮住缓冲 / 已播放层的下半部分.
+    /// 标记的默认不透明度。标记颜色是低饱和的 Fluent 色板，再叠加半透明，
+    /// 避免高饱和色块盖住缓冲 / 已播放进度，也避免在进度条上过于抢眼.
     /// </summary>
-    private const double MarkerHeight = TrackHeight / 2d;
+    private const double MarkerDefaultOpacity = 0.78d;
+
+    /// <summary>
+    /// 悬浮标记的不透明度，让指针下的片段在整条进度条中凸显出来.
+    /// </summary>
+    private const double MarkerHoverOpacity = 1d;
 
     /// <summary>
     /// 标记命中带向上额外放宽的像素，让 4px 高的轨道也容易命中；
-    /// 下方不放宽，轨道下半部完整留给原有的精确定位 / 拖拽.
+    /// 下方不扩展，标记不会抢走轨道下方原有的定位 / 拖拽.
     /// </summary>
     private const double MarkerHitPadding = 4d;
 
@@ -35,6 +41,12 @@ public sealed partial class ChapterSegmentBar
     private readonly Dictionary<SponsorBlockCategory, Brush> _markerBrushes = [];
     private List<SponsorBlockMarker> _markers = [];
     private SponsorBlockMarker? _hoveredMarker;
+
+    /// <summary>
+    /// 当前高亮的标记视觉。只改这一个元素的不透明度，
+    /// 指针在标记之间移动时不会重建视觉树.
+    /// </summary>
+    private Rectangle? _hoveredMarkerVisual;
 
     /// <summary>
     /// 按下标记后挂起的点击候选：只有指针未超过拖动阈值就释放时才算点击.
@@ -58,7 +70,9 @@ public sealed partial class ChapterSegmentBar
             width)];
 
         // 列表变化后旧标记的下标可能失效，先收起悬浮态与挂起的点击，下一次移动会重新判定.
+        // 高亮元素随后会在下面的循环里统一回到默认不透明度.
         _hoveredMarker = null;
+        _hoveredMarkerVisual = null;
         _pendingMarker = null;
         _lastPopupTime = double.NaN;
         _lastPopupX = double.NaN;
@@ -82,6 +96,9 @@ public sealed partial class ChapterSegmentBar
             var visual = _markerVisuals[i];
             visual.Fill = ResolveMarkerBrush(marker.Category);
             visual.Width = marker.Width;
+
+            // 复用的视觉元素可能停留在上一次的悬浮态，重建时统一回到默认不透明度.
+            visual.Opacity = MarkerDefaultOpacity;
             Canvas.SetLeft(visual, marker.Left);
             Canvas.SetTop(visual, top);
         }
@@ -99,6 +116,7 @@ public sealed partial class ChapterSegmentBar
 
         _markers = [];
         _hoveredMarker = null;
+        _hoveredMarkerVisual = null;
         _pendingMarker = null;
         _lastPopupTime = double.NaN;
         _lastPopupX = double.NaN;
@@ -111,13 +129,18 @@ public sealed partial class ChapterSegmentBar
         _markerVisuals.Clear();
     }
 
+    /// <summary>
+    /// 创建一个标记矩形：高度与轨道一致，圆角取轨道圆角，
+    /// 因此标记在视觉上就是轨道的一段，而不是浮在轨道上的细线.
+    /// </summary>
     private Rectangle CreateMarkerVisual()
     {
         var visual = new Rectangle
         {
-            Height = MarkerHeight,
-            RadiusX = MarkerHeight / 2d,
-            RadiusY = MarkerHeight / 2d,
+            Height = TrackHeight,
+            RadiusX = TrackHeight / 2d,
+            RadiusY = TrackHeight / 2d,
+            Opacity = MarkerDefaultOpacity,
         };
 
         _markerLayer.Children.Add(visual);
@@ -167,7 +190,7 @@ public sealed partial class ChapterSegmentBar
 
     /// <summary>
     /// 命中标记。横向严格限制在标记范围内，纵向限制在标记视觉带
-    ///（轨道上半部，向上放宽 <see cref="MarkerHitPadding"/>）；章节上下边缘带优先，
+    ///（整条轨道，向上放宽 <see cref="MarkerHitPadding"/>，不向轨道下方扩展）；章节上下边缘带优先，
     /// 这样标记之外的位置仍由原有的按位置跳转 / 章节跳转逻辑处理.
     /// </summary>
     /// <param name="x">相对画布的横坐标.</param>
@@ -204,6 +227,9 @@ public sealed partial class ChapterSegmentBar
 
         _hoveredMarker = marker;
 
+        // 只切换两个元素的不透明度：先还原上一个，再抬高当前这一个.
+        ApplyMarkerHighlight(marker);
+
         // 强制下一次更新重新计算浮层文本与位置.
         _lastPopupTime = double.NaN;
         _lastPopupX = double.NaN;
@@ -220,6 +246,34 @@ public sealed partial class ChapterSegmentBar
             ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockMarkerTimeRange),
             FormatTime(segment.Start),
             FormatTime(segment.End));
+    }
+
+    /// <summary>
+    /// 把悬浮高亮从一个标记视觉移到另一个：只改不透明度，不重建视觉树.
+    /// </summary>
+    /// <param name="marker">新的悬浮标记；<c>null</c> 表示退出悬浮态.</param>
+    private void ApplyMarkerHighlight(SponsorBlockMarker? marker)
+    {
+        if (_hoveredMarkerVisual is not null)
+        {
+            _hoveredMarkerVisual.Opacity = MarkerDefaultOpacity;
+            _hoveredMarkerVisual = null;
+        }
+
+        if (marker is not SponsorBlockMarker value)
+        {
+            return;
+        }
+
+        var index = _markers.IndexOf(value);
+        if (index < 0 || index >= _markerVisuals.Count)
+        {
+            return;
+        }
+
+        var visual = _markerVisuals[index];
+        visual.Opacity = MarkerHoverOpacity;
+        _hoveredMarkerVisual = visual;
     }
 
     private bool TryGetSponsorSegment(int index, out SponsorBlockSegment segment)

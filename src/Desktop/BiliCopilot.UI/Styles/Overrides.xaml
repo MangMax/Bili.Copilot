@@ -17,19 +17,20 @@
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundPressed" Color="#C5FFFFFF" />
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundDisabled" Color="#87FFFFFF" />
 
-            <!--  空降片段标记：浅色主题使用更深、更饱和的色调，保证在浅色底上仍可分辨  -->
-            <SolidColorBrush x:Key="SponsorBlockMarkerSponsorBrush" Color="#FF009A00" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerSelfPromoBrush" Color="#FFB38600" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerExclusiveAccessBrush" Color="#FF00775A" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerInteractionBrush" Color="#FF9B00CC" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerPoiHighlightBrush" Color="#FFD6006E" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerIntroBrush" Color="#FF009B9B" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerOutroBrush" Color="#FF1D2BD1" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerPreviewBrush" Color="#FF006FA8" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerPaddingBrush" Color="#FF6F6F6F" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerFillerBrush" Color="#FF6A2EDB" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerMusicOfftopicBrush" Color="#FFC76A00" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerUnknownBrush" Color="#FFC62828" />
+            <!--  空降片段标记：浅色主题用同一套低饱和 Fluent 色调的深色变体；
+                  不透明度由标记矩形统一控制，这里只给不透明基色  -->
+            <SolidColorBrush x:Key="SponsorBlockMarkerSponsorBrush" Color="#FFB24E73" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerSelfPromoBrush" Color="#FFA96C3D" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerExclusiveAccessBrush" Color="#FF3D7B69" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerInteractionBrush" Color="#FF7460A8" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPoiHighlightBrush" Color="#FFA45D82" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerIntroBrush" Color="#FF397B8A" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerOutroBrush" Color="#FF566AA3" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPreviewBrush" Color="#FF487794" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPaddingBrush" Color="#FF747474" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerFillerBrush" Color="#FF6F6090" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerMusicOfftopicBrush" Color="#FF98703B" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerUnknownBrush" Color="#FF8A5F61" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="BasicPlayerButtonBackground" Color="Transparent" />
@@ -41,19 +42,20 @@
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundPressed" Color="#C5FFFFFF" />
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundDisabled" Color="#87FFFFFF" />
 
-            <!--  空降片段标记：深色主题使用明亮色调，叠在深色轨道上仍清晰可辨  -->
-            <SolidColorBrush x:Key="SponsorBlockMarkerSponsorBrush" Color="#FF00D800" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerSelfPromoBrush" Color="#FFFFD400" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerExclusiveAccessBrush" Color="#FF00A878" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerInteractionBrush" Color="#FFCC00FF" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerPoiHighlightBrush" Color="#FFFF3B8C" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerIntroBrush" Color="#FF00E5E5" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerOutroBrush" Color="#FF4C5BFF" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerPreviewBrush" Color="#FF2AA0E0" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerPaddingBrush" Color="#FF9E9E9E" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerFillerBrush" Color="#FF8A4DFF" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerMusicOfftopicBrush" Color="#FFFF9F1A" />
-            <SolidColorBrush x:Key="SponsorBlockMarkerUnknownBrush" Color="#FFE53935" />
+            <!--  空降片段标记：深色主题用同一套低饱和 Fluent 色调的浅色变体；
+                  不透明度由标记矩形统一控制，这里只给不透明基色  -->
+            <SolidColorBrush x:Key="SponsorBlockMarkerSponsorBrush" Color="#FFD88CA8" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerSelfPromoBrush" Color="#FFD9A06D" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerExclusiveAccessBrush" Color="#FF73B39E" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerInteractionBrush" Color="#FFA996D6" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPoiHighlightBrush" Color="#FFD68FB5" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerIntroBrush" Color="#FF72ADBA" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerOutroBrush" Color="#FF8798CF" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPreviewBrush" Color="#FF7DA8C1" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPaddingBrush" Color="#FFA4A4A4" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerFillerBrush" Color="#FF9D8FBE" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerMusicOfftopicBrush" Color="#FFCC9D62" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerUnknownBrush" Color="#FFBC898B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <StaticResource x:Key="BasicPlayerButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />

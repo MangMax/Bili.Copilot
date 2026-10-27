@@ -3234,12 +3234,6 @@
   <data name="SponsorBlockCategoryMusicOfftopic" xml:space="preserve">
     <value>音乐：非音乐部分</value>
   </data>
-  <data name="SponsorBlockBehavior" xml:space="preserve">
-    <value>按类别设置行为</value>
-  </data>
-  <data name="SponsorBlockBehaviorDescription" xml:space="preserve">
-    <value>为不同片段类别选择自动跳过、仅静音、显示跳过按钮或不处理</value>
-  </data>
   <data name="SponsorBlockBehaviorNone" xml:space="preserve">
     <value>不处理</value>
   </data>
