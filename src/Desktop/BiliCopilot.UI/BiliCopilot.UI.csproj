@@ -1514,4 +1514,26 @@
     <PublishAot>True</PublishAot>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <!--
+    打包前校验运行时依赖.
+    libmpv / ffmpeg 体积大、不进仓库：CI 由 setup-env 下载，本地按 README 放置；
+    BBDown 随仓库提交. 缺这些文件时 MSIX 仍能打出来，但装好后无法播放或无法下载，
+    因此在这里直接中止打包，而不是等用户装上才发现.
+  -->
+  <Target Name="ValidateRuntimeDependencies"
+          BeforeTargets="_CreateAppxPackage;_GenerateAppxPackage;GenerateMsixPackage">
+    <Error Condition="'$(Platform)' != 'x64' and '$(Platform)' != 'ARM64'"
+           Text="打包中止：平台 $(Platform) 没有对应的运行时依赖，仅支持 x64 / ARM64。" />
+    <PropertyGroup>
+      <_RuntimeAssetArch Condition="'$(Platform)' == 'x64'">x64</_RuntimeAssetArch>
+      <_RuntimeAssetArch Condition="'$(Platform)' == 'ARM64'">arm64</_RuntimeAssetArch>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\Assets\libmpv\$(_RuntimeAssetArch)\libmpv-2.dll')"
+           Text="打包中止：缺少播放器依赖 Assets\libmpv\$(_RuntimeAssetArch)\libmpv-2.dll。请按 README「从源码构建」准备好该文件。" />
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\Assets\ffmpeg\$(_RuntimeAssetArch)\ffmpeg.exe')"
+           Text="打包中止：缺少 Assets\ffmpeg\$(_RuntimeAssetArch)\ffmpeg.exe，下载/混流功能会不可用。请按 README「从源码构建」准备好该文件。" />
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\Assets\bbdown\$(_RuntimeAssetArch)\BBDown.exe')"
+           Text="打包中止：缺少 Assets\bbdown\$(_RuntimeAssetArch)\BBDown.exe。" />
+  </Target>
 </Project>
