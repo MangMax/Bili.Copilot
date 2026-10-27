@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:SettingsPageControlBase
+    x:Class="BiliCopilot.UI.Controls.Settings.SponsorBlockSettingControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:converters="using:BiliCopilot.UI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
+    xmlns:local="using:BiliCopilot.UI.Controls.Settings"
+    xmlns:sponsorblock="using:BiliCopilot.UI.SponsorBlock"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  类别行复用设置面板自带的展开项样式（内边距、分隔线、行距）。
+                      该样式定义在控件库的 Generic.xaml 里，应用级字典查不到，必须在本地合并一次  -->
+                <ResourceDictionary Source="ms-appx:///Richasy.WinUIKernel.Share/Base/SettingsControls/SettingsExpander/SettingsExpander.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:SponsorBlockBehaviorConverter x:Key="SponsorBlockBehaviorConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!--  默认折叠：总开关放在折叠面板标题上，与通知设置一致；展开后才显示类别配置  -->
+    <base:SettingsExpander
+        Description="{ext:Locale Name=SponsorBlockDescription}"
+        Header="{ext:Locale Name=SponsorBlock}"
+        IsExpanded="False">
+        <base:SettingsExpander.HeaderIcon>
+            <ic:SymbolIcon Symbol="FastForward" />
+        </base:SettingsExpander.HeaderIcon>
+        <ToggleSwitch AutomationProperties.AutomationId="SponsorBlockEnabledToggle" IsOn="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=TwoWay}" />
+        <!--
+            类别行放在 ItemsFooter 而不是 Items：每一行本身就是 SettingsCard，
+            作为 Item 会再套一层卡片，只能通过 ItemTemplate 才能保持原样，而整组又需要随总开关联动隐藏。
+            这里使用不虚拟化的 ItemsControl，容器与数据项一一对应、不复用，
+            避免容器复用时下拉框带着上一行的选中项去改写当前类别的设置。
+        -->
+        <base:SettingsExpander.ItemsFooter>
+            <ItemsControl
+                ItemsSource="{x:Bind ViewModel.SponsorBlockCategorySettings, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=OneWay}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="items:SponsorBlockCategorySettingViewModel">
+                        <base:SettingsCard Header="{x:Bind DisplayName}" Style="{StaticResource DefaultSettingsExpanderItemStyle}">
+                            <!--
+                                选中项不用绑定：容器与数据项换绑的瞬间，绑定会把旧选中项回写到新数据项，
+                                造成类别串值。改为创建时显式赋值、变化时经 SelectionChanged 回写，
+                                且回写只在值确实不同于已保存值时发生.
+                            -->
+                            <ComboBox
+                                AutomationProperties.AutomationId="{x:Bind Category}"
+                                AutomationProperties.Name="{x:Bind DisplayName}"
+                                MinWidth="140"
+                                ItemsSource="{x:Bind AvailableBehaviors}"
+                                Loaded="OnBehaviorComboBoxLoaded"
+                                SelectionChanged="OnBehaviorSelectionChanged"
+                                Tag="{x:Bind}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="sponsorblock:SponsorBlockBehavior">
+                                        <TextBlock Text="{x:Bind Converter={StaticResource SponsorBlockBehaviorConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </base:SettingsCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </base:SettingsExpander.ItemsFooter>
+    </base:SettingsExpander>
+</local:SettingsPageControlBase>
