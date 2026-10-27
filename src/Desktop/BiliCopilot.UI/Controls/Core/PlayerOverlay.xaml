@@ -147,17 +147,27 @@
                             Duration="0:0:0.25" />
                     </animations:Implicit.HideAnimations>
                 </local:OverlayTransportControls>
-                <local:NextTip
-                    x:Name="NextTip"
+                <!--
+                    两张提示卡片同为 320 宽，纵向排在同一列：NextTip 固定占顶部槽位，
+                    空降提示紧随其下，两者间距恒为 8px。
+                    用布局而非固定 Margin 让位，是因为 NextTip 的文案来自
+                    NextButtonToolTip，换行行数随语言 / 标题长度变化，
+                    固定偏移量在长文案下仍会与下一张卡片重叠；StackPanel 会随实测高度顺延。
+                    收起的那张（RootPanel 为 Collapsed）高度为 0，不会留下空档.
+                -->
+                <StackPanel
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
-                    ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
-                <local:SponsorBlockSkipTip
-                    x:Name="SponsorBlockTip"
-                    Margin="0,16,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                    Spacing="8">
+                    <local:NextTip
+                        x:Name="NextTip"
+                        HorizontalAlignment="Center"
+                        ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                    <local:SponsorBlockSkipTip
+                        x:Name="SponsorBlockTip"
+                        HorizontalAlignment="Center"
+                        ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                </StackPanel>
             </Grid>
             <Grid
                 x:Name="TestRect"

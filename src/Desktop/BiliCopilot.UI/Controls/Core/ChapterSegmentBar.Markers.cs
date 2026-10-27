@@ -29,7 +29,7 @@ public sealed partial class ChapterSegmentBar
     /// 标记命中带向上额外放宽的像素，让 4px 高的轨道也容易命中；
     /// 下方不放宽，轨道下半部完整留给原有的精确定位 / 拖拽.
     /// </summary>
-    private const double MarkerHitPadding = 2d;
+    private const double MarkerHitPadding = 4d;
 
     private readonly List<Rectangle> _markerVisuals = [];
     private readonly Dictionary<SponsorBlockCategory, Brush> _markerBrushes = [];
