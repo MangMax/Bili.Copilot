@@ -6,13 +6,14 @@ namespace BiliCopilot.UI.SponsorBlock;
 /// 空降助手单个类别在界面、设置与绘制上的全部元数据.
 /// </summary>
 /// <remarks>
-/// <see cref="SettingName"/> / <see cref="DisplayNameKey"/> 保存的是设置项与本地化资源的名称，
-/// 而不是枚举，以便该表与 WinUI 无关、可以直接进行单元测试.
+/// <see cref="SettingName"/> / <see cref="ColorSettingName"/> / <see cref="DisplayNameKey"/>
+/// 保存的是设置项与本地化资源的名称，而不是枚举，以便该表与 WinUI 无关、可以直接进行单元测试.
 /// </remarks>
 /// <param name="Category">片段类别.</param>
 /// <param name="ApiName">接口返回的类别名称，未知类别为空.</param>
 /// <param name="DefaultBehavior">未配置时的默认行为.</param>
-/// <param name="SettingName">本地设置项名称，对应 <c>SettingNames</c> 的成员名.</param>
+/// <param name="SettingName">行为设置项名称，对应 <c>SettingNames</c> 的成员名.</param>
+/// <param name="ColorSettingName">自定义颜色设置项名称，对应 <c>SettingNames</c> 的成员名.</param>
 /// <param name="BrushResourceKey">进度条标记画刷的资源键.</param>
 /// <param name="FallbackColor">资源缺失时的兜底颜色（0xAARRGGBB）.</param>
 /// <param name="DisplayNameKey">本地化显示名称的资源键，对应 <c>StringNames</c> 的成员名.</param>
@@ -21,6 +22,7 @@ public sealed record SponsorBlockCategoryDescriptor(
     string ApiName,
     SponsorBlockBehavior DefaultBehavior,
     string SettingName,
+    string ColorSettingName,
     string BrushResourceKey,
     uint FallbackColor,
     string DisplayNameKey);
@@ -29,7 +31,7 @@ public sealed record SponsorBlockCategoryDescriptor(
 /// 空降助手类别的唯一元数据表.
 /// <para>
 /// 新增类别时只需要在 <see cref="All"/> 中追加一项，并补充对应的设置项与本地化资源，
-/// 行为默认值、进度条颜色、设置名称和显示文案都会自动生效.
+/// 行为默认值、进度条颜色、自定义颜色设置名称和显示文案都会自动生效.
 /// </para>
 /// </summary>
 public static class SponsorBlockCategoryCatalog
@@ -41,6 +43,7 @@ public static class SponsorBlockCategoryCatalog
             "sponsor",
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorSponsor",
+            "SponsorBlockColorSponsor",
             "SponsorBlockMarkerSponsorBrush",
             0xFFD88CA8,
             "SponsorBlockCategorySponsor"),
@@ -49,6 +52,7 @@ public static class SponsorBlockCategoryCatalog
             "selfpromo",
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorSelfPromo",
+            "SponsorBlockColorSelfPromo",
             "SponsorBlockMarkerSelfPromoBrush",
             0xFFD9A06D,
             "SponsorBlockCategorySelfPromo"),
@@ -57,6 +61,7 @@ public static class SponsorBlockCategoryCatalog
             "exclusive_access",
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorExclusiveAccess",
+            "SponsorBlockColorExclusiveAccess",
             "SponsorBlockMarkerExclusiveAccessBrush",
             0xFF73B39E,
             "SponsorBlockCategoryExclusiveAccess"),
@@ -65,6 +70,7 @@ public static class SponsorBlockCategoryCatalog
             "interaction",
             SponsorBlockBehavior.ShowButton,
             "SponsorBlockBehaviorInteraction",
+            "SponsorBlockColorInteraction",
             "SponsorBlockMarkerInteractionBrush",
             0xFFA996D6,
             "SponsorBlockCategoryInteraction"),
@@ -73,6 +79,7 @@ public static class SponsorBlockCategoryCatalog
             "poi_highlight",
             SponsorBlockBehavior.ShowButton,
             "SponsorBlockBehaviorPoiHighlight",
+            "SponsorBlockColorPoiHighlight",
             "SponsorBlockMarkerPoiHighlightBrush",
             0xFFD68FB5,
             "SponsorBlockCategoryPoiHighlight"),
@@ -81,6 +88,7 @@ public static class SponsorBlockCategoryCatalog
             "intro",
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorIntro",
+            "SponsorBlockColorIntro",
             "SponsorBlockMarkerIntroBrush",
             0xFF72ADBA,
             "SponsorBlockCategoryIntro"),
@@ -89,6 +97,7 @@ public static class SponsorBlockCategoryCatalog
             "outro",
             SponsorBlockBehavior.Skip,
             "SponsorBlockBehaviorOutro",
+            "SponsorBlockColorOutro",
             "SponsorBlockMarkerOutroBrush",
             0xFF8798CF,
             "SponsorBlockCategoryOutro"),
@@ -97,6 +106,7 @@ public static class SponsorBlockCategoryCatalog
             "preview",
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorPreview",
+            "SponsorBlockColorPreview",
             "SponsorBlockMarkerPreviewBrush",
             0xFF7DA8C1,
             "SponsorBlockCategoryPreview"),
@@ -105,6 +115,7 @@ public static class SponsorBlockCategoryCatalog
             "padding",
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorPadding",
+            "SponsorBlockColorPadding",
             "SponsorBlockMarkerPaddingBrush",
             0xFFA4A4A4,
             "SponsorBlockCategoryPadding"),
@@ -113,6 +124,7 @@ public static class SponsorBlockCategoryCatalog
             "filler",
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorFiller",
+            "SponsorBlockColorFiller",
             "SponsorBlockMarkerFillerBrush",
             0xFF9D8FBE,
             "SponsorBlockCategoryFiller"),
@@ -121,6 +133,7 @@ public static class SponsorBlockCategoryCatalog
             "music_offtopic",
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorMusicOfftopic",
+            "SponsorBlockColorMusicOfftopic",
             "SponsorBlockMarkerMusicOfftopicBrush",
             0xFFCC9D62,
             "SponsorBlockCategoryMusicOfftopic"),
@@ -129,6 +142,7 @@ public static class SponsorBlockCategoryCatalog
             string.Empty,
             SponsorBlockBehavior.None,
             "SponsorBlockBehaviorUnknown",
+            "SponsorBlockColorUnknown",
             "SponsorBlockMarkerUnknownBrush",
             0xFFBC898B,
             "SponsorBlockCategoryUnknown"),

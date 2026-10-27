@@ -3255,6 +3255,15 @@
   <data name="SponsorBlockMarkerTimeRange" xml:space="preserve">
     <value>{0} – {1}</value>
   </data>
+  <data name="SponsorBlockColor" xml:space="preserve">
+    <value>标记颜色</value>
+  </data>
+  <data name="SponsorBlockColorDefault" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="SponsorBlockColorReset" xml:space="preserve">
+    <value>恢复默认颜色</value>
+  </data>
   <data name="Advanced" xml:space="preserve">
     <value>高级</value>
   </data>
