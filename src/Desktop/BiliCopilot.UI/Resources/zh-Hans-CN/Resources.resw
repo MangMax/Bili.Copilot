@@ -3258,4 +3258,7 @@
   <data name="SponsorBlockPromptTemplate" xml:space="preserve">
     <value>检测到{0}，点击跳过</value>
   </data>
+  <data name="SponsorBlockMarkerTimeRange" xml:space="preserve">
+    <value>{0} – {1}</value>
+  </data>
 </root>
