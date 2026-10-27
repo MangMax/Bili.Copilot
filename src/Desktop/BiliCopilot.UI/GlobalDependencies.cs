@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Resolvers;
+using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Core;
@@ -67,6 +68,7 @@ internal static class GlobalDependencies
             .AddDanmakuService()
             .AddSubtitleService()
             .AddPlayerService()
+            .AddSponsorBlockService()
 
             .AddOpenAIChatService()
             .AddAzureOpenAIChatService()
@@ -160,6 +162,13 @@ internal static class GlobalDependencies
     public static IKernelBuilder AddXamlRootProvider(this IKernelBuilder builder)
     {
         builder.Services.AddSingleton<IXamlRootProvider, XamlRootProvider>();
+        return builder;
+    }
+
+    public static IKernelBuilder AddSponsorBlockService(this IKernelBuilder builder)
+    {
+        // 使用工厂注册，避免 DI 尝试注入可选参数中的 HttpClient.
+        builder.Services.AddSingleton(_ => new SponsorBlockService());
         return builder;
     }
 
