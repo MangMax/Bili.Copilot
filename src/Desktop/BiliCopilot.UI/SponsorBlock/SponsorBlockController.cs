@@ -63,16 +63,6 @@ public sealed class SponsorBlockController
     }
 
     /// <summary>
-    /// 当前播放位置所在的片段（无论其类别是否配置了行为），供进度条标记等界面读取.
-    /// </summary>
-    public SponsorBlockSegment? ActiveSegment { get; private set; }
-
-    /// <summary>
-    /// 当前正在显示跳过提示的片段.
-    /// </summary>
-    public SponsorBlockSegment? PromptSegment => _activePromptSegment;
-
-    /// <summary>
     /// 是否由控制器静音了当前片段.
     /// </summary>
     public bool IsMuteApplied => _muteApplied;
@@ -116,7 +106,6 @@ public sealed class SponsorBlockController
             ? duration
             : double.PositiveInfinity;
         var segmentAtPosition = FindSegmentAt(segments, position);
-        ActiveSegment = segmentAtPosition;
 
         if (_activePromptSegment is not null)
         {
@@ -140,7 +129,6 @@ public sealed class SponsorBlockController
                 {
                     _muteApplied = true;
                     _muteRestoreState = isMuted;
-                    ActiveSegment = _activeMuteSegment;
                     return new SponsorBlockDecision(
                         SponsorBlockActionKind.Mute,
                         _activeMuteSegment,
@@ -154,7 +142,6 @@ public sealed class SponsorBlockController
             var restoreState = _muteApplied ? _muteRestoreState : (bool?)null;
             var muteSegment = _activeMuteSegment;
             ClearMute();
-            ActiveSegment = segmentAtPosition;
             if (restoreState.HasValue)
             {
                 return new SponsorBlockDecision(
@@ -197,7 +184,6 @@ public sealed class SponsorBlockController
                         }
 
                         _ = _handledSegments.Add(key);
-                        ActiveSegment = candidate;
                         return new SponsorBlockDecision(
                             SponsorBlockActionKind.Skip,
                             candidate,
@@ -210,7 +196,6 @@ public sealed class SponsorBlockController
                         _muteApplied = true;
                         _muteSuppressed = false;
                         _muteRestoreState = isMuted;
-                        ActiveSegment = candidate;
                         return new SponsorBlockDecision(
                             SponsorBlockActionKind.Mute,
                             candidate,
@@ -222,7 +207,6 @@ public sealed class SponsorBlockController
                     {
                         _activePromptSegment = candidate;
                         _promptShownAt = now;
-                        ActiveSegment = candidate;
                         return new SponsorBlockDecision(
                             SponsorBlockActionKind.ShowButton,
                             candidate);
@@ -308,7 +292,6 @@ public sealed class SponsorBlockController
         _muteRestoreState = false;
         _hasChecked = false;
         _lastCheckAt = default;
-        ActiveSegment = null;
 
         if (restoreState.HasValue)
         {

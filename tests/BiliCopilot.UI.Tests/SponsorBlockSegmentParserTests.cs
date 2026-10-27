@@ -29,7 +29,6 @@ public class SponsorBlockSegmentParserTests
         Assert.Equal(300.019, segment.Start, 3);
         Assert.Equal(600.014, segment.End, 3);
         Assert.Equal("d0f1e2a3", segment.Uuid);
-        Assert.Equal(SponsorBlockActionType.Skip, segment.ActionType);
     }
 
     [Fact]
@@ -51,7 +50,6 @@ public class SponsorBlockSegmentParserTests
     }
 
     [Theory]
-    [InlineData("poi")]
     [InlineData("full")]
     [InlineData("something_new")]
     public void Parse_IgnoresOutOfScopeActions(string actionType)
@@ -66,11 +64,12 @@ public class SponsorBlockSegmentParserTests
     }
 
     [Theory]
-    [InlineData("mute", SponsorBlockActionType.Mute)]
-    [InlineData("MUTE", SponsorBlockActionType.Mute)]
-    [InlineData("skip", SponsorBlockActionType.Skip)]
-    [InlineData("", SponsorBlockActionType.Skip)]
-    public void Parse_KeepsSupportedActionType(string actionType, SponsorBlockActionType expected)
+    [InlineData("skip")]
+    [InlineData("mute")]
+    [InlineData("MUTE")]
+    [InlineData("poi")]
+    [InlineData("")]
+    public void Parse_KeepsSupportedActionType(string actionType)
     {
         var json = $$"""
             [
@@ -78,12 +77,11 @@ public class SponsorBlockSegmentParserTests
             ]
             """;
 
-        var segment = Assert.Single(SponsorBlockSegmentParser.Parse(json));
-        Assert.Equal(expected, segment.ActionType);
+        Assert.Single(SponsorBlockSegmentParser.Parse(json));
     }
 
     [Fact]
-    public void Parse_MissingActionType_DefaultsToSkip()
+    public void Parse_MissingActionType_IsTreatedAsSkip()
     {
         const string json = """
             [
@@ -91,8 +89,20 @@ public class SponsorBlockSegmentParserTests
             ]
             """;
 
+        Assert.Single(SponsorBlockSegmentParser.Parse(json));
+    }
+
+    [Fact]
+    public void Parse_PoiActionType_EnablesPoiHighlightCategory()
+    {
+        const string json = """
+            [
+              { "category": "poi_highlight", "actionType": "poi", "segment": [10, 20], "UUID": "a" }
+            ]
+            """;
+
         var segment = Assert.Single(SponsorBlockSegmentParser.Parse(json));
-        Assert.Equal(SponsorBlockActionType.Skip, segment.ActionType);
+        Assert.Equal(SponsorBlockCategory.PoiHighlight, segment.Category);
     }
 
     [Fact]
