@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" TreatAsLocalProperty="PackageCertificateKeyFile">
+﻿<Project Sdk="Microsoft.NET.Sdk" TreatAsLocalProperty="PackageCertificateKeyFile;PackageCertificateThumbprint">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
@@ -32,20 +32,21 @@
   </ItemGroup>
 
   <!--
-    本机签名证书.
+    签名证书.
     上游曾提交 BiliCopilot.UI_TemporaryKey.pfx（CN=richasy，2026-09-29 过期），签出的包无法安装，
-    该文件已从本仓库删除；但上游文档和旧命令仍可能指向它，条件里保留按名覆盖。
-    两个清单的 Publisher 都是 CN=Mang，因此只要本机存在自己的证书就用它，任意工作树都能直接出可安装的包。
+    该文件已从本仓库删除。
 
-    覆盖条件有两类：未传 PackageCertificateKeyFile，或传的正是那个已删除的临时证书。
-    CI 的发布流程传 signing.pfx，路径存在、名字不匹配，不会被覆盖。
+    私钥不随仓库分发（本仓库是公开的），也不引用磁盘上的 pfx 副本：
+    直接按指纹使用 CurrentUser\My 中的 CN=Mang 证书，任意工作树、任意检出位置都能签。
+    清单的 Publisher 必须与证书一致，两个 appxmanifest 都是 CN=Mang。
 
-    私钥不随仓库分发（fork 是公开仓库），所以用绝对路径引用本机证书；
+    生效范围是“没传证书参数”或“传的正是那个已删除的临时证书”；
+    CI 传 signing.pfx（文件存在），条件不成立，仍走自己的 secret。
     上面的 TreatAsLocalProperty 让工程能覆盖命令行传入的全局属性，否则命令行永远优先.
   -->
-  <PropertyGroup Condition="Exists('$(UserProfile)\t3work\bili\dev-nopw.pfx') and (!Exists('$(PackageCertificateKeyFile)') or $(PackageCertificateKeyFile.EndsWith('BiliCopilot.UI_TemporaryKey.pfx')))">
-    <PackageCertificateKeyFile>$(UserProfile)\t3work\bili\dev-nopw.pfx</PackageCertificateKeyFile>
-    <PackageCertificatePassword></PackageCertificatePassword>
+  <PropertyGroup Condition="'$(PackageCertificateThumbprint)' == '' and (!Exists('$(PackageCertificateKeyFile)') or $(PackageCertificateKeyFile.EndsWith('BiliCopilot.UI_TemporaryKey.pfx')))">
+    <PackageCertificateKeyFile></PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>2332F980650518FA97C12F3EC94F25085E3C976D</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
   </PropertyGroup>
 
