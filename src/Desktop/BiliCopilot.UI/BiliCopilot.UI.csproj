@@ -36,16 +36,26 @@
     上游曾提交 BiliCopilot.UI_TemporaryKey.pfx（CN=richasy，2026-09-29 过期），签出的包无法安装，
     该文件已从本仓库删除。
 
-    私钥不随仓库分发（本仓库是公开的），也不引用磁盘上的 pfx 副本：
-    直接按指纹使用 CurrentUser\My 中的 CN=Mang 证书，任意工作树、任意检出位置都能签。
-    清单的 Publisher 必须与证书一致，两个 appxmanifest 都是 CN=Mang。
+    Debug（开发包 Mang.BiliCopilot.Dev）用仓库自带的 DevSigning.pfx：
+    自签名 CN=BiliCopilotDev，私钥随仓库分发，任何机器 clone 后都能直接构建、签名、安装。
+    它与正式证书 CN=Mang 的 Subject 不同，因此即使私钥公开，也签不出正式身份的包。
+    新机器首次安装开发包前，需要把同名 DevSigning.cer 导入 LocalMachine\TrustedPeople（需管理员）：
+      Import-Certificate -FilePath DevSigning.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
 
-    生效范围是“没传证书参数”或“传的正是那个已删除的临时证书”；
-    CI 传 signing.pfx（文件存在），条件不成立，仍走自己的 secret。
+    Release（正式包 Mang.BiliCopilot）由 CI 用 secret 里的 CN=Mang 证书签；
+    本机 Release 则按指纹使用证书存储中的同一张证书，仅本机有效。
+
+    显式传入的 PackageCertificateKeyFile 优先，除非它指向已删除的上游临时证书。
     上面的 TreatAsLocalProperty 让工程能覆盖命令行传入的全局属性，否则命令行永远优先.
   -->
-  <PropertyGroup Condition="'$(PackageCertificateThumbprint)' == '' and (!Exists('$(PackageCertificateKeyFile)') or $(PackageCertificateKeyFile.EndsWith('BiliCopilot.UI_TemporaryKey.pfx')))">
-    <PackageCertificateKeyFile></PackageCertificateKeyFile>
+  <PropertyGroup>
+    <UseRepoDevCertificate Condition="'$(Configuration)' == 'Debug' and ('$(PackageCertificateKeyFile)' == '' or $(PackageCertificateKeyFile.EndsWith('BiliCopilot.UI_TemporaryKey.pfx')))">true</UseRepoDevCertificate>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UseRepoDevCertificate)' == 'true'">
+    <PackageCertificateKeyFile>$(MSBuildThisFileDirectory)DevSigning.pfx</PackageCertificateKeyFile>
+    <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' != 'Debug' and '$(PackageCertificateKeyFile)' == '' and '$(PackageCertificateThumbprint)' == ''">
     <PackageCertificateThumbprint>2332F980650518FA97C12F3EC94F25085E3C976D</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
   </PropertyGroup>

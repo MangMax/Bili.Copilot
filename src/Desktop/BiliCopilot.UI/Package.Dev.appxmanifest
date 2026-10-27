@@ -15,9 +15,11 @@
     互不覆盖、各自保留本地数据.
     开发调试使用本文件；正式发布使用 Package.appxmanifest.
   -->
+  <!-- Publisher 必须与 DevSigning.pfx 的 Subject 一致；
+       与正式证书 CN=Mang 不同，开发证书泄露也签不出正式身份的包. -->
   <Identity
     Name="Mang.BiliCopilot.Dev"
-    Publisher="CN=Mang"
+    Publisher="CN=BiliCopilotDev"
     Version="2.2610.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="6f1b2a94-3c7d-4e58-9a06-1d2b8f0c4e73" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
