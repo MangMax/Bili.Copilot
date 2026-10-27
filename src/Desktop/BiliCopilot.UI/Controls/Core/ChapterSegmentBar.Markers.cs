@@ -43,6 +43,11 @@ public sealed partial class ChapterSegmentBar
     private SponsorBlockMarker? _hoveredMarker;
 
     /// <summary>
+    /// 是否已订阅全局颜色变化事件.
+    /// </summary>
+    private bool _colorSettingsHooked;
+
+    /// <summary>
     /// 当前高亮的标记视觉。只改这一个元素的不透明度，
     /// 指针在标记之间移动时不会重建视觉树.
     /// </summary>
@@ -177,15 +182,63 @@ public sealed partial class ChapterSegmentBar
             return brush;
         }
 
-        var argb = SponsorBlockCategoryPalette.GetFallbackColor(category);
-        var fallback = new SolidColorBrush(Windows.UI.Color.FromArgb(
-            (byte)(argb >> 24),
-            (byte)(argb >> 16),
-            (byte)(argb >> 8),
-            (byte)argb));
-        brush = ResolveResource(SponsorBlockCategoryPalette.GetBrushKey(category), fallback);
+        // 自定义颜色是字面值，不随浅色 / 深色主题变化；未配置时才回退到主题画刷.
+        if (SponsorBlockColorSettings.Read(category) is uint argb)
+        {
+            brush = SponsorBlockColorHelper.CreateBrush(argb);
+        }
+        else
+        {
+            var fallback = SponsorBlockColorHelper.CreateBrush(SponsorBlockCategoryPalette.GetFallbackColor(category));
+            brush = ResolveResource(SponsorBlockCategoryPalette.GetBrushKey(category), fallback);
+        }
+
         _markerBrushes[category] = brush;
         return brush;
+    }
+
+    /// <summary>
+    /// 设置页修改颜色后重绘标记：先丢弃按类别缓存的画刷，再按现有片段重建视觉.
+    /// <para>
+    /// 颜色变化可能来自任意线程，统一派发到 UI 线程；播放位置不受影响，因此无需重新加载视频.
+    /// </para>
+    /// </summary>
+    private void OnSponsorBlockColorChanged(object? sender, EventArgs e)
+    {
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            _markerBrushes.Clear();
+            RebuildMarkers();
+        });
+    }
+
+    /// <summary>
+    /// 订阅全局颜色变化。事件是静态的，控件卸载时必须取消订阅，否则会持有已离开视觉树的实例.
+    /// </summary>
+    private void SubscribeColorSettings()
+    {
+        if (_colorSettingsHooked)
+        {
+            return;
+        }
+
+        _colorSettingsHooked = true;
+        SponsorBlockColorSettings.Changed += OnSponsorBlockColorChanged;
+
+        // 控件在卸载期间收不到颜色变化（例如浮层里的进度条只在悬浮时可见），
+        // 重新挂载时必须丢弃上一次留下的画刷缓存，否则会继续画旧颜色.
+        _markerBrushes.Clear();
+    }
+
+    private void UnsubscribeColorSettings()
+    {
+        if (!_colorSettingsHooked)
+        {
+            return;
+        }
+
+        _colorSettingsHooked = false;
+        SponsorBlockColorSettings.Changed -= OnSponsorBlockColorChanged;
     }
 
     /// <summary>

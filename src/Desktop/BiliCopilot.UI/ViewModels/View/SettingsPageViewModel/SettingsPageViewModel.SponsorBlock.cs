@@ -29,7 +29,10 @@ public sealed partial class SettingsPageViewModel
                 category,
                 SponsorBlockBehaviorSettings.Read(category),
                 SponsorBlockCategoryHelper.GetDisplayName(category),
-                SponsorBlockBehaviorSettings.Write));
+                SponsorBlockBehaviorSettings.Write,
+                SponsorBlockColorSettings.Read(category),
+                SponsorBlockColorSettings.Write,
+                SponsorBlockColorSettings.Reset));
         }
     }
 }

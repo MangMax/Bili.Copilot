@@ -6,13 +6,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace BiliCopilot.UI.ViewModels.Items;
 
 /// <summary>
-/// 空降助手单个类别的行为设置项.
+/// 空降助手单个类别的行为与标记颜色设置项.
 /// </summary>
 public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
 {
     private readonly Action<SponsorBlockCategory, SponsorBlockBehavior> _onBehaviorChanged;
+    private readonly Action<SponsorBlockCategory, uint>? _onCustomColorChanged;
+    private readonly Action<SponsorBlockCategory>? _onCustomColorReset;
     private SponsorBlockBehavior _behavior;
     private SponsorBlockBehavior _persistedBehavior;
+    private uint? _customColor;
     private int _bindingRefreshDepth;
 
     /// <summary>
@@ -22,17 +25,26 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
     /// <param name="behavior">当前行为配置.</param>
     /// <param name="displayName">类别的本地化名称.</param>
     /// <param name="onBehaviorChanged">行为变化时的回调.</param>
+    /// <param name="customColor">当前自定义颜色；<c>null</c> 表示使用主题色.</param>
+    /// <param name="onCustomColorChanged">设置自定义颜色时的回调.</param>
+    /// <param name="onCustomColorReset">恢复主题色时的回调.</param>
     public SponsorBlockCategorySettingViewModel(
         SponsorBlockCategory category,
         SponsorBlockBehavior behavior,
         string displayName,
-        Action<SponsorBlockCategory, SponsorBlockBehavior> onBehaviorChanged)
+        Action<SponsorBlockCategory, SponsorBlockBehavior> onBehaviorChanged,
+        uint? customColor = null,
+        Action<SponsorBlockCategory, uint>? onCustomColorChanged = null,
+        Action<SponsorBlockCategory>? onCustomColorReset = null)
     {
         Category = category;
         _behavior = behavior;
         _persistedBehavior = behavior;
         DisplayName = displayName;
         _onBehaviorChanged = onBehaviorChanged;
+        _customColor = customColor;
+        _onCustomColorChanged = onCustomColorChanged;
+        _onCustomColorReset = onCustomColorReset;
     }
 
     /// <summary>
@@ -73,6 +85,31 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// 当前自定义颜色（0xAARRGGBB）；<c>null</c> 表示使用主题色.
+    /// </summary>
+    public uint? CustomColor => _customColor;
+
+    /// <summary>
+    /// 是否设置了自定义颜色.
+    /// </summary>
+    public bool HasCustomColor => _customColor.HasValue;
+
+    /// <summary>
+    /// 是否仍在使用主题色，用于设置页显示「默认」标记.
+    /// </summary>
+    public bool IsUsingDefaultColor => !_customColor.HasValue;
+
+    /// <summary>
+    /// 颜色按钮的无障碍自动化 ID.
+    /// </summary>
+    public string ColorAutomationId => $"SponsorBlockColor_{Category}";
+
+    /// <summary>
+    /// 「恢复默认颜色」按钮的无障碍自动化 ID.
+    /// </summary>
+    public string ColorResetAutomationId => $"SponsorBlockColorReset_{Category}";
+
     private bool IsBindingRefreshInProgress => _bindingRefreshDepth > 0;
 
     /// <summary>
@@ -85,6 +122,37 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
         {
             Behavior = behavior;
         }
+    }
+
+    /// <summary>
+    /// 设置自定义颜色，值未变化时不重复保存.
+    /// </summary>
+    /// <param name="argb">0xAARRGGBB 格式的颜色值.</param>
+    public void SetCustomColor(uint argb)
+    {
+        if (_customColor == argb)
+        {
+            return;
+        }
+
+        _customColor = argb;
+        RaiseColorChanged();
+        _onCustomColorChanged?.Invoke(Category, argb);
+    }
+
+    /// <summary>
+    /// 恢复主题色，未设置自定义颜色时不重复保存.
+    /// </summary>
+    public void ResetColor()
+    {
+        if (!_customColor.HasValue)
+        {
+            return;
+        }
+
+        _customColor = null;
+        RaiseColorChanged();
+        _onCustomColorReset?.Invoke(Category);
     }
 
     /// <summary>
@@ -105,5 +173,12 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
         {
             _bindingRefreshDepth--;
         }
+    }
+
+    private void RaiseColorChanged()
+    {
+        OnPropertyChanged(nameof(CustomColor));
+        OnPropertyChanged(nameof(HasCustomColor));
+        OnPropertyChanged(nameof(IsUsingDefaultColor));
     }
 }

@@ -21,6 +21,7 @@
                 <ResourceDictionary Source="ms-appx:///Richasy.WinUIKernel.Share/Base/SettingsControls/SettingsExpander/SettingsExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:SponsorBlockBehaviorConverter x:Key="SponsorBlockBehaviorConverter" />
+            <converters:SponsorBlockColorBrushConverter x:Key="SponsorBlockColorBrushConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -51,25 +52,63 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="items:SponsorBlockCategorySettingViewModel">
                         <base:SettingsCard Header="{x:Bind DisplayName}" Style="{StaticResource DefaultSettingsExpanderItemStyle}">
-                            <!--
-                                选中项不用绑定：容器与数据项换绑的瞬间，绑定会把旧选中项回写到新数据项，
-                                造成类别串值。改为创建时显式赋值、变化时经 SelectionChanged 回写，
-                                且回写只在值确实不同于已保存值时发生.
-                            -->
-                            <ComboBox
-                                AutomationProperties.AutomationId="{x:Bind Category}"
-                                AutomationProperties.Name="{x:Bind DisplayName}"
-                                MinWidth="140"
-                                ItemsSource="{x:Bind AvailableBehaviors}"
-                                Loaded="OnBehaviorComboBoxLoaded"
-                                SelectionChanged="OnBehaviorSelectionChanged"
-                                Tag="{x:Bind}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate x:DataType="sponsorblock:SponsorBlockBehavior">
-                                        <TextBlock Text="{x:Bind Converter={StaticResource SponsorBlockBehaviorConverter}}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <!--
+                                    紧凑色块按钮：点击后由代码后台弹出 ColorPicker。
+                                    未设置自定义颜色时显示中性色块和「默认」文字，避免看起来像空白按钮；
+                                    使用主题色时也保持固定宽度，切换自定义颜色不会把右侧下拉框挤走.
+                                -->
+                                <Button
+                                    Padding="6,4"
+                                    AutomationProperties.AutomationId="{x:Bind ColorAutomationId}"
+                                    AutomationProperties.HelpText="{ext:Locale Name=SponsorBlockColor}"
+                                    AutomationProperties.Name="{x:Bind DisplayName}"
+                                    Click="OnColorButtonClick"
+                                    CornerRadius="6"
+                                    ToolTipService.ToolTip="{ext:Locale Name=SponsorBlockColor}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <Grid Width="16" Height="16">
+                                            <Border
+                                                Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="4" />
+                                            <Border
+                                                Background="{x:Bind CustomColor, Mode=OneWay, Converter={StaticResource SponsorBlockColorBrushConverter}}"
+                                                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="4"
+                                                Visibility="{x:Bind HasCustomColor, Mode=OneWay}" />
+                                        </Grid>
+                                        <Border Width="28" VerticalAlignment="Center">
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="{ext:Locale Name=SponsorBlockColorDefault}"
+                                                Visibility="{x:Bind IsUsingDefaultColor, Mode=OneWay}" />
+                                        </Border>
+                                    </StackPanel>
+                                </Button>
+                                <!--
+                                    选中项不用绑定：容器与数据项换绑的瞬间，绑定会把旧选中项回写到新数据项，
+                                    造成类别串值。改为创建时显式赋值、变化时经 SelectionChanged 回写，
+                                    且回写只在值确实不同于已保存值时发生.
+                                -->
+                                <ComboBox
+                                    AutomationProperties.AutomationId="{x:Bind Category}"
+                                    AutomationProperties.Name="{x:Bind DisplayName}"
+                                    MinWidth="140"
+                                    ItemsSource="{x:Bind AvailableBehaviors}"
+                                    Loaded="OnBehaviorComboBoxLoaded"
+                                    SelectionChanged="OnBehaviorSelectionChanged"
+                                    Tag="{x:Bind}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="sponsorblock:SponsorBlockBehavior">
+                                            <TextBlock Text="{x:Bind Converter={StaticResource SponsorBlockBehaviorConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
                         </base:SettingsCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

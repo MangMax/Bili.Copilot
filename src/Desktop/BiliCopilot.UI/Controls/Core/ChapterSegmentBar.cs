@@ -321,7 +321,11 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         _canvas.Children.Add(_hoverPopup);
 
         Loaded += OnLoadedHandler;
-        Unloaded += (_, _) => HideHoverPopup();
+        Unloaded += (_, _) =>
+        {
+            HideHoverPopup();
+            UnsubscribeColorSettings();
+        };
         SizeChanged += (_, _) => Rebuild();
 
         PointerPressed += OnPointerPressed;
@@ -383,6 +387,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         _cacheBrush = CacheResolvedBrush;
         ApplyThumbBrushes();
         AttachPlayer();
+        SubscribeColorSettings();
         Rebuild();
         StartRenderLoop();
     }
@@ -529,6 +534,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     protected override void OnControlUnloaded()
     {
         StopRenderLoop();
+        UnsubscribeColorSettings();
 
         if (ViewModel is not null)
         {

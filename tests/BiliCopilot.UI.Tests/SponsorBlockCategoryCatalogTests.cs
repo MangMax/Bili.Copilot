@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.SponsorBlock;
 
 namespace BiliCopilot.UI.Tests;
@@ -25,14 +26,21 @@ public class SponsorBlockCategoryCatalogTests
         Assert.All(descriptors, descriptor =>
         {
             Assert.False(string.IsNullOrWhiteSpace(descriptor.SettingName));
+            Assert.False(string.IsNullOrWhiteSpace(descriptor.ColorSettingName));
             Assert.False(string.IsNullOrWhiteSpace(descriptor.BrushResourceKey));
             Assert.False(string.IsNullOrWhiteSpace(descriptor.DisplayNameKey));
             Assert.Equal(0xFFu, descriptor.FallbackColor >> 24);
+
+            // 颜色设置项名称必须真实存在于 SettingNames，否则持久化会静默失效.
+            Assert.True(Enum.TryParse<SettingNames>(descriptor.ColorSettingName, out _));
         });
 
         Assert.Equal(
             descriptors.Count,
             descriptors.Select(descriptor => descriptor.SettingName).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(
+            descriptors.Count,
+            descriptors.Select(descriptor => descriptor.ColorSettingName).Distinct(StringComparer.Ordinal).Count());
         Assert.Equal(
             descriptors.Count,
             descriptors.Select(descriptor => descriptor.BrushResourceKey).Distinct(StringComparer.Ordinal).Count());

@@ -173,6 +173,138 @@ public class SponsorBlockCategorySettingViewModelTests
         Assert.Empty(writes);
     }
 
+    [Fact]
+    public void Constructor_WithCustomColor_ReportsCustomColor()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Interaction, 0xFF3366CC);
+
+        Assert.Equal(0xFF3366CCu, setting.CustomColor);
+        Assert.True(setting.HasCustomColor);
+        Assert.False(setting.IsUsingDefaultColor);
+    }
+
+    [Fact]
+    public void Constructor_WithoutCustomColor_UsesDefault()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Interaction);
+
+        Assert.Null(setting.CustomColor);
+        Assert.False(setting.HasCustomColor);
+        Assert.True(setting.IsUsingDefaultColor);
+    }
+
+    [Fact]
+    public void SetCustomColor_StoresValueRaisesPropertiesAndWritesOnce()
+    {
+        var writes = new List<(SponsorBlockCategory Category, uint Color)>();
+        var setting = CreateColorSetting(SponsorBlockCategory.Interaction, colorWrites: writes);
+        var changes = new List<string?>();
+        setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
+
+        setting.SetCustomColor(0xFF112233);
+
+        var write = Assert.Single(writes);
+        Assert.Equal(SponsorBlockCategory.Interaction, write.Category);
+        Assert.Equal(0xFF112233u, write.Color);
+        Assert.Equal(0xFF112233u, setting.CustomColor);
+        Assert.True(setting.HasCustomColor);
+        Assert.Equal(
+            [
+                nameof(SponsorBlockCategorySettingViewModel.CustomColor),
+                nameof(SponsorBlockCategorySettingViewModel.HasCustomColor),
+                nameof(SponsorBlockCategorySettingViewModel.IsUsingDefaultColor),
+            ],
+            changes);
+    }
+
+    [Fact]
+    public void SetCustomColor_SameValue_DoesNotWriteOrRaise()
+    {
+        var writes = new List<(SponsorBlockCategory Category, uint Color)>();
+        var setting = CreateColorSetting(SponsorBlockCategory.Interaction, 0xFF112233, writes);
+        var changes = new List<string?>();
+        setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
+
+        setting.SetCustomColor(0xFF112233);
+
+        Assert.Empty(writes);
+        Assert.Empty(changes);
+    }
+
+    [Fact]
+    public void SetCustomColor_ChangeThenRevert_WritesBothTimes()
+    {
+        var writes = new List<(SponsorBlockCategory Category, uint Color)>();
+        var setting = CreateColorSetting(SponsorBlockCategory.Interaction, 0xFF112233, writes);
+
+        setting.SetCustomColor(0xFF445566);
+        setting.SetCustomColor(0xFF112233);
+
+        Assert.Equal(2, writes.Count);
+        Assert.Equal(0xFF445566u, writes[0].Color);
+        Assert.Equal(0xFF112233u, writes[1].Color);
+    }
+
+    [Fact]
+    public void ResetColor_FromCustom_InvokesResetOnceAndRaisesProperties()
+    {
+        var resets = new List<SponsorBlockCategory>();
+        var setting = CreateColorSetting(SponsorBlockCategory.Outro, 0xFF3366CC, resetWrites: resets);
+        var changes = new List<string?>();
+        setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
+
+        setting.ResetColor();
+
+        Assert.Equal([SponsorBlockCategory.Outro], resets);
+        Assert.Null(setting.CustomColor);
+        Assert.False(setting.HasCustomColor);
+        Assert.True(setting.IsUsingDefaultColor);
+        Assert.Equal(
+            [
+                nameof(SponsorBlockCategorySettingViewModel.CustomColor),
+                nameof(SponsorBlockCategorySettingViewModel.HasCustomColor),
+                nameof(SponsorBlockCategorySettingViewModel.IsUsingDefaultColor),
+            ],
+            changes);
+    }
+
+    [Fact]
+    public void ResetColor_WhenDefault_IsNoOp()
+    {
+        var resets = new List<SponsorBlockCategory>();
+        var setting = CreateColorSetting(SponsorBlockCategory.Outro, resetWrites: resets);
+        var changes = new List<string?>();
+        setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
+
+        setting.ResetColor();
+
+        Assert.Empty(resets);
+        Assert.Empty(changes);
+    }
+
+    [Fact]
+    public void ColorAutomationIds_FollowNamingConvention()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.PoiHighlight);
+
+        Assert.Equal("SponsorBlockColor_PoiHighlight", setting.ColorAutomationId);
+        Assert.Equal("SponsorBlockColorReset_PoiHighlight", setting.ColorResetAutomationId);
+    }
+
+    private static SponsorBlockCategorySettingViewModel CreateColorSetting(
+        SponsorBlockCategory category,
+        uint? customColor = null,
+        List<(SponsorBlockCategory Category, uint Color)>? colorWrites = null,
+        List<SponsorBlockCategory>? resetWrites = null)
+        => new(
+            category,
+            SponsorBlockBehavior.None,
+            category.ToString(),
+            (_, _) => { },
+            customColor,
+            colorWrites is null ? null : (changedCategory, color) => colorWrites.Add((changedCategory, color)),
+            resetWrites is null ? null : changedCategory => resetWrites.Add(changedCategory));
+
     private static SponsorBlockCategorySettingViewModel CreateSetting(
         SponsorBlockCategory category,
         SponsorBlockBehavior behavior,
