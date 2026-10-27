@@ -3193,7 +3193,7 @@
     <value>空降助手</value>
   </data>
   <data name="SponsorBlockDescription" xml:space="preserve">
-    <value>按片段类别自动跳过、静音或显示跳过提示（数据来自 SponsorBlock，仅发送 BV 号与分 P ID）</value>
+    <value>按片段类别自动跳过、静音或显示跳过提示（数据来自 SponsorBlock，仅发送 BV 号与分P ID）</value>
   </data>
   <data name="SponsorBlockSkippedTemplate" xml:space="preserve">
     <value>已跳过：{0}</value>
