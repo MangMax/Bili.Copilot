@@ -19,6 +19,7 @@ public sealed partial class SponsorBlockSkipTip : PlayerControlBase
     public SponsorBlockSkipTip()
     {
         InitializeComponent();
+        ProgressRect.Maximum = SponsorBlockController.PromptTimeout.TotalSeconds;
         _timer = DispatcherQueue.CreateTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(100);
         _timer.Tick += OnTimerTick;
@@ -46,10 +47,24 @@ public sealed partial class SponsorBlockSkipTip : PlayerControlBase
         _timer.Stop();
     }
 
+    /// <inheritdoc/>
+    protected override void OnControlUnloaded()
+    {
+        // 必须停掉 100ms 计时器，否则卸载后仍会持续回调.
+        Hide();
+    }
+
     private void OnTimerTick(DispatcherQueueTimer sender, object args)
     {
         if (!_visibleTime.HasValue)
         {
+            return;
+        }
+
+        // 卸载后 ViewModel 可能已失效，此时只停表，不再执行命令.
+        if (ViewModel is null)
+        {
+            Hide();
             return;
         }
 

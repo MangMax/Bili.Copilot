@@ -1,0 +1,45 @@
+name: Run Unit Tests
+
+on:
+  push:
+    branches: [master, feat/**]
+    paths:
+      - "tests/**"
+      - "src/Desktop/BiliCopilot.UI/SponsorBlock/**"
+      - "src/Desktop/BiliCopilot.UI.Models/Constants/**"
+      - ".github/workflows/run-unit-tests.yml"
+  pull_request:
+    paths:
+      - "tests/**"
+      - "src/Desktop/BiliCopilot.UI/SponsorBlock/**"
+      - "src/Desktop/BiliCopilot.UI.Models/Constants/**"
+      - ".github/workflows/run-unit-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    # 独立于 WinUI / MSIX 打包流程：测试项目只链接与 UI 无关的纯逻辑源文件，
+    # 因此可以在普通 Windows runner 上直接构建和运行，不需要 MSIX 工具链.
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore
+        run: dotnet restore tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj
+
+      # 显式构建一次：干净检出上直接 --no-build 运行测试可能报告 0 个测试.
+      - name: Build
+        run: dotnet build tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj --no-restore -c Release
+
+      - name: Test
+        run: dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj --no-build -c Release --logger "console;verbosity=normal"

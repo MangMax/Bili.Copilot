@@ -26,12 +26,16 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <HyperlinkButton
+                AutomationProperties.AutomationId="SponsorBlockSkipButton"
+                AutomationProperties.Name="{ext:Locale Name=SponsorBlockSkipButton}"
                 HorizontalAlignment="Stretch"
                 AllowFocusOnInteraction="False"
                 Command="{x:Bind ViewModel.AcceptSponsorBlockPromptCommand, Mode=OneWay}"
                 Content="{ext:Locale Name=SponsorBlockSkipButton}"
                 IsTabStop="False" />
             <HyperlinkButton
+                AutomationProperties.AutomationId="SponsorBlockDismissButton"
+                AutomationProperties.Name="{ext:Locale Name=Cancel}"
                 Grid.Column="1"
                 HorizontalAlignment="Stretch"
                 AllowFocusOnInteraction="False"
@@ -41,11 +45,16 @@
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 IsTabStop="False" />
         </Grid>
+        <!--
+            进度条的最大值来自 SponsorBlockController.PromptTimeout，见代码后端.
+            它只表达这条 8 秒提示的剩余时间，纯装饰，对读屏器隐藏（Raw 视图外不可见），
+            避免读屏用户在提示出现时被一个无意义的进度值打断.
+        -->
         <ProgressBar
             x:Name="ProgressRect"
+            AutomationProperties.AccessibilityView="Raw"
             Height="4"
             HorizontalAlignment="Stretch"
-            Background="Transparent"
-            Maximum="8" />
+            Background="Transparent" />
     </StackPanel>
 </local:PlayerControlBase>

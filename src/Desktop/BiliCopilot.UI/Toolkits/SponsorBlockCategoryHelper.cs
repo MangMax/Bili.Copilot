@@ -16,19 +16,10 @@ internal static class SponsorBlockCategoryHelper
     /// <param name="category">片段类别.</param>
     /// <returns>本地化后的类别名称.</returns>
     public static string GetDisplayName(SponsorBlockCategory category)
-        => category switch
-        {
-            SponsorBlockCategory.Sponsor => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategorySponsor),
-            SponsorBlockCategory.SelfPromo => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategorySelfPromo),
-            SponsorBlockCategory.ExclusiveAccess => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryExclusiveAccess),
-            SponsorBlockCategory.Interaction => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryInteraction),
-            SponsorBlockCategory.PoiHighlight => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryPoiHighlight),
-            SponsorBlockCategory.Intro => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryIntro),
-            SponsorBlockCategory.Outro => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryOutro),
-            SponsorBlockCategory.Preview => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryPreview),
-            SponsorBlockCategory.Padding => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryPadding),
-            SponsorBlockCategory.Filler => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryFiller),
-            SponsorBlockCategory.MusicOfftopic => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryMusicOfftopic),
-            _ => ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockCategoryUnknown),
-        };
+    {
+        var key = SponsorBlockCategoryCatalog.Get(category).DisplayNameKey;
+        return Enum.TryParse<StringNames>(key, out var name)
+            ? ResourceToolkit.GetLocalizedString(name)
+            : key;
+    }
 }

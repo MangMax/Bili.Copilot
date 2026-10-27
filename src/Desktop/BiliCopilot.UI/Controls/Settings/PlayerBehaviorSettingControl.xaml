@@ -101,7 +101,9 @@
                 <ToggleSwitch IsOn="{x:Bind ViewModel.NoP2P, Mode=TwoWay}" />
             </base:SettingsCard>
             <base:SettingsCard Description="{ext:Locale Name=SponsorBlockDescription}" Header="{ext:Locale Name=SponsorBlock}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=TwoWay}" />
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="SponsorBlockEnabledToggle"
+                    IsOn="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=TwoWay}" />
             </base:SettingsCard>
             <base:SettingsCard
                 ContentAlignment="Left"
@@ -128,6 +130,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock VerticalAlignment="Center" Text="{x:Bind DisplayName}" />
                                 <ComboBox
+                                    AutomationProperties.AutomationId="{x:Bind Category}"
+                                    AutomationProperties.Name="{x:Bind DisplayName}"
                                     Grid.Column="1"
                                     MinWidth="128"
                                     ItemsSource="{x:Bind AvailableBehaviors}"

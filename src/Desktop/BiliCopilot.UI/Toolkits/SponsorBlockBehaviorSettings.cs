@@ -10,26 +10,11 @@ namespace BiliCopilot.UI.Toolkits;
 /// </summary>
 internal static class SponsorBlockBehaviorSettings
 {
-    private static readonly SponsorBlockCategory[] _categories =
-    [
-        SponsorBlockCategory.Sponsor,
-        SponsorBlockCategory.SelfPromo,
-        SponsorBlockCategory.ExclusiveAccess,
-        SponsorBlockCategory.Interaction,
-        SponsorBlockCategory.PoiHighlight,
-        SponsorBlockCategory.Intro,
-        SponsorBlockCategory.Outro,
-        SponsorBlockCategory.Preview,
-        SponsorBlockCategory.Padding,
-        SponsorBlockCategory.Filler,
-        SponsorBlockCategory.MusicOfftopic,
-        SponsorBlockCategory.Unknown,
-    ];
-
     /// <summary>
-    /// 设置页展示的类别顺序.
+    /// 设置页展示的类别顺序，与 <see cref="SponsorBlockCategoryCatalog.All"/> 保持一致.
     /// </summary>
-    public static IReadOnlyList<SponsorBlockCategory> Categories => _categories;
+    public static IReadOnlyList<SponsorBlockCategory> Categories { get; } =
+        SponsorBlockCategoryCatalog.All.Select(descriptor => descriptor.Category).ToArray();
 
     /// <summary>
     /// 读取指定类别的行为配置，未配置时返回默认值.
@@ -38,10 +23,11 @@ internal static class SponsorBlockBehaviorSettings
     /// <returns>该类别当前的行为配置.</returns>
     public static SponsorBlockBehavior Read(SponsorBlockCategory category)
     {
-        var defaultValue = SponsorBlockBehaviorDefaults.GetDefault(category);
+        var descriptor = SponsorBlockCategoryCatalog.Get(category);
+        var defaultValue = descriptor.DefaultBehavior;
         try
         {
-            var value = SettingsToolkit.ReadLocalSetting(GetSettingName(category), defaultValue);
+            var value = SettingsToolkit.ReadLocalSetting(ToSettingName(descriptor), defaultValue);
             return Enum.IsDefined(value) ? value : defaultValue;
         }
         catch (Exception)
@@ -57,22 +43,13 @@ internal static class SponsorBlockBehaviorSettings
     /// <param name="category">片段类别.</param>
     /// <param name="behavior">行为配置.</param>
     public static void Write(SponsorBlockCategory category, SponsorBlockBehavior behavior)
-        => SettingsToolkit.WriteLocalSetting(GetSettingName(category), behavior);
+        => SettingsToolkit.WriteLocalSetting(ToSettingName(SponsorBlockCategoryCatalog.Get(category)), behavior);
 
-    private static SettingNames GetSettingName(SponsorBlockCategory category)
-        => category switch
-        {
-            SponsorBlockCategory.Sponsor => SettingNames.SponsorBlockBehaviorSponsor,
-            SponsorBlockCategory.SelfPromo => SettingNames.SponsorBlockBehaviorSelfPromo,
-            SponsorBlockCategory.ExclusiveAccess => SettingNames.SponsorBlockBehaviorExclusiveAccess,
-            SponsorBlockCategory.Interaction => SettingNames.SponsorBlockBehaviorInteraction,
-            SponsorBlockCategory.PoiHighlight => SettingNames.SponsorBlockBehaviorPoiHighlight,
-            SponsorBlockCategory.Intro => SettingNames.SponsorBlockBehaviorIntro,
-            SponsorBlockCategory.Outro => SettingNames.SponsorBlockBehaviorOutro,
-            SponsorBlockCategory.Preview => SettingNames.SponsorBlockBehaviorPreview,
-            SponsorBlockCategory.Padding => SettingNames.SponsorBlockBehaviorPadding,
-            SponsorBlockCategory.Filler => SettingNames.SponsorBlockBehaviorFiller,
-            SponsorBlockCategory.MusicOfftopic => SettingNames.SponsorBlockBehaviorMusicOfftopic,
-            _ => SettingNames.SponsorBlockBehaviorUnknown,
-        };
+    /// <summary>
+    /// 元数据表保存的是设置项名称，这里换回强类型枚举.
+    /// </summary>
+    private static SettingNames ToSettingName(SponsorBlockCategoryDescriptor descriptor)
+        => Enum.TryParse<SettingNames>(descriptor.SettingName, out var name)
+            ? name
+            : SettingNames.SponsorBlockBehaviorUnknown;
 }

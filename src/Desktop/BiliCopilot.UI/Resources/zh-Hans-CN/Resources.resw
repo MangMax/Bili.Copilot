@@ -3199,7 +3199,7 @@
     <value>已跳过：{0}</value>
   </data>
   <data name="SponsorBlockCategoryUnknown" xml:space="preserve">
-    <value>赞助片段</value>
+    <value>其他片段</value>
   </data>
   <data name="SponsorBlockCategorySponsor" xml:space="preserve">
     <value>赞助广告</value>

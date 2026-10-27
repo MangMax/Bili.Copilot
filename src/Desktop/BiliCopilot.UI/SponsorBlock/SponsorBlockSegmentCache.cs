@@ -9,7 +9,8 @@ public sealed class SponsorBlockSegmentCache
 {
     private const int DefaultCapacity = 200;
     private readonly Dictionary<string, CacheEntry> _entries = new(StringComparer.Ordinal);
-    private readonly Queue<string> _insertionOrder = new();
+    private readonly LinkedList<string> _insertionOrder = new();
+    private readonly Dictionary<string, LinkedListNode<string>> _orderNodes = new(StringComparer.Ordinal);
     private readonly object _lock = new();
     private readonly TimeSpan _timeToLive;
     private readonly int _capacity;
@@ -47,7 +48,10 @@ public sealed class SponsorBlockSegmentCache
 
             if (now - entry.CreatedAt >= _timeToLive)
             {
+                // 过期条目必须同时从插入队列移除，否则重新写入会产生重复队列项，
+                // 后续淘汰可能按重复项删掉仍然有效的新条目.
                 _ = _entries.Remove(key);
+                RemoveFromOrder(key);
                 return false;
             }
 
@@ -71,13 +75,14 @@ public sealed class SponsorBlockSegmentCache
         {
             if (!_entries.ContainsKey(key))
             {
-                while (_entries.Count >= _capacity && _insertionOrder.Count > 0)
+                while (_entries.Count >= _capacity && _insertionOrder.First is { } oldest)
                 {
-                    var oldest = _insertionOrder.Dequeue();
-                    _ = _entries.Remove(oldest);
+                    _insertionOrder.RemoveFirst();
+                    _ = _orderNodes.Remove(oldest.Value);
+                    _ = _entries.Remove(oldest.Value);
                 }
 
-                _insertionOrder.Enqueue(key);
+                _orderNodes[key] = _insertionOrder.AddLast(key);
             }
 
             _entries[key] = new CacheEntry(segments, now);
@@ -93,11 +98,20 @@ public sealed class SponsorBlockSegmentCache
         {
             _entries.Clear();
             _insertionOrder.Clear();
+            _orderNodes.Clear();
         }
     }
 
     private static string CreateKey(string bvid, string cid)
         => $"{bvid}\u001f{cid}";
+
+    private void RemoveFromOrder(string key)
+    {
+        if (_orderNodes.Remove(key, out var node))
+        {
+            _insertionOrder.Remove(node);
+        }
+    }
 
     private readonly record struct CacheEntry(IReadOnlyList<SponsorBlockSegment> Segments, DateTimeOffset CreatedAt);
 }

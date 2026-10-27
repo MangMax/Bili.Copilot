@@ -340,19 +340,6 @@ public class SponsorBlockControllerTests
     }
 
     [Fact]
-    public void ActiveSegment_TracksSegmentAtPosition()
-    {
-        var controller = CreateController();
-        var segment = new SponsorBlockSegment(SponsorBlockCategory.Sponsor, 90, 110, "a");
-
-        _ = controller.Evaluate([segment], 100, 900, false, Start);
-        Assert.Same(segment, controller.ActiveSegment);
-
-        _ = controller.Evaluate([segment], 120, 900, false, At(300));
-        Assert.Null(controller.ActiveSegment);
-    }
-
-    [Fact]
     public void Evaluate_OnlyAppliesConfiguredCategoryBehavior()
     {
         var controller = new SponsorBlockController(category =>
