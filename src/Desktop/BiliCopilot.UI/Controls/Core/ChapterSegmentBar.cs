@@ -210,7 +210,41 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     /// 跳转后的目标位置。播放器上报新 Position 之前先用它绘制填充，
     /// 否则跳转瞬间会读到旧 Position 而把进度条弹回原位，看起来像是没跳到.
     /// </summary>
+    /// <remarks>
+    /// 必须有失效时间：播放器可能落在离目标较远的位置（关键帧对齐），
+    /// 甚至完全不动作（<see cref="PlayerViewModel.ChangePositionAsync"/> 在目标与当前位置
+    /// 相差不足 2 秒时直接返回）。若只靠“位置追平目标”来清除，该值会永久残留，
+    /// 进度条就会停在跳转点不再跟随播放（表现为圆点不动、填充不再增长）.
+    /// </remarks>
     private double? _pendingSeekPosition;
+
+    /// <summary>
+    /// <see cref="_pendingSeekPosition"/> 的失效时刻（<see cref="Environment.TickCount64"/> 毫秒）.
+    /// </summary>
+    private long _pendingSeekDeadline;
+
+    /// <summary>
+    /// 目标位置与当前播放位置的差值小于该值时不再下发跳转，与
+    /// <see cref="PlayerViewModel.ChangePositionAsync"/> 的内部判定保持一致.
+    /// </summary>
+    private const double MinSeekDelta = 2d;
+
+    /// <summary>
+    /// 乐观显示位置的最长存活时间（毫秒）.
+    /// </summary>
+    private const int PendingSeekTtlMs = 2000;
+
+    /// <summary>
+    /// 上一帧已绘制的状态，用于避免每帧重复写入 XAML.
+    /// </summary>
+    private double _lastAppliedPosition = double.NaN;
+    private double _lastAppliedWidth = -1d;
+    private double _lastAppliedDuration = -1d;
+
+    /// <summary>
+    /// 是否已挂上渲染回调.
+    /// </summary>
+    private bool _renderingHooked;
 
     /// <summary>
     /// 当前所在章节下标，用于避免每帧重算章节高亮.
@@ -328,6 +362,64 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         ApplyThumbBrushes();
         AttachPlayer();
         Rebuild();
+        StartRenderLoop();
+    }
+
+    /// <summary>
+    /// 挂上渲染回调。进度条的填充必须跟随播放器推进，
+    /// 而单纯依赖 <c>PropertyChanged</c> 会在订阅时机或控件可见性变化时漏掉更新
+    /// （例如迷你进度条初始为 Collapsed，转为可见时既没有尺寸变化事件也没有位置事件）,
+    /// 因此改为每帧比对目标位置，仅在变化时重绘.
+    /// </summary>
+    private void StartRenderLoop()
+    {
+        if (_renderingHooked)
+        {
+            return;
+        }
+
+        _renderingHooked = true;
+        Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
+    }
+
+    private void StopRenderLoop()
+    {
+        if (!_renderingHooked)
+        {
+            return;
+        }
+
+        _renderingHooked = false;
+        Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
+    }
+
+    /// <summary>
+    /// 每帧检查是否需要重绘：位置、宽度或时长任一变化才写 XAML.
+    /// </summary>
+    private void OnRendering(object? sender, object e)
+    {
+        var duration = Duration;
+        var width = _canvas.ActualWidth;
+        if (duration <= 0 || width <= 0)
+        {
+            return;
+        }
+
+        if (_segments.Count == 0)
+        {
+            Rebuild();
+            return;
+        }
+
+        var position = ResolveDisplayPosition();
+        if (Math.Abs(position - _lastAppliedPosition) < 0.04
+            && Math.Abs(width - _lastAppliedWidth) < 0.5
+            && Math.Abs(duration - _lastAppliedDuration) < 0.001)
+        {
+            return;
+        }
+
+        ApplyFill(position, duration, width);
     }
 
     private void ApplyBarHeight()
@@ -337,6 +429,9 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
 
         foreach (var segment in _segments)
         {
+            // 分段容器以整条热区高度绘制，并靠负的 Top 让轨道落在控件中线，
+            // 因此高度变化时必须跟着重新定位，否则紧凑模式下轨道会跑到控件之外.
+            Canvas.SetTop(segment.Container, (LayoutHeight - HitAreaHeight) / 2d);
             LayoutTrack(segment, TrackHeight);
         }
     }
@@ -408,6 +503,8 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
+        StopRenderLoop();
+
         if (ViewModel is not null)
         {
             ViewModel.ChapterInitialized -= OnChapterInitialized;

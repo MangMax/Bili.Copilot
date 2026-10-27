@@ -402,9 +402,19 @@ public sealed partial class ChapterSegmentBar
 
         var clamped = Math.Clamp(target, 0, Duration);
 
+        // 与播放器内部判定保持一致：目标离当前位置太近时它根本不会跳转，
+        // 此时若仍记录乐观位置，进度条就会停在原处骗人.
+        if (Math.Abs(Position - clamped) < MinSeekDelta)
+        {
+            _pendingSeekPosition = null;
+            UpdateFill();
+            return;
+        }
+
         // 先记录目标位置并刷新填充，让点击立即有视觉反馈；
         // 播放器回报新 Position 后，由 OnPlayerPropertyChanged 收敛掉该值.
         _pendingSeekPosition = clamped;
+        _pendingSeekDeadline = Environment.TickCount64 + PendingSeekTtlMs;
         UpdateFill();
 
         // PreviewPosition 属于播放器手势预览的语义，不用于传递进度条拖动位置.
