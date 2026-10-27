@@ -157,7 +157,17 @@ public sealed partial class ChapterSegmentBar
             return;
         }
 
-        var position = ResolveDisplayPosition();
+        ApplyFill(ResolveDisplayPosition(), duration, width);
+    }
+
+    /// <summary>
+    /// 按给定的位置 / 时长 / 宽度重绘填充与圆点.
+    /// </summary>
+    private void ApplyFill(double position, double duration, double width)
+    {
+        _lastAppliedPosition = position;
+        _lastAppliedDuration = duration;
+        _lastAppliedWidth = width;
 
         foreach (var segment in _segments)
         {
@@ -200,9 +210,19 @@ public sealed partial class ChapterSegmentBar
         }
 
         // 跳转后播放器回报新位置前，继续显示目标位置，避免进度条瞬间弹回旧位置.
-        if (_pendingSeekPosition is double pending && Math.Abs(Position - pending) > SeekSettleThreshold)
+        // 播放器可能永远到不了目标（关键帧对齐、或 ChangePositionAsync 直接忽略过近的跳转），
+        // 所以必须同时用“追平”和“超时”两个条件清除，否则进度条会永久冻结在跳转点.
+        if (_pendingSeekPosition is double pending)
         {
-            return pending;
+            if (Math.Abs(Position - pending) <= SeekSettleThreshold
+                || Environment.TickCount64 >= _pendingSeekDeadline)
+            {
+                _pendingSeekPosition = null;
+            }
+            else
+            {
+                return pending;
+            }
         }
 
         return Position;
