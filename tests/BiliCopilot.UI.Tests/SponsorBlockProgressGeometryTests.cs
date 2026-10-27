@@ -125,6 +125,26 @@ public class SponsorBlockProgressGeometryTests
     }
 
     [Fact]
+    public void Map_UsesSharedSegmentGapAndMinimumWidthConstants()
+    {
+        // 章节分段与标记共用同一组布局常量，避免两处字面量漂移.
+        var segments = new[] { new SponsorBlockSegment(SponsorBlockCategory.Sponsor, 0, 100) };
+        var chapters = new[]
+        {
+            new SponsorBlockTimeRange(0, 50),
+            new SponsorBlockTimeRange(50, 100),
+        };
+        const double width = 200d;
+
+        var markers = SponsorBlockProgressGeometry.Map(segments, chapters, 100, width);
+
+        // 第一段右端与第二段左端之间正好留下一个 SegmentGap.
+        var firstRight = markers[0].Left + markers[0].Width;
+        Assert.Equal(SponsorBlockProgressGeometry.SegmentGap, markers[1].Left - firstRight, 3);
+        Assert.True(markers[0].Width >= SponsorBlockProgressGeometry.MinSegmentWidth);
+    }
+
+    [Fact]
     public void Map_SegmentOutsideChapters_IsClampedToChapterRange()
     {
         // 章节只覆盖 0-40 秒，而片段落在 40-60 秒：没有重叠就不应绘制.
@@ -132,5 +152,57 @@ public class SponsorBlockProgressGeometryTests
         var chapters = new[] { new SponsorBlockTimeRange(0, 40) };
 
         Assert.Empty(SponsorBlockProgressGeometry.Map([segment], chapters, 100, 200));
+    }
+
+    [Fact]
+    public void MarkerHitTest_OnlyAcceptsVisualBandAndPadding()
+    {
+        SponsorBlockMarker[] markers = [new(0, SponsorBlockCategory.Sponsor, 10, 20)];
+        const double trackTop = 15d;
+        const double trackHeight = 4d;
+        const double padding = 2d;
+
+        // 标记视觉只占轨道上半部（15..17），命中带向上放宽 2px.
+        Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 13, trackTop, trackHeight, padding, false));
+        Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 15, trackTop, trackHeight, padding, false));
+        Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 17, trackTop, trackHeight, padding, false));
+
+        // 轨道下半部（17..19）完整保留给原有的精确定位 / 拖拽.
+        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 17.5, trackTop, trackHeight, padding, false));
+        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 19, trackTop, trackHeight, padding, false));
+
+        // 命中带之上也不再拦截.
+        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 12.5, trackTop, trackHeight, padding, false));
+    }
+
+    [Fact]
+    public void MarkerHitTest_ChapterEdgeBand_IsNotPreempted()
+    {
+        SponsorBlockMarker[] markers = [new(0, SponsorBlockCategory.Sponsor, 10, 20)];
+
+        // 上下边缘带代表“跳到章节起点”，即使指针正好落在标记视觉带内也必须让位.
+        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 16, 15, 4, 2, true));
+
+        // 同样位置、不在边缘带时则命中标记.
+        Assert.NotNull(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 15, 16, 15, 4, 2, false));
+    }
+
+    [Fact]
+    public void MarkerHitTest_OutsideMarkerWidth_ReturnsNull()
+    {
+        SponsorBlockMarker[] markers = [new(0, SponsorBlockCategory.Sponsor, 10, 20)];
+
+        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 5, 16, 15, 4, 2, false));
+        Assert.Null(SponsorBlockProgressGeometry.HitTestMarker(
+            markers, 31, 16, 15, 4, 2, false));
     }
 }

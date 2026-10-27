@@ -24,7 +24,4 @@ internal sealed class SponsorBlockSegmentDto
 
     [JsonPropertyName("cid")]
     public JsonElement? Cid { get; set; }
-
-    [JsonPropertyName("videoDuration")]
-    public double? VideoDuration { get; set; }
 }

@@ -41,11 +41,11 @@
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 IsTabStop="False" />
         </Grid>
+        <!-- 进度条的最大值来自 SponsorBlockController.PromptTimeout，见代码后端. -->
         <ProgressBar
             x:Name="ProgressRect"
             Height="4"
             HorizontalAlignment="Stretch"
-            Background="Transparent"
-            Maximum="8" />
+            Background="Transparent" />
     </StackPanel>
 </local:PlayerControlBase>

@@ -44,6 +44,82 @@ public static class SponsorBlockProgressGeometry
     public const double MinSegmentWidth = 2d;
 
     /// <summary>
+    /// 判断指针纵坐标是否落在标记的视觉命中带内。
+    /// <para>
+    /// 标记只绘制在轨道上半部，命中带因此也是「上半部」；为了在 4px 高的轨道上仍然好点，
+    /// 只向上方放宽 <paramref name="padding"/>，下方不再放宽，
+    /// 轨道下半部完整保留给原有的精确定位 / 拖拽.
+    /// </para>
+    /// </summary>
+    /// <param name="y">相对画布的纵坐标.</param>
+    /// <param name="trackTop">轨道上边缘.</param>
+    /// <param name="trackHeight">轨道高度.</param>
+    /// <param name="padding">命中带向上额外放宽的像素.</param>
+    /// <returns>位于命中带内时返回 <c>true</c>.</returns>
+    public static bool IsWithinMarkerBand(double y, double trackTop, double trackHeight, double padding)
+    {
+        if (!IsFinite(y) || !IsFinite(trackTop) || !IsFinite(trackHeight)
+            || trackHeight <= 0 || padding < 0)
+        {
+            return false;
+        }
+
+        var bandBottom = trackTop + (trackHeight / 2d);
+        return y >= trackTop - padding && y <= bandBottom;
+    }
+
+    /// <summary>
+    /// 按横坐标查找命中的标记.
+    /// </summary>
+    /// <param name="markers">当前绘制中的标记.</param>
+    /// <param name="x">相对画布的横坐标.</param>
+    /// <returns>命中的标记；没有时返回 <c>null</c>.</returns>
+    public static SponsorBlockMarker? FindMarkerAt(IReadOnlyList<SponsorBlockMarker>? markers, double x)
+    {
+        if (markers is null || !IsFinite(x))
+        {
+            return null;
+        }
+
+        foreach (var marker in markers)
+        {
+            if (x >= marker.Left && x <= marker.Left + marker.Width)
+            {
+                return marker;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 判定指针是否命中标记。
+    /// <para>
+    /// 章节上下边缘带优先：这些位置代表「跳到章节起点」，
+    /// 即使横向落在标记范围内也不能被标记抢占.
+    /// </para>
+    /// </summary>
+    /// <param name="markers">当前绘制中的标记.</param>
+    /// <param name="x">相对画布的横坐标.</param>
+    /// <param name="y">相对画布的纵坐标.</param>
+    /// <param name="trackTop">轨道上边缘.</param>
+    /// <param name="trackHeight">轨道高度.</param>
+    /// <param name="padding">命中带向上额外放宽的像素.</param>
+    /// <param name="isOnVerticalEdge">指针是否位于章节边缘热区.</param>
+    /// <returns>命中的标记；没有时返回 <c>null</c>.</returns>
+    public static SponsorBlockMarker? HitTestMarker(
+        IReadOnlyList<SponsorBlockMarker>? markers,
+        double x,
+        double y,
+        double trackTop,
+        double trackHeight,
+        double padding,
+        bool isOnVerticalEdge)
+        => isOnVerticalEdge || !IsWithinMarkerBand(y, trackTop, trackHeight, padding)
+            ? null
+            : FindMarkerAt(markers, x);
+
+    /// <summary>
     /// 计算各片段在进度条上的绘制矩形.
     /// </summary>
     /// <param name="segments">当前分 P 的片段列表.</param>

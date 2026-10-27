@@ -14,7 +14,7 @@ public static class SponsorBlockSegmentParser
     /// </summary>
     /// <param name="json">接口返回的 JSON 文本.</param>
     /// <param name="expectedCid">当前分 P 的 cid，用于过滤其他分 P 的片段.</param>
-    /// <returns>按开始时间排序的有效可跳过片段，解析失败时返回空列表.</returns>
+    /// <returns>按开始时间排序的有效可处理片段，解析失败时返回空列表.</returns>
     public static IReadOnlyList<SponsorBlockSegment> Parse(string? json, string? expectedCid = null)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -48,7 +48,7 @@ public static class SponsorBlockSegmentParser
             var start = range[0];
             var end = range[1];
             if (!SponsorBlockSegment.IsValidRange(start, end)
-                || !TryParseActionType(item.ActionType, out var actionType)
+                || !IsSupportedActionType(item.ActionType)
                 || !MatchesCid(item.Cid, expectedCid))
             {
                 continue;
@@ -58,9 +58,7 @@ public static class SponsorBlockSegmentParser
                 SponsorBlockCategoryParser.Parse(item.Category),
                 start,
                 end,
-                item.Uuid,
-                item.VideoDuration,
-                actionType));
+                item.Uuid));
         }
 
         segments.Sort(static (left, right) =>
@@ -72,28 +70,25 @@ public static class SponsorBlockSegmentParser
         return segments;
     }
 
-    private static bool TryParseActionType(string? actionType, out SponsorBlockActionType result)
+    /// <summary>
+    /// 判断 actionType 是否属于自动处理范围.
+    /// <para><c>poi</c> 表示高光时刻，需要保留；<c>full</c> 表示整段视频，应排除.</para>
+    /// </summary>
+    private static bool IsSupportedActionType(string? actionType)
     {
         if (string.IsNullOrWhiteSpace(actionType))
         {
             // 旧接口未返回 actionType 时按跳过处理.
-            result = SponsorBlockActionType.Skip;
             return true;
         }
 
-        switch (actionType.Trim().ToLowerInvariant())
+        return actionType.Trim().ToLowerInvariant() switch
         {
-            case "skip":
-                result = SponsorBlockActionType.Skip;
-                return true;
-            case "mute":
-                result = SponsorBlockActionType.Mute;
-                return true;
-            default:
-                // poi / full 等动作不在自动处理范围内.
-                result = default;
-                return false;
-        }
+            "skip" => true,
+            "mute" => true,
+            "poi" => true,
+            _ => false,
+        };
     }
 
     private static bool MatchesCid(JsonElement? cid, string? expectedCid)

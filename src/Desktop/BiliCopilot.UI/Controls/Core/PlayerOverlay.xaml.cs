@@ -67,6 +67,9 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         ViewModel.RequestHideNextTip -= OnRequestHideNextTip;
         ViewModel.RequestShowSponsorBlockTip -= OnRequestShowSponsorBlockTip;
         ViewModel.RequestHideSponsorBlockTip -= OnRequestHideSponsorBlockTip;
+
+        // 卸载后不再有事件驱动提示，主动收起以停掉它的计时器.
+        SponsorBlockTip?.Hide();
         _controlTimer.Tick -= OnControlTimerTick;
         _controlTimer.Stop();
         _cursorTimer.Tick -= OnCursorTimerTick;

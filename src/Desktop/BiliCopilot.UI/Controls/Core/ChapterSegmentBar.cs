@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Media;
@@ -20,8 +21,17 @@ namespace BiliCopilot.UI.Controls.Core;
 /// </remarks>
 public sealed partial class ChapterSegmentBar : PlayerControlBase
 {
-    private const double SegmentGap = 2d;
-    private const double MinSegmentWidth = 2d;
+    /// <summary>
+    /// 相邻章节分段之间的像素间隙。与空降标记的几何映射共用同一个来源，
+    /// 否则标记会与章节分段的缝隙错位.
+    /// </summary>
+    private const double SegmentGap = SponsorBlockProgressGeometry.SegmentGap;
+
+    /// <summary>
+    /// 章节分段的最小像素宽度，同样与空降标记的几何映射共用同一个来源.
+    /// </summary>
+    private const double MinSegmentWidth = SponsorBlockProgressGeometry.MinSegmentWidth;
+
     private const double TrackHeight = 4d;
     private const double HoverTrackHeight = 8d;
     private const double DragThreshold = 3d;
@@ -317,8 +327,8 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         PointerPressed += OnPointerPressed;
         PointerMoved += OnPointerMoved;
         PointerReleased += OnPointerReleased;
-        PointerCanceled += OnPointerReleased;
-        PointerCaptureLost += OnPointerReleased;
+        PointerCanceled += OnPointerCanceled;
+        PointerCaptureLost += OnPointerCanceled;
         PointerExited += OnPointerExited;
     }
 
@@ -473,6 +483,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
             bar.UpdateCursor(false);
             bar.HideHoverPopup();
             bar._pressed = null;
+            bar._pendingMarker = null;
             bar._isDragging = false;
         }
     }
