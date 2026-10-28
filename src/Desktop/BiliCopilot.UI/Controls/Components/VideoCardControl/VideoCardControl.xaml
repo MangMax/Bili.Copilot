@@ -58,7 +58,6 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Button
-                                    HorizontalAlignment="Left"
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
                                     Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
                                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
@@ -170,7 +169,6 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Button
-                                    HorizontalAlignment="Left"
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
                                     Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
                                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
@@ -297,7 +295,6 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Button
-                                        HorizontalAlignment="Left"
                                         AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
                                         Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
                                         IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
@@ -532,7 +529,6 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Button
-                                    HorizontalAlignment="Left"
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
                                     Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
                                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
@@ -768,7 +764,6 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Button
-                                    HorizontalAlignment="Left"
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
                                     Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
                                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
@@ -963,7 +958,6 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Button
-                                    HorizontalAlignment="Left"
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
                                     Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
                                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
@@ -1139,7 +1133,6 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Button
-                                    HorizontalAlignment="Left"
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
                                     Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
                                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
@@ -1371,7 +1364,6 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Button
-                                    HorizontalAlignment="Left"
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
                                     Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
                                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"

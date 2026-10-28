@@ -168,7 +168,8 @@
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
-        <Setter Property="UseSystemFocusVisuals" Value="True" />
+        <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+        <Setter Property="FocusVisualMargin" Value="-3" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -189,7 +190,11 @@
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource SubtleFillColorTertiaryBrush}" />
                                     </VisualState.Setters>
                                 </VisualState>
-                                <VisualState x:Name="Disabled" />
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.Opacity" Value="0.4" />
+                                    </VisualState.Setters>
+                                </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <ContentPresenter
