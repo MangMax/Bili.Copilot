@@ -10,6 +10,8 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
 {
+    private static readonly SponsorBlockBehavior[] Behaviors = Enum.GetValues<SponsorBlockBehavior>();
+
     private readonly Action<SponsorBlockCategory, SponsorBlockBehavior> _onBehaviorChanged;
     private readonly Action<SponsorBlockCategory, uint>? _onCustomColorChanged;
     private readonly Action<SponsorBlockCategory>? _onCustomColorReset;
@@ -75,10 +77,9 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
     public string DefaultColorText { get; }
 
     /// <summary>
-    /// 可选的行为列表.
+    /// 可选的行为列表。所有类别共用同一份，避免每个设置项各分配一个数组.
     /// </summary>
-    public IReadOnlyList<SponsorBlockBehavior> AvailableBehaviors { get; }
-        = Enum.GetValues<SponsorBlockBehavior>();
+    public IReadOnlyList<SponsorBlockBehavior> AvailableBehaviors => Behaviors;
 
     /// <summary>
     /// 当前行为配置.
