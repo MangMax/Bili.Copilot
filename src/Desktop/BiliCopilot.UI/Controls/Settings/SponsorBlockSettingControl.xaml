@@ -106,11 +106,10 @@
                                             <!--
                                                 宽度由内容决定：默认态「默认」两个字、自定义后是颜色值，字数不同宽度自然不同.
                                                 不预留固定宽度，免得短文案右侧空出一大块.
+                                                文字沿用默认正文样式，与其它设置项的取值文字保持一致.
                                             -->
                                             <TextBlock
                                                 VerticalAlignment="Center"
-                                                FontSize="12"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                 Text="{x:Bind ColorDisplayText, Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
