@@ -169,13 +169,21 @@
                                     <RowDefinition />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <base:TrimTextBlock
+                                <Button
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    FontSize="12"
-                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                    MaxLines="1"
-                                    Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
+                                    AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
+                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    Style="{StaticResource TextButtonStyle}"
+                                    ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
+                                    <base:TrimTextBlock
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                        MaxLines="1"
+                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
+                                </Button>
                                 <base:TrimTextBlock
                                     Grid.Row="1"
                                     HorizontalAlignment="Left"
@@ -288,12 +296,20 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <base:TrimTextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="12"
-                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                        MaxLines="1"
-                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
+                                    <Button
+                                        HorizontalAlignment="Left"
+                                        AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                        Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
+                                        IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                        Style="{StaticResource TextButtonStyle}"
+                                        ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
+                                        <base:TrimTextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="12"
+                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                            MaxLines="1"
+                                            Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
+                                    </Button>
                                     <TextBlock
                                         Grid.Column="1"
                                         HorizontalAlignment="Left"
@@ -515,14 +531,22 @@
                                     <RowDefinition />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <TextBlock
+                                <Button
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="NoWrap" />
+                                    AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
+                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    Style="{StaticResource TextButtonStyle}"
+                                    ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
+                                    <TextBlock
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap" />
+                                </Button>
 
                                 <base:TrimTextBlock
                                     Grid.Row="1"
@@ -743,14 +767,22 @@
                                     <RowDefinition />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <TextBlock
+                                <Button
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="NoWrap" />
+                                    AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
+                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    Style="{StaticResource TextButtonStyle}"
+                                    ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
+                                    <TextBlock
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap" />
+                                </Button>
 
                                 <base:TrimTextBlock
                                     Grid.Row="1"
@@ -930,14 +962,22 @@
                                     <RowDefinition />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <TextBlock
+                                <Button
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="NoWrap" />
+                                    AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
+                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    Style="{StaticResource TextButtonStyle}"
+                                    ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
+                                    <TextBlock
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap" />
+                                </Button>
 
                                 <base:TrimTextBlock
                                     Grid.Row="1"
