@@ -19,24 +19,36 @@ public sealed partial class SearchPage : SearchPageBase, IParameterPage
 
     public void SetParameter(object? parameter)
     {
-        if (parameter is string keyword)
+        if (parameter is not string keyword)
         {
-            _keyword = keyword;
+            return;
+        }
+
+        _keyword = keyword;
+
+        // OverlayFrame 会复用已存在的 SearchPage 实例，此时不会再次触发 OnPageLoaded，
+        // 因此已加载的页面需要在收到新参数时立即执行搜索.
+        if (IsLoaded)
+        {
+            ExecuteSearch();
         }
     }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded()
+        => ExecuteSearch();
+
+    protected override void OnPageUnloaded()
+    {
+        _keyword = string.Empty;
+    }
+
+    private void ExecuteSearch()
     {
         if (!string.IsNullOrEmpty(_keyword))
         {
             ViewModel.SearchCommand.Execute(_keyword);
         }
-    }
-
-    protected override void OnPageUnloaded()
-    {
-        _keyword = string.Empty;
     }
 }
 

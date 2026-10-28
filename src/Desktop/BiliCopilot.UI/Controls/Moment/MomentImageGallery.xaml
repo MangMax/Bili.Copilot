@@ -8,15 +8,33 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:local="using:BiliCopilot.UI.Controls.Moment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Grid>
-        <ItemsRepeater x:Name="ImageRepeater" ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
+        <!--  MaxWidth 368 = 3 列 * 120 + 2 * 4 间距，保证最多 3 列且左对齐。  -->
+        <ItemsRepeater
+            x:Name="ImageRepeater"
+            MaxWidth="368"
+            HorizontalAlignment="Left"
+            ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
             <ItemsRepeater.ItemTemplate>
                 <DataTemplate x:DataType="appearance:BiliImage">
-                    <Grid>
+                    <Button
+                        Width="120"
+                        Height="120"
+                        Padding="0"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        AutomationProperties.AutomationId="{x:Bind local:MomentImageGallery.GetImageAutomationId(Uri)}"
+                        AutomationProperties.Name="{x:Bind local:MomentImageGallery.GetImageAutomationName(Uri)}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="OnImageClick"
+                        CornerRadius="{StaticResource ControlCornerRadius}"
+                        Tag="{x:Bind}">
                         <controls:BasicCoverImage
                             Width="120"
                             Height="120"
@@ -24,17 +42,18 @@
                             VerticalAlignment="Stretch"
                             CornerRadius="{StaticResource ControlCornerRadius}"
                             DecodeWidth="300"
-                            Source="{x:Bind Uri}"
-                            Tag="{x:Bind}"
-                            Tapped="OnImageTapped" />
-                    </Grid>
+                            Source="{x:Bind Uri}" />
+                    </Button>
                 </DataTemplate>
             </ItemsRepeater.ItemTemplate>
             <ItemsRepeater.Layout>
-                <ColumnMajorUniformToLargestGridLayout
-                    ColumnSpacing="4"
-                    MaxColumns="3"
-                    RowSpacing="4" />
+                <UniformGridLayout
+                    ItemsStretch="None"
+                    MinColumnSpacing="4"
+                    MinItemHeight="120"
+                    MinItemWidth="120"
+                    MinRowSpacing="4"
+                    Orientation="Horizontal" />
             </ItemsRepeater.Layout>
         </ItemsRepeater>
     </Grid>

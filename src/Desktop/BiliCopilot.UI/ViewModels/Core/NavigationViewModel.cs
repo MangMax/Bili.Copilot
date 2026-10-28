@@ -133,7 +133,12 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         else
         {
             searchBox.SetExtraRegion(string.Empty, string.Empty);
-            searchBox.Keyword = string.Empty;
+
+            // 搜索页需要保留用户刚选择/输入的关键字；其他页面才清空搜索框.
+            if (pageType != typeof(SearchPage))
+            {
+                searchBox.Keyword = string.Empty;
+            }
         }
     }
 

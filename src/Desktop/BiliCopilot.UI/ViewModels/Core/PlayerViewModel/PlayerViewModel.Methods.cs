@@ -235,6 +235,51 @@ public sealed partial class PlayerViewModel
             _tripleTimer.Interval = TimeSpan.FromSeconds(0.2);
             _tripleTimer.Tick += OnTripleTimerTick;
         }
+
+        if (_volumeCommitTimer == null)
+        {
+            _volumeCommitTimer = queue.CreateTimer();
+            _volumeCommitTimer.Interval = TimeSpan.FromMilliseconds(VolumeCommitDelay);
+            _volumeCommitTimer.Tick += OnVolumeCommitTimerTick;
+        }
+    }
+
+    private void OnVolumeCommitTimerTick(DispatcherQueueTimer sender, object args)
+    {
+        sender.Stop();
+        CommitPendingVolume();
+    }
+
+    private void ScheduleVolumeCommit(double volume)
+    {
+        _volumeCommitTracker.Record(volume);
+        if (_volumeCommitTimer == null)
+        {
+            return;
+        }
+
+        _volumeCommitTimer.Stop();
+        _volumeCommitTimer.Start();
+    }
+
+    private void CommitPendingVolume()
+    {
+        if (_volumeCommitTracker.TryTakePending(out var volume))
+        {
+            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerVolume, volume);
+        }
+    }
+
+    private void FlushPendingVolume()
+    {
+        if (_volumeCommitTimer != null)
+        {
+            _volumeCommitTimer.Tick -= OnVolumeCommitTimerTick;
+            _volumeCommitTimer.Stop();
+            _volumeCommitTimer = null;
+        }
+
+        CommitPendingVolume();
     }
 
     private void OnRightKeyLongPressTimerTick(DispatcherQueueTimer sender, object args)
@@ -441,6 +486,8 @@ public sealed partial class PlayerViewModel
 
     private async void OnWindowDestroying(AppWindow sender, object args)
     {
+        // 窗口销毁路径先于 DisposeAsync 落盘，确保立即关闭时音量也能保存.
+        FlushPendingVolume();
         var appVM = this.Get<AppViewModel>();
         var hideMainWindowOnPlay = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true);
         if (hideMainWindowOnPlay && !UseIntegrationOperation)
@@ -564,18 +611,14 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.Volume) && Player.IsPlaybackInitialized)
         {
-            if (IsVolumeChanging)
+            if (IsVolumeChanging && DateTimeOffset.Now - LastVolumeChangingTime >= TimeSpan.FromMilliseconds(500))
             {
-                if (DateTimeOffset.Now - LastVolumeChangingTime < TimeSpan.FromMilliseconds(500))
-                {
-                    return;
-                } 
-
                 IsVolumeChanging = false;
             }
 
+            // 指示器需要即时响应，但落盘只提交去抖后的最后一次变更.
             CurrentVolume = Player.Volume;
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerVolume, Player.Volume);
+            ScheduleVolumeCommit(Player.Volume);
         }
         else if (e.PropertyName == nameof(Player.PlaybackRate) && Player.IsPlaybackInitialized)
         {
@@ -984,10 +1027,13 @@ public sealed partial class PlayerViewModel
                     }
                 }
 
-                if (Subtitles.Count > 0 && Subtitles.Any(p => !p.IsAI))
+                if (Subtitles.Count > 0)
                 {
-                    var firstNonAi = Subtitles.First(p => !p.IsAI);
-                    firstNonAi.SelectCommand.Execute(default);
+                    var preferredIndex = SubtitlePreference.SelectPreferredIndex(Subtitles, p => p.Name, p => p.IsAI);
+                    if (preferredIndex >= 0)
+                    {
+                        Subtitles[preferredIndex].SelectCommand.Execute(default);
+                    }
                 }
 
                 IsSubtitleEmpty = Subtitles.Count == 0;

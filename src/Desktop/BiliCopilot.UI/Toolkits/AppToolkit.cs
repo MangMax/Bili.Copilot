@@ -20,6 +20,8 @@ internal sealed partial class AppToolkit : SharedAppToolkit
     private const int VK_RCONTROL = 0xA3; // 右Ctrl键
     private const int VK_SHIFT = 0x10; // Shift键
     private const int VK_MENU = 0x12; // Alt键
+    private const int VK_LWIN = 0x5B; // 左Win键
+    private const int VK_RWIN = 0x5C; // 右Win键
 
     private static readonly List<string> _gpuNames = [];
 
@@ -146,17 +148,24 @@ internal sealed partial class AppToolkit : SharedAppToolkit
         return (altState & 0x8000) != 0;
     }
 
+    public static bool IsWinPressed()
+    {
+        var leftWinState = PInvoke.GetAsyncKeyState(VK_LWIN);
+        var rightWinState = PInvoke.GetAsyncKeyState(VK_RWIN);
+        return (leftWinState & 0x8000) != 0 || (rightWinState & 0x8000) != 0;
+    }
+
     public static bool IsOnlyCtrlPressed()
-        => IsCtrlPressed() && !IsShiftPressed() && !IsAltPressed();
+        => ModifierKeys.IsOnlyCtrlPressed(IsCtrlPressed(), IsShiftPressed(), IsAltPressed(), IsWinPressed());
 
     public static bool IsOnlyShiftPressed()
-        => !IsCtrlPressed() && IsShiftPressed() && !IsAltPressed();
+        => ModifierKeys.IsOnlyShiftPressed(IsCtrlPressed(), IsShiftPressed(), IsAltPressed(), IsWinPressed());
 
     public static bool IsOnlyAltPressed()
-        => !IsCtrlPressed() && !IsShiftPressed() && IsAltPressed();
+        => ModifierKeys.IsOnlyAltPressed(IsCtrlPressed(), IsShiftPressed(), IsAltPressed(), IsWinPressed());
 
     public static bool NotModifierKeyPressed()
-        => !IsCtrlPressed() && !IsShiftPressed() && !IsAltPressed();
+        => ModifierKeys.NotModifierKeyPressed(IsCtrlPressed(), IsShiftPressed(), IsAltPressed(), IsWinPressed());
 
     public static async Task<string> EnsureMpvConfigExistAsync()
     {

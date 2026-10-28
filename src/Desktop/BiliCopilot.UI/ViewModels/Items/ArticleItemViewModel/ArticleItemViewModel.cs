@@ -33,7 +33,7 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
         : base(data)
     {
         var primaryLan = ApplicationLanguages.Languages[0];
-        Title = data.Identifier.Title.Trim();
+        Title = HtmlText.Decode(data.Identifier.Title).Trim();
         Subtitle = data.GetExtensionIfNotNull<string>(ArticleExtensionDataId.Subtitle);
         Cover = data.Identifier.Cover?.Uri;
         Author = data.Publisher?.Name;

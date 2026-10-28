@@ -160,13 +160,13 @@ public sealed partial class SubtitleViewModel : ViewModelBase
 
     private SubtitleMeta? GetInitialMeta()
     {
-        var firstNonAIMeta = Metas?.FirstOrDefault(p => !p.IsAI);
-        if (firstNonAIMeta is not null)
+        if (Metas is null || Metas.Count == 0)
         {
-            return firstNonAIMeta;
+            return default;
         }
 
-        return default;
+        var preferredIndex = SubtitlePreference.SelectPreferredIndex(Metas, p => p.LanguageName, p => p.IsAI);
+        return preferredIndex >= 0 ? Metas[preferredIndex] : default;
     }
 
     partial void OnIsEnabledChanged(bool value)
