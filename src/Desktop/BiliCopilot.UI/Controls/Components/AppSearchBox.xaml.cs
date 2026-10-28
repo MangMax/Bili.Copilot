@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
+using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Models.Search;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -12,27 +13,50 @@ namespace BiliCopilot.UI.Controls.Components;
 /// </summary>
 public sealed partial class AppSearchBox : AppSearchBoxBase
 {
+    // 选择联想项后，输入法组合结束/焦点回调可能再次触发建议加载；用短时窗口兜住这类事件.
+    private const int SuggestionSuppressionMilliseconds = 600;
+
+    private readonly DispatcherQueueTimer _suggestionSuppressionTimer;
     private bool _isSubmittingQuery;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBox"/> class.
     /// </summary>
-    public AppSearchBox() => InitializeComponent();
+    public AppSearchBox()
+    {
+        InitializeComponent();
+        _suggestionSuppressionTimer = DispatcherQueue.CreateTimer();
+        _suggestionSuppressionTimer.Interval = TimeSpan.FromMilliseconds(SuggestionSuppressionMilliseconds);
+        _suggestionSuppressionTimer.IsRepeating = false;
+        _suggestionSuppressionTimer.Tick += OnSuggestionSuppressionTimerTick;
+    }
 
     protected override void OnControlUnloaded()
-        => HotSearchView.ItemsSource = null;
+    {
+        _suggestionSuppressionTimer.Stop();
+        _isSubmittingQuery = false;
+        HotSearchView.ItemsSource = null;
+    }
 
     private void OnKeywordChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
         if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
         {
+            if (_isSubmittingQuery)
+            {
+                // 输入法在点击联想项后提交组合文本时，不再重新拉取建议.
+                ViewModel.TryCancelSuggestCommand.Execute(default);
+                Box.IsSuggestionListOpen = false;
+                return;
+            }
+
             ViewModel.ReloadSuggestionsCommand.Execute(default);
         }
     }
 
     private async void OnBoxGettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
     {
-        if (Box.IsSuggestionListOpen)
+        if (_isSubmittingQuery || Box.IsSuggestionListOpen)
         {
             return;
         }
@@ -43,6 +67,13 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         {
             Box.IsSuggestionListOpen = ViewModel.Suggestion.Count > 0;
         }
+    }
+
+    private void OnSuggestionSuppressionTimerTick(DispatcherQueueTimer sender, object args)
+    {
+        sender.Stop();
+        _isSubmittingQuery = false;
+        Box.IsSuggestionListOpen = false;
     }
 
     private void OnHotSearchFlyoutOpened(object sender, object e)
@@ -65,6 +96,8 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
     {
         _isSubmittingQuery = true;
         Box.IsSuggestionListOpen = false;
+        _suggestionSuppressionTimer.Stop();
+        _suggestionSuppressionTimer.Start();
 
         if (args.ChosenSuggestion is SearchSuggestItemViewModel item)
         {
@@ -83,11 +116,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
 
         ViewModel.TryCancelSuggestCommand.Execute(default);
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            ViewModel.Suggestion.Clear();
-            _isSubmittingQuery = false;
-        });
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, ViewModel.Suggestion.Clear);
     }
 }
 
