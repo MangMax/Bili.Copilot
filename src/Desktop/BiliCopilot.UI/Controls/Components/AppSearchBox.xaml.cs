@@ -12,6 +12,8 @@ namespace BiliCopilot.UI.Controls.Components;
 /// </summary>
 public sealed partial class AppSearchBox : AppSearchBoxBase
 {
+    private bool _isSubmittingQuery;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBox"/> class.
     /// </summary>
@@ -37,7 +39,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
         // 保留用户已输入的文字，只按当前文字刷新建议，并在有建议时展开列表。
         await ViewModel.ReloadSuggestionsCommand.ExecuteAsync(default);
-        if (Box.FocusState != FocusState.Unfocused)
+        if (!_isSubmittingQuery && Box.FocusState != FocusState.Unfocused)
         {
             Box.IsSuggestionListOpen = ViewModel.Suggestion.Count > 0;
         }
@@ -61,6 +63,9 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
     private void OnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
+        _isSubmittingQuery = true;
+        Box.IsSuggestionListOpen = false;
+
         if (args.ChosenSuggestion is SearchSuggestItemViewModel item)
         {
             // UpdateTextOnSelect 已关闭，选择联想项时需要手动把展示文本写回输入框.
@@ -78,7 +83,11 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
 
         ViewModel.TryCancelSuggestCommand.Execute(default);
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, ViewModel.Suggestion.Clear);
+        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+        {
+            ViewModel.Suggestion.Clear();
+            _isSubmittingQuery = false;
+        });
     }
 }
 
