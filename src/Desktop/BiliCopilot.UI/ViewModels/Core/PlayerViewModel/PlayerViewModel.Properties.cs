@@ -37,9 +37,12 @@ public sealed partial class PlayerViewModel
     private bool _isRightKeyTripleSpeed;
     private DispatcherQueueTimer? _rightKeyLongPressTimer;
     private DispatcherQueueTimer? _tripleTimer;
+    private DispatcherQueueTimer? _volumeCommitTimer;
+    private readonly VolumeCommitTracker _volumeCommitTracker = new();
     private DateTimeOffset _lastPlayNextOrPrevTime = DateTimeOffset.MinValue;
 
     private const int RightKeyLongPressDelay = 500;
+    private const int VolumeCommitDelay = 500;
     private bool _isRightKeyDown;
     private bool _isTlsFailed;
     private double _prevPosition;
