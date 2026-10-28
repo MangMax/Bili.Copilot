@@ -109,11 +109,13 @@
                                                 文字沿用默认正文样式，与其它设置项的取值文字保持一致.
                                             -->
                                             <!--
-                                                Margin 负值做光学校正：中文在 WinUI 的行框里偏高，
-                                                字形墨迹会比行框中心低约 1px，和左侧色块看起来不齐.
+                                                底部留 3px 做光学校正：中文的字形墨迹在 WinUI 行框里偏下，
+                                                与左侧色块、右侧下拉框的文字不在一条线上.
+                                                这和内置 ComboBox 的做法一致——它的 ComboBoxPadding 是 12,5,0,7，
+                                                底部比顶部多 2px，正是用不对称留白把文字提上来.
                                             -->
                                             <TextBlock
-                                                Margin="0,-1,0,0"
+                                                Margin="0,0,0,3"
                                                 VerticalAlignment="Center"
                                                 Text="{x:Bind ColorDisplayText, Mode=OneWay}" />
                                         </StackPanel>
