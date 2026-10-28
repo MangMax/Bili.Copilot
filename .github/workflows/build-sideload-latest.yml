@@ -20,6 +20,13 @@ on:
         description: "创建 GitHub Release"
         type: boolean
         default: true
+      release_notes:
+        description: "发版说明（Markdown）"
+        required: true
+        default: |
+          Bili.Copilot 的独立维护版本。
+
+          安装：解压后右键以 PowerShell 运行 Install.ps1。
 
 permissions:
   contents: write
@@ -133,10 +140,7 @@ jobs:
         with:
           tag_name: v${{ inputs.version }}
           name: Bili.Copilot ${{ inputs.version }}
-          body: |
-            Bili.Copilot 的独立维护版本。
-
-            安装：解压后右键以 PowerShell 运行 Install.ps1。
+          body: ${{ inputs.release_notes }}
           files: ${{ github.workspace }}\FinalPackages\*.zip
           prerelease: true
         env:
