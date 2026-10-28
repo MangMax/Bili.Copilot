@@ -98,7 +98,7 @@ public sealed partial class SettingsPageViewModel
     /// 是否在进度条上绘制片段标记.
     /// </summary>
     [ObservableProperty]
-    private bool _isSponsorBlockMarkerVisible = true;
+    public partial bool IsSponsorBlockMarkerVisible { get; set; }
 
     [ObservableProperty]
     private string _defaultDownloadPath;
