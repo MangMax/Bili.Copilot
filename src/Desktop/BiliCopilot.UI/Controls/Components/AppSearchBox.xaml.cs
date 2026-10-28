@@ -63,6 +63,12 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
     {
         if (args.ChosenSuggestion is SearchSuggestItemViewModel item)
         {
+            // UpdateTextOnSelect 已关闭，选择联想项时需要手动把展示文本写回输入框.
+            if (!string.IsNullOrEmpty(item.SearchContent))
+            {
+                ViewModel.Keyword = item.SearchContent;
+            }
+
             ViewModel.SearchCommand.Execute(item);
         }
         else if (!string.IsNullOrEmpty(args.QueryText))
