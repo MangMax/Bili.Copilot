@@ -17,6 +17,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
     private readonly ILogger<ChatMessageSectionDetailViewModel> _logger;
 
     private bool _preventLoadMore;
+    private int _requestedMessageCount = InitialMessageCount;
 
     [ObservableProperty]
     private string _lastMessage;
@@ -26,6 +27,12 @@ public sealed partial class ChatMessageSectionDetailViewModel
 
     [ObservableProperty]
     private bool _isLoading;
+
+    [ObservableProperty]
+    private bool _isLoadingOlder;
+
+    [ObservableProperty]
+    private bool _hasMoreMessages;
 
     [ObservableProperty]
     private bool _isEmpty;
@@ -43,7 +50,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
     /// 消息列表.
     /// </summary>
     [ObservableProperty]
-    private ObservableCollection<ChatMessageItemViewModel> _messages;
+    private ObservableCollection<ChatMessageItemViewModel> _messages = new();
 
     /// <summary>
     /// 请求滚动到底部.
