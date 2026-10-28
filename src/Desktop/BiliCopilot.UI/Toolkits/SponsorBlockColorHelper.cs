@@ -19,8 +19,15 @@ internal static class SponsorBlockColorHelper
 
     /// <summary>
     /// (资源键, 主题字典键) 到已解析画刷的缓存，<c>null</c> 表示该主题字典里没有这个键.
+    /// <para>
+    /// 只在 UI 线程访问：调用方是设置页控件与进度条，颜色变化事件也统一派发到 UI 队列.
+    /// </para>
     /// </summary>
     private static readonly Dictionary<(string Key, string ThemeKey), Brush?> _themeBrushCache = [];
+
+    private static readonly string[] LightThemeKeys = ["Light"];
+    private static readonly string[] DarkThemeKeys = ["Dark", "Default"];
+    private static readonly string[] HighContrastThemeKeys = ["HighContrast"];
 
     /// <summary>
     /// 把 0xAARRGGBB 转换为 <see cref="Color"/>.
@@ -197,12 +204,10 @@ internal static class SponsorBlockColorHelper
     {
         if (IsHighContrastInEffect)
         {
-            return ["HighContrast"];
+            return HighContrastThemeKeys;
         }
 
-        return theme == ElementTheme.Light
-            ? ["Light"]
-            : ["Dark", "Default"];
+        return theme == ElementTheme.Light ? LightThemeKeys : DarkThemeKeys;
     }
 
     /// <summary>

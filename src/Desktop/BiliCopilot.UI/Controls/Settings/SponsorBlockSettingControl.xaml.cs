@@ -112,7 +112,9 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
         var panel = new StackPanel { Spacing = 8 };
 
         panel.Children.Add(picker);
-        panel.Children.Add(CreateColorPreview(item));
+
+        var preview = CreateColorPreview(item);
+        panel.Children.Add(preview.Element);
 
         var resetButton = new Button
         {
@@ -155,13 +157,17 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
             flyout.Hide();
         };
 
+        // 用 Closed 而不是元素的 Unloaded 来退订：浮层每次点击都新建一个，
+        // 若 Unloaded 没有如期触发，处理器就会一直挂在长期存活的设置项上.
+        flyout.Closed += (_, _) => preview.Detach();
+
         flyout.ShowAt(button);
     }
 
     /// <summary>
     /// 构建浮层底部的实时预览：色块 + 颜色值文本，让调整透明度的结果当场可见.
     /// </summary>
-    private FrameworkElement CreateColorPreview(SponsorBlockCategorySettingViewModel item)
+    private (FrameworkElement Element, Action Detach) CreateColorPreview(SponsorBlockCategorySettingViewModel item)
     {
         var swatch = new Border
         {
@@ -193,9 +199,8 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
 
         // 浮层里的预览跟随选择器实时变化，而不是等关闭浮层后才在设置页看到结果.
         item.PropertyChanged += OnPreviewSourceChanged;
-        preview.Unloaded += (_, _) => item.PropertyChanged -= OnPreviewSourceChanged;
 
-        return preview;
+        return (preview, () => item.PropertyChanged -= OnPreviewSourceChanged);
 
         void OnPreviewSourceChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

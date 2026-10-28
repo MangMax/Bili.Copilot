@@ -39,8 +39,20 @@ public sealed partial class ChapterSegmentBar
 
     private readonly List<Rectangle> _markerVisuals = [];
     private readonly Dictionary<SponsorBlockCategory, Brush> _markerBrushes = [];
+
+    /// <summary>
+    /// 按类别缓存标记的绘制不透明度。读取一次要访问本地设置（枚举转字符串 + WinRT 调用），
+    /// 而重建标记会随窗口缩放高频触发，所以和画刷一样按类别缓存，颜色变化时一并丢弃.
+    /// </summary>
+    private readonly Dictionary<SponsorBlockCategory, double> _markerOpacities = [];
+
     private List<SponsorBlockMarker> _markers = [];
     private SponsorBlockMarker? _hoveredMarker;
+
+    /// <summary>
+    /// 当前是否显示标记。订阅设置变化时读取一次并缓存，避免每次重建都去读本地设置.
+    /// </summary>
+    private bool _markerVisible = true;
 
     /// <summary>
     /// 是否已订阅全局颜色变化事件.
@@ -70,7 +82,7 @@ public sealed partial class ChapterSegmentBar
     private void RebuildMarkers()
     {
         // 用户在设置里关掉标记后直接不绘制，与“把颜色调成透明”区分开.
-        if (!SponsorBlockMarkerSettings.IsVisible)
+        if (!_markerVisible)
         {
             ClearMarkers();
             return;
@@ -209,17 +221,28 @@ public sealed partial class ChapterSegmentBar
     /// 否则用户设的 100% 会显示成 78%，与设置页色块显示的透明度不一致.
     /// </para>
     /// </summary>
-    private static double ResolveMarkerOpacity(SponsorBlockCategory category)
-        => SponsorBlockColorHelper.IsCustomColorInEffect(category)
+    private double ResolveMarkerOpacity(SponsorBlockCategory category)
+    {
+        if (_markerOpacities.TryGetValue(category, out var opacity))
+        {
+            return opacity;
+        }
+
+        opacity = SponsorBlockColorHelper.IsCustomColorInEffect(category)
             ? MarkerHoverOpacity
             : MarkerDefaultOpacity;
+        _markerOpacities[category] = opacity;
+        return opacity;
+    }
 
     /// <summary>
     /// 主题变化后重绘标记：浅色 / 深色各用各的色板变体，缓存的画刷必须丢弃.
     /// </summary>
     private void OnActualThemeChanged(FrameworkElement sender, object args)
     {
+        // 高对比度切换可能改变「自定义色是否生效」，不透明度缓存一并丢弃.
         _markerBrushes.Clear();
+        _markerOpacities.Clear();
         RebuildMarkers();
     }
 
@@ -234,6 +257,7 @@ public sealed partial class ChapterSegmentBar
         DispatcherQueue.TryEnqueue(() =>
         {
             _markerBrushes.Clear();
+            _markerOpacities.Clear();
             RebuildMarkers();
         });
     }
@@ -253,8 +277,12 @@ public sealed partial class ChapterSegmentBar
         SponsorBlockMarkerSettings.Changed += OnSponsorBlockMarkerVisibleChanged;
 
         // 控件在卸载期间收不到颜色变化（例如浮层里的进度条只在悬浮时可见），
-        // 重新挂载时必须丢弃上一次留下的画刷缓存，否则会继续画旧颜色.
+        // 重新挂载时必须丢弃上一次留下的缓存，否则会继续画旧颜色.
         _markerBrushes.Clear();
+        _markerOpacities.Clear();
+
+        // 显示开关同理，重新挂载时读一次当前值.
+        _markerVisible = SponsorBlockMarkerSettings.IsVisible;
     }
 
     private void UnsubscribeColorSettings()
@@ -378,5 +406,9 @@ public sealed partial class ChapterSegmentBar
     /// 标记显示开关变化后重绘：关闭时清空、打开时按现有片段重建.
     /// </summary>
     private void OnSponsorBlockMarkerVisibleChanged(object? sender, EventArgs e)
-        => DispatcherQueue.TryEnqueue(RebuildMarkers);
+        => DispatcherQueue.TryEnqueue(() =>
+        {
+            _markerVisible = SponsorBlockMarkerSettings.IsVisible;
+            RebuildMarkers();
+        });
 }
