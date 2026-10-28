@@ -28,12 +28,18 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
     }
 
-    private void OnBoxGettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
+    private async void OnBoxGettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
     {
-        if (!Box.IsSuggestionListOpen)
+        if (Box.IsSuggestionListOpen)
         {
-            ViewModel.Keyword = " ";
-            ViewModel.Keyword = string.Empty;
+            return;
+        }
+
+        // 保留用户已输入的文字，只按当前文字刷新建议，并在有建议时展开列表。
+        await ViewModel.ReloadSuggestionsCommand.ExecuteAsync(default);
+        if (Box.FocusState != FocusState.Unfocused)
+        {
+            Box.IsSuggestionListOpen = ViewModel.Suggestion.Count > 0;
         }
     }
 
