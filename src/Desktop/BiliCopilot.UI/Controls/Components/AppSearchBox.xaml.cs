@@ -44,9 +44,11 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         {
             if (_isSubmittingQuery)
             {
-                // 输入法在点击联想项后提交组合文本时，不再重新拉取建议.
+                // 输入法在点击联想项后提交组合文本时，不再重新拉取建议，
+                // 并在当前事件之后再次关闭，避免 AutoSuggestBox 展开一个空弹层.
                 ViewModel.TryCancelSuggestCommand.Execute(default);
-                Box.IsSuggestionListOpen = false;
+                CloseSuggestionList();
+                CloseSuggestionListDeferred();
                 return;
             }
 
@@ -58,22 +60,42 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
     {
         if (_isSubmittingQuery || Box.IsSuggestionListOpen)
         {
+            if (_isSubmittingQuery)
+            {
+                CloseSuggestionList();
+            }
+
             return;
         }
 
         // 保留用户已输入的文字，只按当前文字刷新建议，并在有建议时展开列表。
         await ViewModel.ReloadSuggestionsCommand.ExecuteAsync(default);
-        if (!_isSubmittingQuery && Box.FocusState != FocusState.Unfocused)
+        if (_isSubmittingQuery)
+        {
+            CloseSuggestionList();
+        }
+        else if (Box.FocusState != FocusState.Unfocused)
         {
             Box.IsSuggestionListOpen = ViewModel.Suggestion.Count > 0;
         }
+    }
+
+    private void CloseSuggestionList()
+        => Box.IsSuggestionListOpen = false;
+
+    private void CloseSuggestionListDeferred()
+    {
+        // 文本变更后 AutoSuggestBox 可能在本事件之后再次展开空列表；
+        // 在高、低两个优先级各关一次，覆盖它内部的展开时机.
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, CloseSuggestionList);
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, CloseSuggestionList);
     }
 
     private void OnSuggestionSuppressionTimerTick(DispatcherQueueTimer sender, object args)
     {
         sender.Stop();
         _isSubmittingQuery = false;
-        Box.IsSuggestionListOpen = false;
+        CloseSuggestionList();
     }
 
     private void OnHotSearchFlyoutOpened(object sender, object e)
@@ -95,7 +117,8 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
     private void OnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
         _isSubmittingQuery = true;
-        Box.IsSuggestionListOpen = false;
+        CloseSuggestionList();
+        CloseSuggestionListDeferred();
         _suggestionSuppressionTimer.Stop();
         _suggestionSuppressionTimer.Start();
 
