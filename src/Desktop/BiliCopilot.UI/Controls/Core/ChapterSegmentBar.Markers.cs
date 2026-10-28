@@ -54,6 +54,11 @@ public sealed partial class ChapterSegmentBar
     private Rectangle? _hoveredMarkerVisual;
 
     /// <summary>
+    /// 当前高亮标记所属的类别，退出悬浮时据此还原该类别自己的基准不透明度.
+    /// </summary>
+    private SponsorBlockCategory _hoveredMarkerCategory;
+
+    /// <summary>
     /// 按下标记后挂起的点击候选：只有指针未超过拖动阈值就释放时才算点击.
     /// </summary>
     private SponsorBlockMarker? _pendingMarker;
@@ -102,8 +107,8 @@ public sealed partial class ChapterSegmentBar
             visual.Fill = ResolveMarkerBrush(marker.Category);
             visual.Width = marker.Width;
 
-            // 复用的视觉元素可能停留在上一次的悬浮态，重建时统一回到默认不透明度.
-            visual.Opacity = MarkerDefaultOpacity;
+            // 复用的视觉元素可能停留在上一次的悬浮态，重建时统一回到该类别的不透明度.
+            visual.Opacity = ResolveMarkerOpacity(marker.Category);
             Canvas.SetLeft(visual, marker.Left);
             Canvas.SetTop(visual, top);
         }
@@ -182,20 +187,24 @@ public sealed partial class ChapterSegmentBar
             return brush;
         }
 
-        // 自定义颜色是字面值，不随浅色 / 深色主题变化；未配置时才回退到主题画刷.
-        if (SponsorBlockColorSettings.Read(category) is uint argb)
-        {
-            brush = SponsorBlockColorHelper.CreateBrush(argb);
-        }
-        else
-        {
-            var fallback = SponsorBlockColorHelper.CreateBrush(SponsorBlockCategoryPalette.GetFallbackColor(category));
-            brush = ResolveResource(SponsorBlockCategoryPalette.GetBrushKey(category), fallback);
-        }
-
+        // 与设置页色块共用同一处解析，避免两边口径不一致.
+        brush = SponsorBlockColorHelper.ResolveCategoryBrush(category);
         _markerBrushes[category] = brush;
         return brush;
     }
+
+    /// <summary>
+    /// 该类别标记的绘制不透明度.
+    /// <para>
+    /// 主题色板是不透明基色，统一叠一层半透明以免盖住缓冲与已播放进度；
+    /// 自定义颜色由用户在取色器里自己决定透明度，不再额外衰减，
+    /// 否则用户设的 100% 会显示成 78%，与设置页色块显示的透明度不一致.
+    /// </para>
+    /// </summary>
+    private static double ResolveMarkerOpacity(SponsorBlockCategory category)
+        => SponsorBlockColorHelper.IsCustomColorInEffect(category)
+            ? MarkerHoverOpacity
+            : MarkerDefaultOpacity;
 
     /// <summary>
     /// 设置页修改颜色后重绘标记：先丢弃按类别缓存的画刷，再按现有片段重建视觉.
@@ -309,7 +318,8 @@ public sealed partial class ChapterSegmentBar
     {
         if (_hoveredMarkerVisual is not null)
         {
-            _hoveredMarkerVisual.Opacity = MarkerDefaultOpacity;
+            // 还原上一个标记：回到它所属类别自己的基准不透明度，而不是统一按主题色处理.
+            _hoveredMarkerVisual.Opacity = ResolveMarkerOpacity(_hoveredMarkerCategory);
             _hoveredMarkerVisual = null;
         }
 
@@ -327,6 +337,7 @@ public sealed partial class ChapterSegmentBar
         var visual = _markerVisuals[index];
         visual.Opacity = MarkerHoverOpacity;
         _hoveredMarkerVisual = visual;
+        _hoveredMarkerCategory = value.Category;
     }
 
     private bool TryGetSponsorSegment(int index, out SponsorBlockSegment segment)

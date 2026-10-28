@@ -43,6 +43,29 @@ public class SponsorBlockColorParserTests
     }
 
     [Theory]
+    [InlineData(0x7F3366CCu)]
+    [InlineData(0x00123456u)]
+    [InlineData(0x80FFFFFFu)]
+    public void GetDisplayString_KeepsAlphaWhenTranslucent(uint argb)
+        => Assert.Equal(SponsorBlockColorParser.Format(argb), SponsorBlockColorParser.ToDisplayString(argb));
+
+    [Theory]
+    [InlineData(0xFF000000u, "#000000")]
+    [InlineData(0xFFD88CA8u, "#D88CA8")]
+    [InlineData(0xFFFFFFFFu, "#FFFFFF")]
+    public void GetDisplayString_DropsOpaqueAlphaPrefix(uint argb, string expected)
+        => Assert.Equal(expected, SponsorBlockColorParser.ToDisplayString(argb));
+
+    [Fact]
+    public void GetDisplayString_OpaqueAndTranslucent_AreDistinguishable()
+    {
+        // 同一组 RGB 下，带透明度时文本必须与不透明时不同，否则用户看不出自己调过透明度.
+        Assert.NotEqual(
+            SponsorBlockColorParser.ToDisplayString(0xFF3366CCu),
+            SponsorBlockColorParser.ToDisplayString(0x803366CCu));
+    }
+
+    [Theory]
     [InlineData(0xFF000000u)]
     [InlineData(0xFFD88CA8u)]
     [InlineData(0x7F3366CCu)]

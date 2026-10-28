@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using System.Collections.ObjectModel;
@@ -32,7 +33,9 @@ public sealed partial class SettingsPageViewModel
                 SponsorBlockBehaviorSettings.Write,
                 SponsorBlockColorSettings.Read(category),
                 SponsorBlockColorSettings.Write,
-                SponsorBlockColorSettings.Reset));
+                SponsorBlockColorSettings.Reset,
+                SponsorBlockColorHelper.ResolveThemeColor,
+                ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockColorDefault)));
         }
     }
 }

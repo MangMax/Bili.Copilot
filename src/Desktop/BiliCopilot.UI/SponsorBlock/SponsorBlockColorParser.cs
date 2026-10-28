@@ -27,6 +27,20 @@ public static class SponsorBlockColorParser
         => "#" + argb.ToString("X8", CultureInfo.InvariantCulture);
 
     /// <summary>
+    /// 把 ARGB 颜色格式化为设置页展示用的短文本.
+    /// <para>
+    /// 完全不透明时省略 <c>FF</c> 前缀，只显示 <c>#RRGGBB</c>；
+    /// 带透明度时保留 <c>#AARRGGBB</c>，让透明度在文字上也能看出来.
+    /// </para>
+    /// </summary>
+    /// <param name="argb">0xAARRGGBB 格式的颜色值.</param>
+    /// <returns>设置页色块旁显示的十六进制文本.</returns>
+    public static string ToDisplayString(uint argb)
+        => argb >> 24 == 0xFFu
+            ? "#" + (argb & 0xFFFFFFu).ToString("X6", CultureInfo.InvariantCulture)
+            : Format(argb);
+
+    /// <summary>
     /// 解析 <c>#AARRGGBB</c> 字符串.
     /// </summary>
     /// <param name="value">待解析的字符串，允许首尾空白.</param>

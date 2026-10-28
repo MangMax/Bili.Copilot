@@ -52,21 +52,34 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="items:SponsorBlockCategorySettingViewModel">
                         <base:SettingsCard Header="{x:Bind DisplayName}" Style="{StaticResource DefaultSettingsExpanderItemStyle}">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
+                            <!--
+                                用 Grid 而不是横向 StackPanel：StackPanel 会按子元素自身高度排布，
+                                按钮与下拉框永远各算各的；Grid 让两者落在同一行并各自纵向撑满，
+                                高度差会自动抹平，控件换主题、换字号时也不会再错开.
+                            -->
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
                                 <!--
-                                    紧凑色块按钮：点击后由代码后台弹出 ColorPicker。
-                                    未设置自定义颜色时显示中性色块和「默认」文字，避免看起来像空白按钮；
-                                    使用主题色时也保持固定宽度，切换自定义颜色不会把右侧下拉框挤走.
+                                    色块按钮：点击后由代码后台弹出 ColorPicker。
+                                    色块始终按该类别当前生效的颜色绘制（默认即主题色板色，不是空白占位），
+                                    右侧文本也始终存在：未自定义时显示「默认」，自定义后换成颜色值，
+                                    因此两种状态都有说明，按钮宽度也不会因状态切换而跳动.
+                                    纵向 Stretch 与下拉框对齐，两者内容区高度一致，边框也自然齐平.
                                 -->
                                 <Button
-                                    Padding="6,4"
+                                    VerticalAlignment="Stretch"
+                                    Padding="8,4"
                                     AutomationProperties.AutomationId="{x:Bind ColorAutomationId}"
                                     AutomationProperties.HelpText="{ext:Locale Name=SponsorBlockColor}"
                                     AutomationProperties.Name="{x:Bind DisplayName}"
                                     Click="OnColorButtonClick"
                                     CornerRadius="6"
                                     ToolTipService.ToolTip="{ext:Locale Name=SponsorBlockColor}">
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <!--  底层中性块衬出透明度，上层按生效颜色绘制，带 alpha 时能直接看出来  -->
                                         <Grid Width="16" Height="16">
                                             <Border
                                                 Background="{ThemeResource ControlFillColorSecondaryBrush}"
@@ -74,19 +87,17 @@
                                                 BorderThickness="1"
                                                 CornerRadius="4" />
                                             <Border
-                                                Background="{x:Bind CustomColor, Mode=OneWay, Converter={StaticResource SponsorBlockColorBrushConverter}}"
+                                                Background="{x:Bind EffectiveColor, Mode=OneWay, Converter={StaticResource SponsorBlockColorBrushConverter}}"
                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                 BorderThickness="1"
-                                                CornerRadius="4"
-                                                Visibility="{x:Bind HasCustomColor, Mode=OneWay}" />
+                                                CornerRadius="4" />
                                         </Grid>
-                                        <Border Width="28" VerticalAlignment="Center">
-                                            <TextBlock
-                                                FontSize="12"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Text="{ext:Locale Name=SponsorBlockColorDefault}"
-                                                Visibility="{x:Bind IsUsingDefaultColor, Mode=OneWay}" />
-                                        </Border>
+                                        <TextBlock
+                                            MinWidth="48"
+                                            VerticalAlignment="Center"
+                                            FontSize="12"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Text="{x:Bind ColorDisplayText, Mode=OneWay}" />
                                     </StackPanel>
                                 </Button>
                                 <!--
@@ -95,6 +106,8 @@
                                     且回写只在值确实不同于已保存值时发生.
                                 -->
                                 <ComboBox
+                                    x:Name="BehaviorSelector"
+                                    Grid.Column="1"
                                     AutomationProperties.AutomationId="{x:Bind Category}"
                                     AutomationProperties.Name="{x:Bind DisplayName}"
                                     MinWidth="140"
@@ -108,7 +121,7 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                            </StackPanel>
+                            </Grid>
                         </base:SettingsCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
