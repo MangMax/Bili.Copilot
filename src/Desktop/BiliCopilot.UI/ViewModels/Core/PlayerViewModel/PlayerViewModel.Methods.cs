@@ -1027,10 +1027,14 @@ public sealed partial class PlayerViewModel
                     }
                 }
 
-                if (Subtitles.Count > 0 && Subtitles.Any(p => !p.IsAI))
+                if (Subtitles.Count > 0)
                 {
-                    var firstNonAi = Subtitles.First(p => !p.IsAI);
-                    firstNonAi.SelectCommand.Execute(default);
+                    var candidates = Subtitles.Select(p => (p.Name, p.IsAI)).ToList();
+                    var preferredIndex = SubtitlePreference.SelectPreferredIndex(candidates);
+                    if (preferredIndex >= 0)
+                    {
+                        Subtitles[preferredIndex].SelectCommand.Execute(default);
+                    }
                 }
 
                 IsSubtitleEmpty = Subtitles.Count == 0;
