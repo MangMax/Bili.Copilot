@@ -59,6 +59,9 @@ public sealed partial class ChatSessionBody : ChatMessageControlBase
 
         if (ViewModel is not null)
         {
+            // 控件可能经历卸载/重新加载，重新挂接滚动请求，避免事件丢失.
+            ViewModel.RequestScrollToBottom -= OnRequestScrollToBottom;
+            ViewModel.RequestScrollToBottom += OnRequestScrollToBottom;
             StartScrollToBottom();
         }
     }
@@ -103,7 +106,7 @@ public sealed partial class ChatSessionBody : ChatMessageControlBase
     }
 
     private void OnRequestScrollToBottom(object? sender, EventArgs e)
-        => StartScrollToBottom();
+        => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, StartScrollToBottom);
 
     private void OnMessageViewChanged(ScrollView sender, object args)
         => _ = TryLoadOlderMessagesAsync();

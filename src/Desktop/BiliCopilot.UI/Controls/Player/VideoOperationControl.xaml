@@ -19,7 +19,7 @@
         <StackPanel Orientation="Horizontal" Spacing="16">
             <local:LikeButton
                 Command="{x:Bind ViewModel.ToggleLikeCommand, Mode=OneWay}"
-                IsCompactOverlay="{x:Bind ViewModel.Parent.Player.IsCompactOverlay, Mode=OneWay}"
+                IsCompactOverlay="{x:Bind ViewModel.Parent.Player.IsCompactOverlay, Mode=OneWay, FallbackValue=False}"
                 IsLiked="{x:Bind ViewModel.IsLiked, Mode=OneWay}"
                 Tip="{x:Bind ViewModel.LikeCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
                 TripleCommand="{x:Bind ViewModel.TripleCommand, Mode=OneWay}" />
