@@ -10,11 +10,19 @@ namespace BiliCopilot.UI.Controls.Player;
 /// </summary>
 public sealed partial class LikeButton : LayoutUserControlBase
 {
+    private bool _isTripleTipShown;
+
     /// <summary>
     /// <see cref="IsLiked"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsLikedProperty =
-        DependencyProperty.Register(nameof(IsLiked), typeof(bool), typeof(LikeButton), new PropertyMetadata(default));
+        DependencyProperty.Register(nameof(IsLiked), typeof(bool), typeof(LikeButton), new PropertyMetadata(default, OnIsLikedChanged));
+
+    /// <summary>
+    /// <see cref="IsCompactOverlay"/> 的依赖属性.
+    /// </summary>
+    public static readonly DependencyProperty IsCompactOverlayProperty =
+        DependencyProperty.Register(nameof(IsCompactOverlay), typeof(bool), typeof(LikeButton), new PropertyMetadata(default, OnIsCompactOverlayChanged));
 
     /// <summary>
     /// <see cref="Tip"/> 的依赖属性.
@@ -49,6 +57,15 @@ public sealed partial class LikeButton : LayoutUserControlBase
     }
 
     /// <summary>
+    /// 是否处于小窗模式.
+    /// </summary>
+    public bool IsCompactOverlay
+    {
+        get => (bool)GetValue(IsCompactOverlayProperty);
+        set => SetValue(IsCompactOverlayProperty, value);
+    }
+
+    /// <summary>
     /// 提示文本.
     /// </summary>
     public string Tip
@@ -75,10 +92,44 @@ public sealed partial class LikeButton : LayoutUserControlBase
         set => SetValue(TripleCommandProperty, value);
     }
 
+    /// <inheritdoc/>
+    protected override void OnControlUnloaded()
+    {
+        CloseTripleTip();
+        _isTripleTipShown = false;
+    }
+
+    private static void OnIsLikedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is LikeButton button && e.NewValue is false)
+        {
+            button._isTripleTipShown = false;
+        }
+    }
+
+    private static void OnIsCompactOverlayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is LikeButton button && e.NewValue is true)
+        {
+            button.CloseTripleTip();
+        }
+    }
+
+    private void CloseTripleTip()
+    {
+        if (TripleTip.IsOpen)
+        {
+            TripleTip.IsOpen = false;
+        }
+    }
+
     private void OnLikeButtonClick(object sender, RoutedEventArgs e)
     {
-        if (!IsLiked)
+        var canOpen = !IsLiked && !_isTripleTipShown;
+        CloseTripleTip();
+        if (canOpen)
         {
+            _isTripleTipShown = true;
             TripleTip.IsOpen = true;
         }
     }
