@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.SponsorBlock;
 using Microsoft.UI.Xaml.Media;
@@ -24,6 +24,11 @@ internal static class SponsorBlockColorHelper
     /// </para>
     /// </summary>
     private static readonly Dictionary<(string Key, string ThemeKey), Brush?> _themeBrushCache = [];
+
+    /// <summary>
+    /// 合并字典的遍历深度上限.
+    /// </summary>
+    private const int MaxThemeDictionaryDepth = 16;
 
     private static readonly string[] LightThemeKeys = ["Light"];
     private static readonly string[] DarkThemeKeys = ["Dark", "Default"];
@@ -104,10 +109,9 @@ internal static class SponsorBlockColorHelper
     /// </summary>
     /// <param name="key">资源键.</param>
     /// <param name="theme">调用方所在元素的实际主题.</param>
-    /// <param name="fallback">资源缺失时的兜底画刷.</param>
-    /// <returns>该主题下的画刷.</returns>
-    public static Brush ResolveThemedResource(string key, ElementTheme theme, Brush fallback)
-        => FindThemedBrush(key, theme) ?? fallback;
+    /// <returns>该主题下的画刷；资源缺失时返回 <c>null</c>，由调用方决定兜底值.</returns>
+    public static Brush? ResolveThemedResource(string key, ElementTheme theme)
+        => FindThemedBrush(key, theme);
 
     /// <summary>
     /// 当前是否处于高对比度模式：此时标记由系统高亮色决定，与是否自定义无关.
@@ -167,9 +171,15 @@ internal static class SponsorBlockColorHelper
         return null;
     }
 
-    private static Brush? FindInThemeDictionaries(ResourceDictionary? dictionary, string key, string themeKey)
+    private static Brush? FindInThemeDictionaries(
+        ResourceDictionary? dictionary,
+        string key,
+        string themeKey,
+        int depth = 0)
     {
-        if (dictionary is null)
+        // 合并字典理论上不会成环，但遍历是递归的，加个深度上限兜底，
+        // 万一哪天资源互相引用也不会把 UI 线程栈打爆.
+        if (dictionary is null || depth > MaxThemeDictionaryDepth)
         {
             return null;
         }
@@ -184,7 +194,7 @@ internal static class SponsorBlockColorHelper
 
         foreach (var merged in dictionary.MergedDictionaries)
         {
-            if (FindInThemeDictionaries(merged, key, themeKey) is Brush nested)
+            if (FindInThemeDictionaries(merged, key, themeKey, depth + 1) is Brush nested)
             {
                 return nested;
             }
