@@ -1,3 +1,5 @@
+// Copyright (c) Bili Copilot. All rights reserved.
+
 using BiliCopilot.UI.Toolkits;
 
 namespace BiliCopilot.UI.Tests;
@@ -109,4 +111,28 @@ public class SubtitlePreferenceTests
 
         Assert.Equal(1, index);
     }
+
+    [Fact]
+    public void SelectPreferredIndex_GenericOverload_UsesProvidedPropertyAccessors()
+    {
+        var metas = new SubtitleMetaStub[]
+        {
+            new("English", true),
+            new("中文（简体）", false),
+        };
+
+        var index = SubtitlePreference.SelectPreferredIndex(metas, p => p.LanguageName, p => p.IsAI);
+
+        Assert.Equal(1, index);
+    }
+
+    [Fact]
+    public void SelectPreferredIndex_GenericOverload_EmptyListReturnsMinusOne()
+    {
+        var index = SubtitlePreference.SelectPreferredIndex<SubtitleMetaStub>([], p => p.LanguageName, p => p.IsAI);
+
+        Assert.Equal(-1, index);
+    }
+
+    private sealed record SubtitleMetaStub(string? LanguageName, bool IsAI);
 }

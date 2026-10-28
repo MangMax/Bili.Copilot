@@ -45,7 +45,7 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
     protected override void OnPointerWheelChanged(PointerRoutedEventArgs e)
     {
         var distance = e.GetCurrentPoint(this).Properties.MouseWheelDelta;
-        if (!AppToolkit.IsShiftPressed() && !AppToolkit.IsCtrlPressed() && !AppToolkit.IsAltPressed())
+        if (AppToolkit.NotModifierKeyPressed())
         {
             if (ViewModel?.Client is not null)
             {

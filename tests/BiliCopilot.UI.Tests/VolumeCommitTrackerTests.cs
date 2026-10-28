@@ -1,3 +1,5 @@
+// Copyright (c) Bili Copilot. All rights reserved.
+
 using BiliCopilot.UI.Toolkits;
 
 namespace BiliCopilot.UI.Tests;
@@ -13,7 +15,6 @@ public class VolumeCommitTrackerTests
         var tracker = new VolumeCommitTracker();
 
         Assert.False(tracker.TryTakePending(out _));
-        Assert.False(tracker.HasPending);
     }
 
     [Fact]
@@ -26,7 +27,7 @@ public class VolumeCommitTrackerTests
 
         Assert.True(tracker.TryTakePending(out var volume));
         Assert.Equal(80, volume);
-        Assert.False(tracker.HasPending);
+        Assert.False(tracker.TryTakePending(out _));
     }
 
     [Fact]
