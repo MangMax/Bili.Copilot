@@ -22,7 +22,21 @@ internal static class SubtitlePreference
     /// <param name="metas">字幕元数据，包含语言名称与是否为 AI 字幕。</param>
     /// <returns>首选字幕在列表中的索引；没有可用字幕时为 -1。</returns>
     public static int SelectPreferredIndex(IReadOnlyList<(string LanguageName, bool IsAI)> metas)
+        => SelectPreferredIndex(metas, p => p.LanguageName, p => p.IsAI);
+
+    /// <summary>
+    /// 按语言偏好选出字幕索引，空列表返回 -1。
+    /// </summary>
+    /// <typeparam name="T">字幕元数据类型。</typeparam>
+    /// <param name="metas">字幕元数据列表。</param>
+    /// <param name="getLanguageName">读取字幕语言名称。</param>
+    /// <param name="getIsAI">读取字幕是否为 AI 生成。</param>
+    /// <returns>首选字幕在列表中的索引；没有可用字幕时为 -1。</returns>
+    public static int SelectPreferredIndex<T>(IReadOnlyList<T> metas, Func<T, string?> getLanguageName, Func<T, bool> getIsAI)
     {
+        ArgumentNullException.ThrowIfNull(getLanguageName);
+        ArgumentNullException.ThrowIfNull(getIsAI);
+
         if (metas is null || metas.Count == 0)
         {
             return -1;
@@ -32,7 +46,7 @@ internal static class SubtitlePreference
         var bestRank = FallbackRank;
         for (var i = 0; i < metas.Count; i++)
         {
-            var rank = GetRank(metas[i].LanguageName, metas[i].IsAI);
+            var rank = GetRank(getLanguageName(metas[i]), getIsAI(metas[i]));
             if (rank < bestRank)
             {
                 bestRank = rank;

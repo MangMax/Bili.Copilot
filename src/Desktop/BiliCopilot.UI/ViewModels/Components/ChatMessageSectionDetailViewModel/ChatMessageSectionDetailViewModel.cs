@@ -22,7 +22,6 @@ namespace BiliCopilot.UI.ViewModels.Components;
 public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<ChatSession>, IMessageSectionDetailViewModel
 {
     private const int InitialMessageCount = 100;
-    private const int InitialLoadTarget = 500;
     private const int MaxMessageCount = 2000;
 
     /// <summary>
@@ -84,7 +83,6 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
             var msg = await _service.SendChatMessageAsync(InputText, Data.User);
             if (msg is not null)
             {
-                Messages ??= new();
                 if (!Messages.Any(p => p.Data.Key == msg.Key))
                 {
                     Messages.Add(new ChatMessageItemViewModel(msg));
@@ -181,7 +179,6 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
         }
         catch (Exception ex)
         {
-            HasMoreMessages = false;
             _logger.LogError(ex, "加载更早的聊天消息时失败");
             this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToLoadChatMessages), InfoType.Error));
         }
@@ -201,51 +198,13 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
         try
         {
             IsLoading = true;
-            var merged = new List<ChatMessage>();
-            var requested = InitialMessageCount;
-            var previousCount = 0;
-            var hasMore = false;
-
-            while (true)
-            {
-                var (messages, _, pageHasMore) = await _service.GetChatMessagesAsync(Data.User, requested);
-                if (messages is null)
-                {
-                    break;
-                }
-
-                var result = ChatMessageMerger.Merge(merged, messages, p => p.Key);
-                merged = result.Items.ToList();
-                hasMore = pageHasMore;
-
-                if (!hasMore || merged.Count >= InitialLoadTarget)
-                {
-                    break;
-                }
-
-                // 服务端可能限制单次返回数量：请求更大但消息数不再增长时停止，避免无限循环.
-                if (merged.Count <= previousCount)
-                {
-                    hasMore = false;
-                    break;
-                }
-
-                previousCount = merged.Count;
-                var next = Math.Min(MaxMessageCount, Math.Max(requested * 2, merged.Count + InitialMessageCount));
-                if (next <= requested)
-                {
-                    hasMore = false;
-                    break;
-                }
-
-                requested = next;
-            }
-
-            _requestedMessageCount = requested;
-            HasMoreMessages = hasMore && requested < MaxMessageCount;
-            ReplaceMessages(merged);
-            UpdateLatestMessage(merged);
-            if (merged.Count > 0)
+            var (messages, _, pageHasMore) = await _service.GetChatMessagesAsync(Data.User, InitialMessageCount);
+            IReadOnlyList<ChatMessage> page = messages ?? [];
+            _requestedMessageCount = InitialMessageCount;
+            HasMoreMessages = pageHasMore && InitialMessageCount < MaxMessageCount;
+            ReplaceMessages(page);
+            UpdateLatestMessage(page);
+            if (page.Count > 0)
             {
                 RequestScrollToBottom?.Invoke(this, EventArgs.Empty);
             }
@@ -259,13 +218,12 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
         finally
         {
             IsLoading = false;
-            IsEmpty = Messages?.Count == 0;
+            IsEmpty = Messages.Count == 0;
         }
     }
 
     private void ReplaceMessages(IReadOnlyList<ChatMessage> messages)
     {
-        Messages ??= new();
         Messages.Clear();
         foreach (var item in messages)
         {

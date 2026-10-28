@@ -165,8 +165,7 @@ public sealed partial class SubtitleViewModel : ViewModelBase
             return default;
         }
 
-        var candidates = Metas.Select(p => (p.LanguageName, p.IsAI)).ToList();
-        var preferredIndex = SubtitlePreference.SelectPreferredIndex(candidates);
+        var preferredIndex = SubtitlePreference.SelectPreferredIndex(Metas, p => p.LanguageName, p => p.IsAI);
         return preferredIndex >= 0 ? Metas[preferredIndex] : default;
     }
 

@@ -1029,8 +1029,7 @@ public sealed partial class PlayerViewModel
 
                 if (Subtitles.Count > 0)
                 {
-                    var candidates = Subtitles.Select(p => (p.Name, p.IsAI)).ToList();
-                    var preferredIndex = SubtitlePreference.SelectPreferredIndex(candidates);
+                    var preferredIndex = SubtitlePreference.SelectPreferredIndex(Subtitles, p => p.Name, p => p.IsAI);
                     if (preferredIndex >= 0)
                     {
                         Subtitles[preferredIndex].SelectCommand.Execute(default);

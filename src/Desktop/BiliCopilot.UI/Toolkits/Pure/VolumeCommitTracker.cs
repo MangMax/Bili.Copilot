@@ -14,11 +14,6 @@ internal sealed class VolumeCommitTracker
     private double? _pendingVolume;
 
     /// <summary>
-    /// 是否有等待提交的音量。
-    /// </summary>
-    public bool HasPending => _pendingVolume.HasValue;
-
-    /// <summary>
     /// 记录一次音量变更，后记录的值覆盖先前的值。
     /// </summary>
     /// <param name="volume">最新的播放器音量。</param>
