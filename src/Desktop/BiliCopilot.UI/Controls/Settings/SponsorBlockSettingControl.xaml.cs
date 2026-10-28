@@ -1,7 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
-using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -18,6 +17,27 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
     /// Initializes a new instance of the <see cref="SponsorBlockSettingControl"/> class.
     /// </summary>
     public SponsorBlockSettingControl() => InitializeComponent();
+
+    /// <inheritdoc/>
+    protected override void OnControlLoaded() => ViewModel.ThemeChanged += OnThemeChanged;
+
+    /// <inheritdoc/>
+    protected override void OnControlUnloaded() => ViewModel.ThemeChanged -= OnThemeChanged;
+
+    /// <summary>
+    /// 主题切换后让未自定义的类别重新解析主题色板颜色.
+    /// <para>
+    /// <c>EffectiveColor</c> 是计算属性，主题字典换了以后不会自己通知，
+    /// 因此需要在这里显式刷新一次.
+    /// </para>
+    /// </summary>
+    private void OnThemeChanged(object? sender, EventArgs e)
+    {
+        foreach (var item in ViewModel.SponsorBlockCategorySettings)
+        {
+            item.RefreshThemeColor();
+        }
+    }
 
     /// <summary>
     /// 下拉框创建完成后，把选中项对齐到该类别已保存的行为.
@@ -74,13 +94,21 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
         // 初始颜色在订阅事件之前赋值，避免打开浮层时把主题色误存成自定义颜色.
         var picker = new ColorPicker
         {
-            IsAlphaEnabled = false,
-            IsAlphaSliderVisible = false,
-            IsAlphaTextInputVisible = false,
+            // 支持调节透明度：自定义颜色可以带 alpha，进度条标记会按所选透明度呈现.
+            IsAlphaEnabled = true,
+            IsAlphaSliderVisible = true,
+            IsAlphaTextInputVisible = true,
             IsColorChannelTextInputVisible = true,
             IsHexInputVisible = true,
-            Color = ResolvePickerColor(item),
+            Color = SponsorBlockColorHelper.ToColor(item.EffectiveColor),
         };
+
+        // 浮层宽度交给内容自行撑开：ColorPicker 模板自带 MinWidth 312，
+        // 之前写死宽度会让浮层比取色面板更窄，右侧的透明度与颜色通道输入被裁掉.
+        var panel = new StackPanel { Spacing = 8 };
+
+        panel.Children.Add(picker);
+        panel.Children.Add(CreateColorPreview(item));
 
         var resetButton = new Button
         {
@@ -92,12 +120,7 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
             resetButton,
             ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockColorReset));
 
-        var panel = new StackPanel
-        {
-            Width = 280,
-            Spacing = 8,
-            Children = { picker, resetButton },
-        };
+        panel.Children.Add(resetButton);
 
         var flyout = new Flyout
         {
@@ -105,7 +128,7 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
             Placement = FlyoutPlacementMode.BottomEdgeAlignedRight,
         };
 
-        picker.ColorChanged += (_, args) => item.SetCustomColor(ToOpaqueArgb(args.NewColor));
+        picker.ColorChanged += (_, args) => item.SetCustomColor(SponsorBlockColorHelper.ToArgb(args.NewColor));
         resetButton.Click += (_, _) =>
         {
             item.ResetColor();
@@ -116,30 +139,51 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
     }
 
     /// <summary>
-    /// 解析颜色选择器的初始颜色：优先自定义颜色，否则取该类别的主题画刷.
+    /// 构建浮层底部的实时预览：色块 + 颜色值文本，让调整透明度的结果当场可见.
     /// </summary>
-    private static Windows.UI.Color ResolvePickerColor(SponsorBlockCategorySettingViewModel item)
+    private FrameworkElement CreateColorPreview(SponsorBlockCategorySettingViewModel item)
     {
-        if (item.CustomColor is uint argb)
+        var swatch = new Border
         {
-            return SponsorBlockColorHelper.ToColor(argb);
-        }
+            Width = 24,
+            Height = 24,
+            CornerRadius = new CornerRadius(4),
+            BorderThickness = new Thickness(1),
+            BorderBrush = (Brush)Application.Current.Resources["ControlStrokeColorDefaultBrush"],
+            Background = SponsorBlockColorHelper.CreateBrush(item.EffectiveColor),
+        };
 
-        if (Application.Current?.Resources.TryGetValue(SponsorBlockCategoryPalette.GetBrushKey(item.Category), out var value) == true
-            && value is SolidColorBrush brush)
+        var text = new TextBlock
         {
-            return brush.Color;
-        }
+            VerticalAlignment = VerticalAlignment.Center,
+            FontSize = 12,
+            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+            Text = item.ColorDisplayText,
+        };
 
-        return SponsorBlockColorHelper.ToColor(SponsorBlockCategoryPalette.GetFallbackColor(item.Category));
+        var preview = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 8,
+            Children = { swatch, text },
+        };
+
+        // 浮层里的预览跟随选择器实时变化，而不是等关闭浮层后才在设置页看到结果.
+        item.PropertyChanged += OnPreviewSourceChanged;
+        preview.Unloaded += (_, _) => item.PropertyChanged -= OnPreviewSourceChanged;
+
+        return preview;
+
+        void OnPreviewSourceChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is not (nameof(SponsorBlockCategorySettingViewModel.EffectiveColor)
+                or nameof(SponsorBlockCategorySettingViewModel.ColorDisplayText)))
+            {
+                return;
+            }
+
+            swatch.Background = SponsorBlockColorHelper.CreateBrush(item.EffectiveColor);
+            text.Text = item.ColorDisplayText;
+        }
     }
-
-    /// <summary>
-    /// 标记统一以全局不透明度呈现，颜色本身强制不透明，避免选择器带回的半透明值再叠一层.
-    /// </summary>
-    private static uint ToOpaqueArgb(Windows.UI.Color color)
-        => 0xFF000000u
-        | ((uint)color.R << 16)
-        | ((uint)color.G << 8)
-        | color.B;
 }

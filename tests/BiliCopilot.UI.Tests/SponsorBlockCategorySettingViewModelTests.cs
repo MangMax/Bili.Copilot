@@ -213,6 +213,8 @@ public class SponsorBlockCategorySettingViewModelTests
                 nameof(SponsorBlockCategorySettingViewModel.CustomColor),
                 nameof(SponsorBlockCategorySettingViewModel.HasCustomColor),
                 nameof(SponsorBlockCategorySettingViewModel.IsUsingDefaultColor),
+                nameof(SponsorBlockCategorySettingViewModel.EffectiveColor),
+                nameof(SponsorBlockCategorySettingViewModel.ColorDisplayText),
             ],
             changes);
     }
@@ -264,6 +266,8 @@ public class SponsorBlockCategorySettingViewModelTests
                 nameof(SponsorBlockCategorySettingViewModel.CustomColor),
                 nameof(SponsorBlockCategorySettingViewModel.HasCustomColor),
                 nameof(SponsorBlockCategorySettingViewModel.IsUsingDefaultColor),
+                nameof(SponsorBlockCategorySettingViewModel.EffectiveColor),
+                nameof(SponsorBlockCategorySettingViewModel.ColorDisplayText),
             ],
             changes);
     }
@@ -291,11 +295,88 @@ public class SponsorBlockCategorySettingViewModelTests
         Assert.Equal("SponsorBlockColorReset_PoiHighlight", setting.ColorResetAutomationId);
     }
 
+    [Fact]
+    public void EffectiveColor_WhenDefault_ComesFromThemeProvider()
+    {
+        // 未自定义时色块必须显示实际会用的默认色，而不是空占位.
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, themeColor: 0xFF123456);
+
+        Assert.Equal(0xFF123456u, setting.EffectiveColor);
+    }
+
+    [Fact]
+    public void EffectiveColor_WhenCustom_PrefersCustomColor()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, 0xFFAABBCC, themeColor: 0xFF123456);
+
+        Assert.Equal(0xFFAABBCCu, setting.EffectiveColor);
+    }
+
+    [Fact]
+    public void EffectiveColor_WithoutThemeProvider_FallsBackToPaletteDefault()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor);
+
+        Assert.Equal(SponsorBlockCategoryPalette.GetFallbackColor(SponsorBlockCategory.Sponsor), setting.EffectiveColor);
+    }
+
+    [Fact]
+    public void ColorDisplayText_WhenDefault_ShowsDefaultLabel()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, defaultColorText: "默认");
+
+        // 两种状态右侧都有文本，按钮宽度不会因切换而跳动.
+        Assert.Equal("默认", setting.ColorDisplayText);
+    }
+
+    [Fact]
+    public void ColorDisplayText_WhenCustom_ShowsHexValue()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, 0xFF3366CC, defaultColorText: "默认");
+
+        Assert.Equal("#3366CC", setting.ColorDisplayText);
+    }
+
+    [Fact]
+    public void ColorDisplayText_WhenCustomTranslucent_ShowsAlpha()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, 0x803366CC, defaultColorText: "默认");
+
+        Assert.Equal("#803366CC", setting.ColorDisplayText);
+    }
+
+    [Fact]
+    public void RefreshThemeColor_WhenDefault_RaisesEffectiveColorOnly()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, themeColor: 0xFF123456);
+        var changes = new List<string?>();
+        setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
+
+        setting.RefreshThemeColor();
+
+        Assert.Equal([nameof(SponsorBlockCategorySettingViewModel.EffectiveColor)], changes);
+    }
+
+    [Fact]
+    public void RefreshThemeColor_WhenCustom_DoesNotRaise()
+    {
+        // 自定义颜色是字面值，不受主题影响，切换主题不需要刷新.
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, 0xFFAABBCC, themeColor: 0xFF123456);
+        var changes = new List<string?>();
+        setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
+
+        setting.RefreshThemeColor();
+
+        Assert.Empty(changes);
+    }
+
     private static SponsorBlockCategorySettingViewModel CreateColorSetting(
         SponsorBlockCategory category,
         uint? customColor = null,
         List<(SponsorBlockCategory Category, uint Color)>? colorWrites = null,
-        List<SponsorBlockCategory>? resetWrites = null)
+        List<SponsorBlockCategory>? resetWrites = null,
+        uint? themeColor = null,
+        string defaultColorText = "")
         => new(
             category,
             SponsorBlockBehavior.None,
@@ -303,7 +384,9 @@ public class SponsorBlockCategorySettingViewModelTests
             (_, _) => { },
             customColor,
             colorWrites is null ? null : (changedCategory, color) => colorWrites.Add((changedCategory, color)),
-            resetWrites is null ? null : changedCategory => resetWrites.Add(changedCategory));
+            resetWrites is null ? null : changedCategory => resetWrites.Add(changedCategory),
+            themeColor is null ? null : _ => themeColor.Value,
+            defaultColorText);
 
     private static SponsorBlockCategorySettingViewModel CreateSetting(
         SponsorBlockCategory category,
