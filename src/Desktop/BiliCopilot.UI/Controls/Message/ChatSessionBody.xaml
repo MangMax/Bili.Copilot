@@ -19,20 +19,27 @@
         </Grid.RowDefinitions>
         <ScrollView x:Name="MessageView" Style="{StaticResource PageScrollViewStyle}">
             <!--
-                ItemsStackPanel 是给列表控件虚拟化用的面板，放在 ScrollView 里的 ItemsControl 中
-                会让部分条目无法测量而显示为空白。消息窗口已有上限，这里使用默认 StackPanel 直接布局.
+                ItemsStackPanel 放在 ScrollView 里的 ItemsControl 中会让部分条目无法测量而显示为空白。
+                这里改用 ItemsRepeater + StackLayout：仍由外层 ScrollView 承载滚动，
+                但只实例化可见区域附近的条目，避免长会话一次性创建全部消息控件。
             -->
-            <StackPanel
+            <Grid
                 MaxWidth="800"
                 Margin="20,12,20,20">
-                <ItemsControl ItemsSource="{x:Bind ViewModel.Messages, Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
+                <ItemsRepeater ItemsSource="{x:Bind ViewModel.Messages, Mode=OneWay}">
+                    <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="items:ChatMessageItemViewModel">
-                            <local:ChatMessageItemControl Margin="0,4" ViewModel="{x:Bind}" />
+                            <local:ChatMessageItemControl
+                                Margin="0,4"
+                                HorizontalAlignment="Stretch"
+                                ViewModel="{x:Bind}" />
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                    </ItemsRepeater.ItemTemplate>
+                    <ItemsRepeater.Layout>
+                        <StackLayout />
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </Grid>
         </ScrollView>
         <ProgressRing
             Width="20"

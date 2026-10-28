@@ -28,7 +28,7 @@ public sealed partial class LikeButton : LayoutUserControlBase
     /// <see cref="Tip"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty TipProperty =
-        DependencyProperty.Register(nameof(LikeButton), typeof(string), typeof(LikeButton), new PropertyMetadata(default));
+        DependencyProperty.Register(nameof(Tip), typeof(string), typeof(LikeButton), new PropertyMetadata(default));
 
     /// <summary>
     /// <see cref="Command"/> 的依赖属性.

@@ -34,10 +34,14 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
     protected override void OnControlUnloaded()
         => ImageRepeater.ItemsSource = default;
 
-    private void OnImageTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+    private void OnImageClick(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        e.Handled = true;
-        var image = (sender as FrameworkElement).Tag as BiliImage;
+        var image = (sender as FrameworkElement)?.Tag as BiliImage;
+        if (image is null)
+        {
+            return;
+        }
+
         var itemsSource = ItemsSource as List<BiliImage>;
         new GalleryWindow(image, itemsSource).Activate();
     }
