@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:SettingsPageControlBase
+    x:Class="BiliCopilot.UI.Controls.Settings.SponsorBlockSettingControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:converters="using:BiliCopilot.UI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
+    xmlns:local="using:BiliCopilot.UI.Controls.Settings"
+    xmlns:sponsorblock="using:BiliCopilot.UI.SponsorBlock"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  类别行复用设置面板自带的展开项样式（内边距、分隔线、行距）。
+                      该样式定义在控件库的 Generic.xaml 里，应用级字典查不到，必须在本地合并一次  -->
+                <ResourceDictionary Source="ms-appx:///Richasy.WinUIKernel.Share/Base/SettingsControls/SettingsExpander/SettingsExpander.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:SponsorBlockBehaviorConverter x:Key="SponsorBlockBehaviorConverter" />
+            <converters:SponsorBlockColorBrushConverter x:Key="SponsorBlockColorBrushConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!--  默认折叠：总开关放在折叠面板标题上，与通知设置一致；展开后才显示类别配置  -->
+    <base:SettingsExpander
+        Description="{ext:Locale Name=SponsorBlockDescription}"
+        Header="{ext:Locale Name=SponsorBlock}"
+        IsExpanded="False">
+        <base:SettingsExpander.HeaderIcon>
+            <ic:SymbolIcon Symbol="FastForward" />
+        </base:SettingsExpander.HeaderIcon>
+        <ToggleSwitch AutomationProperties.AutomationId="SponsorBlockEnabledToggle" IsOn="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=TwoWay}" />
+        <!--
+            类别行放在 ItemsFooter 而不是 Items：每一行本身就是 SettingsCard，
+            作为 Item 会再套一层卡片，只能通过 ItemTemplate 才能保持原样，而整组又需要随总开关联动隐藏。
+            这里使用不虚拟化的 ItemsControl，容器与数据项一一对应、不复用，
+            避免容器复用时下拉框带着上一行的选中项去改写当前类别的设置。
+        -->
+        <base:SettingsExpander.ItemsFooter>
+            <StackPanel Visibility="{x:Bind ViewModel.IsSponsorBlockEnabled, Mode=OneWay}">
+                <!--
+                    标记只是展示：不想要色块的用户直接关掉即可，
+                    不必再把颜色调成全透明来“藏”起来.
+                -->
+                <base:SettingsCard
+                    Description="{ext:Locale Name=SponsorBlockMarkerVisibleDescription}"
+                    Header="{ext:Locale Name=SponsorBlockMarkerVisible}"
+                    Style="{StaticResource DefaultSettingsExpanderItemStyle}">
+                    <ToggleSwitch
+                        AutomationProperties.AutomationId="SponsorBlockMarkerVisibleToggle"
+                        IsOn="{x:Bind ViewModel.IsSponsorBlockMarkerVisible, Mode=TwoWay}" />
+                </base:SettingsCard>
+                <ItemsControl ItemsSource="{x:Bind ViewModel.SponsorBlockCategorySettings, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="items:SponsorBlockCategorySettingViewModel">
+                            <base:SettingsCard Header="{x:Bind DisplayName}" Style="{StaticResource DefaultSettingsExpanderItemStyle}">
+                                <!--
+                                    用 Grid 而不是横向 StackPanel：StackPanel 会按子元素自身高度排布，
+                                    按钮与下拉框永远各算各的；Grid 让两者落在同一行并各自纵向撑满，
+                                    高度差会自动抹平，控件换主题、换字号时也不会再错开.
+                                -->
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <!--
+                                        色块按钮：点击后由代码后台弹出 ColorPicker。
+                                        色块始终按该类别当前生效的颜色绘制（默认即主题色板色，不是空白占位），
+                                        右侧文本也始终存在：未自定义时显示「默认」，自定义后换成颜色值，
+                                        因此两种状态都有说明，按钮宽度也不会因状态切换而跳动.
+                                        纵向 Stretch 与下拉框对齐，两者内容区高度一致，边框也自然齐平.
+                                    -->
+                                    <Button
+                                        VerticalAlignment="Stretch"
+                                        Padding="8,4"
+                                        AutomationProperties.AutomationId="{x:Bind ColorAutomationId}"
+                                        AutomationProperties.HelpText="{ext:Locale Name=SponsorBlockColor}"
+                                        AutomationProperties.Name="{x:Bind DisplayName}"
+                                        Click="OnColorButtonClick"
+                                        CornerRadius="6"
+                                        ToolTipService.ToolTip="{ext:Locale Name=SponsorBlockColor}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <!--  底层中性块衬出透明度，上层按生效颜色绘制，带 alpha 时能直接看出来  -->
+                                            <Grid Width="16" Height="16">
+                                                <Border
+                                                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4" />
+                                                <Border
+                                                    Background="{x:Bind EffectiveColor, Mode=OneWay, Converter={StaticResource SponsorBlockColorBrushConverter}}"
+                                                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4" />
+                                            </Grid>
+                                            <!--
+                                                宽度由内容决定：默认态「默认」两个字、自定义后是颜色值，字数不同宽度自然不同.
+                                                不预留固定宽度，免得短文案右侧空出一大块.
+                                                文字沿用默认正文样式，与其它设置项的取值文字保持一致.
+                                            -->
+                                            <!--
+                                                底部留 3px 做光学校正：中文的字形墨迹在 WinUI 行框里偏下，
+                                                与左侧色块、右侧下拉框的文字不在一条线上.
+                                                这和内置 ComboBox 的做法一致——它的 ComboBoxPadding 是 12,5,0,7，
+                                                底部比顶部多 2px，正是用不对称留白把文字提上来.
+                                            -->
+                                            <TextBlock
+                                                Margin="0,0,0,3"
+                                                VerticalAlignment="Center"
+                                                Text="{x:Bind ColorDisplayText, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <!--
+                                        选中项不用绑定：容器与数据项换绑的瞬间，绑定会把旧选中项回写到新数据项，
+                                        造成类别串值。改为创建时显式赋值、变化时经 SelectionChanged 回写，
+                                        且回写只在值确实不同于已保存值时发生.
+                                    -->
+                                    <ComboBox
+                                        x:Name="BehaviorSelector"
+                                        Grid.Column="1"
+                                        AutomationProperties.AutomationId="{x:Bind Category}"
+                                        AutomationProperties.Name="{x:Bind DisplayName}"
+                                        MinWidth="140"
+                                        ItemsSource="{x:Bind AvailableBehaviors}"
+                                        Loaded="OnBehaviorComboBoxLoaded"
+                                        SelectionChanged="OnBehaviorSelectionChanged"
+                                        Tag="{x:Bind}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate x:DataType="sponsorblock:SponsorBlockBehavior">
+                                                <TextBlock Text="{x:Bind Converter={StaticResource SponsorBlockBehaviorConverter}}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
+                            </base:SettingsCard>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </base:SettingsExpander.ItemsFooter>
+    </base:SettingsExpander>
+</local:SettingsPageControlBase>

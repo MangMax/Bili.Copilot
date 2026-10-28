@@ -3189,4 +3189,88 @@
   <data name="MaxBackCacheSize" xml:space="preserve">
     <value>最大后向缓冲大小（MB）</value>
   </data>
+  <data name="SponsorBlock" xml:space="preserve">
+    <value>空降助手</value>
+  </data>
+  <data name="SponsorBlockDescription" xml:space="preserve">
+    <value>按片段类别自动跳过、静音或显示跳过提示（数据来自 SponsorBlock，仅发送 BV 号与分P ID）</value>
+  </data>
+  <data name="SponsorBlockSkippedTemplate" xml:space="preserve">
+    <value>已跳过：{0}</value>
+  </data>
+  <data name="SponsorBlockCategoryUnknown" xml:space="preserve">
+    <value>其他片段</value>
+  </data>
+  <data name="SponsorBlockCategorySponsor" xml:space="preserve">
+    <value>赞助广告</value>
+  </data>
+  <data name="SponsorBlockCategorySelfPromo" xml:space="preserve">
+    <value>自我推广</value>
+  </data>
+  <data name="SponsorBlockCategoryExclusiveAccess" xml:space="preserve">
+    <value>独家内容</value>
+  </data>
+  <data name="SponsorBlockCategoryInteraction" xml:space="preserve">
+    <value>互动提示</value>
+  </data>
+  <data name="SponsorBlockCategoryPoiHighlight" xml:space="preserve">
+    <value>精彩时刻</value>
+  </data>
+  <data name="SponsorBlockCategoryIntro" xml:space="preserve">
+    <value>开场动画</value>
+  </data>
+  <data name="SponsorBlockCategoryOutro" xml:space="preserve">
+    <value>片尾动画</value>
+  </data>
+  <data name="SponsorBlockCategoryPreview" xml:space="preserve">
+    <value>预告回顾</value>
+  </data>
+  <data name="SponsorBlockCategoryPadding" xml:space="preserve">
+    <value>填充内容</value>
+  </data>
+  <data name="SponsorBlockCategoryFiller" xml:space="preserve">
+    <value>无关片段</value>
+  </data>
+  <data name="SponsorBlockCategoryMusicOfftopic" xml:space="preserve">
+    <value>音乐：非音乐部分</value>
+  </data>
+  <data name="SponsorBlockBehaviorNone" xml:space="preserve">
+    <value>不处理</value>
+  </data>
+  <data name="SponsorBlockBehaviorSkip" xml:space="preserve">
+    <value>自动跳过</value>
+  </data>
+  <data name="SponsorBlockBehaviorMute" xml:space="preserve">
+    <value>仅静音</value>
+  </data>
+  <data name="SponsorBlockBehaviorShowButton" xml:space="preserve">
+    <value>显示跳过按钮</value>
+  </data>
+  <data name="SponsorBlockSkipButton" xml:space="preserve">
+    <value>跳过</value>
+  </data>
+  <data name="SponsorBlockPromptTemplate" xml:space="preserve">
+    <value>检测到{0}，点击跳过</value>
+  </data>
+  <data name="SponsorBlockMarkerTimeRange" xml:space="preserve">
+    <value>{0} – {1}</value>
+  </data>
+  <data name="SponsorBlockColor" xml:space="preserve">
+    <value>标记颜色</value>
+  </data>
+  <data name="SponsorBlockColorDefault" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="SponsorBlockColorReset" xml:space="preserve">
+    <value>恢复默认颜色</value>
+  </data>
+  <data name="SponsorBlockMarkerVisible" xml:space="preserve">
+    <value>显示进度条标记</value>
+  </data>
+  <data name="SponsorBlockMarkerVisibleDescription" xml:space="preserve">
+    <value>关闭后进度条上不再绘制片段色块，跳过、静音与跳过按钮不受影响</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>高级</value>
+  </data>
 </root>
