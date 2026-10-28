@@ -26,7 +26,9 @@ public sealed partial class VideoConnectorViewModel
         BvId = view.Information.BvId;
         IsMyVideo = _view.Information.Publisher.User.Id == this.Get<IBiliTokenResolver>().GetToken().UserId.ToString();
         UpAvatar = view.Information.Publisher.User.Avatar.Uri;
-        UpName = view.Information.Publisher.User.Name;
+        UpName = PublisherNameMerger.Merge(
+            view.Information.Publisher?.User?.Name,
+            view.Information.Collaborators?.Select(collaborator => collaborator?.User?.Name));
         var relativeTime = DateTimeOffset.Now - view.Information.PublishTime > TimeSpan.FromDays(90) ? view.Information.PublishTime!.Value.ToString("yyyy-MM-dd HH:mm:ss") : view.Information.PublishTime.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
         PublishRelativeTime = string.Format(ResourceToolkit.GetLocalizedString(StringNames.AuthorPublishTime), relativeTime);
         Description = view.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description);
