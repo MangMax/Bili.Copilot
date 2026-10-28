@@ -175,11 +175,10 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
             Height = 24,
             CornerRadius = new CornerRadius(4),
             BorderThickness = new Thickness(1),
-            // 描边与文字色同样要按本控件的实际主题取，否则浅色主题下会拿到深色变体.
-            BorderBrush = SponsorBlockColorHelper.ResolveThemedResource(
-                "ControlStrokeColorDefaultBrush",
-                ActualTheme,
-                new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0x80, 0x80, 0x80))),
+            // 描边同样要按本控件的实际主题取，否则浅色主题下会拿到深色变体；
+            // 兜底画刷只在资源确实缺失时才分配.
+            BorderBrush = SponsorBlockColorHelper.ResolveThemedResource("ControlStrokeColorDefaultBrush", ActualTheme)
+                ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0x80, 0x80, 0x80)),
             Background = SponsorBlockColorHelper.CreateBrush(item.EffectiveColor),
         };
 
