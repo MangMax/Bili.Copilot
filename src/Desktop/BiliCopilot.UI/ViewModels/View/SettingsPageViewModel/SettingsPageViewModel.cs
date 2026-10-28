@@ -51,6 +51,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         IsVideoMomentNotificationEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsVideoMomentNotificationEnabled, true);
         NoP2P = SettingsToolkit.ReadLocalSetting(SettingNames.PlayWithoutP2P, false);
         IsSponsorBlockEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.SponsorBlockEnabled, true);
+        IsSponsorBlockMarkerVisible = SponsorBlockMarkerSettings.IsVisible;
         InitializeSponsorBlockSettings();
         PlayerDisplayModeCollection = Enum.GetValues<PlayerDisplayMode>().ToList();
         PreferCodecCollection = Enum.GetValues<PreferCodecType>().ToList();
@@ -455,6 +456,9 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 
     partial void OnIsSponsorBlockEnabledChanged(bool value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.SponsorBlockEnabled, value);
+
+    partial void OnIsSponsorBlockMarkerVisibleChanged(bool value)
+        => SponsorBlockMarkerSettings.IsVisible = value;
 
     partial void OnDefaultDownloadPathChanged(string value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.DownloadFolder, value);

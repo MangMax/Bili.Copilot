@@ -132,7 +132,23 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
             Placement = FlyoutPlacementMode.BottomEdgeAlignedRight,
         };
 
-        picker.ColorChanged += (_, args) => item.SetCustomColor(SponsorBlockColorHelper.ToArgb(args.NewColor));
+        picker.ColorChanged += (_, args) =>
+        {
+            var color = args.NewColor;
+
+            // 取色器的十六进制输入框把 #RRGGBB 右对齐当成 ARGB 解析，前两位变成 0，
+            // 用户输入 6 位色会得到全透明、色块直接消失。这里补回不透明；
+            // 需要半透明请用不透明度滑块，想隐藏标记请用上面的「显示进度条标记」开关.
+            if (color.A == 0)
+            {
+                color.A = 0xFF;
+
+                // 回写让取色器本身也显示修正后的值，避免面板与色块不一致.
+                picker.Color = color;
+            }
+
+            item.SetCustomColor(SponsorBlockColorHelper.ToArgb(color));
+        };
         resetButton.Click += (_, _) =>
         {
             item.ResetColor();

@@ -18,6 +18,11 @@ internal static class SponsorBlockColorHelper
     private static readonly AccessibilitySettings _accessibilitySettings = new();
 
     /// <summary>
+    /// (资源键, 主题字典键) 到已解析画刷的缓存，<c>null</c> 表示该主题字典里没有这个键.
+    /// </summary>
+    private static readonly Dictionary<(string Key, string ThemeKey), Brush?> _themeBrushCache = [];
+
+    /// <summary>
     /// 把 0xAARRGGBB 转换为 <see cref="Color"/>.
     /// </summary>
     /// <param name="argb">0xAARRGGBB 格式的颜色值.</param>
@@ -130,11 +135,25 @@ internal static class SponsorBlockColorHelper
     /// </summary>
     private static Brush? FindThemedBrush(string key, ElementTheme theme)
     {
+        // 主题字典是静态资源，同一个 (键, 主题字典) 的结果不会变，缓存下来.
+        // 否则每次切换主题要为 12 个类别各递归遍历一遍合并字典，平白拉长卡顿时间.
         foreach (var themeKey in GetThemeDictionaryKeys(theme))
         {
-            if (FindInThemeDictionaries(Application.Current?.Resources, key, themeKey) is Brush brush)
+            if (_themeBrushCache.TryGetValue((key, themeKey), out var cached))
             {
-                return brush;
+                if (cached is not null)
+                {
+                    return cached;
+                }
+
+                continue;
+            }
+
+            var found = FindInThemeDictionaries(Application.Current?.Resources, key, themeKey);
+            _themeBrushCache[(key, themeKey)] = found;
+            if (found is not null)
+            {
+                return found;
             }
         }
 
