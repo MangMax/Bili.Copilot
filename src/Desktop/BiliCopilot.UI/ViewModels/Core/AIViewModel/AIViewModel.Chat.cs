@@ -274,7 +274,9 @@ public sealed partial class AIViewModel
 
             // 2. 选择字幕元数据.
             ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleInformation);
-            var meta = metas.FirstOrDefault(p => !p.IsAI) ?? metas.First();
+            var metaCandidates = metas.Select(p => (p.LanguageName, p.IsAI)).ToList();
+            var preferredIndex = SubtitlePreference.SelectPreferredIndex(metaCandidates);
+            var meta = metas[preferredIndex];
             if (_generateCancellationTokenSource?.IsCancellationRequested != false)
             {
                 return default;
