@@ -51,6 +51,8 @@ public sealed partial class PlayerViewModel
     public event EventHandler<MpvCacheStateEventArgs> CacheStateChanged;
     public event EventHandler RequestShowNextTip;
     public event EventHandler RequestHideNextTip;
+    public event EventHandler RequestShowSponsorBlockTip;
+    public event EventHandler RequestHideSponsorBlockTip;
 
     public MpvClient? Client { get; private set; }
 
@@ -217,6 +219,9 @@ public sealed partial class PlayerViewModel
 
     [ObservableProperty]
     public partial bool IsMute { get; set; }
+
+    [ObservableProperty]
+    public partial string? SponsorBlockTipText { get; set; }
 
     [ObservableProperty]
     public partial bool IsDanmakuOptionsVisible { get; set; }

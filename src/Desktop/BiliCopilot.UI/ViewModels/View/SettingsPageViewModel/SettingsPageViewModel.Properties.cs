@@ -88,6 +88,18 @@ public sealed partial class SettingsPageViewModel
     [ObservableProperty]
     private bool _noP2P;
 
+    /// <summary>
+    /// 是否启用空降助手.
+    /// </summary>
+    [ObservableProperty]
+    private bool _isSponsorBlockEnabled = true;
+
+    /// <summary>
+    /// 是否在进度条上绘制片段标记.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSponsorBlockMarkerVisible { get; set; }
+
     [ObservableProperty]
     private string _defaultDownloadPath;
 

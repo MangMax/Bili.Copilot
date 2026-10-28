@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:PlayerControlBase
+    x:Class="BiliCopilot.UI.Controls.Core.SponsorBlockSkipTip"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:local="using:BiliCopilot.UI.Controls.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel
+        x:Name="RootPanel"
+        Width="320"
+        AllowFocusOnInteraction="False"
+        Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
+        CornerRadius="{StaticResource OverlayCornerRadius}"
+        IsTabStop="False"
+        Visibility="Collapsed">
+        <StackPanel Margin="16,12">
+            <TextBlock Text="{x:Bind ViewModel.SponsorBlockTipText, Mode=OneWay}" TextWrapping="Wrap" />
+        </StackPanel>
+        <Grid Margin="20,0,20,8" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <HyperlinkButton
+                AutomationProperties.AutomationId="SponsorBlockSkipButton"
+                AutomationProperties.Name="{ext:Locale Name=SponsorBlockSkipButton}"
+                HorizontalAlignment="Stretch"
+                AllowFocusOnInteraction="False"
+                Command="{x:Bind ViewModel.AcceptSponsorBlockPromptCommand, Mode=OneWay}"
+                Content="{ext:Locale Name=SponsorBlockSkipButton}"
+                IsTabStop="False" />
+            <HyperlinkButton
+                AutomationProperties.AutomationId="SponsorBlockDismissButton"
+                AutomationProperties.Name="{ext:Locale Name=Cancel}"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                AllowFocusOnInteraction="False"
+                Background="Transparent"
+                Command="{x:Bind ViewModel.DismissSponsorBlockPromptCommand, Mode=OneWay}"
+                Content="{ext:Locale Name=Cancel}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                IsTabStop="False" />
+        </Grid>
+        <!--
+            进度条的最大值来自 SponsorBlockController.PromptTimeout，见代码后端.
+            它只表达这条 8 秒提示的剩余时间，纯装饰，对读屏器隐藏（Raw 视图外不可见），
+            避免读屏用户在提示出现时被一个无意义的进度值打断.
+        -->
+        <ProgressBar
+            x:Name="ProgressRect"
+            AutomationProperties.AccessibilityView="Raw"
+            Height="4"
+            HorizontalAlignment="Stretch"
+            Background="Transparent" />
+    </StackPanel>
+</local:PlayerControlBase>

@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Media;
@@ -15,11 +16,22 @@ namespace BiliCopilot.UI.Controls.Core;
 /// 自绘实现，不依赖 Slider：每个章节是一个独立分段容器，内部依次叠放
 /// 轨道 / 缓存 / 已播放，因此缓冲进度天然按章节划分。
 /// 轨道在控件内垂直居中，与两侧时间文本对齐；悬浮层用负的 Canvas.Top 绘制在轨道上方.
+/// 空降片段以独立覆盖层绘制在章节分段之上（见 <c>ChapterSegmentBar.Markers.cs</c>），
+/// 与轨道等高、半透明，因此仍能看到下面的缓冲与已播放进度.
 /// </remarks>
 public sealed partial class ChapterSegmentBar : PlayerControlBase
 {
-    private const double SegmentGap = 2d;
-    private const double MinSegmentWidth = 2d;
+    /// <summary>
+    /// 相邻章节分段之间的像素间隙。与空降标记的几何映射共用同一个来源，
+    /// 否则标记会与章节分段的缝隙错位.
+    /// </summary>
+    private const double SegmentGap = SponsorBlockProgressGeometry.SegmentGap;
+
+    /// <summary>
+    /// 章节分段的最小像素宽度，同样与空降标记的几何映射共用同一个来源.
+    /// </summary>
+    private const double MinSegmentWidth = SponsorBlockProgressGeometry.MinSegmentWidth;
+
     private const double TrackHeight = 4d;
     private const double HoverTrackHeight = 8d;
     private const double DragThreshold = 3d;
@@ -122,6 +134,12 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
 
     private readonly List<SegmentVisual> _segments = [];
     private readonly List<(double Start, double End)> _cachedRanges = [];
+
+    /// <summary>
+    /// 空降片段标记的覆盖层。自身不参与命中测试，由控件按标记矩形统一判定，
+    /// 避免覆盖层拦截进度条其他位置的拖拽.
+    /// </summary>
+    private readonly Canvas _markerLayer = new() { IsHitTestVisible = false };
 
     private readonly Ellipse _thumbInner = new()
     {
@@ -295,18 +313,26 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         _hoverPopup.Child = _hoverStack;
 
         _thumb.Child = _thumbInner;
+
+        // 章节分段容器后续通过 Insert(0) 加到最底层，因此标记层位于分段之上、
+        // 圆点与悬浮层之下.
+        _canvas.Children.Add(_markerLayer);
         _canvas.Children.Add(_thumb);
         _canvas.Children.Add(_hoverPopup);
 
         Loaded += OnLoadedHandler;
-        Unloaded += (_, _) => HideHoverPopup();
+        Unloaded += (_, _) =>
+        {
+            HideHoverPopup();
+            UnsubscribeColorSettings();
+        };
         SizeChanged += (_, _) => Rebuild();
 
         PointerPressed += OnPointerPressed;
         PointerMoved += OnPointerMoved;
         PointerReleased += OnPointerReleased;
-        PointerCanceled += OnPointerReleased;
-        PointerCaptureLost += OnPointerReleased;
+        PointerCanceled += OnPointerCanceled;
+        PointerCaptureLost += OnPointerCanceled;
         PointerExited += OnPointerExited;
     }
 
@@ -361,6 +387,12 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         _cacheBrush = CacheResolvedBrush;
         ApplyThumbBrushes();
         AttachPlayer();
+        SubscribeColorSettings();
+
+        // 在加载时订阅而不是构造函数里：Unloaded 会退订，重新挂载时必须再订回来.
+        // 先退订一次，避免重复加载时同一处理器被加两次.
+        ActualThemeChanged -= OnActualThemeChanged;
+        ActualThemeChanged += OnActualThemeChanged;
         Rebuild();
         StartRenderLoop();
     }
@@ -461,6 +493,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
             bar.UpdateCursor(false);
             bar.HideHoverPopup();
             bar._pressed = null;
+            bar._pendingMarker = null;
             bar._isDragging = false;
         }
     }
@@ -479,6 +512,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         {
             oldValue.ChapterInitialized -= OnChapterInitialized;
             oldValue.CacheStateChanged -= OnCacheStateChanged;
+            oldValue.SponsorBlockSegmentsChanged -= OnSponsorBlockSegmentsChanged;
             oldValue.PropertyChanged -= OnViewModelPropertyChanged;
             if (oldValue.Player is not null)
             {
@@ -490,6 +524,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         {
             newValue.ChapterInitialized += OnChapterInitialized;
             newValue.CacheStateChanged += OnCacheStateChanged;
+            newValue.SponsorBlockSegmentsChanged += OnSponsorBlockSegmentsChanged;
             newValue.PropertyChanged += OnViewModelPropertyChanged;
             if (newValue.Player is not null)
             {
@@ -504,11 +539,14 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     protected override void OnControlUnloaded()
     {
         StopRenderLoop();
+        UnsubscribeColorSettings();
+        ActualThemeChanged -= OnActualThemeChanged;
 
         if (ViewModel is not null)
         {
             ViewModel.ChapterInitialized -= OnChapterInitialized;
             ViewModel.CacheStateChanged -= OnCacheStateChanged;
+            ViewModel.SponsorBlockSegmentsChanged -= OnSponsorBlockSegmentsChanged;
             ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
             if (ViewModel.Player is not null)
             {
@@ -565,6 +603,9 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         {
             // 切换视频后，上一个视频的跳转目标已无意义.
             _pendingSeekPosition = null;
+
+            // 标记的像素位置取决于总时长，时长变化后需要重新映射.
+            RebuildMarkers();
         }
     }
 

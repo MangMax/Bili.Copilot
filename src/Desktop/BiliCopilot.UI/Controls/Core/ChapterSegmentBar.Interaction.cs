@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.SponsorBlock;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 
@@ -19,19 +20,42 @@ public sealed partial class ChapterSegmentBar
 
         var point = e.GetCurrentPoint(_canvas);
         var x = point.Position.X;
+        var y = point.Position.Y;
+
         var segment = HitTest(x);
         if (segment is null)
         {
             return;
         }
 
+        // 上下边缘带代表“粗定位到章节起点”，轨道本身才是精确跳转。
+        // 无章节时 IsOnVerticalEdge 恒为 false，整条高度都用于精确跳转。
+        // 边缘带优先于空降标记，标记命中不会抢占这些位置.
+        var onEdge = IsOnVerticalEdge(y);
+
+        // 空降标记命中后先挂起，等释放时再决定是点击还是拖动：
+        // 目标是片段终点（裁剪到视频时长），与自动跳过保持一致，但这里不下发跳转，
+        // 否则会挡住从标记上开始的拖动.
+        var marker = HitTestMarker(x, y, onEdge);
+        if (marker is SponsorBlockMarker hit && TryGetSponsorSegment(hit.SegmentIndex, out _))
+        {
+            _pressed = segment;
+            _pendingMarker = hit;
+            _isDragging = false;
+            _pressX = x;
+            _pressOnEdge = false;
+            CapturePointer(e.Pointer);
+            e.Handled = true;
+            UpdateThumbScale();
+            return;
+        }
+
         _pressed = segment;
+        _pendingMarker = null;
         _isDragging = false;
         _pressX = x;
 
-        // 上下边缘带代表“粗定位到章节起点”，轨道本身才是精确跳转。
-        // 无章节时 IsOnVerticalEdge 恒为 false，整条高度都用于精确跳转。
-        _pressOnEdge = IsOnVerticalEdge(point.Position.Y);
+        _pressOnEdge = onEdge;
         if (_pressOnEdge)
         {
             _edgeChapterStart = segment.Start;
@@ -63,12 +87,16 @@ public sealed partial class ChapterSegmentBar
 
         var point = e.GetCurrentPoint(_canvas);
         var x = point.Position.X;
+        var y = point.Position.Y;
 
         if (_pressed is not null)
         {
             if (!_isDragging && Math.Abs(x - _pressX) >= DragThreshold)
             {
                 _isDragging = true;
+
+                // 超过拖动阈值即为拖动，取消挂起的标记点击，交由普通拖动路径处理.
+                _pendingMarker = null;
             }
 
             if (_isDragging)
@@ -81,25 +109,51 @@ public sealed partial class ChapterSegmentBar
             return;
         }
 
+        var onEdge = IsOnVerticalEdge(y);
+        var markerHit = HitTestMarker(x, y, onEdge);
+        if (markerHit != _hoveredMarker)
+        {
+            SetHoveredMarker(markerHit);
+        }
+
         var hovered = HitTest(x);
         if (hovered?.Start != _hovered?.Start)
         {
             SetHovered(hovered);
         }
 
-        UpdateCursor(IsOnVerticalEdge(point.Position.Y));
+        // 标记可点击，用与章节边缘一致的手形光标提示.
+        UpdateCursor(markerHit is not null || onEdge);
         UpdateHoverPopup(x);
     }
 
     private async void OnPointerReleased(object sender, PointerRoutedEventArgs e)
     {
         var segment = _pressed;
+        var pendingMarker = _pendingMarker;
         var wasDragging = _isDragging;
         var dragTarget = _dragPosition;
+
+        // 必须在释放捕获之前清空状态：释放捕获会触发 PointerCaptureLost 并回到本方法.
         _pressed = null;
+        _pendingMarker = null;
         _isDragging = false;
         ReleasePointerCapture(e.Pointer);
         UpdateThumbScale();
+
+        if (!wasDragging
+            && pendingMarker is SponsorBlockMarker marker
+            && TryGetSponsorSegment(marker.SegmentIndex, out var sponsorSegment))
+        {
+            // 标记点击：指针没有超过拖动阈值，跳到片段终点.
+            // 与自动跳过共用播放器的同一条跳转路径，且不显示“已跳过”提示.
+            e.Handled = true;
+            await SeekToSponsorBlockAsync(Math.Min(sponsorSegment.End, Duration));
+            _pressOnEdge = false;
+            _dragPosition = null;
+            UpdateFill();
+            return;
+        }
 
         if (segment is null)
         {
@@ -120,6 +174,28 @@ public sealed partial class ChapterSegmentBar
         UpdateFill();
     }
 
+    /// <summary>
+    /// 指针被取消或捕获丢失：只清理状态，不执行跳转.
+    /// <para>
+    /// 与 <see cref="OnPointerReleased"/> 分开处理，避免取消事件被误判成标记点击.
+    /// </para>
+    /// </summary>
+    private void OnPointerCanceled(object sender, PointerRoutedEventArgs e)
+    {
+        var hadPress = _pressed is not null || _pendingMarker is not null;
+        _pressed = null;
+        _pendingMarker = null;
+        _isDragging = false;
+        _pressOnEdge = false;
+        _dragPosition = null;
+
+        if (hadPress)
+        {
+            UpdateThumbScale();
+            UpdateFill();
+        }
+    }
+
     private void OnPointerExited(object sender, PointerRoutedEventArgs e)
     {
         SetHovered(null);
@@ -132,6 +208,7 @@ public sealed partial class ChapterSegmentBar
         }
 
         _pressed = null;
+        _pendingMarker = null;
         _isDragging = false;
     }
 
@@ -186,7 +263,11 @@ public sealed partial class ChapterSegmentBar
         }
 
         // 先写入文本再显示，否则可见瞬间内容为空，会出现空白浮层.
-        UpdatePopupText(x, duration, width);
+        // 悬浮在空降标记上时文本已在 SetHoveredMarker 中写入，此处不覆盖.
+        if (_hoveredMarker is null)
+        {
+            UpdatePopupText(x, duration, width);
+        }
 
         if (_hoverPopup.Visibility == Visibility.Visible && Math.Abs(x - _lastPopupX) < PopupMoveThreshold)
         {
@@ -264,6 +345,10 @@ public sealed partial class ChapterSegmentBar
 
         _lastPopupX = double.NaN;
         _lastPopupTime = double.NaN;
+
+        // 直接清空悬浮标记时也要把高亮的标记视觉还原，否则它会停留在不透明状态.
+        _hoveredMarker = null;
+        ApplyMarkerHighlight(null);
     }
 
     private void SetHovered(SegmentVisual? segment)
@@ -420,5 +505,29 @@ public sealed partial class ChapterSegmentBar
         // PreviewPosition 属于播放器手势预览的语义，不用于传递进度条拖动位置.
         await ViewModel.ChangePositionAsync(clamped);
         UpdateFill();
+    }
+
+    /// <summary>
+    /// 点击空降标记：走播放器为自动跳过准备的同一条跳转路径
+    ///（同样的 0.5 秒最小位移与时长裁剪），并保留乐观填充.
+    /// </summary>
+    private async Task SeekToSponsorBlockAsync(double target)
+    {
+        if (ViewModel is null || Duration <= 0 || !double.IsFinite(target))
+        {
+            return;
+        }
+
+        var clamped = Math.Clamp(target, 0, Duration);
+        _pendingSeekPosition = clamped;
+        _pendingSeekDeadline = Environment.TickCount64 + PendingSeekTtlMs;
+        UpdateFill();
+
+        if (!await ViewModel.SeekToSponsorBlockAsync(clamped))
+        {
+            // 播放器判定目标过近而没有跳转时，撤销乐观位置，避免进度条停住不动.
+            _pendingSeekPosition = null;
+            UpdateFill();
+        }
     }
 }

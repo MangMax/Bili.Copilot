@@ -1,0 +1,17 @@
+// Copyright (c) Bili Copilot. All rights reserved.
+
+namespace BiliCopilot.UI.SponsorBlock;
+
+/// <summary>
+/// 空降助手类别解析器.
+/// </summary>
+public static class SponsorBlockCategoryParser
+{
+    /// <summary>
+    /// 将接口返回的类别字符串转换为类别枚举.
+    /// </summary>
+    /// <param name="value">接口返回的类别字符串.</param>
+    /// <returns>类别枚举，未知类别返回 <see cref="SponsorBlockCategory.Unknown"/>.</returns>
+    public static SponsorBlockCategory Parse(string? value)
+        => SponsorBlockCategoryCatalog.FromApiName(value);
+}

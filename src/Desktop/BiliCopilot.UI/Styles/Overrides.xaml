@@ -16,6 +16,21 @@
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundPointerOver" Color="White" />
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundPressed" Color="#C5FFFFFF" />
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundDisabled" Color="#87FFFFFF" />
+
+            <!--  空降片段标记：浅色主题用同一套低饱和 Fluent 色调的深色变体；
+                  不透明度由标记矩形统一控制，这里只给不透明基色  -->
+            <SolidColorBrush x:Key="SponsorBlockMarkerSponsorBrush" Color="#FFB24E73" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerSelfPromoBrush" Color="#FFA96C3D" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerExclusiveAccessBrush" Color="#FF3D7B69" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerInteractionBrush" Color="#FF7460A8" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPoiHighlightBrush" Color="#FFA45D82" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerIntroBrush" Color="#FF397B8A" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerOutroBrush" Color="#FF566AA3" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPreviewBrush" Color="#FF487794" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPaddingBrush" Color="#FF747474" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerFillerBrush" Color="#FF6F6090" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerMusicOfftopicBrush" Color="#FF98703B" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerUnknownBrush" Color="#FF8A5F61" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="BasicPlayerButtonBackground" Color="Transparent" />
@@ -26,6 +41,21 @@
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundPointerOver" Color="White" />
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundPressed" Color="#C5FFFFFF" />
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundDisabled" Color="#87FFFFFF" />
+
+            <!--  空降片段标记：深色主题用同一套低饱和 Fluent 色调的浅色变体；
+                  不透明度由标记矩形统一控制，这里只给不透明基色  -->
+            <SolidColorBrush x:Key="SponsorBlockMarkerSponsorBrush" Color="#FFD88CA8" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerSelfPromoBrush" Color="#FFD9A06D" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerExclusiveAccessBrush" Color="#FF73B39E" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerInteractionBrush" Color="#FFA996D6" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPoiHighlightBrush" Color="#FFD68FB5" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerIntroBrush" Color="#FF72ADBA" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerOutroBrush" Color="#FF8798CF" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPreviewBrush" Color="#FF7DA8C1" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerPaddingBrush" Color="#FFA4A4A4" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerFillerBrush" Color="#FF9D8FBE" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerMusicOfftopicBrush" Color="#FFCC9D62" />
+            <SolidColorBrush x:Key="SponsorBlockMarkerUnknownBrush" Color="#FFBC898B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <StaticResource x:Key="BasicPlayerButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -36,6 +66,20 @@
             <StaticResource x:Key="BasicPlayerButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
             <StaticResource x:Key="BasicPlayerButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
             <StaticResource x:Key="BasicPlayerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+            <!--  高对比度下统一使用系统高亮色，避免自定义颜色不可读  -->
+            <StaticResource x:Key="SponsorBlockMarkerSponsorBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerSelfPromoBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerExclusiveAccessBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerInteractionBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerPoiHighlightBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerIntroBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerOutroBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerPreviewBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerPaddingBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerFillerBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerMusicOfftopicBrush" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SponsorBlockMarkerUnknownBrush" ResourceKey="SystemColorHighlightColorBrush" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
