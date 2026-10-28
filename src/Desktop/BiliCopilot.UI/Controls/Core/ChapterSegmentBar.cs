@@ -321,10 +321,12 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         _canvas.Children.Add(_hoverPopup);
 
         Loaded += OnLoadedHandler;
+        ActualThemeChanged += OnActualThemeChanged;
         Unloaded += (_, _) =>
         {
             HideHoverPopup();
             UnsubscribeColorSettings();
+            ActualThemeChanged -= OnActualThemeChanged;
         };
         SizeChanged += (_, _) => Rebuild();
 

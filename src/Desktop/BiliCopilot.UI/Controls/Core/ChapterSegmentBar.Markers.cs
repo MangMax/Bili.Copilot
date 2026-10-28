@@ -187,8 +187,9 @@ public sealed partial class ChapterSegmentBar
             return brush;
         }
 
-        // 与设置页色块共用同一处解析，避免两边口径不一致.
-        brush = SponsorBlockColorHelper.ResolveCategoryBrush(category);
+        // 与设置页色块共用同一处解析，避免两边口径不一致；
+        // 主题按本控件的实际主题取，浅色 / 深色各用各的变体.
+        brush = SponsorBlockColorHelper.ResolveCategoryBrush(category, ActualTheme);
         _markerBrushes[category] = brush;
         return brush;
     }
@@ -205,6 +206,15 @@ public sealed partial class ChapterSegmentBar
         => SponsorBlockColorHelper.IsCustomColorInEffect(category)
             ? MarkerHoverOpacity
             : MarkerDefaultOpacity;
+
+    /// <summary>
+    /// 主题变化后重绘标记：浅色 / 深色各用各的色板变体，缓存的画刷必须丢弃.
+    /// </summary>
+    private void OnActualThemeChanged(FrameworkElement sender, object args)
+    {
+        _markerBrushes.Clear();
+        RebuildMarkers();
+    }
 
     /// <summary>
     /// 设置页修改颜色后重绘标记：先丢弃按类别缓存的画刷，再按现有片段重建视觉.

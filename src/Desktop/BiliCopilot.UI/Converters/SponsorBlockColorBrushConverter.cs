@@ -10,7 +10,8 @@ namespace BiliCopilot.UI.Converters;
 /// 把空降助手的自定义颜色值转换为设置页色块画刷.
 /// </summary>
 /// <remarks>
-/// 值为空表示使用主题色；此时色块由 XAML 里的主题画刷承担，转换器只返回透明画刷.
+/// 传入的是该类别当前生效的颜色（自定义色或当前主题下的色板色），
+/// 因此这里只做 0xAARRGGBB → 画刷的转换，不再判断“是否使用主题色”.
 /// </remarks>
 internal sealed partial class SponsorBlockColorBrushConverter : IValueConverter
 {
