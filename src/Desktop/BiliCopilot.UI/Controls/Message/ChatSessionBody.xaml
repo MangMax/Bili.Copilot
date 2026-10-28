@@ -18,26 +18,43 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ScrollView x:Name="MessageView" Style="{StaticResource PageScrollViewStyle}">
-            <ItemsControl
+            <!--
+                ItemsStackPanel 放在 ScrollView 里的 ItemsControl 中会让部分条目无法测量而显示为空白。
+                这里改用 ItemsRepeater + StackLayout：仍由外层 ScrollView 承载滚动，
+                但只实例化可见区域附近的条目，避免长会话一次性创建全部消息控件。
+            -->
+            <Grid
                 MaxWidth="800"
-                Margin="20,12,20,20"
-                ItemsSource="{x:Bind ViewModel.Messages, Mode=OneWay}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <ItemsStackPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="items:ChatMessageItemViewModel">
-                        <local:ChatMessageItemControl Margin="0,4" ViewModel="{x:Bind}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                Margin="20,12,20,20">
+                <ItemsRepeater ItemsSource="{x:Bind ViewModel.Messages, Mode=OneWay}">
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="items:ChatMessageItemViewModel">
+                            <local:ChatMessageItemControl
+                                Margin="0,4"
+                                HorizontalAlignment="Stretch"
+                                ViewModel="{x:Bind}" />
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                    <ItemsRepeater.Layout>
+                        <StackLayout />
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </Grid>
         </ScrollView>
+        <ProgressRing
+            Width="20"
+            Height="20"
+            Margin="0,8,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            AutomationProperties.Name="{ext:Locale Name=LoadingAndWait}"
+            IsHitTestVisible="False"
+            IsActive="{x:Bind ViewModel.IsLoadingOlder, Mode=OneWay}"
+            Visibility="{x:Bind ViewModel.IsLoadingOlder, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
         <base:EmptyHolder
             Description="{ext:Locale Name=NoMessage}"
             Emoji="&#x1F37B;"
-            Visibility="{x:Bind ViewModel.IsEmpty}" />
+            Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}" />
         <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
         <local:ChatMessageBox
             Grid.Row="1"

@@ -32,4 +32,11 @@
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\SettingNames.cs" Link="Models\Constants\%(Filename)%(Extension)" />
   </ItemGroup>
 
+  <!--
+    通用纯逻辑与 WinUI 无关，按目录整体链接，新增修复无需改动测试工程。
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Toolkits\Pure\*.cs" Link="Toolkits\Pure\%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

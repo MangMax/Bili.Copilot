@@ -54,8 +54,16 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 
                 if (_recommendItems.Count == 0)
                 {
-                    var recommends = await _searchService.GetSearchRecommendsAsync();
-                    _recommendItems.AddRange(recommends);
+                    try
+                    {
+                        var recommends = await _searchService.GetSearchRecommendsAsync();
+                        _recommendItems.AddRange(recommends);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "尝试加载搜索推荐时出错.");
+                        return;
+                    }
                 }
 
                 if (Suggestion.Count == _recommendItems.Count)
@@ -100,6 +108,15 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
             }
             else
             {
+                // 提交搜索后建议列表会被清空；重新进入用户空间/历史页时，
+                // 需要把“全区/当前区域”选项补回来，否则只剩空列表.
+                if (!Suggestion.Any(p => p.RegionId == "global"))
+                {
+                    Suggestion.Clear();
+                    Suggestion.Add(new("global", ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.WholePartitions)));
+                    Suggestion.Add(new(_extraRegionId, _extraRegionName));
+                }
+
                 foreach (var item in Suggestion)
                 {
                     item.SearchContent = Keyword;
