@@ -49,7 +49,7 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
             return;
         }
 
-        Messages = new();
+        Messages.Clear();
         await LoadLatestMessagesAsync();
     }
 
@@ -60,7 +60,7 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        Messages = new();
+        Messages.Clear();
         _preventLoadMore = false;
         _requestedMessageCount = InitialMessageCount;
         HasMoreMessages = false;
