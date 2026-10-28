@@ -125,7 +125,7 @@ public sealed partial class LikeButton : LayoutUserControlBase
 
     private void OnLikeButtonClick(object sender, RoutedEventArgs e)
     {
-        var canOpen = !IsLiked && !_isTripleTipShown;
+        var canOpen = !IsLiked && !_isTripleTipShown && !IsCompactOverlay;
         CloseTripleTip();
         if (canOpen)
         {
@@ -136,4 +136,13 @@ public sealed partial class LikeButton : LayoutUserControlBase
 
     private void OnTripleButtonClick(TeachingTip sender, object args)
         => TripleTip.IsOpen = false;
+
+    private void OnTripleTipClosed(TeachingTip sender, object args)
+    {
+        // 点赞命令失败时 IsLiked 仍为 false，下一次点击应能再次提示.
+        if (!IsLiked)
+        {
+            _isTripleTipShown = false;
+        }
+    }
 }

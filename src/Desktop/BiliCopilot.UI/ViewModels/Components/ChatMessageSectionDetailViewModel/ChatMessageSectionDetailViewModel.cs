@@ -38,7 +38,7 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
         UserName = session.User?.Name;
         UnreadCount = session.UnreadCount;
         LastMessage = Data.LastMessage;
-        LastMessageTime = Data.Time.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
+        LastMessageTime = Data.Time.Humanize(default, CultureInfo.CurrentCulture);
     }
 
     [RelayCommand]
@@ -90,7 +90,7 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
 
                 InputText = string.Empty;
                 LastMessage = msg.Content?.Text ?? LastMessage;
-                LastMessageTime = now.Humanize(default, new CultureInfo("zh-CN"));
+                LastMessageTime = now.Humanize(default, CultureInfo.CurrentCulture);
                 RequestScrollToBottom?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -151,6 +151,7 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
 
             var minKey = currentMessages.Min(p => p.Key);
             var maxKey = currentMessages.Max(p => p.Key);
+            var hasOlderAdded = mergeResult.AddedItems.Any(p => p.Key < minKey);
             if (mergeResult.AddedItems.All(p => p.Key < minKey))
             {
                 var older = mergeResult.AddedItems.Select(p => new ChatMessageItemViewModel(p)).ToList();
@@ -175,7 +176,7 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
                 ReplaceMessages(mergeResult.Items);
             }
 
-            HasMoreMessages = hasMore && next < MaxMessageCount;
+            HasMoreMessages = hasOlderAdded && hasMore && next < MaxMessageCount;
         }
         catch (Exception ex)
         {
@@ -245,7 +246,7 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
             LastMessage = text;
             if (latest.Time is not null)
             {
-                LastMessageTime = latest.Time.Value.Humanize(default, new CultureInfo("zh-CN"));
+                LastMessageTime = latest.Time.Value.Humanize(default, CultureInfo.CurrentCulture);
             }
         }
     }

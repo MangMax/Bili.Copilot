@@ -32,7 +32,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     public SeasonItemViewModel(SeasonInformation data, SeasonCardStyle style, PgcFavoriteStatus? favStatus = default, Action<SeasonItemViewModel>? removeAction = default, Action<SeasonItemViewModel>? playAction = default)
         : base(data)
     {
-        Title = data.Identifier.Title;
+        Title = HtmlText.Decode(data.Identifier.Title);
         Cover = data.Identifier.Cover.Uri;
         Style = style;
         Subtitle = data.GetExtensionIfNotNull<string>(SeasonExtensionDataId.Subtitle);
