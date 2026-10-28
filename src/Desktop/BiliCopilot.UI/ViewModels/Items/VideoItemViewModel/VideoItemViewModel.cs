@@ -45,7 +45,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         _playAction = playAction;
         var primaryLan = ApplicationLanguages.Languages[0];
         Style = style;
-        Title = info.Identifier.Title;
+        Title = HtmlText.Decode(info.Identifier.Title);
         Cover = info.Identifier.Cover?.Uri;
         Author = info.Publisher?.User?.Name;
         Avatar = info.Publisher?.User?.Avatar?.Uri;
