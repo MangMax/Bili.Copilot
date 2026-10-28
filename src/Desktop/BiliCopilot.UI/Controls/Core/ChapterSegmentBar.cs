@@ -321,12 +321,10 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         _canvas.Children.Add(_hoverPopup);
 
         Loaded += OnLoadedHandler;
-        ActualThemeChanged += OnActualThemeChanged;
         Unloaded += (_, _) =>
         {
             HideHoverPopup();
             UnsubscribeColorSettings();
-            ActualThemeChanged -= OnActualThemeChanged;
         };
         SizeChanged += (_, _) => Rebuild();
 
@@ -390,6 +388,11 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         ApplyThumbBrushes();
         AttachPlayer();
         SubscribeColorSettings();
+
+        // 在加载时订阅而不是构造函数里：Unloaded 会退订，重新挂载时必须再订回来.
+        // 先退订一次，避免重复加载时同一处理器被加两次.
+        ActualThemeChanged -= OnActualThemeChanged;
+        ActualThemeChanged += OnActualThemeChanged;
         Rebuild();
         StartRenderLoop();
     }
@@ -537,6 +540,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     {
         StopRenderLoop();
         UnsubscribeColorSettings();
+        ActualThemeChanged -= OnActualThemeChanged;
 
         if (ViewModel is not null)
         {

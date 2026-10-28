@@ -69,6 +69,13 @@ public sealed partial class ChapterSegmentBar
     /// </summary>
     private void RebuildMarkers()
     {
+        // 用户在设置里关掉标记后直接不绘制，与“把颜色调成透明”区分开.
+        if (!SponsorBlockMarkerSettings.IsVisible)
+        {
+            ClearMarkers();
+            return;
+        }
+
         var width = _canvas.ActualWidth;
         _markerLayer.Width = width;
         _markerLayer.Height = LayoutHeight;
@@ -243,6 +250,7 @@ public sealed partial class ChapterSegmentBar
 
         _colorSettingsHooked = true;
         SponsorBlockColorSettings.Changed += OnSponsorBlockColorChanged;
+        SponsorBlockMarkerSettings.Changed += OnSponsorBlockMarkerVisibleChanged;
 
         // 控件在卸载期间收不到颜色变化（例如浮层里的进度条只在悬浮时可见），
         // 重新挂载时必须丢弃上一次留下的画刷缓存，否则会继续画旧颜色.
@@ -258,6 +266,7 @@ public sealed partial class ChapterSegmentBar
 
         _colorSettingsHooked = false;
         SponsorBlockColorSettings.Changed -= OnSponsorBlockColorChanged;
+        SponsorBlockMarkerSettings.Changed -= OnSponsorBlockMarkerVisibleChanged;
     }
 
     /// <summary>
@@ -364,4 +373,10 @@ public sealed partial class ChapterSegmentBar
     }
 
     private void OnSponsorBlockSegmentsChanged(object? sender, EventArgs e) => RebuildMarkers();
+
+    /// <summary>
+    /// 标记显示开关变化后重绘：关闭时清空、打开时按现有片段重建.
+    /// </summary>
+    private void OnSponsorBlockMarkerVisibleChanged(object? sender, EventArgs e)
+        => DispatcherQueue.TryEnqueue(RebuildMarkers);
 }

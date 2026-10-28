@@ -141,6 +141,7 @@ public enum SettingNames
     VulkanDeviceName,
     MaxBackCacheSize,
     SponsorBlockEnabled,
+    SponsorBlockMarkerVisible,
     SponsorBlockBehaviorSponsor,
     SponsorBlockBehaviorSelfPromo,
     SponsorBlockBehaviorExclusiveAccess,

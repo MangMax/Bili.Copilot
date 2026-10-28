@@ -3264,6 +3264,12 @@
   <data name="SponsorBlockColorReset" xml:space="preserve">
     <value>恢复默认颜色</value>
   </data>
+  <data name="SponsorBlockMarkerVisible" xml:space="preserve">
+    <value>显示进度条标记</value>
+  </data>
+  <data name="SponsorBlockMarkerVisibleDescription" xml:space="preserve">
+    <value>关闭后进度条上不再绘制片段色块，跳过、静音与跳过按钮不受影响</value>
+  </data>
   <data name="Advanced" xml:space="preserve">
     <value>高级</value>
   </data>
