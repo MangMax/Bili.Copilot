@@ -13,7 +13,12 @@
     mc:Ignorable="d">
 
     <Grid>
-        <ItemsRepeater x:Name="ImageRepeater" ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
+        <!--  MaxWidth 368 = 3 列 * 120 + 2 * 4 间距，保证最多 3 列且左对齐。  -->
+        <ItemsRepeater
+            x:Name="ImageRepeater"
+            MaxWidth="368"
+            HorizontalAlignment="Left"
+            ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
             <ItemsRepeater.ItemTemplate>
                 <DataTemplate x:DataType="appearance:BiliImage">
                     <Grid>
@@ -31,10 +36,13 @@
                 </DataTemplate>
             </ItemsRepeater.ItemTemplate>
             <ItemsRepeater.Layout>
-                <ColumnMajorUniformToLargestGridLayout
-                    ColumnSpacing="4"
-                    MaxColumns="3"
-                    RowSpacing="4" />
+                <UniformGridLayout
+                    ItemsStretch="None"
+                    MinColumnSpacing="4"
+                    MinItemHeight="120"
+                    MinItemWidth="120"
+                    MinRowSpacing="4"
+                    Orientation="Horizontal" />
             </ItemsRepeater.Layout>
         </ItemsRepeater>
     </Grid>
