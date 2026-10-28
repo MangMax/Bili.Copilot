@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -33,6 +35,26 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
 
     protected override void OnControlUnloaded()
         => ImageRepeater.ItemsSource = default;
+
+    /// <summary>
+    /// 生成图片按钮的无障碍名称，使用文件名区分同一组图片.
+    /// </summary>
+    /// <param name="uri">图片地址.</param>
+    /// <returns>无障碍名称.</returns>
+    public static string GetImageAutomationName(Uri? uri)
+    {
+        var name = ResourceToolkit.GetLocalizedString(StringNames.OpenImage);
+        var fileName = uri is null ? null : Path.GetFileName(uri.LocalPath);
+        return string.IsNullOrEmpty(fileName) ? name : $"{name} {fileName}";
+    }
+
+    /// <summary>
+    /// 生成图片按钮的无障碍标识.
+    /// </summary>
+    /// <param name="uri">图片地址.</param>
+    /// <returns>无障碍标识.</returns>
+    public static string GetImageAutomationId(Uri? uri)
+        => uri?.AbsoluteUri ?? "MomentImage";
 
     private void OnImageClick(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {

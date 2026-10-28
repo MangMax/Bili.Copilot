@@ -31,7 +31,7 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
     public LiveItemViewModel(LiveInformation data, LiveCardStyle style, Action<LiveItemViewModel>? removeAction = default)
         : base(data)
     {
-        Title = data.Identifier.Title;
+        Title = HtmlText.Decode(data.Identifier.Title);
         Cover = data.Identifier.Cover?.Uri;
         Author = data.User?.Name;
         Avatar = data.User?.Avatar?.Uri;

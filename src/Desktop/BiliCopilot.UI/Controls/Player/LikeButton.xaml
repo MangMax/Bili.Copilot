@@ -39,6 +39,7 @@
         <TeachingTip
             x:Name="TripleTip"
             ActionButtonClick="OnTripleButtonClick"
+            Closed="OnTripleTipClosed"
             ActionButtonCommand="{x:Bind TripleCommand, Mode=OneWay}"
             ActionButtonContent="{ext:Locale Name=Triple}"
             IsLightDismissEnabled="True"

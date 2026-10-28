@@ -43,7 +43,8 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             throw new ArgumentNullException(nameof(keyword));
         }
 
-        if (keyword == Keyword)
+        // 上次搜索失败时 Sections 为空，即使是同一关键字也应允许重试.
+        if (keyword == Keyword && Sections is not null)
         {
             return;
         }

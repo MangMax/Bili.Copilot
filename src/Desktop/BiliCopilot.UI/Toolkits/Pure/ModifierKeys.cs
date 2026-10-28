@@ -6,7 +6,7 @@ namespace BiliCopilot.UI.Toolkits;
 /// 修饰键组合的纯逻辑判定。
 /// </summary>
 /// <remarks>
-/// 按键状态由 <see cref="AppToolkit"/> 通过 P/Invoke 读取，这里只负责组合规则，
+/// 按键状态由 AppToolkit 通过 P/Invoke 读取，这里只负责组合规则，
 /// 以便在无 WinUI 依赖的测试项目中验证。
 /// </remarks>
 internal static class ModifierKeys

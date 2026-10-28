@@ -69,7 +69,17 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
 
         // 保留用户已输入的文字，只按当前文字刷新建议，并在有建议时展开列表。
-        await ViewModel.ReloadSuggestionsCommand.ExecuteAsync(default);
+        try
+        {
+            await ViewModel.ReloadSuggestionsCommand.ExecuteAsync(default);
+        }
+        catch
+        {
+            // 网络异常不应从 async void 事件冒泡到 UI 线程；视图模型已记录日志.
+            CloseSuggestionList();
+            return;
+        }
+
         if (_isSubmittingQuery)
         {
             CloseSuggestionList();

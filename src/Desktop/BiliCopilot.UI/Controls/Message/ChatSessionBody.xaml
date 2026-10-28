@@ -48,6 +48,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
             AutomationProperties.Name="{ext:Locale Name=LoadingAndWait}"
+            IsHitTestVisible="False"
             IsActive="{x:Bind ViewModel.IsLoadingOlder, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.IsLoadingOlder, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
         <base:EmptyHolder
