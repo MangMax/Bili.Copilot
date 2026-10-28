@@ -179,12 +179,8 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
 
         var text = new TextBlock
         {
+            // 与设置项里的颜色值文字保持一致：默认正文样式，不单独指定字号与前景色.
             VerticalAlignment = VerticalAlignment.Center,
-            FontSize = 12,
-            Foreground = SponsorBlockColorHelper.ResolveThemedResource(
-                "TextFillColorSecondaryBrush",
-                ActualTheme,
-                new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x80, 0x80, 0x80))),
             Text = item.ColorDisplayText,
         };
 
