@@ -104,17 +104,14 @@
                                                     CornerRadius="4" />
                                             </Grid>
                                             <!--
-                                                固定最小宽度：默认态「默认」两个字、自定义后 #AARRGGBB 九个字符，
-                                                不预留的话按钮宽度会随之跳变，整行跟着位移.
-                                                文字靠右对齐，两种状态的右缘都对齐到同一处.
+                                                宽度由内容决定：默认态「默认」两个字、自定义后是颜色值，字数不同宽度自然不同.
+                                                不预留固定宽度，免得短文案右侧空出一大块.
                                             -->
                                             <TextBlock
-                                                MinWidth="72"
                                                 VerticalAlignment="Center"
                                                 FontSize="12"
                                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Text="{x:Bind ColorDisplayText, Mode=OneWay}"
-                                                TextAlignment="Right" />
+                                                Text="{x:Bind ColorDisplayText, Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
                                     <!--
