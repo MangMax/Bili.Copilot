@@ -44,28 +44,30 @@ internal static class SponsorBlockColorHelper
     /// </para>
     /// </summary>
     /// <param name="category">片段类别.</param>
+    /// <param name="theme">调用方所在元素的实际主题，用于选取浅色 / 深色变体.</param>
     /// <returns>该类别当前生效的标记画刷.</returns>
-    public static Brush ResolveCategoryBrush(SponsorBlockCategory category)
+    public static Brush ResolveCategoryBrush(SponsorBlockCategory category, ElementTheme theme)
     {
-        if (IsThemePaletteInEffect)
+        if (IsHighContrastInEffect)
         {
             // 高对比度下由系统高亮色接管，自定义颜色不生效，
             // 与 Styles/Overrides.xaml 里 HighContrast 字典的资源覆盖保持一致.
-            return ResolveThemeBrush(category);
+            return ResolveThemeBrush(category, theme);
         }
 
         return SponsorBlockColorSettings.Read(category) is uint argb
             ? CreateBrush(argb)
-            : ResolveThemeBrush(category);
+            : ResolveThemeBrush(category, theme);
     }
 
     /// <summary>
     /// 解析某个类别在主题色板下的颜色值（忽略自定义颜色）.
     /// </summary>
     /// <param name="category">片段类别.</param>
+    /// <param name="theme">调用方所在元素的实际主题，用于选取浅色 / 深色变体.</param>
     /// <returns>该类别主题色板对应的 0xAARRGGBB 颜色值.</returns>
-    public static uint ResolveThemeColor(SponsorBlockCategory category)
-        => ResolveThemeBrush(category) is SolidColorBrush brush
+    public static uint ResolveThemeColor(SponsorBlockCategory category, ElementTheme theme)
+        => ResolveThemeBrush(category, theme) is SolidColorBrush brush
             ? ToArgb(brush.Color)
             : SponsorBlockCategoryPalette.GetFallbackColor(category);
 
@@ -79,12 +81,26 @@ internal static class SponsorBlockColorHelper
     /// <param name="category">片段类别.</param>
     /// <returns>自定义颜色生效时为 <c>true</c>.</returns>
     public static bool IsCustomColorInEffect(SponsorBlockCategory category)
-        => !IsThemePaletteInEffect && SponsorBlockColorSettings.Read(category) is not null;
+        => !IsHighContrastInEffect && SponsorBlockColorSettings.Read(category) is not null;
 
     /// <summary>
-    /// 当前是否由主题色板决定标记颜色：高对比度下系统高亮色接管，与是否自定义无关.
+    /// 按指定主题解析一个主题画刷资源，供代码构建的界面（例如取色浮层）使用.
+    /// <para>
+    /// 直接查 <see cref="Application.Current"/> 的资源只会得到应用主题对应的变体，
+    /// 而本应用的主题是设在窗口内容上的，两者可能不同，因此这里显式按主题字典取值.
+    /// </para>
     /// </summary>
-    private static bool IsThemePaletteInEffect
+    /// <param name="key">资源键.</param>
+    /// <param name="theme">调用方所在元素的实际主题.</param>
+    /// <param name="fallback">资源缺失时的兜底画刷.</param>
+    /// <returns>该主题下的画刷.</returns>
+    public static Brush ResolveThemedResource(string key, ElementTheme theme, Brush fallback)
+        => FindThemedBrush(key, theme) ?? fallback;
+
+    /// <summary>
+    /// 当前是否处于高对比度模式：此时标记由系统高亮色决定，与是否自定义无关.
+    /// </summary>
+    private static bool IsHighContrastInEffect
     {
         get
         {
@@ -100,10 +116,75 @@ internal static class SponsorBlockColorHelper
         }
     }
 
-    private static Brush ResolveThemeBrush(SponsorBlockCategory category)
-        => ResolveResource(
-            SponsorBlockCategoryPalette.GetBrushKey(category),
-            CreateBrush(SponsorBlockCategoryPalette.GetFallbackColor(category)));
+    private static Brush ResolveThemeBrush(SponsorBlockCategory category, ElementTheme theme)
+        => FindThemedBrush(SponsorBlockCategoryPalette.GetBrushKey(category), theme)
+            ?? CreateBrush(SponsorBlockCategoryPalette.GetFallbackColor(category));
+
+    /// <summary>
+    /// 在主题字典里查找画刷.
+    /// <para>
+    /// 应用级资源只暴露它自己那一层的 <c>ThemeDictionaries</c>，
+    /// 而类别画刷定义在合并进来的 <c>Styles/Overrides.xaml</c> 里，
+    /// 因此需要逐层遍历合并字典才能按指定主题取到正确的变体.
+    /// </para>
+    /// </summary>
+    private static Brush? FindThemedBrush(string key, ElementTheme theme)
+    {
+        foreach (var themeKey in GetThemeDictionaryKeys(theme))
+        {
+            if (FindInThemeDictionaries(Application.Current?.Resources, key, themeKey) is Brush brush)
+            {
+                return brush;
+            }
+        }
+
+        return null;
+    }
+
+    private static Brush? FindInThemeDictionaries(ResourceDictionary? dictionary, string key, string themeKey)
+    {
+        if (dictionary is null)
+        {
+            return null;
+        }
+
+        if (dictionary.ThemeDictionaries.TryGetValue(themeKey, out var themed)
+            && themed is ResourceDictionary themedDictionary
+            && themedDictionary.TryGetValue(key, out var value)
+            && value is Brush brush)
+        {
+            return brush;
+        }
+
+        foreach (var merged in dictionary.MergedDictionaries)
+        {
+            if (FindInThemeDictionaries(merged, key, themeKey) is Brush nested)
+            {
+                return nested;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 主题对应的字典键，按优先级排列.
+    /// <para>
+    /// 应用自己的字典用 <c>Light</c> / <c>Dark</c>，
+    /// 而框架资源（XamlControlsResources）习惯用 <c>Default</c> 表示深色，故深色时依次尝试.
+    /// </para>
+    /// </summary>
+    private static string[] GetThemeDictionaryKeys(ElementTheme theme)
+    {
+        if (IsHighContrastInEffect)
+        {
+            return ["HighContrast"];
+        }
+
+        return theme == ElementTheme.Light
+            ? ["Light"]
+            : ["Dark", "Default"];
+    }
 
     /// <summary>
     /// 把 <see cref="Color"/> 还原为 0xAARRGGBB.
@@ -112,9 +193,4 @@ internal static class SponsorBlockColorHelper
     /// <returns>对应的 0xAARRGGBB 颜色值.</returns>
     public static uint ToArgb(Color color)
         => ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | color.B;
-
-    private static Brush ResolveResource(string key, Brush fallback)
-        => Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Brush brush
-            ? brush
-            : fallback;
 }

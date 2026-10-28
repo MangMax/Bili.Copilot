@@ -13,7 +13,7 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
     private readonly Action<SponsorBlockCategory, SponsorBlockBehavior> _onBehaviorChanged;
     private readonly Action<SponsorBlockCategory, uint>? _onCustomColorChanged;
     private readonly Action<SponsorBlockCategory>? _onCustomColorReset;
-    private readonly Func<SponsorBlockCategory, uint> _themeColorProvider;
+    private uint _defaultColor;
     private SponsorBlockBehavior _behavior;
     private SponsorBlockBehavior _persistedBehavior;
     private uint? _customColor;
@@ -30,8 +30,10 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
     /// <param name="onCustomColorChanged">设置自定义颜色时的回调.</param>
     /// <param name="onCustomColorReset">恢复主题色时的回调.</param>
     /// <param name="themeColorProvider">
-    /// 解析类别主题色板颜色的回调，供「未自定义」时色块显示实际默认色；
-    /// 不传时退化为 <see cref="SponsorBlockCategoryPalette.GetFallbackColor"/>，便于纯逻辑测试.
+    /// 解析类别主题色板颜色的回调，仅用于给出初始值；
+    /// 真正的主题相关取值由视图层在加载和主题变化时通过 <see cref="UpdateDefaultColor"/> 推入，
+    /// 因为主题是元素级的，纯逻辑层无法判断. 不传时退化为
+    /// <see cref="SponsorBlockCategoryPalette.GetFallbackColor"/>，便于纯逻辑测试.
     /// </param>
     /// <param name="defaultColorText">「未自定义」时右侧显示的文案.</param>
     public SponsorBlockCategorySettingViewModel(
@@ -53,7 +55,7 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
         _customColor = customColor;
         _onCustomColorChanged = onCustomColorChanged;
         _onCustomColorReset = onCustomColorReset;
-        _themeColorProvider = themeColorProvider ?? SponsorBlockCategoryPalette.GetFallbackColor;
+        _defaultColor = (themeColorProvider ?? SponsorBlockCategoryPalette.GetFallbackColor)(category);
         DefaultColorText = defaultColorText;
     }
 
@@ -122,7 +124,7 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
     /// 而不是一个空白占位.
     /// </para>
     /// </summary>
-    public uint EffectiveColor => _customColor ?? _themeColorProvider(Category);
+    public uint EffectiveColor => _customColor ?? _defaultColor;
 
     /// <summary>
     /// 色块右侧始终显示的文本：自定义时是颜色值，未自定义时是「默认」.
@@ -206,19 +208,21 @@ public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 主题变化后刷新取色.
+    /// 更新「未自定义」时使用的默认色.
     /// <para>
-    /// 未自定义时色块取自主题色板，切换浅色 / 深色后需要重新解析；
-    /// 自定义颜色是字面值，不受主题影响.
+    /// 默认色取自主题色板，而主题是元素级的，只能由视图层解析后推入；
+    /// 自定义颜色是字面值，不受主题影响，因此有自定义色时直接忽略.
     /// </para>
     /// </summary>
-    public void RefreshThemeColor()
+    /// <param name="argb">该类别在当前主题下的色板颜色.</param>
+    public void UpdateDefaultColor(uint argb)
     {
-        if (HasCustomColor)
+        if (HasCustomColor || _defaultColor == argb)
         {
             return;
         }
 
+        _defaultColor = argb;
         OnPropertyChanged(nameof(EffectiveColor));
     }
 

@@ -34,7 +34,10 @@ public sealed partial class SettingsPageViewModel
                 SponsorBlockColorSettings.Read(category),
                 SponsorBlockColorSettings.Write,
                 SponsorBlockColorSettings.Reset,
-                SponsorBlockColorHelper.ResolveThemeColor,
+
+                // 默认色取决于元素所在主题，纯逻辑层无法判断，
+                // 这里只给一个兜底值；控件加载后会用实际主题重新推入.
+                null,
                 ResourceToolkit.GetLocalizedString(StringNames.SponsorBlockColorDefault)));
         }
     }

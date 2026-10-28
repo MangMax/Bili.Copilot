@@ -19,23 +19,27 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
     public SponsorBlockSettingControl() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded() => ViewModel.ThemeChanged += OnThemeChanged;
+    protected override void OnControlLoaded()
+    {
+        // 主题是元素级的：应用级资源只认系统主题，而本应用把主题设在窗口内容上，
+        // 因此默认色必须按本控件自己的实际主题解析，并跟随它的变化重新推入.
+        ActualThemeChanged += OnActualThemeChanged;
+        RefreshDefaultColors();
+    }
 
     /// <inheritdoc/>
-    protected override void OnControlUnloaded() => ViewModel.ThemeChanged -= OnThemeChanged;
+    protected override void OnControlUnloaded() => ActualThemeChanged -= OnActualThemeChanged;
+
+    private void OnActualThemeChanged(FrameworkElement sender, object args) => RefreshDefaultColors();
 
     /// <summary>
-    /// 主题切换后让未自定义的类别重新解析主题色板颜色.
-    /// <para>
-    /// <c>EffectiveColor</c> 是计算属性，主题字典换了以后不会自己通知，
-    /// 因此需要在这里显式刷新一次.
-    /// </para>
+    /// 按当前实际主题重新解析未自定义类别的默认色.
     /// </summary>
-    private void OnThemeChanged(object? sender, EventArgs e)
+    private void RefreshDefaultColors()
     {
         foreach (var item in ViewModel.SponsorBlockCategorySettings)
         {
-            item.RefreshThemeColor();
+            item.UpdateDefaultColor(SponsorBlockColorHelper.ResolveThemeColor(item.Category, ActualTheme));
         }
     }
 
@@ -149,7 +153,11 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
             Height = 24,
             CornerRadius = new CornerRadius(4),
             BorderThickness = new Thickness(1),
-            BorderBrush = (Brush)Application.Current.Resources["ControlStrokeColorDefaultBrush"],
+            // 描边与文字色同样要按本控件的实际主题取，否则浅色主题下会拿到深色变体.
+            BorderBrush = SponsorBlockColorHelper.ResolveThemedResource(
+                "ControlStrokeColorDefaultBrush",
+                ActualTheme,
+                new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0x80, 0x80, 0x80))),
             Background = SponsorBlockColorHelper.CreateBrush(item.EffectiveColor),
         };
 
@@ -157,7 +165,10 @@ public sealed partial class SponsorBlockSettingControl : SettingsPageControlBase
         {
             VerticalAlignment = VerticalAlignment.Center,
             FontSize = 12,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+            Foreground = SponsorBlockColorHelper.ResolveThemedResource(
+                "TextFillColorSecondaryBrush",
+                ActualTheme,
+                new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x80, 0x80, 0x80))),
             Text = item.ColorDisplayText,
         };
 

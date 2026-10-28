@@ -346,28 +346,54 @@ public class SponsorBlockCategorySettingViewModelTests
     }
 
     [Fact]
-    public void RefreshThemeColor_WhenDefault_RaisesEffectiveColorOnly()
+    public void UpdateDefaultColor_WhenDefault_ChangesEffectiveColor()
     {
         var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, themeColor: 0xFF123456);
         var changes = new List<string?>();
         setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
 
-        setting.RefreshThemeColor();
+        setting.UpdateDefaultColor(0xFF654321);
 
+        Assert.Equal(0xFF654321u, setting.EffectiveColor);
         Assert.Equal([nameof(SponsorBlockCategorySettingViewModel.EffectiveColor)], changes);
     }
 
     [Fact]
-    public void RefreshThemeColor_WhenCustom_DoesNotRaise()
+    public void UpdateDefaultColor_WhenUnchanged_DoesNotRaise()
+    {
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, themeColor: 0xFF123456);
+        var changes = new List<string?>();
+        setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
+
+        setting.UpdateDefaultColor(0xFF123456);
+
+        Assert.Empty(changes);
+    }
+
+    [Fact]
+    public void UpdateDefaultColor_WhenCustom_DoesNotRaise()
     {
         // 自定义颜色是字面值，不受主题影响，切换主题不需要刷新.
         var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, 0xFFAABBCC, themeColor: 0xFF123456);
         var changes = new List<string?>();
         setting.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
 
-        setting.RefreshThemeColor();
+        setting.UpdateDefaultColor(0xFF654321);
 
         Assert.Empty(changes);
+        Assert.Equal(0xFFAABBCCu, setting.EffectiveColor);
+    }
+
+    [Fact]
+    public void UpdateDefaultColor_AfterReset_ShowsUpdatedDefault()
+    {
+        // 恢复默认后再切主题，应当显示新主题下的默认色.
+        var setting = CreateColorSetting(SponsorBlockCategory.Sponsor, 0xFFAABBCC, themeColor: 0xFF123456);
+
+        setting.ResetColor();
+        setting.UpdateDefaultColor(0xFF654321);
+
+        Assert.Equal(0xFF654321u, setting.EffectiveColor);
     }
 
     private static SponsorBlockCategorySettingViewModel CreateColorSetting(

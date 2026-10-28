@@ -24,11 +24,6 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 {
-    /// <summary>
-    /// 应用主题变化时触发，供依赖主题色板的控件刷新取值.
-    /// </summary>
-    public event EventHandler? ThemeChanged;
-
     [RelayCommand]
     private async Task InitializeAsync()
     {
@@ -374,9 +369,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         SettingsToolkit.WriteLocalSetting(SettingNames.AppTheme, value);
         CheckTheme();
         this.Get<AppViewModel>().ChangeThemeCommand.Execute(value);
-
-        // 依赖主题色板的计算属性（例如空降助手类别色块）需要据此重新解析.
-        ThemeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     partial void OnLogLevelChanged(MpvLogLevel value)
