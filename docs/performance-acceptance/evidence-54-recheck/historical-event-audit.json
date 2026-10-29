@@ -1,0 +1,77 @@
+[
+  {
+    "source": "evidence-54",
+    "events": 779,
+    "kinds": {
+      "started": 1,
+      "native-changed": 141,
+      "settings-write": 487,
+      "snapshot": 45,
+      "activation-callback": 22,
+      "destroying": 20,
+      "header-alignment": 26,
+      "case-start": 18,
+      "header-padding": 6,
+      "closed-observation": 12,
+      "suite-complete": 1
+    },
+    "results": {
+      "PASS": 18
+    },
+    "lateFocus": 0,
+    "lateGetting": 0
+  },
+  {
+    "source": "evidence-54-focus",
+    "events": 857,
+    "kinds": {
+      "started": 1,
+      "native-changed": 138,
+      "settings-write": 467,
+      "snapshot": 44,
+      "focus": 80,
+      "activation-callback": 21,
+      "header-alignment": 26,
+      "destroying": 19,
+      "case-start": 18,
+      "header-padding": 6,
+      "first-chance": 24,
+      "case-failed": 8,
+      "closed-observation": 4,
+      "suite-complete": 1
+    },
+    "results": {
+      "PASS": 10,
+      "FAIL": 8
+    },
+    "lateFocus": 9,
+    "lateGetting": 0
+  },
+  {
+    "source": "evidence-54-diagnostic",
+    "events": 198,
+    "kinds": {
+      "started": 1,
+      "case-start": 3,
+      "native-changed": 21,
+      "getting-focus": 17,
+      "settings-write": 92,
+      "snapshot": 8,
+      "close-call": 4,
+      "destroying": 4,
+      "close-return": 4,
+      "focus": 17,
+      "closed-observation": 3,
+      "first-chance": 9,
+      "case-failed": 3,
+      "activation-callback": 9,
+      "header-alignment": 2,
+      "header-padding": 1
+    },
+    "results": {
+      "FAIL": 3
+    },
+    "lateFocus": 3,
+    "lateGetting": 0
+  }
+]

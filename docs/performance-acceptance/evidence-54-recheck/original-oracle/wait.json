@@ -1,0 +1,19 @@
+{
+  "found": true,
+  "waitedMs": 6154,
+  "element": {
+    "type": "Text",
+    "name": "Diagnostic complete",
+    "automationId": "Status",
+    "className": "TextBlock",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 67,
+    "y": 161,
+    "width": 326,
+    "height": 27,
+    "selector": "lbl-status-5bea",
+    "isInvokable": false
+  },
+  "timedOut": false
+}

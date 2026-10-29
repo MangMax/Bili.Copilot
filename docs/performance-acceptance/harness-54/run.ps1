@@ -3,8 +3,8 @@ $ErrorActionPreference='Stop'
 if($AppPid -eq 9608){throw 'Protected process'}
 if(Test-Path $Evidence){throw 'Use a fresh evidence directory'}
 New-Item -ItemType Directory $Evidence | Out-Null
-$env:WINAPP_UI_WORKFLOW_ID='acceptance54-2a8c'
-$package=Get-AppxPackage -Name BiliCopilot.Acceptance54.2A8C
+$env:WINAPP_UI_WORKFLOW_ID='acceptance54-recheck-1d19'
+$package=Get-AppxPackage -Name BiliCopilot.Acceptance54.R1D19
 $process=Get-Process -Id $AppPid
 if(!$package -or !$process.Path.StartsWith($package.InstallLocation+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Owned process/package mismatch'}
 $local=Join-Path $env:LOCALAPPDATA "Packages/$($package.PackageFamilyName)/LocalState"
@@ -26,6 +26,9 @@ try {
             Ui @('invoke',$step[0],'-w',$controller)|Set-Content "$Evidence/$($step[0])-invoke.json"
             Ui @('wait-for','Status','--value',$step[1],'-t','3000','-w',$controller)|Out-Null
         }
+        Ui @('invoke','VisualProbe','-w',$controller)|Set-Content "$Evidence/$($step[0])-probe.json"
+        Copy-Item "$local/visual-tree.json" "$Evidence/$($step[0])-visual-tree.json"
+        Ui @('screenshot','-w',$player,'--capture-screen','--output',"$Evidence/$($step[0])-screen.png")|Set-Content "$Evidence/$($step[0])-screen-capture.json"
         Ui @('inspect','-w',$player)|Set-Content "$Evidence/$($step[0])-tree.json"
         Ui @('screenshot','-w',$player,'--output',"$Evidence/$($step[0]).png")|Set-Content "$Evidence/$($step[0])-capture.json"
         if(!(Test-Path "$Evidence/$($step[0]).png") -or (Get-Item "$Evidence/$($step[0]).png").Length -eq 0){throw 'Missing screenshot'}

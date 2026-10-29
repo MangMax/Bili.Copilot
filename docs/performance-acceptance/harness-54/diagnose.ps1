@@ -3,8 +3,8 @@ $ErrorActionPreference='Stop'
 if($AppPid -eq 9608){throw 'Protected process'}
 if(Test-Path $Evidence){throw 'Use new evidence directory'}
 New-Item -ItemType Directory $Evidence|Out-Null
-$env:WINAPP_UI_WORKFLOW_ID='acceptance54-2a8c'
-$package=Get-AppxPackage -Name BiliCopilot.Acceptance54.2A8C
+$env:WINAPP_UI_WORKFLOW_ID='acceptance54-recheck-1d19'
+$package=Get-AppxPackage -Name BiliCopilot.Acceptance54.R1D19
 $p=Get-Process -Id $AppPid
 if(!$package -or !$p.Path.StartsWith($package.InstallLocation+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Owned process mismatch'}
 $local=Join-Path $env:LOCALAPPDATA "Packages/$($package.PackageFamilyName)/LocalState"

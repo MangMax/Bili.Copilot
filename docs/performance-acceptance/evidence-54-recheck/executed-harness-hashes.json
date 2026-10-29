@@ -1,0 +1,32 @@
+[
+  {
+    "file": "App.xaml.cs",
+    "executedSha256": "6bd830765907e426c0119985bc500978a08581771083ab732e58f22a46a30739",
+    "repositorySha256": "02e95e3792a5e204374374c5d9dc8cdf09494d21de1ebcb725b8145a0cf28648"
+  },
+  {
+    "file": "Adapters.cs",
+    "executedSha256": "26b9b530ad1235a0e287db4b763e5a3249442b212dccd435dafe2f88a35e5e8c",
+    "repositorySha256": "26b9b530ad1235a0e287db4b763e5a3249442b212dccd435dafe2f88a35e5e8c"
+  },
+  {
+    "file": "NativeProbe.cs",
+    "executedSha256": "600808605e8efa50821bfe44c44c92ae602354074314556aa9eb36be91cbf9d3",
+    "repositorySha256": "600808605e8efa50821bfe44c44c92ae602354074314556aa9eb36be91cbf9d3"
+  },
+  {
+    "file": "VisualProbe.cs",
+    "executedSha256": "8e60a18e74a3778ecdcdf64d3720a914ab1568b4742f8452e2866530041bdf7c",
+    "repositorySha256": "8e60a18e74a3778ecdcdf64d3720a914ab1568b4742f8452e2866530041bdf7c"
+  },
+  {
+    "file": "Harness.csproj",
+    "executedSha256": "ad81275f70e7f15f43d9d21671e1e0ada03a155de3bdaea73fbe80edac823ead",
+    "repositorySha256": "ad81275f70e7f15f43d9d21671e1e0ada03a155de3bdaea73fbe80edac823ead"
+  },
+  {
+    "file": "App.xaml",
+    "executedSha256": "e1120b6133a97e9f20394f2ae042c9d54d87fd367db9b1e62c81290a887b1482",
+    "repositorySha256": "e1120b6133a97e9f20394f2ae042c9d54d87fd367db9b1e62c81290a887b1482"
+  }
+]

@@ -9,7 +9,7 @@ Copy-Item "$SourceRoot/src/Desktop/BiliCopilot.UI/Assets/logo.ico" "$Destination
 Copy-Item "$SourceRoot/src/Desktop/BiliCopilot.UI/Assets/Logo/Square150x150Logo.scale-100.png" "$Destination/Assets/Logo.png"
 @'
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap rescap">
-<Identity Name="BiliCopilot.Acceptance54.2A8C" Publisher="CN=BiliCopilotDev" Version="1.0.0.0" />
+<Identity Name="BiliCopilot.Acceptance54.R1D19" Publisher="CN=BiliCopilotDev" Version="1.0.0.0" />
 <Properties><DisplayName>Offline PlayerWindow acceptance 54</DisplayName><PublisherDisplayName>Acceptance</PublisherDisplayName><Logo>Assets\Logo.png</Logo></Properties>
 <Dependencies><TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.22621.0" /></Dependencies><Resources><Resource Language="en-us" /></Resources>
 <Applications><Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$"><uap:VisualElements DisplayName="Offline PlayerWindow acceptance 54" Description="Owned offline window harness" BackgroundColor="transparent" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\Logo.png" /></Application></Applications><Capabilities><rescap:Capability Name="runFullTrust" /></Capabilities></Package>

@@ -1,0 +1,12 @@
+dotnet build C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\Harness.csproj -c Debug -r win-x64 --no-restore -v minimal -tl:off -p:Platform=x64
+  Harness -> C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\bin\x64\Debug\net9.0-windows10.0.22621.0\win-x64\Harness.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:08.07
+{
+  "AUMID": "BiliCopilot.Acceptance54.R1D19_y1mf40g4r9srg!App",
+  "ProcessId": 29844
+}

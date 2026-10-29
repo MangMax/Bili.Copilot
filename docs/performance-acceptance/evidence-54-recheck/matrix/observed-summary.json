@@ -1,0 +1,10 @@
+{
+  "events": 1292,
+  "cases": 18,
+  "passed": 18,
+  "closedObservations": 12,
+  "liveFocusEvents": 80,
+  "failed": 0,
+  "visualReview": "See ui-54-recheck.md; JSON is not visual acceptance",
+  "lateFocusEvents": 9
+}
