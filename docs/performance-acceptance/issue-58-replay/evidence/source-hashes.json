@@ -1,0 +1,18 @@
+[
+  {
+    "file": "externals/bili-kernel/src/BiliKernel.Core/Http/BiliHttpClient.cs",
+    "sha256": "CA3F44C61913FB81ADCE74C51A7640AA23CE6FC17EC7DAB17C00F8AFD334EF8D"
+  },
+  {
+    "file": "externals/bili-kernel/src/BiliKernel.Core/Http/BiliHttpClient.Extension.cs",
+    "sha256": "8D9833FC21A500AF90ED108169C61C533BD72AE2A6C227AFF379FC0583F0CE4C"
+  },
+  {
+    "file": "externals/bili-kernel/src/BiliKernel.Core/Content/BiliResponse.cs",
+    "sha256": "C7AC58DDB2D01580B1591A9E100D6E146F7B28064D479E1676EA9127538D1DDC"
+  },
+  {
+    "file": "externals/bili-kernel/src/BiliKernel.Grpc/bilibili/community/service/dm/v1.proto",
+    "sha256": "5830F061032858267618B515F7C2D97004F7116DD2CB6EBC602C0BA9D1551F6B"
+  }
+]

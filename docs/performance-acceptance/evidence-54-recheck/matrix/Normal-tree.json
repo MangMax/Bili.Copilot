@@ -1,0 +1,237 @@
+{
+  "depth": 4,
+  "interactive": false,
+  "hideDisabled": false,
+  "hideOffscreen": false,
+  "windows": [
+    {
+      "hwnd": 9050846,
+      "title": "Acceptance54 real PlayerWindow 2",
+      "windowDpi": 144,
+      "scale": 1.5,
+      "dpiAwareness": "per-monitor-aware",
+      "coordinateSpace": "physical-screen-pixels",
+      "elementCount": 16,
+      "elements": [
+        {
+          "type": "Window",
+          "name": "Acceptance54 real PlayerWindow 2",
+          "className": "Microsoft.UI.Windowing.Window",
+          "isEnabled": true,
+          "isOffscreen": false,
+          "x": 500,
+          "y": 140,
+          "width": 840,
+          "height": 570,
+          "children": [
+            {
+              "type": "Pane",
+              "name": "Non Client Input Sink Window",
+              "className": "InputNonClientPointerSource",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 511,
+              "y": 140,
+              "width": 818,
+              "height": 72,
+              "selector": "pn-nonclientinputs-5b7d",
+              "isInvokable": false
+            },
+            {
+              "type": "Pane",
+              "name": "AppWindow Custom Title Bar",
+              "className": "ReunionWindowingCaptionControls",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 1113,
+              "y": 140,
+              "width": 216,
+              "height": 72,
+              "children": [
+                {
+                  "type": "Button",
+                  "name": "Minimize",
+                  "automationId": "Minimize",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1113,
+                  "y": 140,
+                  "width": 72,
+                  "height": 72,
+                  "selector": "Minimize",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "Maximize",
+                  "automationId": "Maximize",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1185,
+                  "y": 140,
+                  "width": 72,
+                  "height": 72,
+                  "selector": "Maximize",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "Close",
+                  "automationId": "Close",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1257,
+                  "y": 140,
+                  "width": 72,
+                  "height": 72,
+                  "selector": "btn-close-dded",
+                  "isInvokable": true
+                }
+              ],
+              "selector": "pn-appwindowcustom-6d2f",
+              "isInvokable": false
+            },
+            {
+              "type": "Pane",
+              "className": "Microsoft.UI.Content.DesktopChildSiteBridge",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 511,
+              "y": 140,
+              "width": 818,
+              "height": 559,
+              "children": [
+                {
+                  "type": "Pane",
+                  "className": "InputSiteWindowClass",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 511,
+                  "y": 140,
+                  "width": 818,
+                  "height": 559,
+                  "children": [
+                    {
+                      "type": "Text",
+                      "name": "Controlled header probe",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 535,
+                      "y": 152,
+                      "width": 770,
+                      "height": 48,
+                      "selector": "lbl-controlledheade-2f4d",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Text",
+                      "name": "#54 real PlayerWindow\nOffline controlled overlay",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 802,
+                      "y": 391,
+                      "width": 235,
+                      "height": 56,
+                      "selector": "lbl-54realplayerwin-2f4e",
+                      "isInvokable": false
+                    }
+                  ],
+                  "selector": "pn-57f5",
+                  "isInvokable": false
+                }
+              ],
+              "selector": "pn-5f9d",
+              "isInvokable": false
+            },
+            {
+              "type": "TitleBar",
+              "automationId": "TitleBar",
+              "isEnabled": true,
+              "isOffscreen": true,
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "children": [
+                {
+                  "type": "MenuBar",
+                  "name": "\u7CFB\u7EDF",
+                  "automationId": "SystemMenuBar",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 511,
+                  "y": 151,
+                  "width": 33,
+                  "height": 33,
+                  "children": [
+                    {
+                      "type": "MenuItem",
+                      "name": "\u7CFB\u7EDF",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 511,
+                      "y": 151,
+                      "width": 33,
+                      "height": 33,
+                      "selector": "mnu-54d2",
+                      "expandState": "collapsed",
+                      "isInvokable": true
+                    }
+                  ],
+                  "selector": "SystemMenuBar",
+                  "isInvokable": false
+                },
+                {
+                  "type": "Button",
+                  "name": "\u6700\u5C0F\u5316",
+                  "automationId": "Minimize-Restore",
+                  "isEnabled": true,
+                  "isOffscreen": true,
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0,
+                  "selector": "Minimize-Restore",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "\u6700\u5927\u5316",
+                  "automationId": "Maximize-Restore",
+                  "isEnabled": true,
+                  "isOffscreen": true,
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0,
+                  "selector": "Maximize-Restore",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "\u5173\u95ED",
+                  "automationId": "Close",
+                  "isEnabled": true,
+                  "isOffscreen": true,
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0,
+                  "selector": "btn-close-4962",
+                  "isInvokable": true
+                }
+              ],
+              "selector": "TitleBar",
+              "value": "Acceptance54 real PlayerWindow 2",
+              "isInvokable": false
+            }
+          ],
+          "selector": "win-acceptance54rea-5fc5",
+          "isInvokable": false
+        }
+      ]
+    }
+  ]
+}

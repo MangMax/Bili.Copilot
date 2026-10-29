@@ -1,0 +1,21 @@
+
+name                                 passed detail
+----                                 ------ ------
+InitialTemplateLoaded                  True
+Render                                 True
+ProductionCodeClipboard                True
+Clear                                  True
+Reassign                               True
+Detach                                 True
+SameInstanceUnchangedTextAttach        True
+LifecycleBoundaries                   False LifecycleBoundaries: FAIL | blocks=7, loaded=True, instance=1, loads=6, unl…
+FreshReopen                            True
+CoalescedSelectableStreaming           True
+FinalFlush                             True
+AnswerClipboard                        True
+CancelledLateAfterNewCompletion        True
+CancelledLateBeforeNewCompletion       True
+CloseOwnedWindow                       True
+ProductionSourceAndManifestUnchanged   True
+RemoveOwnedTemporaryPackage            True
+YieldDesktop                           True

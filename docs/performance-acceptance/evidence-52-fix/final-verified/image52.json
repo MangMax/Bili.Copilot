@@ -1,0 +1,3771 @@
+{
+  "observations": [
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:05:52.0849589+00:00",
+      "identity": 56679560,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:05:52.4243453+00:00",
+      "identity": 31954712,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:05:52.4884855+00:00",
+      "identity": 31954712
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:05:57.7839693+00:00",
+      "identity": 9290489,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:05:57.7945212+00:00",
+      "identity": 53667499,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:05:57.8009777+00:00",
+      "identity": 26588848,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:05:57.8299235+00:00",
+      "identity": 26588848
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:00.6553818+00:00",
+      "identity": 24174521,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:00.6586014+00:00",
+      "identity": 45833318,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:00.6767108+00:00",
+      "identity": 28311387,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:00.7169599+00:00",
+      "identity": 28311387
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:02.9457256+00:00",
+      "identity": 1664512,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:02.9495756+00:00",
+      "identity": 12867119,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:02.9650053+00:00",
+      "identity": 27059589,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:02.9786197+00:00",
+      "identity": 27059589
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:05.2563944+00:00",
+      "identity": 170067,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:05.2599397+00:00",
+      "identity": 2210881,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:05.2773062+00:00",
+      "identity": 38094735,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:05.2916828+00:00",
+      "identity": 38094735
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:10.780519+00:00",
+      "identity": 613583,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:10.7939325+00:00",
+      "identity": 7976582,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:10.8198166+00:00",
+      "identity": 7976582
+    },
+    {
+      "name": "Landscape",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:13.9648287+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 34755710,
+        "dpi": 1.5,
+        "managed": 30993552,
+        "privateBytes": 155807744,
+        "workingSet": 241426432,
+        "peakWorkingSet": 249217024,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:14.106118+00:00",
+      "identity": 22928593,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:14.4551627+00:00",
+      "identity": 22928593,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Landscape",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:14.4566189+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 34755710,
+        "dpi": 1.5,
+        "managed": 66311936,
+        "privateBytes": 210206720,
+        "workingSet": 283975680,
+        "peakWorkingSet": 283979776,
+        "images": [
+          {
+            "identity": 22928593,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Landscape",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:14.5033938+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 34755710,
+        "dpi": 1.5,
+        "managed": 66748432,
+        "privateBytes": 210530304,
+        "workingSet": 284356608,
+        "peakWorkingSet": 284356608,
+        "images": [
+          {
+            "identity": 22928593,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Portrait",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:17.0947254+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/portrait)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 30092725,
+        "dpi": 1.5,
+        "managed": 48258256,
+        "privateBytes": 201756672,
+        "workingSet": 285306880,
+        "peakWorkingSet": 285306880,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:17.1456905+00:00",
+      "identity": 9525852,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:17.1751167+00:00",
+      "identity": 9525852,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Portrait",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:17.1927386+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/portrait)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 30092725,
+        "dpi": 1.5,
+        "managed": 82938352,
+        "privateBytes": 249020416,
+        "workingSet": 315969536,
+        "peakWorkingSet": 315969536,
+        "images": [
+          {
+            "identity": 9525852,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 960,
+            "IsLoaded": true,
+            "pixelWidth": 1200,
+            "pixelHeight": 2400,
+            "decodeWidth": 720,
+            "decodeHeight": 1440,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Portrait",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:17.2226448+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/portrait)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 30092725,
+        "dpi": 1.5,
+        "managed": 83335128,
+        "privateBytes": 249020416,
+        "workingSet": 315969536,
+        "peakWorkingSet": 315969536,
+        "images": [
+          {
+            "identity": 9525852,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 960,
+            "IsLoaded": true,
+            "pixelWidth": 1200,
+            "pixelHeight": 2400,
+            "decodeWidth": 720,
+            "decodeHeight": 1440,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Square",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:19.5939954+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/square)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 28872470,
+        "dpi": 1.5,
+        "managed": 83799536,
+        "privateBytes": 248426496,
+        "workingSet": 317911040,
+        "peakWorkingSet": 338677760,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:19.6316662+00:00",
+      "identity": 21539257,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:19.6695839+00:00",
+      "identity": 21539257,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Square",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:19.6769757+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/square)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 28872470,
+        "dpi": 1.5,
+        "managed": 117853360,
+        "privateBytes": 304812032,
+        "workingSet": 356917248,
+        "peakWorkingSet": 356917248,
+        "images": [
+          {
+            "identity": 21539257,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 480,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 720,
+            "decodeHeight": 720,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Square",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:19.7111347+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/square)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 28872470,
+        "dpi": 1.5,
+        "managed": 118298672,
+        "privateBytes": 304828416,
+        "workingSet": 356962304,
+        "peakWorkingSet": 356962304,
+        "images": [
+          {
+            "identity": 21539257,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 480,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 720,
+            "decodeHeight": 720,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResizeBefore",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:22.217509+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 38571742,
+        "dpi": 1.5,
+        "managed": 118803432,
+        "privateBytes": 301981696,
+        "workingSet": 354254848,
+        "peakWorkingSet": 356966400,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:22.2528209+00:00",
+      "identity": 64526147,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:22.2773005+00:00",
+      "identity": 64526147,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ResizeBefore",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:22.2828641+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 38571742,
+        "dpi": 1.5,
+        "managed": 152916688,
+        "privateBytes": 354697216,
+        "workingSet": 389775360,
+        "peakWorkingSet": 389775360,
+        "images": [
+          {
+            "identity": 64526147,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:22.3867817+00:00",
+      "identity": 64526147,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Resize",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:22.3896829+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 38571742,
+        "dpi": 1.5,
+        "managed": 111364336,
+        "privateBytes": 352600064,
+        "workingSet": 400158720,
+        "peakWorkingSet": 400158720,
+        "images": [
+          {
+            "identity": 64526147,
+            "source": "BitmapImage",
+            "width": 300,
+            "height": 150,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 450,
+            "decodeHeight": 225,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Resize",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:22.4370584+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 38571742,
+        "dpi": 1.5,
+        "managed": 112622080,
+        "privateBytes": 352604160,
+        "workingSet": 400216064,
+        "peakWorkingSet": 400216064,
+        "images": [
+          {
+            "identity": 64526147,
+            "source": "BitmapImage",
+            "width": 300,
+            "height": 150,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 450,
+            "decodeHeight": 225,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResizeQuiescent",
+      "passed": true,
+      "requests": 5,
+      "observationMilliseconds": 400
+    },
+    {
+      "name": "Resize",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:22.89005+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 38571742,
+        "dpi": 1.5,
+        "managed": 113211848,
+        "privateBytes": 352358400,
+        "workingSet": 400089088,
+        "peakWorkingSet": 400224256,
+        "images": [
+          {
+            "identity": 64526147,
+            "source": "BitmapImage",
+            "width": 300,
+            "height": 150,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 450,
+            "decodeHeight": 225,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SvgCharset",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:25.4697078+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/svg)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 58140748,
+        "dpi": 1.5,
+        "managed": 114396312,
+        "privateBytes": 351678464,
+        "workingSet": 399564800,
+        "peakWorkingSet": 408449024,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:25.5193436+00:00",
+      "identity": 8420759,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:25.7970391+00:00",
+      "identity": 45866579,
+      "source": "SvgImageSource"
+    },
+    {
+      "name": "SvgCharset",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:25.7972741+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/svg)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 58140748,
+        "dpi": 1.5,
+        "managed": 115196408,
+        "privateBytes": 391135232,
+        "workingSet": 441008128,
+        "peakWorkingSet": 460431360,
+        "images": [
+          {
+            "identity": 45866579,
+            "source": "SvgImageSource",
+            "width": 240,
+            "height": 100,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": "\u221E",
+            "svgHeight": "\u221E",
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ActualRendererInput",
+      "Text": "\u003Csvg xmlns=\u0022http://www.w3.org/2000/svg\u0022 width=\u0022240\u0022 height=\u0022100\u0022\u003E\u003Crect width=\u0022240\u0022 height=\u0022100\u0022 fill=\u0022teal\u0022/\u003E\u003Ctext x=\u002220\u0022 y=\u002260\u0022 font-size=\u002240\u0022 fill=\u0022white\u0022\u003Ecaf\u00E9\u003C/text\u003E\u003C/svg\u003E",
+      "Calls": 1
+    },
+    {
+      "name": "SvgCharset",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:25.8324534+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/svg)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 58140748,
+        "dpi": 1.5,
+        "managed": 115842616,
+        "privateBytes": 391135232,
+        "workingSet": 441040896,
+        "peakWorkingSet": 460431360,
+        "images": [
+          {
+            "identity": 45866579,
+            "source": "SvgImageSource",
+            "width": 240,
+            "height": 100,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": "\u221E",
+            "svgHeight": "\u221E",
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "CachedBefore",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:28.0070942+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 37566912,
+        "dpi": 1.5,
+        "managed": 116557368,
+        "privateBytes": 391036928,
+        "workingSet": 441073664,
+        "peakWorkingSet": 464371712,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:28.0473059+00:00",
+      "identity": 42952607,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:28.0506235+00:00",
+      "identity": 11816273,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:28.0508199+00:00",
+      "identity": 11816273,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:28.0591032+00:00",
+      "identity": 11816273
+    },
+    {
+      "name": "CachedBefore",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:28.0593486+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 37566912,
+        "dpi": 1.5,
+        "managed": 117285080,
+        "privateBytes": 391266304,
+        "workingSet": 441344000,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 11816273,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:28.0590994+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:28.1095971+00:00",
+      "identity": 42005190,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:28.1119773+00:00",
+      "identity": 9196566,
+      "source": null
+    },
+    {
+      "name": "CachedProvider",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:28.1122122+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 37566912,
+        "dpi": 1.5,
+        "managed": 118045792,
+        "privateBytes": 391335936,
+        "workingSet": 441458688,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 9196566,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "CachedProvider",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:28.1552954+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 37566912,
+        "dpi": 1.5,
+        "managed": 118831872,
+        "privateBytes": 391348224,
+        "workingSet": 441479168,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 11816273,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:28.0590994+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "CachedProvider",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:28.1934005+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 37566912,
+        "dpi": 1.5,
+        "managed": 119646360,
+        "privateBytes": 391352320,
+        "workingSet": 441487360,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 11816273,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:28.0590994+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:30.1466375+00:00",
+      "identity": 31403715,
+      "source": null
+    },
+    {
+      "name": "LateProviderUnload",
+      "passed": true,
+      "phase": "old provider pending",
+      "state": {
+        "utc": "2026-10-29T19:06:30.1474572+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 47644299,
+        "dpi": 1.5,
+        "managed": 120544992,
+        "privateBytes": 390316032,
+        "workingSet": 440537088,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 31403715,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:30.1875268+00:00",
+      "identity": 2985522,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:30.1882663+00:00",
+      "identity": 38811791,
+      "source": null
+    },
+    {
+      "name": "LateProviderUnloadCurrent",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:30.1884222+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 47644299,
+        "dpi": 1.5,
+        "managed": 121430176,
+        "privateBytes": 390389760,
+        "workingSet": 440614912,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 38811791,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:30.2319824+00:00",
+      "identity": 66476182,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:30.2321367+00:00",
+      "identity": 66476182,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:30.2405213+00:00",
+      "identity": 66476182
+    },
+    {
+      "name": "LateProviderUnloadCurrent",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:30.2407347+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 47644299,
+        "dpi": 1.5,
+        "managed": 122329256,
+        "privateBytes": 390430720,
+        "workingSet": 440651776,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 66476182,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:30.2405182+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "LateProviderUnload",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:30.2821371+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 47644299,
+        "dpi": 1.5,
+        "managed": 123244280,
+        "privateBytes": 390438912,
+        "workingSet": 440672256,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 66476182,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:30.2405182+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:32.2912633+00:00",
+      "identity": 52934828,
+      "source": null
+    },
+    {
+      "name": "LateProviderClear",
+      "passed": true,
+      "phase": "old provider pending",
+      "state": {
+        "utc": "2026-10-29T19:06:32.2938735+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 5988000,
+        "dpi": 1.5,
+        "managed": 124269240,
+        "privateBytes": 390447104,
+        "workingSet": 440696832,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 52934828,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:32.338025+00:00",
+      "identity": 37706198,
+      "source": null
+    },
+    {
+      "name": "LateProviderClearCurrent",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:32.3381215+00:00",
+        "text": "![current](http://127.0.0.1:50609/provided-current)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 5988000,
+        "dpi": 1.5,
+        "managed": 125300656,
+        "privateBytes": 390492160,
+        "workingSet": 440754176,
+        "peakWorkingSet": 464371712,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:32.3754097+00:00",
+      "identity": 30801927,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:32.3755505+00:00",
+      "identity": 30801927,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:32.3846246+00:00",
+      "identity": 30801927
+    },
+    {
+      "name": "LateProviderClearCurrent",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:32.3849107+00:00",
+        "text": "![current](http://127.0.0.1:50609/provided-current)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 5988000,
+        "dpi": 1.5,
+        "managed": 126355040,
+        "privateBytes": 390701056,
+        "workingSet": 441053184,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 30801927,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:32.3846202+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "LateProviderClear",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:32.4233169+00:00",
+        "text": "![current](http://127.0.0.1:50609/provided-current)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 5988000,
+        "dpi": 1.5,
+        "managed": 127431888,
+        "privateBytes": 390705152,
+        "workingSet": 441069568,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 30801927,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:32.3846202+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:34.2974431+00:00",
+      "identity": 25273241,
+      "source": null
+    },
+    {
+      "name": "LateProviderReattach",
+      "passed": true,
+      "phase": "old provider pending",
+      "state": {
+        "utc": "2026-10-29T19:06:34.300999+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 26083731,
+        "dpi": 1.5,
+        "managed": 49135624,
+        "privateBytes": 326369280,
+        "workingSet": 390356992,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 25273241,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:34.3589476+00:00",
+      "identity": 8601054,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:34.3595892+00:00",
+      "identity": 44704848,
+      "source": null
+    },
+    {
+      "name": "LateProviderReattachCurrent",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:34.3597057+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 26083731,
+        "dpi": 1.5,
+        "managed": 52116176,
+        "privateBytes": 328302592,
+        "workingSet": 391946240,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 44704848,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:34.4035571+00:00",
+      "identity": 1939614,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:34.4036608+00:00",
+      "identity": 1939614,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:34.4106421+00:00",
+      "identity": 1939614
+    },
+    {
+      "name": "LateProviderReattachCurrent",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:34.4109248+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 26083731,
+        "dpi": 1.5,
+        "managed": 53346544,
+        "privateBytes": 329408512,
+        "workingSet": 393052160,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 1939614,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:34.4106383+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "LateProviderReattach",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:34.4471585+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 26083731,
+        "dpi": 1.5,
+        "managed": 54609344,
+        "privateBytes": 330407936,
+        "workingSet": 394047488,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 1939614,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:34.4106383+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:36.2606661+00:00",
+      "identity": 37217675,
+      "source": null
+    },
+    {
+      "name": "LateProviderReopen",
+      "passed": true,
+      "phase": "old provider pending",
+      "state": {
+        "utc": "2026-10-29T19:06:36.2615508+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 39276786,
+        "dpi": 1.5,
+        "managed": 55992184,
+        "privateBytes": 334176256,
+        "workingSet": 397979648,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 37217675,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "LateProviderReopenCurrent",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:36.2999399+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided-current)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 29695694,
+        "dpi": 1.5,
+        "managed": 57391600,
+        "privateBytes": 335446016,
+        "workingSet": 399343616,
+        "peakWorkingSet": 464371712,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:36.3383954+00:00",
+      "identity": 18271853,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:36.3407982+00:00",
+      "identity": 12161847,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:36.3408964+00:00",
+      "identity": 12161847,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:36.3471287+00:00",
+      "identity": 12161847
+    },
+    {
+      "name": "LateProviderReopenCurrent",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:36.347265+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided-current)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 29695694,
+        "dpi": 1.5,
+        "managed": 58823112,
+        "privateBytes": 336732160,
+        "workingSet": 400637952,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 12161847,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:36.3471254+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "LateProviderReopen",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:36.3900452+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided-current)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 29695694,
+        "dpi": 1.5,
+        "managed": 60253648,
+        "privateBytes": 338034688,
+        "workingSet": 401940480,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 12161847,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:36.3471254+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:38.1793806+00:00",
+      "identity": 62074559,
+      "source": null
+    },
+    {
+      "name": "SlowBodyUnload",
+      "passed": true,
+      "phase": "64 body bytes sent; remainder held",
+      "state": {
+        "utc": "2026-10-29T19:06:38.1825363+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/slow)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 57849532,
+        "dpi": 1.5,
+        "managed": 61851944,
+        "privateBytes": 339369984,
+        "workingSet": 403341312,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 62074559,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:38.2308469+00:00",
+      "identity": 63930740,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:38.2327416+00:00",
+      "identity": 64093153,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:38.2352067+00:00",
+      "identity": 18260609,
+      "source": null
+    },
+    {
+      "name": "SlowBodyUnloadCurrent",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:38.2366642+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 57849532,
+        "dpi": 1.5,
+        "managed": 63569664,
+        "privateBytes": 341209088,
+        "workingSet": 405401600,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 18260609,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:38.3683275+00:00",
+      "identity": 18260609,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SlowBodyUnloadCurrent",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:38.3724241+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 57849532,
+        "dpi": 1.5,
+        "managed": 98875816,
+        "privateBytes": 377819136,
+        "workingSet": 434069504,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 18260609,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SlowBodyUnload",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:38.4863921+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 57849532,
+        "dpi": 1.5,
+        "managed": 52244056,
+        "privateBytes": 352948224,
+        "workingSet": 426754048,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 18260609,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:40.4121172+00:00",
+      "identity": 61240277,
+      "source": null
+    },
+    {
+      "name": "SlowBodyClear",
+      "passed": true,
+      "phase": "64 body bytes sent; remainder held",
+      "state": {
+        "utc": "2026-10-29T19:06:40.4147074+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/slow)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 5613702,
+        "dpi": 1.5,
+        "managed": 54086688,
+        "privateBytes": 352563200,
+        "workingSet": 426795008,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 61240277,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:40.4646358+00:00",
+      "identity": 30313445,
+      "source": null
+    },
+    {
+      "name": "SlowBodyClearCurrent",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:40.4647723+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 5613702,
+        "dpi": 1.5,
+        "managed": 56042392,
+        "privateBytes": 352616448,
+        "workingSet": 426934272,
+        "peakWorkingSet": 464371712,
+        "images": []
+      }
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:40.5415279+00:00",
+      "identity": 30313445,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SlowBodyClearCurrent",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:40.5476533+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 5613702,
+        "dpi": 1.5,
+        "managed": 91481568,
+        "privateBytes": 371163136,
+        "workingSet": 436695040,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 30313445,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SlowBodyClear",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:40.5935575+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 5613702,
+        "dpi": 1.5,
+        "managed": 52390104,
+        "privateBytes": 343777280,
+        "workingSet": 426106880,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 30313445,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:42.5430359+00:00",
+      "identity": 32401616,
+      "source": null
+    },
+    {
+      "name": "SlowBodyReattach",
+      "passed": true,
+      "phase": "64 body bytes sent; remainder held",
+      "state": {
+        "utc": "2026-10-29T19:06:42.5461842+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/slow)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 65309286,
+        "dpi": 1.5,
+        "managed": 54395936,
+        "privateBytes": 341827584,
+        "workingSet": 424505344,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 32401616,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:42.5934196+00:00",
+      "identity": 41057750,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:42.5948814+00:00",
+      "identity": 9565253,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:42.59614+00:00",
+      "identity": 9786995,
+      "source": null
+    },
+    {
+      "name": "SlowBodyReattachCurrent",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:42.5963379+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 65309286,
+        "dpi": 1.5,
+        "managed": 56612928,
+        "privateBytes": 342085632,
+        "workingSet": 424964096,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 9786995,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:42.6616466+00:00",
+      "identity": 9786995,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SlowBodyReattachCurrent",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:42.6670076+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 65309286,
+        "dpi": 1.5,
+        "managed": 92288064,
+        "privateBytes": 368889856,
+        "workingSet": 442970112,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 9786995,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SlowBodyReattach",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:42.7217363+00:00",
+        "text": "![current](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 65309286,
+        "dpi": 1.5,
+        "managed": 52725432,
+        "privateBytes": 334962688,
+        "workingSet": 425840640,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 9786995,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:44.5797824+00:00",
+      "identity": 13590492,
+      "source": null
+    },
+    {
+      "name": "SlowBodyReopen",
+      "passed": true,
+      "phase": "64 body bytes sent; remainder held",
+      "state": {
+        "utc": "2026-10-29T19:06:44.5828184+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/slow)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 47766073,
+        "dpi": 1.5,
+        "managed": 54977504,
+        "privateBytes": 334426112,
+        "workingSet": 425517056,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 13590492,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SlowBodyReopenCurrent",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:44.6218839+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 35086436,
+        "dpi": 1.5,
+        "managed": 59531704,
+        "privateBytes": 334483456,
+        "workingSet": 425644032,
+        "peakWorkingSet": 464371712,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:44.6639223+00:00",
+      "identity": 40872514,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:44.6925134+00:00",
+      "identity": 40872514,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SlowBodyReopenCurrent",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:44.6983672+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 35086436,
+        "dpi": 1.5,
+        "managed": 95467928,
+        "privateBytes": 365527040,
+        "workingSet": 447889408,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 40872514,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SlowBodyReopen",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:44.7517532+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 35086436,
+        "dpi": 1.5,
+        "managed": 55146632,
+        "privateBytes": 336887808,
+        "workingSet": 428261376,
+        "peakWorkingSet": 464371712,
+        "images": [
+          {
+            "identity": 40872514,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConcurrentHTTP",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:46.5033819+00:00",
+        "text": "![square 0](http://127.0.0.1:50609/square?n=0)\n\n![square 1](http://127.0.0.1:50609/square?n=1)\n\n![square 2](http://127.0.0.1:50609/square?n=2)\n\n![square 3](http://127.0.0.1:50609/square?n=3)\n\n![square 4](http://127.0.0.1:50609/square?n=4)\n\n![square 5](http://127.0.0.1:50609/square?n=5)\n\n![square 6](http://127.0.0.1:50609/square?n=6)\n\n![square 7](http://127.0.0.1:50609/square?n=7)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 16559783,
+        "dpi": 1.5,
+        "managed": 57617632,
+        "privateBytes": 338649088,
+        "workingSet": 430096384,
+        "peakWorkingSet": 464371712,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:46.548328+00:00",
+      "identity": 42443185,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:46.5485178+00:00",
+      "identity": 33467136,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:46.5485836+00:00",
+      "identity": 32419596,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:46.5486398+00:00",
+      "identity": 18801564,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:46.5486952+00:00",
+      "identity": 43093740,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:46.5487604+00:00",
+      "identity": 23347710,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:46.5488499+00:00",
+      "identity": 35084785,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:46.5489369+00:00",
+      "identity": 53449023,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:46.6608985+00:00",
+      "identity": 42443185,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:46.6766522+00:00",
+      "identity": 18801564,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:46.6941729+00:00",
+      "identity": 32419596,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:46.7173947+00:00",
+      "identity": 33467136,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:46.7492179+00:00",
+      "identity": 23347710,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:46.7493575+00:00",
+      "identity": 53449023,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:46.749456+00:00",
+      "identity": 43093740,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:46.749541+00:00",
+      "identity": 35084785,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ConcurrentHTTP",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:46.7559941+00:00",
+        "text": "![square 0](http://127.0.0.1:50609/square?n=0)\n\n![square 1](http://127.0.0.1:50609/square?n=1)\n\n![square 2](http://127.0.0.1:50609/square?n=2)\n\n![square 3](http://127.0.0.1:50609/square?n=3)\n\n![square 4](http://127.0.0.1:50609/square?n=4)\n\n![square 5](http://127.0.0.1:50609/square?n=5)\n\n![square 6](http://127.0.0.1:50609/square?n=6)\n\n![square 7](http://127.0.0.1:50609/square?n=7)",
+        "blocks": 8,
+        "loaded": true,
+        "identity": 16559783,
+        "dpi": 1.5,
+        "managed": 252535552,
+        "privateBytes": 638181376,
+        "workingSet": 656797696,
+        "peakWorkingSet": 657334272,
+        "images": [
+          {
+            "identity": 42443185,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 33467136,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 32419596,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 18801564,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 43093740,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 23347710,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 35084785,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 53449023,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConcurrentHTTP",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:46.8094262+00:00",
+        "text": "![square 0](http://127.0.0.1:50609/square?n=0)\n\n![square 1](http://127.0.0.1:50609/square?n=1)\n\n![square 2](http://127.0.0.1:50609/square?n=2)\n\n![square 3](http://127.0.0.1:50609/square?n=3)\n\n![square 4](http://127.0.0.1:50609/square?n=4)\n\n![square 5](http://127.0.0.1:50609/square?n=5)\n\n![square 6](http://127.0.0.1:50609/square?n=6)\n\n![square 7](http://127.0.0.1:50609/square?n=7)",
+        "blocks": 8,
+        "loaded": true,
+        "identity": 16559783,
+        "dpi": 1.5,
+        "managed": 256175816,
+        "privateBytes": 641376256,
+        "workingSet": 659951616,
+        "peakWorkingSet": 659951616,
+        "images": [
+          {
+            "identity": 42443185,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 33467136,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 32419596,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 18801564,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 43093740,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 23347710,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 35084785,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 53449023,
+            "source": "BitmapImage",
+            "width": 120,
+            "height": 120,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 180,
+            "decodeHeight": 180,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "InlineHttpReattachBefore",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:48.8277736+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 15622276,
+        "dpi": 1.5,
+        "managed": 259185464,
+        "privateBytes": 645206016,
+        "workingSet": 664100864,
+        "peakWorkingSet": 664248320,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:48.8709935+00:00",
+      "identity": 5496458,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:48.8982927+00:00",
+      "identity": 5496458,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "InlineHttpReattachBefore",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:48.9059844+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 15622276,
+        "dpi": 1.5,
+        "managed": 295834584,
+        "privateBytes": 700858368,
+        "workingSet": 702484480,
+        "peakWorkingSet": 702484480,
+        "images": [
+          {
+            "identity": 5496458,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:48.9525661+00:00",
+      "identity": 53791670,
+      "source": null
+    },
+    {
+      "name": "InlineHttpReattachAfter",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:48.9526868+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 15622276,
+        "dpi": 1.5,
+        "managed": 298926312,
+        "privateBytes": 703963136,
+        "workingSet": 705556480,
+        "peakWorkingSet": 705556480,
+        "images": []
+      }
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:49.0215156+00:00",
+      "identity": 53791670,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "InlineHttpReattachAfter",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:49.0237849+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 15622276,
+        "dpi": 1.5,
+        "managed": 335741048,
+        "privateBytes": 759468032,
+        "workingSet": 743968768,
+        "peakWorkingSet": 743968768,
+        "images": [
+          {
+            "identity": 53791670,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "InlineHttpReattach",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:49.0718813+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 15622276,
+        "dpi": 1.5,
+        "managed": 339096240,
+        "privateBytes": 761794560,
+        "workingSet": 746287104,
+        "peakWorkingSet": 747315200,
+        "images": [
+          {
+            "identity": 53791670,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:51.1122133+00:00",
+      "identity": 41677319,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:51.1205276+00:00",
+      "identity": 35987228,
+      "source": null
+    },
+    {
+      "name": "InlineLateProviderAfter",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:06:51.1206298+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 26699568,
+        "dpi": 1.5,
+        "managed": 342661712,
+        "privateBytes": 765046784,
+        "workingSet": 749662208,
+        "peakWorkingSet": 749940736,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:51.1719774+00:00",
+      "identity": 58972140,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:06:51.1721848+00:00",
+      "identity": 58972140,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:06:51.1824754+00:00",
+      "identity": 58972140
+    },
+    {
+      "name": "InlineLateProviderAfter",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:06:51.1827613+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 26699568,
+        "dpi": 1.5,
+        "managed": 346305488,
+        "privateBytes": 768868352,
+        "workingSet": 753479680,
+        "peakWorkingSet": 753479680,
+        "images": [
+          {
+            "identity": 58972140,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:51.1824724+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "InlineLateProvider",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:51.2365662+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 26699568,
+        "dpi": 1.5,
+        "managed": 349977848,
+        "privateBytes": 772575232,
+        "workingSet": 757190656,
+        "peakWorkingSet": 757190656,
+        "images": [
+          {
+            "identity": 58972140,
+            "source": "BitmapImage",
+            "width": 96,
+            "height": 96,
+            "IsLoaded": true,
+            "pixelWidth": 150,
+            "pixelHeight": 150,
+            "decodeWidth": 0,
+            "decodeHeight": 0,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": "2026-10-29T19:06:51.1824724+00:00",
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:53.3325955+00:00",
+      "identity": 47497124,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:53.3328225+00:00",
+      "identity": 26795985,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:53.3329143+00:00",
+      "identity": 12803493,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:53.3330038+00:00",
+      "identity": 32227693,
+      "source": null
+    },
+    {
+      "name": "FourSvgEntered",
+      "passed": true,
+      "phase": "four actual HTTP loads now await noncooperative controlled renderer",
+      "state": {
+        "utc": "2026-10-29T19:06:53.3366597+00:00",
+        "text": "![held](http://127.0.0.1:50609/svg?held=0)\n\n![held](http://127.0.0.1:50609/svg?held=1)\n\n![held](http://127.0.0.1:50609/svg?held=2)\n\n![held](http://127.0.0.1:50609/svg?held=3)",
+        "blocks": 4,
+        "loaded": true,
+        "identity": 1712402,
+        "dpi": 1.5,
+        "managed": 352068520,
+        "privateBytes": 699670528,
+        "workingSet": 762064896,
+        "peakWorkingSet": 762187776,
+        "images": [
+          {
+            "identity": 47497124,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 26795985,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 12803493,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 32227693,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:53.3906126+00:00",
+      "identity": 53219720,
+      "source": null
+    },
+    {
+      "name": "SlotsHeldAfterUnload",
+      "passed": true,
+      "Calls": 4,
+      "before": 28,
+      "after": 28
+    },
+    {
+      "name": "SlotsRecoveredAfterRelease",
+      "passed": true,
+      "Calls": 5,
+      "requests": 29,
+      "oldReturned": 4,
+      "oldPublished": false
+    },
+    {
+      "name": "Slots52",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:54.2488133+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/svg?fifth)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 46421085,
+        "dpi": 1.5,
+        "managed": 356395928,
+        "privateBytes": 871665664,
+        "workingSet": 927481856,
+        "peakWorkingSet": 970448896,
+        "images": [
+          {
+            "identity": 53219720,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:06:54.3119064+00:00",
+      "identity": 52191047,
+      "source": "SvgImageSource"
+    },
+    {
+      "name": "BoundaryDecode-landscape",
+      "decoded": {
+        "PixelWidth": 2400,
+        "PixelHeight": 1200,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 135
+      },
+      "expectedWidth": 270,
+      "expectedHeight": 135
+    },
+    {
+      "name": "Boundary-landscape",
+      "passed": true,
+      "decoded": {
+        "PixelWidth": 2400,
+        "PixelHeight": 1200,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 135
+      },
+      "svgText": null,
+      "width": 180,
+      "height": 90
+    },
+    {
+      "name": "BoundaryDecode-portrait",
+      "decoded": {
+        "PixelWidth": 1200,
+        "PixelHeight": 2400,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 540
+      },
+      "expectedWidth": 270,
+      "expectedHeight": 540
+    },
+    {
+      "name": "Boundary-portrait",
+      "passed": true,
+      "decoded": {
+        "PixelWidth": 1200,
+        "PixelHeight": 2400,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 540
+      },
+      "svgText": null,
+      "width": 180,
+      "height": 360
+    },
+    {
+      "name": "BoundaryDecode-square",
+      "decoded": {
+        "PixelWidth": 2000,
+        "PixelHeight": 2000,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 270
+      },
+      "expectedWidth": 270,
+      "expectedHeight": 270
+    },
+    {
+      "name": "Boundary-square",
+      "passed": true,
+      "decoded": {
+        "PixelWidth": 2000,
+        "PixelHeight": 2000,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 270
+      },
+      "svgText": null,
+      "width": 180,
+      "height": 180
+    },
+    {
+      "name": "Boundary-svg",
+      "passed": true,
+      "decoded": null,
+      "svgText": "\u003Csvg xmlns=\u0022http://www.w3.org/2000/svg\u0022 width=\u0022240\u0022 height=\u0022100\u0022\u003E\u003Crect width=\u0022240\u0022 height=\u0022100\u0022 fill=\u0022teal\u0022/\u003E\u003Ctext x=\u002220\u0022 y=\u002260\u0022 font-size=\u002240\u0022 fill=\u0022white\u0022\u003Ecaf\u00E9\u003C/text\u003E\u003C/svg\u003E",
+      "width": 240,
+      "height": 100
+    },
+    {
+      "name": "PreloadedSourceEvents-landscape",
+      "sourceOpened": true,
+      "imageOpened": false,
+      "loadStatus": "SetSourceAsync completed",
+      "width": 180,
+      "height": 90
+    },
+    {
+      "name": "PreloadedSourceEvents-svg",
+      "sourceOpened": true,
+      "imageOpened": false,
+      "loadStatus": "Success",
+      "width": 180,
+      "height": 75.33333587646484
+    },
+    {
+      "name": "Boundary52",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:06:57.1826808+00:00",
+        "text": "![synthetic](http://127.0.0.1:50609/svg?fifth)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 46421085,
+        "dpi": 1.5,
+        "managed": 118464784,
+        "privateBytes": 996904960,
+        "workingSet": 1043718144,
+        "peakWorkingSet": 1065160704,
+        "images": []
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "landscape",
+      "bytes": 8640054,
+      "sha256": "24D499FC16CE06CA9B153E4EA5C85838DC3AC40017CD08602E3A8F14767A6B39"
+    },
+    {
+      "name": "portrait",
+      "bytes": 8640054,
+      "sha256": "C8E7C4A9CEED39B2A252995DCCF471115BEC48A8BFE65C784FAFE940A2770047"
+    },
+    {
+      "name": "square",
+      "bytes": 12000054,
+      "sha256": "7B2FE0B242AB2BE376A92B3869916C1C14030298CCDE8C494C91E7A0C6663ABC"
+    },
+    {
+      "name": "svg",
+      "bytes": 174,
+      "sha256": "20F9570ECD1C1EBA7E007ED2692C689BC2AD94AFEB4DE694E07A400B236DCD6D"
+    }
+  ],
+  "requests": 35,
+  "connections": 8,
+  "active": 0,
+  "peakServerResponses": 2,
+  "http": [
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:14.360906+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:14.362574+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 2,
+      "path": "portrait",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:17.1487186+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 2,
+      "path": "portrait",
+      "utc": "2026-10-29T19:06:17.1501093+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 3,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:19.6338452+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 3,
+      "path": "square",
+      "utc": "2026-10-29T19:06:19.6352553+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 4,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:22.2556114+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 4,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:22.2567258+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 5,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:22.3256065+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 5,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:22.3268116+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 6,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:25.525643+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 6,
+      "path": "svg",
+      "utc": "2026-10-29T19:06:25.525832+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 7,
+      "path": "slow",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:38.1816585+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 2,
+      "request": 8,
+      "path": "landscape",
+      "active": 2,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:38.2867067+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 2,
+      "request": 8,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:38.2878634+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 7,
+      "path": "slow",
+      "utc": "2026-10-29T19:06:38.4204474+00:00"
+    },
+    {
+      "kind": "connection-end",
+      "id": 1,
+      "error": "IOException",
+      "utc": "2026-10-29T19:06:38.482315+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 2,
+      "request": 9,
+      "path": "slow",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:40.4142671+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 3,
+      "request": 10,
+      "path": "landscape",
+      "active": 2,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:40.5166017+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 3,
+      "request": 10,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:40.5190371+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 2,
+      "request": 9,
+      "path": "slow",
+      "utc": "2026-10-29T19:06:40.5909228+00:00"
+    },
+    {
+      "kind": "connection-end",
+      "id": 2,
+      "error": "IOException",
+      "utc": "2026-10-29T19:06:40.5920047+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 3,
+      "request": 11,
+      "path": "slow",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:42.546011+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 4,
+      "request": 12,
+      "path": "landscape",
+      "active": 2,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:42.6419512+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 4,
+      "request": 12,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:42.6432522+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 3,
+      "request": 11,
+      "path": "slow",
+      "utc": "2026-10-29T19:06:42.7183346+00:00"
+    },
+    {
+      "kind": "connection-end",
+      "id": 3,
+      "error": "IOException",
+      "utc": "2026-10-29T19:06:42.7193044+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 4,
+      "request": 13,
+      "path": "slow",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:44.5826745+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 14,
+      "path": "landscape",
+      "active": 2,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:44.6682629+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 14,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:44.6693895+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 4,
+      "request": 13,
+      "path": "slow",
+      "utc": "2026-10-29T19:06:44.7493434+00:00"
+    },
+    {
+      "kind": "connection-end",
+      "id": 4,
+      "error": "IOException",
+      "utc": "2026-10-29T19:06:44.7501787+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 15,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:46.5547978+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 15,
+      "path": "square",
+      "utc": "2026-10-29T19:06:46.5565753+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 6,
+      "request": 16,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:46.5567266+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 6,
+      "request": 16,
+      "path": "square",
+      "utc": "2026-10-29T19:06:46.5584886+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 7,
+      "request": 17,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:46.5983551+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 7,
+      "request": 17,
+      "path": "square",
+      "utc": "2026-10-29T19:06:46.5999124+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 8,
+      "request": 18,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:46.6228093+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 8,
+      "request": 18,
+      "path": "square",
+      "utc": "2026-10-29T19:06:46.6251333+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 8,
+      "request": 19,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:46.6616238+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 8,
+      "request": 19,
+      "path": "square",
+      "utc": "2026-10-29T19:06:46.663139+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 8,
+      "request": 20,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:46.679935+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 8,
+      "request": 20,
+      "path": "square",
+      "utc": "2026-10-29T19:06:46.6811715+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 8,
+      "request": 21,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:46.6982374+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 8,
+      "request": 21,
+      "path": "square",
+      "utc": "2026-10-29T19:06:46.7000359+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 8,
+      "request": 22,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:46.7180753+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 8,
+      "request": 22,
+      "path": "square",
+      "utc": "2026-10-29T19:06:46.7197909+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 8,
+      "request": 23,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:48.8738251+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 8,
+      "request": 23,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:48.8750674+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 8,
+      "request": 24,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:48.9966444+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 8,
+      "request": 24,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:48.9982695+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 8,
+      "request": 25,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:53.3346424+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 8,
+      "request": 25,
+      "path": "svg",
+      "utc": "2026-10-29T19:06:53.3347239+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 7,
+      "request": 26,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:53.3347386+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 7,
+      "request": 26,
+      "path": "svg",
+      "utc": "2026-10-29T19:06:53.3347944+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 6,
+      "request": 27,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:53.3347998+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 6,
+      "request": 27,
+      "path": "svg",
+      "utc": "2026-10-29T19:06:53.3348586+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 28,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:53.3348679+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 28,
+      "path": "svg",
+      "utc": "2026-10-29T19:06:53.334928+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 29,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:54.2462539+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 29,
+      "path": "svg",
+      "utc": "2026-10-29T19:06:54.2463533+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 30,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:56.492061+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 30,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:56.494871+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 31,
+      "path": "portrait",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:56.5460739+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 31,
+      "path": "portrait",
+      "utc": "2026-10-29T19:06:56.5475601+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 32,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:56.6042502+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 32,
+      "path": "square",
+      "utc": "2026-10-29T19:06:56.6066521+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 33,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:56.6523953+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 33,
+      "path": "svg",
+      "utc": "2026-10-29T19:06:56.6526268+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 34,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:56.6903046+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 34,
+      "path": "landscape",
+      "utc": "2026-10-29T19:06:56.6921953+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 5,
+      "request": 35,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:50609"
+      ],
+      "utc": "2026-10-29T19:06:56.9387622+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 5,
+      "request": 35,
+      "path": "svg",
+      "utc": "2026-10-29T19:06:56.9388718+00:00"
+    }
+  ]
+}

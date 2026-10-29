@@ -1,0 +1,25 @@
+{
+  "appPid": 34032,
+  "checks": [
+    {
+      "name": "Landscape",
+      "passed": false,
+      "status": "Landscape: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__1>d.MoveNext()"
+    },
+    {
+      "name": "Boundary52",
+      "passed": false,
+      "status": "Boundary52: FAIL | System.Exception: boundary decode mismatch\r\n   at Acceptance.App.Require52(Boolean value, String message)\r\n   at Acceptance.App.<>c__DisplayClass58_1.<<Boundary52>b__0>d.MoveNext()\r\n--- End of stack trace from previous location ---\r\n   at BiliCopilot.UI.Controls.Markdown.MarkdownImageLoader.LoadAsync(Uri uri, Func`4 consume, CancellationToken cancellationToken)\r\n   at Acceptance.App.Boundary52()\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__2>d.MoveNext()"
+    },
+    {
+      "passed": true,
+      "name": "Cleanup"
+    }
+  ],
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-84527-layout-c",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\boundary-c\\Landscape.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\boundary-c\\Boundary52.png"
+  ],
+  "target": "local"
+}

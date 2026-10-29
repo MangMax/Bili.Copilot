@@ -1,0 +1,35 @@
+{
+  "elementId": "lbl-aistreamingresp-a51e",
+  "element": {
+    "type": "Text",
+    "name": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.",
+    "automationId": "AIStreamingResponse",
+    "className": "TextBlock",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 345,
+    "y": 611,
+    "width": 1518,
+    "height": 280,
+    "selector": "lbl-aistreamingresp-a51e",
+    "isInvokable": false
+  },
+  "properties": {
+    "Name": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.",
+    "AutomationId": "AIStreamingResponse",
+    "ControlType": "Text",
+    "ClassName": "TextBlock",
+    "IsEnabled": "True",
+    "IsOffscreen": "False",
+    "BoundingRectangle": "345,611,1518,280",
+    "HasKeyboardFocus": "False",
+    "IsKeyboardFocusable": "False",
+    "IsPassword": "False",
+    "FontWeight": "400",
+    "FontName": "Segoe UI Variable",
+    "FontSize": "14",
+    "ForegroundColor": "16777215",
+    "IsItalic": "False",
+    "StrikethroughStyle": "0"
+  }
+}

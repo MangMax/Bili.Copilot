@@ -1,0 +1,32 @@
+{
+  "scope": "project",
+  "projectName": "Harness",
+  "projectDir": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-red",
+  "caveats": [
+    "No Windows SDK at or below the targeted 10.0.22621.0 is installed; answering from 10.0.28000.0. Results may include APIs that do not exist at your target.",
+    "Installed Windows App Runtime 2.6 does not match the referenced Windows App SDK 1.8.39; its metadata is excluded from this project\u0027s API surface."
+  ],
+  "fullName": "Microsoft.UI.Xaml.Controls.Image",
+  "kind": "Class",
+  "description": "Represents a control that displays an image. The image source is specified by referring to an image file, using several supported formats. The image source can also be set with a stream. See Remarks for the list of supported image source formats.",
+  "baseType": "Microsoft.UI.Xaml.FrameworkElement",
+  "filter": "ImageOpened",
+  "totalProperties": 211,
+  "totalEvents": 50,
+  "totalMethods": 55,
+  "properties": [],
+  "events": [
+    {
+      "name": "ImageOpened",
+      "kind": "Event",
+      "signature": "event Microsoft.UI.Xaml.RoutedEventHandler ImageOpened",
+      "returnType": "Microsoft.UI.Xaml.RoutedEventHandler",
+      "description": "Occurs when the image source is downloaded and decoded with no failure. You can use this event to determine the natural size of the image source."
+    }
+  ],
+  "methods": [],
+  "getForCurrentViewWarning": false,
+  "alsoMatched": [
+    "Windows.UI.Xaml.Controls.Image"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "appPid": 15124,
+  "checks": [
+    {
+      "name": "FirstUnloadCancelsFocusRequest",
+      "passed": true
+    },
+    {
+      "name": "SecondUnloadRejectsLateResponse",
+      "passed": true
+    },
+    {
+      "name": "ThirdUnloadCancelsDebounceAndResumes",
+      "passed": true
+    },
+    {
+      "name": "SelectionTimerUnloadAndLateFocusStayCleared",
+      "passed": true
+    }
+  ],
+  "target": "local",
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-fixed-d19-layout-d",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\second-inflight-late.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\third-unload.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\third-resumed.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\late-focus.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\final-remount.png"
+  ]
+}

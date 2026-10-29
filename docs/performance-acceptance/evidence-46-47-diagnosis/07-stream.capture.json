@@ -1,0 +1,7 @@
+{
+  "name": "07-stream",
+  "directUtc": "2026-10-29T17:57:57.7789376+00:00",
+  "screen": "delivered",
+  "screenUtc": "2026-10-29T17:57:58.561669+00:00",
+  "status": "CoalescedSelectableStreaming: PASS | blocks=0, loaded=True, instance=2, loads=7, unloads=6"
+}

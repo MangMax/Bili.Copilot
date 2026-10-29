@@ -1,0 +1,194 @@
+[
+  {
+    "nodes": 35,
+    "file": "00-initial.uia.json",
+    "names": [
+      {
+        "name": "Acceptance 46 / 47\r\nOrdered answer: alpha → beta → omega. Bold and italic text.\r\n\r\n\r\nFixture link\r\n\r\nFINAL-OMEGA\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "fixture\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Console.WriteLine(\"fixture-4647\");\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Fixture link",
+        "type": "Hyperlink"
+      }
+    ]
+  },
+  {
+    "nodes": 35,
+    "file": "01-render.uia.json",
+    "names": [
+      {
+        "name": "Acceptance 46 / 47\r\nOrdered answer: alpha → beta → omega. Bold and italic text.\r\n\r\n\r\nFixture link\r\n\r\nFINAL-OMEGA\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "fixture\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Console.WriteLine(\"fixture-4647\");\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Fixture link",
+        "type": "Hyperlink"
+      }
+    ]
+  },
+  {
+    "nodes": 26,
+    "file": "02-clear.uia.json",
+    "names": []
+  },
+  {
+    "nodes": 35,
+    "file": "03-reassign.uia.json",
+    "names": [
+      {
+        "name": "Acceptance 46 / 47\r\nOrdered answer: alpha → beta → omega. Bold and italic text.\r\n\r\n\r\nFixture link\r\n\r\nFINAL-OMEGA\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "fixture\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Console.WriteLine(\"fixture-4647\");\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Fixture link",
+        "type": "Hyperlink"
+      }
+    ]
+  },
+  {
+    "nodes": 25,
+    "file": "04-detach.uia.json",
+    "names": []
+  },
+  {
+    "nodes": 35,
+    "file": "05-reattach.uia.json",
+    "names": [
+      {
+        "name": "SameInstanceUnchangedTextAttach: PASS | blocks=7, loaded=True, instance=1, loads=2, unloads=1",
+        "type": "Text"
+      },
+      {
+        "name": "Acceptance 46 / 47\r\nOrdered answer: alpha → beta → omega. Bold and italic text.\r\n\r\n\r\nFixture link\r\n\r\nFINAL-OMEGA\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "fixture\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Console.WriteLine(\"fixture-4647\");\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Fixture link",
+        "type": "Hyperlink"
+      }
+    ]
+  },
+  {
+    "nodes": 35,
+    "file": "05b-lifecycle.uia.json",
+    "names": [
+      {
+        "name": "LifecycleBoundaries: FAIL | blocks=7, loaded=True, instance=1, loads=6, unloads=5",
+        "type": "Text"
+      },
+      {
+        "name": "Acceptance 46 / 47\r\nOrdered answer: alpha → beta → omega. Bold and italic text.\r\n\r\n\r\nFixture link\r\n\r\nFINAL-OMEGA\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "fixture\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Console.WriteLine(\"fixture-4647\");\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Fixture link",
+        "type": "Hyperlink"
+      }
+    ]
+  },
+  {
+    "nodes": 35,
+    "file": "06-fresh.uia.json",
+    "names": [
+      {
+        "name": "Acceptance 46 / 47\r\nOrdered answer: alpha → beta → omega. Bold and italic text.\r\n\r\n\r\nFixture link\r\n\r\nFINAL-OMEGA\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "fixture\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Console.WriteLine(\"fixture-4647\");\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Fixture link",
+        "type": "Hyperlink"
+      }
+    ]
+  },
+  {
+    "nodes": 26,
+    "file": "07-stream.uia.json",
+    "names": [
+      {
+        "name": "# Acceptance 46 / 47\n\nOrdered answer: alpha → beta → omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n```csharp\nConsole.",
+        "type": "Text"
+      }
+    ]
+  },
+  {
+    "nodes": 35,
+    "file": "08-final.uia.json",
+    "names": [
+      {
+        "name": "Acceptance 46 / 47\r\nOrdered answer: alpha → beta → omega. Bold and italic text.\r\n\r\n\r\nFixture link\r\n\r\nFINAL-OMEGA\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "fixture\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Console.WriteLine(\"fixture-4647\");\r\n",
+        "type": "Text"
+      },
+      {
+        "name": "Fixture link",
+        "type": "Hyperlink"
+      }
+    ]
+  },
+  {
+    "nodes": 26,
+    "file": "09-cancel-late.uia.json",
+    "names": [
+      {
+        "name": "NEW-ONLY-FINAL\r\n",
+        "type": "Text"
+      }
+    ]
+  }
+]

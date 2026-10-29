@@ -20,6 +20,20 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs" Link="Markdown\MarkdownImageLoader.cs" />
+    <ProjectReference Include="..\..\externals\bili-kernel\src\Services\Services.Media\Services.Media.csproj" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Danmaku\*.cs" Link="Danmaku\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Exercise the real page commands with headless adapters for Windows-only services. -->
+  <ItemGroup>
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\IncrementVerticalScrollControl.xaml.cs" Link="Scroll\IncrementVerticalScrollControl.xaml.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Components\SearchBoxViewModel\*.cs" Link="Search\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Items\SearchSuggestItemViewModel.cs" Link="Search\SearchSuggestItemViewModel.cs" />
+    <ProjectReference Include="..\..\externals\bili-kernel\src\BiliKernel.Abstractions\BiliKernel.Abstractions.csproj" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\View\PopularPageViewModel\*.cs" Link="Popular\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\PopularSectionType.cs" Link="Popular\PopularSectionType.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\VideoCardStyle.cs" Link="Popular\VideoCardStyle.cs" />
   </ItemGroup>
 
   <!--

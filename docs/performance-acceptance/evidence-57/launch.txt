@@ -1,0 +1,14 @@
+dotnet build C:\Users\hp\AppData\Local\Temp\BiliSpike57-a35e\Harness.csproj -c Debug -r win-x64 -v minimal -tl:off -p:Platform=x64
+  正在确定要还原的项目…
+  已还原 C:\Users\hp\AppData\Local\Temp\BiliSpike57-a35e\Harness.csproj (用时 900 毫秒)。
+  Harness -> C:\Users\hp\AppData\Local\Temp\BiliSpike57-a35e\bin\x64\Debug\net9.0-windows10.0.22621.0\win-x64\Harness.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:24.13
+{
+  "AUMID": "BiliCopilot.Spike57.A35E_y1mf40g4r9srg!App",
+  "ProcessId": 64528
+}

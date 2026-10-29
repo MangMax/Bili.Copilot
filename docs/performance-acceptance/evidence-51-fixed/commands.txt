@@ -1,0 +1,15 @@
+Source: C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80
+prepare.ps1 -SourceRoot <source> -Destination $env:TEMP/bili51-fixed-d19
+Temporary copies only: Acceptance51B48A -> Acceptance51FixedD19, bili51-b48a -> bili51-fixed-d19, acceptance-51-b48a -> acceptance-51-fixed-d19, window title cd7811f -> 21a9362.
+dotnet build <temp>/Harness.csproj -p:Platform=x64 -p:GenerateAppxPackageOnBuild=false (exit 0)
+winapp run <temp>/Harness.csproj --no-build --arch x64 -p Platform=x64 --output-appx-directory <layout> --detach --json
+Each run uses unique new layout: bili51-fixed-d19-layout, -layout-b, -layout-c, -layout-d respectively.
+original-repro: temporary identity-adapted original repro-unload.ps1, PID 53184; raw 2 PASS/1 precondition FAIL.
+lifecycle: evidence snapshot runner.ps1, PID 41864; raw 2 PASS/2 FAIL, one genuine late-input blocker and one invalid downstream selection case.
+suite: identity-adapted original run.ps1, PID 40820; exit 0, 7 PASS.
+mouse: first ImeMouseSelectionExactNode case extracted from original followup.ps1; same PID40820 terminal IME state, exit 0, 1 PASS.
+lifecycle-ordered: harness-51/fixed-lifecycle.ps1, PID15124; exit 0, 4 PASS. Explicit different ordering, no production change.
+Runner arguments: -AppPid <pid> -Layout <absolute layout> -Evidence <new evidence directory>.
+Original helper function implementations imported from harness-51/run.ps1 via AST in supplemental script.
+After each host: temporary identity-adapted cleanup.ps1 -AppPid <pid> -Layout <layout> -Evidence <run evidence>.
+All 24 PNGs inspected individually. Original evidence-51 untouched. No production edits.

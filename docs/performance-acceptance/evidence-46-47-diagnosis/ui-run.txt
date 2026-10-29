@@ -1,0 +1,23 @@
+{"error":{"code":"foreground_not_target","message":"The target window is not in the foreground, so a screen capture would record whatever window is actually in front. Bring the window to the foreground and retry, or capture the window directly instead of the screen."}}
+
+name                                 passed detail
+----                                 ------ ------
+InitialTemplateLoaded                  True 
+Render                                 True 
+ProductionCodeClipboard                True 
+Clear                                  True 
+Reassign                               True 
+Detach                                 True 
+SameInstanceUnchangedTextAttach        True 
+LifecycleBoundariesReady               True 
+FreshReopen                            True 
+CoalescedSelectableStreaming           True 
+FinalFlush                             True 
+AnswerClipboard                        True 
+CancelledLateAfterNewCompletion        True 
+CancelledLateBeforeNewCompletion       True 
+CloseOwnedWindow                       True 
+ProductionSourceAndManifestUnchanged   True 
+RemoveOwnedTemporaryPackage            True 
+YieldDesktop                           True 
+

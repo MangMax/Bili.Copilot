@@ -1,0 +1,513 @@
+{
+  "observations": [
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:01:13.6751074+00:00",
+      "identity": 56679560,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:01:13.9385046+00:00",
+      "identity": 31954712,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T19:01:13.9799097+00:00",
+      "identity": 31954712
+    },
+    {
+      "name": "Landscape",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:01:14.8859339+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 57713081,
+        "dpi": 1.5,
+        "managed": 30504776,
+        "privateBytes": 150818816,
+        "workingSet": 226078720,
+        "peakWorkingSet": 232886272,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:01:14.9808628+00:00",
+      "identity": 42941111,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:01:15.2343892+00:00",
+      "identity": 42941111,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Landscape",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:01:15.2388628+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 57713081,
+        "dpi": 1.5,
+        "managed": 65205656,
+        "privateBytes": 205348864,
+        "workingSet": 269094912,
+        "peakWorkingSet": 269094912,
+        "images": [
+          {
+            "identity": 42941111,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Landscape",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:01:15.2690957+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 57713081,
+        "dpi": 1.5,
+        "managed": 65377848,
+        "privateBytes": 205553664,
+        "workingSet": 269283328,
+        "peakWorkingSet": 269283328,
+        "images": [
+          {
+            "identity": 42941111,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Portrait",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:01:16.9854633+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/portrait)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 9864185,
+        "dpi": 1.5,
+        "managed": 65508920,
+        "privateBytes": 207224832,
+        "workingSet": 273227776,
+        "peakWorkingSet": 273227776,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:01:17.0150427+00:00",
+      "identity": 51550198,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:01:17.0458179+00:00",
+      "identity": 51550198,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Portrait",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:01:17.0606589+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/portrait)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 9864185,
+        "dpi": 1.5,
+        "managed": 72946536,
+        "privateBytes": 246714368,
+        "workingSet": 304910336,
+        "peakWorkingSet": 304910336,
+        "images": [
+          {
+            "identity": 51550198,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 960,
+            "IsLoaded": true,
+            "pixelWidth": 1200,
+            "pixelHeight": 2400,
+            "decodeWidth": 720,
+            "decodeHeight": 1440,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Portrait",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:01:17.0963865+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/portrait)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 9864185,
+        "dpi": 1.5,
+        "managed": 73752944,
+        "privateBytes": 246734848,
+        "workingSet": 305008640,
+        "peakWorkingSet": 305008640,
+        "images": [
+          {
+            "identity": 51550198,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 960,
+            "IsLoaded": true,
+            "pixelWidth": 1200,
+            "pixelHeight": 2400,
+            "decodeWidth": 720,
+            "decodeHeight": 1440,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Square",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:01:18.8799665+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/square)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 28311387,
+        "dpi": 1.5,
+        "managed": 73936920,
+        "privateBytes": 246935552,
+        "workingSet": 308256768,
+        "peakWorkingSet": 327737344,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:01:18.9099123+00:00",
+      "identity": 25843664,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:01:18.9387022+00:00",
+      "identity": 25843664,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Square",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:01:18.9459102+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/square)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 28311387,
+        "dpi": 1.5,
+        "managed": 107724192,
+        "privateBytes": 299044864,
+        "workingSet": 342999040,
+        "peakWorkingSet": 342999040,
+        "images": [
+          {
+            "identity": 25843664,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 480,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 720,
+            "decodeHeight": 720,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Square",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T19:01:18.9735344+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/square)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 28311387,
+        "dpi": 1.5,
+        "managed": 108035752,
+        "privateBytes": 299044864,
+        "workingSet": 342999040,
+        "peakWorkingSet": 342999040,
+        "images": [
+          {
+            "identity": 25843664,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 480,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 720,
+            "decodeHeight": 720,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResizeBefore",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T19:01:20.7187866+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 66183938,
+        "dpi": 1.5,
+        "managed": 108252912,
+        "privateBytes": 296792064,
+        "workingSet": 341118976,
+        "peakWorkingSet": 342999040,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T19:01:20.7491942+00:00",
+      "identity": 66977290,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T19:01:20.7724122+00:00",
+      "identity": 66977290,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ResizeBefore",
+      "passed": true,
+      "phase": "ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)",
+      "state": {
+        "utc": "2026-10-29T19:01:20.7773863+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 66183938,
+        "dpi": 1.5,
+        "managed": 142101312,
+        "privateBytes": 345579520,
+        "workingSet": 372756480,
+        "peakWorkingSet": 372756480,
+        "images": [
+          {
+            "identity": 66977290,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Resize",
+      "passed": false,
+      "phase": "terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass51_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T19:01:28.9105694+00:00",
+        "text": "![synthetic](http://127.0.0.1:65080/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 66183938,
+        "dpi": 1.5,
+        "managed": 142414320,
+        "privateBytes": 341553152,
+        "workingSet": 369999872,
+        "peakWorkingSet": 372944896,
+        "images": [
+          {
+            "identity": 66977290,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "landscape",
+      "bytes": 8640054,
+      "sha256": "24D499FC16CE06CA9B153E4EA5C85838DC3AC40017CD08602E3A8F14767A6B39"
+    },
+    {
+      "name": "portrait",
+      "bytes": 8640054,
+      "sha256": "C8E7C4A9CEED39B2A252995DCCF471115BEC48A8BFE65C784FAFE940A2770047"
+    },
+    {
+      "name": "square",
+      "bytes": 12000054,
+      "sha256": "7B2FE0B242AB2BE376A92B3869916C1C14030298CCDE8C494C91E7A0C6663ABC"
+    },
+    {
+      "name": "svg",
+      "bytes": 174,
+      "sha256": "20F9570ECD1C1EBA7E007ED2692C689BC2AD94AFEB4DE694E07A400B236DCD6D"
+    }
+  ],
+  "requests": 4,
+  "connections": 1,
+  "active": 0,
+  "peakServerResponses": 1,
+  "http": [
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65080"
+      ],
+      "utc": "2026-10-29T19:01:15.1794299+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "utc": "2026-10-29T19:01:15.1806184+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 2,
+      "path": "portrait",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65080"
+      ],
+      "utc": "2026-10-29T19:01:17.0173567+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 2,
+      "path": "portrait",
+      "utc": "2026-10-29T19:01:17.0182211+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 3,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65080"
+      ],
+      "utc": "2026-10-29T19:01:18.9126737+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 3,
+      "path": "square",
+      "utc": "2026-10-29T19:01:18.9139612+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 4,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65080"
+      ],
+      "utc": "2026-10-29T19:01:20.7517674+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 4,
+      "path": "landscape",
+      "utc": "2026-10-29T19:01:20.753061+00:00"
+    }
+  ]
+}

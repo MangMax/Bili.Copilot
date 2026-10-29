@@ -1,0 +1,315 @@
+{
+  "observations": [
+    {
+      "name": "FourSvgEntered",
+      "passed": true,
+      "phase": "four actual HTTP loads now await noncooperative controlled renderer",
+      "state": {
+        "utc": "2026-10-29T18:39:18.6552928+00:00",
+        "text": "![held](http://127.0.0.1:61288/svg?held=0)\n\n![held](http://127.0.0.1:61288/svg?held=1)\n\n![held](http://127.0.0.1:61288/svg?held=2)\n\n![held](http://127.0.0.1:61288/svg?held=3)",
+        "blocks": 4,
+        "loaded": true,
+        "identity": 31637239,
+        "dpi": 1.5,
+        "managed": 30997072,
+        "privateBytes": 150634496,
+        "workingSet": 229695488,
+        "peakWorkingSet": 231825408,
+        "images": [
+          {
+            "identity": 15410330,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 66116574,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 54209096,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          },
+          {
+            "identity": 33629616,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SlotsHeldAfterUnload",
+      "passed": true,
+      "Calls": 4,
+      "before": 4,
+      "after": 4
+    },
+    {
+      "name": "SlotsRecoveredAfterRelease",
+      "passed": true,
+      "Calls": 5,
+      "requests": 5,
+      "oldReturned": 4,
+      "oldPublished": false
+    },
+    {
+      "name": "Slots52",
+      "passed": true,
+      "phase": "terminal",
+      "state": {
+        "utc": "2026-10-29T18:39:19.7563795+00:00",
+        "text": "![synthetic](http://127.0.0.1:61288/svg?fifth)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 30988340,
+        "dpi": 1.5,
+        "managed": 32385656,
+        "privateBytes": 283721728,
+        "workingSet": 369528832,
+        "peakWorkingSet": 390569984,
+        "images": [
+          {
+            "identity": 6117571,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "BoundaryDecode-landscape",
+      "decoded": {
+        "PixelWidth": 2400,
+        "PixelHeight": 1200,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 135
+      },
+      "expectedWidth": 270,
+      "expectedHeight": 135
+    },
+    {
+      "name": "Boundary52",
+      "passed": false,
+      "phase": "System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Boundary52()\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass51_0.\u003C\u003CInstall52\u003Eb__2\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:39:30.1958915+00:00",
+        "text": "![synthetic](http://127.0.0.1:61288/svg?fifth)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 30988340,
+        "dpi": 1.5,
+        "managed": 66392000,
+        "privateBytes": 337027072,
+        "workingSet": 408244224,
+        "peakWorkingSet": 471142400,
+        "images": []
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "landscape",
+      "bytes": 8640054,
+      "sha256": "24D499FC16CE06CA9B153E4EA5C85838DC3AC40017CD08602E3A8F14767A6B39"
+    },
+    {
+      "name": "portrait",
+      "bytes": 8640054,
+      "sha256": "C8E7C4A9CEED39B2A252995DCCF471115BEC48A8BFE65C784FAFE940A2770047"
+    },
+    {
+      "name": "square",
+      "bytes": 12000054,
+      "sha256": "7B2FE0B242AB2BE376A92B3869916C1C14030298CCDE8C494C91E7A0C6663ABC"
+    },
+    {
+      "name": "svg",
+      "bytes": 174,
+      "sha256": "20F9570ECD1C1EBA7E007ED2692C689BC2AD94AFEB4DE694E07A400B236DCD6D"
+    }
+  ],
+  "requests": 7,
+  "connections": 4,
+  "active": 0,
+  "peakServerResponses": 1,
+  "http": [
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 1,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:61288"
+      ],
+      "utc": "2026-10-29T18:39:18.5959588+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 1,
+      "path": "svg",
+      "utc": "2026-10-29T18:39:18.5961746+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 2,
+      "request": 2,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:61288"
+      ],
+      "utc": "2026-10-29T18:39:18.596304+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 2,
+      "request": 2,
+      "path": "svg",
+      "utc": "2026-10-29T18:39:18.5963686+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 3,
+      "request": 3,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:61288"
+      ],
+      "utc": "2026-10-29T18:39:18.5965919+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 3,
+      "request": 3,
+      "path": "svg",
+      "utc": "2026-10-29T18:39:18.5966636+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 4,
+      "request": 4,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:61288"
+      ],
+      "utc": "2026-10-29T18:39:18.5968367+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 4,
+      "request": 4,
+      "path": "svg",
+      "utc": "2026-10-29T18:39:18.596908+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 4,
+      "request": 5,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:61288"
+      ],
+      "utc": "2026-10-29T18:39:19.7516664+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 4,
+      "request": 5,
+      "path": "svg",
+      "utc": "2026-10-29T18:39:19.7517896+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 4,
+      "request": 6,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:61288"
+      ],
+      "utc": "2026-10-29T18:39:19.8341911+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 4,
+      "request": 6,
+      "path": "svg",
+      "utc": "2026-10-29T18:39:19.8343566+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 4,
+      "request": 7,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:61288"
+      ],
+      "utc": "2026-10-29T18:39:22.1519797+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 4,
+      "request": 7,
+      "path": "landscape",
+      "utc": "2026-10-29T18:39:22.1530606+00:00"
+    }
+  ]
+}

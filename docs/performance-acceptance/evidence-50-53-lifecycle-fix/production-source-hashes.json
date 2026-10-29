@@ -1,0 +1,112 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "5ED07D1D08F73A3E38665EA61502FC909BB955B5F956ECDFE3219B3595F62219",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\ViewModels\\View\\PopularPageViewModel\\PopularPageViewModel.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "185A3DD86BDA6BBDDC4D6E14231047BA2CF5E29E3F6057F076839D34298A57FB",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\ViewModels\\View\\PopularPageViewModel\\PopularPageViewModel.Properties.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "3336EC79690139F3D91F944C2755CDF4934409CC03E8CB0A5F117DACBBF7BBAD",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\ViewModels\\View\\PopularPageViewModel\\PopularPageViewModel.Requests.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "BA4EB50ABEEC6A8BA26CEA343D0287720AA921023DBACA1C0BD7D63BB33C0B1B",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularPageControlBase.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "36A910A78C0B480BF98968E2F9D182979436F70507BB283108D3DF45EA0A992E",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularMainBody.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "593CE45E26A358F4E0E422AF389DB92CEB5311B90429A806449AA5C4410C3F1A",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularSideBody.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "2CA145F976A3577178C5268EEE3C5FCB5A4C3B226D296E8988DFA1B086AA1655",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularSectionItemControl.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "E4354D0C082D6B48F12FA490775544EE6362BE73563CC93B545AA1EAC4BD1859",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularRankParitionItemControl.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "4F595D027BE901590CA377BAC702F5FC6452B00FE2540EDB281E5D535121DAC9",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\IncrementVerticalScrollControl.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "AC7555BC3562F1C430E3F8B8EBCDFABA780DD2B0AC8F651B27F23DFE6F51A0DF",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Components\\SideBottomLoadingWidget.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "2B8DC0B0162A8245D71BF582B24C30FBA5495CDD979D2AB40D26668F9FEE29ED",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\ViewModels\\Items\\PopularSectionItemViewModel.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "12CECD3D6AAB322633CFB3B24713D2B2937BEB87F60F4B315561E0DF82081F82",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\ViewModels\\Items\\PopularRankPartitionViewModel.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "B843B85D33C00BAD84B86997DA117755B6BB759B43A52679734B8DBFDDB8023F",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\ViewModels\\Items\\IPopularSectionItemViewModel.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "ECC9E692FBAA5C5EE0DA500BBD213B5C982B97941C743DD21FDB5510073E5E52",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Components\\VideoCardControl\\VideoCardControl.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "A1A9FBCB9A03D387D00539349E70968172540A0233278E6ED270A3EDEA72F9F6",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Extensions\\LocaleExtension.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "B9450D5A817A8DA5C6887FEF8FAA232F66FB46C6ED75B411D6B9AA8B2ABB9764",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Extensions\\VideoCardTemplateSelector.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "FE9B6BFDCEE0C13FDE5357BE5C2A9AC7B05DF2B1A289DD40FCFEBCA2AB169257",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Extensions\\PopularSectionTemplateSelector.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "7AAC1B0E3822850039F36798078FC2D33F08D9BAF7C07064565C09D00B47E67D",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI.Models\\Constants\\VideoCardStyle.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "D6F09D4E77FC53A15D002C706C61B4326B4083662139D97CFB23E4E9619B1A58",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI.Models\\Constants\\PopularSectionType.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "21DA196177B97E3553997ECF60CBDC9AF0E4D0EA0D01D28F010C87D027823A75",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI.Models\\Constants\\SettingNames.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "F1B1FBCE3865EE757DF22882EDCAED25596E0C2F6D3FAF12BB33B73447212122",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\BasicCoverImage.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "5486847A2EDD3397706C1B1D227B40DA9DE353158F23B87979835B5595777961",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Extensions\\BasicScaleEffect.cs"
+  }
+]

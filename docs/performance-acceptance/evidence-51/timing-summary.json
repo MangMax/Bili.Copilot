@@ -1,0 +1,27 @@
+{
+  "requestMs": 14447.8598,
+  "firstRenderWithFinalResultMs": 14516.5122,
+  "inputs": [
+    {
+      "ms": 13429.3171,
+      "text": "r"
+    },
+    {
+      "ms": 13614.6064,
+      "text": "ra"
+    },
+    {
+      "ms": 13789.3401,
+      "text": "rap"
+    },
+    {
+      "ms": 13989.2526,
+      "text": "rapi"
+    },
+    {
+      "ms": 14189.2363,
+      "text": "rapid"
+    }
+  ],
+  "delayFromLastUserInputMs": 258.6234999999997
+}

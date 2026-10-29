@@ -1,0 +1,17 @@
+{
+  "target": "local",
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-screen-focused-layout",
+  "checks": [
+    {
+      "error": "winapp ui focus Next52 failed: ",
+      "name": "Runner",
+      "passed": false
+    },
+    {
+      "name": "Cleanup",
+      "passed": true
+    }
+  ],
+  "appPid": 34556,
+  "captures": []
+}

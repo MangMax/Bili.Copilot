@@ -1,0 +1,24 @@
+Fixed HEAD: 7516070bd8b88be1bc024515db92ee3931ed6a43 (parent 244226f0ee265685103a5f32a95325444c5a3d24)
+Worktree: C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80
+SDK: 10.0.403; winapp 0.7.1
+
+dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj --no-restore -c Release --logger 'trx;LogFileName=search51-late-input.trx' --results-directory docs/performance-acceptance/evidence-51-late-input
+Exit 0, 401/0/0.
+dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj --no-restore -c Debug -p:Platform=x64 -p:SolutionDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80/src/ -p:GenerateAppxPackageOnBuild=false
+Exit 0, 0 warnings/errors.
+
+prepare.ps1 -SourceRoot <worktree> -Destination $env:TEMP/bili51-late-7516070-source
+Temporary replacements: BiliCopilot.Acceptance51B48A -> BiliCopilot.Acceptance51Late751; bili51-b48a and bili51-fixed-d19 -> bili51-late-751; workflow acceptance-51-late-751; title identifies 7516070. Source, manifest, and runner snapshots retained.
+dotnet build $env:TEMP/bili51-late-7516070-source/Harness.csproj -p:Platform=x64 -p:GenerateAppxPackageOnBuild=false
+Exit 0, 4 MVVMTK0045 warnings, 0 errors.
+
+For each fresh layout: winapp run <source>/Harness.csproj --no-build --arch x64 -p Platform=x64 --output-appx-directory <layout> --detach --json
+late-input.ps1 -AppPid 15960 -Layout $env:TEMP/bili51-late-7516070-layout -Evidence <evidence>/late  (2/2)
+fixed-lifecycle.ps1 -AppPid 62728 -Layout $env:TEMP/bili51-late-7516070-lifecycle -Evidence <evidence>/lifecycle  (4/4)
+run.ps1 -AppPid 53704 -Layout $env:TEMP/bili51-late-7516070-suite -Evidence <evidence>/suite  (7/7)
+mouse.ps1 -AppPid 53704 -Layout $env:TEMP/bili51-late-7516070-suite -Evidence <evidence>/mouse  (1/1)
+Mouse runner sourced from prior evidence-51-fixed/mouse/runner.ps1 with only pipe/workflow changes; continues terminal suite IME popup.
+cleanup.ps1 (snapshot cleanup-runner.ps1) after each process; identity/path/PID guarded; all owned process/package absent.
+Every runner yielded, followed by explicit final winapp ui yield --json.
+audit.ps1 independently checks raw events, all 14 case results, initial Loaded acceptance, mouse fence, and cleanup. Exit 0.
+No retry-until-pass runs. No production modifications, installations, system policy changes, or PR/issue mutations.

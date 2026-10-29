@@ -1,0 +1,6 @@
+{"schemaVersion":1,"utc":"2026-10-29T21:20:49.5381192+00:00","pid":58912,"kind":"prepared","data":{"name":"r3-StartFailure","exitCode":7,"missing":true,"open":true,"external":false,"copy":false}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:51.8627138+00:00","pid":58912,"kind":"process-created","data":{}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:51.8670336+00:00","pid":58912,"kind":"process-disposed","data":{"handleCaptured":false,"handleClosed":null}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:51.8680336+00:00","pid":58912,"kind":"production-log","data":{"level":"Error","message":"Download process failed (Win32Exception)."}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:52.1444167+00:00","pid":58912,"kind":"setting","data":{"key":"UseExternalBBDown","value":true}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:52.6156986+00:00","pid":58912,"kind":"setting","data":{"key":"OnlyCopyCommandWhenDownload","value":true}}

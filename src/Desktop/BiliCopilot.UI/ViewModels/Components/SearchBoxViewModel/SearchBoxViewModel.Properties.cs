@@ -15,6 +15,7 @@ namespace BiliCopilot.UI.ViewModels.Components;
 public sealed partial class SearchBoxViewModel
 {
     private readonly ISearchService _searchService;
+    private readonly TimeProvider _timeProvider;
     private readonly ILogger<SearchBoxViewModel> _logger;
     private readonly List<SearchRecommendItem> _recommendItems = new();
     private CancellationTokenSource? _cancellationTokenSource;

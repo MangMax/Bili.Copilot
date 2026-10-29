@@ -1,0 +1,13 @@
+  正在确定要还原的项目…
+  已还原 C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\Harness.csproj (用时 2 秒)。
+C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\App.xaml.cs(84,57): error CS9363: “HWND.Value”必须在不安全的上下文中使用，因为它的签名中包含指针 [C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\Harness.csproj]
+C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\App.xaml.cs(84,68): error CS1061: “void*”未包含“ToInt64”的定义，并且找不到可接受第一个“void*”类型参数的可访问扩展方法“ToInt64”(是否缺少 using 指令或程序集引用?) [C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\Harness.csproj]
+
+生成失败。
+
+C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\App.xaml.cs(84,57): error CS9363: “HWND.Value”必须在不安全的上下文中使用，因为它的签名中包含指针 [C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\Harness.csproj]
+C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\App.xaml.cs(84,68): error CS1061: “void*”未包含“ToInt64”的定义，并且找不到可接受第一个“void*”类型参数的可访问扩展方法“ToInt64”(是否缺少 using 指令或程序集引用?) [C:\Users\hp\AppData\Local\Temp\bili-54-recheck-1d19\Harness.csproj]
+    0 个警告
+    2 个错误
+
+已用时间 00:00:08.37

@@ -1,0 +1,11 @@
+
+name                           passed
+----                           ------
+BurstFinalPopup                  True
+SelectionDoesNotRequery          True
+OutOfOrderOldNeverPublishes      True
+ClearRejectsLateResult           True
+EmptyFocusRecommendations        True
+UnloadRemountRejectsLateResult   True
+ChineseImeComposition            True
+

@@ -1,0 +1,309 @@
+{
+  "depth": 12,
+  "interactive": false,
+  "hideDisabled": false,
+  "hideOffscreen": false,
+  "windows": [
+    {
+      "hwnd": 3282836,
+      "title": "Offline search acceptance 51 \u2014 21a9362",
+      "windowDpi": 144,
+      "scale": 1.5,
+      "dpiAwareness": "per-monitor-aware",
+      "coordinateSpace": "physical-screen-pixels",
+      "elementCount": 21,
+      "elements": [
+        {
+          "type": "Window",
+          "name": "Offline search acceptance 51 \u2014 21a9362",
+          "className": "WinUIDesktopWin32WindowClass",
+          "isEnabled": true,
+          "isOffscreen": false,
+          "x": 380,
+          "y": 380,
+          "width": 1120,
+          "height": 800,
+          "children": [
+            {
+              "type": "Pane",
+              "className": "Microsoft.UI.Content.DesktopChildSiteBridge",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 391,
+              "y": 425,
+              "width": 1098,
+              "height": 744,
+              "children": [
+                {
+                  "type": "Pane",
+                  "className": "InputSiteWindowClass",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 391,
+                  "y": 425,
+                  "width": 1098,
+                  "height": 744,
+                  "children": [
+                    {
+                      "type": "Text",
+                      "name": "Search #51 \u00B7 real control / offline service",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 427,
+                      "y": 461,
+                      "width": 1026,
+                      "height": 56,
+                      "selector": "lbl-search51realcon-5094",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Text",
+                      "name": "Type in the production search control. Responses are manually released.",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 427,
+                      "y": 541,
+                      "width": 1026,
+                      "height": 28,
+                      "selector": "lbl-typeintheproduc-5095",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Button",
+                      "name": "ReleaseNewest",
+                      "automationId": "ReleaseNewest",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 427,
+                      "y": 593,
+                      "width": 176,
+                      "height": 48,
+                      "selector": "ReleaseNewest",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "ReleaseOldest",
+                      "automationId": "ReleaseOldest",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 609,
+                      "y": 593,
+                      "width": 167,
+                      "height": 48,
+                      "selector": "ReleaseOldest",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Detach",
+                      "automationId": "Detach",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 782,
+                      "y": 593,
+                      "width": 102,
+                      "height": 48,
+                      "selector": "Detach",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Attach",
+                      "automationId": "Attach",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 891,
+                      "y": 593,
+                      "width": 98,
+                      "height": 48,
+                      "selector": "Attach",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Fence",
+                      "automationId": "Fence",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 995,
+                      "y": 593,
+                      "width": 91,
+                      "height": 48,
+                      "selector": "Fence",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Region",
+                      "automationId": "Region",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 1092,
+                      "y": 593,
+                      "width": 102,
+                      "height": 48,
+                      "selector": "Region",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Global",
+                      "automationId": "Global",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 1200,
+                      "y": 593,
+                      "width": 97,
+                      "height": 48,
+                      "selector": "Global",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Close",
+                      "automationId": "Close",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 1303,
+                      "y": 593,
+                      "width": 88,
+                      "height": 48,
+                      "selector": "btn-close-50a5",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Text",
+                      "name": "begin-SecondUnloadRejectsLateResponse | requests=2 | open=False | loaded=False | text=q | items=",
+                      "automationId": "Status",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 427,
+                      "y": 665,
+                      "width": 1026,
+                      "height": 28,
+                      "selector": "Status",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Text",
+                      "name": "Search",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 427,
+                      "y": 717,
+                      "width": 1026,
+                      "height": 40,
+                      "selector": "lbl-search-50a7",
+                      "isInvokable": false
+                    }
+                  ],
+                  "selector": "pn-69d7",
+                  "isInvokable": false
+                }
+              ],
+              "selector": "pn-5529",
+              "isInvokable": false
+            },
+            {
+              "type": "TitleBar",
+              "automationId": "TitleBar",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 415,
+              "y": 383,
+              "width": 1074,
+              "height": 42,
+              "children": [
+                {
+                  "type": "MenuBar",
+                  "name": "\u7CFB\u7EDF",
+                  "automationId": "SystemMenuBar",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 391,
+                  "y": 391,
+                  "width": 33,
+                  "height": 33,
+                  "children": [
+                    {
+                      "type": "MenuItem",
+                      "name": "\u7CFB\u7EDF",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 391,
+                      "y": 391,
+                      "width": 33,
+                      "height": 33,
+                      "selector": "mnu-faf8",
+                      "expandState": "collapsed",
+                      "isInvokable": true
+                    }
+                  ],
+                  "selector": "SystemMenuBar",
+                  "isInvokable": false
+                },
+                {
+                  "type": "Button",
+                  "name": "\u6700\u5C0F\u5316",
+                  "automationId": "Minimize-Restore",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1278,
+                  "y": 381,
+                  "width": 71,
+                  "height": 44,
+                  "selector": "Minimize-Restore",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "\u6700\u5927\u5316",
+                  "automationId": "Maximize-Restore",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1349,
+                  "y": 381,
+                  "width": 70,
+                  "height": 44,
+                  "selector": "Maximize-Restore",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "\u5173\u95ED",
+                  "automationId": "Close",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1419,
+                  "y": 381,
+                  "width": 71,
+                  "height": 44,
+                  "selector": "btn-close-75a2",
+                  "isInvokable": true
+                }
+              ],
+              "selector": "TitleBar",
+              "value": "Offline search acceptance 51 \u2014 21a9362",
+              "isInvokable": false
+            }
+          ],
+          "selector": "win-offlinesearchac-5c7b",
+          "isInvokable": false
+        }
+      ]
+    }
+  ]
+}

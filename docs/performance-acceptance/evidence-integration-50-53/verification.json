@@ -1,0 +1,969 @@
+{
+  "red-original-12": {
+    "failures": [
+      "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl",
+      "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck",
+      "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView"
+    ],
+    "results": 12,
+    "counters": "<Counters total=\"12\" executed=\"12\" passed=\"9\" failed=\"3\" error=\"0\" timeout=\"0\" aborted=\"0\" inconclusive=\"0\" passedButRunAborted=\"0\" notRunnable=\"0\" notExecuted=\"0\" disconnected=\"0\" warning=\"0\" completed=\"0\" inProgress=\"0\" pending=\"0\" xmlns=\"http://microsoft.com/schemas/VisualStudio/TeamTest/2010\" />"
+  },
+  "red-14": {
+    "failures": [
+      "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView",
+      "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl",
+      "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ThreeRemountsRejectOldDelaysAndAcceptCurrentDelay",
+      "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.RepeatedLoadedEventsKeepOneSubscriptionAndUnloadRemovesIt",
+      "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck"
+    ],
+    "results": 14,
+    "counters": "<Counters total=\"14\" executed=\"14\" passed=\"9\" failed=\"5\" error=\"0\" timeout=\"0\" aborted=\"0\" inconclusive=\"0\" passedButRunAborted=\"0\" notRunnable=\"0\" notExecuted=\"0\" disconnected=\"0\" warning=\"0\" completed=\"0\" inProgress=\"0\" pending=\"0\" xmlns=\"http://microsoft.com/schemas/VisualStudio/TeamTest/2010\" />"
+  },
+  "green-14": {
+    "failures": [],
+    "results": 14,
+    "counters": "<Counters total=\"14\" executed=\"14\" passed=\"14\" failed=\"0\" error=\"0\" timeout=\"0\" aborted=\"0\" inconclusive=\"0\" passedButRunAborted=\"0\" notRunnable=\"0\" notExecuted=\"0\" disconnected=\"0\" warning=\"0\" completed=\"0\" inProgress=\"0\" pending=\"0\" xmlns=\"http://microsoft.com/schemas/VisualStudio/TeamTest/2010\" />"
+  },
+  "release-final": {
+    "failures": [],
+    "results": 403,
+    "counters": "<Counters total=\"403\" executed=\"403\" passed=\"403\" failed=\"0\" error=\"0\" timeout=\"0\" aborted=\"0\" inconclusive=\"0\" passedButRunAborted=\"0\" notRunnable=\"0\" notExecuted=\"0\" disconnected=\"0\" warning=\"0\" completed=\"0\" inProgress=\"0\" pending=\"0\" xmlns=\"http://microsoft.com/schemas/VisualStudio/TeamTest/2010\" />"
+  },
+  "freshRelease": {
+    "scrollCases": 14,
+    "results": 403,
+    "counters": "<Counters total=\"403\" executed=\"403\" passed=\"403\" failed=\"0\" error=\"0\" timeout=\"0\" aborted=\"0\" inconclusive=\"0\" passedButRunAborted=\"0\" notRunnable=\"0\" notExecuted=\"0\" disconnected=\"0\" warning=\"0\" completed=\"0\" inProgress=\"0\" pending=\"0\" xmlns=\"http://microsoft.com/schemas/VisualStudio/TeamTest/2010\" />"
+  },
+  "fences": [
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 5,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 3461,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3009.7772000000004
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Hot",
+        "requests": 5,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 4910,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Hot",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Hot HotVideoList p1 #0",
+          "Hot HotVideoList p2 #0",
+          "Hot HotVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3015.3533000000025
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Saved",
+        "requests": 2,
+        "updates": 1,
+        "views": 0,
+        "sizes": 1,
+        "renders": 6205,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "13",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Saved PartitionRankingList p0 #0"
+        ],
+        "cards": 1,
+        "visible": 1,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3006.8808999999965
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Missing",
+        "requests": 5,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 7930,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Missing RecommendVideoList p1 #0",
+          "Missing RecommendVideoList p2 #0",
+          "Missing RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3010.840200000006
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "DirFail",
+        "requests": 5,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 9236,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "DirFail RecommendVideoList p1 #0",
+          "DirFail RecommendVideoList p2 #0",
+          "DirFail RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3005.3859999999986
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 5,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 10244,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3006.3566999999966
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 9,
+        "updates": 6,
+        "views": 0,
+        "sizes": 1,
+        "renders": 11058,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3012.442299999995
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Failure",
+        "requests": 5,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 12028,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Failure RecommendVideoList p1 #0",
+          "Failure RecommendVideoList p2 #0",
+          "Failure RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3005.5573999999906
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Failure",
+        "requests": 9,
+        "updates": 6,
+        "views": 0,
+        "sizes": 1,
+        "renders": 12833,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Failure RecommendVideoList p1 #0",
+          "Failure RecommendVideoList p2 #0",
+          "Failure RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3001.0458999999973
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Rank",
+        "requests": 2,
+        "updates": 1,
+        "views": 0,
+        "sizes": 1,
+        "renders": 13815,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Rank",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Rank GlobalRankingList p0 #0"
+        ],
+        "cards": 1,
+        "visible": 1,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3014.3781000000017
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Partition",
+        "requests": 2,
+        "updates": 1,
+        "views": 0,
+        "sizes": 1,
+        "renders": 14791,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "13",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Partition PartitionRankingList p0 #0"
+        ],
+        "cards": 1,
+        "visible": 1,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3014.0331000000006
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Stale",
+        "requests": 6,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 16068,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Hot",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Stale HotVideoList p1 #0",
+          "Stale HotVideoList p2 #0",
+          "Stale HotVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 506,
+        "ViewportHeight": 506,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3009.696199999991
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Long",
+        "requests": 3,
+        "updates": 1,
+        "views": 166,
+        "sizes": 24,
+        "renders": 17390,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Long RecommendVideoList p1 #0",
+          "Long RecommendVideoList p1 #1",
+          "Long RecommendVideoList p1 #2",
+          "Long RecommendVideoList p1 #3",
+          "Long RecommendVideoList p1 #4",
+          "Long RecommendVideoList p1 #5",
+          "Long RecommendVideoList p1 #6",
+          "Long RecommendVideoList p1 #7",
+          "Long RecommendVideoList p1 #8",
+          "Long RecommendVideoList p1 #9",
+          "Long RecommendVideoList p1 #10",
+          "Long RecommendVideoList p1 #11",
+          "Long RecommendVideoList p1 #12",
+          "Long RecommendVideoList p1 #13",
+          "Long RecommendVideoList p1 #14",
+          "Long RecommendVideoList p1 #15",
+          "Long RecommendVideoList p1 #16",
+          "Long RecommendVideoList p1 #17",
+          "Long RecommendVideoList p1 #18",
+          "Long RecommendVideoList p1 #19",
+          "Long RecommendVideoList p1 #20",
+          "Long RecommendVideoList p1 #21",
+          "Long RecommendVideoList p1 #22",
+          "Long RecommendVideoList p1 #23",
+          "Long RecommendVideoList p1 #24",
+          "Long RecommendVideoList p1 #25",
+          "Long RecommendVideoList p1 #26",
+          "Long RecommendVideoList p1 #27",
+          "Long RecommendVideoList p1 #28",
+          "Long RecommendVideoList p1 #29",
+          "Long RecommendVideoList p1 #30",
+          "Long RecommendVideoList p1 #31",
+          "Long RecommendVideoList p1 #32",
+          "Long RecommendVideoList p1 #33",
+          "Long RecommendVideoList p1 #34",
+          "Long RecommendVideoList p1 #35",
+          "Long RecommendVideoList p1 #36",
+          "Long RecommendVideoList p1 #37",
+          "Long RecommendVideoList p1 #38",
+          "Long RecommendVideoList p1 #39",
+          "Long RecommendVideoList p1 #40",
+          "Long RecommendVideoList p1 #41",
+          "Long RecommendVideoList p1 #42",
+          "Long RecommendVideoList p1 #43",
+          "Long RecommendVideoList p1 #44",
+          "Long RecommendVideoList p1 #45",
+          "Long RecommendVideoList p1 #46",
+          "Long RecommendVideoList p1 #47",
+          "Long RecommendVideoList p1 #48",
+          "Long RecommendVideoList p1 #49",
+          "Long RecommendVideoList p1 #50",
+          "Long RecommendVideoList p1 #51",
+          "Long RecommendVideoList p1 #52",
+          "Long RecommendVideoList p1 #53",
+          "Long RecommendVideoList p1 #54",
+          "Long RecommendVideoList p1 #55",
+          "Long RecommendVideoList p1 #56",
+          "Long RecommendVideoList p1 #57",
+          "Long RecommendVideoList p1 #58",
+          "Long RecommendVideoList p1 #59"
+        ],
+        "cards": 41,
+        "visible": 4,
+        "ExtentHeight": 11906.6669921875,
+        "ViewportHeight": 453.3333435058594,
+        "VerticalOffset": 11453.333984375
+      },
+      "durationMs": 3016.1627000000008
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 5,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 18581,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 0,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 453.3333435058594,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3005.9575999999943
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 5,
+        "updates": 3,
+        "views": 0,
+        "sizes": 1,
+        "renders": 19479,
+        "loaded": false,
+        "scrollLoaded": false,
+        "active": false,
+        "pending": false,
+        "version": 1,
+        "mainSubscriptions": 0,
+        "sideSubscriptions": 0,
+        "sideHasSource": false,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 0,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 0,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3016.6445000000094
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 6,
+        "updates": 3,
+        "views": 0,
+        "sizes": 2,
+        "renders": 20425,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 1,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 453.3333435058594,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3013.3101000000024
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 10,
+        "updates": 6,
+        "views": 0,
+        "sizes": 2,
+        "renders": 21515,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 1,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 453.3333435058594,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3004.5657000000065
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 10,
+        "updates": 6,
+        "views": 0,
+        "sizes": 2,
+        "renders": 22918,
+        "loaded": false,
+        "scrollLoaded": false,
+        "active": false,
+        "pending": false,
+        "version": 2,
+        "mainSubscriptions": 0,
+        "sideSubscriptions": 0,
+        "sideHasSource": false,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 0,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 0,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3008.1206999999995
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 11,
+        "updates": 6,
+        "views": 0,
+        "sizes": 3,
+        "renders": 23853,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 2,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 453.3333435058594,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3010.117600000027
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 15,
+        "updates": 9,
+        "views": 0,
+        "sizes": 3,
+        "renders": 24863,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 2,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 453.3333435058594,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3003.7333999999973
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 15,
+        "updates": 9,
+        "views": 0,
+        "sizes": 3,
+        "renders": 26154,
+        "loaded": false,
+        "scrollLoaded": false,
+        "active": false,
+        "pending": false,
+        "version": 3,
+        "mainSubscriptions": 0,
+        "sideSubscriptions": 0,
+        "sideHasSource": false,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 0,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 0,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3016.432700000005
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 16,
+        "updates": 9,
+        "views": 0,
+        "sizes": 4,
+        "renders": 27096,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 3,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 453.3333435058594,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3013.1514000000025
+    },
+    {
+      "state": {
+        "condition": "fence-end",
+        "scenario": "Recommend",
+        "requests": 20,
+        "updates": 12,
+        "views": 0,
+        "sizes": 4,
+        "renders": 28156,
+        "loaded": true,
+        "scrollLoaded": true,
+        "active": true,
+        "pending": false,
+        "version": 3,
+        "mainSubscriptions": 1,
+        "sideSubscriptions": 1,
+        "sideHasSource": true,
+        "selected": "Recommend",
+        "partitionLoading": false,
+        "loading": false,
+        "canExecute": true,
+        "items": [
+          "Recommend RecommendVideoList p1 #0",
+          "Recommend RecommendVideoList p2 #0",
+          "Recommend RecommendVideoList p3 #0"
+        ],
+        "cards": 3,
+        "visible": 3,
+        "ExtentHeight": 804.6666870117188,
+        "ViewportHeight": 453.3333435058594,
+        "VerticalOffset": 0
+      },
+      "durationMs": 3011.7458000000042
+    }
+  ],
+  "uiResults": [
+    {
+      "passed": true,
+      "name": "SlowRecommend"
+    },
+    {
+      "passed": true,
+      "name": "SlowHot"
+    },
+    {
+      "passed": true,
+      "name": "Saved restore"
+    },
+    {
+      "passed": true,
+      "name": "Missing restore"
+    },
+    {
+      "passed": true,
+      "name": "DirFail restore"
+    },
+    {
+      "passed": true,
+      "name": "EmptyThenRefresh"
+    },
+    {
+      "passed": true,
+      "name": "FailureThenRefresh"
+    },
+    {
+      "passed": true,
+      "name": "Rank idle"
+    },
+    {
+      "passed": true,
+      "name": "Partition idle"
+    },
+    {
+      "passed": true,
+      "name": "StaleSection"
+    },
+    {
+      "passed": true,
+      "name": "BurstGeometry"
+    },
+    {
+      "passed": true,
+      "name": "UnloadDelay1"
+    },
+    {
+      "passed": true,
+      "name": "ReattachMainSide1"
+    },
+    {
+      "passed": true,
+      "name": "RemountRefresh1"
+    },
+    {
+      "passed": true,
+      "name": "UnloadDelay2"
+    },
+    {
+      "passed": true,
+      "name": "ReattachMainSide2"
+    },
+    {
+      "passed": true,
+      "name": "RemountRefresh2"
+    },
+    {
+      "passed": true,
+      "name": "UnloadDelay3"
+    },
+    {
+      "passed": true,
+      "name": "ReattachMainSide3"
+    },
+    {
+      "passed": true,
+      "name": "RemountRefresh3"
+    }
+  ],
+  "finalHashes": [
+    {
+      "path": "src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularMainBody.xaml.cs",
+      "sha256": "36A910A78C0B480BF98968E2F9D182979436F70507BB283108D3DF45EA0A992E"
+    },
+    {
+      "path": "src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularSideBody.xaml.cs",
+      "sha256": "593CE45E26A358F4E0E422AF389DB92CEB5311B90429A806449AA5C4410C3F1A"
+    },
+    {
+      "path": "src\\Desktop\\BiliCopilot.UI\\Controls\\IncrementVerticalScrollControl.xaml.cs",
+      "sha256": "DA822ADEB0809D1BB24931439E3B9DBEE696FEE45E2699C7D35D4A9D93509B37"
+    }
+  ],
+  "baseHash": "BC68250223D14F53F87082B35428EE2144B7333D124A09AF2A172BC389A232B7"
+}

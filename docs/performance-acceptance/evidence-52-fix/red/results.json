@@ -1,0 +1,20 @@
+{
+  "appPid": 28944,
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-red-layout",
+  "target": "local",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\red\\Landscape.png"
+  ],
+  "checks": [
+    {
+      "status": "Landscape: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Landscape"
+    },
+    {
+      "passed": false,
+      "error": "Owned process failed to exit",
+      "name": "Cleanup"
+    }
+  ]
+}

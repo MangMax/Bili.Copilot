@@ -1,0 +1,55 @@
+{
+  "utc": "2026-10-29T19:12:30.8008586+00:00",
+  "owned": [
+    {
+      "run": "final",
+      "pid": 52532,
+      "absent": true
+    },
+    {
+      "run": "final-verified",
+      "pid": 7648,
+      "absent": true
+    },
+    {
+      "run": "green-a",
+      "pid": 62128,
+      "absent": true
+    },
+    {
+      "run": "green-b",
+      "pid": 38100,
+      "absent": true
+    },
+    {
+      "run": "green-c",
+      "pid": 38920,
+      "absent": true
+    },
+    {
+      "run": "red",
+      "pid": 28944,
+      "absent": true
+    },
+    {
+      "run": "resize-diagnostic",
+      "pid": 21760,
+      "absent": true
+    },
+    {
+      "run": "screen-focused",
+      "pid": 34556,
+      "absent": true
+    },
+    {
+      "run": "screen-verified",
+      "pid": 49656,
+      "absent": true
+    }
+  ],
+  "ownedPackageAbsent": true,
+  "desktopReleased": true,
+  "productionPidUntouched": 9608,
+  "kernel": "2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d",
+  "kernelStatus": []
+}

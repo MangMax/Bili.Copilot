@@ -26,6 +26,11 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
         => _cachedDanmakus is null ? [] : _cachedDanmakus;
 
     /// <summary>
+    /// Gets the latest playback position for a newly loaded or replaced renderer.
+    /// </summary>
+    public int Position => _position;
+
+    /// <summary>
     /// 重置数据.
     /// </summary>
     public void ResetData()

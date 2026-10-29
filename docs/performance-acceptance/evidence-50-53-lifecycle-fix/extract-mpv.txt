@@ -1,0 +1,20 @@
+
+NanaZip 7.0 , version 2610.2 (x64) : (c) M2-Team and Contributors. All rights reserved.
+
+Scanning the drive for archives:
+1 file, 31622190 bytes (31 MiB)
+
+Extracting archive: C:\Users\hp\AppData\Local\Temp\bili-deps\mpv-dev-x86_64-20261021-git-e471496c56.7z
+--
+Path = C:\Users\hp\AppData\Local\Temp\bili-deps\mpv-dev-x86_64-20261021-git-e471496c56.7z
+Type = 7z
+Physical Size = 31622190
+Headers Size = 355
+Method = LZMA2:27 LZMA:20 BCJ2
+Solid = +
+Blocks = 2
+
+Everything is Ok
+
+Size:       121108480
+Compressed: 31622190

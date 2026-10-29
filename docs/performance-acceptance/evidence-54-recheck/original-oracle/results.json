@@ -1,0 +1,17 @@
+[
+  {
+    "name": "QueuedCloseDiagnostic_R1",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003C\u003Ec__DisplayClass16_0.\u003C\u003COnLaunched\u003Eb__10\u003Ed.MoveNext()\r\n--- End of stack trace from previous location ---\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "QueuedCloseDiagnostic_R2",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003C\u003Ec__DisplayClass16_0.\u003C\u003COnLaunched\u003Eb__10\u003Ed.MoveNext()\r\n--- End of stack trace from previous location ---\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "QueuedCloseDiagnostic_R3",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003C\u003Ec__DisplayClass16_0.\u003C\u003COnLaunched\u003Eb__10\u003Ed.MoveNext()\r\n--- End of stack trace from previous location ---\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  }
+]

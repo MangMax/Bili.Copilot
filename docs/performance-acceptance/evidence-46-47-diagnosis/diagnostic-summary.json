@@ -1,0 +1,125 @@
+{
+  "originalLifecycleChecks": [
+    {
+      "name": "InitialTemplateLoaded",
+      "passed": true,
+      "blocks": 7,
+      "identity": 39068398,
+      "textEqualsFixture": true
+    },
+    {
+      "name": "SameInstanceUnchangedTextAttach",
+      "passed": true,
+      "blocks": 7,
+      "identity": 39068398,
+      "textEqualsFixture": true
+    },
+    {
+      "name": "RepeatedAttach1",
+      "passed": true,
+      "blocks": 7,
+      "identity": 39068398,
+      "textEqualsFixture": true
+    },
+    {
+      "name": "RepeatedAttach2",
+      "passed": true,
+      "blocks": 7,
+      "identity": 39068398,
+      "textEqualsFixture": true
+    },
+    {
+      "name": "RepeatedAttach3",
+      "passed": true,
+      "blocks": 7,
+      "identity": 39068398,
+      "textEqualsFixture": true
+    },
+    {
+      "name": "EmptyTextReattach",
+      "passed": true,
+      "blocks": 0,
+      "identity": 39068398,
+      "textEqualsFixture": false
+    },
+    {
+      "name": "LifecycleBoundaries",
+      "passed": true,
+      "blocks": 7,
+      "identity": 39068398,
+      "textEqualsFixture": true
+    }
+  ],
+  "allReadyCount": 11,
+  "allReadyPassed": true,
+  "immediateFailuresRetained": [
+    {
+      "name": "FirstLoadedImmediate",
+      "failedPredicates": [
+        "image"
+      ],
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": false,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "utc": "2026-10-29T17:56:39.8736531+00:00"
+    },
+    {
+      "name": "LifecycleAssignmentImmediate",
+      "failedPredicates": [
+        "image",
+        "codeLabel",
+        "tableFixture",
+        "table47",
+        "codeBody"
+      ],
+      "images": [],
+      "utc": "2026-10-29T17:57:52.3618085+00:00"
+    },
+    {
+      "name": "FinalFlush",
+      "failedPredicates": [
+        "image"
+      ],
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": false,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "utc": "2026-10-29T17:58:00.1024276+00:00"
+    }
+  ],
+  "captureErrors": [
+    {
+      "name": "01-render",
+      "directUtc": "2026-10-29T17:56:54.5576085+00:00",
+      "screen": "winapp ui screenshot -w 11601646 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\01-render.screen.png failed: ",
+      "screenUtc": "2026-10-29T17:56:57.3397521+00:00",
+      "status": "RenderReady: PASS | blocks=7, loaded=True, instance=1, loads=1, unloads=0"
+    }
+  ],
+  "screenshotsReviewed": 44
+}

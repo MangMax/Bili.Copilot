@@ -1,0 +1,48 @@
+{
+  "target": "local",
+  "checks": [
+    {
+      "name": "BurstFinalPopup",
+      "passed": true
+    },
+    {
+      "name": "SelectionDoesNotRequery",
+      "passed": true
+    },
+    {
+      "name": "OutOfOrderOldNeverPublishes",
+      "passed": true
+    },
+    {
+      "name": "ClearRejectsLateResult",
+      "passed": true
+    },
+    {
+      "name": "EmptyFocusRecommendations",
+      "passed": true
+    },
+    {
+      "name": "UnloadRemountRejectsLateResult",
+      "passed": true
+    },
+    {
+      "name": "ChineseImeComposition",
+      "passed": true
+    }
+  ],
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-late-7516070-suite",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\burst-final.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\selection.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\new-result.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\old-rejected.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\clear.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\recommend.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\remount.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\resumed.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\ime-composing.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\ime-committed.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\suite\\ime-result.png"
+  ],
+  "appPid": 53704
+}

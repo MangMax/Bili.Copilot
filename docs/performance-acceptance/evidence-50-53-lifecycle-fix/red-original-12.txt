@@ -1,0 +1,46 @@
+  正在确定要还原的项目…
+  已还原 C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Abstractions\BiliKernel.Abstractions.csproj (用时 226 毫秒)。
+  已还原 C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Grpc\BiliKernel.Grpc.csproj (用时 226 毫秒)。
+  已还原 C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Services\Services.Media\Services.Media.csproj (用时 228 毫秒)。
+  已还原 C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Core\BiliKernel.Core.csproj (用时 228 毫秒)。
+  已还原 C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\BiliCopilot.UI.Tests.csproj (用时 2.25 秒)。
+  BiliKernel.Abstractions -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Abstractions\bin\Release\net8.0\Richasy.BiliKernel.Abstractions.dll
+pgc/gateway/vega/v1.proto(10,1): warning : warning: Import google/protobuf/empty.proto is unused. [C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Grpc\BiliKernel.Grpc.csproj::TargetFramework=net8.0]
+  BiliKernel.Grpc -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Grpc\bin\Release\net8.0\Richasy.BiliKernel.Grpc.dll
+  BiliKernel.Core -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Core\bin\Release\net8.0\Richasy.BiliKernel.Core.dll
+  Services.Media -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Services\Services.Media\bin\Release\net8.0\Richasy.BiliKernel.Services.Media.dll
+  BiliCopilot.UI.Tests -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll (.NETCoreApp,Version=v9.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+[xUnit.net 00:00:01.49]     BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView [FAIL]
+[xUnit.net 00:00:01.49]     BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck [FAIL]
+[xUnit.net 00:00:01.49]     BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl [FAIL]
+  失败 BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView [2 ms]
+  错误消息:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  堆栈跟踪:
+     at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView() in C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs:line 230
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  失败 BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck [< 1 ms]
+  错误消息:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  堆栈跟踪:
+     at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck() in C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs:line 37
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  失败 BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl [< 1 ms]
+  错误消息:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  堆栈跟踪:
+     at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl() in C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs:line 197
+--- End of stack trace from previous location ---
+结果文件: C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\docs\performance-acceptance\evidence-50-53-lifecycle-fix\red-original-12.trx
+
+失败!  - 失败:     3，通过:     9，已跳过:     0，总计:    12，持续时间: 100 ms - BiliCopilot.UI.Tests.dll (net9.0)

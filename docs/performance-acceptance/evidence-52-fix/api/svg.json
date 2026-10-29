@@ -1,0 +1,281 @@
+{
+  "scope": "project",
+  "projectName": "Harness",
+  "projectDir": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-red",
+  "caveats": [
+    "No Windows SDK at or below the targeted 10.0.22621.0 is installed; answering from 10.0.28000.0. Results may include APIs that do not exist at your target.",
+    "Installed Windows App Runtime 2.6 does not match the referenced Windows App SDK 1.8.39; its metadata is excluded from this project\u0027s API surface."
+  ],
+  "fullName": "Microsoft.UI.Xaml.Media.Imaging.SvgImageSource",
+  "kind": "Class",
+  "description": "Provides a source object for properties that use a Scalable Vector Graphics (SVG) source. You can define a SvgImageSource by using a Uniform Resource Identifier (URI) that references a SVG file, or by calling SetSourceAsync(IRandomAccessStream) and supplying a stream.",
+  "baseType": "Microsoft.UI.Xaml.Media.ImageSource",
+  "properties": [
+    {
+      "name": "RasterizePixelHeightProperty",
+      "kind": "Property",
+      "signature": "static Microsoft.UI.Xaml.DependencyProperty RasterizePixelHeightProperty { get; }",
+      "returnType": "Microsoft.UI.Xaml.DependencyProperty",
+      "description": "Identifies the RasterizePixelHeight dependency property.",
+      "writable": false
+    },
+    {
+      "name": "RasterizePixelWidthProperty",
+      "kind": "Property",
+      "signature": "static Microsoft.UI.Xaml.DependencyProperty RasterizePixelWidthProperty { get; }",
+      "returnType": "Microsoft.UI.Xaml.DependencyProperty",
+      "description": "Identifies the RasterizePixelWidth dependency property.",
+      "writable": false
+    },
+    {
+      "name": "UriSourceProperty",
+      "kind": "Property",
+      "signature": "static Microsoft.UI.Xaml.DependencyProperty UriSourceProperty { get; }",
+      "returnType": "Microsoft.UI.Xaml.DependencyProperty",
+      "description": "Identifies the UriSource dependency property.",
+      "writable": false
+    },
+    {
+      "name": "RasterizePixelHeight",
+      "kind": "Property",
+      "signature": "Double RasterizePixelHeight { get; set; }",
+      "returnType": "Double",
+      "description": "Gets or sets the height to use for SVG rasterization operations.",
+      "writable": true
+    },
+    {
+      "name": "RasterizePixelWidth",
+      "kind": "Property",
+      "signature": "Double RasterizePixelWidth { get; set; }",
+      "returnType": "Double",
+      "description": "Gets or sets the width to use for SVG rasterization operations.",
+      "writable": true
+    },
+    {
+      "name": "UriSource",
+      "kind": "Property",
+      "signature": "System.Uri UriSource { get; set; }",
+      "returnType": "System.Uri",
+      "description": "Gets or sets the Uniform Resource Identifier (URI) of the SVG source file that generated this SvgImageSource.",
+      "writable": true
+    },
+    {
+      "name": "Dispatcher",
+      "kind": "Property",
+      "signature": "Windows.UI.Core.CoreDispatcher Dispatcher { get; }",
+      "returnType": "Windows.UI.Core.CoreDispatcher",
+      "description": "Always returns null in a Windows App SDK app. Use DispatcherQueue instead.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true,
+      "writable": false
+    },
+    {
+      "name": "DispatcherQueue",
+      "kind": "Property",
+      "signature": "Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; }",
+      "returnType": "Microsoft.UI.Dispatching.DispatcherQueue",
+      "description": "Gets the DispatcherQueue that this object is associated with. The DispatcherQueue represents a facility that can access the DependencyObject on the UI thread even if the code is initiated by a non-UI thread.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true,
+      "writable": false
+    }
+  ],
+  "events": [
+    {
+      "name": "OpenFailed",
+      "kind": "Event",
+      "signature": "event Windows.Foundation.TypedEventHandler\u003CMicrosoft.UI.Xaml.Media.Imaging.SvgImageSource, Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs\u003E OpenFailed",
+      "returnType": "Windows.Foundation.TypedEventHandler\u003CMicrosoft.UI.Xaml.Media.Imaging.SvgImageSource, Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs\u003E",
+      "description": "Occurs when there is an error associated with SVG retrieval or format."
+    },
+    {
+      "name": "Opened",
+      "kind": "Event",
+      "signature": "event Windows.Foundation.TypedEventHandler\u003CMicrosoft.UI.Xaml.Media.Imaging.SvgImageSource, Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs\u003E Opened",
+      "returnType": "Windows.Foundation.TypedEventHandler\u003CMicrosoft.UI.Xaml.Media.Imaging.SvgImageSource, Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs\u003E",
+      "description": "Occurs when the SVG source is downloaded and decoded with no failure."
+    }
+  ],
+  "methods": [
+    {
+      "name": "As",
+      "kind": "Method",
+      "signature": "static I As\u003CI\u003E()",
+      "returnType": "I"
+    },
+    {
+      "name": "FromAbi",
+      "kind": "Method",
+      "signature": "static Microsoft.UI.Xaml.Media.Imaging.SvgImageSource FromAbi(IntPtr thisPtr)",
+      "returnType": "Microsoft.UI.Xaml.Media.Imaging.SvgImageSource"
+    },
+    {
+      "name": "op_Equality",
+      "kind": "Method",
+      "signature": "static Boolean op_Equality(Microsoft.UI.Xaml.Media.Imaging.SvgImageSource x, Microsoft.UI.Xaml.Media.Imaging.SvgImageSource y)",
+      "returnType": "Boolean"
+    },
+    {
+      "name": "op_Inequality",
+      "kind": "Method",
+      "signature": "static Boolean op_Inequality(Microsoft.UI.Xaml.Media.Imaging.SvgImageSource x, Microsoft.UI.Xaml.Media.Imaging.SvgImageSource y)",
+      "returnType": "Boolean"
+    },
+    {
+      "name": "Equals",
+      "kind": "Method",
+      "signature": "Boolean Equals(Microsoft.UI.Xaml.Media.Imaging.SvgImageSource other)",
+      "returnType": "Boolean"
+    },
+    {
+      "name": "Equals",
+      "kind": "Method",
+      "signature": "Boolean Equals(Object obj)",
+      "returnType": "Boolean"
+    },
+    {
+      "name": "GetHashCode",
+      "kind": "Method",
+      "signature": "Int32 GetHashCode()",
+      "returnType": "Int32"
+    },
+    {
+      "name": "SetSourceAsync",
+      "kind": "Method",
+      "signature": "Windows.Foundation.IAsyncOperation\u003CMicrosoft.UI.Xaml.Media.Imaging.SvgImageSourceLoadStatus\u003E SetSourceAsync(Windows.Storage.Streams.IRandomAccessStream streamSource)",
+      "returnType": "Windows.Foundation.IAsyncOperation\u003CMicrosoft.UI.Xaml.Media.Imaging.SvgImageSourceLoadStatus\u003E",
+      "description": "Sets the source SVG for a SvgImageSource by accessing a stream and processing the result asynchronously."
+    },
+    {
+      "name": "FromAbi",
+      "kind": "Method",
+      "signature": "static Microsoft.UI.Xaml.Media.ImageSource FromAbi(IntPtr thisPtr)",
+      "returnType": "Microsoft.UI.Xaml.Media.ImageSource",
+      "declaringType": "Microsoft.UI.Xaml.Media.ImageSource",
+      "inherited": true
+    },
+    {
+      "name": "op_Equality",
+      "kind": "Method",
+      "signature": "static Boolean op_Equality(Microsoft.UI.Xaml.Media.ImageSource x, Microsoft.UI.Xaml.Media.ImageSource y)",
+      "returnType": "Boolean",
+      "declaringType": "Microsoft.UI.Xaml.Media.ImageSource",
+      "inherited": true
+    },
+    {
+      "name": "op_Inequality",
+      "kind": "Method",
+      "signature": "static Boolean op_Inequality(Microsoft.UI.Xaml.Media.ImageSource x, Microsoft.UI.Xaml.Media.ImageSource y)",
+      "returnType": "Boolean",
+      "declaringType": "Microsoft.UI.Xaml.Media.ImageSource",
+      "inherited": true
+    },
+    {
+      "name": "Equals",
+      "kind": "Method",
+      "signature": "Boolean Equals(Microsoft.UI.Xaml.Media.ImageSource other)",
+      "returnType": "Boolean",
+      "declaringType": "Microsoft.UI.Xaml.Media.ImageSource",
+      "inherited": true
+    },
+    {
+      "name": "FromAbi",
+      "kind": "Method",
+      "signature": "static Microsoft.UI.Xaml.DependencyObject FromAbi(IntPtr thisPtr)",
+      "returnType": "Microsoft.UI.Xaml.DependencyObject",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "op_Equality",
+      "kind": "Method",
+      "signature": "static Boolean op_Equality(Microsoft.UI.Xaml.DependencyObject x, Microsoft.UI.Xaml.DependencyObject y)",
+      "returnType": "Boolean",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "op_Inequality",
+      "kind": "Method",
+      "signature": "static Boolean op_Inequality(Microsoft.UI.Xaml.DependencyObject x, Microsoft.UI.Xaml.DependencyObject y)",
+      "returnType": "Boolean",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "Equals",
+      "kind": "Method",
+      "signature": "Boolean Equals(Microsoft.UI.Xaml.DependencyObject other)",
+      "returnType": "Boolean",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "GetValue",
+      "kind": "Method",
+      "signature": "Object GetValue(Microsoft.UI.Xaml.DependencyProperty dp)",
+      "returnType": "Object",
+      "description": "Returns the current effective value of a dependency property from a DependencyObject.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "SetValue",
+      "kind": "Method",
+      "signature": "void SetValue(Microsoft.UI.Xaml.DependencyProperty dp, Object value)",
+      "returnType": "void",
+      "description": "Sets the local value of a dependency property on a DependencyObject.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "ClearValue",
+      "kind": "Method",
+      "signature": "void ClearValue(Microsoft.UI.Xaml.DependencyProperty dp)",
+      "returnType": "void",
+      "description": "Clears the local value of a dependency property.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "ReadLocalValue",
+      "kind": "Method",
+      "signature": "Object ReadLocalValue(Microsoft.UI.Xaml.DependencyProperty dp)",
+      "returnType": "Object",
+      "description": "Returns the local value of a dependency property, if a local value is set.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "GetAnimationBaseValue",
+      "kind": "Method",
+      "signature": "Object GetAnimationBaseValue(Microsoft.UI.Xaml.DependencyProperty dp)",
+      "returnType": "Object",
+      "description": "Returns any base value established for a dependency property, which would apply in cases where an animation is not active.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "RegisterPropertyChangedCallback",
+      "kind": "Method",
+      "signature": "Int64 RegisterPropertyChangedCallback(Microsoft.UI.Xaml.DependencyProperty dp, Microsoft.UI.Xaml.DependencyPropertyChangedCallback callback)",
+      "returnType": "Int64",
+      "description": "Registers a notification function for listening to changes to a specific DependencyProperty on this DependencyObject instance.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    },
+    {
+      "name": "UnregisterPropertyChangedCallback",
+      "kind": "Method",
+      "signature": "void UnregisterPropertyChangedCallback(Microsoft.UI.Xaml.DependencyProperty dp, Int64 token)",
+      "returnType": "void",
+      "description": "Cancels a change notification that was previously registered by calling RegisterPropertyChangedCallback.",
+      "declaringType": "Microsoft.UI.Xaml.DependencyObject",
+      "inherited": true
+    }
+  ],
+  "getForCurrentViewWarning": false,
+  "alsoMatched": [
+    "Windows.UI.Xaml.Media.Imaging.SvgImageSource"
+  ]
+}

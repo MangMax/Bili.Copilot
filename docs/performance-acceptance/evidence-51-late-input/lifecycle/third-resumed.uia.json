@@ -1,0 +1,528 @@
+{
+  "depth": 12,
+  "interactive": false,
+  "hideDisabled": false,
+  "hideOffscreen": false,
+  "windows": [
+    {
+      "hwnd": 117116132,
+      "title": "Offline search acceptance 51 \u2014 7516070 late-input",
+      "className": "WinUIDesktopWin32WindowClass",
+      "windowDpi": 144,
+      "scale": 1.5,
+      "dpiAwareness": "per-monitor-aware",
+      "coordinateSpace": "physical-screen-pixels",
+      "elementCount": 29,
+      "elements": [
+        {
+          "type": "Window",
+          "name": "Offline search acceptance 51 \u2014 7516070 late-input",
+          "className": "WinUIDesktopWin32WindowClass",
+          "isEnabled": true,
+          "isOffscreen": false,
+          "x": 266,
+          "y": 266,
+          "width": 1120,
+          "height": 800,
+          "children": [
+            {
+              "type": "Pane",
+              "className": "Microsoft.UI.Content.DesktopChildSiteBridge",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 277,
+              "y": 311,
+              "width": 1098,
+              "height": 744,
+              "children": [
+                {
+                  "type": "Pane",
+                  "className": "InputSiteWindowClass",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 277,
+                  "y": 311,
+                  "width": 1098,
+                  "height": 744,
+                  "children": [
+                    {
+                      "type": "Text",
+                      "name": "Search #51 \u00B7 real control / offline service",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 313,
+                      "y": 347,
+                      "width": 1026,
+                      "height": 56,
+                      "selector": "lbl-search51realcon-9934",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Text",
+                      "name": "Type in the production search control. Responses are manually released.",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 313,
+                      "y": 427,
+                      "width": 1026,
+                      "height": 28,
+                      "selector": "lbl-typeintheproduc-9935",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Button",
+                      "name": "ReleaseNewest",
+                      "automationId": "ReleaseNewest",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 313,
+                      "y": 479,
+                      "width": 176,
+                      "height": 48,
+                      "selector": "ReleaseNewest",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "ReleaseOldest",
+                      "automationId": "ReleaseOldest",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 495,
+                      "y": 479,
+                      "width": 167,
+                      "height": 48,
+                      "selector": "ReleaseOldest",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Detach",
+                      "automationId": "Detach",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 668,
+                      "y": 479,
+                      "width": 102,
+                      "height": 48,
+                      "selector": "Detach",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "ArmLateInput",
+                      "automationId": "ArmLateInput",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 777,
+                      "y": 479,
+                      "width": 164,
+                      "height": 48,
+                      "selector": "ArmLateInput",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Attach",
+                      "automationId": "Attach",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 947,
+                      "y": 479,
+                      "width": 98,
+                      "height": 48,
+                      "selector": "Attach",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Fence",
+                      "automationId": "Fence",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 1051,
+                      "y": 479,
+                      "width": 91,
+                      "height": 48,
+                      "selector": "Fence",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Region",
+                      "automationId": "Region",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 1148,
+                      "y": 479,
+                      "width": 102,
+                      "height": 48,
+                      "selector": "Region",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Global",
+                      "automationId": "Global",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 1256,
+                      "y": 479,
+                      "width": 83,
+                      "height": 48,
+                      "selector": "Global",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "name": "Close",
+                      "automationId": "Close",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": true,
+                      "x": 0,
+                      "y": 0,
+                      "width": 0,
+                      "height": 0,
+                      "selector": "btn-close-9947",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Text",
+                      "name": "third-resumed | requests=6 | open=True | loaded=True | text=resumed | items=resumed result",
+                      "automationId": "Status",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 313,
+                      "y": 551,
+                      "width": 1026,
+                      "height": 28,
+                      "selector": "Status",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Text",
+                      "name": "Search",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 313,
+                      "y": 603,
+                      "width": 1026,
+                      "height": 40,
+                      "selector": "lbl-search-9949",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Group",
+                      "automationId": "SearchBox",
+                      "className": "AutoSuggestBox",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 313,
+                      "y": 667,
+                      "width": 1026,
+                      "height": 119,
+                      "children": [
+                        {
+                          "type": "Edit",
+                          "name": "SearchTip",
+                          "automationId": "SearchInput",
+                          "className": "TextBox",
+                          "isEnabled": true,
+                          "isOffscreen": false,
+                          "x": 313,
+                          "y": 667,
+                          "width": 1026,
+                          "height": 50,
+                          "selector": "SearchInput",
+                          "value": "resumed",
+                          "isInvokable": false
+                        },
+                        {
+                          "type": "Window",
+                          "name": "Popup",
+                          "automationId": "SuggestionsPopup",
+                          "className": "Popup",
+                          "isEnabled": true,
+                          "isOffscreen": false,
+                          "x": 313,
+                          "y": 716,
+                          "width": 1026,
+                          "height": 70,
+                          "children": [
+                            {
+                              "type": "List",
+                              "automationId": "SuggestionsList",
+                              "className": "ListView",
+                              "isEnabled": true,
+                              "isOffscreen": false,
+                              "x": 314,
+                              "y": 720,
+                              "width": 1025,
+                              "height": 60,
+                              "children": [
+                                {
+                                  "type": "ListItem",
+                                  "name": "BiliCopilot.UI.ViewModels.Items.SearchSuggestItemViewModel",
+                                  "className": "ListViewItem",
+                                  "isEnabled": true,
+                                  "isOffscreen": false,
+                                  "x": 314,
+                                  "y": 720,
+                                  "width": 1024,
+                                  "height": 60,
+                                  "children": [
+                                    {
+                                      "type": "Text",
+                                      "name": "resumed result",
+                                      "automationId": "Block",
+                                      "className": "TextBlock",
+                                      "isEnabled": true,
+                                      "isOffscreen": false,
+                                      "x": 337,
+                                      "y": 737,
+                                      "width": 982,
+                                      "height": 28,
+                                      "selector": "lbl-block-e0fb",
+                                      "isInvokable": false
+                                    }
+                                  ],
+                                  "selector": "itm-bilicopilotuivi-e0fa",
+                                  "isInvokable": true
+                                }
+                              ],
+                              "selector": "lst-suggestionslist-e0f9",
+                              "isInvokable": false
+                            }
+                          ],
+                          "selector": "win-suggestionspopu-e0f8",
+                          "isInvokable": false
+                        }
+                      ],
+                      "selector": "SearchBox",
+                      "isInvokable": true
+                    },
+                    {
+                      "type": "Button",
+                      "automationId": "HotSearchButton",
+                      "className": "Button",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 316,
+                      "y": 668,
+                      "width": 48,
+                      "height": 48,
+                      "selector": "HotSearchButton",
+                      "isInvokable": true
+                    }
+                  ],
+                  "selector": "pn-5a77",
+                  "isInvokable": false
+                }
+              ],
+              "selector": "pn-581b",
+              "isInvokable": false
+            },
+            {
+              "type": "TitleBar",
+              "automationId": "TitleBar",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 301,
+              "y": 269,
+              "width": 1074,
+              "height": 42,
+              "children": [
+                {
+                  "type": "MenuBar",
+                  "name": "\u7CFB\u7EDF",
+                  "automationId": "SystemMenuBar",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 277,
+                  "y": 277,
+                  "width": 33,
+                  "height": 33,
+                  "children": [
+                    {
+                      "type": "MenuItem",
+                      "name": "\u7CFB\u7EDF",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 277,
+                      "y": 277,
+                      "width": 33,
+                      "height": 33,
+                      "selector": "mnu-6158",
+                      "expandState": "collapsed",
+                      "isInvokable": true
+                    }
+                  ],
+                  "selector": "SystemMenuBar",
+                  "isInvokable": false
+                },
+                {
+                  "type": "Button",
+                  "name": "\u6700\u5C0F\u5316",
+                  "automationId": "Minimize-Restore",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1164,
+                  "y": 267,
+                  "width": 71,
+                  "height": 44,
+                  "selector": "Minimize-Restore",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "\u6700\u5927\u5316",
+                  "automationId": "Maximize-Restore",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1235,
+                  "y": 267,
+                  "width": 70,
+                  "height": 44,
+                  "selector": "Maximize-Restore",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "\u5173\u95ED",
+                  "automationId": "Close",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 1305,
+                  "y": 267,
+                  "width": 71,
+                  "height": 44,
+                  "selector": "btn-close-33a2",
+                  "isInvokable": true
+                }
+              ],
+              "selector": "TitleBar",
+              "value": "Offline search acceptance 51 \u2014 7516070 late-input",
+              "isInvokable": false
+            }
+          ],
+          "selector": "win-offlinesearchac-51cb",
+          "isInvokable": false
+        }
+      ]
+    },
+    {
+      "hwnd": 6036740,
+      "title": "PopupHost",
+      "className": "Microsoft.UI.Content.PopupWindowSiteBridge",
+      "windowDpi": 144,
+      "scale": 1.5,
+      "dpiAwareness": "per-monitor-aware",
+      "coordinateSpace": "physical-screen-pixels",
+      "elementCount": 6,
+      "elements": [
+        {
+          "type": "Pane",
+          "name": "PopupHost",
+          "className": "Microsoft.UI.Content.PopupWindowSiteBridge",
+          "isEnabled": true,
+          "isOffscreen": false,
+          "x": 298,
+          "y": 713,
+          "width": 1056,
+          "height": 100,
+          "children": [
+            {
+              "type": "Pane",
+              "className": "InputSiteWindowClass",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 277,
+              "y": 311,
+              "width": 1098,
+              "height": 744,
+              "children": [
+                {
+                  "type": "Window",
+                  "name": "Popup",
+                  "automationId": "SuggestionsPopup",
+                  "className": "Popup",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 313,
+                  "y": 716,
+                  "width": 1026,
+                  "height": 70,
+                  "children": [
+                    {
+                      "type": "List",
+                      "automationId": "SuggestionsList",
+                      "className": "ListView",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 314,
+                      "y": 720,
+                      "width": 1025,
+                      "height": 60,
+                      "children": [
+                        {
+                          "type": "ListItem",
+                          "name": "BiliCopilot.UI.ViewModels.Items.SearchSuggestItemViewModel",
+                          "className": "ListViewItem",
+                          "isEnabled": true,
+                          "isOffscreen": false,
+                          "x": 314,
+                          "y": 720,
+                          "width": 1024,
+                          "height": 60,
+                          "children": [
+                            {
+                              "type": "Text",
+                              "name": "resumed result",
+                              "automationId": "Block",
+                              "className": "TextBlock",
+                              "isEnabled": true,
+                              "isOffscreen": false,
+                              "x": 337,
+                              "y": 737,
+                              "width": 982,
+                              "height": 28,
+                              "selector": "lbl-block-e0fb",
+                              "isInvokable": false
+                            }
+                          ],
+                          "selector": "itm-bilicopilotuivi-e0fa",
+                          "isInvokable": true
+                        }
+                      ],
+                      "selector": "lst-suggestionslist-e0f9",
+                      "isInvokable": false
+                    }
+                  ],
+                  "selector": "win-suggestionspopu-e0f8",
+                  "isInvokable": false
+                }
+              ],
+              "selector": "pn-539d",
+              "isInvokable": false
+            }
+          ],
+          "selector": "pn-popuphost-61eb",
+          "isInvokable": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "target": "local",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle\\second-inflight-late.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle\\third-unload.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle\\ThirdUnloadCancelsDebounceAndResumes-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle\\SelectionTimerUnloadAndLateFocusStayCleared-failure.png"
+  ],
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-fixed-d19-layout-b",
+  "appPid": 41864,
+  "checks": [
+    {
+      "passed": true,
+      "name": "FirstUnloadCancelsFocusRequest"
+    },
+    {
+      "passed": true,
+      "name": "SecondUnloadRejectsLateResponse"
+    },
+    {
+      "error": "Third unload dispatched debounce",
+      "name": "ThirdUnloadCancelsDebounceAndResumes",
+      "passed": false
+    },
+    {
+      "error": "Selection timer revived result",
+      "name": "SelectionTimerUnloadAndLateFocusStayCleared",
+      "passed": false
+    }
+  ]
+}

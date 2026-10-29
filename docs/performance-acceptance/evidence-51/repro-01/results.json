@@ -1,0 +1,28 @@
+{
+  "appPid": 63892,
+  "checks": [
+    {
+      "passed": true,
+      "name": "FirstUnloadCancelsFocusRequest"
+    },
+    {
+      "passed": false,
+      "name": "SecondUnloadCancelsDebounce",
+      "error": "PRODUCTION: request q dispatched while unloaded"
+    },
+    {
+      "passed": false,
+      "name": "SecondUnloadRejectsLateResponse",
+      "error": "PRODUCTION: q result published while unloaded"
+    }
+  ],
+  "target": "local",
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-b48a-layout2",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\repro-01\\second-unload.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\repro-01\\SecondUnloadCancelsDebounce-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\repro-01\\second-late.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\repro-01\\SecondUnloadRejectsLateResponse-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\repro-01\\second-remount.png"
+  ]
+}

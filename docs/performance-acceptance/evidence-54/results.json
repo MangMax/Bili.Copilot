@@ -1,0 +1,74 @@
+[
+  {
+    "name": "RapidFinalNormal_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "RestoreBothModesAndSavedGeometry_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuring500ms_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseBeforeQueuedFocusAndTitle_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuringFirstTitleDelay_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuringSecondTitleDelay_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "RapidFinalNormal_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "RestoreBothModesAndSavedGeometry_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuring500ms_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseBeforeQueuedFocusAndTitle_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuringFirstTitleDelay_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuringSecondTitleDelay_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "RapidFinalNormal_R3",
+    "status": "PASS"
+  },
+  {
+    "name": "RestoreBothModesAndSavedGeometry_R3",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuring500ms_R3",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseBeforeQueuedFocusAndTitle_R3",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuringFirstTitleDelay_R3",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuringSecondTitleDelay_R3",
+    "status": "PASS"
+  }
+]

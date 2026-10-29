@@ -1,0 +1,12 @@
+{
+  "args": [
+    "invoke",
+    "DownloadSetting",
+    "--action",
+    "expand",
+    "-w",
+    "22091450"
+  ],
+  "output": "",
+  "exit": 1
+}

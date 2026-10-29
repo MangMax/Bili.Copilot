@@ -1,0 +1,15 @@
+{
+  "failed": 0,
+  "events": 1292,
+  "liveFocusEvents": 80,
+  "cases": 18,
+  "visualReview": "See ui-54-recheck.md; not inferred from JSON",
+  "closedObservations": 12,
+  "source": "results.json + events.jsonl",
+  "lateGettingFocusOrActivation": 0,
+  "unexpectedExceptions": 0,
+  "passed": 18,
+  "lateHeaderReads": 0,
+  "lateGotFocusNotifications": 9,
+  "lateNativeRequests": 0
+}

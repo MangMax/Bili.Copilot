@@ -1,0 +1,7 @@
+{
+  "name": "04-detach",
+  "directUtc": "2026-10-29T17:57:26.0935533+00:00",
+  "screen": "delivered",
+  "screenUtc": "2026-10-29T17:57:28.0632754+00:00",
+  "status": "Detach: PASS | blocks=0, loaded=False, instance=1, loads=1, unloads=1"
+}

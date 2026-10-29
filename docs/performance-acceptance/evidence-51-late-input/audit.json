@@ -1,0 +1,38 @@
+{
+  "ownedPackageGone": true,
+  "ownedProcessesGone": true,
+  "checks": [
+    {
+      "run": "late",
+      "count": 2
+    },
+    {
+      "run": "lifecycle",
+      "count": 4
+    },
+    {
+      "run": "suite",
+      "count": 7
+    },
+    {
+      "run": "mouse",
+      "count": 1
+    }
+  ],
+  "lateInputMs": 5947.7575,
+  "sourceHead": "7516070bd8b88be1bc024515db92ee3931ed6a43",
+  "unloadedObservationMs": 2739.036400000001,
+  "mouseFenceAfterSubmitMs": 876.737600000004,
+  "firstInputRequestMs": 2225.7603,
+  "keywordMs": 5789.8609,
+  "unloadedMs": 5802.3537,
+  "firstUserInputMs": 1970.122,
+  "firstLoadedMs": 307.8377,
+  "lateRequests": 0,
+  "latePublications": 0,
+  "ownedPids": [
+    15960,
+    62728,
+    53704
+  ]
+}

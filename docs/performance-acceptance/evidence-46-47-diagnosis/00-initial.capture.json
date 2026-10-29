@@ -1,0 +1,7 @@
+{
+  "name": "00-initial",
+  "directUtc": "2026-10-29T17:56:45.0427848+00:00",
+  "screen": "delivered",
+  "screenUtc": "2026-10-29T17:56:47.2095991+00:00",
+  "status": "InitialTemplateLoadedReady: PASS | blocks=7, loaded=True, instance=1, loads=1, unloads=0"
+}

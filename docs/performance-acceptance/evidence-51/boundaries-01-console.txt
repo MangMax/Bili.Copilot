@@ -1,0 +1,11 @@
+{"error":{"code":"internal_error","message":"Selector matched 3 elements:\r\n  [0] Text \u0022\u4F60\u597D result\u0022 (299,697 982x27)  -\u003E lbl-block-cf3e\r\n  [1] Text \u0022ime-ready | requests=6 | open=True | loaded=True | text=\u4F60\u597D | items=\u4F60\u597D result\u0022 (275,513 1026x28)  -\u003E lbl-status-e05a\r\n  [2] Text \u0022\u4F60\u597D result\u0022 (299,697 982x27)  -\u003E lbl-block-cf3e\r\nUse a slug from \u0027inspect\u0027 to target a specific element.","details":"UiAmbiguousSelectorException"}}
+
+name                              passed
+----                              ------
+FocusLateAcrossRemount              True
+MultipleInputEventsWithinDebounce   True
+ClearDuringDebounce                 True
+UnloadDuringDebounce               False
+RegionChoicesAndAdapterRouting      True
+ImeMouseSelectionDoesNotRequery    False
+

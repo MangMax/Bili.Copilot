@@ -1,0 +1,34 @@
+[
+  {
+    "sha256": "52D94AF8E678B2666677ABED38D45A45332F667B434BC5C4337C780BB318668B",
+    "path": "src/Desktop/BiliCopilot.UI/ViewModels/Core/DownloadViewModel/DownloadViewModel.cs"
+  },
+  {
+    "sha256": "5DD66FDED30CD3BC9F58834EF588BFA5854B34C5C7EF0FE0BEA3DC6D0C2ECF07",
+    "path": "src/Desktop/BiliCopilot.UI/ViewModels/Core/DownloadViewModel/DownloadViewModel.Properties.cs"
+  },
+  {
+    "sha256": "BFE9F5FFDF17C9D489D0D2C73A5352457D02342256BEBA056B9B203A70AFF9A5",
+    "path": "src/Desktop/BiliCopilot.UI/Toolkits/Pure/DownloadProcessRunner.cs"
+  },
+  {
+    "sha256": "9E913A60B0F9BDAEA358A8FCE63CA853724005FB78F7FD5B8FD271C0FAA7E61E",
+    "path": "src/Desktop/BiliCopilot.UI/Controls/Player/DownloadButton.xaml"
+  },
+  {
+    "sha256": "32D69A3877B752FF28BF4CAA0ADB0B4333FB065E77E8FBAF8DBCCC469F5435D6",
+    "path": "src/Desktop/BiliCopilot.UI/Controls/Player/DownloadButton.xaml.cs"
+  },
+  {
+    "sha256": "B34465ADB963AF2D47A043A603BD148E3E8D5D5BF1869F3B5781C4C3F0BD8643",
+    "path": "src/Desktop/BiliCopilot.UI/Controls/Settings/DownloadSettingControl.xaml"
+  },
+  {
+    "sha256": "D2AF6E5CD1B9EF76B8703A1CCC4BDE81E2598785062887C638FC0A6E36845EA8",
+    "path": "src/Desktop/BiliCopilot.UI/Controls/Settings/DownloadSettingControl.xaml.cs"
+  },
+  {
+    "sha256": "3B6CDF57FE25708AA361D88B14D6C1B2ACC7FDFCFCA6550C86A352DBA32C1771",
+    "path": "src/Desktop/BiliCopilot.UI/Controls/Settings/SettingsPageControlBase.cs"
+  }
+]

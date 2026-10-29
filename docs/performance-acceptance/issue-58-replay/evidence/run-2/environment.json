@@ -1,0 +1,40 @@
+{
+  "utc": "2026-10-29T18:15:54.8006191Z",
+  "measuredIntegrationSha": "ae16b95e8b6ac7066371a7b48474873203b64a16",
+  "kernelSha": "2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d",
+  "runtime": ".NET 8.0.33",
+  "os": "Microsoft Windows 10.0.26300",
+  "architecture": "X64",
+  "cpuCount": 16,
+  "serverGc": false,
+  "protobuf": "3.29.3\u002Bb407e8416e3893036aee5af9a12bd9b6a0e2b2e6",
+  "json": "9.0.1\u002Bc8acea22626efab11c13778c028975acdc34678f",
+  "framework": "8.0.33\u002Bda7a9beabf4cccc624399d583f52f080a4c858c2",
+  "tieredCompilation": "0",
+  "fixtures": [
+    {
+      "Name": "json-20",
+      "Count": 20,
+      "bytes": 1131,
+      "sha256": "B4F1E7B673B0C9BCEBA5BDE1DA698C07C74B1D78DDB9C6AE2EB76C211E6A871C"
+    },
+    {
+      "Name": "json-5000",
+      "Count": 5000,
+      "bytes": 283931,
+      "sha256": "1D4AAB0D9496BBD6073BE736F0CEFB7CAAEF17F34432617BE23C93182D2CC9CF"
+    },
+    {
+      "Name": "grpc-20",
+      "Count": 20,
+      "bytes": 821,
+      "sha256": "83677522FE4D14E94221F7A7F11E2D0267684203F28BA979DF941BF82B2DFBBE"
+    },
+    {
+      "Name": "grpc-5000",
+      "Count": 5000,
+      "bytes": 214710,
+      "sha256": "254A11562A849CABD12D4F95E0929C1C69A08EF8F380A23101ACF2474E2CE7B6"
+    }
+  ]
+}

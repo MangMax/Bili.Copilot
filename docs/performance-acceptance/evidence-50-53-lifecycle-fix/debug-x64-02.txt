@@ -1,0 +1,27 @@
+  BiliKernel.Abstractions -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Abstractions\bin\x64\Debug\net8.0\Richasy.BiliKernel.Abstractions.dll
+  BiliKernel.Grpc -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Grpc\bin\x64\Debug\net8.0\Richasy.BiliKernel.Grpc.dll
+  BiliKernel.Core -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Core\bin\x64\Debug\net8.0\Richasy.BiliKernel.Core.dll
+  Services.Media -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Services\Services.Media\bin\x64\Debug\net8.0\Richasy.BiliKernel.Services.Media.dll
+  Authorizers.Tv -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Authorizers\Authorizers.Tv\bin\x64\Debug\net8.0\Richasy.BiliKernel.Authorizers.TV.dll
+  Services.User -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Services\Services.User\bin\x64\Debug\net8.0\Richasy.BiliKernel.Services.User.dll
+  Services.Search -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Services\Services.Search\bin\x64\Debug\net8.0\Richasy.BiliKernel.Services.Search.dll
+  Services.Comment -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Services\Services.Comment\bin\x64\Debug\net8.0\Richasy.BiliKernel.Services.Comment.dll
+  Services.Moment -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Services\Services.Moment\bin\x64\Debug\net8.0\Richasy.BiliKernel.Services.Moment.dll
+  Services.Article -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Services\Services.Article\bin\x64\Debug\net8.0\Richasy.BiliKernel.Services.Article.dll
+  BiliKernel.Abstractions -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\BiliKernel.Abstractions\bin\x64\Debug\netstandard2.0\Richasy.BiliKernel.Abstractions.dll
+  Resolvers.WinUICookies -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Resolvers\Resolvers.WinUICookies\bin\x64\Debug\net8.0-windows10.0.22621.0\Richasy.BiliKernel.Resolvers.WinUICookies.dll
+  Resolvers.WinUIToken -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Resolvers\Resolvers.WinUIToken\bin\x64\Debug\net8.0-windows10.0.22621.0\Richasy.BiliKernel.Resolvers.WinUIToken.dll
+  BiliCopilot.Visor.Models -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\src\_build\x64\Debug\BiliCopilot.Visor.Models\bin\BiliCopilot.Visor.Models.dll
+  BiliCopilot.UI.ResourceGenerator -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\src\_build\AnyCPU\Debug\BiliCopilot.UI.ResourceGenerator\bin\BiliCopilot.UI.ResourceGenerator.dll
+  BiliCopilot.UI.Models -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\src\_build\x64\Debug\BiliCopilot.UI.Models\bin\BiliCopilot.UI.Models.dll
+  Resolvers.WinUIQRCode -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\externals\bili-kernel\src\Resolvers\Resolvers.WinUIQRCode\bin\x64\Debug\net8.0-windows10.0.22621.0\Richasy.BiliKernel.Resolvers.WinUIQRCode.dll
+  BiliCopilot.UI -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\src\_build\x64\Debug\BiliCopilot.UI\bin\BiliCopilot.UI.dll
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\src\Desktop\BiliCopilot.UI\BiliCopilot.UI.csproj(1538,5): error : 打包中止：缺少播放器依赖 Assets\libmpv\x64\libmpv-2.dll。请按 README「从源码构建」准备好该文件。
+
+生成失败。
+
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\src\Desktop\BiliCopilot.UI\BiliCopilot.UI.csproj(1538,5): error : 打包中止：缺少播放器依赖 Assets\libmpv\x64\libmpv-2.dll。请按 README「从源码构建」准备好该文件。
+    0 个警告
+    1 个错误
+
+已用时间 00:00:29.73

@@ -1,0 +1,42 @@
+[
+  {
+    "ms": 50647.6805,
+    "kind": "navigation-adapter",
+    "data": {
+      "route": "global",
+      "keyword": "你好"
+    }
+  },
+  {
+    "ms": 50648.1732,
+    "kind": "submit",
+    "data": {
+      "QueryText": "你好",
+      "chosen": true
+    }
+  },
+  {
+    "ms": 50665.2073,
+    "kind": "pipe",
+    "data": "Fence"
+  },
+  {
+    "ms": 51530.6149,
+    "kind": "state",
+    "data": {
+      "condition": "fence9",
+      "loaded": true,
+      "text": "你好 result",
+      "keyword": "你好 result",
+      "open": false,
+      "focus": "Unfocused",
+      "items": [],
+      "requests": 11
+    }
+  },
+  {
+    "ms": 51581.1238,
+    "kind": "pipe",
+    "data": "ime-mouse-exact"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "scenario": "Recommend",
+    "directoryRequestMs": 14187.8463,
+    "firstCardMs": 15278.2174,
+    "elapsedMs": 1090.3711000000003,
+    "directoryPending": true
+  },
+  {
+    "scenario": "Hot",
+    "directoryRequestMs": 25545.5998,
+    "firstCardMs": 25730.2999,
+    "elapsedMs": 184.70010000000184,
+    "directoryPending": true
+  }
+]

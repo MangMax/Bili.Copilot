@@ -19,11 +19,17 @@ namespace BiliCopilot.UI.Controls.Danmaku;
 /// </summary>
 public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 {
+    private readonly DanmakuRedrawSession _redrawSession;
     private int _lastProgress;
     private DanmakuFrostMaster? _danmakuMaster;
     private DanmakuRenderer? _danmakuRenderer;
+    private DanmakuRenderViewModel? _subscribedViewModel;
 
-    public VideoDanmakuPanel() => InitializeComponent();
+    public VideoDanmakuPanel()
+    {
+        _redrawSession = new(callback => DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => callback()));
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -33,13 +39,19 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             return;
         }
 
-        ReloadRenderer();
-        ResetDanmakuStyle();
+        SubscribeViewModel(ViewModel);
+        Redraw();
     }
 
     private void ReloadRenderer()
     {
-        var type = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuRenderer, DanmakuRendererType.Win2D);
+        var type = ViewModel.Renderer;
+        if ((type == DanmakuRendererType.DirectX && _danmakuMaster is not null)
+            || (type == DanmakuRendererType.Win2D && _danmakuRenderer is not null))
+        {
+            ReleaseRenderer();
+        }
+
         if (type == DanmakuRendererType.DirectX && _danmakuRenderer == null)
         {
             _danmakuRenderer = new DanmakuRenderer(RootGrid, this.Get<ILogger<DanmakuRenderer>>());
@@ -53,26 +65,33 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.RequestClearDanmaku -= OnRequestClearDanmaku;
-            ViewModel.ProgressChanged -= OnProgressChanged;
-            ViewModel.PauseDanmaku -= OnPauseDanmaku;
-            ViewModel.ResumeDanmaku -= OnResumeDanmaku;
-            ViewModel.RequestResetStyle -= OnRequestResetStyle;
-            ViewModel.ExtraSpeedChanged -= OnExtraSpeedChanged;
-            ViewModel.RequestRedrawDanmaku -= OnRedrawDanmaku;
-            ViewModel.RequestAddSingleDanmaku -= OnRequestAddSingleDanmaku;
-            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-        }
+        _redrawSession.Invalidate();
+        SubscribeViewModel(null);
+        ReleaseRenderer();
+    }
 
+    private void ReleaseRenderer()
+    {
         _danmakuMaster?.Close();
         _danmakuRenderer?.Dispose();
+        _danmakuMaster = null;
+        _danmakuRenderer = null;
+        RootGrid.Children.Clear();
     }
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(DanmakuRenderViewModel? oldValue, DanmakuRenderViewModel? newValue)
     {
+        _redrawSession.Invalidate();
+        SubscribeViewModel(IsLoaded ? newValue : null);
+        _danmakuMaster?.Clear();
+        _danmakuRenderer?.Clear();
+        Redraw();
+    }
+
+    private void SubscribeViewModel(DanmakuRenderViewModel? newValue)
+    {
+        var oldValue = _subscribedViewModel;
         if (oldValue is not null)
         {
             oldValue.RequestClearDanmaku -= OnRequestClearDanmaku;
@@ -86,6 +105,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             oldValue.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
+        _subscribedViewModel = newValue;
         if (newValue is null)
         {
             return;
@@ -100,48 +120,14 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         newValue.RequestRedrawDanmaku += OnRedrawDanmaku;
         newValue.RequestAddSingleDanmaku += OnRequestAddSingleDanmaku;
         newValue.PropertyChanged += OnViewModelPropertyChanged;
-
-        // 延迟执行样式重置,避免在 Layout 期间触发重入
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (IsLoaded && ViewModel == newValue)
-            {
-                ResetDanmakuStyle();
-            }
-        });
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ViewModel.Renderer))
         {
-            // 在 UI 线程上异步执行渲染器切换,避免重入问题
-            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-            {
-                if (!IsLoaded || ViewModel is null)
-                {
-                    return;
-                }
-
-                if (ViewModel.Renderer == DanmakuRendererType.DirectX && _danmakuMaster != null)
-                {
-                    _danmakuMaster.Close();
-                    _danmakuMaster = null;
-                    RootGrid.Children.Clear();
-                    ReloadRenderer();
-                    ResetDanmakuStyle();
-                    ViewModel.Redraw();
-                }
-                else if (ViewModel.Renderer == DanmakuRendererType.Win2D && _danmakuRenderer != null)
-                {
-                    _danmakuRenderer.Dispose();
-                    _danmakuRenderer = null;
-                    RootGrid.Children.Clear();
-                    ReloadRenderer();
-                    ResetDanmakuStyle();
-                    ViewModel.Redraw();
-                }
-            });
+            // Renderer replacement and redraw share one dispatcher batch.
+            Redraw();
         }
     }
 
@@ -167,6 +153,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void OnRequestClearDanmaku(object? sender, EventArgs e)
     {
+        _redrawSession.Invalidate();
         if (ViewModel.IsShowDanmaku)
         {
             _lastProgress = 0;
@@ -253,39 +240,47 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         _danmakuRenderer?.UpdateConfiguration(new DanmakuConfiguration { RollingSpeedBase = (float)finalSpeed });
     }
 
-    private async void Redraw()
+    private void Redraw()
     {
         if (!IsLoaded || ViewModel is null)
         {
             return;
         }
 
-        if (_danmakuRenderer == null || _danmakuMaster == null)
-        {
-            await Task.Delay(500);
-        }
-
-        // 确保在 UI 线程空闲时执行弹幕绘制
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
+        _redrawSession.Request(() =>
         {
             if (!IsLoaded || ViewModel is null)
             {
                 return;
             }
 
-            if (ViewModel.GetCachedDanmakus().Count > 0)
+            ReloadRenderer();
+            var danmakus = ViewModel.GetCachedDanmakus();
+            if (danmakus.Count > 0)
             {
-                _danmakuMaster?.SetDanmakuList(BilibiliDanmakuParser.GetDanmakuList(ViewModel.GetCachedDanmakus(), true));
-                _danmakuRenderer?.SetDanmakuList(BilibiliDanmakuParser.GetDanmakuList(ViewModel.GetCachedDanmakus(), true));
+                var list = BilibiliDanmakuParser.GetDanmakuList(danmakus, true);
+                _danmakuMaster?.SetDanmakuList(list);
+                _danmakuRenderer?.SetDanmakuList(list);
+            }
+            else
+            {
+                _danmakuMaster?.Clear();
+                _danmakuRenderer?.Clear();
             }
 
+            _lastProgress = ViewModel.Position;
             UpdateDanmakuTime(_lastProgress);
             ResetDanmakuStyle();
 
-            if (!ViewModel.IsPaused)
+            if (!ViewModel.IsPaused && ViewModel.IsShowDanmaku)
             {
                 _danmakuRenderer?.Resume();
                 _danmakuMaster?.Resume();
+            }
+            else
+            {
+                _danmakuRenderer?.Pause();
+                _danmakuMaster?.Pause();
             }
         });
     }

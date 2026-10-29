@@ -1,0 +1,194 @@
+{
+  "observations": [
+    {
+      "name": "BoundaryDecode-landscape",
+      "decoded": {
+        "PixelWidth": 2400,
+        "PixelHeight": 1200,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 135
+      },
+      "expectedWidth": 270,
+      "expectedHeight": 135
+    },
+    {
+      "name": "Boundary-landscape",
+      "passed": true,
+      "decoded": {
+        "PixelWidth": 2400,
+        "PixelHeight": 1200,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 135
+      },
+      "svgText": null,
+      "width": 180,
+      "height": 90
+    },
+    {
+      "name": "BoundaryDecode-portrait",
+      "decoded": {
+        "PixelWidth": 1200,
+        "PixelHeight": 2400,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 540
+      },
+      "expectedWidth": 270,
+      "expectedHeight": 540
+    },
+    {
+      "name": "Boundary-portrait",
+      "passed": true,
+      "decoded": {
+        "PixelWidth": 1200,
+        "PixelHeight": 2400,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 540
+      },
+      "svgText": null,
+      "width": 180,
+      "height": 360
+    },
+    {
+      "name": "BoundaryDecode-square",
+      "decoded": {
+        "PixelWidth": 2000,
+        "PixelHeight": 2000,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 270
+      },
+      "expectedWidth": 270,
+      "expectedHeight": 270
+    },
+    {
+      "name": "Boundary-square",
+      "passed": true,
+      "decoded": {
+        "PixelWidth": 2000,
+        "PixelHeight": 2000,
+        "DecodePixelWidth": 270,
+        "DecodePixelHeight": 270
+      },
+      "svgText": null,
+      "width": 180,
+      "height": 180
+    },
+    {
+      "name": "Boundary52",
+      "passed": false,
+      "phase": "System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Boundary52()\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass51_0.\u003C\u003CInstall52\u003Eb__2\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:41:23.7473793+00:00",
+        "text": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 39068398,
+        "dpi": 1.5,
+        "managed": 106348552,
+        "privateBytes": 329850880,
+        "workingSet": 378363904,
+        "peakWorkingSet": 401006592,
+        "images": []
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "landscape",
+      "bytes": 8640054,
+      "sha256": "24D499FC16CE06CA9B153E4EA5C85838DC3AC40017CD08602E3A8F14767A6B39"
+    },
+    {
+      "name": "portrait",
+      "bytes": 8640054,
+      "sha256": "C8E7C4A9CEED39B2A252995DCCF471115BEC48A8BFE65C784FAFE940A2770047"
+    },
+    {
+      "name": "square",
+      "bytes": 12000054,
+      "sha256": "7B2FE0B242AB2BE376A92B3869916C1C14030298CCDE8C494C91E7A0C6663ABC"
+    },
+    {
+      "name": "svg",
+      "bytes": 174,
+      "sha256": "20F9570ECD1C1EBA7E007ED2692C689BC2AD94AFEB4DE694E07A400B236DCD6D"
+    }
+  ],
+  "requests": 4,
+  "connections": 1,
+  "active": 0,
+  "peakServerResponses": 1,
+  "http": [
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:64247"
+      ],
+      "utc": "2026-10-29T18:41:15.3535132+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "utc": "2026-10-29T18:41:15.3547494+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 2,
+      "path": "portrait",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:64247"
+      ],
+      "utc": "2026-10-29T18:41:15.4222618+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 2,
+      "path": "portrait",
+      "utc": "2026-10-29T18:41:15.4231639+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 3,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:64247"
+      ],
+      "utc": "2026-10-29T18:41:15.4508376+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 3,
+      "path": "square",
+      "utc": "2026-10-29T18:41:15.4520456+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 4,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:64247"
+      ],
+      "utc": "2026-10-29T18:41:15.4760278+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 4,
+      "path": "svg",
+      "utc": "2026-10-29T18:41:15.4761169+00:00"
+    }
+  ]
+}

@@ -21,11 +21,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     private readonly AppWindow _rootWindow;
     private readonly DesktopWindowXamlSource _xamlSource;
     private readonly CursorGrid _rootGrid;
+    private readonly PresenterChangeSession _presenterChange = new(() => Task.Delay(500));
     private InputActivationListener _inputActivationListener;
     private bool _isFirstActivated = true;
     private bool _enteringFullScreen;
     private bool _enteringCompactOverlay;
-    private bool _isPresenterChanging;
     private Action<bool> _activeChangedAction;
 
     public PlayerWindow()
@@ -69,7 +69,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// <summary>
     /// 窗口展示模式是否正在改变.
     /// </summary>
-    public bool IsPresenterChanging => _isPresenterChanging;
+    public bool IsPresenterChanging => _presenterChange.IsChanging;
 
     /// <summary>
     /// 窗口大小改变事件.
@@ -95,11 +95,15 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         }
 
         IsDisposed = true;
+        _presenterChange.Close();
 
         if (_rootWindow != null)
         {
             _rootWindow.Changed -= OnWindowChanged;
-            _rootWindow.Destroy();
+            if (!IsClosed)
+            {
+                _rootWindow.Destroy();
+            }
         }
 
         _xamlSource?.Dispose();
@@ -172,6 +176,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
     public void EnterFullScreen()
     {
+        if (IsClosed || IsDisposed)
+        {
+            return;
+        }
+
         if (_rootWindow.Presenter.Kind != AppWindowPresenterKind.FullScreen)
         {
             if (IsTopMost())
@@ -181,33 +190,31 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
             _enteringFullScreen = true;
             _enteringCompactOverlay = false;
-            _isPresenterChanging = true;
-            _rootWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
-            _ = Task.Run(() =>
-            {
-                Task.Delay(500).Wait();
-                _isPresenterChanging = false;
-            });
+            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.FullScreen));
         }
     }
 
     public void ExitFullScreen()
     {
+        if (IsClosed || IsDisposed)
+        {
+            return;
+        }
+
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen)
         {
             _enteringFullScreen = false;
-            _isPresenterChanging = true;
-            _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
-            _ = Task.Run(() =>
-            {
-                Task.Delay(500).Wait();
-                _isPresenterChanging = false;
-            });
+            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
         }
     }
 
     public void EnterCompactOverlay()
     {
+        if (IsClosed || IsDisposed)
+        {
+            return;
+        }
+
         if (_rootWindow.Presenter.Kind != AppWindowPresenterKind.CompactOverlay)
         {
             if (IsTopMost())
@@ -217,28 +224,21 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
             _enteringCompactOverlay = true;
             _enteringFullScreen = false;
-            _isPresenterChanging = true;
-            _rootWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
-            _ = Task.Run(() =>
-            {
-                Task.Delay(500).Wait();
-                _isPresenterChanging = false;
-            });
+            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay));
         }
     }
 
     public void ExitCompactOverlay()
     {
+        if (IsClosed || IsDisposed)
+        {
+            return;
+        }
+
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
         {
             _enteringCompactOverlay = false;
-            _isPresenterChanging = true;
-            _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
-            _ = Task.Run(() =>
-            {
-                Task.Delay(500).Wait();
-                _isPresenterChanging = false;
-            });
+            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
         }
     }
 
@@ -281,12 +281,26 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         {
             this.Get<DispatcherQueue>().TryEnqueue(async () =>
             {
+                if (IsClosed || IsDisposed)
+                {
+                    return;
+                }
+
                 if (delaySec)
                 {
                     overlay?.HeaderBar.HorizontalAlignment = HorizontalAlignment.Left;
                     await Task.Delay(800);
+                    if (IsClosed || IsDisposed)
+                    {
+                        return;
+                    }
+
                     overlay?.HeaderBar.HorizontalAlignment = HorizontalAlignment.Stretch;
                     await Task.Delay(800);
+                    if (IsClosed || IsDisposed)
+                    {
+                        return;
+                    }
                 }
 
                 if (overlay?.HeaderBar?.ActualWidth > 0 && _rootWindow.IsVisible && !PInvoke.IsIconic(new(Handle)))
@@ -301,7 +315,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     {
         // 延迟处理，避免打断正常的用户操作.
         await Task.Delay(400);
-        if (IsClosed)
+        if (IsClosed || IsDisposed)
         {
             return;
         }
@@ -370,6 +384,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     private void OnWindowDestroying(AppWindow sender, object args)
     {
         IsClosed = true;
+        _presenterChange.Close();
         _inputActivationListener.InputActivationChanged -= OnInputActivationChanged;
         _rootWindow.Destroying -= OnWindowDestroying;
         _rootWindow.Changed -= OnWindowChanged;
@@ -410,7 +425,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     {
         DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
-            if (_xamlSource is null || _xamlSource.SiteBridge is null || _rootGrid is null)
+            if (IsClosed || IsDisposed || _xamlSource is null || _xamlSource.SiteBridge is null || _rootGrid is null)
             {
                 return;
             }

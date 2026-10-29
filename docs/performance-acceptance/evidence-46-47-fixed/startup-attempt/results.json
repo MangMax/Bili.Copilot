@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "passed": false,
+      "detail": "winapp ui invoke Close failed: ",
+      "name": "CloseOwnedWindow"
+    },
+    {
+      "passed": true,
+      "name": "ProductionSourceAndManifestUnchanged"
+    },
+    {
+      "passed": true,
+      "name": "RemoveOwnedTemporaryPackage"
+    },
+    {
+      "passed": true,
+      "name": "YieldDesktop"
+    }
+  ],
+  "appPid": 32728,
+  "screenshots": [],
+  "target": "local"
+}

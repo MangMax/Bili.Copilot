@@ -1,0 +1,156 @@
+{
+  "scope": "project",
+  "projectName": "BiliCopilot.UI",
+  "projectDir": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\src\\Desktop\\BiliCopilot.UI",
+  "caveats": [
+    "No Windows SDK at or below the targeted 10.0.22621.0 is installed; answering from 10.0.28000.0. Results may include APIs that do not exist at your target.",
+    "Installed Windows App Runtime 2.6 does not match the referenced Windows App SDK 1.8.39; its metadata is excluded from this project\u0027s API surface."
+  ],
+  "fullName": "Richasy.Danmaku.Legacy.DanmakuFrostMaster",
+  "kind": "Class",
+  "baseType": "System.Object",
+  "totalProperties": 1,
+  "totalEvents": 0,
+  "totalMethods": 33,
+  "totalFields": 1,
+  "descriptionsOmitted": true,
+  "hint": "Unfiltered listing: inherited members are listed by name only under \u0027inherited\u0027, and dependency-property identifiers and member descriptions are omitted. Use --filter \u003Ctext\u003E to search the full surface with signatures and descriptions, or --all for the complete listing.",
+  "properties": [
+    {
+      "name": "DebugMode",
+      "signature": "Boolean DebugMode { get; set; }",
+      "writable": true
+    }
+  ],
+  "events": [],
+  "methods": [
+    {
+      "name": "SetDanmakuEnabledType",
+      "signature": "void SetDanmakuEnabledType(System.Nullable\u003CBoolean\u003E isRollingEnabled, System.Nullable\u003CBoolean\u003E isTopEnabled, System.Nullable\u003CBoolean\u003E isBottomEnabled)"
+    },
+    {
+      "name": "SetAutoControlDensity",
+      "signature": "void SetAutoControlDensity(Boolean value)"
+    },
+    {
+      "name": "SetRollingDensity",
+      "signature": "void SetRollingDensity(Int32 value)"
+    },
+    {
+      "name": "SetRollingAreaRatio",
+      "signature": "void SetRollingAreaRatio(Int32 value)"
+    },
+    {
+      "name": "SetRollingSpeed",
+      "signature": "void SetRollingSpeed(Double value)"
+    },
+    {
+      "name": "SetOutlineSize",
+      "signature": "void SetOutlineSize(Double value)"
+    },
+    {
+      "name": "SetOpacity",
+      "signature": "void SetOpacity(Double value)"
+    },
+    {
+      "name": "SetIsTextBold",
+      "signature": "void SetIsTextBold(Boolean value)"
+    },
+    {
+      "name": "SetDanmakuFontSizeOffset",
+      "signature": "void SetDanmakuFontSizeOffset(Double value)"
+    },
+    {
+      "name": "SetFontFamilyName",
+      "signature": "void SetFontFamilyName(String value)"
+    },
+    {
+      "name": "SetBorderColor",
+      "signature": "void SetBorderColor(Windows.UI.Color borderColor)"
+    },
+    {
+      "name": "SetNoOverlapSubtitle",
+      "signature": "void SetNoOverlapSubtitle(Boolean value)"
+    },
+    {
+      "name": "SetRefreshRate",
+      "signature": "void SetRefreshRate(Int32 refreshRate)"
+    },
+    {
+      "name": "ForceSoftwareRenderer",
+      "signature": "void ForceSoftwareRenderer(Boolean value)"
+    },
+    {
+      "name": "UpdateTime",
+      "signature": "void UpdateTime(UInt32 currentMs)"
+    },
+    {
+      "name": "Pause",
+      "signature": "void Pause()"
+    },
+    {
+      "name": "Resume",
+      "signature": "void Resume()"
+    },
+    {
+      "name": "Stop",
+      "signature": "void Stop()"
+    },
+    {
+      "name": "Restart",
+      "signature": "void Restart()"
+    },
+    {
+      "name": "SetLayerRenderState",
+      "signature": "void SetLayerRenderState(UInt32 layerId, Boolean render)"
+    },
+    {
+      "name": "Seek",
+      "signature": "void Seek(UInt32 targetMs)"
+    },
+    {
+      "name": "Clear",
+      "signature": "void Clear()"
+    },
+    {
+      "name": "Close",
+      "signature": "void Close()"
+    },
+    {
+      "name": "AddRealtimeDanmaku",
+      "signature": "void AddRealtimeDanmaku(Richasy.Danmaku.Models.DanmakuItem item, Boolean insertToList, UInt32 layerId)"
+    },
+    {
+      "name": "GetDanmakuList",
+      "signature": "System.Collections.Generic.List\u003CRichasy.Danmaku.Models.DanmakuItem\u003E GetDanmakuList()"
+    },
+    {
+      "name": "SetDanmakuList",
+      "signature": "void SetDanmakuList(System.Collections.Generic.List\u003CRichasy.Danmaku.Models.DanmakuItem\u003E danmakuList)"
+    },
+    {
+      "name": "AddDanmakuList",
+      "signature": "void AddDanmakuList(System.Collections.Generic.List\u003CRichasy.Danmaku.Models.DanmakuItem\u003E danmakuList)"
+    }
+  ],
+  "fields": [
+    {
+      "name": "DefaultDanmakuLayerCount",
+      "signature": "const UInt32 DefaultDanmakuLayerCount",
+      "writable": false
+    }
+  ],
+  "inherited": [
+    {
+      "declaringType": "System.Object",
+      "methods": [
+        "Equals",
+        "GetHashCode",
+        "GetType",
+        "ReferenceEquals",
+        "ToString"
+      ]
+    }
+  ],
+  "getForCurrentViewWarning": false
+}

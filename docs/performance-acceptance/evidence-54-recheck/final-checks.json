@@ -1,0 +1,10 @@
+{
+  "sourceHashesMatch": true,
+  "productionUnchanged": true,
+  "ownedProcessesGone": true,
+  "ownedPackageGone": true,
+  "historicalEvidenceUnchanged": true,
+  "trackedImplementationDiffCheckPassed": true,
+  "retainedEvidenceWhitespace": "Full staged diff check reports trailing blank lines in the two verbatim executed-App.cs.txt snapshots. Preserved intentionally; no source formatting error.",
+  "desktopRelease": "matrix/cleanup-yield.json released=true; later final-yield.json released=false because this workflow had already yielded, with no intervening desktop acquisition."
+}

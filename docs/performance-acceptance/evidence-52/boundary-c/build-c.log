@@ -1,0 +1,17 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-84527f12\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs(57,61): warning CS8632: 只能在 "#nullable" 注释上下文内的代码中使用可为 null 的引用类型的注释。 [C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-84527f12\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs(8,74): warning CS8632: 只能在 "#nullable" 注释上下文内的代码中使用可为 null 的引用类型的注释。 [C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Harness.csproj]
+C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Image52.cs(49,59): error CS0117: “Border”未包含“ChildProperty”的定义 [C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Harness.csproj]
+C:\Users\hp\.nuget\packages\microsoft.windowsappsdk.winui\1.8.251105000\buildTransitive\Microsoft.UI.Xaml.Markup.Compiler.interop.targets(845,9): error MSB3073: 命令“"C:\Users\hp\.nuget\packages\microsoft.windowsappsdk.winui\1.8.251105000\buildTransitive\..\tools\net6.0\..\net472\XamlCompiler.exe" "obj\x64\Debug\net9.0-windows10.0.22621.0\win-x64\\input.json" "obj\x64\Debug\net9.0-windows10.0.22621.0\win-x64\\output.json"”已退出，代码为 1。 [C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Harness.csproj]
+
+生成失败。
+
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-84527f12\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs(57,61): warning CS8632: 只能在 "#nullable" 注释上下文内的代码中使用可为 null 的引用类型的注释。 [C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-84527f12\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs(8,74): warning CS8632: 只能在 "#nullable" 注释上下文内的代码中使用可为 null 的引用类型的注释。 [C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Harness.csproj]
+C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Image52.cs(49,59): error CS0117: “Border”未包含“ChildProperty”的定义 [C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Harness.csproj]
+C:\Users\hp\.nuget\packages\microsoft.windowsappsdk.winui\1.8.251105000\buildTransitive\Microsoft.UI.Xaml.Markup.Compiler.interop.targets(845,9): error MSB3073: 命令“"C:\Users\hp\.nuget\packages\microsoft.windowsappsdk.winui\1.8.251105000\buildTransitive\..\tools\net6.0\..\net472\XamlCompiler.exe" "obj\x64\Debug\net9.0-windows10.0.22621.0\win-x64\\input.json" "obj\x64\Debug\net9.0-windows10.0.22621.0\win-x64\\output.json"”已退出，代码为 1。 [C:\Users\hp\AppData\Local\Temp\bili-52-84527-a\Harness.csproj]
+    2 个警告
+    2 个错误
+
+已用时间 00:00:03.67

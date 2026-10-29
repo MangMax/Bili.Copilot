@@ -1,0 +1,21 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  BiliKernel.Abstractions -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\BiliKernel.Abstractions\bin\x64\Release\net8.0\Richasy.BiliKernel.Abstractions.dll
+  BiliKernel.Grpc -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\BiliKernel.Grpc\bin\x64\Release\net8.0\Richasy.BiliKernel.Grpc.dll
+  BiliKernel.Core -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\BiliKernel.Core\bin\x64\Release\net8.0\Richasy.BiliKernel.Core.dll
+  Services.Media -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Services\Services.Media\bin\x64\Release\net8.0\Richasy.BiliKernel.Services.Media.dll
+  Authorizers.Tv -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Authorizers\Authorizers.Tv\bin\x64\Release\net8.0\Richasy.BiliKernel.Authorizers.TV.dll
+  Services.Article -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Services\Services.Article\bin\x64\Release\net8.0\Richasy.BiliKernel.Services.Article.dll
+  Services.Moment -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Services\Services.Moment\bin\x64\Release\net8.0\Richasy.BiliKernel.Services.Moment.dll
+  Services.User -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Services\Services.User\bin\x64\Release\net8.0\Richasy.BiliKernel.Services.User.dll
+  Services.Comment -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Services\Services.Comment\bin\x64\Release\net8.0\Richasy.BiliKernel.Services.Comment.dll
+  Services.Search -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Services\Services.Search\bin\x64\Release\net8.0\Richasy.BiliKernel.Services.Search.dll
+  BiliCopilot.Visor.Models -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\src\_build\x64\Release\BiliCopilot.Visor.Models\bin\BiliCopilot.Visor.Models.dll
+  BiliKernel.Abstractions -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\BiliKernel.Abstractions\bin\x64\Release\netstandard2.0\Richasy.BiliKernel.Abstractions.dll
+  Resolvers.WinUICookies -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Resolvers\Resolvers.WinUICookies\bin\x64\Release\net8.0-windows10.0.22621.0\win-x64\Richasy.BiliKernel.Resolvers.WinUICookies.dll
+  Resolvers.WinUIToken -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Resolvers\Resolvers.WinUIToken\bin\x64\Release\net8.0-windows10.0.22621.0\win-x64\Richasy.BiliKernel.Resolvers.WinUIToken.dll
+  Resolvers.WinUIQRCode -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\externals\bili-kernel\src\Resolvers\Resolvers.WinUIQRCode\bin\x64\Release\net8.0-windows10.0.22621.0\win-x64\Richasy.BiliKernel.Resolvers.WinUIQRCode.dll
+  BiliCopilot.UI.ResourceGenerator -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\src\_build\AnyCPU\Release\BiliCopilot.UI.ResourceGenerator\bin\BiliCopilot.UI.ResourceGenerator.dll
+  BiliCopilot.UI.Models -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\src\_build\x64\Release\BiliCopilot.UI.Models\bin\BiliCopilot.UI.Models.dll
+  BiliCopilot.UI -> C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\src\_build\x64\Release\BiliCopilot.UI\bin\BiliCopilot.UI.dll
+C:\Users\hp\.nuget\packages\microsoft.dotnet.ilcompiler\9.0.22\build\Microsoft.NETCore.Native.Windows.targets(138,5): error : Platform linker not found. Ensure you have all the required prerequisites documented at https://aka.ms/nativeaot-prerequisites, in particular the Desktop Development for C++ workload in Visual Studio. For ARM64 development also install C++ ARM64 build tools. [C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-64b6ed4f\src\Desktop\BiliCopilot.UI\BiliCopilot.UI.csproj]

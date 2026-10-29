@@ -212,17 +212,24 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return;
         }
 
-        _ = Task.Run(() =>
+        _ = Task.Run(async () =>
         {
-            var startInfo = new ProcessStartInfo(fileName, command);
-            var process = Process.Start(startInfo);
-            if (_openFolderAfterDownload)
+            try
             {
-                process.WaitForExit();
-                if (process.ExitCode == 0)
+                var process = new Process { StartInfo = new ProcessStartInfo(fileName, command) };
+                var exitCode = await DownloadProcessRunner.RunAsync(process, _openFolderAfterDownload, () =>
                 {
-                    Process.Start("explorer.exe", _downloadPath);
+                    using var explorer = Process.Start("explorer.exe", _downloadPath);
+                }).ConfigureAwait(false);
+                if (exitCode != 0)
+                {
+                    _logger.LogWarning("Download process exited with code {ExitCode}.", exitCode);
                 }
+            }
+            catch (Exception ex)
+            {
+                // Exception messages may contain the command's credentials. Log only the type.
+                _logger.LogError("Download process failed ({ErrorType}).", ex.GetType().Name);
             }
         });
     }

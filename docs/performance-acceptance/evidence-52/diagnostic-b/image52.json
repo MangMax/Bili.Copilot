@@ -1,0 +1,524 @@
+{
+  "observations": [
+    {
+      "name": "Landscape",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:34:26.7260417+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 17345954,
+        "dpi": 1.5,
+        "managed": 30401480,
+        "privateBytes": 148103168,
+        "workingSet": 226009088,
+        "peakWorkingSet": 233095168,
+        "images": []
+      }
+    },
+    {
+      "name": "Landscape",
+      "passed": false,
+      "phase": "System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass49_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:34:34.8301922+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 17345954,
+        "dpi": 1.5,
+        "managed": 72793696,
+        "privateBytes": 237412352,
+        "workingSet": 298930176,
+        "peakWorkingSet": 305954816,
+        "images": [
+          {
+            "identity": 44090910,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Portrait",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:34:37.6246052+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/portrait)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 9290489,
+        "dpi": 1.5,
+        "managed": 73343200,
+        "privateBytes": 241139712,
+        "workingSet": 306417664,
+        "peakWorkingSet": 306417664,
+        "images": []
+      }
+    },
+    {
+      "name": "Portrait",
+      "passed": false,
+      "phase": "System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass49_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:34:45.656089+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/portrait)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 9290489,
+        "dpi": 1.5,
+        "managed": 140675552,
+        "privateBytes": 331145216,
+        "workingSet": 362786816,
+        "peakWorkingSet": 383373312,
+        "images": [
+          {
+            "identity": 12419569,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Square",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:34:47.6817485+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/square)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 39595582,
+        "dpi": 1.5,
+        "managed": 140771520,
+        "privateBytes": 327385088,
+        "workingSet": 359227392,
+        "peakWorkingSet": 383373312,
+        "images": []
+      }
+    },
+    {
+      "name": "Square",
+      "passed": false,
+      "phase": "System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass49_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:34:55.7130824+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/square)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 39595582,
+        "dpi": 1.5,
+        "managed": 140071856,
+        "privateBytes": 349786112,
+        "workingSet": 386232320,
+        "peakWorkingSet": 403935232,
+        "images": [
+          {
+            "identity": 9864185,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResizeBefore",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:34:57.2973684+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 7997724,
+        "dpi": 1.5,
+        "managed": 140597144,
+        "privateBytes": 349360128,
+        "workingSet": 385957888,
+        "peakWorkingSet": 403935232,
+        "images": []
+      }
+    },
+    {
+      "name": "Resize",
+      "passed": false,
+      "phase": "System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass49_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:35:05.3351964+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 7997724,
+        "dpi": 1.5,
+        "managed": 113700840,
+        "privateBytes": 365441024,
+        "workingSet": 405958656,
+        "peakWorkingSet": 414134272,
+        "images": [
+          {
+            "identity": 65012215,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SvgCharset",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:35:12.7734439+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/svg)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 45833318,
+        "dpi": 1.5,
+        "managed": 114248672,
+        "privateBytes": 363851776,
+        "workingSet": 404553728,
+        "peakWorkingSet": 414134272,
+        "images": []
+      }
+    },
+    {
+      "name": "SvgCharset",
+      "passed": false,
+      "phase": "System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass49_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:35:20.8314731+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/svg)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 45833318,
+        "dpi": 1.5,
+        "managed": 47471944,
+        "privateBytes": 264105984,
+        "workingSet": 350638080,
+        "peakWorkingSet": 473804800,
+        "images": [
+          {
+            "identity": 10943876,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "CachedBefore",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:35:24.8425271+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/provided)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 42086477,
+        "dpi": 1.5,
+        "managed": 48071024,
+        "privateBytes": 261685248,
+        "workingSet": 349118464,
+        "peakWorkingSet": 473804800,
+        "images": []
+      }
+    },
+    {
+      "name": "CachedProvider",
+      "passed": false,
+      "phase": "System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass49_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:35:32.8820555+00:00",
+        "text": "![synthetic](http://127.0.0.1:65451/provided)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 42086477,
+        "dpi": 1.5,
+        "managed": 48206400,
+        "privateBytes": 240095232,
+        "workingSet": 327671808,
+        "peakWorkingSet": 473804800,
+        "images": [
+          {
+            "identity": 44657727,
+            "source": null,
+            "width": 0,
+            "height": 0,
+            "IsLoaded": true,
+            "pixelWidth": null,
+            "pixelHeight": null,
+            "decodeWidth": null,
+            "decodeHeight": null,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "landscape",
+      "bytes": 8640054,
+      "sha256": "24D499FC16CE06CA9B153E4EA5C85838DC3AC40017CD08602E3A8F14767A6B39"
+    },
+    {
+      "name": "portrait",
+      "bytes": 8640054,
+      "sha256": "C8E7C4A9CEED39B2A252995DCCF471115BEC48A8BFE65C784FAFE940A2770047"
+    },
+    {
+      "name": "square",
+      "bytes": 12000054,
+      "sha256": "7B2FE0B242AB2BE376A92B3869916C1C14030298CCDE8C494C91E7A0C6663ABC"
+    },
+    {
+      "name": "svg",
+      "bytes": 174,
+      "sha256": "20F9570ECD1C1EBA7E007ED2692C689BC2AD94AFEB4DE694E07A400B236DCD6D"
+    }
+  ],
+  "requests": 10,
+  "connections": 1,
+  "active": 0,
+  "peakServerResponses": 1,
+  "http": [
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:34:27.0845316+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "utc": "2026-10-29T18:34:27.0857432+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 2,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:34:27.1557184+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 2,
+      "path": "landscape",
+      "utc": "2026-10-29T18:34:27.156749+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 3,
+      "path": "portrait",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:34:37.6581221+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 3,
+      "path": "portrait",
+      "utc": "2026-10-29T18:34:37.6591709+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 4,
+      "path": "portrait",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:34:37.6880267+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 4,
+      "path": "portrait",
+      "utc": "2026-10-29T18:34:37.6892033+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 5,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:34:47.7136149+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 5,
+      "path": "square",
+      "utc": "2026-10-29T18:34:47.7148497+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 6,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:34:47.7514767+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 6,
+      "path": "square",
+      "utc": "2026-10-29T18:34:47.752579+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 7,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:34:57.3251819+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 7,
+      "path": "landscape",
+      "utc": "2026-10-29T18:34:57.3261662+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 8,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:34:57.352634+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 8,
+      "path": "landscape",
+      "utc": "2026-10-29T18:34:57.353485+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 9,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:35:12.8266431+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 9,
+      "path": "svg",
+      "utc": "2026-10-29T18:35:12.8268327+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 10,
+      "path": "svg",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:65451"
+      ],
+      "utc": "2026-10-29T18:35:13.2457105+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 10,
+      "path": "svg",
+      "utc": "2026-10-29T18:35:13.245846+00:00"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "333CE6FB8442998B747EA6B30F8E4A15C4135363886E6FB380A18C6181ACAE9F",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Forms\\PlayerWindow.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "7A1AEFF9466AA8ACAA34423F2A23EFF59BA1CD6C8004875AE9EE7C2D82F583E5",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Toolkits\\Pure\\PresenterChangeSession.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "CC02AEB22351EA234198B6EB6E6E6DF736049CC5717FF72EC47B27F6A614636B",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Core\\CursorGrid.cs"
+  }
+]

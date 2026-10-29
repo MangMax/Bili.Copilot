@@ -1,0 +1,4 @@
+{
+  "TimeCreated": "2026-10-30T05:17:06.6547485+08:00",
+  "Message": "出错应用程序名称： Harness.exe，版本： 1.0.0.0，时间戳： 0x6ada0000\r\n出错模块名称： Microsoft.UI.Xaml.dll， 版本： 3.1.8.0，时间戳： 0x28741835\r\n异常代码： 0xc000027b\r\n错误偏移： 0x00000000003a7515\r\n出错进程 ID： 0xB03C\r\n出错应用程序开始时间： 0x1DD67EAD6E57DEE\r\nFaulting 应用程序路径： C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\bin\\x64\\Debug\\net9.0-windows10.0.22621.0\\win-x64\\AppX\\Harness.exe\r\nFaulting 模块路径： C:\\Program Files\\WindowsApps\\Microsoft.WindowsAppRuntime.1.8_8000.994.2142.0_x64__8wekyb3d8bbwe\\Microsoft.UI.Xaml.dll\r\nReport ID： 425c392e-dffd-4485-9b69-0b610c063121\r\nFaulting 包全名： BiliCopilot.Acceptance55.A187_1.0.0.0_x64__y1mf40g4r9srg\r\nFaulting 程序包相对应用程序 ID： App 个"
+}

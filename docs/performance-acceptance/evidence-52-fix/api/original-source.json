@@ -1,0 +1,33 @@
+{
+  "scope": "project",
+  "projectName": "Harness",
+  "projectDir": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-red",
+  "caveats": [
+    "No Windows SDK at or below the targeted 10.0.22621.0 is installed; answering from 10.0.28000.0. Results may include APIs that do not exist at your target.",
+    "Installed Windows App Runtime 2.6 does not match the referenced Windows App SDK 1.8.39; its metadata is excluded from this project\u0027s API surface."
+  ],
+  "fullName": "Microsoft.UI.Xaml.RoutedEventArgs",
+  "kind": "Class",
+  "description": "Contains state information and event data associated with a routed event.",
+  "baseType": "System.Object",
+  "filter": "OriginalSource",
+  "totalProperties": 1,
+  "totalEvents": 0,
+  "totalMethods": 6,
+  "properties": [
+    {
+      "name": "OriginalSource",
+      "kind": "Property",
+      "signature": "Object OriginalSource { get; }",
+      "returnType": "Object",
+      "description": "Gets a reference to the object that raised the event. This is often a template part of a control rather than an element that was declared in your app UI.",
+      "writable": false
+    }
+  ],
+  "events": [],
+  "methods": [],
+  "getForCurrentViewWarning": false,
+  "alsoMatched": [
+    "Windows.UI.Xaml.RoutedEventArgs"
+  ]
+}

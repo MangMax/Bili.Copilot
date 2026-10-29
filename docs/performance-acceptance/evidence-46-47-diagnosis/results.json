@@ -1,0 +1,109 @@
+{
+  "target": "local",
+  "screenshots": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\00-initial.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\00-initial.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\01-render.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\02-clear.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\02-clear.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\03-reassign.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\03-reassign.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\04-detach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\04-detach.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\05-reattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\05-reattach.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\RepeatedAttach1Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\RepeatedAttach1Ready.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\RepeatedAttach2Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\RepeatedAttach2Ready.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\RepeatedAttach3Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\RepeatedAttach3Ready.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\EmptyTextReattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\EmptyTextReattach.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\05b-lifecycle.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\05b-lifecycle.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\06-fresh.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\06-fresh.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\07-stream.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\07-stream.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\08-final.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\08-final.screen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\09-cancel-late.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-diagnosis\\09-cancel-late.screen.png"
+  ],
+  "appPid": 54652,
+  "checks": [
+    {
+      "name": "InitialTemplateLoaded",
+      "passed": true
+    },
+    {
+      "name": "Render",
+      "passed": true
+    },
+    {
+      "name": "ProductionCodeClipboard",
+      "passed": true
+    },
+    {
+      "name": "Clear",
+      "passed": true
+    },
+    {
+      "name": "Reassign",
+      "passed": true
+    },
+    {
+      "name": "Detach",
+      "passed": true
+    },
+    {
+      "name": "SameInstanceUnchangedTextAttach",
+      "passed": true
+    },
+    {
+      "name": "LifecycleBoundariesReady",
+      "passed": true
+    },
+    {
+      "name": "FreshReopen",
+      "passed": true
+    },
+    {
+      "name": "CoalescedSelectableStreaming",
+      "passed": true
+    },
+    {
+      "name": "FinalFlush",
+      "passed": true
+    },
+    {
+      "name": "AnswerClipboard",
+      "passed": true
+    },
+    {
+      "name": "CancelledLateAfterNewCompletion",
+      "passed": true
+    },
+    {
+      "name": "CancelledLateBeforeNewCompletion",
+      "passed": true
+    },
+    {
+      "name": "CloseOwnedWindow",
+      "passed": true
+    },
+    {
+      "name": "ProductionSourceAndManifestUnchanged",
+      "passed": true
+    },
+    {
+      "name": "RemoveOwnedTemporaryPackage",
+      "passed": true
+    },
+    {
+      "name": "YieldDesktop",
+      "passed": true
+    }
+  ]
+}

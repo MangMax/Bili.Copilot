@@ -1,0 +1,395 @@
+{
+  "observations": [
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T18:55:56.7784401+00:00",
+      "identity": 56679560,
+      "source": null
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T18:55:57.3616254+00:00",
+      "identity": 31954712,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "ImageOpened",
+      "utc": "2026-10-29T18:55:57.4435931+00:00",
+      "identity": 31954712
+    },
+    {
+      "name": "Landscape",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:56:00.4003938+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 57713081,
+        "dpi": 1.5,
+        "managed": 30609144,
+        "privateBytes": 150278144,
+        "workingSet": 227864576,
+        "peakWorkingSet": 235143168,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T18:56:00.8079072+00:00",
+      "identity": 49763145,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T18:56:01.7237817+00:00",
+      "identity": 49763145,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Landscape",
+      "passed": false,
+      "phase": "terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass51_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:56:08.9600566+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 57713081,
+        "dpi": 1.5,
+        "managed": 65218608,
+        "privateBytes": 204890112,
+        "workingSet": 273420288,
+        "peakWorkingSet": 273420288,
+        "images": [
+          {
+            "identity": 49763145,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Portrait",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:56:13.7044013+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/portrait)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 54940109,
+        "dpi": 1.5,
+        "managed": 65521616,
+        "privateBytes": 208297984,
+        "workingSet": 279732224,
+        "peakWorkingSet": 288104448,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T18:56:13.7482773+00:00",
+      "identity": 24174521,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T18:56:13.8046289+00:00",
+      "identity": 24174521,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Portrait",
+      "passed": false,
+      "phase": "terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass51_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:56:21.7561946+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/portrait)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 54940109,
+        "dpi": 1.5,
+        "managed": 72950648,
+        "privateBytes": 246992896,
+        "workingSet": 310927360,
+        "peakWorkingSet": 330780672,
+        "images": [
+          {
+            "identity": 24174521,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 960,
+            "IsLoaded": true,
+            "pixelWidth": 1200,
+            "pixelHeight": 2400,
+            "decodeWidth": 720,
+            "decodeHeight": 1440,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Square",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:56:23.5697926+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/square)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 18724082,
+        "dpi": 1.5,
+        "managed": 73859888,
+        "privateBytes": 247218176,
+        "workingSet": 311713792,
+        "peakWorkingSet": 330780672,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T18:56:23.6002458+00:00",
+      "identity": 44657727,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T18:56:23.6459516+00:00",
+      "identity": 44657727,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Square",
+      "passed": false,
+      "phase": "terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass51_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:56:31.6008213+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/square)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 18724082,
+        "dpi": 1.5,
+        "managed": 64367304,
+        "privateBytes": 244654080,
+        "workingSet": 322158592,
+        "peakWorkingSet": 346959872,
+        "images": [
+          {
+            "identity": 44657727,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 480,
+            "IsLoaded": true,
+            "pixelWidth": 2000,
+            "pixelHeight": 2000,
+            "decodeWidth": 720,
+            "decodeHeight": 720,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResizeBefore",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:56:33.1837614+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/landscape)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 56467617,
+        "dpi": 1.5,
+        "managed": 65445736,
+        "privateBytes": 241999872,
+        "workingSet": 319844352,
+        "peakWorkingSet": 346959872,
+        "images": []
+      }
+    },
+    {
+      "name": "ImageSubscribed",
+      "utc": "2026-10-29T18:56:33.2152053+00:00",
+      "identity": 63817037,
+      "source": null
+    },
+    {
+      "name": "SourceChanged",
+      "utc": "2026-10-29T18:56:33.2383179+00:00",
+      "identity": 63817037,
+      "source": "BitmapImage"
+    },
+    {
+      "name": "Resize",
+      "passed": false,
+      "phase": "terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.\u003C\u003Ec__DisplayClass51_0.\u003C\u003CInstall52\u003Eb__1\u003Ed.MoveNext()",
+      "state": {
+        "utc": "2026-10-29T18:56:41.2223649+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/landscape)",
+        "blocks": 1,
+        "loaded": true,
+        "identity": 56467617,
+        "dpi": 1.5,
+        "managed": 99337280,
+        "privateBytes": 278458368,
+        "workingSet": 339288064,
+        "peakWorkingSet": 347549696,
+        "images": [
+          {
+            "identity": 63817037,
+            "source": "BitmapImage",
+            "width": 480,
+            "height": 240,
+            "IsLoaded": true,
+            "pixelWidth": 2400,
+            "pixelHeight": 1200,
+            "decodeWidth": 720,
+            "decodeHeight": 360,
+            "svgWidth": null,
+            "svgHeight": null,
+            "opened": null,
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "SvgCharset",
+      "passed": false,
+      "phase": "immediate observation; false means readiness not yet asserted",
+      "state": {
+        "utc": "2026-10-29T18:56:42.8113979+00:00",
+        "text": "![synthetic](http://127.0.0.1:64340/svg)",
+        "blocks": 0,
+        "loaded": false,
+        "identity": 26249108,
+        "dpi": 1.5,
+        "managed": 99590568,
+        "privateBytes": 275066880,
+        "workingSet": 336027648,
+        "peakWorkingSet": 347549696,
+        "images": []
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "landscape",
+      "bytes": 8640054,
+      "sha256": "24D499FC16CE06CA9B153E4EA5C85838DC3AC40017CD08602E3A8F14767A6B39"
+    },
+    {
+      "name": "portrait",
+      "bytes": 8640054,
+      "sha256": "C8E7C4A9CEED39B2A252995DCCF471115BEC48A8BFE65C784FAFE940A2770047"
+    },
+    {
+      "name": "square",
+      "bytes": 12000054,
+      "sha256": "7B2FE0B242AB2BE376A92B3869916C1C14030298CCDE8C494C91E7A0C6663ABC"
+    },
+    {
+      "name": "svg",
+      "bytes": 174,
+      "sha256": "20F9570ECD1C1EBA7E007ED2692C689BC2AD94AFEB4DE694E07A400B236DCD6D"
+    }
+  ],
+  "requests": 4,
+  "connections": 1,
+  "active": 0,
+  "peakServerResponses": 1,
+  "http": [
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:64340"
+      ],
+      "utc": "2026-10-29T18:56:01.5719949+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 1,
+      "path": "landscape",
+      "utc": "2026-10-29T18:56:01.5735097+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 2,
+      "path": "portrait",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:64340"
+      ],
+      "utc": "2026-10-29T18:56:13.7530292+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 2,
+      "path": "portrait",
+      "utc": "2026-10-29T18:56:13.754239+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 3,
+      "path": "square",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:64340"
+      ],
+      "utc": "2026-10-29T18:56:23.6031176+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 3,
+      "path": "square",
+      "utc": "2026-10-29T18:56:23.6048672+00:00"
+    },
+    {
+      "kind": "request",
+      "id": 1,
+      "request": 4,
+      "path": "landscape",
+      "active": 1,
+      "headers": [
+        "Host: 127.0.0.1:64340"
+      ],
+      "utc": "2026-10-29T18:56:33.2172278+00:00"
+    },
+    {
+      "kind": "body-sent",
+      "id": 1,
+      "request": 4,
+      "path": "landscape",
+      "utc": "2026-10-29T18:56:33.218398+00:00"
+    }
+  ]
+}

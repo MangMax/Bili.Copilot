@@ -1,0 +1,14 @@
+{
+  "appPid": 40820,
+  "checks": [
+    {
+      "passed": true,
+      "name": "ImeMouseSelectionExactNode"
+    }
+  ],
+  "target": "local",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\mouse\\ime-mouse-exact.png"
+  ],
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-fixed-d19-layout-c"
+}

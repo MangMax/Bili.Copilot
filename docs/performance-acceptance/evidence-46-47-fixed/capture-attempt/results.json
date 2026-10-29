@@ -1,0 +1,90 @@
+{
+  "screenshots": [],
+  "checks": [
+    {
+      "passed": false,
+      "name": "InitialTemplateLoaded",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\00-initial.png failed: "
+    },
+    {
+      "passed": false,
+      "name": "Render",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\01-render.png failed: "
+    },
+    {
+      "passed": true,
+      "name": "ProductionCodeClipboard"
+    },
+    {
+      "passed": false,
+      "name": "Clear",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\02-clear.png failed: "
+    },
+    {
+      "passed": false,
+      "name": "Reassign",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\03-reassign.png failed: "
+    },
+    {
+      "passed": false,
+      "name": "Detach",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\04-detach.png failed: "
+    },
+    {
+      "passed": false,
+      "name": "SameInstanceUnchangedTextAttach",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\05-reattach.png failed: "
+    },
+    {
+      "passed": false,
+      "name": "LifecycleBoundaries",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\05b-lifecycle.png failed: "
+    },
+    {
+      "passed": false,
+      "name": "FreshReopen",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\06-fresh.png failed: "
+    },
+    {
+      "passed": false,
+      "name": "CoalescedSelectableStreaming",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\07-stream.png failed: "
+    },
+    {
+      "passed": false,
+      "name": "FinalFlush",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\08-final.png failed: "
+    },
+    {
+      "passed": true,
+      "name": "AnswerClipboard"
+    },
+    {
+      "passed": false,
+      "name": "CancelledLateAfterNewCompletion",
+      "detail": "winapp ui screenshot -w 927504 --capture-screen --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\09-cancel-late.png failed: "
+    },
+    {
+      "passed": true,
+      "name": "CancelledLateBeforeNewCompletion"
+    },
+    {
+      "passed": true,
+      "name": "CloseOwnedWindow"
+    },
+    {
+      "passed": true,
+      "name": "ProductionSourceAndManifestUnchanged"
+    },
+    {
+      "passed": true,
+      "name": "RemoveOwnedTemporaryPackage"
+    },
+    {
+      "passed": true,
+      "name": "YieldDesktop"
+    }
+  ],
+  "appPid": 21056,
+  "target": "local"
+}

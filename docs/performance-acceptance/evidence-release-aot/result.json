@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-10-30T02:55:47.2703652+08:00",
+  "vswhereCppComponentMatches": [],
+  "vcvars64Exists": true,
+  "vcvarsallExists": false,
+  "linkerExists": true,
+  "desktopX64LibExists": false,
+  "onecoreX64LibExists": true,
+  "publishExit": 1,
+  "runtimeGateExit": 0,
+  "nativeArtifact": null,
+  "msixArtifact": null
+}

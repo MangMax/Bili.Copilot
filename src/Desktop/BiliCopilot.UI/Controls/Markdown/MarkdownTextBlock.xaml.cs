@@ -15,6 +15,7 @@ public partial class MarkdownTextBlock : Control
     private readonly MarkdownPipeline _pipeline;
     private readonly MyFlowDocument _document;
     private WinUIRenderer _renderer;
+    private bool _restoreOnLoaded;
 
     private static readonly DependencyProperty ConfigProperty = DependencyProperty.Register(
         nameof(Config),
@@ -67,6 +68,7 @@ public partial class MarkdownTextBlock : Control
             .UsePipeTables()
             .Build();
 
+        Loaded += OnLoaded;
         Unloaded += OnUnloaded;
     }
 
@@ -108,16 +110,25 @@ public partial class MarkdownTextBlock : Control
         }
     }
 
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_restoreOnLoaded && _renderer != null)
+        {
+            ApplyText(Text, true);
+            _restoreOnLoaded = false;
+        }
+    }
+
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         Clean();
+        _restoreOnLoaded = true;
     }
 
     private void Clean()
     {
         _document.RichTextBlock.Blocks.Clear();
         _renderer?.Clear();
-        GC.Collect();
     }
 
     private void Build()

@@ -1,0 +1,7 @@
+{
+  "name": "03-reassign",
+  "directUtc": "2026-10-29T17:57:17.8357426+00:00",
+  "screen": "delivered",
+  "screenUtc": "2026-10-29T17:57:20.0629308+00:00",
+  "status": "ReassignReady: PASS | blocks=7, loaded=True, instance=1, loads=1, unloads=0"
+}
