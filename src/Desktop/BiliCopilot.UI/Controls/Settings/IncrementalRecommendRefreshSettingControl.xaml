@@ -15,6 +15,9 @@
         <base:SettingsCard.HeaderIcon>
             <ic:SymbolIcon Symbol="ArrowSync" />
         </base:SettingsCard.HeaderIcon>
-        <ToggleSwitch AutomationProperties.AutomationId="IncrementalRecommendRefreshToggle" IsOn="{x:Bind ViewModel.IncrementalRecommendRefresh, Mode=TwoWay}" />
+        <ToggleSwitch
+            AutomationProperties.AutomationId="IncrementalRecommendRefreshToggle"
+            AutomationProperties.Name="{ext:Locale Name=IncrementalRecommendRefresh}"
+            IsOn="{x:Bind ViewModel.IncrementalRecommendRefresh, Mode=TwoWay}" />
     </base:SettingsCard>
 </local:SettingsPageControlBase>

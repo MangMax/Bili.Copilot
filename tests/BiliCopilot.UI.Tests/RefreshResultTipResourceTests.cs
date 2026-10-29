@@ -1,6 +1,5 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using System.IO;
 using System.Xml.Linq;
 
 namespace BiliCopilot.UI.Tests;
@@ -24,7 +23,7 @@ public class RefreshResultTipResourceTests
     [Fact]
     public void Resources_ContainTipText()
     {
-        var resources = LoadResources();
+        var resources = ResourcesFileHelper.LoadResources();
 
         foreach (var key in ResourceKeys)
         {
@@ -42,7 +41,7 @@ public class RefreshResultTipResourceTests
     [Fact]
     public void RefreshResultAdded_UsesAddedCountPlaceholder()
     {
-        var value = GetValue(LoadResources(), "RefreshResultAdded");
+        var value = GetValue(ResourcesFileHelper.LoadResources(), "RefreshResultAdded");
 
         Assert.Contains("{0}", value, StringComparison.Ordinal);
     }
@@ -50,7 +49,7 @@ public class RefreshResultTipResourceTests
     [Fact]
     public void RefreshResultReloaded_DoesNotMentionAddedCount()
     {
-        var value = GetValue(LoadResources(), "RefreshResultReloaded");
+        var value = GetValue(ResourcesFileHelper.LoadResources(), "RefreshResultReloaded");
 
         Assert.DoesNotContain("{0}", value, StringComparison.Ordinal);
     }
@@ -60,34 +59,4 @@ public class RefreshResultTipResourceTests
             .Single(data => (string?)data.Attribute("name") == key)
             .Element("value")!
             .Value;
-
-    private static IReadOnlyList<XElement> LoadResources()
-    {
-        var reswPath = Path.Combine(
-            FindRepositoryRoot(),
-            "src",
-            "Desktop",
-            "BiliCopilot.UI",
-            "Resources",
-            "zh-Hans-CN",
-            "Resources.resw");
-
-        return XDocument.Load(reswPath).Root!.Elements("data").ToList();
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = AppContext.BaseDirectory;
-        while (directory is not null)
-        {
-            if (Directory.Exists(Path.Combine(directory, "src", "Desktop", "BiliCopilot.UI")))
-            {
-                return directory;
-            }
-
-            directory = Path.GetDirectoryName(directory);
-        }
-
-        throw new InvalidOperationException("未找到仓库根目录（含 src/Desktop/BiliCopilot.UI）。");
-    }
 }

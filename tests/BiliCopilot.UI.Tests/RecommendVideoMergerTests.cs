@@ -128,7 +128,29 @@ public class RecommendVideoMergerTests
     }
 
     [Fact]
-    public void Merge_DuplicateKeysWithinCurrent_KeepFirstOccurrenceOnly()
+    public void Merge_DuplicateKeysWithinCurrent_AreKeptAsIs()
+    {
+        var current = new[]
+        {
+            new TestVideo("a", "first"),
+            new TestVideo("b", "b"),
+            new TestVideo("a", "second"),
+        };
+        var incoming = new[]
+        {
+            new TestVideo("x", "x"),
+        };
+
+        var result = RecommendVideoMerger.Merge(current, incoming, p => p.Id);
+
+        Assert.Equal(new[] { "x", "a", "b", "a" }, result.Items.Select(p => p.Id));
+        Assert.Equal("first", result.Items[1].Title);
+        Assert.Equal("second", result.Items[3].Title);
+        Assert.Equal(new[] { "x" }, result.AddedItems.Select(p => p.Id));
+    }
+
+    [Fact]
+    public void Merge_EmptyIncoming_KeepsDuplicateKeysInCurrentAsIs()
     {
         var current = new[]
         {
@@ -139,8 +161,9 @@ public class RecommendVideoMergerTests
 
         var result = RecommendVideoMerger.Merge(current, Array.Empty<TestVideo>(), p => p.Id);
 
-        Assert.Equal(new[] { "a", "b" }, result.Items.Select(p => p.Id));
+        Assert.Equal(new[] { "a", "b", "a" }, result.Items.Select(p => p.Id));
         Assert.Equal("first", result.Items[0].Title);
+        Assert.Equal("second", result.Items[2].Title);
         Assert.Empty(result.AddedItems);
     }
 

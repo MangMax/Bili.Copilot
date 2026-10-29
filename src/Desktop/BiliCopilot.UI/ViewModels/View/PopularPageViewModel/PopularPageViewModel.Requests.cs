@@ -24,8 +24,12 @@ public sealed partial class PopularPageViewModel
         var isIncremental = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
             && Videos.Count > 0;
 
-        // 记录发起刷新时的分区：请求期间用户可能切到别的分区，回来后不能把结果写到新分区上。
-        var section = SelectedSection;
+        // 新一次刷新本身就改变了列表状态，之前发起的刷新即使还在路上也必须失效。
+        _refreshGeneration++;
+
+        // 记录发起刷新时的代次：请求期间用户可能切到别的分区（甚至切走又切回），
+        // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
+        var generation = _refreshGeneration;
 
         // 无论增量还是重载，都先记下刷新前的列表与偏移，成功后才有东西可撤销。
         // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
@@ -35,37 +39,27 @@ public sealed partial class PopularPageViewModel
         try
         {
             var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(0);
-            if (SelectedSection != section)
+            var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
+            if (!RecommendRefreshResultGuard.ShouldApply(isRecommend, generation, _refreshGeneration))
             {
                 return;
             }
 
-            if (isIncremental)
-            {
-                var incoming = videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Recommend));
-                var merged = RecommendVideoMerger.Merge(
-                    Videos,
-                    incoming,
-                    p => p.Data.Identifier.Id);
-                Videos.Clear();
-                foreach (var video in merged.Items)
-                {
-                    Videos.Add(video);
-                }
+            var application = RecommendRefreshApplier.Apply(
+                Videos,
+                videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Recommend)),
+                p => p.Data.Identifier.Id,
+                isIncremental,
+                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
+                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
 
-                ShowRefreshTip(
-                    RefreshResultMessageBuilder.Build(
-                        isIncremental: true,
-                        addedCount: merged.AddedItems.Count,
-                        ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
-                        ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded)));
-            }
-            else
+            Videos.Clear();
+            foreach (var video in application.Items)
             {
-                Videos.Clear();
-                TryAddVideos(videos, VideoCardStyle.Recommend);
-                ShowRefreshTip(ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
+                Videos.Add(video);
             }
+
+            ShowRefreshTip(application.Message);
 
             _recommendRefreshSnapshot = snapshot;
             _recommendOffset = nextOffset;

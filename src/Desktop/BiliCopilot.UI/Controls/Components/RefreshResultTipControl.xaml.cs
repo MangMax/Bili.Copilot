@@ -22,13 +22,13 @@ public sealed partial class RefreshResultTipControl : UserControl
     /// <see cref="Message"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty MessageProperty =
-        DependencyProperty.Register(nameof(Message), typeof(string), typeof(RefreshResultTipControl), new PropertyMetadata(default(string)));
+        DependencyProperty.Register(nameof(Message), typeof(string), typeof(RefreshResultTipControl), new PropertyMetadata(default));
 
     /// <summary>
     /// <see cref="UndoCommand"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty UndoCommandProperty =
-        DependencyProperty.Register(nameof(UndoCommand), typeof(ICommand), typeof(RefreshResultTipControl), new PropertyMetadata(default(ICommand)));
+        DependencyProperty.Register(nameof(UndoCommand), typeof(ICommand), typeof(RefreshResultTipControl), new PropertyMetadata(default));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RefreshResultTipControl"/> class.
