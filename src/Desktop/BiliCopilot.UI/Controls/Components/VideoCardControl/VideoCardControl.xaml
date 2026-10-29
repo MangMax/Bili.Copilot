@@ -63,13 +63,13 @@
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
-                                    <base:TrimTextBlock
+                                    <TextBlock
                                         HorizontalAlignment="Left"
                                         FontSize="12"
                                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                        MaxLines="1"
-                                        IsHitTestVisible="False"
-                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
+                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap" />
                                 </Button>
                                 <base:TrimTextBlock
                                     Grid.Row="1"
@@ -175,14 +175,14 @@
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
-                                    <base:TrimTextBlock
+                                    <TextBlock
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         FontSize="12"
                                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                        IsHitTestVisible="False"
-                                        MaxLines="1"
-                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
+                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap" />
                                 </Button>
                                 <base:TrimTextBlock
                                     Grid.Row="1"
@@ -302,13 +302,13 @@
                                         x:Name="AuthorButton"
                                         Style="{StaticResource TextButtonStyle}"
                                         ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
-                                        <base:TrimTextBlock
+                                        <TextBlock
                                             VerticalAlignment="Center"
                                             FontSize="12"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                            MaxLines="1"
-                                            IsHitTestVisible="False"
-                                            Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
+                                            Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
                                     </Button>
                                     <TextBlock
                                         Grid.Column="1"
