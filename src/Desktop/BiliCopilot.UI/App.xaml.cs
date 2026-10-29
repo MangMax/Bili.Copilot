@@ -97,7 +97,10 @@ public partial class App : Application
         else
         {
             var activatedArgs = instance.GetActivatedEventArgs();
-            _ = instance.RedirectActivationToAsync(activatedArgs).AsTask().ContinueWith(_ => Current.Exit());
+            // The continuation runs on a worker thread; WinUI Exit must run on
+            // this instance's UI thread or the windowless secondary stays alive.
+            _ = instance.RedirectActivationToAsync(activatedArgs).AsTask()
+                .ContinueWith(_ => _dispatcherQueue.TryEnqueue(() => Current.Exit()));
         }
     }
 
