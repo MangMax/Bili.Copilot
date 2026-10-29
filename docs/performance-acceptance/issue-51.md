@@ -10,7 +10,7 @@ Date: 2026-10-30. Code and deterministic service-boundary tests implemented. **R
 - Branch: `t3/search-debounce-cancellation`.
 - Worktree: `C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-8c1fb4a7`.
 - Before edits, `git fetch origin`, `git rev-parse HEAD feat/performance-45 origin/feat/performance-45`, and ancestor checks confirmed HEAD/local integration `745ac5c7efe814d372c17a1d46c6cfc5cce57cb6`, containing remote integration `ed35a68bb894cd63640435220008c5c79a0d1921`.
-- During work, `git merge --no-edit feat/performance-45` fast-forwarded this branch to `175b2c07a67a8654d1046112fde0ae095db45913`. Repeated immediately before final verification: `Already up to date.` Integration itself was not mutated. While the first build ran, integration advanced to `2eac5fac1554e0081bbe93bf0b47eb95d219ead7` (#48). Committed the verified #51 slice, merged that tip, resolved the test logging adapter overlap by keeping the real ILogger dependency introduced by #48, then reran tests/build on the merged tree.
+- During work, `git merge --no-edit feat/performance-45` fast-forwarded this branch to `175b2c07a67a8654d1046112fde0ae095db45913`. Repeated immediately before final verification: `Already up to date.` Integration itself was not mutated. While the first build ran, integration advanced to `2eac5fac1554e0081bbe93bf0b47eb95d219ead7` (#48). Committed the verified #51 slice, merged that tip, resolved the test logging adapter overlap by keeping the real ILogger dependency introduced by #48, then reran tests/build on the merged tree. Finally merged `eeb28f2c914a2a86491781a3f2942b860db688ee`, which adds only integration-47.md and integration-48.md; source/tests/submodule are identical to the verified tree. Final source-diff and whitespace checks passed; no redundant rebuild for those documentation-only changes.
 - `git submodule status --recursive` and `git -C externals/bili-kernel status --short` verified initialized, clean submodule `6501985d0f30c55c28b3f78c6e045c2536e1d389`. Checked service/nested source files exist (17 csproj files). Initially no submodule SHA or source change. The final integration merge inherited #48's gitlink `2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d`; `git submodule update --init --recursive` checked out that exact integration-owned SHA. No independent submodule edit or gitlink selection was made for #51.
 - No other worktrees, subagents, PR, push, issue closure, package deployment, app launch, UI input, installs, or global configuration changes.
 
@@ -134,5 +134,3 @@ When the parent grants a slot, test this exact build in its selected target with
 6. Collect actual network request counts/timestamps and visible popup state for the same build/material. Release Native AOT runtime/performance acceptance remains unverified.
 
 No unit test or static check here validates WinUI ABI, actual settings persistence, real IME composition, popup layout, theme/accessibility, actual navigation, or network timing.
-
-
