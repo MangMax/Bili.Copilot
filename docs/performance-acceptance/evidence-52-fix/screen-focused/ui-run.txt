@@ -1,0 +1,7 @@
+{"error":{"code":"foreground_not_target","message":"Target window is not in the foreground \u2014 refusing to focus to avoid acting on the wrong window. Activate the intended window manually, check for a blocking dialog, then retry."}}
+
+error                           name    passed
+-----                           ----    ------
+winapp ui focus Next52 failed:  Runner   False
+                                Cleanup   True
+

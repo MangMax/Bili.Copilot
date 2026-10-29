@@ -1,0 +1,5234 @@
+[
+  {
+    "kind": "discovered",
+    "utc": "2026-10-29T18:55:56.7832075+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": null,
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 56679560,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:55:57.2705773+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 56679560,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:55:57.2716542+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 56679560,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:55:57.3635374+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 31954712,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:55:57.3918522+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 31954712,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:55:57.3924025+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 31954712,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:55:57.4030257+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 31954712,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:55:57.4031343+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 31954712,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:55:57.4031927+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 31954712,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:55:57.4032309+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 31954712,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:55:57.4032874+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      },
+      {
+        "id": 49386989,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 38051083,
+        "type": "Grid"
+      },
+      {
+        "id": 39068398,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 55291023,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 47694669,
+        "type": "Grid"
+      },
+      {
+        "id": 7335444,
+        "type": "Border"
+      },
+      {
+        "id": 28251915,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 31730584,
+        "type": "Grid"
+      },
+      {
+        "id": 60868535,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 19126270,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 47314927,
+        "type": "Border"
+      },
+      {
+        "id": 11114284,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 66374831,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 31954712,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:00.2306875+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 35412789,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:00.8035922+00:00",
+    "host": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 52377683,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 52377683,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 35412789,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "discovered",
+    "utc": "2026-10-29T18:56:00.8079943+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": null,
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:00.8089042+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:00.80899+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:01.5210175+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:01.5211911+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:01.7259255+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:01.7306293+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:01.7314687+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:01.7331267+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:01.7332569+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:01.7333077+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      },
+      {
+        "id": 42941111,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 21363534,
+        "type": "Grid"
+      },
+      {
+        "id": 57713081,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 49763145,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:13.7006626+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 66172805,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:13.7437031+00:00",
+    "host": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 36310921,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 36310921,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 66172805,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "discovered",
+    "utc": "2026-10-29T18:56:13.7483897+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": null,
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:13.7487612+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:13.7488281+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:13.7528882+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 9290489,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 53667499,
+        "type": "Grid"
+      },
+      {
+        "id": 26588848,
+        "type": "Border"
+      },
+      {
+        "id": 10110709,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 64330362,
+        "type": "Grid"
+      },
+      {
+        "id": 30988340,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 195236,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 2538076,
+        "type": "Border"
+      },
+      {
+        "id": 32994989,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 26281683,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:13.7945648+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:13.8090373+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:13.8119236+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:13.8121251+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:13.8122472+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:13.8122965+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:13.8123256+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      },
+      {
+        "id": 45833318,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 58962222,
+        "type": "Grid"
+      },
+      {
+        "id": 54940109,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 24174521,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:23.5690807+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 37575856,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:23.598207+00:00",
+    "host": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 65012215,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 65012215,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 37575856,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "discovered",
+    "utc": "2026-10-29T18:56:23.6003197+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": null,
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:23.6005256+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:23.6005666+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:23.6066842+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:23.6067778+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:23.6474984+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:23.6492515+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:23.6496398+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:23.6497214+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:23.6497429+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:23.6497606+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      },
+      {
+        "id": 43679547,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 30963200,
+        "type": "Grid"
+      },
+      {
+        "id": 18724082,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 32503717,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 19895143,
+        "type": "Grid"
+      },
+      {
+        "id": 57310276,
+        "type": "Border"
+      },
+      {
+        "id": 6836088,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 21760288,
+        "type": "Grid"
+      },
+      {
+        "id": 14448300,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 53610177,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 25843664,
+        "type": "Border"
+      },
+      {
+        "id": 423323,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 5503204,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 44657727,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:33.1818514+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 40479205,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:33.2120852+00:00",
+    "host": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 45014116,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 45014116,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 40479205,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "discovered",
+    "utc": "2026-10-29T18:56:33.2153034+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": null,
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:33.2155371+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:33.2155915+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:33.2313932+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:33.2314945+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:33.2423365+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:33.2435577+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:33.244011+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:33.2443103+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:33.244347+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:33.2443631+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      },
+      {
+        "id": 24315120,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 47661113,
+        "type": "Grid"
+      },
+      {
+        "id": 56467617,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 63817037,
+      "type": "Image"
+    },
+    "source": "BitmapImage"
+  },
+  {
+    "kind": "Unloaded",
+    "utc": "2026-10-29T18:56:42.8108102+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 7181382,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Unloaded-deferred",
+    "utc": "2026-10-29T18:56:42.8388742+00:00",
+    "host": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 13927332,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 13927332,
+        "type": "Border"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 7181382,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "discovered",
+    "utc": "2026-10-29T18:56:42.8406858+00:00",
+    "host": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "sender": null,
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 24072164,
+        "type": "Border"
+      },
+      {
+        "id": 61887951,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 66345871,
+        "type": "Grid"
+      },
+      {
+        "id": 26249108,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 4760611,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:42.8408932+00:00",
+    "host": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 24072164,
+        "type": "Border"
+      },
+      {
+        "id": 61887951,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 66345871,
+        "type": "Grid"
+      },
+      {
+        "id": 26249108,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 4760611,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded",
+    "utc": "2026-10-29T18:56:42.8409311+00:00",
+    "host": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": false,
+    "parents": [
+      {
+        "id": 24072164,
+        "type": "Border"
+      },
+      {
+        "id": 61887951,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 66345871,
+        "type": "Grid"
+      },
+      {
+        "id": 26249108,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 4760611,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:42.8532927+00:00",
+    "host": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 24072164,
+        "type": "Border"
+      },
+      {
+        "id": 61887951,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 66345871,
+        "type": "Grid"
+      },
+      {
+        "id": 26249108,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 4760611,
+      "type": "Image"
+    },
+    "source": null
+  },
+  {
+    "kind": "Loaded-deferred",
+    "utc": "2026-10-29T18:56:42.8533937+00:00",
+    "host": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "sender": {
+      "id": 24072164,
+      "type": "Border"
+    },
+    "original": null,
+    "hostIsOriginal": false,
+    "IsLoaded": true,
+    "parents": [
+      {
+        "id": 24072164,
+        "type": "Border"
+      },
+      {
+        "id": 61887951,
+        "type": "RichTextBlock"
+      },
+      {
+        "id": 66345871,
+        "type": "Grid"
+      },
+      {
+        "id": 26249108,
+        "type": "MarkdownTextBlock"
+      },
+      {
+        "id": 3738399,
+        "type": "StackPanel"
+      },
+      {
+        "id": 15614700,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 1664512,
+        "type": "Grid"
+      },
+      {
+        "id": 21638659,
+        "type": "Border"
+      },
+      {
+        "id": 12867119,
+        "type": "ScrollViewer"
+      },
+      {
+        "id": 33054828,
+        "type": "Grid"
+      },
+      {
+        "id": 27059589,
+        "type": "ContentPresenter"
+      },
+      {
+        "id": 16230349,
+        "type": "DependencyObject"
+      },
+      {
+        "id": 9667952,
+        "type": "Border"
+      },
+      {
+        "id": 58574524,
+        "type": "ScrollContentPresenter"
+      },
+      {
+        "id": 23271310,
+        "type": "ScrollViewer"
+      }
+    ],
+    "originalParents": [],
+    "child": {
+      "id": 4760611,
+      "type": "Image"
+    },
+    "source": null
+  }
+]

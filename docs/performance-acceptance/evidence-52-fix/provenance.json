@@ -1,0 +1,47 @@
+{
+  "base": "a236aaa2266156804651223743444a0418af4822",
+  "acceptance": "4c5dc7ceab440c038b176ff98b724dfdc01c4e6e",
+  "integration": "1b1c1945103de1f1fa423b7d7c26ffd22dfaccc0",
+  "merge": "5201e08c3b8e5e361437ab8045f709f3fb499996",
+  "kernel": "2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d",
+  "winapp": "0.7.1",
+  "sdk": "10.0.403",
+  "upstreamReference": "https://github.com/microsoft/microsoft-ui-xaml/tree/0a03f68d586d1c100f753ca3221597c3ee550f4a",
+  "sourceHashes": [
+    {
+      "Algorithm": "SHA256",
+      "Hash": "41E117FD7A80FC36A95B1E02429308B572D736AA562B0A829A45E18993A6095B",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyImage.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "96BE970CEEB72F8478CAE8ED4E8B18E1EE5958965DA0725FE03140A4F43AC1E2",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\harness-46-47\\Image52.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "49AB389596382F97FA2FA7629DAEAC4339108BE7F9A65A2BB527EFFCBE7EE474",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\harness-46-47\\Http52.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F41CFB14A68D3E7CA63477251B82B44B636442775270A9CC006C7FA9C41080A5",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\harness-46-47\\run-52.ps1"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B574B5493F90227D4595CD4A2B2A790CA564810E0BAD1A4C707D084E42F22B85",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\harness-46-47\\prepare-52.ps1"
+    }
+  ],
+  "releaseCounters": {
+    "total": 401,
+    "resultRecords": 401,
+    "failed": 0,
+    "passed": 401,
+    "skipped": 0
+  },
+  "productionFilesChanged": [
+    "src/Desktop/BiliCopilot.UI/Controls/Markdown/TextElements/MyImage.cs"
+  ]
+}

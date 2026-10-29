@@ -1,0 +1,163 @@
+{
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-green-c-layout",
+  "appPid": 38920,
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\InitialTemplateLoadedReady.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\Detach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\SameInstanceUnchangedTextAttachReady.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\RepeatedAttach1Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\RepeatedAttach2Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\RepeatedAttach3Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\EmptyTextReattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\LifecycleBoundariesReady.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\Landscape.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\Portrait.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\Square.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\Resize.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\SvgCharset.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\CachedProvider.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\LateProviderUnload.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\LateProviderClear.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\LateProviderReattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\LateProviderReopen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\SlowBodyUnload.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\SlowBodyClear.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\SlowBodyReattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\SlowBodyReopen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\ConcurrentHTTP.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\Slots52.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-c\\Boundary52.png"
+  ],
+  "target": "local",
+  "checks": [
+    {
+      "passed": true,
+      "status": "InitialTemplateLoadedReady: PASS | blocks=7, loaded=True, instance=1, loads=1, unloads=0",
+      "name": "InitialTemplateLoadedReady"
+    },
+    {
+      "passed": true,
+      "status": "Detach: PASS | blocks=0, loaded=False, instance=1, loads=1, unloads=1",
+      "name": "Detach"
+    },
+    {
+      "passed": true,
+      "status": "SameInstanceUnchangedTextAttachReady: PASS | blocks=7, loaded=True, instance=1, loads=2, unloads=1",
+      "name": "SameInstanceUnchangedTextAttachReady"
+    },
+    {
+      "passed": true,
+      "status": "RepeatedAttach1Ready: PASS | blocks=7, loaded=True, instance=1, loads=3, unloads=2",
+      "name": "RepeatedAttach1Ready"
+    },
+    {
+      "passed": true,
+      "status": "RepeatedAttach2Ready: PASS | blocks=7, loaded=True, instance=1, loads=4, unloads=3",
+      "name": "RepeatedAttach2Ready"
+    },
+    {
+      "passed": true,
+      "status": "RepeatedAttach3Ready: PASS | blocks=7, loaded=True, instance=1, loads=5, unloads=4",
+      "name": "RepeatedAttach3Ready"
+    },
+    {
+      "passed": true,
+      "status": "EmptyTextReattach: PASS | blocks=0, loaded=True, instance=1, loads=6, unloads=5",
+      "name": "EmptyTextReattach"
+    },
+    {
+      "passed": true,
+      "status": "LifecycleBoundariesReady: PASS | blocks=7, loaded=True, instance=1, loads=6, unloads=5",
+      "name": "LifecycleBoundariesReady"
+    },
+    {
+      "passed": true,
+      "status": "Landscape: terminal PASS | terminal",
+      "name": "Landscape"
+    },
+    {
+      "passed": true,
+      "status": "Portrait: terminal PASS | terminal",
+      "name": "Portrait"
+    },
+    {
+      "passed": true,
+      "status": "Square: terminal PASS | terminal",
+      "name": "Square"
+    },
+    {
+      "passed": false,
+      "status": "Resize: terminal FAIL | terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__1>d.MoveNext()",
+      "name": "Resize"
+    },
+    {
+      "passed": true,
+      "status": "SvgCharset: terminal PASS | terminal",
+      "name": "SvgCharset"
+    },
+    {
+      "passed": true,
+      "status": "CachedProvider: terminal PASS | terminal",
+      "name": "CachedProvider"
+    },
+    {
+      "passed": true,
+      "status": "LateProviderUnload: terminal PASS | terminal",
+      "name": "LateProviderUnload"
+    },
+    {
+      "passed": true,
+      "status": "LateProviderClear: terminal PASS | terminal",
+      "name": "LateProviderClear"
+    },
+    {
+      "passed": true,
+      "status": "LateProviderReattach: terminal PASS | terminal",
+      "name": "LateProviderReattach"
+    },
+    {
+      "passed": true,
+      "status": "LateProviderReopen: terminal PASS | terminal",
+      "name": "LateProviderReopen"
+    },
+    {
+      "passed": true,
+      "status": "SlowBodyUnload: terminal PASS | terminal",
+      "name": "SlowBodyUnload"
+    },
+    {
+      "passed": true,
+      "status": "SlowBodyClear: terminal PASS | terminal",
+      "name": "SlowBodyClear"
+    },
+    {
+      "passed": true,
+      "status": "SlowBodyReattach: terminal PASS | terminal",
+      "name": "SlowBodyReattach"
+    },
+    {
+      "passed": true,
+      "status": "SlowBodyReopen: terminal PASS | terminal",
+      "name": "SlowBodyReopen"
+    },
+    {
+      "passed": true,
+      "status": "ConcurrentHTTP: terminal PASS | terminal",
+      "name": "ConcurrentHTTP"
+    },
+    {
+      "passed": true,
+      "status": "Slots52: terminal PASS | terminal",
+      "name": "Slots52"
+    },
+    {
+      "passed": true,
+      "status": "Boundary52: terminal PASS | terminal",
+      "name": "Boundary52"
+    },
+    {
+      "passed": true,
+      "name": "Cleanup"
+    }
+  ]
+}

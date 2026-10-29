@@ -1,0 +1,992 @@
+[
+  {
+    "name": "FirstLoadedImmediate",
+    "passed": false,
+    "expected": "observation in first Loaded event",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 1,
+    "unloads": 0,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 1355.9063,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": false,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": true,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:15.3884689+00:00"
+  },
+  {
+    "name": "FirstLoadedImmediateReady",
+    "passed": false,
+    "expected": "terminal=timeout; waitedMs=3016.041; original assertion retained; ImageOpened and positive layout size required",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 1,
+    "unloads": 0,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 4542.4819,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": false,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": true,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:18.5730699+00:00"
+  },
+  {
+    "name": "InitialTemplateLoaded",
+    "passed": false,
+    "expected": "first template/Loaded renders exactly seven blocks",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 1,
+    "unloads": 0,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 7481.0529,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": false,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": true,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:21.5116349+00:00"
+  },
+  {
+    "name": "InitialTemplateLoadedReady",
+    "passed": false,
+    "expected": "terminal=timeout; waitedMs=3012.639; original assertion retained; ImageOpened and positive layout size required",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 1,
+    "unloads": 0,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 10495.6377,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": false,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": true,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:24.5261626+00:00"
+  },
+  {
+    "name": "Detach",
+    "passed": true,
+    "expected": "unloaded and blocks cleared",
+    "blocks": 0,
+    "loaded": false,
+    "instance": 1,
+    "loads": 1,
+    "unloads": 1,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 12008.6511,
+      "text": "",
+      "richTexts": [
+        ""
+      ],
+      "links": [],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 0,
+      "loaded": false,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": false,
+        "finalOmega": false,
+        "hyperlink": false,
+        "image": false,
+        "codeLabel": false,
+        "tableFixture": false,
+        "table47": false,
+        "codeBody": false
+      },
+      "images": [],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:26.0389054+00:00"
+  },
+  {
+    "name": "SameInstanceUnchangedTextAttach",
+    "passed": true,
+    "expected": "observe after actual Loaded; unchanged fixture must render",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 2,
+    "unloads": 1,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 13436.4639,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": true,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": 3,
+          "source": "ms-appx:///Assets/Logo.png",
+          "sourceType": "BitmapImage",
+          "width": 96,
+          "height": 96,
+          "IsLoaded": true,
+          "pixelWidth": 150,
+          "pixelHeight": 150,
+          "created": "2026-10-29T18:31:27.4505471+00:00",
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": true
+    },
+    "utc": "2026-10-29T18:31:27.4677581+00:00"
+  },
+  {
+    "name": "SameInstanceUnchangedTextAttachReady",
+    "passed": true,
+    "expected": "terminal=ImageOpened\u002Blayout-size; waitedMs=10.645; original assertion retained; ImageOpened and positive layout size required",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 2,
+    "unloads": 1,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 13449.884,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": true,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": 3,
+          "source": "ms-appx:///Assets/Logo.png",
+          "sourceType": "BitmapImage",
+          "width": 96,
+          "height": 96,
+          "IsLoaded": true,
+          "pixelWidth": 150,
+          "pixelHeight": 150,
+          "created": "2026-10-29T18:31:27.4505471+00:00",
+          "opened": "2026-10-29T18:31:27.4788439+00:00",
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": true
+    },
+    "utc": "2026-10-29T18:31:27.4804627+00:00"
+  },
+  {
+    "name": "RepeatedAttach1",
+    "passed": true,
+    "expected": "same instance/text, actual unload/load, exactly seven blocks",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 3,
+    "unloads": 2,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 14837.4238,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": true,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": 4,
+          "source": "ms-appx:///Assets/Logo.png",
+          "sourceType": "BitmapImage",
+          "width": 96,
+          "height": 96,
+          "IsLoaded": true,
+          "pixelWidth": 150,
+          "pixelHeight": 150,
+          "created": "2026-10-29T18:31:28.861725+00:00",
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": true
+    },
+    "utc": "2026-10-29T18:31:28.8679789+00:00"
+  },
+  {
+    "name": "RepeatedAttach1Ready",
+    "passed": true,
+    "expected": "terminal=ImageOpened\u002Blayout-size; waitedMs=5.343; original assertion retained; ImageOpened and positive layout size required",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 3,
+    "unloads": 2,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 14844.3402,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": true,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": 4,
+          "source": "ms-appx:///Assets/Logo.png",
+          "sourceType": "BitmapImage",
+          "width": 96,
+          "height": 96,
+          "IsLoaded": true,
+          "pixelWidth": 150,
+          "pixelHeight": 150,
+          "created": "2026-10-29T18:31:28.861725+00:00",
+          "opened": "2026-10-29T18:31:28.873154+00:00",
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": true
+    },
+    "utc": "2026-10-29T18:31:28.8748892+00:00"
+  },
+  {
+    "name": "RepeatedAttach2",
+    "passed": true,
+    "expected": "same instance/text, actual unload/load, exactly seven blocks",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 4,
+    "unloads": 3,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 16264.0155,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": true,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": 5,
+          "source": "ms-appx:///Assets/Logo.png",
+          "sourceType": "BitmapImage",
+          "width": 96,
+          "height": 96,
+          "IsLoaded": true,
+          "pixelWidth": 150,
+          "pixelHeight": 150,
+          "created": "2026-10-29T18:31:30.2867492+00:00",
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": true
+    },
+    "utc": "2026-10-29T18:31:30.2947066+00:00"
+  },
+  {
+    "name": "RepeatedAttach2Ready",
+    "passed": true,
+    "expected": "terminal=ImageOpened\u002Blayout-size; waitedMs=3.264; original assertion retained; ImageOpened and positive layout size required",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 4,
+    "unloads": 3,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 16276.7523,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": true,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": 5,
+          "source": "ms-appx:///Assets/Logo.png",
+          "sourceType": "BitmapImage",
+          "width": 96,
+          "height": 96,
+          "IsLoaded": true,
+          "pixelWidth": 150,
+          "pixelHeight": 150,
+          "created": "2026-10-29T18:31:30.2867492+00:00",
+          "opened": "2026-10-29T18:31:30.2982635+00:00",
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": true
+    },
+    "utc": "2026-10-29T18:31:30.3076169+00:00"
+  },
+  {
+    "name": "RepeatedAttach3",
+    "passed": true,
+    "expected": "same instance/text, actual unload/load, exactly seven blocks",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 5,
+    "unloads": 4,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 17712.5322,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": true,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": 6,
+          "source": "ms-appx:///Assets/Logo.png",
+          "sourceType": "BitmapImage",
+          "width": 96,
+          "height": 96,
+          "IsLoaded": true,
+          "pixelWidth": 150,
+          "pixelHeight": 150,
+          "created": "2026-10-29T18:31:31.7375929+00:00",
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": true
+    },
+    "utc": "2026-10-29T18:31:31.7430756+00:00"
+  },
+  {
+    "name": "RepeatedAttach3Ready",
+    "passed": true,
+    "expected": "terminal=ImageOpened\u002Blayout-size; waitedMs=5.593; original assertion retained; ImageOpened and positive layout size required",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 5,
+    "unloads": 4,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 17719.6822,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": true,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": 6,
+          "source": "ms-appx:///Assets/Logo.png",
+          "sourceType": "BitmapImage",
+          "width": 96,
+          "height": 96,
+          "IsLoaded": true,
+          "pixelWidth": 150,
+          "pixelHeight": 150,
+          "created": "2026-10-29T18:31:31.7375929+00:00",
+          "opened": "2026-10-29T18:31:31.7488991+00:00",
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": true
+    },
+    "utc": "2026-10-29T18:31:31.7502108+00:00"
+  },
+  {
+    "name": "EmptyTextReattach",
+    "passed": true,
+    "expected": "empty text remains empty after Loaded",
+    "blocks": 0,
+    "loaded": true,
+    "instance": 1,
+    "loads": 6,
+    "unloads": 5,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 19137.1885,
+      "text": "",
+      "richTexts": [
+        ""
+      ],
+      "links": [],
+      "textEqualsFixture": false,
+      "controlIdentity": 39068398,
+      "blocks": 0,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": false,
+        "finalOmega": false,
+        "hyperlink": false,
+        "image": false,
+        "codeLabel": false,
+        "tableFixture": false,
+        "table47": false,
+        "codeBody": false
+      },
+      "images": [],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:33.1674732+00:00"
+  },
+  {
+    "name": "LifecycleAssignmentImmediate",
+    "passed": false,
+    "expected": "synchronous observation immediately after Text assignment; before dispatcher UpdateLayout",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 6,
+    "unloads": 5,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 20542.8532,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": false,
+        "codeLabel": false,
+        "tableFixture": false,
+        "table47": false,
+        "codeBody": false
+      },
+      "images": [],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:34.5731568+00:00"
+  },
+  {
+    "name": "LifecycleBoundaries",
+    "passed": false,
+    "expected": "reassign after empty attach restores exactly seven blocks",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 6,
+    "unloads": 5,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 20548.8824,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": false,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": true,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:34.5793523+00:00"
+  },
+  {
+    "name": "LifecycleBoundariesReady",
+    "passed": false,
+    "expected": "terminal=timeout; waitedMs=3008.748; original assertion retained; ImageOpened and positive layout size required",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 6,
+    "unloads": 5,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 23559.3496,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": false,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": true,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:31:37.5898208+00:00"
+  }
+]

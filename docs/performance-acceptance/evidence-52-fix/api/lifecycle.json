@@ -1,0 +1,48 @@
+{
+  "scope": "project",
+  "projectName": "Harness",
+  "projectDir": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-red",
+  "caveats": [
+    "No Windows SDK at or below the targeted 10.0.22621.0 is installed; answering from 10.0.28000.0. Results may include APIs that do not exist at your target.",
+    "Installed Windows App Runtime 2.6 does not match the referenced Windows App SDK 1.8.39; its metadata is excluded from this project\u0027s API surface."
+  ],
+  "fullName": "Microsoft.UI.Xaml.FrameworkElement",
+  "kind": "Class",
+  "description": "Provides a base element class for Windows Runtime UI objects. FrameworkElement defines common API that support UI interaction and the automatic layout system. FrameworkElement also defines API related to data binding, defining and examining the object tree, and tracking object lifetime.",
+  "baseType": "Microsoft.UI.Xaml.UIElement",
+  "filter": "Loaded",
+  "totalProperties": 205,
+  "totalEvents": 48,
+  "totalMethods": 49,
+  "properties": [
+    {
+      "name": "IsLoaded",
+      "kind": "Property",
+      "signature": "Boolean IsLoaded { get; }",
+      "returnType": "Boolean",
+      "description": "Gets a value that indicates whether the element has been added to the element tree and is ready for interaction.",
+      "writable": false
+    }
+  ],
+  "events": [
+    {
+      "name": "Loaded",
+      "kind": "Event",
+      "signature": "event Microsoft.UI.Xaml.RoutedEventHandler Loaded",
+      "returnType": "Microsoft.UI.Xaml.RoutedEventHandler",
+      "description": "Occurs when a FrameworkElement has been constructed and added to the object tree, and is ready for interaction."
+    },
+    {
+      "name": "Unloaded",
+      "kind": "Event",
+      "signature": "event Microsoft.UI.Xaml.RoutedEventHandler Unloaded",
+      "returnType": "Microsoft.UI.Xaml.RoutedEventHandler",
+      "description": "Occurs when this object is no longer connected to the main object tree."
+    }
+  ],
+  "methods": [],
+  "getForCurrentViewWarning": false,
+  "alsoMatched": [
+    "Windows.UI.Xaml.FrameworkElement"
+  ]
+}

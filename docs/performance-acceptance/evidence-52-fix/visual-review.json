@@ -1,0 +1,164 @@
+[
+  {
+    "file": "final-verified/Boundary52.png",
+    "sha256": "51557467675F2A42618DE3550CA46A7AE2C6186633F9163B8C70F5333C4D0D54",
+    "openedIndividually": true,
+    "note": "Three proportioned bitmap controls and teal SVG plus two preloaded probes visible; lower probe partly clipped by viewport. No cafe acute glyphs."
+  },
+  {
+    "file": "final-verified/CachedProvider.png",
+    "sha256": "DB2DC15855C84360AF40806F08592118CB8EB9FC83CC54BEB8BE107FE34C81A1",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/ConcurrentHTTP.png",
+    "sha256": "6181C872EAF3EDF3CE8428E4F0D28A779CD28E737313034B2FAFEA2F9DCEC4F6",
+    "openedIndividually": true,
+    "note": "Multiple square checkerboards visible in scroll viewport; remaining images below viewport, all eight have positive structured layout."
+  },
+  {
+    "file": "final-verified/Detach.png",
+    "sha256": "DFF5680776DBAC3F9A8C68801D636D8A7EFB38F28D5A29D9DEFE9F87F154E1FE",
+    "openedIndividually": true,
+    "note": "Expected empty document visible."
+  },
+  {
+    "file": "final-verified/EmptyTextReattach.png",
+    "sha256": "F89A778FEF5DD5A768F9D6380C3BC9636B5C7433F5A65F8D4D6A4C4FCE3A349D",
+    "openedIndividually": true,
+    "note": "Expected empty document visible."
+  },
+  {
+    "file": "final-verified/InitialTemplateLoadedReady.png",
+    "sha256": "871B1AFD0F251E0CF88DB73748C768EFF8A77C420982DA6F60313CDE69EB38C0",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/InlineHttpReattach.png",
+    "sha256": "D2457EE7C3E3A7932FCAFC6D89156EAD1048A8EBC2B9169F6A515DAD855351CA",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/InlineLateProvider.png",
+    "sha256": "1D9A191CE7351E3715BE774E7DA6B2FB0363D5ADBC399308552909066FD0BB47",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/Landscape.png",
+    "sha256": "EB4EF8200FE6B8898C379F5F05764EC231C4D15D177FF1D7F25E3D7E67CCD91D",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/LateProviderClear.png",
+    "sha256": "0CA65C9B2E0C5CCBE5A14E8673F837D7B8515F63D491A84E5A6C8D3A7195EAD1",
+    "openedIndividually": true,
+    "note": "Expected provider logo absent in default window capture despite structured source/layout success; visual evidence insufficient."
+  },
+  {
+    "file": "final-verified/LateProviderReattach.png",
+    "sha256": "13FCCF08B401D5D92F34FCDD8FC269E8E347A079B50259B3D178ADC96D8A8EF0",
+    "openedIndividually": true,
+    "note": "Expected provider logo absent in default window capture despite structured source/layout success; visual evidence insufficient."
+  },
+  {
+    "file": "final-verified/LateProviderReopen.png",
+    "sha256": "82BC9BBB94D2BE5A38531C417B57A81684B5460C39C4C615DD454A08FD034AEA",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/LateProviderUnload.png",
+    "sha256": "1DE7DDD95026FCA9F3AB33EBE52276241A40342CBAE2C4F6426D0EE277B9CF8E",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/LifecycleBoundariesReady.png",
+    "sha256": "6A126768C0DB541ADABDBB70A4726EAA82B7ECB7575BD727BA4070F1DC87EE5F",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/Portrait.png",
+    "sha256": "CD8A05DC8E411EAC453CC143AA6C59A5460D704F7ED4DAA52079B86F1CAED3EA",
+    "openedIndividually": true,
+    "note": "Portrait checkerboard visible; tall image extends below the scroll viewport."
+  },
+  {
+    "file": "final-verified/RepeatedAttach1Ready.png",
+    "sha256": "43569A8EB4DEF21C9D5BD388A02D3879323475DBBFD277156C322086783050EB",
+    "openedIndividually": true,
+    "note": "Partial rendering in default window capture: code panel and logo visible; heading/body/link/tail absent. Structured Ready passed; complete visual output not established by this PNG."
+  },
+  {
+    "file": "final-verified/RepeatedAttach2Ready.png",
+    "sha256": "BC77F6453A8D8EAF6B1A8353558FD71EBF4BD2150B2DE7A94E3F34115ABEE73E",
+    "openedIndividually": true,
+    "note": "Partial rendering: heading and code panel visible; remaining fixture content absent. Not a full visual pass."
+  },
+  {
+    "file": "final-verified/RepeatedAttach3Ready.png",
+    "sha256": "4F5A402E985887ED06ACCD8168262FC133BFF1853A78995CF115632C3F1A3B09",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/Resize.png",
+    "sha256": "34A648C0586954CE0B779D8B86E5418FBD52A1783B862F31AC76998B76E91B1C",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/SameInstanceUnchangedTextAttachReady.png",
+    "sha256": "5604C3DD0DD9D4E67B3B3C8DC13A38139DEAAA442D6AFC595949695617226D5A",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/Slots52.png",
+    "sha256": "78DBB9709A20606BF95E3FC8DA46426D91F8AADB3D75EA6A8833DEBB5C7792E2",
+    "openedIndividually": true,
+    "note": "Recovered current teal SVG visible; controlled old result rejection asserted separately."
+  },
+  {
+    "file": "final-verified/SlowBodyClear.png",
+    "sha256": "AD4012D8B76833A9986FBDDD6746E6BFD3B63951D38A1E377DB9E9056DB7FF81",
+    "openedIndividually": true,
+    "note": "Expected bitmap absent in default window capture despite structured source/layout success; visual evidence insufficient."
+  },
+  {
+    "file": "final-verified/SlowBodyReattach.png",
+    "sha256": "6812C02F3C48CE4AED75CED3897B3B422AB37BAAD8BF5B68D7A78EA6565926F4",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/SlowBodyReopen.png",
+    "sha256": "3AEE580E88BFE4D0C95288AF3D4A335B7465AEA2AAC636F72914754A80CAE87C",
+    "openedIndividually": true,
+    "note": "Expected bitmap absent in default window capture despite structured source/layout success; visual evidence insufficient."
+  },
+  {
+    "file": "final-verified/SlowBodyUnload.png",
+    "sha256": "1891F3112E050C76E030A374D86199FC9773DB0ED3A95A66D048D76E4EC401FC",
+    "openedIndividually": true,
+    "note": "Expected fixture/image visible; status and content do not overlap."
+  },
+  {
+    "file": "final-verified/Square.png",
+    "sha256": "62DD665275B93D53DE47B8F32279D7B2A31BA5F8EB03C66A7FDCFE70F4EC00EB",
+    "openedIndividually": true,
+    "note": "Square checkerboard visible; lower edge extends below viewport."
+  },
+  {
+    "file": "final-verified/SvgCharset.png",
+    "sha256": "63EB21CCF5FA3EA0CD2BBB1525470B663185E3BF87FC6A98E311DD6EED972BD4",
+    "openedIndividually": true,
+    "note": "Teal rectangle visible; cafe acute glyph pixels absent. Exact renderer input is separately saved."
+  }
+]

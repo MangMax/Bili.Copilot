@@ -1,0 +1,151 @@
+{
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-84527-layout-a",
+  "target": "local",
+  "appPid": 19288,
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\InitialTemplateLoadedReady.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\Detach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\SameInstanceUnchangedTextAttachReady.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\RepeatedAttach1Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\RepeatedAttach2Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\RepeatedAttach3Ready.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\EmptyTextReattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\LifecycleBoundariesReady.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\Landscape.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\Portrait.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\Square.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\Resize.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\SvgCharset.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\CachedProvider.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\LateProviderUnload.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\LateProviderClear.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\LateProviderReattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\LateProviderReopen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\SlowBodyUnload.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\SlowBodyClear.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\SlowBodyReattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\SlowBodyReopen.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\attempt-a\\ConcurrentHTTP.png"
+  ],
+  "checks": [
+    {
+      "passed": false,
+      "name": "InitialTemplateLoadedReady",
+      "status": "InitialTemplateLoadedReady: FAIL | blocks=7, loaded=True, instance=1, loads=1, unloads=0"
+    },
+    {
+      "passed": true,
+      "name": "Detach",
+      "status": "Detach: PASS | blocks=0, loaded=False, instance=1, loads=1, unloads=1"
+    },
+    {
+      "passed": true,
+      "name": "SameInstanceUnchangedTextAttachReady",
+      "status": "SameInstanceUnchangedTextAttachReady: PASS | blocks=7, loaded=True, instance=1, loads=2, unloads=1"
+    },
+    {
+      "passed": true,
+      "name": "RepeatedAttach1Ready",
+      "status": "RepeatedAttach1Ready: PASS | blocks=7, loaded=True, instance=1, loads=3, unloads=2"
+    },
+    {
+      "passed": true,
+      "name": "RepeatedAttach2Ready",
+      "status": "RepeatedAttach2Ready: PASS | blocks=7, loaded=True, instance=1, loads=4, unloads=3"
+    },
+    {
+      "passed": true,
+      "name": "RepeatedAttach3Ready",
+      "status": "RepeatedAttach3Ready: PASS | blocks=7, loaded=True, instance=1, loads=5, unloads=4"
+    },
+    {
+      "passed": true,
+      "name": "EmptyTextReattach",
+      "status": "EmptyTextReattach: PASS | blocks=0, loaded=True, instance=1, loads=6, unloads=5"
+    },
+    {
+      "passed": false,
+      "name": "LifecycleBoundariesReady",
+      "status": "LifecycleBoundariesReady: FAIL | blocks=7, loaded=True, instance=1, loads=6, unloads=5"
+    },
+    {
+      "passed": false,
+      "name": "Landscape",
+      "status": "Landscape: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "Portrait",
+      "status": "Portrait: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "Square",
+      "status": "Square: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "Resize",
+      "status": "Resize: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "SvgCharset",
+      "status": "SvgCharset: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "CachedProvider",
+      "status": "CachedProvider: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": true,
+      "name": "LateProviderUnload",
+      "status": "LateProviderUnload: PASS | terminal"
+    },
+    {
+      "passed": false,
+      "name": "LateProviderClear",
+      "status": "LateProviderClear: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": true,
+      "name": "LateProviderReattach",
+      "status": "LateProviderReattach: PASS | terminal"
+    },
+    {
+      "passed": false,
+      "name": "LateProviderReopen",
+      "status": "LateProviderReopen: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "SlowBodyUnload",
+      "status": "SlowBodyUnload: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "SlowBodyClear",
+      "status": "SlowBodyClear: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "SlowBodyReattach",
+      "status": "SlowBodyReattach: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "SlowBodyReopen",
+      "status": "SlowBodyReopen: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "passed": false,
+      "name": "ConcurrentHTTP",
+      "status": "ConcurrentHTTP: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass48_0.<<Install52>b__0>d.MoveNext()"
+    },
+    {
+      "name": "Cleanup",
+      "passed": true
+    }
+  ]
+}

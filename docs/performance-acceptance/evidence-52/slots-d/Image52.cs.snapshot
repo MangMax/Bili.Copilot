@@ -1,0 +1,249 @@
+using BiliCopilot.UI.Controls.Markdown;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Media.Imaging;
+using System.Diagnostics;
+using System.Text.Json;
+
+namespace Acceptance;
+
+public partial class App
+{
+    Http52 http52;
+    int next52;
+    readonly List<object> observations52 = new();
+    readonly System.Collections.Concurrent.ConcurrentQueue<string> exceptions52 = new();
+    readonly HashSet<Border> borders52 = new();
+    readonly List<object> lifecycle52 = new();
+    readonly Dictionary<Image, (DateTimeOffset? opened,string error)> traces52 = new();
+    Action changed52;
+    readonly string[] cases52 = ["Landscape", "Portrait", "Square", "Resize", "SvgCharset", "CachedProvider", "LateProviderUnload", "LateProviderClear", "LateProviderReattach", "LateProviderReopen", "SlowBodyUnload", "SlowBodyClear", "SlowBodyReattach", "SlowBodyReopen", "ConcurrentHTTP"];
+    void Install52(StackPanel toolbar)
+    {
+        AppDomain.CurrentDomain.FirstChanceException += (_,e) => {
+            var text=e.Exception.ToString();
+            if(text.Contains("MyImage")||text.Contains("DefaultSVGRenderer")||text.Contains("MarkdownImageLoader")) exceptions52.Enqueue(text);
+        };
+        var row=new StackPanel { Orientation=Orientation.Horizontal };
+        var button=new Button { Content="Next52" }; AutomationProperties.SetAutomationId(button,"Next52");
+        button.Click += async (_,_) => {
+            button.IsEnabled=false;
+            var name=next52<cases52.Length ? cases52[next52++] : "Done";
+            try { if(http52==null) http52=new Http52(); await Case52(name); Save52(name,true,"terminal"); }
+            catch(Exception e) { Save52(name,false,e.ToString()); }
+            finally { button.IsEnabled=true; }
+        };
+        row.Children.Add(button); toolbar.Children.Add(row);
+        var boundary=new Button{Content="Boundary52"}; AutomationProperties.SetAutomationId(boundary,"Boundary52"); row.Children.Add(boundary);
+        boundary.Click+=async (_,_)=> { boundary.IsEnabled=false; try{if(http52==null)http52=new Http52();await Boundary52();Save52("Boundary52",true,"terminal");}catch(Exception e){Save52("Boundary52",false,e.ToString());}finally{boundary.IsEnabled=true;} };
+        var slots=new Button{Content="Slots52"};AutomationProperties.SetAutomationId(slots,"Slots52");row.Children.Add(slots);
+        slots.Click+=async(_,_)=>{slots.IsEnabled=false;try{if(http52==null)http52=new Http52();await Slots52();Save52("Slots52",true,"terminal");}catch(Exception e){Save52("Slots52",false,e.ToString());}finally{slots.IsEnabled=true;}};
+        host.LayoutUpdated += (_,_) => { Track52(); changed52?.Invoke(); };
+        window.Closed += (_,_) => http52?.Dispose();
+    }
+    void Track52()
+    {
+        var document=Document();
+        if(document!=null) foreach(var border in document.Blocks.OfType<Microsoft.UI.Xaml.Documents.Paragraph>().SelectMany(p=>Inlines(p.Inlines)).OfType<Microsoft.UI.Xaml.Documents.InlineUIContainer>().Select(i=>i.Child).OfType<Border>())
+        {
+            if(!borders52.Add(border))continue;
+            void Log(string kind)=>lifecycle52.Add(new {kind,utc=DateTimeOffset.UtcNow,host=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(border),border.IsLoaded,child=border.Child==null?0:System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(border.Child),source=(border.Child as Image)?.Source?.GetType().Name});
+            Log("discovered"); border.Loaded+=(_,_)=>Log("Loaded"); border.Unloaded+=(_,_)=>Log("Unloaded");
+        }
+        foreach(var image in Descendants(markdown).OfType<Image>())
+        {
+            if(traces52.ContainsKey(image)) continue;
+            traces52[image]=(null,null);
+            image.ImageOpened += (_,_) => { traces52[image]=(DateTimeOffset.UtcNow,null); changed52?.Invoke(); };
+            image.ImageFailed += (_,e) => { traces52[image]=(null,e.ErrorMessage); changed52?.Invoke(); };
+        }
+    }
+    object State52()
+    {
+        using var p=Process.GetCurrentProcess(); p.Refresh();
+        return new { utc=DateTimeOffset.UtcNow, text=markdown.Text, blocks=Blocks(), loaded=markdown.IsLoaded,
+            identity=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(markdown), dpi=markdown.XamlRoot?.RasterizationScale,
+            managed=GC.GetTotalMemory(false), privateBytes=p.PrivateMemorySize64, workingSet=p.WorkingSet64, peakWorkingSet=p.PeakWorkingSet64,
+            images=Descendants(markdown).OfType<Image>().Select(i=> { traces52.TryGetValue(i,out var t); var b=i.Source as BitmapImage; var s=i.Source as SvgImageSource;
+                return new { identity=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(i), source=i.Source?.GetType().Name,width=i.ActualWidth,height=i.ActualHeight,i.IsLoaded,pixelWidth=b?.PixelWidth,pixelHeight=b?.PixelHeight,decodeWidth=b?.DecodePixelWidth,decodeHeight=b?.DecodePixelHeight,svgWidth=s?.RasterizePixelWidth,svgHeight=s?.RasterizePixelHeight,opened=t.opened,error=t.error }; }).ToArray() };
+    }
+    void Save52(string name,bool passed,string phase)
+    {
+        observations52.Add(new { name,passed,phase,state=State52() });
+        File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"exceptions52.json"),JsonSerializer.Serialize(exceptions52.ToArray(),new JsonSerializerOptions{WriteIndented=true}));
+        File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"lifecycle52.json"),JsonSerializer.Serialize(lifecycle52,new JsonSerializerOptions{WriteIndented=true}));
+        File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"image52.json"),JsonSerializer.Serialize(new { observations=observations52,fixtures=http52?.Manifest,requests=http52?.Requests,connections=http52?.Connections,active=http52?.Active,peakServerResponses=http52?.Peak,http=http52?.Events.ToArray() },new JsonSerializerOptions{WriteIndented=true}));
+        status.Text=$"{name}: {(passed?"PASS":"FAIL")} | {phase}";
+    }
+    async Task Ready52(string name,int count=1)
+    {
+        Track52(); Save52(name,false,"immediate observation; false means readiness not yet asserted");
+        var completion=new TaskCompletionSource();
+        void Evaluate()
+        {
+            Track52(); var images=Descendants(markdown).OfType<Image>().ToArray();
+            if(images.Any(i=>traces52.TryGetValue(i,out var t)&&t.error!=null)) completion.TrySetException(new Exception("ImageFailed"));
+            else if(images.Length==count&&images.All(i=>i.IsLoaded&&i.ActualWidth>0&&i.ActualHeight>0&&i.Source!=null&&traces52.TryGetValue(i,out var t)&&t.opened!=null)) completion.TrySetResult();
+        }
+        changed52+=Evaluate;
+        try { Evaluate(); await completion.Task.WaitAsync(TimeSpan.FromSeconds(8)); }
+        finally { changed52-=Evaluate; }
+        Save52(name,true,"ImageOpened and positive layout terminal");
+    }
+    async Task Flush52()
+    {
+        var done=new TaskCompletionSource(); window.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,()=>done.SetResult());
+        await done.Task.WaitAsync(TimeSpan.FromSeconds(3)); host.UpdateLayout();
+    }
+    async Task Set52(string path,MarkdownConfig config=null)
+    {
+        host.Children.Remove(markdown); await Flush52();
+        markdown=new MarkdownTextBlock { Config=config??new MarkdownConfig(),Width=480,HorizontalAlignment=HorizontalAlignment.Left,Text=$"![synthetic]({http52.Url}{path})" };
+        markdown.Loading+=(_,_)=>Track52();
+        host.Children.Add(markdown); Track52();
+    }
+    async Task Boundary52()
+    {
+        // Diagnostic control experiment: exact production loader + WinRT decoder,
+        // separately from the unchanged MyImage integration that failed above.
+        host.Children.Remove(markdown); await Flush52();
+        var panel=new StackPanel{Orientation=Orientation.Horizontal,Spacing=12};host.Children.Add(panel);
+        foreach(var entry in new[]{("landscape",2d),("portrait",.5d),("square",1d),("svg",2.4d)})
+        {
+            Image result=null;string svgText=null;object decoded=null;
+            await MarkdownImageLoader.Shared.LoadAsync(new Uri(http52.Url+entry.Item1),async(stream,type,token)=> {
+                if(entry.Item1=="svg") { svgText=await MarkdownImageLoader.ReadSvgAsync(stream,type,token);result=await new DefaultSVGRenderer().SvgToImage(svgText); }
+                else {
+                    using var random=stream.AsRandomAccessStream();var decoder=await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(random);
+                    var size=MarkdownImageLoader.GetDecodeSize(decoder.OrientedPixelWidth,decoder.OrientedPixelHeight,0,0,180,1.5);
+                    var bitmap=new BitmapImage{DecodePixelType=DecodePixelType.Physical,DecodePixelWidth=size.Width,DecodePixelHeight=size.Height};random.Seek(0);await bitmap.SetSourceAsync(random);
+                    decoded=new {bitmap.PixelWidth,bitmap.PixelHeight,bitmap.DecodePixelWidth,bitmap.DecodePixelHeight};
+                    observations52.Add(new {name="BoundaryDecode-"+entry.Item1,decoded,expectedWidth=size.Width,expectedHeight=size.Height});
+                    result=new Image{Source=bitmap,Width=size.DisplayWidth,Height=size.DisplayHeight};
+                }
+            },CancellationToken.None);
+            var ready=new TaskCompletionSource();result.ImageOpened+=(_,_)=>ready.TrySetResult();result.ImageFailed+=(_,e)=>ready.TrySetException(new Exception(e.ErrorMessage));panel.Children.Add(result);
+            await ready.Task.WaitAsync(TimeSpan.FromSeconds(8));await Flush52();
+            Require52(result.ActualWidth>0&&result.ActualHeight>0,"boundary layout empty");
+            if(result.Source is BitmapImage b) { decoded=new{b.PixelWidth,b.PixelHeight,b.DecodePixelWidth,b.DecodePixelHeight};Require52(Math.Abs((double)b.PixelWidth/b.PixelHeight-entry.Item2)<.02,"opened boundary source aspect mismatch"); }
+            observations52.Add(new {name="Boundary-"+entry.Item1,passed=true,decoded,svgText,width=result.ActualWidth,height=result.ActualHeight});
+        }
+    }
+    async Task Slots52()
+    {
+        var renderer=new GatedRenderer52();
+        try
+        {
+            await Set52("svg",new MarkdownConfig{SVGRenderer=renderer});
+            markdown.Text=string.Join("\n\n",Enumerable.Range(0,4).Select(i=>$"![held]({http52.Url}svg?held={i})"));
+            await renderer.Four.Task.WaitAsync(TimeSpan.FromSeconds(8));
+            Save52("FourSvgEntered",true,"four actual HTTP loads now await noncooperative controlled renderer");
+            await Transition(false);var before=http52.Requests;
+            await Set52("svg?fifth",new MarkdownConfig{SVGRenderer=renderer});
+            var blocked=false;
+            try{await renderer.Fifth.Task.WaitAsync(TimeSpan.FromMilliseconds(750));}catch(TimeoutException){blocked=true;}
+            observations52.Add(new {name="SlotsHeldAfterUnload",passed=blocked&&http52.Requests==before,renderer.Calls,before,after=http52.Requests});
+            Require52(blocked&&http52.Requests==before,"fifth reached HTTP/renderer before controlled release");
+            renderer.Release.TrySetResult();
+            await renderer.Fifth.Task.WaitAsync(TimeSpan.FromSeconds(8));
+            await renderer.OldReturned.Task.WaitAsync(TimeSpan.FromSeconds(8));await Flush52();await Flush52();
+            Require52(!Descendants(markdown).OfType<Image>().Any(i=>renderer.Old.Contains(i)),"old renderer image published after unload");
+            observations52.Add(new {name="SlotsRecoveredAfterRelease",passed=true,renderer.Calls,requests=http52.Requests,oldReturned=renderer.Old.Count,oldPublished=false});
+        }
+        finally { renderer.Release.TrySetResult(); }
+    }
+    sealed class GatedRenderer52 : ISVGRenderer
+    {
+        public int Calls; public List<Image> Old=new();
+        public TaskCompletionSource Four=new(),Fifth=new(),Release=new(),OldReturned=new();
+        public async Task<Image> SvgToImage(string text)
+        {
+            var call=++Calls;if(call==4)Four.TrySetResult();if(call>=5)Fifth.TrySetResult();
+            if(call<=4)await Release.Task;
+            var image=await new DefaultSVGRenderer().SvgToImage(text);
+            if(call<=4){Old.Add(image);if(Old.Count==4)OldReturned.TrySetResult();}return image;
+        }
+    }
+    void Require52(bool value,string message) { if(!value) throw new Exception(message); }
+    void Geometry52(double ratio)
+    {
+        var i=Descendants(markdown).OfType<Image>().Single(); var b=(BitmapImage)i.Source;
+        Require52(b.PixelWidth>0&&b.PixelHeight>0&&b.PixelWidth<=4096&&b.PixelHeight<=4096&&(long)b.PixelWidth*b.PixelHeight<=4194304,"Actual decoded dimensions exceed budget");
+        Require52(Math.Abs((double)b.PixelWidth/b.PixelHeight-ratio)<.02,"Decoded aspect mismatch");
+        Require52(Math.Abs(i.ActualWidth/i.ActualHeight-ratio)<.02,"Layout aspect mismatch");
+        Require52(b.PixelWidth==b.DecodePixelWidth&&b.PixelHeight==b.DecodePixelHeight,"Actual BitmapImage dimensions differ from requested decode dimensions");
+    }
+    async Task Case52(string name)
+    {
+        if(name is "Landscape" or "Portrait" or "Square") { await Set52(name.ToLowerInvariant()); await Ready52(name); Geometry52(name=="Landscape"?2:name=="Portrait"?.5:1); }
+        else if(name=="Resize")
+        {
+            await Set52("landscape"); await Ready52("ResizeBefore"); var old=Descendants(markdown).OfType<Image>().Single().Source;
+            markdown.Width=300;
+            var changed=new TaskCompletionSource();
+            void Check() { if(Descendants(markdown).OfType<Image>().Any(i=>i.Source!=null&&!ReferenceEquals(i.Source,old))) changed.TrySetResult(); }
+            changed52+=Check; try { Check(); await changed.Task.WaitAsync(TimeSpan.FromSeconds(8)); } finally { changed52-=Check; }
+            await Ready52(name); Geometry52(2);
+            Require52(Descendants(markdown).OfType<Image>().Single().ActualWidth<=300,"Resize overflow");
+        }
+        else if(name=="SvgCharset")
+        {
+            var renderer=new Renderer52(); await Set52("svg",new MarkdownConfig{SVGRenderer=renderer}); await Ready52(name);
+            Require52(renderer.Text.Contains("café")&&!renderer.Text.Contains('�'),"charset corrupted before real renderer");
+            Require52(Descendants(markdown).OfType<Image>().Single().Source is SvgImageSource,"not actual SVG source");
+            observations52.Add(new { name="ActualRendererInput", renderer.Text, renderer.Calls });
+        }
+        else if(name=="CachedProvider")
+        {
+            var provider=new Provider52(false); await Set52("provided",new MarkdownConfig{ImageProvider=provider}); await Ready52("CachedBefore");
+            var cached=provider.Cached; var source=cached.Source; var same=markdown; var text=markdown.Text; var blocks=Blocks();
+            await Transition(false); Require52(cached.Source==source,"unload cleared provider-owned source"); await Transition(true); await Ready52(name);
+            Require52(ReferenceEquals(same,markdown)&&markdown.Text==text&&Blocks()==blocks&&provider.Calls==2&&Descendants(markdown).Contains(cached)&&cached.Source==source,"cached instance/text/blocks/source not preserved");
+        }
+        else if(name.StartsWith("LateProvider"))
+        {
+            var provider=new Provider52(true); await Set52("provided",new MarkdownConfig{ImageProvider=provider}); await provider.Started.Task.WaitAsync(TimeSpan.FromSeconds(3));
+            Save52(name,true,"old provider pending"); var same=markdown;
+            if(name.EndsWith("Clear")) { markdown.Text=""; await Flush52(); Require52(Blocks()==0,"clear blocks"); markdown.Text=$"![current]({http52.Url}provided-current)"; }
+            else { await Transition(false); Require52(Blocks()==0,"unload blocks"); if(name.EndsWith("Reopen")) await Set52("provided-current",new MarkdownConfig{ImageProvider=provider}); else await Transition(true); }
+            await Ready52(name+"Current");
+            var current=Descendants(markdown).OfType<Image>().Single(); var currentSource=current.Source;
+            var late=new Image{Source=new BitmapImage(new Uri("ms-appx:///Assets/Logo.png"))}; provider.Pending.SetResult(late);
+            await Flush52(); await Flush52();
+            Require52(Descendants(markdown).Contains(current)&&current.Source==currentSource&&!Descendants(markdown).Contains(late),"late provider replaced current");
+            if(!name.EndsWith("Reopen")) Require52(ReferenceEquals(same,markdown),"lost same Markdown instance");
+        }
+        else if(name.StartsWith("SlowBody"))
+        {
+            http52.SlowStarted=new(TaskCreationOptions.RunContinuationsAsynchronously); http52.ReleaseSlow=new(TaskCreationOptions.RunContinuationsAsynchronously);
+            await Set52("slow"); await http52.SlowStarted.Task.WaitAsync(TimeSpan.FromSeconds(3)); Save52(name,true,"64 body bytes sent; remainder held");
+            var same=markdown;
+            if(name.EndsWith("Clear")) { markdown.Text=""; await Flush52(); Require52(Blocks()==0,"clear blocks"); markdown.Text=$"![current]({http52.Url}landscape)"; }
+            else { await Transition(false); Require52(Blocks()==0,"unload blocks"); markdown.Text=$"![current]({http52.Url}landscape)"; if(name.EndsWith("Reopen")) await Set52("landscape"); else await Transition(true); }
+            await Ready52(name+"Current"); http52.ReleaseSlow.TrySetResult(); await Flush52();
+            Geometry52(2); if(!name.EndsWith("Reopen")) Require52(ReferenceEquals(same,markdown),"same instance lost");
+        }
+        else if(name=="ConcurrentHTTP")
+        {
+            await Set52("square"); markdown.Text=string.Join("\n\n",Enumerable.Range(0,8).Select(i=>$"![square {i}]({http52.Url}square?n={i})"));
+            markdown.Width=120; await Ready52(name,8);
+            Require52(http52.Connections<http52.Requests,"no observed connection reuse");
+            Require52(http52.Peak<=4,"server observed more than 4 active responses (includes cancellation drain)");
+        }
+    }
+    sealed class Renderer52 : ISVGRenderer
+    {
+        public string Text; public int Calls;
+        public async Task<Image> SvgToImage(string text) { Text=text;Calls++;return await new DefaultSVGRenderer().SvgToImage(text); }
+    }
+    sealed class Provider52(bool delayed) : IImageProvider
+    {
+        public int Calls; public Image Cached;
+        public TaskCompletionSource Started=new(); public TaskCompletionSource<Image> Pending=new();
+        public bool ShouldUseThisProvider(string url)=>url.Contains("provided");
+        public Task<Image> GetImage(string url)
+        {
+            Calls++; if(delayed&&Calls==1){Started.TrySetResult();return Pending.Task;}
+            Cached??=new Image {Width=96,Height=96,Source=new BitmapImage(new Uri("ms-appx:///Assets/Logo.png"))}; return Task.FromResult(Cached);
+        }
+    }
+}
