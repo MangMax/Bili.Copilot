@@ -1,0 +1,66 @@
+[
+  {
+    "file": "contracts.trx",
+    "total": "22",
+    "passed": "22",
+    "failed": "0",
+    "executed": "22",
+    "names": [
+      "Issue58.Tests.ReplayTests.Grpc_OffsetCandidate_PreservesFieldsAndMalformedPayloadException",
+      "Issue58.Tests.ReplayTests.TransportCancellationWithoutCallerCancellation_IsWrapped",
+      "Issue58.Tests.ReplayTests.CancellationAfterSend_DoesNotCancelParse_AndCallerOwnsResponse",
+      "Issue58.Tests.ReplayTests.Json_InvalidOrNull_WrappedValidationFailure(text: \"{\")",
+      "Issue58.Tests.ReplayTests.Json_ErrorCode_PreservesMessageAndRawBody(code: 1)",
+      "Issue58.Tests.ReplayTests.Json_Empty_ThrowsKernelEmptyResponse(text: \"\")",
+      "Issue58.Tests.ReplayTests.Grpc_LengthBoundary_PreservesEmptyMessageAndRejection(length: 5)",
+      "Issue58.Tests.ReplayTests.Json_Empty_ThrowsKernelEmptyResponse(text: \" \\r\\n\")",
+      "Issue58.Tests.ReplayTests.CallerCancellation_IsNotWrapped_AndNoExtraSend(beforeSend: False)",
+      "Issue58.Tests.ReplayTests.Grpc_DirectParseShortBody_OffsetPreservesSkipSemantics(length: 4)",
+      "Issue58.Tests.ReplayTests.Json_ErrorCode_PreservesMessageAndRawBody(code: -400)",
+      "Issue58.Tests.ReplayTests.Grpc_DirectParseShortBody_OffsetPreservesSkipSemantics(length: 0)",
+      "Issue58.Tests.ReplayTests.RepeatedReads_UseOneBodyBuffer_ButReturnDistinctArraysAndStrings",
+      "Issue58.Tests.ReplayTests.HttpStatusFailure_IsWrappedBeforeJsonValidation",
+      "Issue58.Tests.ReplayTests.Grpc_LengthBoundary_PreservesEmptyMessageAndRejection(length: 4)",
+      "Issue58.Tests.ReplayTests.Json_MissingCode_DefaultsToSuccess_AndBusinessShapeFailureIsUnwrapped",
+      "Issue58.Tests.ReplayTests.Json_InvalidOrNull_WrappedValidationFailure(text: \"null\")",
+      "Issue58.Tests.ReplayTests.Success_ReturnsBusinessResult_OneSendAndOneBodySerialization(grpc: True)",
+      "Issue58.Tests.ReplayTests.CallerCancellation_IsNotWrapped_AndNoExtraSend(beforeSend: True)",
+      "Issue58.Tests.ReplayTests.Grpc_LengthBoundary_PreservesEmptyMessageAndRejection(length: 0)",
+      "Issue58.Tests.ReplayTests.Json_ErrorCode_PreservesMessageAndRawBody(code: -101)",
+      "Issue58.Tests.ReplayTests.Success_ReturnsBusinessResult_OneSendAndOneBodySerialization(grpc: False)"
+    ]
+  },
+  {
+    "file": "issue-48-session.trx",
+    "total": "7",
+    "passed": "7",
+    "failed": "0",
+    "executed": "7",
+    "names": [
+      "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing(close: False)",
+      "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Close_QueuedCompletionAndLateFailure_PublishesNothingAndRejectsNewLoads",
+      "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Load_FailedSegment_ReleasesPermitAndPublishesRemainingSegments",
+      "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Switch_LateOldResult_OnlyCurrentSessionPublishes",
+      "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Load_EmptyMedia_CompletesWithEmptyCountAndNoRequests",
+      "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing(close: True)",
+      "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Reload_ContinuousSameMediaLoads_OnlyLastResultAndCountPublish"
+    ]
+  },
+  {
+    "file": "issue-48.trx",
+    "total": "8",
+    "passed": "8",
+    "failed": "0",
+    "executed": "8",
+    "names": [
+      "BiliCopilot.UI.Tests.DanmakuCancellationTests.HttpSend_TimeoutWithoutCallerCancellation_KeepsWrappedFailure",
+      "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_AlreadyCanceled_DoesNotSend(web: False)",
+      "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_OrdinaryFailure_RetriesThreeTimes(web: True)",
+      "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_AlreadyCanceled_DoesNotSend(web: True)",
+      "BiliCopilot.UI.Tests.DanmakuCancellationTests.HttpSend_CallerCanceled_PreservesCancellation",
+      "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_CanceledDuringSend_DoesNotRetry(web: True)",
+      "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_CanceledDuringSend_DoesNotRetry(web: False)",
+      "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_OrdinaryFailure_RetriesThreeTimes(web: False)"
+    ]
+  }
+]

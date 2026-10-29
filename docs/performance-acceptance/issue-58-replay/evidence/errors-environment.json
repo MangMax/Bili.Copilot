@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-29T18:23:37.681476Z",
+  "measuredIntegrationSha": "8530be8ee93db839bd3ccff32f11564744a190c7",
+  "kernelSha": "2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d",
+  "runtime": ".NET 8.0.33",
+  "tieredCompilation": "0",
+  "json": "9.0.1\u002Bc8acea22626efab11c13778c028975acdc34678f",
+  "protobuf": "3.29.3\u002Bb407e8416e3893036aee5af9a12bd9b6a0e2b2e6"
+}

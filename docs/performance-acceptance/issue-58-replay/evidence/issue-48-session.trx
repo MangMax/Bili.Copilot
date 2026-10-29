@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e5dd6ebc-932b-4f36-b972-8ee1ed076de1" name="hp@DESKTOP-V1D4VEN 2026-10-30 02:22:23" runUser="DESKTOP-V1D4VEN\hp" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-30T02:22:23.2875454+08:00" queuing="2026-10-30T02:22:23.2875458+08:00" start="2026-10-30T02:22:22.3902093+08:00" finish="2026-10-30T02:22:23.2933703+08:00" />
+  <TestSettings name="default" id="bf4cc7b5-3e70-4ab0-8e29-1030feeb13ac">
+    <Deployment runDeploymentRoot="hp_DESKTOP-V1D4VEN_2026-10-30_02_22_23" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="deaaead1-9ad7-4bf7-9050-f2ca506b5c12" testId="4b67b2c6-20aa-fa5f-0649-e23090e2e634" testName="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing(close: False)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0014434" startTime="2026-10-30T02:22:23.1582793+08:00" endTime="2026-10-30T02:22:23.1583131+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="deaaead1-9ad7-4bf7-9050-f2ca506b5c12" />
+    <UnitTestResult executionId="ffd011e5-5bf0-4b4c-b104-450dc80f3934" testId="c6f64e09-8938-dbb6-e65f-6d1e1bbdbe8f" testName="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Close_QueuedCompletionAndLateFailure_PublishesNothingAndRejectsNewLoads" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0023330" startTime="2026-10-30T02:22:23.1755735+08:00" endTime="2026-10-30T02:22:23.1780933+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ffd011e5-5bf0-4b4c-b104-450dc80f3934" />
+    <UnitTestResult executionId="5cd06ea4-8388-434c-a93a-9dfcde652843" testId="a1d1405b-ff45-cb40-f37b-c41f7523c61c" testName="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Load_FailedSegment_ReleasesPermitAndPublishesRemainingSegments" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0131894" startTime="2026-10-30T02:22:23.1620356+08:00" endTime="2026-10-30T02:22:23.1753998+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5cd06ea4-8388-434c-a93a-9dfcde652843" />
+    <UnitTestResult executionId="1a943177-e9ee-4119-b786-01d4fb5cb8eb" testId="450220b6-cf15-79ba-0ef4-96b1fc41842f" testName="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Switch_LateOldResult_OnlyCurrentSessionPublishes" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0242034" startTime="2026-10-30T02:22:23.1110984+08:00" endTime="2026-10-30T02:22:23.1441220+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1a943177-e9ee-4119-b786-01d4fb5cb8eb" />
+    <UnitTestResult executionId="40f04181-03fe-44d3-875e-a70b34cd9d64" testId="e134b8fa-1f64-7cf8-04ed-9c90759ecc25" testName="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Load_EmptyMedia_CompletesWithEmptyCountAndNoRequests" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0021062" startTime="2026-10-30T02:22:23.1584177+08:00" endTime="2026-10-30T02:22:23.1584436+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="40f04181-03fe-44d3-875e-a70b34cd9d64" />
+    <UnitTestResult executionId="bd19beaf-7837-48ab-8e3b-0c4882b85921" testId="07365147-95dd-f7ca-852c-4dbaee3f94f5" testName="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing(close: True)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0063902" startTime="2026-10-30T02:22:23.1576245+08:00" endTime="2026-10-30T02:22:23.1577263+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd19beaf-7837-48ab-8e3b-0c4882b85921" />
+    <UnitTestResult executionId="48133cd6-9fd2-4274-ae37-33f873bddde4" testId="3a974e82-01a6-bc30-10e6-b333de572c13" testName="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Reload_ContinuousSameMediaLoads_OnlyLastResultAndCountPublish" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0040570" startTime="2026-10-30T02:22:23.1585081+08:00" endTime="2026-10-30T02:22:23.1618647+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="48133cd6-9fd2-4274-ae37-33f873bddde4" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Load_EmptyMedia_CompletesWithEmptyCountAndNoRequests" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="e134b8fa-1f64-7cf8-04ed-9c90759ecc25">
+      <Execution id="40f04181-03fe-44d3-875e-a70b34cd9d64" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuLoadSessionTests" name="Load_EmptyMedia_CompletesWithEmptyCountAndNoRequests" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Switch_LateOldResult_OnlyCurrentSessionPublishes" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="450220b6-cf15-79ba-0ef4-96b1fc41842f">
+      <Execution id="1a943177-e9ee-4119-b786-01d4fb5cb8eb" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuLoadSessionTests" name="Switch_LateOldResult_OnlyCurrentSessionPublishes" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Close_QueuedCompletionAndLateFailure_PublishesNothingAndRejectsNewLoads" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="c6f64e09-8938-dbb6-e65f-6d1e1bbdbe8f">
+      <Execution id="ffd011e5-5bf0-4b4c-b104-450dc80f3934" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuLoadSessionTests" name="Close_QueuedCompletionAndLateFailure_PublishesNothingAndRejectsNewLoads" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Reload_ContinuousSameMediaLoads_OnlyLastResultAndCountPublish" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="3a974e82-01a6-bc30-10e6-b333de572c13">
+      <Execution id="48133cd6-9fd2-4274-ae37-33f873bddde4" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuLoadSessionTests" name="Reload_ContinuousSameMediaLoads_OnlyLastResultAndCountPublish" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Load_FailedSegment_ReleasesPermitAndPublishesRemainingSegments" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="a1d1405b-ff45-cb40-f37b-c41f7523c61c">
+      <Execution id="5cd06ea4-8388-434c-a93a-9dfcde652843" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuLoadSessionTests" name="Load_FailedSegment_ReleasesPermitAndPublishesRemainingSegments" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing(close: False)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="4b67b2c6-20aa-fa5f-0649-e23090e2e634">
+      <Execution id="deaaead1-9ad7-4bf7-9050-f2ca506b5c12" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuLoadSessionTests" name="CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuLoadSessionTests.CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing(close: True)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="07365147-95dd-f7ca-852c-4dbaee3f94f5">
+      <Execution id="bd19beaf-7837-48ab-8e3b-0c4882b85921" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuLoadSessionTests" name="CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="4b67b2c6-20aa-fa5f-0649-e23090e2e634" executionId="deaaead1-9ad7-4bf7-9050-f2ca506b5c12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c6f64e09-8938-dbb6-e65f-6d1e1bbdbe8f" executionId="ffd011e5-5bf0-4b4c-b104-450dc80f3934" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a1d1405b-ff45-cb40-f37b-c41f7523c61c" executionId="5cd06ea4-8388-434c-a93a-9dfcde652843" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="450220b6-cf15-79ba-0ef4-96b1fc41842f" executionId="1a943177-e9ee-4119-b786-01d4fb5cb8eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e134b8fa-1f64-7cf8-04ed-9c90759ecc25" executionId="40f04181-03fe-44d3-875e-a70b34cd9d64" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="07365147-95dd-f7ca-852c-4dbaee3f94f5" executionId="bd19beaf-7837-48ab-8e3b-0c4882b85921" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a974e82-01a6-bc30-10e6-b333de572c13" executionId="48133cd6-9fd2-4274-ae37-33f873bddde4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="7" executed="7" passed="7" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.14)&#xD;
+[xUnit.net 00:00:00.08]   Discovering: BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:00.17]   Discovered:  BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:00.20]   Starting:    BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:00.29]   Finished:    BiliCopilot.UI.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
