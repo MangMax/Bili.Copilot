@@ -16,12 +16,12 @@ public partial class App
     readonly List<object> lifecycle52 = new();
     readonly Dictionary<Image, (DateTimeOffset? opened,string error)> traces52 = new();
     Action changed52;
-    readonly string[] cases52 = ["Landscape", "Portrait", "Square", "Resize", "SvgCharset", "CachedProvider", "LateProviderUnload", "LateProviderClear", "LateProviderReattach", "LateProviderReopen", "SlowBodyUnload", "SlowBodyClear", "SlowBodyReattach", "SlowBodyReopen", "ConcurrentHTTP"];
+    readonly string[] cases52 = ["Landscape", "Portrait", "Square", "Resize", "SvgCharset", "CachedProvider", "LateProviderUnload", "LateProviderClear", "LateProviderReattach", "LateProviderReopen", "SlowBodyUnload", "SlowBodyClear", "SlowBodyReattach", "SlowBodyReopen", "ConcurrentHTTP", "InlineHttpReattach", "InlineLateProvider"];
     void Install52(StackPanel toolbar)
     {
         AppDomain.CurrentDomain.FirstChanceException += (_,e) => {
             var text=e.Exception.ToString();
-            if(text.Contains("MyImage")||text.Contains("DefaultSVGRenderer")||text.Contains("MarkdownImageLoader")) exceptions52.Enqueue(text);
+            if(text.Contains("MyImage")||text.Contains("DefaultSVGRenderer")||text.Contains("MarkdownImageLoader")||text.Contains("System.Text.Json")) exceptions52.Enqueue(text);
         };
         var row=new StackPanel { Orientation=Orientation.Horizontal };
         var button=new Button { Content="Next52" }; AutomationProperties.SetAutomationId(button,"Next52");
@@ -29,14 +29,14 @@ public partial class App
             button.IsEnabled=false;
             var name=next52<cases52.Length ? cases52[next52++] : "Done";
             try { if(http52==null) http52=new Http52(); await Case52(name); Save52(name,true,"terminal"); }
-            catch(Exception e) { Save52(name,false,e.ToString()); }
+            catch(Exception e) { Save52(name,false,"terminal failure: "+e); }
             finally { button.IsEnabled=true; }
         };
         row.Children.Add(button); toolbar.Children.Add(row);
         var boundary=new Button{Content="Boundary52"}; AutomationProperties.SetAutomationId(boundary,"Boundary52"); row.Children.Add(boundary);
-        boundary.Click+=async (_,_)=> { boundary.IsEnabled=false; try{if(http52==null)http52=new Http52();await Boundary52();Save52("Boundary52",true,"terminal");}catch(Exception e){Save52("Boundary52",false,e.ToString());}finally{boundary.IsEnabled=true;} };
+        boundary.Click+=async (_,_)=> { boundary.IsEnabled=false; try{if(http52==null)http52=new Http52();await Boundary52();Save52("Boundary52",true,"terminal");}catch(Exception e){Save52("Boundary52",false,"terminal failure: "+e);}finally{boundary.IsEnabled=true;} };
         var slots=new Button{Content="Slots52"};AutomationProperties.SetAutomationId(slots,"Slots52");row.Children.Add(slots);
-        slots.Click+=async(_,_)=>{slots.IsEnabled=false;try{if(http52==null)http52=new Http52();await Slots52();Save52("Slots52",true,"terminal");}catch(Exception e){Save52("Slots52",false,e.ToString());}finally{slots.IsEnabled=true;}};
+        slots.Click+=async(_,_)=>{slots.IsEnabled=false;try{if(http52==null)http52=new Http52();await Slots52();Save52("Slots52",true,"terminal");}catch(Exception e){Save52("Slots52",false,"terminal failure: "+e);}finally{slots.IsEnabled=true;}};
         host.LayoutUpdated += (_,_) => { Track52(); changed52?.Invoke(); };
         window.Closed += (_,_) => http52?.Dispose();
     }
@@ -45,17 +45,26 @@ public partial class App
         var document=Document();
         if(document!=null) foreach(var border in document.Blocks.OfType<Microsoft.UI.Xaml.Documents.Paragraph>().SelectMany(p=>Inlines(p.Inlines)).OfType<Microsoft.UI.Xaml.Documents.InlineUIContainer>().Select(i=>i.Child).OfType<Border>())
         {
+            if(border.Child is Image inlineImage) TrackImage52(inlineImage);
             if(!borders52.Add(border))continue;
-            void Log(string kind)=>lifecycle52.Add(new {kind,utc=DateTimeOffset.UtcNow,host=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(border),border.IsLoaded,child=border.Child==null?0:System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(border.Child),source=(border.Child as Image)?.Source?.GetType().Name});
-            Log("discovered"); border.Loaded+=(_,_)=>Log("Loaded"); border.Unloaded+=(_,_)=>Log("Unloaded");
+            object Identity(object value)=>value==null?null:new {id=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(value),type=value.GetType().Name};
+            object[] Parents(DependencyObject value) { var parents=new List<object>(); for(var p=value;p!=null;p=Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(p)) parents.Add(Identity(p));return parents.ToArray(); }
+            void Log(string kind,object sender=null,RoutedEventArgs e=null)=>lifecycle52.Add(new {kind,utc=DateTimeOffset.UtcNow,host=Identity(border),sender=Identity(sender),original=Identity(e?.OriginalSource),hostIsOriginal=ReferenceEquals(border,e?.OriginalSource),border.IsLoaded,parents=Parents(border),originalParents=Parents(e?.OriginalSource as DependencyObject),child=Identity(border.Child),source=(border.Child as Image)?.Source?.GetType().Name});
+            void Event(string kind,object sender,RoutedEventArgs e) { Log(kind,sender,e);window.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,()=>Log(kind+"-deferred",sender,e)); }
+            Log("discovered"); border.Loaded+=(s,e)=>Event("Loaded",s,e); border.Unloaded+=(s,e)=>Event("Unloaded",s,e);
+            for(var p=Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(border);p!=null;p=Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(p))
+                if(p is FrameworkElement parent) parent.SizeChanged+=(s,e)=>lifecycle52.Add(new{kind="AncestorSizeChanged",utc=DateTimeOffset.UtcNow,host=Identity(border),border.IsLoaded,sender=Identity(s),width=parent.ActualWidth,previousWidth=e.PreviousSize.Width,newWidth=e.NewSize.Width});
         }
-        foreach(var image in Descendants(markdown).OfType<Image>())
-        {
-            if(traces52.ContainsKey(image)) continue;
+        foreach(var image in Descendants(markdown).OfType<Image>()) TrackImage52(image);
+    }
+    void TrackImage52(Image image)
+    {
+            if(traces52.ContainsKey(image)) return;
             traces52[image]=(null,null);
-            image.ImageOpened += (_,_) => { traces52[image]=(DateTimeOffset.UtcNow,null); changed52?.Invoke(); };
+            observations52.Add(new {name="ImageSubscribed",utc=DateTimeOffset.UtcNow,identity=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(image),source=image.Source?.GetType().Name});
+            image.RegisterPropertyChangedCallback(Image.SourceProperty,(_,_)=> { traces52[image]=(null,null); observations52.Add(new{name="SourceChanged",utc=DateTimeOffset.UtcNow,identity=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(image),source=image.Source?.GetType().Name}); });
+            image.ImageOpened += (_,_) => { traces52[image]=(DateTimeOffset.UtcNow,null); observations52.Add(new{name="ImageOpened",utc=DateTimeOffset.UtcNow,identity=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(image)}); changed52?.Invoke(); };
             image.ImageFailed += (_,e) => { traces52[image]=(null,e.ErrorMessage); changed52?.Invoke(); };
-        }
     }
     object State52()
     {
@@ -64,7 +73,7 @@ public partial class App
             identity=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(markdown), dpi=markdown.XamlRoot?.RasterizationScale,
             managed=GC.GetTotalMemory(false), privateBytes=p.PrivateMemorySize64, workingSet=p.WorkingSet64, peakWorkingSet=p.PeakWorkingSet64,
             images=Descendants(markdown).OfType<Image>().Select(i=> { traces52.TryGetValue(i,out var t); var b=i.Source as BitmapImage; var s=i.Source as SvgImageSource;
-                return new { identity=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(i), source=i.Source?.GetType().Name,width=i.ActualWidth,height=i.ActualHeight,i.IsLoaded,pixelWidth=b?.PixelWidth,pixelHeight=b?.PixelHeight,decodeWidth=b?.DecodePixelWidth,decodeHeight=b?.DecodePixelHeight,svgWidth=s?.RasterizePixelWidth,svgHeight=s?.RasterizePixelHeight,opened=t.opened,error=t.error }; }).ToArray() };
+                return new { identity=System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(i), source=i.Source?.GetType().Name,width=i.ActualWidth,height=i.ActualHeight,i.IsLoaded,pixelWidth=b?.PixelWidth,pixelHeight=b?.PixelHeight,decodeWidth=b?.DecodePixelWidth,decodeHeight=b?.DecodePixelHeight,svgWidth=s?.RasterizePixelWidth.ToString("R"),svgHeight=s?.RasterizePixelHeight.ToString("R"),opened=t.opened,error=t.error }; }).ToArray() };
     }
     void Save52(string name,bool passed,string phase)
     {
@@ -72,7 +81,7 @@ public partial class App
         File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"exceptions52.json"),JsonSerializer.Serialize(exceptions52.ToArray(),new JsonSerializerOptions{WriteIndented=true}));
         File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"lifecycle52.json"),JsonSerializer.Serialize(lifecycle52,new JsonSerializerOptions{WriteIndented=true}));
         File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"image52.json"),JsonSerializer.Serialize(new { observations=observations52,fixtures=http52?.Manifest,requests=http52?.Requests,connections=http52?.Connections,active=http52?.Active,peakServerResponses=http52?.Peak,http=http52?.Events.ToArray() },new JsonSerializerOptions{WriteIndented=true}));
-        status.Text=$"{name}: {(passed?"PASS":"FAIL")} | {phase}";
+        status.Text=phase.StartsWith("terminal") ? $"{name}: terminal {(passed?"PASS":"FAIL")} | {phase}" : $"{name}: {(passed?"PASS":"FAIL")} | {phase}";
     }
     async Task Ready52(string name,int count=1)
     {
@@ -82,12 +91,13 @@ public partial class App
         {
             Track52(); var images=Descendants(markdown).OfType<Image>().ToArray();
             if(images.Any(i=>traces52.TryGetValue(i,out var t)&&t.error!=null)) completion.TrySetException(new Exception("ImageFailed"));
-            else if(images.Length==count&&images.All(i=>i.IsLoaded&&i.ActualWidth>0&&i.ActualHeight>0&&i.Source!=null&&traces52.TryGetValue(i,out var t)&&t.opened!=null)) completion.TrySetResult();
+            else if(images.Length==count&&images.All(i=>i.IsLoaded&&i.ActualWidth>0&&i.ActualHeight>0&&i.Source!=null&&
+                (i.Source is SvgImageSource || i.Source is BitmapImage {UriSource:null,PixelWidth:>0,PixelHeight:>0} || (traces52.TryGetValue(i,out var t)&&t.opened!=null)))) completion.TrySetResult();
         }
         changed52+=Evaluate;
         try { Evaluate(); await completion.Task.WaitAsync(TimeSpan.FromSeconds(8)); }
         finally { changed52-=Evaluate; }
-        Save52(name,true,"ImageOpened and positive layout terminal");
+        Save52(name,true,"ready: stream bitmap published after SetSourceAsync; URI bitmap ImageOpened; SVG renderer returned preloaded source; positive layout (not an immediate observation)");
     }
     async Task Flush52()
     {
@@ -121,10 +131,28 @@ public partial class App
                     observations52.Add(new {name="BoundaryDecode-"+entry.Item1,decoded,expectedWidth=size.Width,expectedHeight=size.Height});
                 }
             },CancellationToken.None);
-            await ready.Task.WaitAsync(TimeSpan.FromSeconds(8));await Flush52();
+            if(entry.Item1!="svg") await ready.Task.WaitAsync(TimeSpan.FromSeconds(8));await Flush52();
             Require52(result.ActualWidth>0&&result.ActualHeight>0,"boundary layout empty");
             if(result.Source is BitmapImage b) { decoded=new{b.PixelWidth,b.PixelHeight,b.DecodePixelWidth,b.DecodePixelHeight};Require52(Math.Abs((double)b.PixelWidth/b.PixelHeight-entry.Item2)<.02,"opened boundary source aspect mismatch"); }
             observations52.Add(new {name="Boundary-"+entry.Item1,passed=true,decoded,svgText,width=result.ActualWidth,height=result.ActualHeight});
+        }
+        // Separate readiness experiment: subscribe BEFORE loading the source, then
+        // assign the already-loaded source to a mounted Image, as MyImage does.
+        var preloadedPanel=new StackPanel{Orientation=Orientation.Horizontal,Spacing=12};host.Children.Add(preloadedPanel);
+        foreach(var path in new[]{"landscape","svg"})
+        {
+            var result=new Image{Width=180,Height=90};preloadedPanel.Children.Add(result);
+            var imageOpened=false;var sourceOpened=false;string loadStatus=null;
+            result.ImageOpened+=(_,_)=>imageOpened=true;
+            await MarkdownImageLoader.Shared.LoadAsync(new Uri(http52.Url+path),async(stream,type,token)=> {
+                using var random=stream.AsRandomAccessStream();
+                if(path=="landscape") {var source=new BitmapImage();source.ImageOpened+=(_,_)=>sourceOpened=true;await source.SetSourceAsync(random);loadStatus="SetSourceAsync completed";result.Source=source;}
+                else {var text=await MarkdownImageLoader.ReadSvgAsync(stream,type,token);using var bytes=new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text));var source=new SvgImageSource();source.Opened+=(_,_)=>sourceOpened=true;loadStatus=(await source.SetSourceAsync(bytes.AsRandomAccessStream())).ToString();result.Source=source;}
+            },CancellationToken.None);
+            await Flush52();await Task.Delay(200);await Flush52();
+            observations52.Add(new{name="PreloadedSourceEvents-"+path,sourceOpened,imageOpened,loadStatus,width=result.ActualWidth,height=result.ActualHeight});
+            Require52(sourceOpened&&result.ActualWidth>0&&result.ActualHeight>0,"preloaded source readiness probe failed");
+            if(path=="svg") Require52(loadStatus=="Success","SVG SetSourceAsync did not succeed");
         }
     }
     async Task Slots52()
@@ -166,10 +194,13 @@ public partial class App
     void Geometry52(double ratio)
     {
         var i=Descendants(markdown).OfType<Image>().Single(); var b=(BitmapImage)i.Source;
-        Require52(b.PixelWidth>0&&b.PixelHeight>0&&b.PixelWidth<=4096&&b.PixelHeight<=4096&&(long)b.PixelWidth*b.PixelHeight<=4194304,"Actual decoded dimensions exceed budget");
+        Require52(b.DecodePixelType==DecodePixelType.Physical&&b.DecodePixelWidth>0&&b.DecodePixelHeight>0&&b.DecodePixelWidth<=4096&&b.DecodePixelHeight<=4096&&(long)b.DecodePixelWidth*b.DecodePixelHeight<=4194304,"Requested physical decode dimensions exceed budget");
+        Require52(b.PixelWidth>0&&b.PixelHeight>0,"Opened bitmap has no source dimensions");
         Require52(Math.Abs((double)b.PixelWidth/b.PixelHeight-ratio)<.02,"Decoded aspect mismatch");
         Require52(Math.Abs(i.ActualWidth/i.ActualHeight-ratio)<.02,"Layout aspect mismatch");
-        Require52(b.PixelWidth==b.DecodePixelWidth&&b.PixelHeight==b.DecodePixelHeight,"Actual BitmapImage dimensions differ from requested decode dimensions");
+        // PixelWidth/Height describe source pixels on the restored WinUI runtime;
+        // they are not measured native backing allocation or DecodePixelWidth/Height.
+        Require52(Math.Abs(b.DecodePixelWidth-i.ActualWidth*i.XamlRoot.RasterizationScale)<=1&&Math.Abs(b.DecodePixelHeight-i.ActualHeight*i.XamlRoot.RasterizationScale)<=1,"Physical decode request does not match displayed size and DPI");
     }
     async Task Case52(string name)
     {
@@ -183,6 +214,11 @@ public partial class App
             changed52+=Check; try { Check(); await changed.Task.WaitAsync(TimeSpan.FromSeconds(8)); } finally { changed52-=Check; }
             await Ready52(name); Geometry52(2);
             Require52(Descendants(markdown).OfType<Image>().Single().ActualWidth<=300,"Resize overflow");
+            var settled=http52.Requests;var settledSource=Descendants(markdown).OfType<Image>().Single().Source;
+            for(var n=0;n<3;n++) { markdown.InvalidateMeasure();await Flush52(); }
+            await Task.Delay(400);
+            Require52(http52.Requests==settled&&ReferenceEquals(settledSource,Descendants(markdown).OfType<Image>().Single().Source),"layout self-triggered another HTTP load");
+            observations52.Add(new{name="ResizeQuiescent",passed=true,requests=settled,observationMilliseconds=400});
         }
         else if(name=="SvgCharset")
         {
@@ -228,6 +264,22 @@ public partial class App
             Require52(http52.Connections<http52.Requests,"no observed connection reuse");
             Require52(http52.Peak<=4,"server observed more than 4 active responses (includes cancellation drain)");
         }
+        else if(name is "InlineHttpReattach" or "InlineLateProvider")
+        {
+            var provider=name=="InlineLateProvider"?new Provider52(true):null;
+            await Set52(provider==null?"landscape":"provided",provider==null?null:new MarkdownConfig{ImageProvider=provider});
+            if(provider==null) await Ready52(name+"Before"); else await provider.Started.Task.WaitAsync(TimeSpan.FromSeconds(3));
+            var paragraph=Document().Blocks.OfType<Microsoft.UI.Xaml.Documents.Paragraph>().Single();
+            var inline=paragraph.Inlines.OfType<Microsoft.UI.Xaml.Documents.InlineUIContainer>().Single();
+            var border=(Border)inline.Child;var oldChild=(Image)border.Child;var requests=http52.Requests;
+            paragraph.Inlines.Remove(inline);await Flush52();
+            Require52(!border.IsLoaded&&!ReferenceEquals(oldChild,border.Child)&&(border.Child as Image)?.Source==null,"actual inline unload did not release child");
+            paragraph.Inlines.Add(inline);await Ready52(name+"After");await Flush52();
+            Require52(ReferenceEquals(border,inline.Child)&&border.IsLoaded,"same inline host did not remount");
+            var current=(Image)border.Child;var source=current.Source;
+            if(provider!=null) {var late=new Image{Source=new BitmapImage(new Uri("ms-appx:///Assets/Logo.png"))};provider.Pending.SetResult(late);await Flush52();await Flush52();Require52(provider.Calls==2&&ReferenceEquals(current,border.Child)&&ReferenceEquals(source,current.Source)&&!ReferenceEquals(late,border.Child),"old provider published across same-host remount");}
+            else { Geometry52(2);Require52(http52.Requests==requests+1,"same-host HTTP remount did not load exactly once"); }
+        }
     }
     sealed class Renderer52 : ISVGRenderer
     {
@@ -242,7 +294,7 @@ public partial class App
         public Task<Image> GetImage(string url)
         {
             Calls++; if(delayed&&Calls==1){Started.TrySetResult();return Pending.Task;}
-            Cached??=new Image {Width=96,Height=96,Source=new BitmapImage(new Uri("ms-appx:///Assets/Logo.png"))}; return Task.FromResult(Cached);
+            if(Cached==null) { Cached=new Image {Width=96,Height=96};((App)Current).TrackImage52(Cached);Cached.Source=new BitmapImage(new Uri("ms-appx:///Assets/Logo.png")); } return Task.FromResult(Cached);
         }
     }
 }
