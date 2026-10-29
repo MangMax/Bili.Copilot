@@ -12,7 +12,6 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
     public DanmakuRenderViewModel()
     {
         Renderer = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuRenderer, DanmakuRendererType.Win2D);
-        ReloadFontsCommand.Execute(default);
     }
 
     public void Initialize(IList<DanmakuInformation> danmakus)
@@ -119,7 +118,12 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
             return;
         }
 
-        var fonts = await this.Get<IFontToolkit>().GetFontsAsync();
+        var fonts = await FontCatalog.GetFontsAsync(this.Get<IFontToolkit>());
+        if (Fonts.Count > 0)
+        {
+            return;
+        }
+
         foreach (var item in fonts)
         {
             Fonts.Add(item);
@@ -128,7 +132,9 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
         var localFont = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuFontFamily, "Segoe UI");
         if (!Fonts.Select(p => p.LocalName).Contains(localFont))
         {
-            localFont = "Segoe UI";
+            // Preserve a saved family even when enumeration cannot find it.
+            // The renderer can apply its normal fallback without rewriting settings.
+            Fonts.Add(new SystemFont { LocalName = localFont, EngName = localFont });
         }
 
         DanmakuFontFamily = localFont;

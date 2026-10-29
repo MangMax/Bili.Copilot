@@ -615,7 +615,7 @@ public sealed partial class PlayerViewModel
             CheckBlackBackgroundVisible();
             CheckBottomProgressBarVisible();
             ResetSubtitlePositionCommand.Execute(default);
-            ReloadFontsCommand.Execute(default);
+            await ChangeSubtitleFontFamilyCommand.ExecuteAsync(SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontFamily, "Segoe UI"));
             var subtitleFontSize = SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontSize, 32d);
             ChangeSubtitleFontSizeCommand.Execute(Math.Max(1, subtitleFontSize));
             if (_continuePosition > 0)
