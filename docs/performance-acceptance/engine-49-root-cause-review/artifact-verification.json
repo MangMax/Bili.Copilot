@@ -1,0 +1,122 @@
+[
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\source\\upstream.zip",
+    "matches": true,
+    "sha256": "5b6465b63c438cdbfa8c0c2d7697719a677539522d98feeb7c2b7b87f1691bc0"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\feed\\Danmaku.Core.0.0.1-preview6-local49-c9d5.nupkg",
+    "matches": true,
+    "sha256": "a843182ff869d984b773e4b3c89c41f5a3257b8274d3f4ed1cf77bf4229b81f6"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\feed\\Danmaku.Core.0.0.1-preview6-local49-c9d5.snupkg",
+    "matches": true,
+    "sha256": "0d736b2c882fcb6c93313c69a76ece2d0e5d26d08f77cd87581909bf4fb6d5c0"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\feed\\Danmaku.Legacy.0.0.1-preview6-local49-c9d5.nupkg",
+    "matches": true,
+    "sha256": "996bf2adfc2ce03cd78936678fbcb96ad22aaa940d42255da953b938850c6a3b"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\feed\\Danmaku.Legacy.0.0.1-preview6-local49-c9d5.snupkg",
+    "matches": true,
+    "sha256": "64cac0978134605c66e3cf7beebc6d99e8785ba2fbc86b02cfd12f1767159972"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\feed\\Danmaku.Share.0.0.1-preview6-local49-c9d5.nupkg",
+    "matches": true,
+    "sha256": "a17958d56efcb2c083dd5af1f00089d0af9ee3622bd288aa0cd967bbc7e7c3a3"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\feed\\Danmaku.Share.0.0.1-preview6-local49-c9d5.snupkg",
+    "matches": true,
+    "sha256": "37bba3f43923e3d91ab91dd297af75d2c6521854c1a750a17cfddd3545a06130"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-barrier-red-final\\Danmaku.Core.dll",
+    "matches": true,
+    "sha256": "f6f788f4366d580bc2cdccf5d9da58ea56e117f34ba712a1bbb98239c00f301c"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-barrier-red-final\\Danmaku.Legacy.dll",
+    "matches": true,
+    "sha256": "02ec2f279f808539506069f8406f9f7a81a843b7d547ee6a121c47da65a75394"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-barrier-red-final\\Danmaku.Share.dll",
+    "matches": true,
+    "sha256": "923610fbd5fd97cdbf1116ab0f2c32f91dddb0681c53f337f7c9f9cb1a29cee5"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final-barrier\\Danmaku.Core.dll",
+    "matches": true,
+    "sha256": "b67972a3e09b3b548dffbe0c5d9e85a74b2322f886d30e7c228d9a8dd078dd56"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final-barrier\\Danmaku.Legacy.dll",
+    "matches": true,
+    "sha256": "68f030bbdafe03a28fc0ca3722d7f4c9c8cd8393964cfb4fb66f7bc64303c91d"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final-barrier\\Danmaku.Share.dll",
+    "matches": true,
+    "sha256": "923610fbd5fd97cdbf1116ab0f2c32f91dddb0681c53f337f7c9f9cb1a29cee5"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final\\Danmaku.Core.dll",
+    "matches": true,
+    "sha256": "b67972a3e09b3b548dffbe0c5d9e85a74b2322f886d30e7c228d9a8dd078dd56"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final\\Danmaku.Legacy.dll",
+    "matches": true,
+    "sha256": "68f030bbdafe03a28fc0ca3722d7f4c9c8cd8393964cfb4fb66f7bc64303c91d"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final\\Danmaku.Share.dll",
+    "matches": true,
+    "sha256": "923610fbd5fd97cdbf1116ab0f2c32f91dddb0681c53f337f7c9f9cb1a29cee5"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\source\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Core\\bin\\x64\\Release\\net9.0-windows10.0.22621.0\\Danmaku.Core.dll",
+    "matches": true,
+    "sha256": "b67972a3e09b3b548dffbe0c5d9e85a74b2322f886d30e7c228d9a8dd078dd56"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\source\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Core\\bin\\x64\\Release\\net9.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "matches": true,
+    "sha256": "923610fbd5fd97cdbf1116ab0f2c32f91dddb0681c53f337f7c9f9cb1a29cee5"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\source\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Legacy\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Legacy.dll",
+    "matches": true,
+    "sha256": "68f030bbdafe03a28fc0ca3722d7f4c9c8cd8393964cfb4fb66f7bc64303c91d"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\source\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Legacy\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "matches": true,
+    "sha256": "923610fbd5fd97cdbf1116ab0f2c32f91dddb0681c53f337f7c9f9cb1a29cee5"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\source\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Share\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "matches": true,
+    "sha256": "923610fbd5fd97cdbf1116ab0f2c32f91dddb0681c53f337f7c9f9cb1a29cee5"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\provenance\\danmaku.core.zip",
+    "matches": true,
+    "sha256": "63365bed9565e6c49cc15573a87769aff858f0124b11bc575fc3a8329f46d7cb"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\provenance\\danmaku.legacy.zip",
+    "matches": true,
+    "sha256": "7606dda091534a5458c9af4779572fec0c83e03c59f86043f284a3738c4e2c75"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\provenance\\danmaku.share.zip",
+    "matches": true,
+    "sha256": "40805154f9dadb77988c962f8bb74374bec9448672d407d270c14cf337e361f3"
+  }
+]

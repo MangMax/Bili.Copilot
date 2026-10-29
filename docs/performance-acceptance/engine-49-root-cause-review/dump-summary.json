@@ -1,0 +1,102 @@
+{
+  "dump": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\red\\Harness.exe.30952.dmp",
+  "sha256": "3e3f8a820be78d5a3a0d17d19797c5dd78cb025112c3ee9dc47593ea849662db",
+  "bytes": 10548314,
+  "streams": {
+    "3": [
+      2692,
+      1800
+    ],
+    "4": [
+      17176,
+      4504
+    ],
+    "14": [
+      84,
+      21680
+    ],
+    "13": [
+      16756,
+      21764
+    ],
+    "5": [
+      66068,
+      262469
+    ],
+    "6": [
+      168,
+      1632
+    ],
+    "7": [
+      56,
+      212
+    ],
+    "15": [
+      1364,
+      268
+    ],
+    "21": [
+      524,
+      38520
+    ],
+    "22": [
+      152,
+      39044
+    ],
+    "24": [
+      172,
+      39196
+    ],
+    "0": [
+      0,
+      0
+    ]
+  },
+  "exception": {
+    "thread": 58576,
+    "code": "0xc000027b",
+    "address": "CoreMessagingXP.dll+0x93bd6",
+    "parameters": [
+      "0x22db4effe80",
+      "0x1"
+    ]
+  },
+  "stowed": [
+    {
+      "address": "0x22db42c37a8",
+      "size": 56,
+      "signature": "0x53453032",
+      "hresult": "0x80004003",
+      "form": 1,
+      "thread": 58576,
+      "exceptionAddress": "combase.dll+0x5cf34",
+      "stackWordSize": 8,
+      "stackCount": 25,
+      "stackError": "unmapped 0x22db47e8020",
+      "nestedType": "0x0",
+      "nested": "0x0"
+    }
+  ],
+  "engineModules": [
+    {
+      "base": "0x7ff6dcf40000",
+      "size": 176128,
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-red\\Harness.exe"
+    },
+    {
+      "base": "0x22db3cf0000",
+      "size": 90112,
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-red\\Danmaku.Core.dll"
+    },
+    {
+      "base": "0x22db3000000",
+      "size": 49152,
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-red\\Danmaku.Legacy.dll"
+    },
+    {
+      "base": "0x22db3cc0000",
+      "size": 24576,
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-red\\Danmaku.Share.dll"
+    }
+  ]
+}
