@@ -58,11 +58,7 @@ public sealed partial class PopularPageViewModel
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
 
-            RefreshTipState = Toolkits.RefreshTipState.FromRefreshResult(
-                isIncremental,
-                application.AddedCount,
-                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
-                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
+            RefreshTipState = Toolkits.RefreshTipState.Completed;
 
             _recommendRefreshSnapshot = snapshot;
             _recommendOffset = nextOffset;

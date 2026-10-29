@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Xml.Linq;
 
@@ -17,8 +17,6 @@ public class RefreshResultTipResourceTests
     [
         "UndoRefresh",
         "RefreshingRecommendVideos",
-        "RefreshResultAdded",
-        "RefreshResultReloaded",
     ];
 
     [Fact]
@@ -37,22 +35,6 @@ public class RefreshResultTipResourceTests
                 string.IsNullOrWhiteSpace(entry.Element("value")?.Value),
                 $"资源键 {key} 的文案为空.");
         }
-    }
-
-    [Fact]
-    public void RefreshResultAdded_UsesAddedCountPlaceholder()
-    {
-        var value = GetValue(ResourcesFileHelper.LoadResources(), "RefreshResultAdded");
-
-        Assert.Contains("{0}", value, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void RefreshResultReloaded_DoesNotMentionAddedCount()
-    {
-        var value = GetValue(ResourcesFileHelper.LoadResources(), "RefreshResultReloaded");
-
-        Assert.DoesNotContain("{0}", value, StringComparison.Ordinal);
     }
 
     [Fact]

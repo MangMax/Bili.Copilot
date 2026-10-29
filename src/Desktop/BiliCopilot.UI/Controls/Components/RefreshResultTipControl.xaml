@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
     x:Class="BiliCopilot.UI.Controls.Components.RefreshResultTipControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -52,27 +52,17 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!--  固定宽度的图标槽：加载态显示进度环，结果态显示完成图标，切换时文字位置不跳。  -->
-            <Grid
+            <!--  刷新中才显示进度环；结果态只保留撤销入口，不再占用一行文字。  -->
+            <ProgressRing
                 Width="16"
                 Height="16"
-                VerticalAlignment="Center">
-                <ProgressRing
-                    Width="16"
-                    Height="16"
-                    MinWidth="16"
-                    MinHeight="16"
-                    AutomationProperties.AccessibilityView="Raw"
-                    IsActive="{x:Bind local:RefreshResultTipControl.IsProgressVisible(State), Mode=OneWay}"
-                    Style="{StaticResource PageProgressRingStyle}"
-                    Visibility="{x:Bind local:RefreshResultTipControl.GetProgressVisibility(State), Mode=OneWay}" />
-                <ic:SymbolIcon
-                    FontSize="16"
-                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                    Symbol="Checkmark"
-                    AutomationProperties.AccessibilityView="Raw"
-                    Visibility="{x:Bind local:RefreshResultTipControl.GetResultVisibility(State), Mode=OneWay}" />
-            </Grid>
+                MinWidth="16"
+                MinHeight="16"
+                VerticalAlignment="Center"
+                AutomationProperties.AccessibilityView="Raw"
+                IsActive="{x:Bind local:RefreshResultTipControl.IsProgressVisible(State), Mode=OneWay}"
+                Style="{StaticResource PageProgressRingStyle}"
+                Visibility="{x:Bind local:RefreshResultTipControl.GetProgressVisibility(State), Mode=OneWay}" />
 
             <!--  LiveSetting 放在 TextBlock 上：它自带自动化对等体，文案变化才能被读屏播报。  -->
             <TextBlock
@@ -83,7 +73,8 @@
                 AutomationProperties.LiveSetting="Polite"
                 Style="{StaticResource BodyTextBlockStyle}"
                 Text="{x:Bind Message, Mode=OneWay}"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap"
+                Visibility="{x:Bind local:RefreshResultTipControl.GetMessageVisibility(State), Mode=OneWay}" />
 
             <HyperlinkButton
                 Grid.Column="2"
