@@ -1,9 +1,10 @@
-param([int]$AppPid=47000,[string]$Evidence="$PSScriptRoot/../evidence-50-53")
+param([Parameter(Mandatory)][int]$AppPid,[Parameter(Mandatory)][string]$Evidence,[Parameter(Mandatory)][string]$OwnedLayout)
 $ErrorActionPreference='Stop'
 $env:WINAPP_UI_WORKFLOW_ID='bili5053-d26c'
+$layout=(Resolve-Path -LiteralPath $OwnedLayout).Path.TrimEnd('\')
 $process=Get-Process -Id $AppPid -ErrorAction SilentlyContinue
 if($process){
- if($AppPid -eq 9608 -or -not $process.Path.StartsWith('C:\Users\hp\AppData\Local\Temp\bili5053-d26c-layout\',[StringComparison]::OrdinalIgnoreCase)){throw 'Not owned'}
+ if($AppPid -eq 9608 -or -not $process.Path.StartsWith($layout+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Not owned'}
  winapp ui invoke Close -a $AppPid --json | Set-Content "$Evidence/close.json"
  if($LASTEXITCODE -ne 0){throw 'Close failed'}
  $process.WaitForExit(5000)|Out-Null
@@ -11,7 +12,7 @@ if($process){
 }
 $package=Get-AppxPackage -Name BiliCopilot.Acceptance5053D26C
 if($package){
- if($package.InstallLocation -ne 'C:\Users\hp\AppData\Local\Temp\bili5053-d26c-layout'){throw 'Unexpected package layout'}
+ if($package.InstallLocation -ne $layout){throw 'Unexpected package layout'}
  $trace="$env:LOCALAPPDATA/Packages/$($package.PackageFamilyName)/LocalState/trace.jsonl"
  Copy-Item $trace "$Evidence/final-events.jsonl"
  $package|Select-Object Name,PackageFullName,InstallLocation|ConvertTo-Json|Set-Content "$Evidence/owned-package.json"

@@ -1,4 +1,5 @@
-param([Parameter(Mandatory)][int]$AppPid,[Parameter(Mandatory)][string]$Evidence)
+param([Parameter(Mandatory)][int]$AppPid,[Parameter(Mandatory)][string]$Evidence,
+ [Parameter(Mandatory)][string]$OwnedLayout,[switch]$OnlyLifecycle)
 $ErrorActionPreference='Stop'
 $env:WINAPP_UI_WORKFLOW_ID='bili5053-d26c'
 $Evidence=[IO.Path]::GetFullPath($Evidence)
@@ -32,7 +33,9 @@ function Case([string]$Name,[scriptblock]$Test){
 }
 try{
  $owned=Get-Process -Id $AppPid
- Check ($AppPid -ne 9608 -and $owned.Path.StartsWith('C:\Users\hp\AppData\Local\Temp\bili5053-d26c-layout\',[StringComparison]::OrdinalIgnoreCase)) 'Not owned process'
+ $layout=(Resolve-Path -LiteralPath $OwnedLayout).Path.TrimEnd('\')+'\'
+ Check ($AppPid -ne 9608 -and $owned.Path.StartsWith($layout,[StringComparison]::OrdinalIgnoreCase)) 'Not owned process'
+ if(-not $OnlyLifecycle){
  foreach($mode in @('Recommend','Hot')){
   Case "Slow$mode" {
    Command $mode
@@ -76,28 +79,40 @@ try{
  Case 'StaleSection' {
   Command 'Stale';Start-Sleep -Milliseconds 400;Command 'SwitchHot';Start-Sleep -Milliseconds 700
   Command 'ReleaseOld';Command 'ReleaseDirectory';$s=Fence
-  Check ($s.selected -eq 'Hot' -and @($s.items|Where-Object {$_ -like '*STALE*'}).Count -eq 0 -and $s.items.Count -gt 0) 'Old page contaminated new section'
+  Check ($s.selected -eq 'Hot' -and @($s.items|Where-Object {$_ -ceq 'STALE MUST NOT APPEAR'}).Count -eq 0 -and $s.items.Count -gt 0 -and @($s.items|Where-Object {$_ -notlike '*HotVideoList*'}).Count -eq 0) 'Old page contaminated new section'
   Capture 'stale-rejected'
  }
  Case 'BurstGeometry' {
-  Command 'Long';Start-Sleep -Milliseconds 500;Command 'Burst';Start-Sleep -Milliseconds 1200;$s=Fence
+  Command 'Long';Start-Sleep -Milliseconds 500;Command 'Burst';Start-Sleep -Milliseconds 1200
+  $tree=Ui @('inspect','--depth','12')|ConvertFrom-Json
+  function Nodes($nodes){foreach($node in $nodes){$node;Nodes $node.children}}
+  $presenters=@(Nodes $tree.windows.elements|Where-Object {$_.automationId -eq 'PART_ScrollPresenter' -and $_.width -gt 500})
+  Check ($presenters.Count -eq 1) 'Expected unique main presenter'
+  Ui @('send-keys','ctrl+end','--target',$presenters[0].selector,'--via','send-input')|Out-Null
+  $s=Fence
   Check ($s.items.Count -eq 60 -and $s.views -gt 0 -and $s.sizes -gt 1) 'Burst did not exercise real geometry events'
   Capture 'long-burst'
   Get-Process -Id $AppPid|Select-Object Id,CPU,WorkingSet64,PrivateMemorySize64,HandleCount|ConvertTo-Json|Set-Content "$Evidence/process-sample.json"
  }
- Case 'UnloadDelay' {
-  Command 'Recommend';Start-Sleep -Milliseconds 200;Command 'DelayDetach';$s=Fence
-  Check (-not $s.loaded -and -not $s.active -and $s.mainSubscriptions -eq 0 -and $s.sideSubscriptions -eq 0) 'Unloaded control remains active'
-  Capture 'detached'
  }
- Case 'ReattachMainSide' {
+ Command 'Recommend';Command 'ReleaseDirectory';$s=Fence
+ Check ($s.items.Count -eq 3) 'Initial short pages must fill before remount test'
+ foreach($cycle in 1..3){
+ Case "UnloadDelay$cycle" {
+  $before=Snap;Command 'DelayDetach';$s=Fence
+  Check (-not $s.loaded -and -not $s.active -and $s.mainSubscriptions -eq 0 -and $s.sideSubscriptions -eq 0) 'Unloaded control remains active'
+  Check ($s.requests -eq $before.requests -and $s.version -eq $cycle) 'Delay escaped unload or lifecycle did not detach once'
+  Capture "detached-$cycle"
+ }
+ Case "ReattachMainSide$cycle" {
   Command 'Attach';$s=Fence
-  Capture 'reattached'
+  Capture "reattached-$cycle"
   Check ($s.loaded -and $s.scrollLoaded -and $s.active -and $s.mainSubscriptions -eq 1 -and $s.sideSubscriptions -eq 1 -and $s.sideHasSource) 'Reattached control lost lifecycle subscriptions or active state'
  }
- Case 'RemountRefresh' {
-  Command 'Refresh';$s=Fence;Capture 'remount-refresh'
-  Check ($s.items.Count -eq 3) 'Reattached short list no longer automatically fills'
+ Case "RemountRefresh$cycle" {
+  $before=Snap;Command 'Refresh';$s=Fence;Capture "remount-refresh-$cycle"
+  Check ($s.items.Count -eq 3 -and $s.requests -eq $before.requests+4 -and $s.updates -eq $before.updates+3) 'Reattached short list must load three pages and an empty page'
+ }
  }
 }finally{
  Copy-Item $trace "$Evidence/events.jsonl"
