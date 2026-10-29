@@ -9,6 +9,36 @@ public class MarkdownImageLoaderTests
 {
     private static readonly Uri ImageUri = new("https://images.example/test.png");
 
+    [Fact]
+    public async Task SvgResponsePreservesDeclaredCharset()
+    {
+        const string svg = "<svg><text>café</text></svg>";
+        using var content = new ByteArrayContent(Encoding.Latin1.GetBytes(svg));
+        content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("image/svg+xml; charset=iso-8859-1");
+        using var client = new HttpClient(new Handler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = content })));
+        await new MarkdownImageLoader(client).LoadAsync(ImageUri, async (stream, contentType, token) =>
+        {
+            Assert.Equal("image/svg+xml; charset=iso-8859-1", contentType);
+            Assert.Equal(svg, await MarkdownImageLoader.ReadSvgAsync(stream, contentType, token));
+        }, default);
+    }
+
+    [Theory]
+    [InlineData("utf-8", false)]
+    [InlineData("\"iso-8859-1\"", false)]
+    [InlineData(null, true)]
+    public async Task SvgTextDecodesCharsetOrBom(string? charset, bool useBom)
+    {
+        const string svg = "<svg><text>café</text></svg>";
+        var encoding = useBom ? Encoding.Unicode : Encoding.GetEncoding(charset!.Trim('"'));
+        var bytes = useBom ? encoding.GetPreamble().Concat(encoding.GetBytes(svg)).ToArray() : encoding.GetBytes(svg);
+        using var content = new ByteArrayContent(bytes);
+        content.Headers.ContentType = new("image/svg+xml") { CharSet = charset };
+        using var client = new HttpClient(new Handler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = content })));
+        await new MarkdownImageLoader(client).LoadAsync(ImageUri, async (stream, contentType, token) =>
+            Assert.Equal(svg, await MarkdownImageLoader.ReadSvgAsync(stream, contentType, token)), default);
+    }
+
     [Theory]
     [InlineData(4000, 2000, 300, 0, 800, 2, 600, 300, 300, 150)]
     [InlineData(4000, 2000, 0, 100, 800, 1.5, 300, 150, 200, 100)]

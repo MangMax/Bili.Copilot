@@ -197,15 +197,15 @@ internal class MyImage : IAddChild
             {
                 await MarkdownImageLoader.Shared.LoadAsync(_uri, async (stream, contentType, token) =>
                 {
-                    if (string.Equals(contentType, "image/svg+xml", StringComparison.OrdinalIgnoreCase))
+                    if (System.Net.Http.Headers.MediaTypeHeaderValue.TryParse(contentType, out var mediaType)
+                        && string.Equals(mediaType.MediaType, "image/svg+xml", StringComparison.OrdinalIgnoreCase))
                     {
                         if (IsCurrent(operation))
                         {
                             _providedImage = true;
                         }
 
-                        using var reader = new StreamReader(stream, leaveOpen: true);
-                        var svg = await reader.ReadToEndAsync(token);
+                        var svg = await MarkdownImageLoader.ReadSvgAsync(stream, contentType, token);
                         token.ThrowIfCancellationRequested();
                         var rendered = await _svgRenderer.SvgToImage(svg);
                         token.ThrowIfCancellationRequested();
