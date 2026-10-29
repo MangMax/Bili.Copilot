@@ -162,6 +162,15 @@ public sealed partial class PlayerViewModel
     }
 
     /// <summary>
+    /// 跳转到指定秒数.
+    /// </summary>
+    /// <param name="seconds">目标秒数.</param>
+    /// <returns><see cref="Task"/>.</returns>
+    [RelayCommand]
+    private Task SeekToTimestampAsync(double seconds)
+        => ChangePositionAsync(seconds);
+
+    /// <summary>
     /// 改变音量.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
