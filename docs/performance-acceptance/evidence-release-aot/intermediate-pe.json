@@ -1,0 +1,9 @@
+{
+  "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-64b6ed4f\\src\\_build\\x64\\Release\\BiliCopilot.UI\\bin\\BiliCopilot.UI.dll",
+  "size": 3457024,
+  "machine": "0x8664",
+  "optionalHeaderMagic": "0x020B",
+  "clrHeaderRva": 8192,
+  "sha256": "639D4067E8229E39E986CB6F2D26EB06CAB881B5C82599CC64B5C3A21FFC1CEA",
+  "classification": "Managed intermediate DLL; not a Native AOT deliverable"
+}
