@@ -19,6 +19,15 @@ public sealed partial class PopularPageViewModel
     private readonly Dictionary<IPopularSectionItemViewModel, List<VideoItemViewModel>> _videoCache = new();
 
     private long _recommendOffset;
+
+    /// <summary>
+    /// 推荐流每页请求的条数.
+    /// </summary>
+    /// <remarks>
+    /// 不传时服务端按默认页大小返回，一页过滤后只剩约 6 条，对桌面端偏少；
+    /// 这里显式请求与桌面客户端相当的数量。服务端仍会过滤非视频卡片，实际返回可能少于该值。
+    /// </remarks>
+    private const int RecommendPageSize = 30;
     private long _hotOffset;
 
     /// <summary>

@@ -42,7 +42,7 @@ public sealed partial class PopularPageViewModel
         _isRecommendRefreshing = true;
         try
         {
-            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(0);
+            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(0, RecommendPageSize);
             var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
             if (!RecommendRefreshResultGuard.ShouldApply(isRecommend, generation, _refreshGeneration))
             {
@@ -85,7 +85,7 @@ public sealed partial class PopularPageViewModel
     {
         try
         {
-            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset);
+            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset, RecommendPageSize);
             _recommendOffset = nextOffset;
             TryAddVideos(videos, VideoCardStyle.Recommend);
         }
