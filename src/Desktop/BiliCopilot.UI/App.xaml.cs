@@ -2,17 +2,20 @@
 
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using H.NotifyIcon;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
 using Richasy.BiliKernel.Models.Media;
 using Serilog;
 using System.Text.Json;
+using WinUIEx;
 
 namespace BiliCopilot.UI;
 
@@ -44,7 +47,30 @@ public partial class App : Application
     /// </summary>
     public static string LoggerFolder { get; private set; }
 
-    private TaskbarIcon TrayIcon { get; set; }
+    internal TrayLifecycle? TrayLifecycle { get; private set; }
+
+    internal void InitializeTrayLifecycle()
+    {
+        TrayLifecycle ??= new TrayLifecycle(
+            () => SettingsToolkit.ReadLocalSetting(SettingNames.HideWhenCloseWindow, false),
+            value => SettingsToolkit.WriteLocalSetting(SettingNames.HideWhenCloseWindow, value),
+            CreateTrayIcon,
+            () => GetMainWindow()?.Hide(),
+            RestoreMainWindow,
+            ex => Log.Logger.ForContext<App>().Error(ex, "初始化任务栏图标失败"));
+    }
+
+    internal void SetTrayEnabled(bool enabled)
+    {
+        if (TrayLifecycle is { } lifecycle)
+        {
+            lifecycle.SetEnabled(enabled);
+        }
+        else
+        {
+            SettingsToolkit.WriteLocalSetting(SettingNames.HideWhenCloseWindow, enabled);
+        }
+    }
 
     /// <summary>
     /// Invoked when the application is launched.
@@ -80,41 +106,67 @@ public partial class App : Application
 
     private void OnInstanceActivated(object? sender, AppActivationArguments e)
     {
-        _dispatcherQueue.TryEnqueue(() => GetMainWindow()?.Activate());
+        _dispatcherQueue.TryEnqueue(() => TrayLifecycle?.Restore());
     }
 
-    private void InitializeTrayIcon()
+    private static void RestoreMainWindow()
     {
-        if (TrayIcon != null)
+        if (GetMainWindow() is not { } window || window.Get<AppViewModel>().IsClosed)
         {
             return;
         }
 
-        var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
-        showHideWindowCommand.ExecuteRequested += OnShowHideWindowCommandExecuteRequested;
+        window.Show();
+        if (window.AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter)
+        {
+            presenter.Restore();
+        }
 
-        var exitApplicationCommand = (XamlUICommand)Resources["QuitCommand"];
-        exitApplicationCommand.ExecuteRequested += OnQuitCommandExecuteRequested;
+        window.Activate();
+    }
 
+    private IDisposable CreateTrayIcon()
+    {
+        // A fresh dictionary owns fresh commands and an icon on every enable.
+        // Disposed TaskbarIcon resources cannot be reused.
+        var resources = new ResourceDictionary { Source = new Uri("ms-appx:///Styles/TrayResources.xaml") };
+        var icon = (TaskbarIcon)resources["TrayIcon"];
+        var show = (XamlUICommand)resources["ShowHideWindowCommand"];
+        var quit = (XamlUICommand)resources["QuitCommand"];
+        show.ExecuteRequested += OnShowHideWindowCommandExecuteRequested;
+        quit.ExecuteRequested += OnQuitCommandExecuteRequested;
+        var session = new TrayIconSession(icon, () =>
+        {
+            show.ExecuteRequested -= OnShowHideWindowCommandExecuteRequested;
+            quit.ExecuteRequested -= OnQuitCommandExecuteRequested;
+        });
         try
         {
-            TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
-            TrayIcon.ForceCreate();
+            icon.ForceCreate();
+            if (!icon.IsCreated)
+            {
+                throw new InvalidOperationException("The notification area did not create the tray icon.");
+            }
+
+            return session;
         }
-        catch (Exception)
+        catch
         {
-            var logger = Log.Logger.ForContext<App>();
-            logger.Error("初始化任务栏图标失败");
+            session.Dispose();
+            throw;
         }
     }
 
-    private void ExitApp()
+    internal void ReleaseTrayResources()
     {
-        TrayIcon?.Dispose();
-        TrayIcon = null;
+        TrayLifecycle?.Dispose();
+        if (_notificationManager is not null)
+        {
+            _notificationManager.NotificationInvoked -= OnAppNotificationInvoked;
+        }
+
         _notificationManager?.Unregister();
         _notificationManager = null;
-        Exit();
     }
 
     private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
@@ -156,8 +208,17 @@ public partial class App : Application
     }
 
     private void OnQuitCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
-        => ExitApp();
+        => GetMainWindow()?.RequestExit();
 
     private void OnShowHideWindowCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
-        => GetMainWindow()?.Activate();
+        => TrayLifecycle?.Restore();
+
+    private sealed class TrayIconSession(TaskbarIcon icon, Action unsubscribe) : IDisposable
+    {
+        public void Dispose()
+        {
+            unsubscribe();
+            icon.Dispose();
+        }
+    }
 }

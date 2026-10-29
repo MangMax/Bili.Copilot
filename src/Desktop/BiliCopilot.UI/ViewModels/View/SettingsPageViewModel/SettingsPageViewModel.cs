@@ -440,7 +440,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         => SettingsToolkit.WriteLocalSetting(SettingNames.PreferQuality, value);
 
     partial void OnHideWhenCloseWindowChanged(bool value)
-        => SettingsToolkit.WriteLocalSetting(SettingNames.HideWhenCloseWindow, value);
+        => ((App)Application.Current).SetTrayEnabled(value);
 
     partial void OnIsNotificationEnabledChanged(bool value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.IsNotificationEnabled, value);
