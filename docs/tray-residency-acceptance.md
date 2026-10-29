@@ -2,7 +2,61 @@
 
 Date: 2026-10-29 (Asia/Shanghai). Spec: [#39](https://github.com/MangMax/Bili.Copilot/issues/39); task: [#42](https://github.com/MangMax/Bili.Copilot/issues/42).
 
-**Overall: NOT ACCEPTED.** Automated lifecycle tests and builds pass. A real isolated WinUI login window was launched and inspected, but no authenticated main window was available. The tray interaction, resource measurements and playback/download acceptance below remain NOT RUN. This report must not be used to close the acceptance ticket as passed.
+**Overall: NOT ACCEPTED — partial runtime acceptance completed on 2026-10-30.** An authenticated normal main window is now available. The final-runtime section below supersedes the historical login blocker and old test counts. Remaining history, download and accessibility coverage prevents closing the acceptance ticket as passed.
+
+## Final runtime acceptance (2026-10-30)
+
+Final application source: `9eb207a5f30b0e766192745f1632a35a91b48c65`, based on requested integration `1664ad8dd5cb2c0ded350000a68933870394b411`. The integration was already merged before this report. All evidence referenced in this section is local under `C:/Users/hp/AppData/Local/Temp/BiliCopilot-tray-spec/t3-evidence/final`; screenshots and package/user data are not committed.
+
+The retained isolated identity `Mang.BiliCopilot.TrayAcceptance.T3_y1mf40g4r9srg` was rebuilt and deployed without uninstall/reset or `--clean`. The temporary isolated manifest was restored in `finally`, byte-for-byte (SHA256 `058D0578A5EDF4D9BD6AFB6624BE1C62EF55342EC7FB13283F4375B31CF3FFFE`). Normal AUMID launch used retained login and reached the main window, without a login bypass or debug waiter. Tested isolated UI DLL SHA256: `D721C5C6D7011EB4739D558BA5CA3BF957913935830B89B3D5EB088A69F2DC65` (`fixed-tested-binary.json`). The prior stale HWND disappearance is not assigned a speculative root cause.
+
+### Confirmed defect and verification
+
+Repeated activation restored the primary window but left windowless secondary processes alive. Before the fix, 28 such processes held 1,459,736,576 private bytes and 30,402 handles in aggregate. The native regression failed with a secondary still present after ten seconds (`activation-red.json`). The redirect continuation called WinUI `Exit` from a worker thread. Commit `9eb207a` queues that call onto the instance UI dispatcher. Three activation repetitions then passed; the strengthened final regression also minimizes the owned main HWND before each activation to prove activation actually restores it (`activation-final-green.json`). This is a confirmed process-lifetime leak, distinct from idle residency in the primary process.
+
+Full post-fix tests: **307 passed, 0 failed, 0 skipped** (`post-fix-tests.trx`, `post-fix-counters.json`). Final isolated and production Release x64 JIT builds: **0 warnings, 0 errors** (`isolated-build-ready.log`, `fixed-production-build.log`). Native AOT and a dedicated WinUIAnalyzer run were not performed. The initial missing-submodule build and external protobuf warning are retained in earlier logs; they are not the final build result.
+
+### Native runtime coverage
+
+| Check | Observed result / boundary |
+| --- | --- |
+| Toggle, persistence, disabled close | PASS: OFF persisted across normal restart; disabled close exited the isolated primary; enabling recreated the tray. Keyboard Space toggled OFF/ON. Clean-install default was not tested because retained data was preserved; default false remains automated/static coverage. |
+| Close, restore, minimize, repeated launch | PASS: same primary HWND restored, including minimized activation. Twenty post-fix close/launch cycles checked secondary process cleanup (`cycles-results.json`, `cycles.csv`). |
+| Tray menu | PASS for accessible labels and UIA invocation of show/exit. Native popup keyboard injection reported `no_interactive_desktop`; keyboard menu navigation and Narrator remain NOT VERIFIED. |
+| Explicit exit | PASS: actual tray Exit removed the primary and its windows (`explicit-exit-fixed.json`); subsequent normal launch succeeded. Exit during active playback/download remains NOT RUN. |
+| Shell recreation | PASS for twenty targeted registered `TaskbarCreated` messages sent to the app's own tray window, retaining hidden residency. This is synthetic message recovery, not a real Explorer restart or a forced Shell registration failure. Explorer was not restarted. |
+| Last player closes | PASS with integrated operation OFF and ON: close main into residency, close the actual last native player, main remains hidden (`player-coordination-results.json`). |
+| Playback continuity | Short real playback continued while main was resident; reviewed before/after frames for integration OFF show advancing content. This is not a long playback/network endurance test. |
+| History | NOT VERIFIED: after the short playback cases the actual history page displayed no recent records (`history-final.png/.json`). Final position persistence is not established; cause is undiagnosed. Paused and immediate-close history cases remain NOT RUN. |
+| Downloads | NOT RUN: no actual download continuity or exit-during-download evidence. |
+
+The earlier pre-fix `baseline-cycles-results.json` checked primary restoration only and missed secondary ownership; it must not be counted as a complete pass. Post-fix twenty-cycle private bytes increased only 48 KiB, handles 23 at the immediate endpoint; this short stress result is supplementary and does not establish leak freedom.
+
+### Warmed visible–hidden–visible memory study
+
+Authoritative data: `strict-idle.csv/.json`, `strict-idle-status.json`, `strict-idle-analysis.json`, and `strict-idle-chart.html`. Same primary PID 9608, same idle Settings/Application page, no playback/download, no debugger, notifications persisted OFF **before restarting** the isolated application. This restart matters because the existing notification timer is not stopped merely by changing the master toggle. The process was already warmed by the preceding exploratory run. No forced GC or working-set trimming was used. WTS session state was measured as unlocked throughout; foreground focus is recorded metadata, not an exclusion condition.
+
+| Phase | Duration | Private bytes (MiB), start → end | Working set (MiB), start → end | Handles, start → end | CPU (% of one core) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Visible before | 69.59 s | 248.51 → 248.53 | 366.16 → 365.32 | 3180 → 3168 | 14.93% |
+| Hidden resident | 604.99 s | 249.43 → 248.32 | 366.08 → 167.17 | 3169 → 3156 | 13.54% |
+| Visible restored | 65.00 s | 248.48 → 248.40 | 168.31 → 154.83 | 3168 → 3167 | 13.80% |
+
+All 122 hidden samples were actually hidden. Nominal cadence was five seconds (median 4.996 s), with a maximum 45 s host scheduling/tool gap and subsequent clustered samples; timestamps are retained rather than pretending perfectly uniform sampling. During the last five hidden minutes, private-byte range was only 40 KiB, fitted slope approximately −11.4 KiB/min, and handles remained 3156. **No sustained private-byte or handle growth was observed in this bounded run. This does not prove zero leaks over longer use.**
+
+Private allocations were essentially unchanged between the warmed visible endpoints. Working set fell substantially, but remained low and fell further after restoration: this is not evidence that hiding frees allocations or that the tray feature alone caused the reduction. OS residency/aging and other desktop load were not experimentally isolated. Hidden CPU remained about 13–15% of one core, providing no clear idle CPU saving in this run. CPU percentages are not percentages of total multicore capacity.
+
+The app remained online. Periodic established-TCP counts were zero; process I/O counters showed no read/write growth, but these are not precise network-traffic measurements or proof of no network work. Managed GC heap was **not measured**: no existing easy noninvasive collector was installed. A read-only thread CPU snapshot identifies active thread IDs but supplies no stacks or causal attribution (`hidden-thread-cpu.json`).
+
+The earlier `long-idle.*` exploratory run contains 36 samples with mismatched intended hidden state (the main became visible/minimized, then was closed again). Its data and correction are retained, but it is not the authoritative hidden comparison. Earlier short foreground/resident runs are also superseded. Playback tests occurred only after both idle studies, so their allocations are excluded from these results.
+
+### Optimization opportunities, separate from acceptance defects
+
+The confirmed secondary-process leak was fixed. The remaining measurable opportunity is sustained idle CPU; profile its actual call stacks before changing rendering, polling, or timers. The existing master notification toggle only persists its value, while an already-started timer has no stop path and the video-moment callback checks the per-feature toggle. That is a control/behavior concern for separate discussion, not an optimization silently included here. `ChapterSegmentBar` subscribes to `CompositionTarget.Rendering` until Unloaded without a visibility guard; it is only a profiling candidate because actual hidden-window render ticks and its contribution have not been measured. Neither candidate is a confirmed cause of this run's CPU or a demonstrated allocation leak.
+
+The normal authenticated isolated main was restored after testing (PID 9608, HWND 1713510); test-package tray and integrated-operation settings are ON, notifications OFF. No authentication tokens were inspected/copied. Remaining native acceptance gaps above require follow-up; this report does not approve closing #42.
+
+## Historical acceptance record (superseded where noted above)
 
 ## Revision and environment
 
