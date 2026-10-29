@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -16,7 +17,8 @@ namespace BiliCopilot.UI.Update;
 /// </summary>
 /// <param name="PackagePath">可直接安装的 msix 路径.</param>
 /// <param name="Sha256">与 <paramref name="PackagePath"/> 对应的期望摘要；没有时为 null.</param>
-public sealed record UpdateDownloadResult(string PackagePath, string? Sha256);
+/// <param name="Error">失败原因.</param>
+public sealed record UpdateDownloadResult(string? PackagePath, string? Sha256, string? Error = null);
 
 /// <summary>
 /// 下载更新安装包.
@@ -36,22 +38,22 @@ public sealed class UpdateDownloader
 
     private static readonly HttpClient SharedHttpClient = new() { Timeout = TimeSpan.FromMinutes(10) };
 
-    private readonly ILogger _logger;
+    private readonly ILogger<UpdateDownloader> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UpdateDownloader"/> class.
     /// </summary>
     /// <param name="logger">日志.</param>
-    public UpdateDownloader(ILogger logger) => _logger = logger;
+    public UpdateDownloader(ILogger<UpdateDownloader> logger) => _logger = logger;
 
     /// <summary>
     /// 下载安装包到本地更新目录，校验摘要，必要时从 zip 解出 msix.
     /// </summary>
     /// <param name="asset">要下载的资产.</param>
-    /// <param name="progress">进度回调，取值 0-100；无法确定总大小时为 null.</param>
+    /// <param name="progress">进度回调，取值 0-100；无法确定总大小时为 -1.</param>
     /// <param name="cancellationToken">取消令牌.</param>
-    /// <returns>可直接安装的本地 msix 路径；失败时返回 null.</returns>
-    public async Task<UpdateDownloadResult?> DownloadAsync(
+    /// <returns>可直接安装的本地 msix 路径；失败时返回原因.</returns>
+    public async Task<UpdateDownloadResult> DownloadAsync(
         UpdateAsset asset,
         IProgress<double>? progress,
         CancellationToken cancellationToken)
@@ -66,35 +68,45 @@ public sealed class UpdateDownloader
             var probes = await ProbeAsync(candidates, cancellationToken).ConfigureAwait(false);
 
             var remembered = UpdateMirrorSettings.ReadFreshSource(SourceMemoryTtl);
-            var source = UpdateSourcePolicy.Select(probes, remembered) ?? absoluteUrl;
-            UpdateMirrorSettings.RememberSource(source);
-
-            // 只有沿用上次的源时才续传；换源后内容可能不一致，必须从头下载.
-            var allowResume = !string.IsNullOrEmpty(remembered)
-                && string.Equals(source, remembered, StringComparison.Ordinal);
-            var path = await DownloadWithResumeAsync(source, asset, progress, allowResume, cancellationToken)
-                .ConfigureAwait(false);
-            if (path is null)
+            string? error = null;
+            foreach (var source in UpdateSourcePolicy.GetDownloadOrder(probes, remembered, absoluteUrl))
             {
-                return null;
-            }
-
-            if (!string.IsNullOrWhiteSpace(asset.Sha256))
-            {
-                var actual = await ComputeSha256Async(path, cancellationToken).ConfigureAwait(false);
-                if (!string.Equals(actual, asset.Sha256, StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    _logger.LogError("更新包摘要不匹配，已丢弃：期望 {Expected}，实际 {Actual}", asset.Sha256, actual);
-                    TryDelete(path);
-                    return null;
+                    // 记忆的是 .part 所属源，换源必须从头写，不能拼接不同响应.
+                    var allowResume = string.Equals(source, remembered, StringComparison.Ordinal);
+                    UpdateMirrorSettings.RememberSource(source);
+                    remembered = source;
+                    progress?.Report(0d);
+                    using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                    timeout.CancelAfter(TimeSpan.FromMinutes(10));
+                    var path = await DownloadWithResumeAsync(source, asset, progress, allowResume, timeout.Token)
+                        .ConfigureAwait(false);
+                    if (!string.IsNullOrWhiteSpace(asset.Sha256))
+                    {
+                        var actual = await ComputeSha256Async(path, timeout.Token).ConfigureAwait(false);
+                        if (!string.Equals(actual, asset.Sha256, StringComparison.OrdinalIgnoreCase))
+                        {
+                            TryDelete(path);
+                            throw new InvalidDataException(ResourceToolkit.GetLocalizedString(StringNames.UpdateDigestMismatch));
+                        }
+                    }
+
+                    var packagePath = asset.IsZip ? ExtractMsix(path) : path;
+                    return new UpdateDownloadResult(packagePath, asset.IsMsix ? asset.Sha256 : null);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    error = ex.Message;
+                    _logger.LogWarning(ex, "更新源 {Url} 下载失败，尝试其他源", source);
                 }
             }
 
-            // 发布里没有裸 msix 时只能下 zip，这里解出其中的安装包.
-            var packagePath = asset.IsZip ? ExtractMsix(path) : path;
-            return packagePath is null
-                ? null
-                : new UpdateDownloadResult(packagePath, asset.IsMsix ? asset.Sha256 : null);
+            return new UpdateDownloadResult(null, null, error);
         }
         catch (OperationCanceledException)
         {
@@ -103,7 +115,7 @@ public sealed class UpdateDownloader
         catch (Exception ex)
         {
             _logger.LogError(ex, "下载更新失败");
-            return null;
+            return new UpdateDownloadResult(null, null, ex.Message);
         }
     }
 
@@ -171,7 +183,7 @@ public sealed class UpdateDownloader
         }
     }
 
-    private async Task<string?> DownloadWithResumeAsync(
+    private async Task<string> DownloadWithResumeAsync(
         string url,
         UpdateAsset asset,
         IProgress<double>? progress,
@@ -200,11 +212,7 @@ public sealed class UpdateDownloader
             .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
             .ConfigureAwait(false);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogWarning("下载源 {Url} 返回 {Status}", url, (int)response.StatusCode);
-            return null;
-        }
+        response.EnsureSuccessStatusCode();
 
         // 只有服务端确实续传时才追加，否则从头写.
         var append = existing > 0 && response.StatusCode == HttpStatusCode.PartialContent;
@@ -262,28 +270,19 @@ public sealed class UpdateDownloader
         return finalPath;
     }
 
-    private string? ExtractMsix(string zipPath)
+    private static string ExtractMsix(string zipPath)
     {
-        try
+        using var archive = ZipFile.OpenRead(zipPath);
+        var entry = archive.Entries.FirstOrDefault(
+            e => e.Name.EndsWith(".msix", StringComparison.OrdinalIgnoreCase));
+        if (entry is null)
         {
-            using var archive = ZipFile.OpenRead(zipPath);
-            var entry = archive.Entries.FirstOrDefault(
-                e => e.Name.EndsWith(".msix", StringComparison.OrdinalIgnoreCase));
-            if (entry is null)
-            {
-                _logger.LogError("更新压缩包里没有 msix：{Path}", zipPath);
-                return null;
-            }
+            throw new InvalidDataException(ResourceToolkit.GetLocalizedString(StringNames.UpdateArchiveMissingPackage));
+        }
 
-            var target = Path.Combine(Path.GetDirectoryName(zipPath)!, entry.Name);
-            entry.ExtractToFile(target, overwrite: true);
-            return target;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "解压更新包失败：{Path}", zipPath);
-            return null;
-        }
+        var target = Path.Combine(Path.GetDirectoryName(zipPath)!, entry.Name);
+        entry.ExtractToFile(target, overwrite: true);
+        return target;
     }
 
     private static async Task<string> ComputeSha256Async(string path, CancellationToken cancellationToken)

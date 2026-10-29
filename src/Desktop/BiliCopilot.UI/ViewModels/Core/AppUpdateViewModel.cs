@@ -70,6 +70,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     private UpdateCheckResult? _lastResult;
     private UpdateDownloadResult? _downloaded;
     private string? _failureDetail;
+    private string _failureTitle = string.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AppUpdateViewModel"/> class.
@@ -98,7 +99,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         or AppUpdateState.Downloading
         or AppUpdateState.Ready
         or AppUpdateState.Installing
-        || HasNoPackageForArchitecture;
+        || (State == AppUpdateState.Failed && (CanRetryDownload || HasNoPackageForArchitecture));
 
     /// <summary>
     /// 圆钮图标随状态变化：就绪与安装中换成重启语义.
@@ -125,9 +126,22 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     /// <summary>
     /// 悬停提示的标题.
     /// </summary>
-    public string ToolTipTitle => State is AppUpdateState.Ready or AppUpdateState.Installing
-        ? ResourceToolkit.GetLocalizedString(StringNames.UpdateReadyToInstall)
-        : string.Format(ResourceToolkit.GetLocalizedString(StringNames.UpdateAvailableFormat), AvailableVersion);
+    public string ToolTipTitle => StatusText;
+
+    /// <summary>
+    /// 当前更新操作的无障碍名称.
+    /// </summary>
+    public string ActionName => ResourceToolkit.GetLocalizedString(State switch
+    {
+        AppUpdateState.Available => StringNames.UpdateDownloadAction,
+        AppUpdateState.Ready => StringNames.UpdateInstallAction,
+        AppUpdateState.Failed when HasNoPackageForArchitecture => StringNames.UpdateOpenReleaseAction,
+        AppUpdateState.Failed when _downloaded is not null => StringNames.UpdateRetryInstallAction,
+        AppUpdateState.Failed => StringNames.UpdateRetryDownloadAction,
+        AppUpdateState.Downloading => StringNames.UpdateDownloadingUnknown,
+        AppUpdateState.Installing => StringNames.UpdateInstalling,
+        _ => StringNames.CheckUpdate,
+    });
 
     /// <summary>
     /// 设置页的状态文案.
@@ -139,6 +153,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         AppUpdateState.Available => string.Format(
             ResourceToolkit.GetLocalizedString(StringNames.UpdateAvailableFormat),
             AvailableVersion),
+        AppUpdateState.Downloading when IsIndeterminate => ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadingUnknown),
         AppUpdateState.Downloading => string.Format(
             ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadingFormat),
             Math.Round(DownloadProgress)),
@@ -169,6 +184,8 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
         State = AppUpdateState.Checking;
         _failureDetail = null;
+        _downloaded = null;
+        _failureTitle = ResourceToolkit.GetLocalizedString(StringNames.UpdateCheckFailed);
         var result = await _updateService.CheckAsync(CancellationToken.None);
         _lastResult = result;
 
@@ -227,6 +244,9 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
             case AppUpdateState.Failed when HasNoPackageForArchitecture:
                 await OpenReleaseAsync();
                 break;
+            case AppUpdateState.Failed when _downloaded is not null:
+                await InstallAsync();
+                break;
             case AppUpdateState.Failed when CanRetryDownload:
                 await DownloadAsync();
                 break;
@@ -264,10 +284,19 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         DownloadProgress = 0;
         _failureDetail = null;
 
-        var progress = new Progress<double>(value => DownloadProgress = value);
-        var result = await _downloader.DownloadAsync(selection.Asset, progress, CancellationToken.None);
-        if (result is null)
+        _failureTitle = ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadFailed);
+        _downloaded = null;
+        var progress = new Progress<double>(value =>
         {
+            if (State == AppUpdateState.Downloading)
+            {
+                DownloadProgress = value;
+            }
+        });
+        var result = await _downloader.DownloadAsync(selection.Asset, progress, CancellationToken.None);
+        if (result.PackagePath is null)
+        {
+            _failureDetail = result.Error;
             State = AppUpdateState.Failed;
             return;
         }
@@ -283,13 +312,16 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
             return;
         }
 
+        _failureDetail = null;
+        _failureTitle = ResourceToolkit.GetLocalizedString(StringNames.UpdateInstallFailed);
         State = AppUpdateState.Installing;
         var installed = await _installer.InstallAsync(
-            _downloaded.PackagePath,
+            _downloaded.PackagePath!,
             _downloaded.Sha256,
             CancellationToken.None);
-        if (!installed)
+        if (!installed.Succeeded)
         {
+            _failureDetail = installed.Error;
             State = AppUpdateState.Failed;
             return;
         }
@@ -302,9 +334,10 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         => _lastResult?.Status == UpdateCheckStatus.NoAssetForArchitecture
             ? ResourceToolkit.GetLocalizedString(StringNames.UpdateNoPackageForArchitecture)
             : string.IsNullOrWhiteSpace(_failureDetail)
-                ? ResourceToolkit.GetLocalizedString(StringNames.UpdateCheckFailed)
+                ? _failureTitle
                 : string.Format(
-                    ResourceToolkit.GetLocalizedString(StringNames.UpdateFailedWithReasonFormat),
+                    ResourceToolkit.GetLocalizedString(StringNames.UpdateOperationFailedFormat),
+                    _failureTitle,
                     _failureDetail);
 
     private static void RestartApplication()
@@ -315,6 +348,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     partial void OnStateChanged(AppUpdateState value)
     {
+        OnPropertyChanged(nameof(ActionName));
         OnPropertyChanged(nameof(IsButtonVisible));
         OnPropertyChanged(nameof(IsDownloading));
         OnPropertyChanged(nameof(IconSymbol));
@@ -325,7 +359,8 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     partial void OnDownloadProgressChanged(double value)
     {
-        IsIndeterminate = value < 0;
+        OnPropertyChanged(nameof(IsIndeterminate));
+        OnPropertyChanged(nameof(ToolTipTitle));
         OnPropertyChanged(nameof(StatusText));
     }
 
@@ -350,5 +385,5 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     /// <summary>
     /// 下载总大小未知时进度不可确定.
     /// </summary>
-    public bool IsIndeterminate { get; private set; }
+    public bool IsIndeterminate => DownloadProgress < 0;
 }

@@ -119,4 +119,44 @@ public class UpdateSourcePolicyTests
         => Assert.Equal(
             "only",
             UpdateSourcePolicy.Select([new UpdateSourceProbe("only", true, 10, true, 5)], null));
+
+    [Fact]
+    public void GetDownloadOrder_RetriesOtherSourcesAfterRememberedSource()
+    {
+        var probes = new UpdateSourceProbe[]
+        {
+            new(Url, true, 200, true, 100),
+            new("https://fast.example/" + Url, true, 10, true, 100),
+            new("https://remembered.example/" + Url, true, 50, true, 100),
+        };
+
+        Assert.Equal([probes[2].Url, probes[1].Url, Url], UpdateSourcePolicy.GetDownloadOrder(probes, probes[2].Url, Url));
+    }
+
+    [Fact]
+    public void GetDownloadOrder_AllProbesFail_StillAttemptsDirectAndMirrorsOnce()
+    {
+        var mirror = "https://mirror.example/" + Url;
+        var probes = new UpdateSourceProbe[]
+        {
+            new(mirror, false, 1, false, 0),
+            new(Url, false, 2, false, 0),
+            new(mirror, false, 3, false, 0),
+        };
+
+        Assert.Equal([Url, mirror], UpdateSourcePolicy.GetDownloadOrder(probes, mirror, Url));
+    }
+
+    [Fact]
+    public void GetDownloadOrder_FailedRememberedSourceDoesNotPreemptHealthySource()
+    {
+        var mirror = "https://mirror.example/" + Url;
+        var probes = new UpdateSourceProbe[]
+        {
+            new(mirror, false, 1, false, 0),
+            new(Url, true, 2, true, 100),
+        };
+
+        Assert.Equal([Url, mirror], UpdateSourcePolicy.GetDownloadOrder(probes, mirror, Url));
+    }
 }
