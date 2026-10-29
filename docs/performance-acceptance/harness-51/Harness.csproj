@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <Platforms>x64</Platforms><PlatformTarget>x64</PlatformTarget><RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained><UseWinUI>true</UseWinUI><EnableMsixTooling>true</EnableMsixTooling>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><LangVersion>preview</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest><AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6901" />
+    <PackageReference Include="Richasy.WinUIKernel.Share" Version="0.0.12-preview3" />
+    <PackageReference Include="FluentIcons.WinUI" Version="1.2.315" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
+    <ProjectReference Include="$(SourceRoot)/externals/bili-kernel/src/BiliKernel.Abstractions/BiliKernel.Abstractions.csproj" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Components/AppSearchBox.xaml.cs" Link="AppSearchBox.xaml.cs" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/ViewModels/Components/SearchBoxViewModel/*.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/ViewModels/Items/SearchSuggestItemViewModel.cs" Link="Production/SearchSuggestItemViewModel.cs" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Converters/SearchSuggestRegionIconConverter.cs" Link="Production/SearchSuggestRegionIconConverter.cs" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Extensions/SearchSuggestTemplateSelector.cs" Link="Production/SearchSuggestTemplateSelector.cs" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Extensions/LocaleExtension.cs" Link="Production/LocaleExtension.cs" />
+    <Content Include="Assets/**" />
+  </ItemGroup>
+</Project>
