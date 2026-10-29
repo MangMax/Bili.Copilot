@@ -17,11 +17,21 @@ public sealed partial class PopularSideBody : PopularPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularSideBody"/> class.
     /// </summary>
-    public PopularSideBody() => InitializeComponent();
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    public PopularSideBody()
     {
+        InitializeComponent();
+        // The NuGet base unregisters its lifecycle handlers on the first unload.
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_isActive)
+        {
+            return;
+        }
+
         _isActive = true;
         SectionView.ItemsSource = ViewModel.Sections;
         SectionView.LayoutUpdated += OnSectionLayoutUpdated;
@@ -30,9 +40,13 @@ public sealed partial class PopularSideBody : PopularPageControlBase
         CheckSectionSelection();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        if (!_isActive)
+        {
+            return;
+        }
+
         _isActive = false;
         _selectionPending = false;
         SectionView.LayoutUpdated -= OnSectionLayoutUpdated;

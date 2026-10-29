@@ -1,0 +1,62 @@
+{
+  "counters": [],
+  "results": 403,
+  "scroll": [
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.BurstQueuesOneCheckAndExecutesLoadMoreOnce",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.RejectedEnqueueCanRetryAndCommandIsReadAtExecution",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ThreeRemountsRejectOldDelaysAndAcceptCurrentDelay",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReentrantLayoutKeepsOneFollowUpCheckWithoutLosingNextPage",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 801, expectedLoads: 0)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 799, expectedLoads: 1)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 800, expectedLoads: 1)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.DisabledCommandIsNotExecutedAndLaterInputCanRetry",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.RepeatedLoadedEventsKeepOneSubscriptionAndUnloadRemovesIt",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ShortPagesFillViewportThenScrollAndResizeContinueUntilLastPage",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.DelayedChecksCoalesceAndCannotLoadWhileUnloaded",
+      "outcome": "Passed"
+    }
+  ]
+}

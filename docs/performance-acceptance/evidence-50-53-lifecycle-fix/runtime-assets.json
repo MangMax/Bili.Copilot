@@ -1,0 +1,22 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "EFC719EFF3DC5954B4A5EFC800632808BCEC01CC9034940DD14E5EB7FE9EA633",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-deps\\mpv-dev-x86_64-20261021-git-e471496c56.7z"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "FC9C135B799B410FFC78517F428904C299BC64CD8144F21F63F84FCD8C35EA19",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-deps\\ffmpeg-x86_64-git-9a861e968.7z"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "04E4D27DC385DC18DDD93FBE69C75E635B864F3C6EC53A9122DF54C2F7842F4A",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Assets\\libmpv\\x64\\libmpv-2.dll"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "A1BCBA486CCE341EB033522F0625BB356AE17B1D124A2BC59CFA22540DB81D4B",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Assets\\ffmpeg\\x64\\ffmpeg.exe"
+  }
+]

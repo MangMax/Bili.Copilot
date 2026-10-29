@@ -1,6 +1,6 @@
 # Offline WinUI composition acceptance for #50/#53
 
-Disposable fixture, not a shared framework. Run prepare.ps1 -SourceRoot <checkout> -Destination <new-owned-temp>; then winapp run <temp>/Harness.csproj --arch x64 --detach --json --output-appx-directory <owned-layout>; then run.ps1 -AppPid <returned-owned-PID> -Evidence <new-evidence-directory>.
+Disposable fixture, not a shared framework. Run prepare.ps1 -SourceRoot <checkout> -Destination <new-owned-temp>; then winapp run <temp>/Harness.csproj --arch x64 --detach --json --output-appx-directory <owned-layout>; then run.ps1 -AppPid <returned-owned-PID> -Evidence <new-evidence-directory> -OwnedLayout <owned-layout>. Add -OnlyLifecycle for the same-instance three-cycle unload/remount/refresh regression. Finish with cleanup.ps1 using the same AppPid, Evidence and OwnedLayout.
 
 The runner's owned-layout guard deliberately identifies this run. Package identity: BiliCopilot.Acceptance5053D26C. Never use production/Dev identity. Close the owned window, preserve LocalState/trace.jsonl, remove only that package, then winapp ui yield. The runner yields but leaves the window for inspection; cleanup is recorded separately.
 
@@ -15,3 +15,5 @@ Tests use real UIA InvokePattern on fixture actions, real WinUI layout/ScrollTo/
 A fence waits 1500 ms for finite trailing work, then checks a 3000 ms interval with unchanged requests, notifications and geometry events. No infinite-time stability or CPU-budget claim. Frame observation runs on CompositionTarget.Rendering, so process CPU cannot represent production idle power.
 
 Exploratory runtime and failed run-01 are retained. Do not collapse their failures into the later run or count cascading crash captures as independent production defects. See ../ui-50-53.md for results and actual validated SHA.
+
+Lifecycle-fix reruns live separately in ../evidence-50-53-lifecycle-fix. The unchanged window title contains the original baseline label; production-source-hashes.json and provenance.json identify the actual tested sources. run.ps1 now matches the exact old-page sentinel and uses the real PART_ScrollPresenter for geometry input, incorporating the earlier follow-up corrections without rewriting historical evidence. Its three-cycle checks require one main/side VM subscription, active scroll, incremented unload generation, no unloaded delayed request, and three successful refresh pages plus one empty response. The headless test adapter models the NuGet base's one-time unsubscription; this real fixture still loads the original NuGet DLL.
