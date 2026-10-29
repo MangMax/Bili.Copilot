@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+    <KernelRoot>../../../externals/bili-kernel/src</KernelRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.29.3" />
+    <PackageReference Include="Grpc.Tools" Version="2.69.0" PrivateAssets="all" />
+    <PackageReference Include="System.Text.Json" Version="9.0.1" />
+    <PackageReference Include="RichasyKernel.Abstractions" Version="0.0.1" />
+    <Compile Include="$(KernelRoot)/BiliKernel.Core/Http/BiliHttpClient*.cs" Link="Original/%(Filename)%(Extension)" />
+    <Compile Include="$(KernelRoot)/BiliKernel.Core/Content/BiliResponse.cs" Link="Original/BiliResponse.cs" />
+    <Compile Include="$(KernelRoot)/BiliKernel.Abstractions/Diagnostics/Verify.cs" Link="Original/Verify.cs" />
+    <Compile Include="obj/candidate/*.cs" />
+    <Compile Remove="Tests/**/*.cs" />
+    <Protobuf Include="$(KernelRoot)/BiliKernel.Grpc/bilibili/community/service/dm/v1.proto" GrpcServices="None" />
+  </ItemGroup>
+</Project>
