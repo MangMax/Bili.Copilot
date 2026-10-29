@@ -136,7 +136,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        if (SelectedSection is PopularSectionItemViewModel section2 && section2.Type == PopularSectionType.Rank && Videos.Count > 0)
+        if (Videos.Count > 0
+            && (SelectedSection is PopularRankPartitionViewModel
+                || SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Rank }))
         {
             return;
         }
