@@ -16,6 +16,7 @@ public class RefreshResultTipResourceTests
     private static readonly string[] ResourceKeys =
     [
         "UndoRefresh",
+        "RefreshingRecommendVideos",
         "RefreshResultAdded",
         "RefreshResultReloaded",
     ];
@@ -50,6 +51,14 @@ public class RefreshResultTipResourceTests
     public void RefreshResultReloaded_DoesNotMentionAddedCount()
     {
         var value = GetValue(ResourcesFileHelper.LoadResources(), "RefreshResultReloaded");
+
+        Assert.DoesNotContain("{0}", value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RefreshingRecommendVideos_IsPlainText()
+    {
+        var value = GetValue(ResourcesFileHelper.LoadResources(), "RefreshingRecommendVideos");
 
         Assert.DoesNotContain("{0}", value, StringComparison.Ordinal);
     }

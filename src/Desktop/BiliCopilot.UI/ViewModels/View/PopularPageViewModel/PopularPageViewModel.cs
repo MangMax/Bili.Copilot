@@ -200,8 +200,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     private void ClearRefreshTip()
     {
         _recommendRefreshSnapshot = null;
-        IsRefreshTipVisible = false;
-        RefreshTipMessage = string.Empty;
+        RefreshTipState = Toolkits.RefreshTipState.Hidden;
         _refreshGeneration++;
     }
 
