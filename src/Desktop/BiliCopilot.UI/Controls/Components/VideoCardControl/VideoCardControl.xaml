@@ -59,6 +59,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
@@ -169,6 +170,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
@@ -294,6 +296,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Button
                                         AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                        AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
                                         x:Name="AuthorButton"
                                         Style="{StaticResource TextButtonStyle}"
                                         ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
@@ -527,6 +530,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
@@ -761,6 +765,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
@@ -954,6 +959,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
@@ -1128,6 +1134,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}"
@@ -1358,6 +1365,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
+                                    AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
                                     x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
