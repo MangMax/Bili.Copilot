@@ -24,6 +24,37 @@ internal static class TimestampTextPresenter
         => Append(paragraph, TimestampText.Split(text), seekCommand);
 
     /// <summary>
+    /// 按换行切分文本后写入段落，保留原有换行.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="RichTextBlock"/> 不会把 <see cref="Run"/> 里的换行符渲染成换行，
+    /// 因此这里显式拆分文本并在行间插入 <see cref="LineBreak"/>.
+    /// </remarks>
+    /// <param name="paragraph">目标段落.</param>
+    /// <param name="text">待呈现的文本，允许为 null.</param>
+    /// <param name="seekCommand">点击时间戳时执行的跳转命令，参数为秒数.</param>
+    public static void AppendLines(Paragraph paragraph, string? text, ICommand? seekCommand)
+    {
+        ArgumentNullException.ThrowIfNull(paragraph);
+
+        if (string.IsNullOrEmpty(text))
+        {
+            return;
+        }
+
+        var lines = text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            if (i > 0)
+            {
+                paragraph.Inlines.Add(new LineBreak());
+            }
+
+            Append(paragraph, lines[i], seekCommand);
+        }
+    }
+
+    /// <summary>
     /// 把已切分好的文本写入段落，其中的时间戳渲染为可点击链接.
     /// </summary>
     /// <param name="paragraph">目标段落.</param>
@@ -49,7 +80,7 @@ internal static class TimestampTextPresenter
     /// <param name="segment">文本段或时间戳段.</param>
     /// <param name="seekCommand">点击时间戳时执行的跳转命令，参数为秒数.</param>
     /// <returns>普通文本段返回 <see cref="Run"/>；时间戳段返回 <see cref="Hyperlink"/>.</returns>
-    public static Inline CreateInline(TimestampTextSegment segment, ICommand? seekCommand)
+    private static Inline CreateInline(TimestampTextSegment segment, ICommand? seekCommand)
     {
         ArgumentNullException.ThrowIfNull(segment);
 
@@ -67,8 +98,7 @@ internal static class TimestampTextPresenter
         link.Inlines.Add(new Run { Text = segment.Text });
         link.Click += (_, _) =>
         {
-            // 0 秒是合法位置（跳到视频开头），只拒绝负数与 NaN.
-            if (seconds >= 0 && seekCommand.CanExecute(seconds))
+            if (seekCommand.CanExecute(seconds))
             {
                 seekCommand.Execute(seconds);
             }

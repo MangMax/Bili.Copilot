@@ -109,17 +109,6 @@ public sealed partial class VideoConnectorViewModel : ViewModelBase, IPlayerConn
         => RequestOpenExtraPanel?.Invoke(this, EventArgs.Empty);
 
     [RelayCommand]
-    private Task SeekToTimestampAsync(double seconds)
-    {
-        if (double.IsNaN(seconds) || seconds < 0)
-        {
-            return Task.CompletedTask;
-        }
-
-        return Parent.ChangePositionAsync(seconds);
-    }
-
-    [RelayCommand]
     private void SelectSection(IPlayerSectionDetailViewModel section)
     {
         if (section is null || section == SelectedSection)

@@ -30,7 +30,7 @@
             CornerRadius="{StaticResource ControlCornerRadius}"
             Visibility="{x:Bind ViewModel.Description, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
             <components:TimestampTextBlock
-                SeekCommand="{x:Bind ViewModel.SeekToTimestampCommand, Mode=OneWay}"
+                SeekCommand="{x:Bind ViewModel.Parent.SeekToTimestampCommand, Mode=OneWay}"
                 Text="{x:Bind ViewModel.Description, Mode=OneWay}" />
         </Grid>
     </StackPanel>

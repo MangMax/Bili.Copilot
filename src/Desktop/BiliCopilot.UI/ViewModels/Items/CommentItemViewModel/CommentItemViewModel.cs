@@ -70,8 +70,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
     {
         var players = this.Get<AppViewModel>().Players;
         var player = players.LastOrDefault();
-        // 0 秒是合法位置（跳到视频开头），只拒绝负数与 NaN.
-        if (player is null || seconds < 0 || double.IsNaN(seconds))
+        if (player is null)
         {
             return;
         }

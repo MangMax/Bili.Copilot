@@ -78,17 +78,6 @@ public sealed partial class PgcConnectorViewModel : ViewModelBase, IPlayerConnec
     private void OpenPanel()
         => RequestOpenExtraPanel?.Invoke(this, EventArgs.Empty);
 
-    [RelayCommand]
-    private Task SeekToTimestampAsync(double seconds)
-    {
-        if (double.IsNaN(seconds) || seconds < 0)
-        {
-            return Task.CompletedTask;
-        }
-
-        return Parent.ChangePositionAsync(seconds);
-    }
-
     private async Task LoadItemDetailAsync()
     {
         var service = this.Get<IPlayerService>();
