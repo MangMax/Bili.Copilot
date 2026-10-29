@@ -1,0 +1,62 @@
+[
+  {
+    "name": "SlowRecommend",
+    "passed": true
+  },
+  {
+    "name": "SlowHot",
+    "passed": true
+  },
+  {
+    "name": "Saved restore",
+    "passed": true
+  },
+  {
+    "name": "Missing restore",
+    "passed": true
+  },
+  {
+    "name": "DirFail restore",
+    "passed": true
+  },
+  {
+    "name": "EmptyThenRefresh",
+    "passed": true
+  },
+  {
+    "name": "FailureThenRefresh",
+    "passed": true
+  },
+  {
+    "name": "Rank idle",
+    "passed": true
+  },
+  {
+    "name": "Partition idle",
+    "passed": true
+  },
+  {
+    "error": "Old page contaminated new section",
+    "name": "StaleSection",
+    "passed": false
+  },
+  {
+    "error": "Burst did not exercise real geometry events",
+    "name": "BurstGeometry",
+    "passed": false
+  },
+  {
+    "name": "UnloadDelay",
+    "passed": true
+  },
+  {
+    "error": "Reattached control lost lifecycle subscriptions or active state",
+    "name": "ReattachMainSide",
+    "passed": false
+  },
+  {
+    "error": "Reattached short list no longer automatically fills",
+    "name": "RemountRefresh",
+    "passed": false
+  }
+]

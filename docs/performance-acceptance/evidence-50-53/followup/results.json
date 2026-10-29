@@ -1,0 +1,11 @@
+[
+  {
+    "passed": true,
+    "name": "StaleSectionExactIdentity"
+  },
+  {
+    "error": "UI command failed: send-keys ctrl+end --target VideoScroll --via send-input ",
+    "name": "ActualScrollResizeAndIdle",
+    "passed": false
+  }
+]
