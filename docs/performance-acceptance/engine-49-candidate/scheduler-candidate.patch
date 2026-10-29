@@ -1,0 +1,634 @@
+--- a/src/Danmaku.Core/DanmakuScheduler.cs
++++ b/src/Danmaku.Core/DanmakuScheduler.cs
+@@ -11,9 +11,12 @@
+ /// </summary>
+ internal sealed class DanmakuScheduler : IDisposable
+ {
+-    private readonly Queue<uint> _updateTimeQueue = new();
++    private readonly Queue<(uint Time, long Generation)> _updateTimeQueue = new();
+     private readonly AutoResetEvent _updateEvent = new(false);
+     private List<DanmakuItem> _danmakuList = new();
++    private readonly object _stateGate = new();
++    private long _generation;
++    private bool _wantsPlaying = true;
+     private volatile bool _isSeeking;
+     private volatile bool _isClosing;
+     private volatile int _lastIndex;
+@@ -81,15 +84,11 @@
+     {
+         lock (_updateTimeQueue)
+         {
+-            if (_updateTimeQueue.LastOrDefault() == currentMs)
+-            {
+-                // 避免重复更新
+-                return;
+-            }
+-
+-            _updateTimeQueue.Enqueue(currentMs);
+-        }
+-        _updateEvent.Set();
++            if (_isClosing) return;
++            if (_updateTimeQueue.Count > 0 && _updateTimeQueue.Last().Time == currentMs) return;
++            _updateTimeQueue.Enqueue((currentMs, _generation));
++            _updateEvent.Set();
++        }
+     }
+ 
+     /// <summary>
+@@ -97,8 +96,10 @@
+     /// </summary>
+     public void Pause()
+     {
+-        if (!_isClosing)
+-        {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _wantsPlaying = false;
+             PauseRequested?.Invoke();
+         }
+     }
+@@ -108,7 +109,12 @@
+     /// </summary>
+     public void Resume()
+     {
+-        ResumeRequested?.Invoke();
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _wantsPlaying = true;
++            ResumeRequested?.Invoke();
++        }
+     }
+ 
+     /// <summary>
+@@ -116,11 +122,13 @@
+     /// </summary>
+     public void Stop()
+     {
+-        Pause();
+-        StopRequested?.Invoke();
+-        lock (_updateTimeQueue)
+-        {
+-            _updateTimeQueue.Clear();
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _wantsPlaying = false;
++            InvalidatePending();
++            PauseRequested?.Invoke();
++            StopRequested?.Invoke();
+         }
+     }
+ 
+@@ -129,7 +137,12 @@
+     /// </summary>
+     public void Restart()
+     {
+-        Seek(0);
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _wantsPlaying = true;
++            Seek(0);
++        }
+     }
+ 
+     /// <summary>
+@@ -137,34 +150,28 @@
+     /// </summary>
+     public void Seek(uint targetMs)
+     {
+-        _isSeeking = true;
+-        Stop();
+-        lock (_danmakuList)
+-        {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            InvalidatePending();
++            SeekCore(targetMs);
++        }
++    }
++
++    /// <summary>
++    /// 清空弹幕列表.
++    /// </summary>
++    public void Clear()
++    {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            InvalidatePending();
++            _danmakuList.Clear();
+             _lastIndex = 0;
+-            if (_danmakuList.Count > 0)
+-            {
+-                while (_lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs < targetMs)
+-                {
+-                    _lastIndex++;
+-                }
+-            }
+-            _lastTimeMs = targetMs;
+-            Resume();
+-            _isSeeking = false;
+-        }
+-    }
+-
+-    /// <summary>
+-    /// 清空弹幕列表.
+-    /// </summary>
+-    public void Clear()
+-    {
+-        lock (_danmakuList)
+-        {
+-            _danmakuList?.Clear();
+-        }
+-        StopRequested?.Invoke();
++            _lastTimeMs = 0;
++            StopRequested?.Invoke();
++        }
+     }
+ 
+     /// <summary>
+@@ -172,6 +179,9 @@
+     /// </summary>
+     public void AddRealtimeDanmaku(DanmakuItem item, bool insertToList)
+     {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
+         item.AllowDensityControl = false;
+         item.IsRealtime = true;
+ 
+@@ -181,7 +191,7 @@
+ 
+         if (insertToList)
+         {
+-            lock (_danmakuList)
++            lock (_stateGate)
+             {
+                 bool added = false;
+                 for (int i = 0; i < _danmakuList.Count; i++)
+@@ -199,6 +209,8 @@
+                 }
+             }
+         }
++    
++        }
+     }
+ 
+     /// <summary>
+@@ -206,7 +218,7 @@
+     /// </summary>
+     public List<DanmakuItem> GetDanmakuList()
+     {
+-        lock (_danmakuList)
++        lock (_stateGate)
+         {
+             return _danmakuList.ToList();
+         }
+@@ -217,9 +229,10 @@
+     /// </summary>
+     public void SetDanmakuList(List<DanmakuItem> danmakuList)
+     {
+-        Clear();
+-        lock (_danmakuList)
+-        {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            Clear();
+             _danmakuList = danmakuList ?? new List<DanmakuItem>();
+         }
+     }
+@@ -229,7 +242,10 @@
+     /// </summary>
+     public void AddDanmakuList(List<DanmakuItem> danmakuList)
+     {
+-        lock (_danmakuList)
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++        lock (_stateGate)
+         {
+             if (_danmakuList == null)
+             {
+@@ -241,18 +257,46 @@
+                 _danmakuList.AddRange(items);
+             }
+         }
++    
++        }
+     }
+ 
+     public void Dispose()
+     {
+-        if (!_isClosing)
+-        {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
+             _isClosing = true;
+-            _updateEvent?.Set();
+-            _updateEvent?.Dispose();
+-        }
+-    }
+-
++            InvalidatePending();
++            _updateEvent.Set();
++        }
++
++    }
++
++
++    private void InvalidatePending()
++    {
++        lock (_updateTimeQueue)
++        {
++            _generation++;
++            _updateTimeQueue.Clear();
++        }
++    }
++
++    private void SeekCore(uint targetMs)
++    {
++        _isSeeking = true;
++        PauseRequested?.Invoke();
++        StopRequested?.Invoke();
++        _lastIndex = 0;
++        while (_lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs < targetMs)
++            _lastIndex++;
++        _lastTimeMs = targetMs;
++        // State and render tail share the same boundary as public Pause/Resume.
++        if (_wantsPlaying) { ResumeRequested?.Invoke(); }
++        else { PauseRequested?.Invoke(); }
++        _isSeeking = false;
++    }
+     private void UpdaterWorker()
+     {
+         try
+@@ -266,28 +310,24 @@
+                     break;
+                 }
+ 
+-                uint currentTimeMs = 0;
++                uint currentTimeMs;
++                long generation;
+                 lock (_updateTimeQueue)
+                 {
+-                    if (_updateTimeQueue.Count > 0)
+-                    {
+-                        currentTimeMs = _updateTimeQueue.Dequeue();
+-                    }
+-                }
+-
+-                if (currentTimeMs == 0)
+-                {
+-                    continue;
+-                }
+-
+-                lock (_danmakuList)
+-                {
++                    if (_isClosing) break;
++                    if (_updateTimeQueue.Count == 0) continue;
++                    (currentTimeMs, generation) = _updateTimeQueue.Dequeue();
++                    if (_updateTimeQueue.Count > 0) _updateEvent.Set();
++                }
++
++                lock (_stateGate)
++                {
++                    if (_isClosing || generation != _generation) continue;
+                     // 检查是否长时间暂停或重启
+                     if (currentTimeMs < _lastTimeMs || currentTimeMs - _lastTimeMs > 5000)
+                     {
+                         Logger.Log("Reseek after a long time suspension");
+-                        Seek(currentTimeMs);
+-                        continue;
++                        SeekCore(currentTimeMs);
+                     }
+ 
+                     _lastTimeMs = currentTimeMs;
+@@ -335,6 +375,7 @@
+         }
+         finally
+         {
++            _updateEvent.Dispose();
+             Logger.Log("DanmakuScheduler exited");
+         }
+     }
+--- a/src/Danmaku.Legacy/DanmakuFrostMaster.cs
++++ b/src/Danmaku.Legacy/DanmakuFrostMaster.cs
+@@ -23,10 +23,13 @@
+         public const uint DefaultDanmakuLayerCount = DanmakuDefaultLayerDef.DefaultLayerCount;
+ 
+         private readonly DanmakuRender _render;
+-        private readonly Queue<uint> _updateTimeQueue = new Queue<uint>();
++        private readonly Queue<(uint Time, long Generation)> _updateTimeQueue = new Queue<(uint Time, long Generation)>();
+         private readonly AutoResetEvent _updateEvent = new AutoResetEvent(false);
+         private List<DanmakuItem> _danmakuList = new List<DanmakuItem>();
+-        private volatile bool _isSeeking;
++        private readonly object _stateGate = new();
++    private long _generation;
++    private bool _wantsPlaying = true;
++    private volatile bool _isSeeking;
+         private volatile bool _isClosing;
+         private volatile int _lastIndex;
+         private volatile uint _lastTimeMs;
+@@ -168,51 +171,56 @@
+ 
+         public void UpdateTime(uint currentMs)
+         {
+-            if (_render is null)
+-            {
+-                return;
+-            }
+-
+-            lock (_updateTimeQueue)
+-            {
+-                if (_updateTimeQueue.LastOrDefault() == currentMs)
+-                {
+-                    // Avoid duplicate updates
+-                    return;
+-                }
+-
+-                _updateTimeQueue.Enqueue(currentMs);
+-            }
++        lock (_updateTimeQueue)
++        {
++            if (_isClosing) return;
++            if (_updateTimeQueue.Count > 0 && _updateTimeQueue.Last().Time == currentMs) return;
++            _updateTimeQueue.Enqueue((currentMs, _generation));
+             _updateEvent.Set();
+         }
++    }
+ 
+         public void Pause()
+         {
+-            if (!_isClosing && _render is not null)
+-            {
+-                _render.Pause();
+-            }
+-        }
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _wantsPlaying = false;
++            _render?.Pause();
++        }
++    }
+ 
+         public void Resume()
+         {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _wantsPlaying = true;
+             _render?.Start();
+         }
++    }
+ 
+         public void Stop()
+         {
+-            Pause();
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _wantsPlaying = false;
++            InvalidatePending();
++            _render?.Pause();
+             _render?.Stop();
+-            lock (_updateTimeQueue)
+-            {
+-                _updateTimeQueue.Clear();
+-            }
+-        }
++        }
++    }
+ 
+         public void Restart()
+         {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _wantsPlaying = true;
+             Seek(0);
+         }
++    }
+ 
+         public void SetLayerRenderState(uint layerId, bool render)
+         {
+@@ -221,53 +229,44 @@
+ 
+         public void Seek(uint targetMs)
+         {
+-            if (_render is null)
+-            {
+-                return;
+-            }
+-
+-            _isSeeking = true;
+-            Stop();
+-            lock (_danmakuList)
+-            {
+-                _lastIndex = 0;
+-                if (_danmakuList.Count > 0)
+-                {
+-                    while (_danmakuList[_lastIndex].StartMs < targetMs)
+-                    {
+-                        _lastIndex++;
+-                        if (_lastIndex >= _danmakuList.Count)
+-                        {
+-                            break;
+-                        }
+-                    }
+-                }
+-                _lastTimeMs = targetMs;
+-                Resume();
+-                _isSeeking = false;
+-            }
+-        }
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            InvalidatePending();
++            SeekCore(targetMs);
++        }
++    }
+ 
+         public void Clear()
+         {
+-            _danmakuList?.Clear();
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            InvalidatePending();
++            _danmakuList.Clear();
++            _lastIndex = 0;
++            _lastTimeMs = 0;
+             _render?.Stop();
+         }
++    }
+ 
+         public void Close()
+         {
+-            if (!_isClosing)
+-            {
+-                _isClosing = true;
+-                _updateEvent?.Set();
+-                _render?.Close();
+-
+-                Logger.Log("DanmakuFrostMaster is closed");
+-            }
+-        }
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
++            _isClosing = true;
++            InvalidatePending();
++            _updateEvent.Set();
++        }
++        _render?.Close();
++    }
+ 
+         public void AddRealtimeDanmaku(DanmakuItem item, bool insertToList, uint layerId = DanmakuDefaultLayerDef.DefaultLayerId)
+         {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
+             if (_render is null)
+             {
+                 return;
+@@ -278,7 +277,7 @@
+             _render.RenderDanmakuItem(layerId, item);
+             if (insertToList)
+             {
+-                lock (_danmakuList)
++                lock (_stateGate)
+                 {
+                     bool added = false;
+                     for (int i = 0; i < _danmakuList.Count; i++)
+@@ -297,7 +296,9 @@
+                     }
+                 }
+             }
+-        }
++        
++        }
++    }
+ 
+         public List<DanmakuItem> GetDanmakuList()
+             => _danmakuList;
+@@ -305,12 +306,19 @@
+         /// <param name="danmakuList">Must be pre-ordered by StartMs</param>
+         public void SetDanmakuList(List<DanmakuItem> danmakuList)
+         {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
+             Clear();
+             _danmakuList = danmakuList ?? new List<DanmakuItem>();
+         }
++    }
+ 
+         public void AddDanmakuList(List<DanmakuItem> danmakuList)
+         {
++        lock (_stateGate)
++        {
++            if (_isClosing) return;
+             if (_danmakuList == null)
+             {
+                 _danmakuList = danmakuList;
+@@ -320,8 +328,34 @@
+                 var items = danmakuList.Where(p => !_danmakuList.Any(v => v.Id == p.Id));
+                 _danmakuList = items.ToList();
+             }
+-        }
+-
++        
++        }
++    }
++
++
++    private void InvalidatePending()
++    {
++        lock (_updateTimeQueue)
++        {
++            _generation++;
++            _updateTimeQueue.Clear();
++        }
++    }
++
++    private void SeekCore(uint targetMs)
++    {
++        _isSeeking = true;
++        _render?.Pause();
++        _render?.Stop();
++        _lastIndex = 0;
++        while (_lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs < targetMs)
++            _lastIndex++;
++        _lastTimeMs = targetMs;
++        // State and render tail share the same boundary as public Pause/Resume.
++        if (_wantsPlaying) { _render?.Start(); }
++        else { _render?.Pause(); }
++        _isSeeking = false;
++    }
+         private void Updater_DoWork(IAsyncAction action)
+         {
+             if (_render is null)
+@@ -335,33 +369,31 @@
+                 {
+                     _updateEvent.WaitOne();
+ 
+-                    uint currentTimeMs = 0;
+-                    lock (_updateTimeQueue)
++                uint currentTimeMs;
++                long generation;
++                lock (_updateTimeQueue)
++                {
++                    if (_isClosing) break;
++                    if (_updateTimeQueue.Count == 0) continue;
++                    (currentTimeMs, generation) = _updateTimeQueue.Dequeue();
++                    if (_updateTimeQueue.Count > 0) _updateEvent.Set();
++                }
++
++                lock (_stateGate)
+                     {
+-                        if (_updateTimeQueue.Count > 0)
+-                        {
+-                            currentTimeMs = _updateTimeQueue.Dequeue();
+-                        }
+-                    }
+-                    if (currentTimeMs == 0)
+-                    {
+-                        continue;
+-                    }
+-
+-                    lock (_danmakuList)
+-                    {
++                    if (_isClosing || generation != _generation) continue;
+                         // Check if app/thread has been suspended for a while or danmaku engine has been restarted
+                         if (currentTimeMs < _lastTimeMs || currentTimeMs - _lastTimeMs > 5000)
+                         {
+                             Logger.Log("Reseek after a long time suspension");
+-                            Seek(currentTimeMs);
++                            SeekCore(currentTimeMs);
+                         }
+                         else
+                         {
+                             _lastTimeMs = currentTimeMs;
+                         }
+ 
+-                        while (currentTimeMs > 0 && _lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs <= currentTimeMs)
++                        while (_lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs <= currentTimeMs)
+                         {
+                             if (_isClosing)
+                             {
+@@ -415,6 +447,7 @@
+             }
+             finally
+             {
++            _updateEvent.Dispose();
+                 Logger.Log("Exited");
+             }
+         }

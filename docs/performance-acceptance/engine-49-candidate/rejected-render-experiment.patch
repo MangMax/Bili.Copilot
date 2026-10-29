@@ -1,0 +1,168 @@
+--- a/src/Danmaku.Core/DanmakuDirectXRender.cs
++++ b/src/Danmaku.Core/DanmakuDirectXRender.cs
+@@ -11,6 +11,8 @@
+ 
+ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClient
+ {
++    private int _frameRequested;
++    private volatile bool _renderDispatcherReady;
+     internal DanmakuDirectXRender(SwapChainPanel swapChainPanel, FrameworkElement container, DanmakuConfiguration initialConfig = null)
+     {
+         _swapChainPanel = swapChainPanel ?? throw new ArgumentNullException(nameof(swapChainPanel));
+@@ -72,6 +74,19 @@
+ 
+         // 创建游戏循环线程（用于渲染）
+         _gameLoopThread = new GameLoopThread(_swapChainPanel, this);
++        var gameLoop = _gameLoopThread;
++        _ = Task.Run(() =>
++        {
++            try
++            {
++                gameLoop.StartDispatcher();
++                _renderDispatcherReady = true;
++            }
++            catch (ObjectDisposedException)
++            {
++                // Closing before asynchronous startup completed.
++            }
++        });
+ 
+         // 订阅 CompositionTarget.Rendering 作为渲染时机信号
+         CompositionTarget.Rendering += OnRenderingSignal;
+@@ -114,7 +129,7 @@
+     private void OnRenderingSignal(object? sender, object e)
+     {
+         // 快速检查：避免重复调度
+-        if (_isPaused || _isStopped || _isRendering)
++        if (!_renderDispatcherReady || (_isPaused && System.Threading.Volatile.Read(ref _frameRequested) == 0) || _isStopped || _isRendering)
+         {
+             return;
+         }
+@@ -261,6 +276,7 @@
+             lock (_renderLayerList[layerId].RenderList)
+             {
+                 _renderLayerList[layerId].RenderList.Add(renderItem);
++                System.Threading.Interlocked.Exchange(ref _frameRequested, 1);
+                 addedToRenderList = true;  // 标记已添加
+             }
+         }
+@@ -625,7 +641,7 @@
+         _frameStopwatch.Start();
+ 
+         // 启动游戏循环调度器（用于渲染）
+-        _gameLoopThread?.StartDispatcher();
++        // RunAsync also services the manual queue; no UI-thread dispatcher wait is needed.
+ 
+         Debug.WriteLine("DanmakuDirectXRender is started (Hybrid Rendering Mode)");
+     }
+@@ -633,7 +649,9 @@
+     public void Pause()
+     {
+         _isPaused = true;
++        _isStopped = false;
+         _frameStopwatch.Stop();
++        System.Threading.Interlocked.Exchange(ref _frameRequested, 1);
+         Debug.WriteLine("DanmakuDirectXRender is paused");
+     }
+ 
+@@ -642,7 +660,7 @@
+         _isStopped = true;
+ 
+         // 停止游戏循环调度器
+-        _gameLoopThread?.StopDispatcher();
++        // A stopped frame is rejected by RenderFrame; do not wait for the render thread.
+ 
+         Clear();
+         Logger.Log("DanmakuDirectXRender is stopped");
+@@ -766,18 +784,19 @@
+             return;
+         }
+ 
+-        if (_isPaused || _isStopped || _resourceManager.D2DContext == null)
++        if ((_isPaused && System.Threading.Volatile.Read(ref _frameRequested) == 0) || _isStopped || _resourceManager.D2DContext == null)
+         {
+             return;
+         }
+ 
+         // 设置重入保护标志
+         _isRendering = true;
++        System.Threading.Interlocked.Exchange(ref _frameRequested, 0);
+ 
+         try
+         {
+             var currentTime = _frameStopwatch.Elapsed;
+-            var elapsedTime = currentTime - _lastFrameTime;
++            var elapsedTime = _isPaused ? TimeSpan.Zero : currentTime - _lastFrameTime;
+             _lastFrameTime = currentTime;
+             _totalTime += elapsedTime;
+ 
+@@ -862,3 +881,4 @@
+ 
+     #endregion
+ }
++
+--- a/src/Danmaku.Legacy/DanmakuRender.cs
++++ b/src/Danmaku.Legacy/DanmakuRender.cs
+@@ -46,6 +46,7 @@
+         private volatile float _rollingAreaRatio = 0.8f;
+         private volatile float _rollingSpeed = DefaultRollingSpeed; // 1 to 10
+         private volatile bool _isPaused;
++        private TimeSpan _playbackTime;
+         private float _scale = 1.0f;
+         private double _textOpacity = 1.0;
+         private Color _borderColor = Colors.Blue;
+@@ -560,6 +561,7 @@
+             if (_canvas != null)
+             {
+                 _isPaused = true;
++                _isStopped = false;
+                 _canvas.Invalidate();
+             }
+ 
+@@ -633,10 +635,12 @@
+ 
+         private void OnCanvasUpdate(ICanvasAnimatedControl sender, CanvasAnimatedUpdateEventArgs args)
+         {
+-            if (_canvas is null || CanvasWidth <= 0 || CanvasHeight <= 0 || _isPaused)
++            if (_canvas is null || CanvasWidth <= 0 || CanvasHeight <= 0)
+             {
+                 return;
+             }
++
++            if (!_isPaused) _playbackTime += args.Timing.ElapsedTime;
+ 
+             // 避免LINQ产生GC - 直接检查是否有item
+             bool hasItem = false;
+@@ -671,11 +675,11 @@
+                         DanmakuRenderItem renderItem = renderList[i];
+                         if (!renderItem.IsFirstRenderTimeSet)
+                         {
+-                            renderItem.FirstRenderTime = args.Timing.TotalTime;
++                            renderItem.FirstRenderTime = _playbackTime;
+                             renderItem.IsFirstRenderTimeSet = true;
+                         }
+-                        float elapsedMs = (float)args.Timing.ElapsedTime.TotalMilliseconds;
+-                        float durationMs = (float)(args.Timing.TotalTime - renderItem.FirstRenderTime).TotalMilliseconds;
++                        float elapsedMs = _isPaused ? 0 : (float)args.Timing.ElapsedTime.TotalMilliseconds;
++                        float durationMs = (float)(_playbackTime - renderItem.FirstRenderTime).TotalMilliseconds;
+                         bool removeItem = false;
+ 
+                         // Do layout and rendering
+@@ -683,7 +687,7 @@
+                         {
+                             case DanmakuMode.Rolling:
+                                 {
+-                                    if (!sender.Paused)
++                                    if (!_isPaused)
+                                     {
+                                         renderItem.X -= elapsedMs * AdjustRollingSpeedByWidth(_rollingSpeed, renderItem.Width);
+                                     }
+@@ -717,7 +721,7 @@
+                                 }
+                             case DanmakuMode.ReverseRolling:
+                                 {
+-                                    if (!sender.Paused)
++                                    if (!_isPaused)
+                                     {
+                                         renderItem.X += elapsedMs * AdjustRollingSpeedByWidth(_rollingSpeed, renderItem.Width);
+                                     }
