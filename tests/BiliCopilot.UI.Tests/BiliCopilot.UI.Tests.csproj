@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs" Link="Markdown\MarkdownImageLoader.cs" />
     <ProjectReference Include="..\..\externals\bili-kernel\src\Services\Services.Media\Services.Media.csproj" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Danmaku\*.cs" Link="Danmaku\%(Filename)%(Extension)" />
   </ItemGroup>
