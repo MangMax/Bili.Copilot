@@ -3285,10 +3285,4 @@
   <data name="RefreshingRecommendVideos" xml:space="preserve">
     <value>正在刷新推荐视频</value>
   </data>
-  <data name="RefreshResultAdded" xml:space="preserve">
-    <value>已增量刷新，新增 {0} 条推荐视频</value>
-  </data>
-  <data name="RefreshResultReloaded" xml:space="preserve">
-    <value>已刷新推荐视频</value>
-  </data>
 </root>
