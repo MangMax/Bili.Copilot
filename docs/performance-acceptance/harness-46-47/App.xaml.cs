@@ -42,6 +42,13 @@ public partial class App : Application
         var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
         var row2 = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
         toolbar.Children.Add(row); toolbar.Children.Add(row2);
+        var lifecycleRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        toolbar.Children.Add(lifecycleRow);
+        Add(lifecycleRow, "Initial", () => Observe("InitialTemplateLoaded", () => loads == 1 && unloads == 0 && markdown.IsLoaded && Blocks() == 7 && Rendered(), "first template/Loaded renders exactly seven blocks"));
+        Add(lifecycleRow, "Lifecycle", async () => {
+            try { await VerifyLifecycle(); }
+            catch (Exception e) { Record("LifecycleBoundaries", false, e.ToString()); }
+        });
         Add(row, "Render", () => { markdown.Text = fixture; Observe("Render", () => Rendered(), "fixture text/table/code/link/image"); });
         Add(row, "Clear", () => { markdown.Text = ""; Observe("Clear", () => Blocks() == 0, "zero blocks"); });
         Add(row, "Reassign", () => { markdown.Text = fixture; Observe("Reassign", () => Rendered(), "full fixture restored"); });
@@ -102,6 +109,41 @@ public partial class App : Application
         var queued = pending.Count;
         Drain();
         Observe("CoalescedSelectableStreaming", () => queued == 1 && publications == 1 && generating && streaming.IsTextSelectionEnabled && streaming.Text == fixture[..(fixture.Length / 2)] && Blocks() == 0, "one queued publication; exact ordered selectable plain text; no Markdown blocks");
+    }
+
+    private async Task Transition(bool attach)
+    {
+        var completed = new TaskCompletionSource();
+        RoutedEventHandler handler = null;
+        handler = (_, _) => {
+            if (attach) markdown.Loaded -= handler; else markdown.Unloaded -= handler;
+            window.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => completed.SetResult());
+        };
+        if (attach) { markdown.Loaded += handler; host.Children.Add(markdown); }
+        else { markdown.Unloaded += handler; host.Children.Remove(markdown); }
+        await completed.Task.WaitAsync(TimeSpan.FromSeconds(3));
+        host.UpdateLayout();
+    }
+
+    private async Task VerifyLifecycle()
+    {
+        var same = markdown;
+        for (var i = 1; i <= 3; i++)
+        {
+            await Transition(false);
+            if (markdown.IsLoaded || Blocks() != 0) throw new Exception("Unload did not clear document");
+            await Transition(true);
+            var passed = ReferenceEquals(same, markdown) && markdown.Text == fixture && markdown.IsLoaded && Blocks() == 7 && Rendered();
+            Record($"RepeatedAttach{i}", passed, "same instance/text, actual unload/load, exactly seven blocks");
+            if (!passed) throw new Exception("Repeated attach lost or duplicated content");
+        }
+        markdown.Text = "";
+        await Transition(false); await Transition(true);
+        var empty = markdown.Text == "" && markdown.IsLoaded && Blocks() == 0;
+        Record("EmptyTextReattach", empty, "empty text remains empty after Loaded");
+        if (!empty) throw new Exception("Empty reattach restored stale content");
+        markdown.Text = fixture;
+        Observe("LifecycleBoundaries", () => ReferenceEquals(same, markdown) && Blocks() == 7 && Rendered(), "reassign after empty attach restores exactly seven blocks");
     }
 
     private void Publish(string text, bool final)
