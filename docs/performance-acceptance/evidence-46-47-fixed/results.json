@@ -1,0 +1,92 @@
+{
+  "checks": [
+    {
+      "passed": true,
+      "name": "InitialTemplateLoaded"
+    },
+    {
+      "passed": true,
+      "name": "Render"
+    },
+    {
+      "passed": true,
+      "name": "ProductionCodeClipboard"
+    },
+    {
+      "passed": true,
+      "name": "Clear"
+    },
+    {
+      "passed": true,
+      "name": "Reassign"
+    },
+    {
+      "passed": true,
+      "name": "Detach"
+    },
+    {
+      "passed": true,
+      "name": "SameInstanceUnchangedTextAttach"
+    },
+    {
+      "passed": false,
+      "detail": "LifecycleBoundaries: FAIL | blocks=7, loaded=True, instance=1, loads=6, unloads=5",
+      "name": "LifecycleBoundaries"
+    },
+    {
+      "passed": true,
+      "name": "FreshReopen"
+    },
+    {
+      "passed": true,
+      "name": "CoalescedSelectableStreaming"
+    },
+    {
+      "passed": true,
+      "name": "FinalFlush"
+    },
+    {
+      "passed": true,
+      "name": "AnswerClipboard"
+    },
+    {
+      "passed": true,
+      "name": "CancelledLateAfterNewCompletion"
+    },
+    {
+      "passed": true,
+      "name": "CancelledLateBeforeNewCompletion"
+    },
+    {
+      "passed": true,
+      "name": "CloseOwnedWindow"
+    },
+    {
+      "passed": true,
+      "name": "ProductionSourceAndManifestUnchanged"
+    },
+    {
+      "passed": true,
+      "name": "RemoveOwnedTemporaryPackage"
+    },
+    {
+      "passed": true,
+      "name": "YieldDesktop"
+    }
+  ],
+  "appPid": 55384,
+  "target": "local",
+  "screenshots": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\00-initial.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\01-render.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\02-clear.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\03-reassign.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\04-detach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\05-reattach.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\05b-lifecycle.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\06-fresh.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\07-stream.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\08-final.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-46-47-fixed\\09-cancel-late.png"
+  ]
+}

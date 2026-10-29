@@ -1,0 +1,25 @@
+{
+  "productionDiff": [],
+  "ownedProcesses": [
+    {
+      "exited": true,
+      "pid": 32728
+    },
+    {
+      "exited": true,
+      "pid": 65188
+    },
+    {
+      "exited": true,
+      "pid": 21056
+    },
+    {
+      "exited": true,
+      "pid": 55384
+    }
+  ],
+  "historicalEvidenceDiff": [],
+  "acceptancePackageAbsent": true,
+  "kernelStatus": [],
+  "kernel": "2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d"
+}

@@ -1,0 +1,177 @@
+{
+  "passed": 17,
+  "releaseExitCode": 0,
+  "uiExitCode": 1,
+  "failed": 1,
+  "harnessBuildExitCode": 0,
+  "visualUnresolved": "05b-lifecycle shows code block only while UIA contains full document",
+  "viewedScreenshots": [
+    "00-initial.png",
+    "01-render.png",
+    "02-clear.png",
+    "03-reassign.png",
+    "04-detach.png",
+    "05-reattach.png",
+    "05b-lifecycle.png",
+    "06-fresh.png",
+    "07-stream.png",
+    "08-final.png",
+    "09-cancel-late.png"
+  ],
+  "debugBuildExitCode": 0,
+  "observations": [
+    {
+      "name": "InitialTemplateLoaded",
+      "passed": true,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 1,
+      "unloads": 0
+    },
+    {
+      "name": "Render",
+      "passed": true,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 1,
+      "unloads": 0
+    },
+    {
+      "name": "ProductionCodeClipboard",
+      "passed": true,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 1,
+      "unloads": 0
+    },
+    {
+      "name": "Clear",
+      "passed": true,
+      "blocks": 0,
+      "instance": 1,
+      "loads": 1,
+      "unloads": 0
+    },
+    {
+      "name": "Reassign",
+      "passed": true,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 1,
+      "unloads": 0
+    },
+    {
+      "name": "Detach",
+      "passed": true,
+      "blocks": 0,
+      "instance": 1,
+      "loads": 1,
+      "unloads": 1
+    },
+    {
+      "name": "SameInstanceUnchangedTextAttach",
+      "passed": true,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 2,
+      "unloads": 1
+    },
+    {
+      "name": "RepeatedAttach1",
+      "passed": true,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 3,
+      "unloads": 2
+    },
+    {
+      "name": "RepeatedAttach2",
+      "passed": true,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 4,
+      "unloads": 3
+    },
+    {
+      "name": "RepeatedAttach3",
+      "passed": true,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 5,
+      "unloads": 4
+    },
+    {
+      "name": "EmptyTextReattach",
+      "passed": true,
+      "blocks": 0,
+      "instance": 1,
+      "loads": 6,
+      "unloads": 5
+    },
+    {
+      "name": "LifecycleBoundaries",
+      "passed": false,
+      "blocks": 7,
+      "instance": 1,
+      "loads": 6,
+      "unloads": 5
+    },
+    {
+      "name": "FreshReopen",
+      "passed": true,
+      "blocks": 7,
+      "instance": 2,
+      "loads": 7,
+      "unloads": 6
+    },
+    {
+      "name": "CoalescedSelectableStreaming",
+      "passed": true,
+      "blocks": 0,
+      "instance": 2,
+      "loads": 7,
+      "unloads": 6
+    },
+    {
+      "name": "FinalFlush",
+      "passed": true,
+      "blocks": 7,
+      "instance": 2,
+      "loads": 7,
+      "unloads": 6
+    },
+    {
+      "name": "HarnessCopyAnswer",
+      "passed": true,
+      "blocks": 7,
+      "instance": 2,
+      "loads": 7,
+      "unloads": 6
+    },
+    {
+      "name": "AnswerClipboard",
+      "passed": true,
+      "blocks": 7,
+      "instance": 2,
+      "loads": 7,
+      "unloads": 6
+    },
+    {
+      "name": "CancelledLateBeforeNewCompletion",
+      "passed": true,
+      "blocks": 0,
+      "instance": 2,
+      "loads": 7,
+      "unloads": 6
+    },
+    {
+      "name": "CancelledLateAfterNewCompletion",
+      "passed": true,
+      "blocks": 1,
+      "instance": 2,
+      "loads": 7,
+      "unloads": 6
+    }
+  ],
+  "visualWarning": "Table fixture wraps fixtur/e"
+}

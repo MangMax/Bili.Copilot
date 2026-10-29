@@ -13,11 +13,13 @@ $source = (Resolve-Path .).Path
 $project = Join-Path $env:TEMP ('bili-accept-4647-' + [guid]::NewGuid().ToString('N'))
 $layout = "$project-layout"
 $evidence = "$project-evidence"
+if (Get-AppxPackage -Name BiliCopilot.Acceptance4647) { throw 'Identity already registered: do not take over or uninstall another task package.' }
 ./docs/performance-acceptance/harness-46-47/prepare.ps1 -SourceRoot $source -Destination $project
 dotnet build "$project/Harness.csproj" -p:Platform=x64 -v:minimal
 if ($LASTEXITCODE -ne 0) { throw 'Harness build failed' }
 $launch = winapp run "$project/Harness.csproj" --arch x64 --no-build --detach --json --output-appx-directory $layout | ConvertFrom-Json
 if ($launch.Error -or -not $launch.ProcessId) { throw 'Harness activation failed' }
+if ($launch.ProcessId -eq 9608 -or -not (Get-Process -Id $launch.ProcessId).Path.StartsWith($layout + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Unexpected process: refuse UI actions.' }
 ./docs/performance-acceptance/harness-46-47/run-ui.ps1 -AppPid $launch.ProcessId -Layout $layout -PreparedProject $project -Evidence $evidence
 ```
 
@@ -26,3 +28,9 @@ At `eeb28f2`, expect exit **1**, because `SameInstanceUnchangedTextAttach` repro
 Fixed fixture: `fixture.md`, UTF-8, LF, 312 UTF-16 characters. Streaming sends the first 156 characters individually before draining one queued callback, then appends the remainder and completes before the final queued callback drains. Expected publications: one interim plus one final. Cancellation injects an old queued flush, late append and late completion both before and after replacement completion. The fixture uses only synthetic text; clipboard checks never read pre-existing clipboard data.
 
 GC profiling is separate. On this machine `dotnet-trace`, `dotnet-counters`, and PerfView were unavailable. System WPR exists, but `wpr -start DotNET -filemode` failed with `0xc5585011` (policy enablement failure); `wpr -status` confirmed no recording. No elevation, policy change or installation was attempted, and there is no runtime GC/performance claim.
+
+## Fixed-source recheck
+
+The original `SameInstanceUnchangedTextAttach` assertion remains unchanged. The fixed-source run additionally checks `InitialTemplateLoaded`, `RepeatedAttach1` through `RepeatedAttach3`, `EmptyTextReattach`, and `LifecycleBoundaries`. Repeated attaches require exactly seven blocks, preserving the same control and fixture; empty reattachment requires zero. These are real WinUI event/layout assertions, not private-field/source-text tests. Reassignment is observed through the same low-priority dispatcher helper as the original cases.
+
+The runner waits for `HarnessStatus` before looking for the owned window, and allows 300 ms for composition before direct HWND screenshots. Screen-region capture can fail with `foreground_not_target`; direct window capture avoids capturing other applications. The historical title suffix `eeb28f2` remains a harness selector, **not** source provenance: record the actual checkout and assembly hashes. See [fixed recheck](../ui-46-47-fixed.md). Never overwrite earlier evidence; use a new evidence directory for each run.

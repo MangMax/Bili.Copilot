@@ -22,7 +22,9 @@ function Check([string]$Name, [scriptblock]$Action) {
 }
 function Capture([string]$Name) {
     $path = Join-Path $Evidence "$Name.png"
-    Ui @('screenshot','--output',$path) | Out-Null
+    # Allow the compositor to present the asserted state before capturing its pixels.
+    Start-Sleep -Milliseconds 300
+    Ui @('screenshot','-w',$script:ownedHwnd,'--output',$path) | Out-Null
     if (-not (Test-Path $path) -or (Get-Item $path).Length -eq 0) { throw 'Missing screenshot' }
     $captures.Add($path)
     Ui @('inspect','--depth','12') | Set-Content (Join-Path $Evidence "$Name.uia.json") -Encoding utf8
@@ -36,9 +38,12 @@ function Step([string]$Button, [string]$Case, [string]$Shot) {
 }
 function Flatten($nodes) { foreach ($n in $nodes) { $n; Flatten $n.children } }
 try {
+    Ui @('wait-for','HarnessStatus','-t','15000') | Out-Null
     $windows = Ui @('list-windows') | ConvertFrom-Json
     if (-not ($windows | Where-Object title -eq 'Offline acceptance 46 47 — eeb28f2')) { throw 'Owned harness title missing' }
+    $script:ownedHwnd = [string]($windows | Where-Object title -eq 'Offline acceptance 46 47 — eeb28f2' | Select-Object -First 1).hwnd
     $windows | ConvertTo-Json -Depth 8 | Set-Content "$Evidence/windows.json"
+    Check 'InitialTemplateLoaded' { Step Initial InitialTemplateLoaded '00-initial' }
     Check 'Render' { Step Render Render '01-render' }
     Check 'ProductionCodeClipboard' {
         $tree = Ui @('inspect','--depth','12') | ConvertFrom-Json
@@ -51,6 +56,7 @@ try {
     Check 'Reassign' { Step Reassign Reassign '03-reassign' }
     Check 'Detach' { Step Detach Detach '04-detach' }
     Check 'SameInstanceUnchangedTextAttach' { Step Attach SameInstanceUnchangedTextAttach '05-reattach' }
+    Check 'LifecycleBoundaries' { Step Lifecycle LifecycleBoundaries '05b-lifecycle' }
     Check 'FreshReopen' { Step Fresh FreshReopen '06-fresh' }
     Check 'CoalescedSelectableStreaming' {
         Step Stream CoalescedSelectableStreaming '07-stream'

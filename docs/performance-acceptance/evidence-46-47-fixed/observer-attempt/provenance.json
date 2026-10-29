@@ -1,0 +1,334 @@
+{
+  "merge": "57dceffb1f20dc9db281755acb593c98265534f8",
+  "hashes": [
+    {
+      "Algorithm": "SHA256",
+      "Hash": "EC65C21C6C3F8C95DD3F5FF2615CCA225B5BE45779783BACEBFDF7F9DE281B8F",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\DefaultSVGRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "6437CC6592E3FF012D6A6624D9D09406B0C364B8534ECA4B99E6EF021E106551",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Extensions.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "71A1760428193AE75EA2B1756E9F0AEBD9AC9522AE66C3DCEC9CABF6E79DC5D5",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\HtmlWriter.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3207E1C8A97142E5CB852778C309DE031E46E20D01CB0059708A815EEF6DBDAA",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\ImageProvider.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "59D0F467EE1B58AC9AD9261C9710A00997938AA1E08E3A45F40FAC662D49F2CF",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\ISVGRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3F6CCF0EAC70702117AA5DD54DF7EFF5FF80B85624CA3757B83873E7E26FFAC8",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\MarkdownConfig.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "DAC5C8A5A41281BB39774B558100B22321607A7C33C275180D594AA4DF21950A",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\MarkdownTextBlock.xaml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F02E7BF95253E00140BC40A07AB2F1EEAE180091FA898DFCDB2B42D94DEA4CA9",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\MarkdownTextBlock.xaml.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B2DF5CFA6752B0197F1E6E867D4AEEF4DADEDE8A65B807503167830B14E19525",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\MarkdownThemes.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "182D91F6FE80AA7268598419461C4BB036924A04DDF0ECF606871E9826A05895",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\WinUIObjectRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "FB9C78ED15369952F922DD200D70DA2CB9E8D8544EBDB1FF2C46E039D30B9E98",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\WinUIRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1F7EA96A3463B38A082A82CB585BA899626D033235F96AB86C9F43ED73C14A10",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\CodeBlockRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "FDB118DC416808E40404503D731FCA1B6A7F6DDA423DD9E283DB26A0DA97DDC2",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\HeadingRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A257F2D6924A1AE91E9562B6DA096724F01703B3B1E1189BF88AED923859305F",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\HtmlBlockRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "9874A2EB8A242FC5E8D7683D70BFE613AE01563E6BCCBB06251591358C522A2C",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\ListRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "7E75823C20B3CF0B07156F01D4F4D87816F05E658791E4F1841D9CE4F65DE9F6",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\ParagraphRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "07E406767A4812D15296DB843B983D8FDE91215E8BEB0F65E035D7E1DA194A77",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\QuoteBlockRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "C52F6A14FF2CBE6928FA251BF3F642F248088AC8050488D71C6EE9B087AB83BA",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\ThematicBreakRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "20CD2FFE8A1B61AA05ECCBB5656A36CEE402520A65853898F065B614E87D1FD4",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Extensions\\TableRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "4A1F74ADB533E8F84C144E5AFA0CC9541E4B818F77B29276BBFFA2DE33078485",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Extensions\\TaskListRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "708C7055F04542ED419E806546330CBBC4F7EE6F194783477A58A02F55CAEDBB",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\AutoLinkInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "240B28E548D2694C9C0B63D4993FA78E6542A94398D23D3EAD9096D15E5AD160",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\CodeInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "618F2ED3BC6DFA5C1C9ACE7D27E6EDC87B0DB864F36E325D1F4C605641CD2EE1",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\ContainerInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1852A553CA93A8373E3970E2F135F4820680C9AFABF10221F4EBBAF32D6CA411",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\DelimiterInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3D4B5E83E3C98F75E959E18483762DEF4566108AF1A7AFD0CC8FD102CE83F993",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\EmphasisInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "CAF5C1E6DD36D9C315DBE0F516AD8BABD72D2C7A61669E303864FC5EC8CA915F",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\HtmlEntityInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "7242859F1D0573CD8ADD64B474AF7FEF78D9D1C163D2BF2B0930BCF7EF78E985",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\HtmlInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "5F709368EC80EE7F7770D2DD805047C97A053EE866AFAB496B9F2D65620222A9",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\LineBreakInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1FD01E6F5901D1568917C1AA0F62E63862D2952B0335738E0CFEAC60B6FB46EF",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\LinkInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "512D788D4499645A86CDD18710F9EAC9DD018C4BD2C7C86F54065C895360DDBA",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\Renderers\\ObjectRenderers\\Inlines\\LiteralInlineRenderer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1FCD807871C15F0527472B935C157CC003DA222197D79609C910E461734149CE",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\HtmlElementType.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "AE1084992526B8098B994CDCE45A116B33367077ED3B9C4BA6F1567A0F41C546",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\IAddChild.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F444DCC23D44E334EB73556C51BD6727B55AD4C0FB3D24EB21FAA17A3CE7835A",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyAutolinkInline.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "CF6A7B4A25A417B0FFFADB97ECED19BCC8231AFAE5C84B8FB691AC72B1A2A55E",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyBlockContainer.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "77013941EE87D50F115966B92D0FAEDCED48CF2A78A34FE1A8802C808F05F089",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyCodeBlock.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "4FEB61D3B29D69E582B38C7101409605391CE7DEEE8EBF409035BE18D65330DC",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyEmphasisInline.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "36C2D54A775319C1BA612012AB0B914239A51C41EBFF2B5FF7C03F2179E0CFB0",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyFlowDocument.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "10CB3573AB5A8FC39F64086B8C2413D42EC004ED10984EE5767BA09337F71830",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyHeading.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "6CF9D1101DC68E98C3DC9FAEB6C4862F715274EBE4B772388641DB37244B58E5",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyHyperlink.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "D34C04690CF8FA64199D923B9B48BCAF3DEAD0993DCD7496C237220D5A90D1CA",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyHyperlinkButton.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B83A57E25FBF1847E36F03C0668948AA26DC4B0DBCDB7F274A1AA0856C3FAE2A",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyImage.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "5B8B3E813A2A6C6D16930ED00386F5C04B83C89F66A4F73B798735A15D9ED1C9",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyInlineCode.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1022F1F41B366C6144D14F42BE8C741B37F5AA15879D40255FCDEB221AAF07FF",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyInlineText.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A52391DC041238AC89552BEE7CEC1BF11F0CC51A5F57EBBB5625993E21A08447",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyLineBreak.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "642E7819F5D92684F6DF548B3C4A6288DD8A684BF390DE1E94F733C6C8892A08",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyList.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F75AB41BCCCE29495F6779F2C60997D7C733279BE0050B3133BE71A9F4049696",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyParagraph.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "7CB0D229AB6912F18AE51655E56848F84C72A2A8D75E2B02DEDA9E8E63A3B883",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyQuote.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "27DFEF52D72E5800712EC20D6F20BC53B0EB8520849132C8A89534E87D0E8B0C",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyTable.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E1FF3A994CBFA9B17CA33C980E49DFDEBA29C43C7C7A73374DB49FD51B57E189",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyTableCell.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3E6779B9B6AF5368AF9B932D3E9A730524C6C04A7FD79BA771C9666F365CEEBD",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyTableRow.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "D00BA862782ABE463C3CBF8664FD5C348BD5638785DDC08719CB5EC7F3599425",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyTableUIElement.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B9DDE1FB91FC69E3A28786A558A28942DD17D393FFB6E9CB9954BB2FAC8E7DBB",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyTaskListCheckBox.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A247279882DAFF31F0F6C1C80DB5859DB8D1C6880E1BBBD1132F8D092395A83F",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\MyThematicBreak.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "23CC6ACDFB64AFAC75E43001D86E64B934E372A82FE47CFFF8F2AC8513E66A0D",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\Html\\MyBlock.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "2ADAF9D8AD98C7AB7F4C73C54160737D4FD60C6D1E59F0D15C22857FBF5DD52D",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\Html\\MyDetails.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "AD0A4AB3335C5C960E9C1A0AD860C9D90ABA890B97CE1B10721C0188F56AEACB",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Markdown\\TextElements\\Html\\MyInline.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "34BD8E389043CE956323E0361409E11FA67BF7C8C5BD35E07323F66F6CE1B399",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Toolkits\\Pure\\StreamingResponseSession.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "0A3EAD297AC8BDA6A0B20953FEDCCAE65CC716FE63672746936EEBB645EB27E3",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\AI\\AIBody.xaml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F590F3C96C38088A445211375221BF992EC03A8125B7638F32AAA6BC5CE087E4",
+      "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\harness-46-47\\fixture.md"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "BC9A7D6538BDD148726BAA48B0128327369E95A70F6A851D99E28FED28AE7199",
+      "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-fixed-5e5a6d037430451d8f16c78fa6b57107\\App.xaml.cs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "404332385B64EEF7D07729A901E32F80954D527623F0FFD5CD6A10CD4A619FF7",
+      "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-fixed-5e5a6d037430451d8f16c78fa6b57107\\Harness.csproj"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "AFC32DB118B0728DEF4BCA2B0B39FF275DE201B5149AC62566D4622EE2D0851D",
+      "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-fixed-5e5a6d037430451d8f16c78fa6b57107\\prepare.ps1"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "6D61E0B9731D8D6BC28486A1B93E59DAD7382BA98B8E8E1756537B12B850C459",
+      "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-fixed-5e5a6d037430451d8f16c78fa6b57107\\run-ui.ps1"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B4B90CDE0FBE5B3840D73B46C6BBA3CD70B91C10AF2DF4445E56BF41E6D0A7DC",
+      "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-fixed-5e5a6d037430451d8f16c78fa6b57107\\Wiring.cs"
+    }
+  ],
+  "sdk": "10.0.403",
+  "assembly": {
+    "Algorithm": "SHA256",
+    "Hash": "C2C2029CAD9B529CB88FE7B50D5BCE298EF57137FA50B079C10D931F8E63D2BE",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-fixed-5e5a6d037430451d8f16c78fa6b57107\\bin\\x64\\Debug\\net9.0-windows10.0.22621.0\\win-x64\\Harness.dll"
+  },
+  "winapp": "0.7.1",
+  "kernel": "2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d",
+  "productionFix": "d4592d3579aacaf4dcef24ccd9396c1ecc33506f"
+}
