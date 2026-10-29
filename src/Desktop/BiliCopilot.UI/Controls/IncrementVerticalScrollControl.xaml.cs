@@ -5,13 +5,27 @@ namespace BiliCopilot.UI.Controls;
 
 public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBase
 {
+    private bool _checkPending;
+    private bool _isActive;
+    private int _loadVersion;
+    private readonly TimeProvider _timeProvider;
+
     public static readonly DependencyProperty ElementProperty =
         DependencyProperty.Register(nameof(Element), typeof(object), typeof(IncrementVerticalScrollControl), new PropertyMetadata(default));
 
     public static readonly DependencyProperty LoadMoreCommandProperty =
         DependencyProperty.Register(nameof(LoadMoreCommand), typeof(ICommand), typeof(IncrementVerticalScrollControl), new PropertyMetadata(default));
 
-    public IncrementVerticalScrollControl() => InitializeComponent();
+    public IncrementVerticalScrollControl()
+        : this(TimeProvider.System)
+    {
+    }
+
+    internal IncrementVerticalScrollControl(TimeProvider timeProvider)
+    {
+        _timeProvider = timeProvider;
+        InitializeComponent();
+    }
 
     public object Element
     {
@@ -27,8 +41,17 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
 
     public async Task DelayCheckItemsAsync()
     {
-        await Task.Delay(500);
-        CheckItemsCount();
+        if (!_isActive)
+        {
+            return;
+        }
+
+        var version = _loadVersion;
+        await Task.Delay(TimeSpan.FromMilliseconds(500), _timeProvider);
+        if (version == _loadVersion)
+        {
+            CheckItemsCount();
+        }
     }
 
     public void ResetScrollPosition()
@@ -53,12 +76,17 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
 
     protected override void OnControlLoaded()
     {
+        _isActive = true;
         View.ViewChanged += OnViewChanged;
         View.SizeChanged += OnViewSizeChanged;
+        CheckItemsCount();
     }
 
     protected override void OnControlUnloaded()
     {
+        _isActive = false;
+        _loadVersion++;
+        // Keep the pending slot until its callback drains, even across a reload.
         View.ViewChanged -= OnViewChanged;
         View.SizeChanged -= OnViewSizeChanged;
     }
@@ -78,12 +106,27 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
 
     private void CheckItemsCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+        if (!_isActive || _checkPending)
         {
-            if (View.ExtentHeight - View.ViewportHeight - View.VerticalOffset <= 800)
+            return;
+        }
+
+        _checkPending = true;
+        if (!DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+        {
+            // Reentrant layout can request one follow-up; always read the current view.
+            _checkPending = false;
+            if (_isActive && View.ExtentHeight - View.ViewportHeight - View.VerticalOffset <= 800)
             {
-                LoadMoreCommand?.Execute(default);
+                var command = LoadMoreCommand;
+                if (command?.CanExecute(default) == true)
+                {
+                    command.Execute(default);
+                }
             }
-        });
+        }))
+        {
+            _checkPending = false;
+        }
     }
 }
