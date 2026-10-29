@@ -56,16 +56,10 @@ public sealed partial class VideoPartitionDetailViewModel
     private PartitionViewModel _currentPartition;
 
     /// <summary>
-    /// 是否显示刷新结果提示条.
+    /// 刷新提示的展示状态（隐藏 / 刷新中 / 结果 / 失败）.
     /// </summary>
     [ObservableProperty]
-    public partial bool IsRefreshTipVisible { get; set; }
-
-    /// <summary>
-    /// 刷新结果提示文案.
-    /// </summary>
-    [ObservableProperty]
-    public partial string RefreshTipMessage { get; set; } = string.Empty;
+    public partial RefreshTipState RefreshTipState { get; set; } = Toolkits.RefreshTipState.Hidden;
 
     /// <summary>
     /// 初始化完成.

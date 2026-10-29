@@ -113,15 +113,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     internal void ClearRefreshTip()
     {
         _recommendRefreshSnapshot = null;
-        IsRefreshTipVisible = false;
-        RefreshTipMessage = string.Empty;
+        RefreshTipState = Toolkits.RefreshTipState.Hidden;
         _refreshGeneration++;
-    }
-
-    private void ShowRefreshTip(string message)
-    {
-        RefreshTipMessage = message;
-        IsRefreshTipVisible = true;
     }
 
     [RelayCommand]
@@ -216,6 +209,9 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
         var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
 
+        RefreshTipState = Toolkits.RefreshTipState.Refreshing(
+            ResourceToolkit.GetLocalizedString(StringNames.RefreshingRecommendVideos));
+
         IsVideoLoading = true;
         try
         {
@@ -229,14 +225,16 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
                 Videos,
                 videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Partition)),
                 p => p.Data.Identifier.Id,
-                isIncremental,
-                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
-                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
+                isIncremental);
 
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
 
-            ShowRefreshTip(application.Message);
+            RefreshTipState = Toolkits.RefreshTipState.FromRefreshResult(
+                isIncremental,
+                application.AddedCount,
+                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
+                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
 
             _recommendRefreshSnapshot = snapshot;
             _recommendOffset = offset;
@@ -247,7 +245,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         }
         catch (Exception ex)
         {
-            // 失败时列表、偏移与快照都保持原样，也不给提示。
+            // 失败时列表、偏移与快照都保持原样，浮层收起，不展示「已刷新」。
+            RefreshTipState = Toolkits.RefreshTipState.Failed;
             _logger.LogError(ex, "尝试刷新分区推荐视频时出错.");
         }
         finally
