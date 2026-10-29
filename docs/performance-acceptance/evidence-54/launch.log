@@ -1,0 +1,11 @@
+dotnet build C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj -c Debug -r win-x64 --no-restore -v minimal -tl:off -p:Platform=x64
+  Harness -> C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\bin\x64\Debug\net9.0-windows10.0.22621.0\win-x64\Harness.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:03.50
+{
+  "Error": "Failed to register package: Failed to register package: \u65E0\u6CD5\u6253\u5F00\u5305\u3002\r\n\r\n\u9519\u8BEF 0x80070003: \u4ECE\u4F4D\u7F6E appxmanifest.xml \u4E2D\u6253\u5F00\u6587\u4EF6\u5931\u8D25\uFF0C\u9519\u8BEF\u4E3A: \u7CFB\u7EDF\u627E\u4E0D\u5230\u6307\u5B9A\u7684\u8DEF\u5F84\u3002\r\n\u3002 (0x80073CF0)"
+}

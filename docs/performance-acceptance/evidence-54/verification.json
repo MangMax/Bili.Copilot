@@ -1,0 +1,12 @@
+{
+  "events": 779,
+  "unexpectedExceptions": 0,
+  "visualReview": "See ui-54.md; not inferred from JSON",
+  "source": "results.json + events.jsonl",
+  "failed": 0,
+  "closedObservations": 12,
+  "cases": 18,
+  "lateFocusOrActivation": 0,
+  "liveFocusEvents": 0,
+  "passed": 18
+}

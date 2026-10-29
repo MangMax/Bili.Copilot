@@ -1,0 +1,82 @@
+[
+  {
+    "name": "RapidFinalNormal_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "RestoreBothModesAndSavedGeometry_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuring500ms_R1",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003CRun\u003Eb__20_2()\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "CloseBeforeQueuedFocusAndTitle_R1",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003CRun\u003Eb__20_3()\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "CloseDuringFirstTitleDelay_R1",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003CRun\u003Eb__20_4()\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "CloseDuringSecondTitleDelay_R1",
+    "status": "PASS"
+  },
+  {
+    "name": "RapidFinalNormal_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "RestoreBothModesAndSavedGeometry_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuring500ms_R2",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003CRun\u003Eb__20_2()\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "CloseBeforeQueuedFocusAndTitle_R2",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003CRun\u003Eb__20_3()\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "CloseDuringFirstTitleDelay_R2",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003CRun\u003Eb__20_4()\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "CloseDuringSecondTitleDelay_R2",
+    "status": "PASS"
+  },
+  {
+    "name": "RapidFinalNormal_R3",
+    "status": "PASS"
+  },
+  {
+    "name": "RestoreBothModesAndSavedGeometry_R3",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuring500ms_R3",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003CRun\u003Eb__20_2()\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "CloseBeforeQueuedFocusAndTitle_R3",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: ASSERT: late lifecycle effect\r\n   at Acceptance54.App.Check(Boolean condition, String detail)\r\n   at Acceptance54.App.VerifyClosed(Int32 observationMs)\r\n   at Acceptance54.App.\u003CRun\u003Eb__20_3()\r\n   at Acceptance54.App.Case(String name, Func\u00601 body)"
+  },
+  {
+    "name": "CloseDuringFirstTitleDelay_R3",
+    "status": "PASS"
+  },
+  {
+    "name": "CloseDuringSecondTitleDelay_R3",
+    "status": "PASS"
+  }
+]
