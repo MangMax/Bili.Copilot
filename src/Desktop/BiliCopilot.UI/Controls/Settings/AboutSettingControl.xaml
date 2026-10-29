@@ -35,6 +35,17 @@
                 Text="{x:Bind ViewModel.Update.StatusText, Mode=OneWay}" />
         </StackPanel>
         <base:SettingsExpander.Items>
+            <base:SettingsCard
+                ContentAlignment="Left"
+                Description="{ext:Locale Name=UpdateMirrorPrefixesDescription}"
+                Header="{ext:Locale Name=UpdateMirrorPrefixes}">
+                <TextBox
+                    MinWidth="320"
+                    AcceptsReturn="True"
+                    FontFamily="Consolas"
+                    Text="{x:Bind ViewModel.UpdateMirrorPrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextWrapping="Wrap" />
+            </base:SettingsCard>
             <base:SettingsCard HorizontalContentAlignment="Stretch" ContentAlignment="Left">
                 <StackPanel x:Name="LinkContainer" Margin="-12,0,0,0">
                     <HyperlinkButton Content="{ext:Locale Name=BiliHomePage}" NavigateUri="https://space.bilibili.com/5992670" />

@@ -28,5 +28,5 @@ public sealed partial class UpdateButton : UserControl
         => _ = ViewModel.AutoCheckAsync();
 
     private void OnButtonClick(object sender, RoutedEventArgs e)
-        => ViewModel.OpenReleaseCommand.Execute(default);
+        => ViewModel.PrimaryActionCommand.Execute(default);
 }

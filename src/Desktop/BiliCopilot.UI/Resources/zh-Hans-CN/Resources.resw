@@ -861,9 +861,6 @@
   <data name="HardwareDecode" xml:space="preserve">
     <value>硬件解码</value>
   </data>
-  <data name="HasUpdate" xml:space="preserve">
-    <value>您已更新到新版本</value>
-  </data>
   <data name="HDFirst" xml:space="preserve">
     <value>高清（1080P）优先</value>
   </data>
@@ -2651,12 +2648,6 @@
   <data name="FailedToSearchUserVideos" xml:space="preserve">
     <value>尝试获取用户视频时失败</value>
   </data>
-  <data name="HasUpdateDescription" xml:space="preserve">
-    <value>点击下方按钮来查看更新内容吧！</value>
-  </data>
-  <data name="OpenUpdate" xml:space="preserve">
-    <value>查看更新</value>
-  </data>
   <data name="DownloadSubtitle" xml:space="preserve">
     <value>下载字幕</value>
   </data>
@@ -3292,12 +3283,24 @@
     <value>更新已就绪，重启即可安装</value>
   </data>
   <data name="UpdateCheckFailed" xml:space="preserve">
-    <value>检查更新失败，请稍后重试</value>
+    <value>更新失败，请稍后重试</value>
+  </data>
+  <data name="UpdateNoPackageForArchitecture" xml:space="preserve">
+    <value>暂无适用于当前架构的更新包</value>
   </data>
   <data name="UpdateButtonTip" xml:space="preserve">
     <value>有可用更新</value>
   </data>
   <data name="UpdateReleaseNotesHeader" xml:space="preserve">
     <value>本次更新</value>
+  </data>
+  <data name="UpdateInstalling" xml:space="preserve">
+    <value>正在安装更新…</value>
+  </data>
+  <data name="UpdateMirrorPrefixes" xml:space="preserve">
+    <value>附加加速源</value>
+  </data>
+  <data name="UpdateMirrorPrefixesDescription" xml:space="preserve">
+    <value>每行一个 https:// 前缀，用于加速更新包下载；留空则只用内置加速源</value>
   </data>
 </root>
