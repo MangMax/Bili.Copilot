@@ -90,6 +90,15 @@ public sealed partial class VideoItemViewModel
     /// </summary>
     public bool IsUserValid { get; init; }
 
+    /// <summary>
+    /// 是否可以进入作者的用户空间.
+    /// </summary>
+    /// <remarks>
+    /// 分区视频列表只返回作者名称（存放在 <see cref="Subtitle"/>），不包含用户 ID，
+    /// 需要点击时再通过视频详情补全。
+    /// </remarks>
+    public bool CanOpenUserSpace => IsUserValid || (Style == VideoCardStyle.Partition && !string.IsNullOrWhiteSpace(Subtitle));
+
     [ObservableProperty]
     public partial bool IsSelected { get; set; }
 }
