@@ -145,6 +145,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
         IsVideoLoading = true;
         var version = _sectionVersion;
+        var previousCount = Videos.Count;
         if (SelectedSection is PopularSectionItemViewModel section)
         {
             if (section.Type == PopularSectionType.Recommend)
@@ -170,7 +171,11 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        if (Videos.Count > previousCount)
+        {
+            VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (version == _sectionVersion)
