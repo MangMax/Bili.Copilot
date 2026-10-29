@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -20,10 +20,12 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     /// </summary>
     public SearchBoxViewModel(
         ISearchService searchService,
-        ILogger<SearchBoxViewModel> logger)
+        ILogger<SearchBoxViewModel> logger,
+        TimeProvider? timeProvider = null)
     {
         _searchService = searchService;
         _logger = logger;
+        _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     /// <summary>
@@ -31,21 +33,58 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     /// </summary>
     public void SetExtraRegion(string regionId, string regionName)
     {
+        TryCancelSuggest();
+        Suggestion.Clear();
         _extraRegionId = regionId;
         _extraRegionName = regionName;
     }
 
-    [RelayCommand]
-    private async Task ReloadSuggestionsAsync()
+    partial void OnKeywordChanged(string value)
     {
         TryCancelSuggest();
+        Suggestion.Clear();
+    }
 
-        if (string.IsNullOrEmpty(Keyword.Trim()))
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private Task DebounceSuggestionsAsync() => LoadSuggestionsAsync(debounce: true);
+
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private Task ReloadSuggestionsAsync() => LoadSuggestionsAsync(debounce: false);
+
+    // Called on the UI thread. Each operation owns its token source until its await completes;
+    // invalidation immediately revokes publication, even when a service ignores cancellation.
+    private async Task LoadSuggestionsAsync(bool debounce)
+    {
+        TryCancelSuggest();
+        using var source = new CancellationTokenSource();
+        _cancellationTokenSource = source;
+        var token = source.Token;
+        var keyword = Keyword;
+        try
         {
-            if (string.IsNullOrEmpty(_extraRegionId))
+            if (debounce)
             {
-                var isRecommendEnabled = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.ShowSearchRecommend, true);
-                if (!isRecommendEnabled)
+                await Task.Delay(TimeSpan.FromMilliseconds(250), _timeProvider, token);
+                token.ThrowIfCancellationRequested();
+            }
+
+            if (!string.IsNullOrEmpty(_extraRegionId))
+            {
+                Suggestion.Clear();
+                Suggestion.Add(new("global", ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.WholePartitions)));
+                Suggestion.Add(new(_extraRegionId, _extraRegionName));
+                foreach (var item in Suggestion)
+                {
+                    item.SearchContent = keyword;
+                    item.Keyword = keyword;
+                }
+
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                if (!SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.ShowSearchRecommend, true))
                 {
                     _recommendItems.Clear();
                     Suggestion.Clear();
@@ -54,21 +93,13 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 
                 if (_recommendItems.Count == 0)
                 {
-                    try
+                    var recommends = await _searchService.GetSearchRecommendsAsync(token);
+                    if (!ReferenceEquals(_cancellationTokenSource, source))
                     {
-                        var recommends = await _searchService.GetSearchRecommendsAsync();
-                        _recommendItems.AddRange(recommends);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "尝试加载搜索推荐时出错.");
                         return;
                     }
-                }
 
-                if (Suggestion.Count == _recommendItems.Count)
-                {
-                    return;
+                    _recommendItems.AddRange(recommends);
                 }
 
                 Suggestion.Clear();
@@ -80,48 +111,34 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
             else
             {
                 Suggestion.Clear();
-                Suggestion.Add(new("global", ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.WholePartitions)));
-                Suggestion.Add(new(_extraRegionId, _extraRegionName));
-            }
-        }
-        else
-        {
-            if (string.IsNullOrEmpty(_extraRegionId))
-            {
-                try
+                var suggests = await _searchService.GetSearchSuggestsAsync(keyword, token);
+                if (!ReferenceEquals(_cancellationTokenSource, source))
                 {
-                    Suggestion.Clear();
-                    _cancellationTokenSource = new CancellationTokenSource();
-                    var suggests = await _searchService.GetSearchSuggestsAsync(Keyword, _cancellationTokenSource.Token);
-                    if (suggests is not null)
-                    {
-                        foreach (var item in suggests)
-                        {
-                            Suggestion.Add(new(item));
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "尝试加载搜索建议时出错.");
-                }
-            }
-            else
-            {
-                // 提交搜索后建议列表会被清空；重新进入用户空间/历史页时，
-                // 需要把“全区/当前区域”选项补回来，否则只剩空列表.
-                if (!Suggestion.Any(p => p.RegionId == "global"))
-                {
-                    Suggestion.Clear();
-                    Suggestion.Add(new("global", ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.WholePartitions)));
-                    Suggestion.Add(new(_extraRegionId, _extraRegionName));
+                    return;
                 }
 
-                foreach (var item in Suggestion)
+                if (suggests is not null)
                 {
-                    item.SearchContent = Keyword;
-                    item.Keyword = Keyword;
+                    foreach (var item in suggests)
+                    {
+                        Suggestion.Add(new(item));
+                    }
                 }
+            }
+        }
+        catch (Exception ex) when (token.IsCancellationRequested && ex.GetBaseException() is OperationCanceledException)
+        {
+            // BiliHttpClient can wrap cancellation in KernelException. Real failures still log below.
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "尝试加载搜索建议时出错.");
+        }
+        finally
+        {
+            if (ReferenceEquals(_cancellationTokenSource, source))
+            {
+                _cancellationTokenSource = null;
             }
         }
     }
@@ -154,12 +171,9 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     [RelayCommand]
     private void TryCancelSuggest()
     {
-        if (_cancellationTokenSource is not null)
-        {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = null;
-        }
+        var source = _cancellationTokenSource;
+        _cancellationTokenSource = null;
+        source?.Cancel();
     }
 
     [RelayCommand]
