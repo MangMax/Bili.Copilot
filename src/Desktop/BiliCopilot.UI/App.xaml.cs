@@ -57,7 +57,7 @@ public partial class App : Application
             CreateTrayIcon,
             () => GetMainWindow()?.Hide(),
             RestoreMainWindow,
-            ex => Log.Logger.ForContext<App>().Error(ex, "初始化任务栏图标失败"));
+            ex => Log.Logger.ForContext<App>().Error(ex, "托盘生命周期操作失败"));
     }
 
     internal void SetTrayEnabled(bool enabled)
@@ -194,6 +194,11 @@ public partial class App : Application
 
             _dispatcherQueue.TryEnqueue(() =>
             {
+                if (TrayLifecycle?.IsExiting == true)
+                {
+                    return;
+                }
+
                 var identifier = JsonSerializer.Deserialize(argsStr, GlobalSerializeContext.Default.MediaIdentifier);
                 if (type == "video")
                 {
@@ -207,8 +212,13 @@ public partial class App : Application
         }
     }
 
-    private void OnQuitCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
-        => GetMainWindow()?.RequestExit();
+    private async void OnQuitCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+    {
+        if (GetMainWindow() is { } window)
+        {
+            await window.RequestExitAsync();
+        }
+    }
 
     private void OnShowHideWindowCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
         => TrayLifecycle?.Restore();

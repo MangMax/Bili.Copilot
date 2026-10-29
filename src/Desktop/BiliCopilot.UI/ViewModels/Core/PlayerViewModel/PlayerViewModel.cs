@@ -22,8 +22,134 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<PlayerViewModel> logger) : ViewModelBase, IAsyncDisposable
 {
+    private Task? _closeTask;
+    private TaskCompletionSource? _disposeCompletion;
+    private Task _initializationTask = Task.CompletedTask;
+    private InputPointerSource? _pointerSource;
+    private InputKeyboardSource? _keyboardSource;
+
+    /// <summary>
+    /// 原生关闭、返回和应用退出共享同一个任务，完成后才从播放器集合移除。
+    /// </summary>
+    public Task CloseAsync()
+    {
+        if (_closeTask is not null)
+        {
+            return _closeTask;
+        }
+
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _closeTask = completion.Task;
+        _ = CompleteCloseAsync();
+        return _closeTask;
+
+        async Task CompleteCloseAsync()
+        {
+            try
+            {
+                var appVM = this.Get<AppViewModel>();
+                await ((App)Application.Current).TrayLifecycle!.ClosePlayerAsync(
+                    SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true),
+                    UseIntegrationOperation,
+                    appVM.Players.Count,
+                    appVM.IsMainWindowVisible(),
+                    ShowMainWindow,
+                    async () =>
+                    {
+                        if (Window?.IsClosed == false)
+                        {
+                            Window.Close();
+                        }
+
+                        await DisposeAsync();
+                    },
+                    () => appVM.Windows.OfType<MainWindow>().FirstOrDefault()?.Close());
+                completion.SetResult();
+            }
+            catch (Exception ex)
+            {
+                completion.SetException(ex);
+            }
+        }
+    }
+
+    private async Task TryCleanupAsync(Func<Task> cleanup)
+    {
+        try
+        {
+            await cleanup();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "清理播放器时失败");
+        }
+    }
+
     /// <inheritdoc/>
     public async ValueTask DisposeAsync()
+    {
+        if (_disposeCompletion is not null)
+        {
+            // Reentrant disposal joins the same UI-thread operation without blocking the dispatcher.
+#pragma warning disable VSTHRD003
+            await _disposeCompletion.Task;
+#pragma warning restore VSTHRD003
+            return;
+        }
+
+        _disposeCompletion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        try
+        {
+            // Initialization may still be creating a native client. Both operations originate on
+            // the UI thread and never synchronously block its dispatcher.
+#pragma warning disable VSTHRD003
+            await TryCleanupAsync(() => _initializationTask);
+#pragma warning restore VSTHRD003
+            await DisposeResourcesAsync();
+            _disposeCompletion.SetResult();
+        }
+        catch (Exception ex)
+        {
+            _disposeCompletion.SetException(ex);
+            throw;
+        }
+    }
+
+    private async Task DisposeResourcesAsync()
+    {
+        try
+        {
+            await ReleasePlaybackEventsAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "释放播放器事件时失败");
+        }
+
+        if (Player is not null)
+        {
+            Player.PropertyChanged -= OnPlayerPropertyChanged;
+            // MpvPlayer.DisposeAsync saves history and then disposes its client.
+            // Do not destroy that client before the history save has completed.
+            await TryCleanupAsync(() => Player.DisposeAsync().AsTask());
+        }
+
+        if (Client?.IsDisposed == false)
+        {
+            await TryCleanupAsync(() => Client.DisposeAsync().AsTask());
+        }
+
+        if (Window?.IsDisposed == false)
+        {
+            Window.SizeChanged -= OnWindowSizeChanged;
+            Window.GetWindow().Destroying -= OnWindowDestroying;
+            await TryCleanupAsync(() => Window.DisposeAsync().AsTask());
+        }
+
+        this.Get<AppViewModel>().Players.Remove(this);
+    }
+
+    private async Task ReleasePlaybackEventsAsync()
     {
         // 关闭前把仍在去抖中的音量落盘，避免最后一次调整丢失.
         FlushPendingVolume();
@@ -34,8 +160,6 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             _sponsorBlockLoadSource.Dispose();
             _sponsorBlockLoadSource = null;
         }
-        _nativeMp?.Dispose();
-        _nativeMp = null;
 
         if (_rightKeyLongPressTimer != null)
         {
@@ -57,6 +181,22 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             _smtc = null;
         }
 
+        _nativeMp?.Dispose();
+        _nativeMp = null;
+
+        if (_pointerSource is not null)
+        {
+            _pointerSource.PointerReleased -= OnWindowPointerReleased;
+            _pointerSource = null;
+        }
+
+        if (_keyboardSource is not null)
+        {
+            _keyboardSource.KeyDown -= OnWindowKeyDown;
+            _keyboardSource.KeyUp -= OnWindowKeyUp;
+            _keyboardSource = null;
+        }
+
         if (Connector != null)
         {
             Connector.PlaylistInitialized -= OnConnectorPlaylistInitialized;
@@ -65,31 +205,30 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             Connector.PropertiesUpdated -= OnConnectorPropertiesUpdated;
         }
 
-        if (Client?.IsDisposed == false)
+        if (Client is not null)
         {
             Client.ErrorOccurred -= OnClientErrorOccurred;
             Client.CacheStateChanged -= OnClientCacheStateChanged;
-            await Client.DisposeAsync();
         }
-
-        if (Player is not null)
-        {
-            Player.PropertyChanged -= OnPlayerPropertyChanged;
-            await Player.DisposeAsync();
-        }
-
-        if (Window?.IsDisposed == false)
-        {
-            Window.SizeChanged -= OnWindowSizeChanged;
-            Window.GetWindow().Destroying -= OnWindowDestroying;
-            await Window.DisposeAsync();
-        }
-
-        this.Get<AppViewModel>().Players.Remove(this);
     }
 
     [RelayCommand]
-    internal async Task InitializeAsync(MediaSnapshot snapshot)
+    internal Task InitializeAsync(MediaSnapshot snapshot)
+    {
+        if (_closeTask is not null || _disposeCompletion is not null || this.Get<AppViewModel>().IsClosed)
+        {
+            return Task.CompletedTask;
+        }
+
+        var previousInitialization = _initializationTask;
+        var initialization = InitializeCoreAsync(snapshot);
+        _initializationTask = previousInitialization.IsCompleted
+            ? initialization
+            : Task.WhenAll(previousInitialization, initialization);
+        return _initializationTask;
+    }
+
+    private async Task InitializeCoreAsync(MediaSnapshot snapshot)
     {
         _snapshot = snapshot;
         ErrorMessage = default;
@@ -130,6 +269,11 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
 
         await InitializeInternalAsync();
+        if (_closeTask is not null || _disposeCompletion is not null)
+        {
+            return;
+        }
+
         if (Connector != null)
         {
             System.Diagnostics.Debug.WriteLine($"Player initialized with connector: {Connector.GetType().Name}");
@@ -261,8 +405,19 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     /// <summary>
     /// 关闭播放器.
     /// </summary>
-    public void Close()
-        => Window?.Close();
+    public void Close() => _ = ObserveCloseAsync();
+
+    private async Task ObserveCloseAsync()
+    {
+        try
+        {
+            await CloseAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "关闭播放器时失败");
+        }
+    }
 
     private void ShowPlayerWindow()
     {
@@ -272,11 +427,11 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             Window.SetActiveAction(isActive => queue.TryEnqueue(DispatcherQueuePriority.Low, () => IsWindowDeactivated = !isActive));
             Window.GetWindow().Destroying += OnWindowDestroying;
             Window.SizeChanged += OnWindowSizeChanged;
-            var pointerSource = InputPointerSource.GetForIsland(Window.XamlRoot?.ContentIsland);
-            pointerSource.PointerReleased += OnWindowPointerReleased;
-            var keyboardSource = InputKeyboardSource.GetForIsland(Window.XamlRoot?.ContentIsland);
-            keyboardSource.KeyDown += OnWindowKeyDown;
-            keyboardSource.KeyUp += OnWindowKeyUp;
+            _pointerSource = InputPointerSource.GetForIsland(Window.XamlRoot?.ContentIsland);
+            _pointerSource.PointerReleased += OnWindowPointerReleased;
+            _keyboardSource = InputKeyboardSource.GetForIsland(Window.XamlRoot?.ContentIsland);
+            _keyboardSource.KeyDown += OnWindowKeyDown;
+            _keyboardSource.KeyUp += OnWindowKeyUp;
         }
 
         var hideMainWindowOnPlay = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true);

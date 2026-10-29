@@ -99,7 +99,10 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (_rootWindow != null)
         {
             _rootWindow.Changed -= OnWindowChanged;
-            _rootWindow.Destroy();
+            if (!IsClosed)
+            {
+                _rootWindow.Destroy();
+            }
         }
 
         _xamlSource?.Dispose();

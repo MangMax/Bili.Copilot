@@ -15,6 +15,7 @@ internal sealed class TrayLifecycle : IDisposable
     private IDisposable? _tray;
     private bool _enabled;
     private bool _disposed;
+    private Task? _exitTask;
 
     public TrayLifecycle(
         Func<bool> readSetting,
@@ -41,12 +42,88 @@ internal sealed class TrayLifecycle : IDisposable
     /// </summary>
     public bool IsResident { get; private set; }
 
+    public bool IsExiting => _exitTask is not null;
+
+    /// <summary>
+    /// 在调用系统边界前锁定退出状态，重入共享同一个保存和清理任务。
+    /// </summary>
+    public Task ExitAsync(Func<Task> saveSettings, Func<Task> cleanupPlayers, Action exitApplication)
+    {
+        if (_exitTask is not null)
+        {
+            return _exitTask;
+        }
+
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _exitTask = completion.Task;
+        _ = CompleteExitAsync();
+        return _exitTask;
+
+        async Task CompleteExitAsync()
+        {
+            try
+            {
+                await TryCompleteAsync(saveSettings);
+                await TryCompleteAsync(cleanupPlayers);
+                await TryCompleteAsync(() =>
+                {
+                    Dispose();
+                    return Task.CompletedTask;
+                });
+                exitApplication();
+                completion.SetResult();
+            }
+            catch (Exception ex)
+            {
+                completion.SetException(ex);
+            }
+        }
+    }
+
+    private async Task TryCompleteAsync(Func<Task> operation)
+    {
+        try
+        {
+            await operation();
+        }
+        catch (Exception ex)
+        {
+            _reportFailure(ex);
+        }
+    }
+
+    /// <summary>
+    /// 保留播放隐藏/集成窗口的原有行为，但主动驻留时不恢复或关闭主窗口。
+    /// </summary>
+    public async Task ClosePlayerAsync(
+        bool hideMainWindowOnPlay,
+        bool useIntegrationOperation,
+        int playerCount,
+        bool mainWindowVisible,
+        Action restoreMainWindow,
+        Func<Task> cleanupPlayer,
+        Action closeMainWindow)
+    {
+        if (!_disposed && !IsExiting && !IsResident
+            && ((hideMainWindowOnPlay && !useIntegrationOperation)
+                || (playerCount <= 1 && !mainWindowVisible && !(hideMainWindowOnPlay && useIntegrationOperation))))
+        {
+            restoreMainWindow();
+        }
+
+        await cleanupPlayer();
+        if (!_disposed && !IsExiting && !IsResident && useIntegrationOperation)
+        {
+            closeMainWindow();
+        }
+    }
+
     /// <summary>
     /// 保存选择并立即启停托盘；禁用时先恢复主动驻留的窗口。
     /// </summary>
     public void SetEnabled(bool enabled)
     {
-        if (_disposed)
+        if (_disposed || IsExiting)
         {
             return;
         }
@@ -73,7 +150,7 @@ internal sealed class TrayLifecycle : IDisposable
     /// </summary>
     public void Restore()
     {
-        if (_disposed)
+        if (_disposed || IsExiting)
         {
             return;
         }
@@ -88,6 +165,11 @@ internal sealed class TrayLifecycle : IDisposable
     /// </summary>
     public bool HandleClose()
     {
+        if (IsExiting)
+        {
+            return true;
+        }
+
         if (_disposed || !_enabled)
         {
             return false;

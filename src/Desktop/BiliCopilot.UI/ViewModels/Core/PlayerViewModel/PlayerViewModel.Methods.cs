@@ -484,28 +484,8 @@ public sealed partial class PlayerViewModel
         });
     }
 
-    private async void OnWindowDestroying(AppWindow sender, object args)
-    {
-        // 窗口销毁路径先于 DisposeAsync 落盘，确保立即关闭时音量也能保存.
-        FlushPendingVolume();
-        var appVM = this.Get<AppViewModel>();
-        var hideMainWindowOnPlay = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true);
-        if (hideMainWindowOnPlay && !UseIntegrationOperation)
-        {
-            ShowMainWindow();
-        }
-        else if (appVM.Players.Count <= 1 && !appVM.IsMainWindowVisible() && !appVM.IsClosed && !(hideMainWindowOnPlay && UseIntegrationOperation))
-        {
-            ShowMainWindow();
-        }
-
-        await DisposeAsync();
-        if (UseIntegrationOperation)
-        {
-            var mainWnd = this.Get<Core.AppViewModel>().Windows.Find(p => p is MainWindow);
-            mainWnd?.Close();
-        }
-    }
+    private void OnWindowDestroying(AppWindow sender, object args)
+        => Close();
 
     private async void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -698,7 +678,7 @@ public sealed partial class PlayerViewModel
 
     private async void OnConnectorNewMediaRequest(object? sender, MediaSnapshot e)
     {
-        if (_snapshot == e)
+        if (_snapshot == e || _closeTask is not null || _disposeCompletion is not null || this.Get<AppViewModel>().IsClosed)
         {
             return;
         }
