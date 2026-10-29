@@ -35,5 +35,12 @@
             Grid.Row="1"
             Text="{ext:Locale Name=LoadingAndWait}"
             Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}" />
+        <components:RefreshResultTipControl
+            Margin="16,8"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            IsOpen="{x:Bind ViewModel.IsRefreshTipVisible, Mode=OneWay}"
+            Message="{x:Bind ViewModel.RefreshTipMessage, Mode=OneWay}"
+            UndoCommand="{x:Bind ViewModel.UndoRefreshCommand, Mode=OneWay}" />
     </Grid>
 </local:VideoPartitionDetailControlBase>
