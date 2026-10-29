@@ -1,0 +1,13 @@
+{"draft":"01","title":"[Perf] AI 流式回复合并显示并隔离过期会话","url":"https://github.com/MangMax/Bili.Copilot/issues/46","scope":"M"}
+{"draft":"02","title":"[Perf] Markdown 清理不再主动触发全堆回收","url":"https://github.com/MangMax/Bili.Copilot/issues/47","scope":"S"}
+{"draft":"03","title":"[Perf] 切换或关闭播放器终止旧弹幕加载","url":"https://github.com/MangMax/Bili.Copilot/issues/48","scope":"M"}
+{"draft":"04","title":"[Perf] 弹幕重绘按活动引擎就绪并合并请求","url":"https://github.com/MangMax/Bili.Copilot/issues/49","scope":"M"}
+{"draft":"05","title":"[Perf] 首页推荐首屏不等待分区目录","url":"https://github.com/MangMax/Bili.Copilot/issues/50","scope":"M"}
+{"draft":"06","title":"[Perf] 搜索联想防抖并仅展示最新输入结果","url":"https://github.com/MangMax/Bili.Copilot/issues/51","scope":"M"}
+{"draft":"07","title":"[Perf] Markdown 图片复用连接并限制解码资源","url":"https://github.com/MangMax/Bili.Copilot/issues/52","scope":"M"}
+{"draft":"08","title":"[Perf] 合并滚动触底检查并阻止卸载后加载","url":"https://github.com/MangMax/Bili.Copilot/issues/53","scope":"S"}
+{"draft":"09","title":"[Perf] 播放器模式切换采用非阻塞状态收尾","url":"https://github.com/MangMax/Bili.Copilot/issues/54","scope":"S"}
+{"draft":"10","title":"[Perf] 下载进程异步等待并确定性释放句柄","url":"https://github.com/MangMax/Bili.Copilot/issues/55","scope":"S"}
+{"draft":"11","title":"[Spike] 确定首页列表缓存预算与撤销兼容策略","url":"https://github.com/MangMax/Bili.Copilot/issues/56","scope":"spike"}
+{"draft":"12","title":"[Spike] 验证弹幕按播放位置预取的可行性","url":"https://github.com/MangMax/Bili.Copilot/issues/57","scope":"spike"}
+{"draft":"13","title":"[Spike] 量化 bili-kernel 响应重复解析与复制开销","url":"https://github.com/MangMax/Bili.Copilot/issues/58","scope":"spike"}
