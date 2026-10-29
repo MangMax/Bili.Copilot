@@ -1,0 +1,1 @@
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { AddToViewLater,CopyVideoUrl,EnterUserSpace,FixContent,GettingPartitions,Hot,LoadingAndWait,OpenInBrowser,PartitionRank,PlayCount,PlayInPrivate,Rank,Recommend,Remove } }
