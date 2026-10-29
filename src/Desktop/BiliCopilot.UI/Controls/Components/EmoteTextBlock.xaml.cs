@@ -36,8 +36,6 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     public static readonly DependencyProperty SeekCommandProperty =
         DependencyProperty.Register(nameof(SeekCommand), typeof(ICommand), typeof(EmoteTextBlock), new PropertyMetadata(default));
 
-    private static readonly Regex TimeStampRegex = new(@"(?<!\d)(\d{1,2}):([0-5]\d)(?::([0-5]\d))?(?!\d)", RegexOptions.Compiled);
-
     /// <summary>
     /// Initializes a new instance of the <see cref="EmoteTextBlock"/> class.
     /// </summary>
@@ -174,82 +172,12 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     }
 
     /// <summary>
-    /// 判断文本是否含有可跳转的时间戳.
-    /// </summary>
-    /// <param name="content">评论文本.</param>
-    /// <returns>是否包含时间戳.</returns>
-    internal static bool ContainsTimeStamp(string? content)
-        => !string.IsNullOrEmpty(content) && TimeStampRegex.IsMatch(content);
-
-    /// <summary>
-    /// 把形如 <c>01:23</c> / <c>1:02:03</c> 的时间戳解析为秒数.
-    /// </summary>
-    /// <param name="match">正则匹配结果.</param>
-    /// <returns>秒数，无法解析时返回 <see cref="double.NaN"/>.</returns>
-    private static double ParseTimeStamp(Match match)
-    {
-        if (!int.TryParse(match.Groups[1].Value, out var first)
-            || !int.TryParse(match.Groups[2].Value, out var second))
-        {
-            return double.NaN;
-        }
-
-        if (match.Groups[3].Success)
-        {
-            return int.TryParse(match.Groups[3].Value, out var third)
-                ? (first * 3600d) + (second * 60d) + third
-                : double.NaN;
-        }
-
-        return (first * 60d) + second;
-    }
-
-    /// <summary>
-    /// 把一段纯文本写入段落，其中的时间戳渲染为可点击链接.
+    /// 把一段纯文本写入段落，其中的时间戳由共享呈现器渲染为可点击链接.
     /// </summary>
     /// <param name="para">目标段落.</param>
     /// <param name="content">文本内容.</param>
     private void AppendInlineText(Paragraph para, string content)
-    {
-        if (SeekCommand is null || string.IsNullOrEmpty(content))
-        {
-            para.Inlines.Add(new Run { Text = content });
-            return;
-        }
-
-        var lastIndex = 0;
-        foreach (Match match in TimeStampRegex.Matches(content))
-        {
-            var seconds = ParseTimeStamp(match);
-            if (double.IsNaN(seconds) || seconds <= 0)
-            {
-                continue;
-            }
-
-            if (match.Index > lastIndex)
-            {
-                para.Inlines.Add(new Run { Text = content[lastIndex..match.Index] });
-            }
-
-            var link = new Hyperlink();
-            link.Inlines.Add(new Run { Text = match.Value });
-            link.Click += (_, _) =>
-            {
-                if (SeekCommand?.CanExecute(seconds) == true)
-                {
-                    SeekCommand.Execute(seconds);
-                }
-            };
-
-            para.Inlines.Add(link);
-            lastIndex = match.Index + match.Length;
-        }
-
-        if (lastIndex < content.Length)
-        {
-            para.Inlines.Add(new Run { Text = content[lastIndex..] });
-        }
-    }
+        => TimestampTextPresenter.Append(para, content, SeekCommand);
 
     private void CheckTextTrim()
     {
