@@ -73,19 +73,6 @@ public sealed partial class RefreshResultTipControl : UserControl
         => state is RefreshTipStatus.Refreshing or RefreshTipStatus.Completed ? Visibility.Visible : Visibility.Collapsed;
 
     /// <summary>
-    /// 根据宿主宽度计算浮层最大宽度.
-    /// </summary>
-    /// <param name="availableWidth">宿主控件的实际宽度.</param>
-    /// <returns>扣掉左右安全边距后的宽度；宿主尚未完成布局时不做限制.</returns>
-    /// <remarks>
-    /// 小窗口下浮层不能越过内容区右边界，否则文字会被截断；首次布局前宽度为 0，此时不限制。
-    /// </remarks>
-    public static double GetMaxWidth(double availableWidth)
-        => double.IsFinite(availableWidth) && availableWidth > 0
-            ? Math.Max(0, availableWidth - 32)
-            : double.PositiveInfinity;
-
-    /// <summary>
     /// 是否显示进度环.
     /// </summary>
     /// <param name="state">提示状态.</param>
@@ -113,6 +100,14 @@ public sealed partial class RefreshResultTipControl : UserControl
     /// <returns>加载态可见.</returns>
     public static Visibility GetProgressVisibility(RefreshTipStatus state)
         => IsProgressVisible(state) ? Visibility.Visible : Visibility.Collapsed;
+
+    /// <summary>
+    /// 撤销图标的可见性.
+    /// </summary>
+    /// <param name="state">提示状态.</param>
+    /// <returns>刷新完成后可见.</returns>
+    public static Visibility GetUndoIconVisibility(RefreshTipStatus state)
+        => IsUndoVisible(state) ? Visibility.Visible : Visibility.Collapsed;
 
     /// <summary>
     /// 提示文案的可见性.
