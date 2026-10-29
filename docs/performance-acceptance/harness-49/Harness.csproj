@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <Platforms>x64</Platforms><PlatformTarget>x64</PlatformTarget><RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained><UseWinUI>true</UseWinUI><EnableMsixTooling>true</EnableMsixTooling>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>annotations</Nullable><LangVersion>preview</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest><AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6901" />
+    <PackageReference Include="Danmaku.Core" Version="0.0.1-preview6" />
+    <PackageReference Include="Danmaku.Legacy" Version="0.0.1-preview6" />
+    <PackageReference Include="Danmaku.Share" Version="0.0.1-preview6" />
+    <Content Include="Assets/**" />
+<PackageReference Include="Richasy.WinUIKernel.Share" Version="0.0.12-preview3" />
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Danmaku/VideoDanmakuPanel.xaml.cs" Link="Production/%(Filename)%(Extension)" />
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Danmaku/DanmakuControlBase.cs" Link="Production/%(Filename)%(Extension)" />
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Danmaku/CommonDanmakuParser.cs" Link="Production/%(Filename)%(Extension)" />
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/ViewModels/Core/DanmakuRenderViewModel/*.cs" Link="Production/%(Filename)%(Extension)" />
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Toolkits/Pure/DanmakuRedrawSession.cs" Link="Production/%(Filename)%(Extension)" />
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI.Models/Constants/DanmakuRendererType.cs" Link="Production/%(Filename)%(Extension)" />
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI.Models/Constants/SettingNames.cs" Link="Production/%(Filename)%(Extension)" />
+<Compile Include="$(SourceRoot)/externals/bili-kernel/src/BiliKernel.Abstractions/Models/Danmaku/DanmakuInformation.cs" Link="Production/%(Filename)%(Extension)" />
+<Compile Include="$(SourceRoot)/externals/bili-kernel/src/BiliKernel.Abstractions/Models/DanmakuLocation.cs" Link="Production/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>
