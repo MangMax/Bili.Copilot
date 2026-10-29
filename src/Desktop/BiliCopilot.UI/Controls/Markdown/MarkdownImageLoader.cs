@@ -5,6 +5,16 @@ namespace BiliCopilot.UI.Controls.Markdown;
 /// <summary>Owns the bounded lifetime of a remote Markdown image, including decoding.</summary>
 internal sealed class MarkdownImageLoader(HttpClient client)
 {
+    internal static async Task<string> ReadSvgAsync(Stream stream, string? contentType, CancellationToken token)
+    {
+        var charset = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(contentType!).CharSet;
+        var encoding = string.IsNullOrWhiteSpace(charset)
+            ? System.Text.Encoding.UTF8
+            : System.Text.Encoding.GetEncoding(charset.Trim('"'));
+        using var reader = new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+        return await reader.ReadToEndAsync(token);
+    }
+
     internal const int MaxResponseBytes = 32 * 1024 * 1024;
     // Separate from the authenticated Bili client: arbitrary image origins get no cookies or credentials.
     public static MarkdownImageLoader Shared { get; } = new(new HttpClient(new SocketsHttpHandler
@@ -87,7 +97,7 @@ internal sealed class MarkdownImageLoader(HttpClient client)
 
             token.ThrowIfCancellationRequested();
             buffer.Position = 0;
-            await consume(buffer, response.Content.Headers.ContentType?.MediaType, token);
+            await consume(buffer, response.Content.Headers.ContentType?.ToString(), token);
             token.ThrowIfCancellationRequested();
         }
         finally
