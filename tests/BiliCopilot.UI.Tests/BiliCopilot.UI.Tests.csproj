@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <ProjectReference Include="..\..\externals\bili-kernel\src\Services\Services.Media\Services.Media.csproj" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Danmaku\*.cs" Link="Danmaku\%(Filename)%(Extension)" />
   </ItemGroup>
 
   <!--

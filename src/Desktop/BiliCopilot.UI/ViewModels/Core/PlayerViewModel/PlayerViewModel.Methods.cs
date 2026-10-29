@@ -630,6 +630,7 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.IsPlaybackInitialized) && Player.IsPlaybackInitialized && !(Window?.IsClosed ?? true))
         {
+            var danmakuPlaybackVersion = _danmakuPlaybackVersion;
             ErrorMessage = default;
             _prevPosition = 0;
             CheckBlackBackgroundVisible();
@@ -656,7 +657,7 @@ public sealed partial class PlayerViewModel
 
             await VerifyChaptersAsync();
 
-            if (!_isDanmakuInitialized)
+            if (!_isDanmakuInitialized && danmakuPlaybackVersion == _danmakuPlaybackVersion && !_isDanmakuClosed && !Window.IsClosed)
             {
                 InitializeDanmakuCommand.Execute(default);
                 _isDanmakuInitialized = true;
@@ -703,6 +704,9 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        _danmakuPlaybackVersion++;
+        _isDanmakuInitialized = true;
+        _danmakuLoadSession?.Cancel();
         await Client!.PauseAsync();
         await Client!.StopAsync();
         await InitializeAsync(e);
