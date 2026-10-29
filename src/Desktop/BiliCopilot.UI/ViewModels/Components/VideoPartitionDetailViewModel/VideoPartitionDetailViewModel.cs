@@ -94,11 +94,9 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         }
 
         var snapshot = _recommendRefreshSnapshot;
-        Videos.Clear();
-        foreach (var video in snapshot.Items)
-        {
-            Videos.Add(video);
-        }
+
+        // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
 
         _recommendOffset = snapshot.Offset;
         ClearRefreshTip();
@@ -229,11 +227,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
                 p => p.Data.Identifier.Id,
                 isIncremental);
 
-            Videos.Clear();
-            foreach (var video in application.Items)
-            {
-                Videos.Add(video);
-            }
+            // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
+            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
 
             RefreshTipState = Toolkits.RefreshTipState.FromRefreshResult(
                 isIncremental,
