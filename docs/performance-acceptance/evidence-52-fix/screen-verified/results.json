@@ -1,0 +1,17 @@
+{
+  "target": "local",
+  "captures": [],
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-screen-layout",
+  "appPid": 49656,
+  "checks": [
+    {
+      "passed": false,
+      "name": "Runner",
+      "error": "winapp ui screenshot -w 25569432 --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\screen-verified\\InitialTemplateLoadedReady.png --capture-screen failed: "
+    },
+    {
+      "name": "Cleanup",
+      "passed": true
+    }
+  ]
+}

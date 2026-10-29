@@ -1,0 +1,37 @@
+{
+  "appPid": 21760,
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\resize-diagnostic\\Landscape.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\resize-diagnostic\\Portrait.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\resize-diagnostic\\Square.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\resize-diagnostic\\Resize.png"
+  ],
+  "checks": [
+    {
+      "passed": true,
+      "name": "Landscape",
+      "status": "Landscape: terminal PASS | terminal"
+    },
+    {
+      "passed": true,
+      "name": "Portrait",
+      "status": "Portrait: terminal PASS | terminal"
+    },
+    {
+      "passed": true,
+      "name": "Square",
+      "status": "Square: terminal PASS | terminal"
+    },
+    {
+      "passed": false,
+      "name": "Resize",
+      "status": "Resize: terminal FAIL | terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__1>d.MoveNext()"
+    },
+    {
+      "name": "Cleanup",
+      "passed": true
+    }
+  ],
+  "target": "local",
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-resize-layout"
+}

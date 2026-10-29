@@ -1,0 +1,113 @@
+{
+  "scope": "project",
+  "projectName": "Harness",
+  "projectDir": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-red",
+  "caveats": [
+    "No Windows SDK at or below the targeted 10.0.22621.0 is installed; answering from 10.0.28000.0. Results may include APIs that do not exist at your target.",
+    "Installed Windows App Runtime 2.6 does not match the referenced Windows App SDK 1.8.39; its metadata is excluded from this project\u0027s API surface."
+  ],
+  "fullName": "Microsoft.UI.Xaml.Media.Imaging.BitmapImage",
+  "kind": "Class",
+  "description": "Provides the practical object source type for the Image.Source and ImageBrush.ImageSource properties. You can define a BitmapImage by using a Uniform Resource Identifier (URI) that references an image source file, or by calling SetSourceAsync and supplying a stream.",
+  "baseType": "Microsoft.UI.Xaml.Media.Imaging.BitmapSource",
+  "filter": "Pixel",
+  "totalProperties": 22,
+  "totalEvents": 3,
+  "totalMethods": 30,
+  "properties": [
+    {
+      "name": "DecodePixelHeightProperty",
+      "kind": "Property",
+      "signature": "static Microsoft.UI.Xaml.DependencyProperty DecodePixelHeightProperty { get; }",
+      "returnType": "Microsoft.UI.Xaml.DependencyProperty",
+      "description": "Identifies the DecodePixelHeight dependency property.",
+      "writable": false
+    },
+    {
+      "name": "DecodePixelTypeProperty",
+      "kind": "Property",
+      "signature": "static Microsoft.UI.Xaml.DependencyProperty DecodePixelTypeProperty { get; }",
+      "returnType": "Microsoft.UI.Xaml.DependencyProperty",
+      "description": "Identifies the DecodePixelType dependency property.",
+      "writable": false
+    },
+    {
+      "name": "DecodePixelWidthProperty",
+      "kind": "Property",
+      "signature": "static Microsoft.UI.Xaml.DependencyProperty DecodePixelWidthProperty { get; }",
+      "returnType": "Microsoft.UI.Xaml.DependencyProperty",
+      "description": "Identifies the DecodePixelWidth dependency property.",
+      "writable": false
+    },
+    {
+      "name": "DecodePixelHeight",
+      "kind": "Property",
+      "signature": "Int32 DecodePixelHeight { get; set; }",
+      "returnType": "Int32",
+      "description": "Gets or sets the height to use for image decoding operations.",
+      "writable": true
+    },
+    {
+      "name": "DecodePixelType",
+      "kind": "Property",
+      "signature": "Microsoft.UI.Xaml.Media.Imaging.DecodePixelType DecodePixelType { get; set; }",
+      "returnType": "Microsoft.UI.Xaml.Media.Imaging.DecodePixelType",
+      "description": "Gets or sets a value that determines how DecodePixelWidth and DecodePixelHeight values are interpreted for decoding operations.",
+      "writable": true
+    },
+    {
+      "name": "DecodePixelWidth",
+      "kind": "Property",
+      "signature": "Int32 DecodePixelWidth { get; set; }",
+      "returnType": "Int32",
+      "description": "Gets or sets the width to use for image decoding operations.",
+      "writable": true
+    },
+    {
+      "name": "PixelHeightProperty",
+      "kind": "Property",
+      "signature": "static Microsoft.UI.Xaml.DependencyProperty PixelHeightProperty { get; }",
+      "returnType": "Microsoft.UI.Xaml.DependencyProperty",
+      "description": "Identifies the PixelHeight dependency property.",
+      "declaringType": "Microsoft.UI.Xaml.Media.Imaging.BitmapSource",
+      "inherited": true,
+      "writable": false
+    },
+    {
+      "name": "PixelWidthProperty",
+      "kind": "Property",
+      "signature": "static Microsoft.UI.Xaml.DependencyProperty PixelWidthProperty { get; }",
+      "returnType": "Microsoft.UI.Xaml.DependencyProperty",
+      "description": "Identifies the PixelWidth dependency property.",
+      "declaringType": "Microsoft.UI.Xaml.Media.Imaging.BitmapSource",
+      "inherited": true,
+      "writable": false
+    },
+    {
+      "name": "PixelHeight",
+      "kind": "Property",
+      "signature": "Int32 PixelHeight { get; }",
+      "returnType": "Int32",
+      "description": "Gets the height of the bitmap in pixels.",
+      "declaringType": "Microsoft.UI.Xaml.Media.Imaging.BitmapSource",
+      "inherited": true,
+      "writable": false
+    },
+    {
+      "name": "PixelWidth",
+      "kind": "Property",
+      "signature": "Int32 PixelWidth { get; }",
+      "returnType": "Int32",
+      "description": "Gets the width of the bitmap in pixels.",
+      "declaringType": "Microsoft.UI.Xaml.Media.Imaging.BitmapSource",
+      "inherited": true,
+      "writable": false
+    }
+  ],
+  "events": [],
+  "methods": [],
+  "getForCurrentViewWarning": false,
+  "alsoMatched": [
+    "Windows.UI.Xaml.Media.Imaging.BitmapImage"
+  ]
+}

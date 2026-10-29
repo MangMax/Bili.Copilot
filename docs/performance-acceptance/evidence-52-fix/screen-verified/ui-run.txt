@@ -1,0 +1,7 @@
+{"error":{"code":"foreground_not_target","message":"The target window is not in the foreground, so a screen capture would record whatever window is actually in front. Bring the window to the foreground and retry, or capture the window directly instead of the screen."}}
+
+passed name    error
+------ ----    -----
+ False Runner  winapp ui screenshot -w 25569432 --output C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-dde0a64d\docs\perfor…
+  True Cleanup 
+

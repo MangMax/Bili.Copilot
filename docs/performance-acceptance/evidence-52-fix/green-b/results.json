@@ -1,0 +1,42 @@
+{
+  "target": "local",
+  "appPid": 38100,
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-dde0-green-b-layout",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-b\\Landscape.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-b\\Portrait.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-b\\Square.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dde0a64d\\docs\\performance-acceptance\\evidence-52-fix\\green-b\\Resize.png"
+  ],
+  "checks": [
+    {
+      "status": "Landscape: terminal FAIL | terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Landscape"
+    },
+    {
+      "status": "Portrait: terminal FAIL | terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Portrait"
+    },
+    {
+      "status": "Square: terminal FAIL | terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Square"
+    },
+    {
+      "status": "Resize: terminal FAIL | terminal failure: System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Resize"
+    },
+    {
+      "error": "winapp ui wait-for HarnessStatus --value SvgCharset: terminal --contains -t 20000 failed: {   \"found\": false,   \"waitedMs\": 20123,   \"timedOut\": true }",
+      "passed": false,
+      "name": "Runner"
+    },
+    {
+      "passed": true,
+      "name": "Cleanup"
+    }
+  ]
+}

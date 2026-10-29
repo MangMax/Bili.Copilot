@@ -1,0 +1,9 @@
+
+passed name      status
+------ ----      ------
+  True Landscape Landscape: terminal PASS | terminal
+  True Portrait  Portrait: terminal PASS | terminal
+  True Square    Square: terminal PASS | terminal
+ False Resize    Resize: terminal FAIL | terminal failure: System.TimeoutException: The operation has timed out.…
+  True Cleanup   
+
