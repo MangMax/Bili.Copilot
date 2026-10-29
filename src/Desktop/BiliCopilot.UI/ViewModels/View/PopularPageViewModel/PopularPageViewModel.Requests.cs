@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Models;
@@ -13,6 +14,81 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class PopularPageViewModel
 {
+    private async Task RefreshRecommendVideosAsync()
+    {
+        if (IsVideoLoading)
+        {
+            return;
+        }
+
+        var isIncremental = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
+            && Videos.Count > 0;
+
+        // 记录发起刷新时的分区：请求期间用户可能切到别的分区，回来后不能把结果写到新分区上。
+        var section = SelectedSection;
+
+        // 无论增量还是重载，都先记下刷新前的列表与偏移，成功后才有东西可撤销。
+        // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
+        var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
+
+        IsVideoLoading = true;
+        try
+        {
+            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(0);
+            if (SelectedSection != section)
+            {
+                return;
+            }
+
+            if (isIncremental)
+            {
+                var incoming = videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Recommend));
+                var merged = RecommendVideoMerger.Merge(
+                    Videos,
+                    incoming,
+                    p => p.Data.Identifier.Id);
+                Videos.Clear();
+                foreach (var video in merged.Items)
+                {
+                    Videos.Add(video);
+                }
+
+                ShowRefreshTip(
+                    RefreshResultMessageBuilder.Build(
+                        isIncremental: true,
+                        addedCount: merged.AddedItems.Count,
+                        ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
+                        ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded)));
+            }
+            else
+            {
+                Videos.Clear();
+                TryAddVideos(videos, VideoCardStyle.Recommend);
+                ShowRefreshTip(ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
+            }
+
+            _recommendRefreshSnapshot = snapshot;
+            _recommendOffset = nextOffset;
+            _videoCache.Remove(SelectedSection);
+            VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            // 失败时列表与快照都保持原样，也不给提示。
+            _logger.LogError(ex, "尝试刷新推荐视频时出错.");
+        }
+        finally
+        {
+            IsVideoLoading = false;
+        }
+    }
+
+    private void ShowRefreshTip(string message)
+    {
+        RefreshTipMessage = message;
+        IsRefreshTipVisible = true;
+    }
+
     private async Task LoadRecommendVideosAsync()
     {
         try
