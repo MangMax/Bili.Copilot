@@ -341,7 +341,12 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        var fonts = await this.Get<IFontToolkit>().GetFontsAsync();
+        var fonts = await FontCatalog.GetFontsAsync(this.Get<IFontToolkit>());
+        if (Fonts.Count > 0)
+        {
+            return;
+        }
+
         foreach (var item in fonts)
         {
             Fonts.Add(item);
@@ -350,10 +355,10 @@ public sealed partial class PlayerViewModel
         var localFont = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.SubtitleFontFamily, "Segoe UI");
         if (!Fonts.Select(p => p.LocalName).Contains(localFont))
         {
-            localFont = "Segoe UI";
+            Fonts.Add(new SystemFont { LocalName = localFont, EngName = localFont });
         }
 
-        ChangeSubtitleFontFamilyCommand.Execute(localFont);
+        await ChangeSubtitleFontFamilyCommand.ExecuteAsync(localFont);
     }
 
     [RelayCommand]

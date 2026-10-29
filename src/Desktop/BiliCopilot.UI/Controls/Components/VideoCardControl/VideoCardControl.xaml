@@ -17,9 +17,8 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="116" />
                             </Grid.RowDefinitions>
-                            <controls:BasicCoverImage
+                            <controls:RecommendationCoverImage
                                 CornerRadius="4,4,0,0"
-                                DecodeWidth="600"
                                 Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Cover}" />
                             <Border
                                 Margin="8"
