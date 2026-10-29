@@ -181,11 +181,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
 
         var snapshot = _recommendRefreshSnapshot;
-        Videos.Clear();
-        foreach (var video in snapshot.Items)
-        {
-            Videos.Add(video);
-        }
+
+        // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
 
         _recommendOffset = snapshot.Offset;
         ClearRefreshTip();
