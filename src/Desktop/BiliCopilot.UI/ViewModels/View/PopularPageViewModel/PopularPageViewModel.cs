@@ -79,6 +79,8 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
+        ClearRefreshTip();
+
         if (Videos.Count > 0)
         {
             _videoCache[SelectedSection] = Videos.ToList();
@@ -153,21 +155,55 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task RefreshVideoAsync()
     {
+        if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend })
+        {
+            await RefreshRecommendVideosAsync();
+            return;
+        }
+
+        ClearRefreshTip();
         Videos.Clear();
         _videoCache.Remove(SelectedSection);
-        if (SelectedSection is PopularSectionItemViewModel section)
+        if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Hot })
         {
-            if (section.Type == PopularSectionType.Recommend)
-            {
-                _recommendOffset = 0;
-            }
-            else if (section.Type == PopularSectionType.Hot)
-            {
-                _hotOffset = 0;
-            }
+            _hotOffset = 0;
         }
 
         await LoadVideosAsync();
+    }
+
+    [RelayCommand]
+    private void UndoRefresh()
+    {
+        if (_recommendRefreshSnapshot is null)
+        {
+            return;
+        }
+
+        var snapshot = _recommendRefreshSnapshot;
+        Videos.Clear();
+        foreach (var video in snapshot.Items)
+        {
+            Videos.Add(video);
+        }
+
+        _recommendOffset = snapshot.Offset;
+        ClearRefreshTip();
+        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 清除撤销快照与刷新提示.
+    /// </summary>
+    /// <remarks>
+    /// 切换分区时 <see cref="Videos"/> 会被分区缓存替换，
+    /// 旧快照指向的列表已不在页面上，必须一并失效。
+    /// </remarks>
+    private void ClearRefreshTip()
+    {
+        _recommendRefreshSnapshot = null;
+        IsRefreshTipVisible = false;
+        RefreshTipMessage = string.Empty;
     }
 
     [RelayCommand]
