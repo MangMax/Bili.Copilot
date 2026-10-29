@@ -15,7 +15,14 @@
     mc:Ignorable="d">
 
     <Grid>
-        <controls:IncrementVerticalScrollControl x:Name="View" LoadMoreCommand="{x:Bind ViewModel.LoadVideosCommand, Mode=OneWay}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <controls:IncrementVerticalScrollControl
+            x:Name="View"
+            Grid.Row="1"
+            LoadMoreCommand="{x:Bind ViewModel.LoadVideosCommand, Mode=OneWay}">
             <controls:IncrementVerticalScrollControl.Element>
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
@@ -36,9 +43,9 @@
             Text="{ext:Locale Name=LoadingAndWait}"
             Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}" />
         <components:RefreshResultTipControl
+            Grid.Row="0"
             Margin="16,8"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Top"
             IsOpen="{x:Bind ViewModel.IsRefreshTipVisible, Mode=OneWay}"
             Message="{x:Bind ViewModel.RefreshTipMessage, Mode=OneWay}"
             UndoCommand="{x:Bind ViewModel.UndoRefreshCommand, Mode=OneWay}" />
