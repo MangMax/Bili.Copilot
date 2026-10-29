@@ -36,7 +36,7 @@
             Click="OnButtonClick"
             CornerRadius="14"
             Padding="0">
-            <ic:SymbolIcon FontSize="14" Symbol="ArrowDownload" />
+            <ic:SymbolIcon FontSize="14" Symbol="{x:Bind ViewModel.IconSymbol, Mode=OneWay}" />
             <ToolTipService.ToolTip>
                 <ToolTip Placement="Bottom">
                     <StackPanel MaxWidth="320" Spacing="6">

@@ -47,7 +47,12 @@ internal enum AppUpdateState
     Ready,
 
     /// <summary>
-    /// 检查或下载失败.
+    /// 正在安装.
+    /// </summary>
+    Installing,
+
+    /// <summary>
+    /// 检查、下载或安装失败.
     /// </summary>
     Failed,
 }
@@ -63,6 +68,8 @@ internal sealed partial class AppUpdateViewModel : ViewModelBase
     private readonly ILogger<AppUpdateViewModel> _logger;
     private bool _hasAutoChecked;
     private UpdateCheckResult? _lastResult;
+    private string? _downloadedPackagePath;
+    private string? _downloadedSha256;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AppUpdateViewModel"/> class.
@@ -83,7 +90,17 @@ internal sealed partial class AppUpdateViewModel : ViewModelBase
     /// <summary>
     /// 更新入口是否应当出现.
     /// </summary>
-    public bool IsButtonVisible => State is AppUpdateState.Available or AppUpdateState.Downloading or AppUpdateState.Ready;
+    public bool IsButtonVisible
+        => State is AppUpdateState.Available or AppUpdateState.Downloading or AppUpdateState.Ready or AppUpdateState.Installing
+        || (State == AppUpdateState.Failed && _lastResult?.Status == UpdateCheckStatus.Available);
+
+    /// <summary>
+    /// 圆钮图标随状态变化.
+    /// </summary>
+    public FluentIcons.Common.Symbol IconSymbol
+        => State is AppUpdateState.Ready or AppUpdateState.Installing or AppUpdateState.Failed
+            ? FluentIcons.Common.Symbol.ArrowSync
+            : FluentIcons.Common.Symbol.ArrowDownload;
 
     /// <summary>
     /// 是否正在下载.
@@ -93,14 +110,14 @@ internal sealed partial class AppUpdateViewModel : ViewModelBase
     /// <summary>
     /// 进度是否不可确定（未知文件大小时使用）.
     /// </summary>
-    public bool IsIndeterminate { get; private set; }
+    public bool IsIndeterminate => false;
 
     /// <summary>
     /// 悬停提示的标题.
     /// </summary>
-    public string ToolTipTitle => string.Format(
-        ResourceToolkit.GetLocalizedString(StringNames.UpdateAvailableFormat),
-        AvailableVersion);
+    public string ToolTipTitle => State is AppUpdateState.Ready or AppUpdateState.Installing
+        ? ResourceToolkit.GetLocalizedString(StringNames.UpdateReadyToInstall)
+        : string.Format(ResourceToolkit.GetLocalizedString(StringNames.UpdateAvailableFormat), AvailableVersion);
 
     /// <summary>
     /// 设置页的状态文案.
@@ -116,7 +133,10 @@ internal sealed partial class AppUpdateViewModel : ViewModelBase
             ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadingFormat),
             Math.Round(DownloadProgress)),
         AppUpdateState.Ready => ResourceToolkit.GetLocalizedString(StringNames.UpdateReadyToInstall),
-        AppUpdateState.Failed => ResourceToolkit.GetLocalizedString(StringNames.UpdateCheckFailed),
+        AppUpdateState.Installing => ResourceToolkit.GetLocalizedString(StringNames.UpdateInstalling),
+        AppUpdateState.Failed => _lastResult?.Status == UpdateCheckStatus.NoAssetForArchitecture
+            ? ResourceToolkit.GetLocalizedString(StringNames.UpdateNoPackageForArchitecture)
+            : ResourceToolkit.GetLocalizedString(StringNames.UpdateCheckFailed),
         _ => string.Empty,
     };
 
@@ -174,7 +194,92 @@ internal sealed partial class AppUpdateViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 打开本次更新的发布页（下载功能就绪前的占位动作）.
+    /// 主按钮的点击动作：按当前状态分发.
+    /// </summary>
+    /// <returns><see cref="Task"/>.</returns>
+    [RelayCommand]
+    private async Task PrimaryActionAsync()
+    {
+        switch (State)
+        {
+            case AppUpdateState.Available:
+                await DownloadAsync();
+                break;
+            case AppUpdateState.Ready:
+                await InstallAsync();
+                break;
+            case AppUpdateState.Failed:
+                if (_lastResult is { Status: UpdateCheckStatus.Available, Selection.Asset: not null })
+                {
+                    await DownloadAsync();
+                }
+                else
+                {
+                    await CheckAsync();
+                }
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 下载安装包.
+    /// </summary>
+    /// <returns><see cref="Task"/>.</returns>
+    [RelayCommand]
+    private async Task DownloadAsync()
+    {
+        var selection = _lastResult?.Selection;
+        if (selection?.Asset is null || State is not (AppUpdateState.Available or AppUpdateState.Failed))
+        {
+            return;
+        }
+
+        State = AppUpdateState.Downloading;
+        DownloadProgress = 0;
+        var progress = new Progress<double>(value => DownloadProgress = value);
+        var path = await _updateService.DownloadAsync(selection.Asset, progress, CancellationToken.None);
+        if (path is null)
+        {
+            State = AppUpdateState.Failed;
+            return;
+        }
+
+        _downloadedPackagePath = path;
+        // zip 的摘要不适用于解出来的 msix，只有裸 msix 才带期望摘要.
+        _downloadedSha256 = selection.Kind == UpdateAssetKind.Msix ? selection.Asset.Sha256 : null;
+        State = AppUpdateState.Ready;
+    }
+
+    /// <summary>
+    /// 安装已下载的更新并重启.
+    /// </summary>
+    /// <returns><see cref="Task"/>.</returns>
+    [RelayCommand]
+    private async Task InstallAsync()
+    {
+        if (State != AppUpdateState.Ready || string.IsNullOrEmpty(_downloadedPackagePath))
+        {
+            return;
+        }
+
+        State = AppUpdateState.Installing;
+        var installed = await _updateService.InstallAsync(_downloadedPackagePath, _downloadedSha256, CancellationToken.None);
+        if (!installed)
+        {
+            State = AppUpdateState.Failed;
+            return;
+        }
+
+        _logger.LogInformation("更新已安装，重启应用以完成升级");
+        Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().UnregisterKey();
+        Microsoft.Windows.AppLifecycle.AppInstance.Restart(default);
+    }
+
+    /// <summary>
+    /// 打开本次更新的发布页.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
     [RelayCommand]
@@ -191,7 +296,9 @@ internal sealed partial class AppUpdateViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(IsButtonVisible));
         OnPropertyChanged(nameof(IsDownloading));
+        OnPropertyChanged(nameof(IconSymbol));
         OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(ToolTipTitle));
     }
 
     partial void OnDownloadProgressChanged(double value)

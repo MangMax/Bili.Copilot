@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.MpvKernel;
 using Richasy.MpvKernel.Core.Enums;
@@ -265,4 +266,10 @@ public sealed partial class SettingsPageViewModel
     /// 更新视图模型.
     /// </summary>
     internal Core.AppUpdateViewModel Update => this.Get<Core.AppUpdateViewModel>();
+
+    [ObservableProperty]
+    public partial string UpdateMirrorPrefixes { get; set; }
+
+    partial void OnUpdateMirrorPrefixesChanged(string value)
+        => SettingsToolkit.WriteLocalSetting(SettingNames.UpdateMirrorPrefixes, value ?? string.Empty);
 }
