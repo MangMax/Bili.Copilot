@@ -1,0 +1,7 @@
+{
+  "name": "05-reattach",
+  "directUtc": "2026-10-29T17:57:33.3360618+00:00",
+  "screen": "delivered",
+  "screenUtc": "2026-10-29T17:57:34.8376459+00:00",
+  "status": "SameInstanceUnchangedTextAttachReady: PASS | blocks=7, loaded=True, instance=1, loads=2, unloads=1"
+}

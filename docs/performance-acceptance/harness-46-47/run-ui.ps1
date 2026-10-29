@@ -7,7 +7,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 $previousWorkflow = $env:WINAPP_UI_WORKFLOW_ID
-$env:WINAPP_UI_WORKFLOW_ID = 'acceptance-46-47-t3-5b5b1beb'
+$env:WINAPP_UI_WORKFLOW_ID = 'diagnosis-46-47-t3-1d19cc80'
 $checks = [Collections.Generic.List[object]]::new()
 $captures = [Collections.Generic.List[string]]::new()
 New-Item -ItemType Directory -Path $Evidence -Force | Out-Null
@@ -22,15 +22,26 @@ function Check([string]$Name, [scriptblock]$Action) {
 }
 function Capture([string]$Name) {
     $path = Join-Path $Evidence "$Name.png"
-    # Allow the compositor to present the asserted state before capturing its pixels.
-    Start-Sleep -Milliseconds 300
     Ui @('screenshot','-w',$script:ownedHwnd,'--output',$path) | Out-Null
     if (-not (Test-Path $path) -or (Get-Item $path).Length -eq 0) { throw 'Missing screenshot' }
     $captures.Add($path)
+    $captureRecord = @{ name=$Name; directUtc=[DateTimeOffset]::UtcNow; status=(Ui @('get-value','HarnessStatus') | ConvertFrom-Json).text }
+    $screen = Join-Path $Evidence "$Name.screen.png"
+    try {
+        Ui @('screenshot','-w',$script:ownedHwnd,'--capture-screen','--output',$screen) | Out-Null
+        $captures.Add($screen)
+        $captureRecord.screen='delivered'
+    } catch { $captureRecord.screen="$_" }
+    $captureRecord.screenUtc=[DateTimeOffset]::UtcNow
+    $captureRecord | ConvertTo-Json | Set-Content (Join-Path $Evidence "$Name.capture.json")
     Ui @('inspect','--depth','12') | Set-Content (Join-Path $Evidence "$Name.uia.json") -Encoding utf8
 }
 function Step([string]$Button, [string]$Case, [string]$Shot) {
     Ui @('invoke',$Button) | Out-Null
+    if ($Case -in @("InitialTemplateLoaded", "Render", "Reassign", "SameInstanceUnchangedTextAttach", "FreshReopen", "FinalFlush")) {
+        $Case += "Ready"
+        Ui @('wait-for','HarnessStatus','--value',"${Case}:",'--contains','-t','5000') | Out-Null
+    }
     Ui @('wait-for','HarnessStatus','--value',"${Case}:",'--contains','-t','5000') | Out-Null
     if ($Shot) { Capture $Shot }
     $status = Ui @('get-value','HarnessStatus') | ConvertFrom-Json
@@ -56,7 +67,20 @@ try {
     Check 'Reassign' { Step Reassign Reassign '03-reassign' }
     Check 'Detach' { Step Detach Detach '04-detach' }
     Check 'SameInstanceUnchangedTextAttach' { Step Attach SameInstanceUnchangedTextAttach '05-reattach' }
-    Check 'LifecycleBoundaries' { Step Lifecycle LifecycleBoundaries '05b-lifecycle' }
+    Check 'LifecycleBoundariesReady' {
+        Ui @('invoke','Lifecycle') | Out-Null
+        foreach ($case in @('RepeatedAttach1Ready','RepeatedAttach2Ready','RepeatedAttach3Ready','EmptyTextReattach')) {
+            Ui @('wait-for','HarnessStatus','--value',"${case}:",'--contains','-t','5000') | Out-Null
+            Capture $case
+            $state = Ui @('get-value','HarnessStatus') | ConvertFrom-Json
+            if ($state.text -notlike "${case}: PASS*") { throw $state.text }
+            Ui @('invoke','Continue') | Out-Null
+        }
+        Ui @('wait-for','HarnessStatus','--value','LifecycleBoundariesReady:','--contains','-t','5000') | Out-Null
+        Capture '05b-lifecycle'
+        $state = Ui @('get-value','HarnessStatus') | ConvertFrom-Json
+        if ($state.text -notlike 'LifecycleBoundariesReady: PASS*') { throw $state.text }
+    }
     Check 'FreshReopen' { Step Fresh FreshReopen '06-fresh' }
     Check 'CoalescedSelectableStreaming' {
         Step Stream CoalescedSelectableStreaming '07-stream'

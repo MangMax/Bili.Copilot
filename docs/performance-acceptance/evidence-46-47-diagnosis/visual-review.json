@@ -1,0 +1,266 @@
+[
+  {
+    "path": "00-initial.png",
+    "sha256": "bb3978d20df269dd4c21df3d4e929b29f84645fd7c12cc4ee23e4beee73139ca",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "00-initial.screen.png",
+    "sha256": "2b9972ddffa1d75e83659743ec31255db2d8700ec56789ada7c218177d48f7f2",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "01-render.png",
+    "sha256": "493f9c516bb90d61a942a54241d3ae979b9701bc41a00054be20d0c65e2bcbbb",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "02-clear.png",
+    "sha256": "bdbe7a4e6adc5b4c5aec1a10c72c9be07fe6a2e434e54e6a5783ddb928d54636",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "02-clear.screen.png",
+    "sha256": "2a3e7d52cc6900eb7ba4d5a924562a1b3a9aae3dbf7eb65413fb0be43e600b97",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "03-reassign.png",
+    "sha256": "1e19402352d6acc64b79ce30601f8ec971c62d30ff9ba15822cbeb4adcb69da3",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "03-reassign.screen.png",
+    "sha256": "d6b03a90e06c55a7f026aa7fd9ed512a4bfc8cbc6944d07b5c4d011d03d5611f",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "04-detach.png",
+    "sha256": "340556cb88010f6ac36f5034aea06f30a9ebad5c959f9dfdc68cd0523432ac61",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "04-detach.screen.png",
+    "sha256": "4a40526c4cf6b0cb3ceb657f121df4e318529f72d20c038bc4aa9024ea42628c",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "05-reattach.png",
+    "sha256": "5d1ad79c7a50d234e7f0bc4054e8a71974c66526f24567b4adb6937f97655c09",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "05-reattach.screen.png",
+    "sha256": "9ba6ebbffa9ccf39e6acbafff9b04c39f36180346c551d6f18760ea79a17375d",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "05b-lifecycle.png",
+    "sha256": "9c853b16605ebbc52dbf102f9be331538216b42ca2b1ea60bc44abaf6d5c015c",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "05b-lifecycle.screen.png",
+    "sha256": "3032b0e94c5e88c18fb601b1114db519bbe0fa193d56a9fd1539a15c86995804",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "06-fresh.png",
+    "sha256": "70d7c7aa225b0aa6936b1f7d01ad61e5dc5dc6296f66c6676d42a83492215d45",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "06-fresh.screen.png",
+    "sha256": "4a4f8c9e2a21423d0d79a63fc657ec57add2d3540415e524de48589a2558590e",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "07-stream.png",
+    "sha256": "1ff6bda044126df72f1dbad147cfa54289fe624d1c5fcc3f348f654c99742a6f",
+    "viewedIndividually": true,
+    "finding": "Expected ordered unformatted first half, ending Console."
+  },
+  {
+    "path": "07-stream.screen.png",
+    "sha256": "6d84691080daecf0ef19a681298659bc2dfe56434feb8ae3d5ad8376266aa3b8",
+    "viewedIndividually": true,
+    "finding": "Expected ordered unformatted first half, ending Console."
+  },
+  {
+    "path": "08-final.png",
+    "sha256": "070dc932305784ccf1a7f68871b37a2de264e7f0e60b97f03f3d13fba88c4085",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "08-final.screen.png",
+    "sha256": "5d33e5ab61f68f0e6cd42efebc8fa4b4642642fff8392140e55aaf224298ec04",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "09-cancel-late.png",
+    "sha256": "9463baf769b0ea153161e242a1826ce41afe5b8604fbc2ff97fd453e866ec93b",
+    "viewedIndividually": true,
+    "finding": "Only NEW-ONLY-FINAL."
+  },
+  {
+    "path": "09-cancel-late.screen.png",
+    "sha256": "fd7c3e340ed227fe19527b2d6b2275e3895ed3e2558b749ccf1ff90f9f943868",
+    "viewedIndividually": true,
+    "finding": "Only NEW-ONLY-FINAL."
+  },
+  {
+    "path": "EmptyTextReattach.png",
+    "sha256": "3d91e2a8993c47a05a088ebd8bfab2257e3796a9f2c255987c8611ef09c281ec",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "EmptyTextReattach.screen.png",
+    "sha256": "f22e2cb98d81b9da27da0a1b38b4f04534031f1fa3a8dd1b808036006fc863a3",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "instrumentation-attempt\\00-initial.png",
+    "sha256": "d0310516072bc178ff33388deab0fd0a3c3bf930544d58a4a8c9e272a3f23ea8",
+    "viewedIndividually": true,
+    "finding": "Partial direct HWND capture: embedded code visible, other fixture content absent in capture; structured state complete."
+  },
+  {
+    "path": "instrumentation-attempt\\01-render.png",
+    "sha256": "7b8ce34a2d2e6f26a98b367252834a928fa7344e7d9389d358c7d5b764b2b943",
+    "viewedIndividually": true,
+    "finding": "Partial direct HWND capture: embedded code visible, other fixture content absent in capture; structured state complete."
+  },
+  {
+    "path": "instrumentation-attempt\\02-clear.png",
+    "sha256": "438520c9d364b29ee689841d054e52829592d9de6b6df90cedc502864c36ca9d",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "instrumentation-attempt\\03-reassign.png",
+    "sha256": "801b9d25d593d4ff2c648cae99a8750c2e42d3b38f25b2a80c7c8f4f01a2c1db",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "instrumentation-attempt\\04-detach.png",
+    "sha256": "c242e19a46c160ba2ff0ca5f651ae7a0c3cc490f7afa44580ed37146e87baab9",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "instrumentation-attempt\\05-reattach.png",
+    "sha256": "03246bf3da081864a19be145bd2fa9d08bb3b48534bcc5fe2e181ae6a421213f",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "instrumentation-attempt\\05b-lifecycle.png",
+    "sha256": "362852913caaa17eba11d2292e134d83174b5567a0a3571eea9e8640b7176527",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "instrumentation-attempt\\06-fresh.png",
+    "sha256": "fdd9e9440771f1b8103b9ec49a1bb008d75962cc305792348ef8695f9c3e7ced",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "instrumentation-attempt\\07-stream.png",
+    "sha256": "2c9a07b87d4688be39c0a147a0c03713486c324b0d5a3da7b640d552c581d134",
+    "viewedIndividually": true,
+    "finding": "Expected ordered unformatted first half, ending Console."
+  },
+  {
+    "path": "instrumentation-attempt\\08-final.png",
+    "sha256": "b519615c54a2ca36b8889ed010922d3f653c0ae0608a8ea263dabfbc1073ebff",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "instrumentation-attempt\\09-cancel-late.png",
+    "sha256": "a10081bcfd2a0708072b278c3dec1dfa00099be980e68d36a5cecd895edfbd2a",
+    "viewedIndividually": true,
+    "finding": "Only NEW-ONLY-FINAL."
+  },
+  {
+    "path": "instrumentation-attempt\\EmptyTextReattach.png",
+    "sha256": "22e6416e345c5bd11f5d1fbf4c32e33de3e115138ce86c2741b406da665b17ec",
+    "viewedIndividually": true,
+    "finding": "Expected empty content."
+  },
+  {
+    "path": "instrumentation-attempt\\RepeatedAttach1Ready.png",
+    "sha256": "57eca0773cf2f0e8a273c07786ddcbc0c2737a14c2321091fd36b3f3707bb4f9",
+    "viewedIndividually": true,
+    "finding": "Partial direct HWND capture: embedded code visible, other fixture content absent in capture; structured state complete."
+  },
+  {
+    "path": "instrumentation-attempt\\RepeatedAttach2Ready.png",
+    "sha256": "75f0f4ffe93777aab6b54eea6abce773dfc0acc946be9d95cccde56c96952fdc",
+    "viewedIndividually": true,
+    "finding": "Partial direct HWND capture: embedded code visible, other fixture content absent in capture; structured state complete."
+  },
+  {
+    "path": "instrumentation-attempt\\RepeatedAttach3Ready.png",
+    "sha256": "7590593109a3407fc2aec4986e6cb6762dea68a7dd157e848e0253a995a9d4ef",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "RepeatedAttach1Ready.png",
+    "sha256": "6da5a8bbca6cf0a53aca03026b75167f13ce77345856755963cfc340bb53d3f4",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "RepeatedAttach1Ready.screen.png",
+    "sha256": "7220179b42c1bc336541b3bc2526f32304c7fc9dc3b934d3743fa776916a1044",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "RepeatedAttach2Ready.png",
+    "sha256": "5cb8acdb3707efb18df9f5859951d8c87bc97e7638e29770c0ae53aae40a5b16",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "RepeatedAttach2Ready.screen.png",
+    "sha256": "62bda923fa1455b8a499de1592b43824208f5471728bf694b26d7846198fd1f3",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "RepeatedAttach3Ready.png",
+    "sha256": "6faa77434ce27f1c2fabeeaebc451b748dab88c70c77b6207d99c165b10836c7",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  },
+  {
+    "path": "RepeatedAttach3Ready.screen.png",
+    "sha256": "1084ee4eb5ebd134a39cb007dd344b31ca685a0c156e6ca1112bfd83b4f5f8a7",
+    "viewedIndividually": true,
+    "finding": "Heading, body, table, highlighted code, hyperlink, image and FINAL-OMEGA visible; fixture table cell wraps."
+  }
+]

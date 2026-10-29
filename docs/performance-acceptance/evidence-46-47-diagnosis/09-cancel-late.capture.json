@@ -1,0 +1,7 @@
+{
+  "name": "09-cancel-late",
+  "directUtc": "2026-10-29T17:58:06.0784669+00:00",
+  "screen": "delivered",
+  "screenUtc": "2026-10-29T17:58:06.8050994+00:00",
+  "status": "CancelledLateAfterNewCompletion: PASS | blocks=1, loaded=True, instance=2, loads=7, unloads=6"
+}

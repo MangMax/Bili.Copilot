@@ -1,0 +1,58 @@
+# Independent lifecycle / capture diagnosis for #46–47
+
+The earlier description of `evidence-46-47-fixed/05b-lifecycle.png` was factually wrong: independent `view_image` inspection shows the heading, body, table, highlighted code, hyperlink, offline image and FINAL-OMEGA. The FAIL status is visible too, but records an earlier compound assertion. The old PNG/JSON evidence is untouched; `ui-46-47-fixed.md` now corrects its description.
+
+This investigation establishes a **harness observation/readiness race**, with a concrete failed image predicate after the original low-priority dispatcher + UpdateLayout in `FinalFlush`. It does **not** establish the exact failed term in the historical `LifecycleBoundaries` sample: that original observation passed in both new runs. No production defect was demonstrated and no production repair was made. Do not describe the historical failure as conclusively solved or all immediate assertions as green.
+
+## Scope and provenance
+
+Started clean on `feat/performance-45`, HEAD `8cf40300d533ef15acd1c034f6a2630bbb4c88d0`, in the requested parent checkout only. The existing harness links real production Markdown C# and StreamingResponseSession, copies the real Markdown template, and extracts the real streaming TextBlock. The only added behavior is harness instrumentation, event waits and capture checkpoints. Production sources/manifests and both earlier evidence directories are unchanged; see [provenance](evidence-46-47-diagnosis/provenance.json).
+
+Applied systematic-debugging, winui-ui-testing, winui-code-review, verification-before-completion and focused code-testing guidance. No child agents, merge, #52 integration, push, PR/issue changes, authentication, Dev/production package actions, installation, system policy changes, PID 9608 operations or WPR retry. The previously passed 342-test suite and app build were not rerun because no production source changed.
+
+Two harness builds and two owned local runs were performed, each build succeeding with zero warnings/errors. The second run was justified by an instrumentation defect in the first (Detach erroneously starting image readiness), and the need for direct/screen capture comparison, not by retrying a failing production assertion until green. First-run evidence and tested C# snapshots remain in [instrumentation-attempt](evidence-46-47-diagnosis/instrumentation-attempt/results.json). Final build/logs: [build](evidence-46-47-diagnosis/harness-build.txt), [UI runner](evidence-46-47-diagnosis/ui-run.txt), [launch](evidence-46-47-diagnosis/launch.json), [paths](evidence-46-47-diagnosis/run-paths.json).
+
+## Observations and causal limits
+
+[Full structured observations](evidence-46-47-diagnosis/observations.json) retain every original result plus separate readiness results. [Parsed verification](evidence-46-47-diagnosis/diagnostic-summary.json) independently checks same control identity, exact blocks, original lifecycle assertions, all readiness predicates and actual ImageOpened timestamps.
+
+1. **First Loaded:** `FirstLoadedImmediate` fails only `image`. The visual tree contains an unloaded placeholder with null source and size 0×0. All document, content, hyperlink, table and code terms pass. The provider then supplies the packaged bitmap and ImageOpened occurs; `FirstLoadedImmediateReady` passes with size 96×96, bitmap 150×150. The event wait reports 270.912 ms; this excludes earlier snapshot/serialization work and is not an app performance measurement.
+2. **After empty reattach, synchronous Text assignment:** `LifecycleAssignmentImmediate` has the same object, exact fixture Text and 7 document blocks, with heading/body/link/tail present. Its visual descendants do not yet contain images, table cells or code controls. Failed terms are exactly `image`, `codeLabel`, `tableFixture`, `table47`, `codeBody`. About 11.6 ms later, the original dispatcher + UpdateLayout observation `LifecycleBoundaries` passes all terms. At that point image 7 has source and size 96×96, but `opened` is still null. ImageOpened is recorded at 01:57:52.3768674 +08:00; the separate terminal observation passes, with a 2.538 ms readiness wait. Positive dimensions do not prove ImageOpened has occurred.
+3. **Original observation helper can still be too early:** final-run `FinalFlush` is FAIL after its original dispatcher + UpdateLayout. Its only failing Rendered term is `image`: source=null, width=0, height=0, IsLoaded=false. Publication count is exactly 2, generating=false, Text is the exact fixture, and all other content terms pass. Without another Text assignment, rerender or retry, `FinalFlushReady` passes after ImageOpened, with a 10.421 ms wait. This is direct evidence of assertion timing, not a lost final response.
+4. **Historical lifecycle attribution remains limited:** neither new run reproduces FAIL at the original `LifecycleBoundaries` observation. Snapshot serialization and separate capture checkpoints alter timing; the historic compound result cannot reveal its missing term retroactively. The observed races support readiness as a plausible explanation, not proof that the old failure was specifically the image term. No timing distribution or failure rate is claimed.
+
+Source review agrees with the observed sequence: `MyImage.Init` inserts a placeholder and subscribes its Loaded event; `LoadImage` replaces it through the provider seam. Document blocks and inline children can exist before their visual descendants are realized. Bitmap ImageOpened is a later event. `_restoreOnLoaded` restores the existing renderer after unloading, while ReloadDocument clears prior content; the observed exact seven blocks support restoration without duplication in these samples. No additional production error was established by this focused WinUI review. The existing table `fixture` cell wrapping remains a visual warning, not a proven new regression. No additional WinUI analyzer package was installed or claimed to have run.
+
+## Assertion/readiness contract
+
+The original `Rendered()` implementation and `SameInstanceUnchangedTextAttach` assertion are unchanged. Each record now includes every term, actual strings/URIs, control identity, loaded state, blocks and image source/type/size/pixel-size/open/failure state. Synchronous first-load and assignment observations are explicitly additional records.
+
+Readiness registers ImageOpened/ImageFailed and LayoutUpdated observation before checking current state; it accepts an already opened and sized image or completes on an event, has a 3-second timeout, and removes temporary wait subscriptions in finally. It checks the original assertion again, requires actual ImageOpened and positive size, and does not mutate content or retry. Repeated mounts retain the same identity/Text/content/exact-block assertions. A failed immediate observation remains in JSON even when a later readiness observation passes. A bounded 30-second Continue checkpoint lets each mounted/empty state be captured once.
+
+The UI runner exited **0 with 18/18 runner checks**, including cleanup. These are terminal/UI checks, not a roll-up of all immediate records: **three immediate failures remain** (`FirstLoadedImmediate`, `LifecycleAssignmentImmediate`, `FinalFlush`). All **11 separate Ready records** pass. The seven original lifecycle records below also independently pass; in particular the original same-instance regression assertion was not replaced by its Ready result.
+
+| Requested behavior | Concrete evidence |
+| --- | --- |
+| First template/load | `FirstLoadedImmediate` image failure preserved; `FirstLoadedImmediateReady`, original `InitialTemplateLoaded` and its Ready record pass. `00-initial.png` and screen counterpart show all content. |
+| Same instance, unchanged Text | Original `SameInstanceUnchangedTextAttach` PASS; identity 39068398, fixture exact, 7 blocks; `05-reattach` direct/screen images complete. |
+| Repeated unload/mount | Original `RepeatedAttach1/2/3` and each Ready PASS, same identity and exactly 7 blocks, loads 3/4/5 and unloads 2/3/4. Each transition still asserts unloaded/zero blocks. Three individual direct/screen capture pairs show full fixture without duplication. |
+| Empty remount, then assignment | `EmptyTextReattach` PASS, zero blocks, empty Text, loads 6/unloads 5; blank capture pair. `LifecycleAssignmentImmediate` retains five failed visual terms; original `LifecycleBoundaries` and Ready PASS, same identity and 7 blocks; `05b-lifecycle` pair complete. |
+| Final complete content | Original `FinalFlush` image failure preserved, exact Text and two publications; `FinalFlushReady` PASS with all predicates and real ImageOpened; `08-final` pair complete. |
+| Capture timing | Per-state `*.capture.json` records status and direct/screen timestamps; UIA trees retained. One screen attempt rejected, no retry. All delivered PNGs viewed individually. |
+| Production stable and cleanup | Source hashes and empty production/historical-evidence diffs in provenance; process/package absence in cleanup-confirmed.json; yield released=true. |
+
+## Capture findings
+
+All **44 delivered PNGs** (15 first-attempt, 29 final) were opened individually; [visual review with hashes](evidence-46-47-diagnosis/visual-review.json) records each finding. The original disputed fixed-run PNG was independently opened too.
+
+First-attempt direct captures `00-initial`, `01-render`, `RepeatedAttach1Ready`, `RepeatedAttach2Ready` contain only the embedded code portion of the expected fixture despite complete structured terminal states. Other first-attempt full-fixture captures are complete. These four PNGs are preserved, not described as proof of production content loss.
+
+Final-run direct captures and all delivered screen captures contain the expected full fixture, or the intended blank/streaming/cancel state. `01-render` screen capture was rejected with `foreground_not_target` (verbatim error in ui-run.txt), while its direct capture is complete. The successful screen captures include small window-border/background margins. No failed screen capture was retried.
+
+Capture and assertion are different instants: the runner invokes external UIA/capture processes after the status update; the paired captures are sequential, not simultaneous, and screen capture also requests foreground. Thus this experiment does not isolate whether the four earlier partial captures arose from direct-window capture, foreground/composition or drawing state. It does establish that the final observed stable states are complete and that the original fixed-run screenshot was misdescribed. No arbitrary screenshot sleep remains.
+
+## Remaining limits and desktop release
+
+Only two local Debug x64 runs, one fixed offline fixture, three repeated mounts per run, one empty-string remount per run. No null-text variant, network image failures/cancellation, adversarial attach during pending remote load, production AIViewModel/provider/auth flow, broad theme/RTL/accessibility matrix, physical text selection, external navigation, Release/AOT or GC/performance claims. ImageFailed/timeout branches are bounded and logged but were not forced in this sample. The diagnostic dictionary intentionally retains a finite set of images until process exit, so this harness cannot measure production retention/GC. Capture checkpoints and instrumentation perturb scheduling.
+
+Owned PIDs **13288** and **54652** closed through UIA and were confirmed absent. The exact-layout owned `BiliCopilot.Acceptance4647` package was removed after each run. [Final cleanup](evidence-46-47-diagnosis/cleanup-confirmed.json) confirms no owned PID/package remains; [yield](evidence-46-47-diagnosis/desktop-release.json) returned `released: true`. **Desktop ownership is released.**

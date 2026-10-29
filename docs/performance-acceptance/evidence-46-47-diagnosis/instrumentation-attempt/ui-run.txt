@@ -1,0 +1,22 @@
+
+name                                 passed detail
+----                                 ------ ------
+InitialTemplateLoaded                  True 
+Render                                 True 
+ProductionCodeClipboard                True 
+Clear                                  True 
+Reassign                               True 
+Detach                                 True 
+SameInstanceUnchangedTextAttach        True 
+LifecycleBoundariesReady               True 
+FreshReopen                            True 
+CoalescedSelectableStreaming           True 
+FinalFlush                             True 
+AnswerClipboard                        True 
+CancelledLateAfterNewCompletion        True 
+CancelledLateBeforeNewCompletion       True 
+CloseOwnedWindow                       True 
+ProductionSourceAndManifestUnchanged   True 
+RemoveOwnedTemporaryPackage            True 
+YieldDesktop                           True 
+
