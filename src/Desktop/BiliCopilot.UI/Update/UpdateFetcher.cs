@@ -16,13 +16,13 @@ public sealed class UpdateFetcher
 {
     private static readonly HttpClient SharedHttpClient = new() { Timeout = TimeSpan.FromSeconds(15) };
 
-    private readonly ILogger _logger;
+    private readonly ILogger<UpdateFetcher> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UpdateFetcher"/> class.
     /// </summary>
     /// <param name="logger">日志.</param>
-    public UpdateFetcher(ILogger logger) => _logger = logger;
+    public UpdateFetcher(ILogger<UpdateFetcher> logger) => _logger = logger;
 
     /// <summary>
     /// 依次尝试候选地址，返回第一个成功响应的正文.

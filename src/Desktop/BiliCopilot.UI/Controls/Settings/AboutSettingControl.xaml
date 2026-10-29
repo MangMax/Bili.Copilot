@@ -25,6 +25,7 @@
                 Style="{StaticResource CaptionTextBlockStyle}"
                 Text="{x:Bind ViewModel.PackageVersion, Mode=OneWay}" />
             <Button
+                AutomationProperties.AutomationId="CheckForUpdates"
                 Padding="8,2"
                 Command="{x:Bind ViewModel.Update.CheckCommand, Mode=OneWay}"
                 Content="{ext:Locale Name=CheckUpdate}" />
@@ -41,6 +42,8 @@
                 Header="{ext:Locale Name=UpdateMirrorPrefixes}">
                 <TextBox
                     MinWidth="320"
+                    AutomationProperties.AutomationId="UpdateMirrorPrefixes"
+                    AutomationProperties.Name="{ext:Locale Name=UpdateMirrorPrefixes}"
                     AcceptsReturn="True"
                     FontFamily="Consolas"
                     Text="{x:Bind ViewModel.UpdateMirrorPrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

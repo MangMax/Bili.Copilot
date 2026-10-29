@@ -18,9 +18,6 @@ public sealed partial class UpdateButton : UpdateButtonBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
         => _ = ViewModel.AutoCheckAsync();
-
-    private void OnButtonClick(object sender, RoutedEventArgs e)
-        => ViewModel.PrimaryActionCommand.Execute(default);
 }
 
 /// <summary>

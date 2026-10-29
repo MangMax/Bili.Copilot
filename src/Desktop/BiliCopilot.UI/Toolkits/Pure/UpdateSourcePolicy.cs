@@ -32,6 +32,27 @@ public sealed record UpdateSourceProbe(
 public static class UpdateSourcePolicy
 {
     /// <summary>
+    /// 按记忆源、可用源速度、其余候选源排列下载重试顺序；直连始终保留且只尝试一次.
+    /// </summary>
+    /// <param name="probes">探测结果.</param>
+    /// <param name="rememberedUrl">可续传的上次源.</param>
+    /// <param name="originalUrl">直连地址.</param>
+    /// <returns>去重后的候选源顺序.</returns>
+    public static IReadOnlyList<string> GetDownloadOrder(
+        IReadOnlyList<UpdateSourceProbe> probes,
+        string? rememberedUrl,
+        string originalUrl)
+    {
+        var first = Select(probes, rememberedUrl) ?? originalUrl;
+        return new[] { first }
+            .Concat(probes.Where(probe => probe.Succeeded).OrderBy(probe => probe.ElapsedMs).Select(probe => probe.Url))
+            .Append(originalUrl)
+            .Concat(probes.Select(probe => probe.Url))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+    }
+
+    /// <summary>
     /// 构造候选地址链：直连在前，镜像按给定顺序依次拼接.
     /// </summary>
     /// <param name="originalUrl">GitHub 原始地址.</param>

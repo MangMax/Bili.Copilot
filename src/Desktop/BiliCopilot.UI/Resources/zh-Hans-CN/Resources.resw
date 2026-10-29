@@ -3283,7 +3283,7 @@
     <value>更新已就绪，重启即可安装</value>
   </data>
   <data name="UpdateCheckFailed" xml:space="preserve">
-    <value>更新失败，请稍后重试</value>
+    <value>检查更新失败，请稍后重试</value>
   </data>
   <data name="UpdateNoPackageForArchitecture" xml:space="preserve">
     <value>暂无适用于当前架构的更新包</value>
@@ -3299,5 +3299,41 @@
   </data>
   <data name="UpdateFailedWithReasonFormat" xml:space="preserve">
     <value>更新失败：{0}</value>
+  </data>
+  <data name="UpdateDownloadAction" xml:space="preserve">
+    <value>下载更新</value>
+  </data>
+  <data name="UpdateInstallAction" xml:space="preserve">
+    <value>安装更新并重启</value>
+  </data>
+  <data name="UpdateRetryInstallAction" xml:space="preserve">
+    <value>重试安装更新</value>
+  </data>
+  <data name="UpdateRetryDownloadAction" xml:space="preserve">
+    <value>重试下载更新</value>
+  </data>
+  <data name="UpdateDownloadingUnknown" xml:space="preserve">
+    <value>正在下载更新…</value>
+  </data>
+  <data name="UpdateDownloadFailed" xml:space="preserve">
+    <value>下载更新失败</value>
+  </data>
+  <data name="UpdateInstallFailed" xml:space="preserve">
+    <value>安装更新失败</value>
+  </data>
+  <data name="UpdateOperationFailedFormat" xml:space="preserve">
+    <value>{0}：{1}</value>
+  </data>
+  <data name="UpdatePackageMissing" xml:space="preserve">
+    <value>更新包不存在，请重新检查更新并下载</value>
+  </data>
+  <data name="UpdateDigestMismatch" xml:space="preserve">
+    <value>更新包校验失败</value>
+  </data>
+  <data name="UpdateArchiveMissingPackage" xml:space="preserve">
+    <value>压缩包中没有安装包</value>
+  </data>
+  <data name="UpdateOpenReleaseAction" xml:space="preserve">
+    <value>打开更新发布页</value>
   </data>
 </root>
