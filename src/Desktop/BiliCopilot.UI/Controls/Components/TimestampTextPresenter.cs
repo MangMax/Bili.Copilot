@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
+using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Documents;
 using System.Windows.Input;
 
@@ -90,10 +91,13 @@ internal static class TimestampTextPresenter
         }
 
         // 不设置 Foreground，沿用 Hyperlink 默认的主题强调色，浅色与深色主题切换时自动跟随.
+        // 关闭下划线后不能只靠颜色区分（色觉障碍用户难以辨认），因此用字重作为第二重区分，
+        // 这也是 WinUI 文档在禁用下划线时给出的建议.
         // WinUI 的 Hyperlink 默认已提供手形光标，无需额外的指针处理.
         var link = new Hyperlink
         {
             UnderlineStyle = UnderlineStyle.None,
+            FontWeight = FontWeights.SemiBold,
         };
         link.Inlines.Add(new Run { Text = segment.Text });
         link.Click += (_, _) =>
