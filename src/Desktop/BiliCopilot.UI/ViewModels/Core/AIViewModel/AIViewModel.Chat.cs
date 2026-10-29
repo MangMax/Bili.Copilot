@@ -24,6 +24,8 @@ public sealed partial class AIViewModel
 {
     private async Task SummaryVideoAsync(AIQuickItemViewModel source)
     {
+        using var generation = BeginGeneration();
+        var token = generation.Token;
         try
         {
             Erase();
@@ -31,8 +33,8 @@ public sealed partial class AIViewModel
             RequestText = string.Format(source.RequestTemplate, _videoView.Information.Identifier.Title);
             var promptTemplate = source.Prompt;
             IsGenerating = true;
-            _generateCancellationTokenSource = new CancellationTokenSource();
-            var subtitleText = await GetVideoSubtitleAsync();
+            var subtitleText = await GetVideoSubtitleAsync(token);
+            EnsureCurrentGeneration(token);
             subtitleText ??= "无字幕";
 
             // 生成总结.
@@ -41,26 +43,36 @@ public sealed partial class AIViewModel
                 .Replace("{title}", _videoView.Information.Identifier.Title)
                 .Replace("{description}", _videoView.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description))
                 .Replace("{subtitle}", subtitleText);
-            await SendMessageAsync(prompt);
+            await SendMessageAsync(prompt, token);
+            EnsureCurrentGeneration(token);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
         }
-        catch (Exception ex)
+        catch (Exception ex) when (IsCurrentGeneration(token))
         {
             _logger.LogError(ex, "总结视频内容失败");
             ErrorMessage = ex.Message;
         }
+        catch (Exception) when (!IsCurrentGeneration(token))
+        {
+        }
         finally
         {
-            IsGenerating = false;
-            ProgressTip = default;
+            if (IsCurrentGeneration(token))
+            {
+                IsGenerating = false;
+                ProgressTip = default;
+                _generateCancellationTokenSource = null;
+            }
         }
     }
 
     private async Task EvaluateVideoAsync(AIQuickItemViewModel source)
     {
+        using var generation = BeginGeneration();
+        var token = generation.Token;
         try
         {
             Erase();
@@ -68,10 +80,11 @@ public sealed partial class AIViewModel
             RequestText = string.Format(source.RequestTemplate, _videoView.Information.Identifier.Title);
             var promptTemplate = source.Prompt;
             IsGenerating = true;
-            _generateCancellationTokenSource = new CancellationTokenSource();
-            var subtitleText = await GetVideoSubtitleAsync();
+            var subtitleText = await GetVideoSubtitleAsync(token);
+            EnsureCurrentGeneration(token);
             subtitleText ??= "无字幕";
-            var commentText = await GetHotCommentTextAsync(_videoView.Information.Identifier.Id, CommentTargetType.Video);
+            var commentText = await GetHotCommentTextAsync(_videoView.Information.Identifier.Id, CommentTargetType.Video, token);
+            EnsureCurrentGeneration(token);
             commentText ??= "无评论";
 
             // 生成总结.
@@ -81,21 +94,29 @@ public sealed partial class AIViewModel
                 .Replace("{description}", _videoView.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description))
                 .Replace("{subtitle}", subtitleText)
                 .Replace("{comments}", commentText);
-            await SendMessageAsync(prompt);
+            await SendMessageAsync(prompt, token);
+            EnsureCurrentGeneration(token);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
         }
-        catch (Exception ex)
+        catch (Exception ex) when (IsCurrentGeneration(token))
         {
             _logger.LogError(ex, "评价视频内容失败");
             ErrorMessage = ex.Message;
         }
+        catch (Exception) when (!IsCurrentGeneration(token))
+        {
+        }
         finally
         {
-            IsGenerating = false;
-            ProgressTip = default;
+            if (IsCurrentGeneration(token))
+            {
+                IsGenerating = false;
+                ProgressTip = default;
+                _generateCancellationTokenSource = null;
+            }
         }
     }
 
@@ -106,15 +127,18 @@ public sealed partial class AIViewModel
             return;
         }
 
+        using var generation = BeginGeneration();
+        var token = generation.Token;
         try
         {
             Erase();
             InitOtherPrompts(default);
             RequestText = question;
+            _lastQuestion = question;
             var promptTemplate = PromptConstants.VideoQuestionPrompt;
             IsGenerating = true;
-            _generateCancellationTokenSource = new CancellationTokenSource();
-            var subtitleText = await GetVideoSubtitleAsync();
+            var subtitleText = await GetVideoSubtitleAsync(token);
+            EnsureCurrentGeneration(token);
             subtitleText ??= "无字幕";
 
             // 生成总结.
@@ -124,26 +148,36 @@ public sealed partial class AIViewModel
                 .Replace("{description}", _videoView.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description))
                 .Replace("{subtitle}", subtitleText)
                 .Replace("{question}", question);
-            await SendMessageAsync(prompt);
+            await SendMessageAsync(prompt, token);
+            EnsureCurrentGeneration(token);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
         }
-        catch (Exception ex)
+        catch (Exception ex) when (IsCurrentGeneration(token))
         {
             _logger.LogError(ex, "回答问题失败");
             ErrorMessage = ex.Message;
         }
+        catch (Exception) when (!IsCurrentGeneration(token))
+        {
+        }
         finally
         {
-            IsGenerating = false;
-            ProgressTip = default;
+            if (IsCurrentGeneration(token))
+            {
+                IsGenerating = false;
+                ProgressTip = default;
+                _generateCancellationTokenSource = null;
+            }
         }
     }
 
     private async Task SummaryArticleAsync(AIQuickItemViewModel source)
     {
+        using var generation = BeginGeneration();
+        var token = generation.Token;
         try
         {
             Erase();
@@ -151,7 +185,6 @@ public sealed partial class AIViewModel
             RequestText = string.Format(source.RequestTemplate, _articleDetail.Identifier.Title);
             var promptTemplate = source.Prompt;
             IsGenerating = true;
-            _generateCancellationTokenSource = new CancellationTokenSource();
             var articleContent = GetArticlePlainText();
 
             // 生成总结.
@@ -159,26 +192,36 @@ public sealed partial class AIViewModel
             var prompt = promptTemplate
                 .Replace("{title}", _articleDetail.Identifier.Title)
                 .Replace("{content}", articleContent);
-            await SendMessageAsync(prompt);
+            await SendMessageAsync(prompt, token);
+            EnsureCurrentGeneration(token);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
         }
-        catch (Exception ex)
+        catch (Exception ex) when (IsCurrentGeneration(token))
         {
             _logger.LogError(ex, "总结文章内容失败");
             ErrorMessage = ex.Message;
         }
+        catch (Exception) when (!IsCurrentGeneration(token))
+        {
+        }
         finally
         {
-            IsGenerating = false;
-            ProgressTip = default;
+            if (IsCurrentGeneration(token))
+            {
+                IsGenerating = false;
+                ProgressTip = default;
+                _generateCancellationTokenSource = null;
+            }
         }
     }
 
     private async Task EvaluateArticleAsync(AIQuickItemViewModel source)
     {
+        using var generation = BeginGeneration();
+        var token = generation.Token;
         try
         {
             Erase();
@@ -186,10 +229,10 @@ public sealed partial class AIViewModel
             RequestText = string.Format(source.RequestTemplate, _articleDetail.Identifier.Title);
             var promptTemplate = source.Prompt;
             IsGenerating = true;
-            _generateCancellationTokenSource = new CancellationTokenSource();
             var articleContent = GetArticlePlainText();
 
-            var commentText = await GetHotCommentTextAsync(_articleDetail.Identifier.Id, CommentTargetType.Article);
+            var commentText = await GetHotCommentTextAsync(_articleDetail.Identifier.Id, CommentTargetType.Article, token);
+            EnsureCurrentGeneration(token);
             commentText ??= "无评论";
 
             // 生成总结.
@@ -198,21 +241,29 @@ public sealed partial class AIViewModel
                 .Replace("{title}", _articleDetail.Identifier.Title)
                 .Replace("{content}", articleContent)
                 .Replace("{comments}", commentText);
-            await SendMessageAsync(prompt);
+            await SendMessageAsync(prompt, token);
+            EnsureCurrentGeneration(token);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
         }
-        catch (Exception ex)
+        catch (Exception ex) when (IsCurrentGeneration(token))
         {
             _logger.LogError(ex, "评价文章内容失败");
             ErrorMessage = ex.Message;
         }
+        catch (Exception) when (!IsCurrentGeneration(token))
+        {
+        }
         finally
         {
-            IsGenerating = false;
-            ProgressTip = default;
+            if (IsCurrentGeneration(token))
+            {
+                IsGenerating = false;
+                ProgressTip = default;
+                _generateCancellationTokenSource = null;
+            }
         }
     }
 
@@ -223,14 +274,16 @@ public sealed partial class AIViewModel
             return;
         }
 
+        using var generation = BeginGeneration();
+        var token = generation.Token;
         try
         {
             Erase();
             InitOtherPrompts(default);
             RequestText = question;
+            _lastQuestion = question;
             var promptTemplate = PromptConstants.ArticleQuestionPrompt;
             IsGenerating = true;
-            _generateCancellationTokenSource = new CancellationTokenSource();
             var articleContent = GetArticlePlainText();
 
             // 生成总结.
@@ -239,25 +292,33 @@ public sealed partial class AIViewModel
                 .Replace("{title}", _articleDetail.Identifier.Title)
                 .Replace("{content}", articleContent)
                 .Replace("{question}", question);
-            await SendMessageAsync(prompt);
+            await SendMessageAsync(prompt, token);
+            EnsureCurrentGeneration(token);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
         }
-        catch (Exception ex)
+        catch (Exception ex) when (IsCurrentGeneration(token))
         {
             _logger.LogError(ex, "回答问题失败");
             ErrorMessage = ex.Message;
         }
+        catch (Exception) when (!IsCurrentGeneration(token))
+        {
+        }
         finally
         {
-            IsGenerating = false;
-            ProgressTip = default;
+            if (IsCurrentGeneration(token))
+            {
+                IsGenerating = false;
+                ProgressTip = default;
+                _generateCancellationTokenSource = null;
+            }
         }
     }
 
-    private async Task<string?> GetVideoSubtitleAsync()
+    private async Task<string?> GetVideoSubtitleAsync(CancellationToken token)
     {
         if (_subtitles is null)
         {
@@ -265,7 +326,8 @@ public sealed partial class AIViewModel
 
             // 1. 先获取字幕元数据.
             ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleMeta);
-            var metas = await service.GetSubtitleMetasAsync(_videoView.Information.Identifier.Id, _videoPart.Identifier.Id, _generateCancellationTokenSource.Token);
+            var metas = await service.GetSubtitleMetasAsync(_videoView.Information.Identifier.Id, _videoPart.Identifier.Id, token);
+            EnsureCurrentGeneration(token);
             if (metas is null || metas.Count == 0)
             {
                 ErrorMessage = ResourceToolkit.GetLocalizedString(StringNames.NoSubtitleAvailable);
@@ -276,24 +338,26 @@ public sealed partial class AIViewModel
             ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleInformation);
             var preferredIndex = SubtitlePreference.SelectPreferredIndex(metas, p => p.LanguageName, p => p.IsAI);
             var meta = metas[preferredIndex];
-            if (_generateCancellationTokenSource?.IsCancellationRequested != false)
+            if (!IsCurrentGeneration(token))
             {
                 return default;
             }
 
-            _subtitles = [.. await service.GetSubtitleDetailAsync(meta, _generateCancellationTokenSource.Token)];
+            var subtitles = await service.GetSubtitleDetailAsync(meta, token);
+            EnsureCurrentGeneration(token);
+            _subtitles = [.. subtitles];
         }
 
         return string.Join(Environment.NewLine, _subtitles.Select(p => $"{AppToolkit.FormatDuration(TimeSpan.FromSeconds(p.StartPosition))} - {AppToolkit.FormatDuration(TimeSpan.FromSeconds(p.EndPosition))}: {p.Content}"));
     }
 
-    private async Task<string?> GetHotCommentTextAsync(string id, CommentTargetType target)
+    private async Task<string?> GetHotCommentTextAsync(string id, CommentTargetType target, CancellationToken token)
     {
         // 获取评论.
         ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.GettingHotComments);
         var commentService = this.Get<ICommentService>();
-        var comments = await commentService.GetCommentsAsync(id, target, CommentSortType.Hot, cancellationToken: _generateCancellationTokenSource.Token);
-        if (_generateCancellationTokenSource?.IsCancellationRequested != false)
+        var comments = await commentService.GetCommentsAsync(id, target, CommentSortType.Hot, cancellationToken: token);
+        if (!IsCurrentGeneration(token))
         {
             return default;
         }
@@ -315,41 +379,69 @@ public sealed partial class AIViewModel
         return commentText;
     }
 
-    private async Task SendMessageAsync(string prompt)
+    private async Task SendMessageAsync(string prompt, CancellationToken token)
     {
+        EnsureCurrentGeneration(token);
+        var session = new StreamingResponseSession(
+            callback => _ = ScheduleStreamingAsync(callback, token),
+            (text, final) =>
+            {
+                if (!IsCurrentGeneration(token))
+                {
+                    return;
+                }
+
+                if (final)
+                {
+                    TempResult = string.Empty;
+                    FinalResult = text.Trim();
+                }
+                else
+                {
+                    TempResult = text;
+                }
+            });
+        using var registration = token.Register(session.Cancel);
         try
         {
-            if (_generateCancellationTokenSource?.IsCancellationRequested != false)
-            {
-                return;
-            }
-
             var useStreaming = SettingsToolkit.ReadLocalSetting(SettingNames.IsAIStreamingResponse, true);
-            var result = useStreaming
-                ? await SendMessageInternalAsync(SelectedService.ProviderType, prompt, OnStreaming, _generateCancellationTokenSource.Token)
-                : await SendMessageInternalAsync(SelectedService.ProviderType, prompt, cancellationToken: _generateCancellationTokenSource.Token);
-            TempResult = string.Empty;
-
-            if (_generateCancellationTokenSource?.IsCancellationRequested != false)
+            var result = await SendMessageInternalAsync(SelectedService.ProviderType, prompt,
+                useStreaming ? session.Append : null, token);
+            EnsureCurrentGeneration(token);
+            if (!useStreaming)
             {
-                return;
+                session.Append(result);
             }
 
-            FinalResult = result.Trim();
+            session.Complete();
         }
-        catch (TaskCanceledException)
+        catch (Exception ex) when (ex is not OperationCanceledException && IsCurrentGeneration(token))
         {
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(UI.Models.Constants.StringNames.UserCancelled), InfoType.Warning));
-        }
-        catch (Exception ex)
-        {
-            Cancel();
-            ErrorMessage = ex.Message;
+            TempResult = string.Empty;
             this.Get<AppViewModel>().ShowTipCommand.Execute((ex.Message, InfoType.Error));
+            throw;
         }
         finally
         {
-            IsGenerating = false;
+            session.Cancel();
+        }
+    }
+
+    private async Task ScheduleStreamingAsync(Action callback, CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(75, token).ConfigureAwait(false);
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                if (IsCurrentGeneration(token))
+                {
+                    callback();
+                }
+            });
+        }
+        catch (OperationCanceledException)
+        {
         }
     }
 
@@ -359,16 +451,19 @@ public sealed partial class AIViewModel
         Action<string>? streamingAction = null,
         CancellationToken cancellationToken = default)
     {
+        var model = SelectedModel;
         var messages = new List<ChatMessage>();
         var options = new ChatOptions
         {
-            ModelId = SelectedModel.Id,
+            ModelId = model.Id,
         };
-        var config = await this.Get<IChatConfigManager>().GetServiceConfigAsync(type, SelectedModel.Data);
+        var config = await this.Get<IChatConfigManager>().GetServiceConfigAsync(type, model.Data);
+        cancellationToken.ThrowIfCancellationRequested();
         var service = GlobalDependencies.Kernel.GetRequiredService<IChatService>(type.ToString());
         service.Initialize(config);
         messages.Add(new(ChatRole.User, message));
         var responseContent = string.Empty;
+        var hasStreamingContent = false;
         try
         {
             if (streamingAction is null)
@@ -382,24 +477,24 @@ public sealed partial class AIViewModel
                 {
                     if (!string.IsNullOrEmpty(partialResponse.Text))
                     {
-                        streamingAction?.Invoke(partialResponse.Text);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        hasStreamingContent = true;
+                        streamingAction.Invoke(partialResponse.Text);
                     }
-
-                    responseContent += partialResponse.Text;
                 }
             }
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException)
         {
             throw;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"{type} | {SelectedModel.Id} 发生错误");
+            _logger.LogError(ex, $"{type} | {model.Id} 发生错误");
             throw;
         }
 
-        return !string.IsNullOrEmpty(responseContent) ? responseContent : throw new KernelException($"{type} | {SelectedModel.Id} 返回空响应，具体错误请查看日志");
+        return hasStreamingContent || !string.IsNullOrEmpty(responseContent) ? responseContent : throw new KernelException($"{type} | {model.Id} 返回空响应，具体错误请查看日志");
     }
 
     private string GetArticlePlainText()
@@ -415,16 +510,22 @@ public sealed partial class AIViewModel
         return html;
     }
 
-    private void OnStreaming(string text)
+    private CancellationTokenSource BeginGeneration()
     {
-        _dispatcherQueue.TryEnqueue(() =>
-        {
-            if (_generateCancellationTokenSource is null || _generateCancellationTokenSource.IsCancellationRequested)
-            {
-                TempResult = string.Empty;
-            }
+        _generateCancellationTokenSource?.Cancel();
+        var generation = new CancellationTokenSource();
+        _generateCancellationTokenSource = generation;
+        return generation;
+    }
 
-            TempResult += text;
-        });
+    private bool IsCurrentGeneration(CancellationToken token)
+        => !token.IsCancellationRequested && _generateCancellationTokenSource?.Token == token;
+
+    private void EnsureCurrentGeneration(CancellationToken token)
+    {
+        if (!IsCurrentGeneration(token))
+        {
+            throw new OperationCanceledException(token);
+        }
     }
 }
