@@ -37,7 +37,7 @@ internal sealed partial class VideoMediaHistoryResolver(IPlayerService playerSer
     public async Task SaveHistoryAsync(double position, double duration, MpvPlayerState state, bool isExiting = false)
     {
         var shouldReport = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.ShouldReportProgress, true);
-        if (!shouldReport || _snapshot.IsPrivate || position == 0 || state == MpvPlayerState.Paused)
+        if (!shouldReport || _snapshot.IsPrivate || position == 0 || (state == MpvPlayerState.Paused && !isExiting))
         {
             return;
         }

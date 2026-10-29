@@ -24,7 +24,7 @@ public sealed partial class PlayerViewModel
     private void Back()
     {
         UseIntegrationOperation = false;
-        Window?.Close();
+        Close();
     }
 
     [RelayCommand]
