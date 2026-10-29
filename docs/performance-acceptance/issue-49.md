@@ -74,6 +74,8 @@ During that verification, parent integration advanced again to `fff7cb5cb5ad4b30
 
 Latest-integration same-command Debug x64 build: exit 0, **0 warnings, 0 errors**, elapsed 58.56 seconds. Log: `C:/Users/hp/AppData/Local/Temp/issue49-build-latest.log`. This validates C#/XAML compilation and the repository's build/runtime-asset checks, not deployment, app launch or Native AOT publication. `git diff --check` passed; this ticket's diff against latest integration remains limited to the panel, redraw session, read-only position property, session tests and this report.
 
+At handoff, integration added documentation-only commit `e6f425509a728a4086eefbe29e7273d2851a03f0` (`integration-51.md`). Merged as `7ec252e99047e8b01ae591cbe8c84b4ac0950a12`; verified the merge adds only that document and no source/project/dependency changes, so the above build/test evidence still covers identical code. Final ancestry, whitespace and clean nested-dependency checks passed.
+
 Final manual WinUI review: no unresolved error found in the scoped source changes. Checked both mutually exclusive renderer branches, exact event detach/reattach symmetry, invalidation before unload/clear/ViewModel replacement, no captured renderer instances, current position/style/content reads at execution, explicit paused/hidden state, and no async-void redraw or fixed delay. This is static review; native engine initialization/rendering and visual state remain unverified below.
 
 Local ignored assets reused from `C:/WorkFile/Project/Bili.Copilot/src/Desktop/BiliCopilot.UI/Assets/`, only when absent in this worktree; no installation/download or project configuration changes:
