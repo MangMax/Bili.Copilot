@@ -24,21 +24,25 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     private DanmakuFrostMaster? _danmakuMaster;
     private DanmakuRenderer? _danmakuRenderer;
     private DanmakuRenderViewModel? _subscribedViewModel;
+    private bool _isActive;
 
     public VideoDanmakuPanel()
     {
         _redrawSession = new(callback => DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => callback()));
         InitializeComponent();
+        // The NuGet base unregisters its lifecycle handlers on the first unload.
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is null)
+        if (_isActive)
         {
             return;
         }
 
+        _isActive = true;
         SubscribeViewModel(ViewModel);
         Redraw();
     }
@@ -62,9 +66,14 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         }
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        if (!_isActive)
+        {
+            return;
+        }
+
+        _isActive = false;
         _redrawSession.Invalidate();
         SubscribeViewModel(null);
         ReleaseRenderer();
@@ -83,7 +92,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     protected override void OnViewModelChanged(DanmakuRenderViewModel? oldValue, DanmakuRenderViewModel? newValue)
     {
         _redrawSession.Invalidate();
-        SubscribeViewModel(IsLoaded ? newValue : null);
+        SubscribeViewModel(_isActive ? newValue : null);
         _danmakuMaster?.Clear();
         _danmakuRenderer?.Clear();
         Redraw();
@@ -242,14 +251,14 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void Redraw()
     {
-        if (!IsLoaded || ViewModel is null)
+        if (!_isActive || !IsLoaded || ViewModel is null)
         {
             return;
         }
 
         _redrawSession.Request(() =>
         {
-            if (!IsLoaded || ViewModel is null)
+            if (!_isActive || !IsLoaded || ViewModel is null)
             {
                 return;
             }
