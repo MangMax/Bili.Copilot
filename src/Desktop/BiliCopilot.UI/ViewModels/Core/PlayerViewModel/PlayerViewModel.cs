@@ -25,6 +25,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     /// <inheritdoc/>
     public async ValueTask DisposeAsync()
     {
+        _isDanmakuClosed = true;
+        _danmakuLoadSession?.Dispose();
         // 关闭前把仍在去抖中的音量落盘，避免最后一次调整丢失.
         FlushPendingVolume();
         Danmaku.ClearAll();
@@ -91,6 +93,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     [RelayCommand]
     internal async Task InitializeAsync(MediaSnapshot snapshot)
     {
+        _danmakuPlaybackVersion++;
+        _danmakuLoadSession?.Cancel();
         _snapshot = snapshot;
         ErrorMessage = default;
         CacheSpeedText = default;

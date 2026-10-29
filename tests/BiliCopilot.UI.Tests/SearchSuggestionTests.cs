@@ -206,7 +206,12 @@ public sealed class SearchSuggestionTests
     private sealed class SearchLogger : ILogger<SearchBoxViewModel>
     {
         public List<Exception> Errors { get; } = [];
-        public void RecordError(Exception exception) => Errors.Add(exception);
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+        public bool IsEnabled(LogLevel logLevel) => true;
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            if (logLevel == LogLevel.Error && exception is not null) Errors.Add(exception);
+        }
     }
 
     [Theory]
