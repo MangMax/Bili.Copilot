@@ -9,102 +9,82 @@
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:media="using:CommunityToolkit.WinUI.Media"
-    xmlns:ui="using:CommunityToolkit.WinUI"
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
     IsTabStop="False"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <media:AttachedCardShadow
-            x:Key="TipShadow"
-            BlurRadius="12"
-            CornerRadius="8"
-            InnerContentClipMode="CompositionMaskBrush"
-            Opacity="0.08"
-            Offset="0,1,2" />
-    </UserControl.Resources>
-
     <!--
         浮层脱离列表布局流：整格叠放在列表之上，容器锚定左下角。
+        样式与仓库既有的 LoadingWidget 保持一致（亚克力底、1px 描边、24 圆角胶囊、20 内边距），
+        这样「正在刷新」和完成后的「撤销刷新」看起来是同一个提示，而不是两套控件。
         可见性挂在带动画容器上，Implicit 动画才能捕捉到显示/收起并播放过渡。
-        容器在加载态与结果态之间保持同一个外框，切换时只换内部内容，避免布局跳动。
     -->
-    <Border
-        Margin="16,0,0,16"
-        Padding="16,12"
+    <StackPanel
+        Margin="20,0,0,48"
+        Padding="20,12"
         HorizontalAlignment="Left"
         VerticalAlignment="Bottom"
         AutomationProperties.AutomationId="RefreshResultTip"
         AutomationProperties.LiveSetting="Polite"
         Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}"
         BorderThickness="1"
-        CornerRadius="{StaticResource OverlayCornerRadius}"
-        MaxWidth="{x:Bind local:RefreshResultTipControl.GetMaxWidth(ActualWidth), Mode=OneWay}"
-        ui:Effects.Shadow="{StaticResource TipShadow}"
+        CornerRadius="24"
+        Orientation="Horizontal"
+        Spacing="8"
         Visibility="{x:Bind local:RefreshResultTipControl.GetVisibility(State), Mode=OneWay}">
-        <Grid MinHeight="24" ColumnSpacing="12">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
 
-            <!--  刷新中才显示进度环；结果态只保留撤销入口，不再占用一行文字。  -->
-            <ProgressRing
-                Width="16"
-                Height="16"
-                MinWidth="16"
-                MinHeight="16"
-                VerticalAlignment="Center"
-                AutomationProperties.AccessibilityView="Raw"
-                IsActive="{x:Bind local:RefreshResultTipControl.IsProgressVisible(State), Mode=OneWay}"
-                Style="{StaticResource PageProgressRingStyle}"
-                Visibility="{x:Bind local:RefreshResultTipControl.GetProgressVisibility(State), Mode=OneWay}" />
+        <!--  刷新中显示进度环；完成后换成撤销图标，两者占用同一位置，切换时不跳动。  -->
+        <ProgressRing
+            Width="20"
+            Height="20"
+            MinWidth="20"
+            MinHeight="20"
+            VerticalAlignment="Center"
+            AutomationProperties.AccessibilityView="Raw"
+            IsActive="{x:Bind local:RefreshResultTipControl.IsProgressVisible(State), Mode=OneWay}"
+            Visibility="{x:Bind local:RefreshResultTipControl.GetProgressVisibility(State), Mode=OneWay}" />
 
-            <!--  LiveSetting 放在 TextBlock 上：它自带自动化对等体，文案变化才能被读屏播报。  -->
-            <TextBlock
-                Grid.Column="1"
-                MaxWidth="360"
-                VerticalAlignment="Center"
-                AutomationProperties.AutomationId="RefreshResultTipMessage"
-                AutomationProperties.LiveSetting="Polite"
-                Style="{StaticResource BodyTextBlockStyle}"
-                Text="{x:Bind Message, Mode=OneWay}"
-                TextWrapping="Wrap"
-                Visibility="{x:Bind local:RefreshResultTipControl.GetMessageVisibility(State), Mode=OneWay}" />
+        <ic:SymbolIcon
+            FontSize="20"
+            VerticalAlignment="Center"
+            AutomationProperties.AccessibilityView="Raw"
+            Symbol="ArrowUndo"
+            Visibility="{x:Bind local:RefreshResultTipControl.GetUndoIconVisibility(State), Mode=OneWay}" />
 
-            <HyperlinkButton
-                Grid.Column="2"
-                VerticalAlignment="Center"
-                AutomationProperties.AutomationId="UndoRefreshButton"
-                AutomationProperties.Name="{ext:Locale Name=UndoRefresh}"
-                Command="{x:Bind UndoCommand, Mode=OneWay}"
-                Content="{ext:Locale Name=UndoRefresh}"
-                Visibility="{x:Bind local:RefreshResultTipControl.GetUndoVisibility(State), Mode=OneWay}" />
-        </Grid>
+        <!--  LiveSetting 放在 TextBlock 上：它自带自动化对等体，文案变化才能被读屏播报。  -->
+        <TextBlock
+            VerticalAlignment="Center"
+            AutomationProperties.AutomationId="RefreshResultTipMessage"
+            AutomationProperties.LiveSetting="Polite"
+            Text="{x:Bind Message, Mode=OneWay}"
+            Visibility="{x:Bind local:RefreshResultTipControl.GetMessageVisibility(State), Mode=OneWay}" />
+
+        <HyperlinkButton
+            Padding="0"
+            VerticalAlignment="Center"
+            AutomationProperties.AutomationId="UndoRefreshButton"
+            AutomationProperties.Name="{ext:Locale Name=UndoRefresh}"
+            Command="{x:Bind UndoCommand, Mode=OneWay}"
+            Content="{ext:Locale Name=UndoRefresh}"
+            Visibility="{x:Bind local:RefreshResultTipControl.GetUndoVisibility(State), Mode=OneWay}" />
 
         <animations:Implicit.ShowAnimations>
-            <animations:TranslationAnimation
-                From="0,8"
-                To="0,0"
-                Duration="0:0:0.24" />
             <animations:OpacityAnimation
-                From="0.0"
-                To="1.0"
+                From="0"
+                To="1"
+                Duration="0:0:0.24" />
+            <animations:TranslationAnimation
+                From="0,20"
+                To="0,0"
                 Duration="0:0:0.2" />
         </animations:Implicit.ShowAnimations>
         <animations:Implicit.HideAnimations>
-            <animations:TranslationAnimation
-                From="0,0"
-                To="0,8"
-                Duration="0:0:0.24" />
             <animations:OpacityAnimation
-                From="1.0"
-                To="0.0"
-                Duration="0:0:0.2" />
+                From="1"
+                To="0"
+                Duration="0:0:0.24" />
         </animations:Implicit.HideAnimations>
-    </Border>
+    </StackPanel>
 </UserControl>
