@@ -59,6 +59,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
             return;
         }
 
+        // 排序会重载列表，推荐子分区的撤销快照必须失效，避免撤销回排序前的列表。
+        ClearRefreshTip();
         SelectedSortType = sortType;
         _childPartitionVideoCache.Clear();
         Videos.Clear();
@@ -71,17 +73,57 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     {
         if (IsRecommend)
         {
-            _recommendOffset = 0;
-            _recommendVideoCache?.Clear();
-        }
-        else
-        {
-            _childPartitionVideoCache.Remove(CurrentPartition.Data.Id);
-            _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
+            await RefreshRecommendVideosAsync();
+            return;
         }
 
+        // 非推荐子分区的刷新行为保持不变，但必须让推荐子分区的撤销状态失效，避免串场。
+        ClearRefreshTip();
+        _childPartitionVideoCache.Remove(CurrentPartition.Data.Id);
+        _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
         Videos.Clear();
         await LoadVideosAsync();
+    }
+
+    [RelayCommand]
+    private void UndoRefresh()
+    {
+        if (_recommendRefreshSnapshot is null)
+        {
+            return;
+        }
+
+        var snapshot = _recommendRefreshSnapshot;
+        Videos.Clear();
+        foreach (var video in snapshot.Items)
+        {
+            Videos.Add(video);
+        }
+
+        _recommendOffset = snapshot.Offset;
+        ClearRefreshTip();
+        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 清除撤销快照与刷新提示.
+    /// </summary>
+    /// <remarks>
+    /// 切换子分区、切换排序或走普通刷新时 <see cref="Videos"/> 会被替换或重载，
+    /// 旧快照指向的列表已不在页面上，必须一并失效，否则撤销会把推荐列表撤销到别的子分区。
+    /// </remarks>
+    internal void ClearRefreshTip()
+    {
+        _recommendRefreshSnapshot = null;
+        IsRefreshTipVisible = false;
+        RefreshTipMessage = string.Empty;
+        _refreshGeneration++;
+    }
+
+    private void ShowRefreshTip(string message)
+    {
+        RefreshTipMessage = message;
+        IsRefreshTipVisible = true;
     }
 
     [RelayCommand]
@@ -92,6 +134,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
             return;
         }
 
+        ClearRefreshTip();
         IsRecommend = partition.Data.Id == Data.Data.Id;
         if (Videos.Count > 0)
         {
@@ -152,6 +195,81 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
         IsVideoLoading = false;
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    private async Task RefreshRecommendVideosAsync()
+    {
+        if (IsVideoLoading)
+        {
+            return;
+        }
+
+        var isIncremental = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
+            && Videos.Count > 0;
+
+        // 新一次刷新本身就改变了列表状态，之前发起的刷新即使还在路上也必须失效。
+        _refreshGeneration++;
+
+        // 记录发起刷新时的代次：请求期间用户可能切到别的子分区（甚至切走又切回），
+        // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
+        var generation = _refreshGeneration;
+
+        // 无论增量还是重载，都先记下刷新前的列表与偏移，成功后才有东西可撤销。
+        // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
+        var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
+
+        IsVideoLoading = true;
+        try
+        {
+            var (videos, offset) = await _service.GetPartitionRecommendVideoListAsync(Data.Data, 0);
+            if (!RecommendRefreshResultGuard.ShouldApply(IsRecommend, generation, _refreshGeneration))
+            {
+                return;
+            }
+
+            if (isIncremental)
+            {
+                var incoming = videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Partition));
+                var merged = RecommendVideoMerger.Merge(
+                    Videos,
+                    incoming,
+                    p => p.Data.Identifier.Id);
+                Videos.Clear();
+                foreach (var video in merged.Items)
+                {
+                    Videos.Add(video);
+                }
+
+                ShowRefreshTip(
+                    RefreshResultMessageBuilder.Build(
+                        isIncremental: true,
+                        addedCount: merged.AddedItems.Count,
+                        ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
+                        ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded)));
+            }
+            else
+            {
+                Videos.Clear();
+                TryAddVideos(videos, VideoCardStyle.Partition);
+                ShowRefreshTip(ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
+            }
+
+            _recommendRefreshSnapshot = snapshot;
+            _recommendOffset = offset;
+
+            // 刷新后的列表才是当前推荐列表，旧的缓存不能再被切回推荐子分区时复用。
+            _recommendVideoCache?.Clear();
+            VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            // 失败时列表、偏移与快照都保持原样，也不给提示。
+            _logger.LogError(ex, "尝试刷新分区推荐视频时出错.");
+        }
+        finally
+        {
+            IsVideoLoading = false;
+        }
     }
 
     private async Task LoadRecommendVideosAsync()
