@@ -34,6 +34,8 @@ git diff --check
 
 After integration advanced, repeated `git merge feat/performance-45`, the same test command with `LogFileName=integration-final.trx`, and the same build command. This is the final verified base.
 
+Integration advanced once more with documentation-only commit `a61b8a05a821bb4e447d05f67f67cebbcfa678b1`. Merged it after the focused implementation commit, then repeated tests with `LogFileName=merged-final.trx` and the same build command. This supersedes the earlier final base: tests exit 0, Passed: 288, Failed: 0, Skipped: 0, 310 ms; parsed TRX counters agree. Build exit 1, 1 warning/8 errors, 7.55 s, same missing-submodule failure. Evidence: `artifacts/issue-47/merged-final-tests.log`, `merged-final.trx`, `merged-final-build.log`. Final whitespace check passed.
+
 | Verification | Result | Local evidence |
 | --- | --- | --- |
 | Pre-edit tests | Exit 0; Passed: 282, Failed: 0, Skipped: 0; 412 ms test duration | `artifacts/issue-47/baseline-tests.log`, `baseline.trx` |
