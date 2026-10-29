@@ -48,6 +48,11 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
     private void OnKeywordChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
+        if (!IsLoaded)
+        {
+            return;
+        }
+
         _suggestionInteractionVersion++;
         // 清空文本时只关闭建议，不展开空态/推荐下拉；聚焦空框时仍由获焦逻辑加载推荐.
         if (string.IsNullOrEmpty(Box.Text))
@@ -78,7 +83,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
     private async void OnBoxGettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
     {
-        if (_isSubmittingQuery || Box.IsSuggestionListOpen)
+        if (!IsLoaded || _isSubmittingQuery || Box.IsSuggestionListOpen)
         {
             if (_isSubmittingQuery)
             {
