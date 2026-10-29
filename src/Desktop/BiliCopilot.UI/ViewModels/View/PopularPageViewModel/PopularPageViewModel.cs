@@ -117,7 +117,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsVideoLoading)
+        if (IsVideoLoading || _isRecommendRefreshing)
         {
             return;
         }

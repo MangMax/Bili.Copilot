@@ -16,7 +16,8 @@ public sealed partial class PopularPageViewModel
 {
     private async Task RefreshRecommendVideosAsync()
     {
-        if (IsVideoLoading)
+        // 推荐刷新用左下角浮层表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
+        if (IsVideoLoading || _isRecommendRefreshing)
         {
             return;
         }
@@ -38,7 +39,7 @@ public sealed partial class PopularPageViewModel
         RefreshTipState = Toolkits.RefreshTipState.Refreshing(
             ResourceToolkit.GetLocalizedString(StringNames.RefreshingRecommendVideos));
 
-        IsVideoLoading = true;
+        _isRecommendRefreshing = true;
         try
         {
             var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(0);
@@ -76,7 +77,7 @@ public sealed partial class PopularPageViewModel
         }
         finally
         {
-            IsVideoLoading = false;
+            _isRecommendRefreshing = false;
         }
     }
 

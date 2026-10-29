@@ -169,7 +169,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsVideoLoading)
+        if (IsVideoLoading || _isRecommendRefreshing)
         {
             return;
         }
@@ -190,7 +190,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
     private async Task RefreshRecommendVideosAsync()
     {
-        if (IsVideoLoading)
+        // 推荐刷新用左下角浮层表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
+        if (IsVideoLoading || _isRecommendRefreshing)
         {
             return;
         }
@@ -212,7 +213,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         RefreshTipState = Toolkits.RefreshTipState.Refreshing(
             ResourceToolkit.GetLocalizedString(StringNames.RefreshingRecommendVideos));
 
-        IsVideoLoading = true;
+        _isRecommendRefreshing = true;
         try
         {
             var (videos, offset) = await _service.GetPartitionRecommendVideoListAsync(Data.Data, 0);
@@ -251,7 +252,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         }
         finally
         {
-            IsVideoLoading = false;
+            _isRecommendRefreshing = false;
         }
     }
 
