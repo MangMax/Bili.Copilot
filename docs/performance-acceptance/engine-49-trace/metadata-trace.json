@@ -1,0 +1,38 @@
+[
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\trace\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Core\\bin\\x64\\Release\\net9.0-windows10.0.22621.0\\Danmaku.Core.dll",
+    "sha256": "35CB361C37626F4E00FD92D48EA336EC14CC9CB0D26C2C0FAB0E9A64B2FD7CA2",
+    "diagnosticFields": [],
+    "mvid": "55674dee-6c30-427a-80a9-ec66658b89c3"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\trace\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Core\\bin\\x64\\Release\\net9.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "sha256": "34D306ACC25A85DB4FD7D7EC6D626DAFF0DE67474E64A8B9441235C8313B09C9",
+    "diagnosticFields": [],
+    "mvid": "76f09bbf-87cf-4b9f-b1a0-f80f1ac8c3d3"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\trace\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Legacy\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Legacy.dll",
+    "sha256": "0182AD4DC51AFC0E3F93C1913B5BE4F39EC18E23C9770C4FD2F4AF59F21BF14D",
+    "diagnosticFields": [
+      "DanmakuRender._trace49Instance",
+      "DanmakuRender._trace49NextInstance",
+      "DanmakuRender._trace49Generation",
+      "LegacyTrace49._trace49Sequence",
+      "RenderLayer._trace49Owner"
+    ],
+    "mvid": "e08204c8-73cc-4b92-be79-6843991c2b67"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\trace\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Legacy\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "sha256": "34D306ACC25A85DB4FD7D7EC6D626DAFF0DE67474E64A8B9441235C8313B09C9",
+    "diagnosticFields": [],
+    "mvid": "76f09bbf-87cf-4b9f-b1a0-f80f1ac8c3d3"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\trace\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Share\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "sha256": "34D306ACC25A85DB4FD7D7EC6D626DAFF0DE67474E64A8B9441235C8313B09C9",
+    "diagnosticFields": [],
+    "mvid": "76f09bbf-87cf-4b9f-b1a0-f80f1ac8c3d3"
+  }
+]
