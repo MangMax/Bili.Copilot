@@ -1,0 +1,19 @@
+
+name                                 passed detail
+----                                 ------ ------
+Render                                 True
+ProductionCodeClipboard                True
+Clear                                  True
+Reassign                               True
+Detach                                 True
+SameInstanceUnchangedTextAttach       False SameInstanceUnchangedTextAttach: FAIL | blocks=0, loaded=True, instance=1, …
+FreshReopen                            True
+CoalescedSelectableStreaming           True
+FinalFlush                             True
+AnswerClipboard                        True
+CancelledLateAfterNewCompletion        True
+CancelledLateBeforeNewCompletion       True
+CloseOwnedWindow                       True
+ProductionSourceAndManifestUnchanged   True
+RemoveOwnedTemporaryPackage            True
+YieldDesktop                           True

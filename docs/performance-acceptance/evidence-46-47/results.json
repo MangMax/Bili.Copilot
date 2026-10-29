@@ -1,0 +1,82 @@
+{
+  "screenshots": [
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\01-render.png",
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\02-clear.png",
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\03-reassign.png",
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\04-detach.png",
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\05-reattach.png",
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\06-fresh.png",
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\07-stream.png",
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\08-final.png",
+    "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-accept-4647-evidence-verified\\09-cancel-late.png"
+  ],
+  "appPid": 28020,
+  "target": "local",
+  "checks": [
+    {
+      "name": "Render",
+      "passed": true
+    },
+    {
+      "name": "ProductionCodeClipboard",
+      "passed": true
+    },
+    {
+      "name": "Clear",
+      "passed": true
+    },
+    {
+      "name": "Reassign",
+      "passed": true
+    },
+    {
+      "name": "Detach",
+      "passed": true
+    },
+    {
+      "passed": false,
+      "name": "SameInstanceUnchangedTextAttach",
+      "detail": "SameInstanceUnchangedTextAttach: FAIL | blocks=0, loaded=True, instance=1, loads=2, unloads=1"
+    },
+    {
+      "name": "FreshReopen",
+      "passed": true
+    },
+    {
+      "name": "CoalescedSelectableStreaming",
+      "passed": true
+    },
+    {
+      "name": "FinalFlush",
+      "passed": true
+    },
+    {
+      "name": "AnswerClipboard",
+      "passed": true
+    },
+    {
+      "name": "CancelledLateAfterNewCompletion",
+      "passed": true
+    },
+    {
+      "name": "CancelledLateBeforeNewCompletion",
+      "passed": true
+    },
+    {
+      "name": "CloseOwnedWindow",
+      "passed": true
+    },
+    {
+      "name": "ProductionSourceAndManifestUnchanged",
+      "passed": true
+    },
+    {
+      "name": "RemoveOwnedTemporaryPackage",
+      "passed": true
+    },
+    {
+      "name": "YieldDesktop",
+      "passed": true
+    }
+  ]
+}
