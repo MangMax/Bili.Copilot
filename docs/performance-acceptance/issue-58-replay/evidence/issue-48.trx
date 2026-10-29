@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f4f55a5e-474d-480e-92ba-fcaf096b3376" name="hp@DESKTOP-V1D4VEN 2026-10-30 02:22:21" runUser="DESKTOP-V1D4VEN\hp" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-30T02:22:21.4566690+08:00" queuing="2026-10-30T02:22:21.4566694+08:00" start="2026-10-30T02:22:19.7521684+08:00" finish="2026-10-30T02:22:21.4634803+08:00" />
+  <TestSettings name="default" id="1aedfd73-b339-4898-82ab-74739328dfcc">
+    <Deployment runDeploymentRoot="hp_DESKTOP-V1D4VEN_2026-10-30_02_22_21" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="05da29f9-be07-41ba-abdf-2139ecc25721" testId="2081ef3e-11c7-0264-7e9e-7196637f0e38" testName="BiliCopilot.UI.Tests.DanmakuCancellationTests.HttpSend_TimeoutWithoutCallerCancellation_KeepsWrappedFailure" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0018361" startTime="2026-10-30T02:22:21.3435715+08:00" endTime="2026-10-30T02:22:21.3436079+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05da29f9-be07-41ba-abdf-2139ecc25721" />
+    <UnitTestResult executionId="f9d7efa1-8fea-4204-b254-1a9e2f40ccd3" testId="563494d8-4068-c6c7-86b4-4c24cd38dee9" testName="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_AlreadyCanceled_DoesNotSend(web: False)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0006981" startTime="2026-10-30T02:22:21.3437149+08:00" endTime="2026-10-30T02:22:21.3437411+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f9d7efa1-8fea-4204-b254-1a9e2f40ccd3" />
+    <UnitTestResult executionId="2e20234a-f736-4214-9990-8f73c3501f58" testId="0c98c3e2-1ad1-16b6-615d-780faee1d710" testName="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_OrdinaryFailure_RetriesThreeTimes(web: True)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0011531" startTime="2026-10-30T02:22:21.3439580+08:00" endTime="2026-10-30T02:22:21.3439827+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2e20234a-f736-4214-9990-8f73c3501f58" />
+    <UnitTestResult executionId="caebc408-0e75-4282-b170-ad90eaf9f38e" testId="42850583-a2ff-483d-81fb-c1e04be33559" testName="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_AlreadyCanceled_DoesNotSend(web: True)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0002246" startTime="2026-10-30T02:22:21.3437878+08:00" endTime="2026-10-30T02:22:21.3438131+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="caebc408-0e75-4282-b170-ad90eaf9f38e" />
+    <UnitTestResult executionId="787ae5be-bfeb-409b-9d1c-9dc4fb2aa031" testId="c7937ab0-89ec-a563-9e58-95ba8745d371" testName="BiliCopilot.UI.Tests.DanmakuCancellationTests.HttpSend_CallerCanceled_PreservesCancellation" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0029950" startTime="2026-10-30T02:22:21.3438747+08:00" endTime="2026-10-30T02:22:21.3438994+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="787ae5be-bfeb-409b-9d1c-9dc4fb2aa031" />
+    <UnitTestResult executionId="33fa9bab-463e-4afe-99a9-60d60496e7c0" testId="a584fa95-8663-6022-4743-c58b34e7db56" testName="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_CanceledDuringSend_DoesNotRetry(web: True)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0044884" startTime="2026-10-30T02:22:21.3420954+08:00" endTime="2026-10-30T02:22:21.3421736+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="33fa9bab-463e-4afe-99a9-60d60496e7c0" />
+    <UnitTestResult executionId="0826d1de-b7be-4320-8b57-b083935f9459" testId="da5b77bf-2578-19bd-4863-9186498b2fb2" testName="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_CanceledDuringSend_DoesNotRetry(web: False)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0626511" startTime="2026-10-30T02:22:21.2633907+08:00" endTime="2026-10-30T02:22:21.3322538+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0826d1de-b7be-4320-8b57-b083935f9459" />
+    <UnitTestResult executionId="b86c4854-7520-4a44-a0b1-e268fcb79f5a" testId="91114e13-aeb2-4016-376e-79d576d0b9e1" testName="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_OrdinaryFailure_RetriesThreeTimes(web: False)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0004927" startTime="2026-10-30T02:22:21.3440218+08:00" endTime="2026-10-30T02:22:21.3444499+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b86c4854-7520-4a44-a0b1-e268fcb79f5a" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_AlreadyCanceled_DoesNotSend(web: True)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="42850583-a2ff-483d-81fb-c1e04be33559">
+      <Execution id="caebc408-0e75-4282-b170-ad90eaf9f38e" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuCancellationTests" name="Segment_AlreadyCanceled_DoesNotSend" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_CanceledDuringSend_DoesNotRetry(web: True)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="a584fa95-8663-6022-4743-c58b34e7db56">
+      <Execution id="33fa9bab-463e-4afe-99a9-60d60496e7c0" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuCancellationTests" name="Segment_CanceledDuringSend_DoesNotRetry" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_OrdinaryFailure_RetriesThreeTimes(web: True)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="0c98c3e2-1ad1-16b6-615d-780faee1d710">
+      <Execution id="2e20234a-f736-4214-9990-8f73c3501f58" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuCancellationTests" name="Segment_OrdinaryFailure_RetriesThreeTimes" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_AlreadyCanceled_DoesNotSend(web: False)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="563494d8-4068-c6c7-86b4-4c24cd38dee9">
+      <Execution id="f9d7efa1-8fea-4204-b254-1a9e2f40ccd3" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuCancellationTests" name="Segment_AlreadyCanceled_DoesNotSend" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_CanceledDuringSend_DoesNotRetry(web: False)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="da5b77bf-2578-19bd-4863-9186498b2fb2">
+      <Execution id="0826d1de-b7be-4320-8b57-b083935f9459" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuCancellationTests" name="Segment_CanceledDuringSend_DoesNotRetry" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuCancellationTests.HttpSend_CallerCanceled_PreservesCancellation" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="c7937ab0-89ec-a563-9e58-95ba8745d371">
+      <Execution id="787ae5be-bfeb-409b-9d1c-9dc4fb2aa031" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuCancellationTests" name="HttpSend_CallerCanceled_PreservesCancellation" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_OrdinaryFailure_RetriesThreeTimes(web: False)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="91114e13-aeb2-4016-376e-79d576d0b9e1">
+      <Execution id="b86c4854-7520-4a44-a0b1-e268fcb79f5a" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuCancellationTests" name="Segment_OrdinaryFailure_RetriesThreeTimes" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.DanmakuCancellationTests.HttpSend_TimeoutWithoutCallerCancellation_KeepsWrappedFailure" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-897a0a69\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="2081ef3e-11c7-0264-7e9e-7196637f0e38">
+      <Execution id="05da29f9-be07-41ba-abdf-2139ecc25721" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-897a0a69\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.DanmakuCancellationTests" name="HttpSend_TimeoutWithoutCallerCancellation_KeepsWrappedFailure" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="2081ef3e-11c7-0264-7e9e-7196637f0e38" executionId="05da29f9-be07-41ba-abdf-2139ecc25721" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="563494d8-4068-c6c7-86b4-4c24cd38dee9" executionId="f9d7efa1-8fea-4204-b254-1a9e2f40ccd3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c98c3e2-1ad1-16b6-615d-780faee1d710" executionId="2e20234a-f736-4214-9990-8f73c3501f58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="42850583-a2ff-483d-81fb-c1e04be33559" executionId="caebc408-0e75-4282-b170-ad90eaf9f38e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c7937ab0-89ec-a563-9e58-95ba8745d371" executionId="787ae5be-bfeb-409b-9d1c-9dc4fb2aa031" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a584fa95-8663-6022-4743-c58b34e7db56" executionId="33fa9bab-463e-4afe-99a9-60d60496e7c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="da5b77bf-2578-19bd-4863-9186498b2fb2" executionId="0826d1de-b7be-4320-8b57-b083935f9459" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="91114e13-aeb2-4016-376e-79d576d0b9e1" executionId="b86c4854-7520-4a44-a0b1-e268fcb79f5a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="8" executed="8" passed="8" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.14)&#xD;
+[xUnit.net 00:00:00.81]   Discovering: BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:00.90]   Discovered:  BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:00.93]   Starting:    BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:01.04]   Finished:    BiliCopilot.UI.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
