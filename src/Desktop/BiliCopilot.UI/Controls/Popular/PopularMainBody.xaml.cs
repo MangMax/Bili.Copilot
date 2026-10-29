@@ -7,20 +7,38 @@ namespace BiliCopilot.UI.Controls.Popular;
 /// </summary>
 public sealed partial class PopularMainBody : PopularPageControlBase
 {
+    private bool _isActive;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularMainBody"/> class.
     /// </summary>
-    public PopularMainBody() => InitializeComponent();
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    public PopularMainBody()
     {
+        InitializeComponent();
+        // The NuGet base unregisters its lifecycle handlers on the first unload.
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_isActive)
+        {
+            return;
+        }
+
+        _isActive = true;
         ViewModel.VideoListUpdated += OnVideoListUpdatedAsync;
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        if (!_isActive)
+        {
+            return;
+        }
+
+        _isActive = false;
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
     }
 
