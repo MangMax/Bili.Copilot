@@ -1,0 +1,61 @@
+{
+  "method": "manual inspection of every capture through image viewer; observations, not OCR or automated pass counts",
+  "findings": {
+    "run1": {
+      "DirectX-Window": "FIRST-0/1 visible",
+      "DirectX-Full": "blank; not a visible pass",
+      "DirectX-Dense": "blank; not a visible pass",
+      "DirectX-Append": "FIRST-0/1 visible; list check separately",
+      "DirectX-Replace": "blank after shorter replacement",
+      "DirectX-Seek": "one REPLACEMENT visible",
+      "DirectX-Pause": "one REPLACEMENT visible in this capture",
+      "Win2D-Window": "FIRST-0/1 visible",
+      "Win2D-Full": "FIRST-0/1 visible",
+      "Win2D-Dense": "FIRST-0/1 visible",
+      "Win2D-Append": "blank; list check separately",
+      "Win2D-Replace": "blank after shorter replacement",
+      "Win2D-Seek": "one REPLACEMENT visible",
+      "Win2D-Pause": "blank; not a paused-state pass"
+    },
+    "run2": {
+      "DirectX-Window": "FIRST-0/1 visible",
+      "DirectX-Full": "blank; not a visible pass",
+      "DirectX-Dense": "FIRST-0/1 visible",
+      "DirectX-Append": "blank; list check separately",
+      "DirectX-Replace": "blank after shorter replacement",
+      "DirectX-Seek": "one REPLACEMENT visible",
+      "DirectX-Pause": "blank; not a paused-state pass",
+      "Win2D-Window": "FIRST-0/1 visible",
+      "Win2D-Full": "FIRST-0/1 visible",
+      "Win2D-Dense": "blank; not a visible pass",
+      "Win2D-Append": "blank; list check separately",
+      "Win2D-Replace": "blank after shorter replacement",
+      "Win2D-Seek": "one REPLACEMENT visible",
+      "Win2D-Pause": "blank; not a paused-state pass"
+    },
+    "probes": {
+      "DirectX-primary": "PRIMARY-BEFORE-NEIGHBOR visible",
+      "DirectX-paused-a": "rolling item visible at right edge",
+      "DirectX-paused-b": "content absent; cannot establish paused stability",
+      "DirectX-seek-a": "rolling item visible toward right",
+      "DirectX-seek-b": "same label visibly further left; seek resumed animation",
+      "Win2D-primary": "PRIMARY-BEFORE-NEIGHBOR visible",
+      "Win2D-paused-a": "rolling item visible at right edge",
+      "Win2D-paused-b": "content absent; cannot establish paused stability",
+      "Win2D-seek-a": "rolling item visible toward right",
+      "Win2D-seek-b": "same label visibly further left; seek resumed animation"
+    },
+    "probes2": {
+      "DirectX-primary": "PRIMARY-BEFORE-NEIGHBOR visible",
+      "DirectX-paused-a": "rolling item visible at right edge",
+      "DirectX-paused-b": "content absent; cannot establish paused stability",
+      "DirectX-seek-a": "rolling item visible toward right",
+      "DirectX-seek-b": "same label visibly further left; seek resumed animation",
+      "Win2D-primary": "PRIMARY-BEFORE-NEIGHBOR visible",
+      "Win2D-paused-a": "rolling item visible at right edge",
+      "Win2D-paused-b": "content absent; cannot establish paused stability",
+      "Win2D-seek-a": "rolling item visible toward right",
+      "Win2D-seek-b": "same label visibly further left; seek resumed animation"
+    }
+  }
+}

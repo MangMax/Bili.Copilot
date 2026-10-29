@@ -1,0 +1,72 @@
+[
+  {
+    "visualReview": "PENDING",
+    "name": "DirectX-primary",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\DirectX-primary.png",
+    "captureEndUtc": "2026-10-29T18:16:17.6104597Z",
+    "captureStartUtc": "2026-10-29T18:16:17.1941103Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "DirectX-paused-a",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\DirectX-paused-a.png",
+    "captureEndUtc": "2026-10-29T18:16:21.9365287Z",
+    "captureStartUtc": "2026-10-29T18:16:21.5427446Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "DirectX-paused-b",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\DirectX-paused-b.png",
+    "captureEndUtc": "2026-10-29T18:16:24.3448584Z",
+    "captureStartUtc": "2026-10-29T18:16:23.9472751Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "DirectX-seek-a",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\DirectX-seek-a.png",
+    "captureEndUtc": "2026-10-29T18:16:25.8857021Z",
+    "captureStartUtc": "2026-10-29T18:16:25.4722537Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "DirectX-seek-b",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\DirectX-seek-b.png",
+    "captureEndUtc": "2026-10-29T18:16:28.3054937Z",
+    "captureStartUtc": "2026-10-29T18:16:27.8982087Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "Win2D-primary",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\Win2D-primary.png",
+    "captureEndUtc": "2026-10-29T18:16:30.0239998Z",
+    "captureStartUtc": "2026-10-29T18:16:29.5868198Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "Win2D-paused-a",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\Win2D-paused-a.png",
+    "captureEndUtc": "2026-10-29T18:16:34.5280985Z",
+    "captureStartUtc": "2026-10-29T18:16:33.97437Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "Win2D-paused-b",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\Win2D-paused-b.png",
+    "captureEndUtc": "2026-10-29T18:16:36.9727817Z",
+    "captureStartUtc": "2026-10-29T18:16:36.5333791Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "Win2D-seek-a",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\Win2D-seek-a.png",
+    "captureEndUtc": "2026-10-29T18:16:38.6045468Z",
+    "captureStartUtc": "2026-10-29T18:16:38.1397877Z"
+  },
+  {
+    "visualReview": "PENDING",
+    "name": "Win2D-seek-b",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\probes2\\Win2D-seek-b.png",
+    "captureEndUtc": "2026-10-29T18:16:41.1564584Z",
+    "captureStartUtc": "2026-10-29T18:16:40.6189734Z"
+  }
+]

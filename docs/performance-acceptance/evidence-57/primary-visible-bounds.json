@@ -1,0 +1,12 @@
+[
+  {
+    "engine": "DirectX",
+    "firstVisibleUpperBoundMs": 823.8389999999999,
+    "basis": "primary-start to end of manually reviewed screen capture; not exact first frame"
+  },
+  {
+    "engine": "Win2D",
+    "firstVisibleUpperBoundMs": 854.66,
+    "basis": "primary-start to end of manually reviewed screen capture; not exact first frame"
+  }
+]

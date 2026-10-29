@@ -1,0 +1,14 @@
+{
+  "workflowId": "bili-spike57-a35e",
+  "remainingOwnedProcessCount": 0,
+  "remainingOwnedPackageCount": 0,
+  "packageName": "BiliCopilot.Spike57.A35E",
+  "yieldObserved": "Released the UI turn.",
+  "ownedProcessIds": [
+    64528,
+    43648,
+    53144
+  ],
+  "yieldCommand": "winapp ui yield --on local",
+  "checkedUtc": "2026-10-29T18:26:03.9193959Z"
+}

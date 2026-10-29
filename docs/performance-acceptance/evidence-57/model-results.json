@@ -1,0 +1,73 @@
+{
+  "evidence_kind": "logical-time-model-only",
+  "results": [
+    {
+      "case": "slow-segment-2",
+      "all_barrier": {
+        "logical_publish_ms": 3000,
+        "requests": 120
+      },
+      "current_first": {
+        "logical_publish_ms": 30,
+        "initial_requests": 2
+      },
+      "note": "Current and next start together; only current gates publication. Assumed durations, not measurements."
+    },
+    {
+      "case": "slow-segment-120",
+      "all_barrier": {
+        "logical_publish_ms": 3570,
+        "requests": 120
+      },
+      "current_first": {
+        "logical_publish_ms": 30,
+        "initial_requests": 2
+      },
+      "note": "Current and next start together; only current gates publication. Assumed durations, not measurements."
+    },
+    {
+      "case": "seek-stale-and-order-dedup",
+      "status": "PASS",
+      "published": [
+        [
+          119,
+          [
+            [
+              "a",
+              42481000
+            ],
+            [
+              "b",
+              42481000
+            ]
+          ]
+        ],
+        [
+          1,
+          [
+            [
+              "1",
+              360000
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "case": "long-traversal-cache",
+      "status": "PASS",
+      "segments": 120,
+      "max_cache_segments": 3,
+      "note": "Only a segment count bound. Byte/item budget remains required for dense segments."
+    },
+    {
+      "case": "close-late-completion",
+      "status": "PASS"
+    },
+    {
+      "case": "retry-budget",
+      "status": "DESIGN_ONLY",
+      "decision": "Use existing service's at-most-three transport attempts; no second three-attempt wrapper. Explicit user retry or re-entry resets failure state; cancellation never retries."
+    }
+  ]
+}
