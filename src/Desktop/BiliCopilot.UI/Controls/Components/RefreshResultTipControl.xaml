@@ -7,18 +7,22 @@
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     HorizontalAlignment="Stretch"
-    AutomationProperties.AutomationId="RefreshResultTip"
     IsTabStop="False"
-    Visibility="{x:Bind IsOpen, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
     mc:Ignorable="d">
 
+    <!--
+        提示条常驻在可视树中，只用 InfoBar.IsOpen 控制展开/收起：
+        这样文案变化发生在元素已进入 UI 自动化树之后，读屏的 LiveSetting 才能播报新增条数。
+        折叠整个控件会让 InfoBar 在设置文案时还不在树里，首次出现时播报会被吞掉。
+    -->
     <InfoBar
+        AutomationProperties.AutomationId="RefreshResultTip"
+        AutomationProperties.LiveSetting="Polite"
         IsClosable="False"
         IsIconVisible="True"
         IsOpen="{x:Bind IsOpen, Mode=OneWay}"
         Message="{x:Bind Message, Mode=OneWay}"
-        Severity="Informational"
-        AutomationProperties.LiveSetting="Polite">
+        Severity="Informational">
         <InfoBar.ActionButton>
             <HyperlinkButton
                 AutomationProperties.AutomationId="UndoRefreshButton"

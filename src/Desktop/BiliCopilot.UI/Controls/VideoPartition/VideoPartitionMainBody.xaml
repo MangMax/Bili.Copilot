@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <local:VideoPartitionDetailControlBase
     x:Class="BiliCopilot.UI.Controls.VideoPartition.VideoPartitionMainBody"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -44,7 +44,6 @@
             Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}" />
         <components:RefreshResultTipControl
             Grid.Row="0"
-            Margin="16,8"
             HorizontalAlignment="Stretch"
             IsOpen="{x:Bind ViewModel.IsRefreshTipVisible, Mode=OneWay}"
             Message="{x:Bind ViewModel.RefreshTipMessage, Mode=OneWay}"

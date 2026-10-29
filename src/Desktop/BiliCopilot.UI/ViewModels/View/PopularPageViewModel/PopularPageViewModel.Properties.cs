@@ -44,11 +44,17 @@ public sealed partial class PopularPageViewModel
     [ObservableProperty]
     private IPopularSectionItemViewModel _selectedSection;
 
+    /// <summary>
+    /// 是否显示刷新结果提示条.
+    /// </summary>
     [ObservableProperty]
-    private bool _isRefreshTipVisible;
+    public partial bool IsRefreshTipVisible { get; set; }
 
+    /// <summary>
+    /// 刷新结果提示文案.
+    /// </summary>
     [ObservableProperty]
-    private string _refreshTipMessage = string.Empty;
+    public partial string RefreshTipMessage { get; set; } = string.Empty;
 
     /// <summary>
     /// 区块加载完成.
