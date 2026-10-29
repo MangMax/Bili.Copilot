@@ -108,7 +108,9 @@ jobs:
           $version = "${{ inputs.version }}"
           $appPackages = Join-Path $env:GITHUB_WORKSPACE 'AppPackages'
           $sourceDir = Join-Path $env:GITHUB_WORKSPACE 'FinalPackages'
+          $bundleDir = Join-Path $env:GITHUB_WORKSPACE 'BundleStaging'
           New-Item -ItemType Directory -Path $sourceDir -Force | Out-Null
+          New-Item -ItemType Directory -Path $bundleDir -Force | Out-Null
 
           $msix = Get-ChildItem $appPackages -Filter *.msix -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
           if (-not $msix) {
@@ -117,22 +119,28 @@ jobs:
             exit 1
           }
 
-          Copy-Item $msix.FullName $sourceDir -Force
-          Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'signing.cer') $sourceDir -Force
-          Copy-Item 'docs/sideload-guide.txt' (Join-Path $sourceDir '安装说明.txt') -Force
-          Copy-Item 'scripts/Install.ps1' (Join-Path $sourceDir 'Install.ps1') -Force
+          # 裸 msix：供应用内更新直接交给部署 API，命名与 zip 保持一致.
+          $bareMsixName = "BiliCopilot_" + $version + "_x64.msix"
+          Copy-Item $msix.FullName (Join-Path $sourceDir $bareMsixName) -Force
+
+          # zip：首次安装用，内含 msix + 证书 + 安装脚本 + 说明.
+          Copy-Item $msix.FullName $bundleDir -Force
+          Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'signing.cer') $bundleDir -Force
+          Copy-Item 'docs/sideload-guide.txt' (Join-Path $bundleDir '安装说明.txt') -Force
+          Copy-Item 'scripts/Install.ps1' (Join-Path $bundleDir 'Install.ps1') -Force
 
           $zipName = "BiliCopilot_" + $version + "_x64.zip"
           $zipPath = Join-Path $sourceDir $zipName
-          Compress-Archive -Path (Join-Path $sourceDir '*') -DestinationPath $zipPath -Force
-          Get-ChildItem $sourceDir -File | Where-Object { $_.Name -ne $zipName } | Remove-Item -Force
+          Compress-Archive -Path (Join-Path $bundleDir '*') -DestinationPath $zipPath -Force
+          Remove-Item $bundleDir -Recurse -Force
           Write-Host "已生成: " + $zipPath
+          Write-Host "已生成: " + (Join-Path $sourceDir $bareMsixName)
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: BiliCopilot-x64
-          path: ${{ github.workspace }}\FinalPackages\*.zip
+          path: ${{ github.workspace }}\FinalPackages\*
 
       - name: Create GitHub Release
         if: ${{ inputs.publish_release }}
@@ -141,7 +149,7 @@ jobs:
           tag_name: v${{ inputs.version }}
           name: Bili.Copilot ${{ inputs.version }}
           body: ${{ inputs.release_notes }}
-          files: ${{ github.workspace }}\FinalPackages\*.zip
+          files: ${{ github.workspace }}\FinalPackages\*
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
