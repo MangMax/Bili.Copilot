@@ -162,12 +162,21 @@ public sealed partial class PlayerViewModel
     }
 
     /// <summary>
+    /// 跳转到指定秒数.
+    /// </summary>
+    /// <param name="seconds">目标秒数.</param>
+    /// <returns><see cref="Task"/>.</returns>
+    [RelayCommand]
+    private Task SeekToTimestampAsync(double seconds)
+        => ChangePositionAsync(seconds);
+
+    /// <summary>
     /// 改变当前播放位置.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
     public async Task ChangePositionAsync(double position)
     {
-        if (Player is null || position < 0 || position > Player.Duration || Math.Abs(Player.Position - position) < 2)
+        if (Player is null || double.IsNaN(position) || position < 0 || position > Player.Duration || Math.Abs(Player.Position - position) < 2)
         {
             return;
         }
