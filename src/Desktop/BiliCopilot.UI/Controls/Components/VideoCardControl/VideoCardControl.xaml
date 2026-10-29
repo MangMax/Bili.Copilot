@@ -59,8 +59,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
-                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
-                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
                                     <base:TrimTextBlock
@@ -170,8 +169,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
-                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
-                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
                                     <base:TrimTextBlock
@@ -296,8 +294,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Button
                                         AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
-                                        Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
-                                        IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                        x:Name="AuthorButton"
                                         Style="{StaticResource TextButtonStyle}"
                                         ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
                                         <base:TrimTextBlock
@@ -530,8 +527,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
-                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
-                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
                                     <TextBlock
@@ -765,8 +761,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
-                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
-                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
                                     <TextBlock
@@ -959,8 +954,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
-                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
-                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
                                     <TextBlock
@@ -1134,8 +1128,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
-                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
-                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}"
                                     Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author, Converter={StaticResource ObjectToVisibilityConverter}}">
@@ -1365,8 +1358,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     AutomationProperties.HelpText="{ext:Locale Name=EnterUserSpace}"
-                                    Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.ShowUserSpaceCommand}"
-                                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.IsUserValid}"
+                                    x:Name="AuthorButton"
                                     Style="{StaticResource TextButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
                                     <TextBlock
