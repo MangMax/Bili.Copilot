@@ -28,8 +28,9 @@ public sealed record TimestampTextSegment(string Text, double? Seconds)
 /// </remarks>
 public static class TimestampText
 {
+    // `m:ss` 后面若紧跟 `:数字`，说明它只是非法 `h:mm:ss` 的前缀，不能单独识别.
     private static readonly Regex TimeStampPattern = new(
-        @"(?<!\d)(?:(?<hour>\d{1,2}):(?<minute>[0-5]\d):(?<second>[0-5]\d)|(?<minuteOnly>[0-5]?\d):(?<secondOnly>[0-5]\d))(?!\d)",
+        @"(?<!\d)(?:(?<hour>\d{1,2}):(?<minute>[0-5]\d):(?<second>[0-5]\d)|(?<minuteOnly>[0-5]?\d):(?<secondOnly>[0-5]\d)(?!:\d))(?!\d)",
         RegexOptions.Compiled);
 
     /// <summary>

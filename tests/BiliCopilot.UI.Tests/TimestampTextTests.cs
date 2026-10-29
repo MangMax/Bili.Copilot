@@ -26,6 +26,9 @@ public class TimestampTextTests
     [InlineData("1:60")]
     [InlineData("60:00")]
     [InlineData("1:60:03")]
+    [InlineData("01:23:99")]
+    [InlineData("1:02:60")]
+    [InlineData("1:59:60")]
     public void Split_OutOfRangeTimestamp_RemainsPlainText(string input)
     {
         var segment = Assert.Single(TimestampText.Split(input));
