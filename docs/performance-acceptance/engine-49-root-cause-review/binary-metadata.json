@@ -1,0 +1,99 @@
+[
+  {
+    "methods": [],
+    "fields": [
+      "_updateTimeQueue",
+      "_updateEvent",
+      "_danmakuList",
+      "_stateGate",
+      "_generation",
+      "_wantsPlaying",
+      "_isSeeking",
+      "_testDequeued",
+      "_testIdle",
+      "_isClosing",
+      "_lastIndex",
+      "_lastTimeMs",
+      "_isTopEnabled",
+      "_isBottomEnabled",
+      "_isRollingEnabled",
+      "_updateThread",
+      "DanmakuRendered",
+      "PauseRequested",
+      "ResumeRequested",
+      "StopRequested"
+    ],
+    "type": "DanmakuScheduler",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final\\Danmaku.Core.dll",
+    "sha256": "B67972A3E09B3B548DFFBE0C5D9E85A74B2322F886D30E7C228D9A8DD078DD56"
+  },
+  {
+    "methods": [],
+    "fields": [
+      "DefaultDanmakuLayerCount",
+      "_render",
+      "_updateTimeQueue",
+      "_updateEvent",
+      "_danmakuList",
+      "_stateGate",
+      "_generation",
+      "_wantsPlaying",
+      "_isSeeking",
+      "_testDequeued",
+      "_testIdle",
+      "_isClosing",
+      "_lastIndex",
+      "_lastTimeMs",
+      "_isTopEnabled",
+      "_isBottomEnabled",
+      "_isRollingEnabled"
+    ],
+    "type": "DanmakuFrostMaster",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final\\Danmaku.Legacy.dll",
+    "sha256": "68F030BBDAFE03A28FC0CA3722D7F4C9C8CD8393964CFB4FB66F7BC64303C91D"
+  },
+  {
+    "methods": [
+      {
+        "il": "027B1600000414285900000A2C140217FE137D24000004027B160000046F9000000A2A",
+        "name": "Pause"
+      },
+      {
+        "il": "027B160000042C24022824000006220000000031170228260000062200000000310A02FE137B240000042C012A160A160B2B1D027B19000004079A7B610000046F6900000A163104170A2B0F0717580B07027B190000048E6932D8062D012A160C38B3020000027B19000004089A7B620000040D027B19000004089A7B6100000413041104130516130611051206282E00000A11046F6900000A17591307385C02000002FE137B1A0000042C05DD77020000110411076FA000000A13081108FE137B3D0000042D1C1108046FA100000A7BA200000A7D3E000004110817FE137D3D000004046FA100000A130C120C7CA300000A28A400000A6B1309046FA100000A7BA200000A11087B3E00000428A500000A130D120D28A400000A6B130A16130B11087B3A000004130E110E17594506000000050000009A0100009A010000A5000000A5000000170100003895010000036FA600000A2D2B110825FE137B43000004110902FE137B230000041108FE137B4100000428450000065A59FE137D430000041108FE137B450000042C421108FE137B430000040228240000061108FE137B410000045922000040425934210911087B310000041108FE137B590000046D6F49000006110816FE137D450000041108FE137B430000041108FE137B410000046541FD00000017130B38F500000011080228240000061108FE137B410000045922000000405BFE137D4300000411087B51000004166A35072200803B452B0911087B51000004766B130F110A110F43B000000017130B1108FE137B45000004399F0000000911087B310000041108FE137B590000046D6F490000063883000000036FA600000A2D2B110825FE137B43000004110902FE137B230000041108FE137B4100000428450000065A58FE137D430000041108FE137B450000042C311108FE137B43000004220000404236210911087B310000041108FE137B590000046D6F49000006110816FE137D450000041108FE137B43000004022824000006370317130B110B2C1011086F50000006110411076FA700000A1107175913071107163C9CFDFFFFDE0C11062C071105283500000ADC0817580C086E027B190000048E696A3F3DFDFFFF2A",
+        "name": "OnCanvasUpdate"
+      }
+    ],
+    "fields": [
+      "StandardCanvasWidth",
+      "DefaultRollingSpeed",
+      "DefaultBottomAndTopDurationMs",
+      "DefaultFontFamilyName",
+      "_canvas",
+      "_container",
+      "_device",
+      "_renderLayerList",
+      "_isStopped",
+      "_dpi",
+      "_autoControlDensity",
+      "_textBold",
+      "_noOverlapSubtitle",
+      "_maxDanmakuSize",
+      "_rollingDensity",
+      "_danmakuFontSizeScale",
+      "_rollingAreaRatio",
+      "_rollingSpeed",
+      "_isPaused",
+      "_scale",
+      "_textOpacity",
+      "_borderColor",
+      "_defaultFontFamilyName",
+      "_outlineSize",
+      "<CanvasWidth>k__BackingField",
+      "<CanvasHeight>k__BackingField",
+      "<DebugMode>k__BackingField"
+    ],
+    "type": "DanmakuRender",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-c9d5219a\\artifacts\\engine49\\layout-final\\Danmaku.Legacy.dll",
+    "sha256": "68F030BBDAFE03A28FC0CA3722D7F4C9C8CD8393964CFB4FB66F7BC64303C91D"
+  }
+]

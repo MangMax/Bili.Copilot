@@ -1,0 +1,14 @@
+{
+  "remainingOwnedProcesses": 0,
+  "yieldCode": 0,
+  "identity": "BiliCopilot.Acceptance49Trace9D66",
+  "remainingPackages": 0,
+  "yieldResult": {
+    "released": true
+  },
+  "installLocation": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\layout",
+  "ownedPids": [
+    38392,
+    22196
+  ]
+}

@@ -1,0 +1,40 @@
+--- a/App.xaml.cs
++++ b/App.xaml.cs
+@@ -15,9 +15,9 @@
+  Window window; Grid slot=new(); TextBlock status=new(); VideoDanmakuPanel panel; DanmakuRenderViewModel vm;
+  int serial, loads, unloads; bool busy;
+  readonly string log=Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path,"events.jsonl");
+- public App(){InitializeComponent();UnhandledException+=(_,e)=>Write("UNHANDLED",new{error=e.Exception.ToString()});}
++ public App(){AppDomain.CurrentDomain.FirstChanceException += (_,e) => { try { File.AppendAllText(Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path,"firstchance.txt"),e.Exception.ToString()+Environment.NewLine); } catch {} };InitializeComponent();UnhandledException+=(_,e)=>Write("UNHANDLED",new{error=e.Exception.ToString()});}
+  protected override void OnLaunched(LaunchActivatedEventArgs args){
+-  window=new Window{Title="Acceptance 49 C4D3 — actual VideoDanmakuPanel"};
++  window=new Window{Title="Acceptance 49 C9D5 — actual VideoDanmakuPanel"};
+   var root=new Grid{Padding=new Thickness(12),RowSpacing=8};
+   root.RowDefinitions.Add(new RowDefinition{Height=GridLength.Auto});root.RowDefinitions.Add(new RowDefinition{Height=GridLength.Auto});root.RowDefinitions.Add(new RowDefinition());
+   var commands=new StackPanel{Spacing=4};root.Children.Add(commands);
+@@ -39,13 +39,17 @@
+   Add("UnloadQueued",()=>{vm.Redraw();vm.Renderer=engine==DanmakuRendererType.DirectX?DanmakuRendererType.Win2D:DanmakuRendererType.DirectX;slot.Children.Clear();});
+   Add("DetachedUpdates",()=>{vm.Initialize(Items("DETACHED"));vm.UpdatePosition(20);vm.Pause();vm.Redraw();});
+   Add("Remount",()=>{if(slot.Children.Count==0)slot.Children.Add(panel);});
+-  Add("Realtime",()=>vm.AddDanmaku("PUBLIC VM REALTIME"));Add("Switch",()=>{engine=engine==DanmakuRendererType.DirectX?DanmakuRendererType.Win2D:DanmakuRendererType.DirectX;vm.Renderer=engine;});Add("Sample",()=>{});Add("Close",()=>window.Close());
++  Add("Realtime",()=>vm.AddDanmaku("PUBLIC VM REALTIME"));Add("Switch",()=>{engine=engine==DanmakuRendererType.DirectX?DanmakuRendererType.Win2D:DanmakuRendererType.DirectX;vm.Renderer=engine;});Add("Exact",()=>{vm.Initialize(new List<DanmakuInformation>(){new("E2","EXACT TOP 2",5,2,0xFFFFFF,30),new("R2","EXACT ROLL 2",1,2,0x00FFFF,30),new("E20","EXACT TOP 20",5,20,0xFFFFFF,30),new("R20","EXACT ROLL 20",1,20,0xFFFF00,30)});vm.UpdatePosition(2);});
++  Add("Motion",()=>{vm.Resume();vm.AddDanmaku("CONTINUOUS MOTION");motionClock.Restart();motionTimer ??= new DispatcherTimer{Interval=TimeSpan.FromMilliseconds(40)};motionTimer.Tick-=MotionTick;motionTimer.Tick+=MotionTick;motionTimer.Start();});
++  Add("FreezeMotion",()=>{motionTimer?.Stop();vm.Pause();});Add("Sample",()=>{});Add("EngineTests",()=>_ = RunEngineTests());Add("Close",()=>window.Close());
+   AutomationProperties.SetAutomationId(status,"Status");Grid.SetRow(status,1);root.Children.Add(status);
+   slot.Background=new SolidColorBrush(Microsoft.UI.Colors.Black);Grid.SetRow(slot,2);root.Children.Add(slot);
+   window.Content=root;window.AppWindow.Resize(new Windows.Graphics.SizeInt32(1400,820));window.Activate();
+   Write("launch",new{pid=Environment.ProcessId,identity=Windows.ApplicationModel.Package.Current.Id.Name});
+   status.Text="ready";
+  }
++ DispatcherTimer motionTimer; readonly Stopwatch motionClock=new();
++ void MotionTick(object sender,object args)=>vm.UpdatePosition(20+(int)motionClock.Elapsed.TotalSeconds);
+  DanmakuRendererType engine;
+  static List<DanmakuInformation> Items(string prefix)=>new(){
+   new("1",prefix+" TOP @1.999",5,1.999,0xFFFFFF,30),new("2",prefix+" ROLL @1.999",1,1.999,0x00FFFF,30),
+@@ -67,3 +71,6 @@
+  }
+  void Write(string kind,object data)=>File.AppendAllText(log,JsonSerializer.Serialize(new{utc=DateTimeOffset.UtcNow,kind,data})+Environment.NewLine);
+ }
++
++
++

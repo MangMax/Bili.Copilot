@@ -1,0 +1,32 @@
+[
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\original\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Core\\bin\\x64\\Release\\net9.0-windows10.0.22621.0\\Danmaku.Core.dll",
+    "sha256": "9CBF889D39DC89E9B0D1CF6C684C43236E948941F677B135A4676418F6E62180",
+    "diagnosticFields": [],
+    "mvid": "73cc854c-f81a-4fd8-b410-32161a75b970"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\original\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Core\\bin\\x64\\Release\\net9.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "sha256": "CF8F2693EF991290BD99BA410666CC3DEC8FF0CC47BBF636ADA4CBBF35FD05B6",
+    "diagnosticFields": [],
+    "mvid": "fa532563-15c9-407f-87d1-75e97262a194"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\original\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Legacy\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Legacy.dll",
+    "sha256": "572B236AC109D81E33A8C8EE125C0AC943E61A8EB2F7B4E4B385998AE950278A",
+    "diagnosticFields": [],
+    "mvid": "19ed11d7-245c-4449-b2e5-989c0928513d"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\original\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Legacy\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "sha256": "CF8F2693EF991290BD99BA410666CC3DEC8FF0CC47BBF636ADA4CBBF35FD05B6",
+    "diagnosticFields": [],
+    "mvid": "fa532563-15c9-407f-87d1-75e97262a194"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-9d663a29\\artifacts\\engine49-trace\\original\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Share\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Share.dll",
+    "sha256": "CF8F2693EF991290BD99BA410666CC3DEC8FF0CC47BBF636ADA4CBBF35FD05B6",
+    "diagnosticFields": [],
+    "mvid": "fa532563-15c9-407f-87d1-75e97262a194"
+  }
+]
