@@ -70,7 +70,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
     {
         var players = this.Get<AppViewModel>().Players;
         var player = players.LastOrDefault();
-        if (player is null || seconds <= 0)
+        if (player is null)
         {
             return;
         }
