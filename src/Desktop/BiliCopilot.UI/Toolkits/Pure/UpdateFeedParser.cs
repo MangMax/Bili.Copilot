@@ -14,7 +14,7 @@ namespace BiliCopilot.UI.Toolkits;
 /// <param name="Version">归一后的版本号，例如 2.2610.3.0.</param>
 /// <param name="Notes">发布说明的纯文本.</param>
 /// <param name="PublishedAt">发布时间；无法解析时为 null.</param>
-internal sealed record UpdateReleaseInfo(string Tag, string Version, string Notes, DateTimeOffset? PublishedAt);
+public sealed record UpdateReleaseInfo(string Tag, string Version, string Notes, DateTimeOffset? PublishedAt);
 
 /// <summary>
 /// GitHub Releases Atom Feed 解析.
@@ -23,7 +23,7 @@ internal sealed record UpdateReleaseInfo(string Tag, string Version, string Note
 /// 使用 Atom Feed 而不是 REST API，是因为 Feed 没有 60 次/小时的配额限制，
 /// 并且同样包含 pre-release。
 /// </remarks>
-internal static partial class UpdateFeedParser
+public static partial class UpdateFeedParser
 {
     private const string TagMarker = "/releases/tag/";
 

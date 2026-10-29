@@ -11,7 +11,7 @@ namespace BiliCopilot.UI.Toolkits;
 /// <param name="Name">文件名.</param>
 /// <param name="DownloadPath">相对下载路径，以 / 开头.</param>
 /// <param name="Sha256">页面给出的 sha256；没有时为 null.</param>
-internal sealed record UpdateAsset(string Name, string DownloadPath, string? Sha256)
+public sealed record UpdateAsset(string Name, string DownloadPath, string? Sha256)
 {
     /// <summary>
     /// 是否为 MSIX 安装包.
@@ -27,7 +27,7 @@ internal sealed record UpdateAsset(string Name, string DownloadPath, string? Sha
 /// <summary>
 /// 资产类型.
 /// </summary>
-internal enum UpdateAssetKind
+public enum UpdateAssetKind
 {
     /// <summary>
     /// 没有可用资产.
@@ -50,7 +50,7 @@ internal enum UpdateAssetKind
 /// </summary>
 /// <param name="Kind">选中的类型.</param>
 /// <param name="Asset">选中的资产；<see cref="UpdateAssetKind.None"/> 时为 null.</param>
-internal sealed record UpdateAssetSelection(UpdateAssetKind Kind, UpdateAsset? Asset);
+public sealed record UpdateAssetSelection(UpdateAssetKind Kind, UpdateAsset? Asset);
 
 /// <summary>
 /// Releases 资产页解析与资产筛选.
@@ -59,7 +59,7 @@ internal sealed record UpdateAssetSelection(UpdateAssetKind Kind, UpdateAsset? A
 /// 资产页是 github.com 的 HTML 片段端点，不消耗 REST API 配额，
 /// 且同时给出文件名与 sha256。
 /// </remarks>
-internal static partial class UpdateAssetParser
+public static partial class UpdateAssetParser
 {
     /// <summary>
     /// 解析资产页 HTML.

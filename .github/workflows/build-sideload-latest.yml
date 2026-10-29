@@ -34,12 +34,17 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 两个架构都发布：客户端按当前进程架构挑包，缺哪个架构就会提示没有可用更新.
+        platform: [x64, arm64]
     env:
       Project_Path: src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj
       Manifest_Path: src/Desktop/BiliCopilot.UI/Package.appxmanifest
       Solution_Path: src/Bili.Copilot.sln
       Configuration: Release
-      Platform: x64
+      Platform: ${{ matrix.platform }}
 
     steps:
       - name: Checkout
@@ -120,7 +125,7 @@ jobs:
           }
 
           # 裸 msix：供应用内更新直接交给部署 API，命名与 zip 保持一致.
-          $bareMsixName = "BiliCopilot_" + $version + "_x64.msix"
+          $bareMsixName = "BiliCopilot_" + $version + "_" + "${{ env.Platform }}" + ".msix"
           Copy-Item $msix.FullName (Join-Path $sourceDir $bareMsixName) -Force
 
           # zip：首次安装用，内含 msix + 证书 + 安装脚本 + 说明.
@@ -129,7 +134,7 @@ jobs:
           Copy-Item 'docs/sideload-guide.txt' (Join-Path $bundleDir '安装说明.txt') -Force
           Copy-Item 'scripts/Install.ps1' (Join-Path $bundleDir 'Install.ps1') -Force
 
-          $zipName = "BiliCopilot_" + $version + "_x64.zip"
+          $zipName = "BiliCopilot_" + $version + "_" + "${{ env.Platform }}" + ".zip"
           $zipPath = Join-Path $sourceDir $zipName
           Compress-Archive -Path (Join-Path $bundleDir '*') -DestinationPath $zipPath -Force
           Remove-Item $bundleDir -Recurse -Force
@@ -139,11 +144,23 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BiliCopilot-x64
+          name: BiliCopilot-${{ matrix.platform }}
           path: ${{ github.workspace }}\FinalPackages\*
 
+  # 两个架构并行构建后统一发布：Release 只能由一个 job 创建，否则同 tag 会冲突.
+  publish:
+    needs: build
+    runs-on: windows-latest
+    if: ${{ inputs.publish_release }}
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: BiliCopilot-*
+          path: ${{ github.workspace }}\FinalPackages
+          merge-multiple: true
+
       - name: Create GitHub Release
-        if: ${{ inputs.publish_release }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.version }}
