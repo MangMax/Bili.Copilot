@@ -45,6 +45,7 @@ public partial class App : Application
         var lifecycleRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
         toolbar.Children.Add(lifecycleRow);
         Add(lifecycleRow, "Initial", () => Observe("InitialTemplateLoaded", () => loads == 1 && unloads == 0 && markdown.IsLoaded && Blocks() == 7 && Rendered(), "first template/Loaded renders exactly seven blocks"));
+        Add(lifecycleRow, "Continue", () => checkpoint?.TrySetResult());
         Add(lifecycleRow, "Lifecycle", async () => {
             try { await VerifyLifecycle(); }
             catch (Exception e) { Record("LifecycleBoundaries", false, e.ToString()); }
@@ -84,7 +85,7 @@ public partial class App : Application
         var value = new MarkdownTextBlock { Config = new MarkdownConfig { ImageProvider = new OfflineImageProvider() }, Text = fixture };
         AutomationProperties.SetAutomationId(value, "RealMarkdown");
         value.Unloaded += (_, _) => unloads++;
-        value.Loaded += (_, _) => loads++;
+        value.Loaded += (_, _) => { loads++; if (loads == 1) { Record("FirstLoadedImmediate", Rendered(), "observation in first Loaded event"); _ = ReadyRecord("FirstLoadedImmediate", () => markdown.IsLoaded && Blocks() == 7 && Rendered()); } };
         return value;
     }
 
@@ -135,14 +136,17 @@ public partial class App : Application
             await Transition(true);
             var passed = ReferenceEquals(same, markdown) && markdown.Text == fixture && markdown.IsLoaded && Blocks() == 7 && Rendered();
             Record($"RepeatedAttach{i}", passed, "same instance/text, actual unload/load, exactly seven blocks");
-            if (!passed) throw new Exception("Repeated attach lost or duplicated content");
+            await ReadyRecord($"RepeatedAttach{i}", () => ReferenceEquals(same, markdown) && markdown.Text == fixture && markdown.IsLoaded && Blocks() == 7 && Rendered());
+            await Checkpoint();
         }
         markdown.Text = "";
         await Transition(false); await Transition(true);
         var empty = markdown.Text == "" && markdown.IsLoaded && Blocks() == 0;
         Record("EmptyTextReattach", empty, "empty text remains empty after Loaded");
         if (!empty) throw new Exception("Empty reattach restored stale content");
+        await Checkpoint();
         markdown.Text = fixture;
+        Record("LifecycleAssignmentImmediate", ReferenceEquals(same, markdown) && Blocks() == 7 && Rendered(), "synchronous observation immediately after Text assignment; before dispatcher UpdateLayout");
         Observe("LifecycleBoundaries", () => ReferenceEquals(same, markdown) && Blocks() == 7 && Rendered(), "reassign after empty attach restores exactly seven blocks");
     }
 
@@ -180,7 +184,7 @@ public partial class App : Application
     {
         // Low-priority dispatcher observation lets real layout/Loaded/Unloaded run first.
         window.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
-            () => { try { host.UpdateLayout(); Record(name, assertion(), expected); } catch (Exception e) { Record(name, false, e.ToString()); } });
+            async () => { try { host.UpdateLayout(); Record(name, assertion(), expected); if (markdown.Text == fixture && markdown.IsLoaded && Blocks() > 0) await ReadyRecord(name, assertion); } catch (Exception e) { Record(name + "Ready", false, e.ToString()); } });
     }
 
     private static IEnumerable<DependencyObject> Descendants(DependencyObject root)
@@ -214,13 +218,22 @@ public partial class App : Application
     private void Record(string name, bool passed, string expected)
     {
         status.Text = $"{name}: {(passed ? "PASS" : "FAIL")} | blocks={Blocks()}, loaded={markdown.IsLoaded}, instance={instance}, loads={loads}, unloads={unloads}";
-        records.Add(new { name, passed, expected, blocks = Blocks(), loaded = markdown.IsLoaded, instance, loads, unloads, publications, generating, markdownText = markdown.Text, streamingText = streaming.Text, utc = DateTimeOffset.UtcNow });
+        records.Add(new { name, passed, expected, blocks = Blocks(), loaded = markdown.IsLoaded, instance, loads, unloads, publications, generating, markdownText = markdown.Text, streamingText = streaming.Text, diagnostics = Snapshot(), utc = DateTimeOffset.UtcNow });
         File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "observations.json"), JsonSerializer.Serialize(records, new JsonSerializerOptions { WriteIndented = true }));
     }
 
     private sealed class OfflineImageProvider : IImageProvider
     {
         public bool ShouldUseThisProvider(string url) => url == "https://fixture.invalid/image.png";
-        public Task<Image> GetImage(string url) => Task.FromResult(new Image { Source = new BitmapImage(new Uri("ms-appx:///Assets/Logo.png")), Width = 96, Height = 96 });
+        public Task<Image> GetImage(string url)
+        {
+            var image = new Image { Width = 96, Height = 96 };
+            var trace = new ImageTrace { Id = imageTraces.Count + 1, Created = DateTimeOffset.UtcNow };
+            imageTraces.Add(image, trace);
+            image.ImageOpened += (_, _) => { trace.Opened = DateTimeOffset.UtcNow; imageChanged?.Invoke(); };
+            image.ImageFailed += (_, e) => { trace.Failed = e.ErrorMessage; trace.FailedAt = DateTimeOffset.UtcNow; imageChanged?.Invoke(); };
+            image.Source = new BitmapImage(new Uri("ms-appx:///Assets/Logo.png"));
+            return Task.FromResult(image);
+        }
     }
 }
