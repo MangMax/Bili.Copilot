@@ -121,3 +121,11 @@ Raw launch attempts: `%TEMP%/issue-48-launch.json`, `issue-48-isolated-launch.js
 - Player video/PGC switching, reload, close during active loading: **NOT RUN — login required**. Startup screenshot/close does not count as the ticket's player-close acceptance. This is the remaining UI acceptance blocker.
 - Closed only the owned startup window using `winapp ui invoke btn-close-cc37 -w 3876138 --json`; invocation succeeded, subsequent owned window list was `[]`. Called `winapp ui yield` with workflow `bili-issue-48`. Other task PID `9608` remained running. Desktop slot released and parent notified.
 - Parent can reuse the isolated registered package/layout for a later authenticated acceptance. No existing installed package was uninstalled; no Windows feature was enabled.
+
+## Integration synchronization
+
+- Initial ticket commit: `632f794`.
+- Merged then-current local integration `799d3b216b91f731e3805d781c9e1e832134e840` into this implementation branch as `0b51e478d61e382b13c3c4c3ac7a4f3e3bcc2f85`; no text conflicts.
+- Integration introduced #50's test-only `ILogger`/`NullLogger` declarations, which collided (CS0436) with real logging abstractions brought in by #48's media-service reference. Removed only those redundant logging declarations from `PopularPageTestAdapters.cs`; existing page tests now use real `NullLogger<T>`. No test behavior, runner, production #50 code or package version changed.
+- First postmerge run passed 320 tests but reported CS0436 warnings. After the adapter correction, `dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj --no-restore --logger 'trx;LogFileName=issue-48-postmerge-final.trx'` exited 0 with Passed: 320, Failed: 0, Skipped: 0 and no warnings. Parsed TRX counters confirm total/executed/passed 320, failed/notExecuted 0.
+- Parent subsequently froze integration at the #47 merge for final synchronization; final fixed-tip evidence follows.
