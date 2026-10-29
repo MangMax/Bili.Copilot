@@ -3279,4 +3279,13 @@
   <data name="IncrementalRecommendRefreshDescription" xml:space="preserve">
     <value>刷新推荐视频时保留当前列表，仅在顶部插入新视频</value>
   </data>
+  <data name="UndoRefresh" xml:space="preserve">
+    <value>撤销刷新</value>
+  </data>
+  <data name="RefreshResultAdded" xml:space="preserve">
+    <value>已增量刷新，新增 {0} 条推荐视频</value>
+  </data>
+  <data name="RefreshResultReloaded" xml:space="preserve">
+    <value>已刷新推荐视频</value>
+  </data>
 </root>

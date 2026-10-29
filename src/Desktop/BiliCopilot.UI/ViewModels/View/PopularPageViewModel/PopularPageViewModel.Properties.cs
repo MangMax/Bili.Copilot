@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,11 @@ public sealed partial class PopularPageViewModel
     private long _recommendOffset;
     private long _hotOffset;
 
+    /// <summary>
+    /// 推荐分区刷新前的快照，非 null 表示可以撤销这次刷新.
+    /// </summary>
+    private RecommendRefreshSnapshot<VideoItemViewModel>? _recommendRefreshSnapshot;
+
     [ObservableProperty]
     private bool _isPartitionLoading;
 
@@ -28,6 +34,12 @@ public sealed partial class PopularPageViewModel
 
     [ObservableProperty]
     private IPopularSectionItemViewModel _selectedSection;
+
+    [ObservableProperty]
+    private bool _isRefreshTipVisible;
+
+    [ObservableProperty]
+    private string _refreshTipMessage = string.Empty;
 
     /// <summary>
     /// 区块加载完成.
