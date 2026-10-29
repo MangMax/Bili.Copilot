@@ -1,0 +1,11 @@
+PASS: 7 exact behavior cases; final events, real child termination, UIA command exits and owned clipboard cleanup verified.
+PASS raw cross-check: SuccessOpen
+PASS raw cross-check: SuccessDisabled
+PASS raw cross-check: NonzeroExit
+PASS raw cross-check: StartFailure
+PASS raw cross-check: CopyOnlyNoProcess
+PASS raw cross-check: CloseWindowHostAlive
+PASS raw cross-check: CloseLastWindowChildSurvives
+PASS production source SHA256: 8/8
+PASS recorded phase yield and owned cleanup; cleanup-yield itself reports released=false
+Scope: offline record validation only; no fresh UI, shell, child launch or lifecycle experiment.
