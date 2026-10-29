@@ -1,0 +1,42 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "04F0FFCA147306D7952FB5C277C5AE8691F9807276551FB93AB65A3A7347148C",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\App.xaml"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "80EDCF7E5B400AF33733D36B0DCF8A9FF443325E1E97CB58DDBFC541FD656483",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\App.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "7C6BFC767C08CFF43E0CED965733AE22B2D7DEE508CB145E923BF6B6F7931DB1",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\Adapters.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "27CF4852110033CF04CACEBC9DD3392BE45AC7A93A9177D9922B8C0349DA56F1",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\Harness.csproj"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "F0C452785B0718396E00F075B6F6BE0D4938EF913A841CC7881F5BB317C261A7",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\Child\\Program.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "6CF738CC6C779356BD8EB9D384FC6245E7B1AA19F771809A591F653820B09FD7",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\Child\\Child.csproj"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "1808C97CF0F5BDD33E566DF0C7D3332E4F5A362FC08F4487D5A1FBDC61B636D3",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\bin\\x64\\Debug\\net9.0-windows10.0.22621.0\\win-x64\\AppX\\Harness.dll"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "1C9CDFCAD8BFDBFDE7D87754318C90E9B8A642297D37954503684985961811CF",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili55-a187\\bin\\x64\\Debug\\net9.0-windows10.0.22621.0\\win-x64\\AppX\\Assets\\Child\\BBDown.exe"
+  }
+]

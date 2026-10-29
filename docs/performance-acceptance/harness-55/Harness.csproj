@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <Platforms>x64</Platforms><PlatformTarget>x64</PlatformTarget><RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained><UseWinUI>true</UseWinUI><EnableMsixTooling>true</EnableMsixTooling>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>annotations</Nullable><LangVersion>preview</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest><AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6901" />
+    <PackageReference Include="Richasy.WinUIKernel.Share" Version="0.0.12-preview3" />
+    <PackageReference Include="FluentIcons.WinUI" Version="1.2.315" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/ViewModels/Core/DownloadViewModel/*.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Toolkits/Pure/DownloadProcessRunner.cs" Link="Production/DownloadProcessRunner.cs" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Player/DownloadButton.xaml.cs" Link="DownloadButton.xaml.cs" />
+    <Page Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Player/DownloadButton.xaml" Link="DownloadButton.xaml" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Settings/DownloadSettingControl.xaml.cs" Link="DownloadSettingControl.xaml.cs" />
+    <Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Settings/SettingsPageControlBase.cs" Link="Production/SettingsPageControlBase.cs" />
+    <Page Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Settings/DownloadSettingControl.xaml" Link="DownloadSettingControl.xaml" />
+    <Content Include="Assets/**" />
+    <Compile Remove="Child/**" />
+  </ItemGroup>
+</Project>

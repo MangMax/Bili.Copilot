@@ -1,0 +1,4 @@
+{"schemaVersion":1,"utc":"2026-10-29T21:20:46.2757353+00:00","pid":58912,"kind":"prepared","data":{"name":"r3-NonzeroExit","exitCode":7,"missing":false,"open":true,"external":false,"copy":false}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:48.5663592+00:00","pid":58912,"kind":"process-created","data":{}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:48.7386976+00:00","pid":58912,"kind":"process-disposed","data":{"handleCaptured":true,"handleClosed":true}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:48.7432854+00:00","pid":58912,"kind":"production-log","data":{"level":"Warning","message":"Download process exited with code 7."}}

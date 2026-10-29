@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "run2": {
+    "changesBeforeRun3": [
+      "create collection directory explicitly",
+      "write results/calls before collection",
+      "yield in nested finally",
+      "retain external child Handle before exit"
+    ],
+    "childEvidence": "SuccessOpen child exited; process-disposed and folder-adapter recorded",
+    "observedTerminalError": "Copy-Item: cannot copy container onto existing leaf item (finally collector)",
+    "precedingException": "Not preserved because finally masked it; do not infer exact cause",
+    "status": "INCOMPLETE_NOT_PASS"
+  },
+  "last": {
+    "fix": "bounded identity.pid match",
+    "cause": "New process launched before identity.json replacement; stale prior HWND",
+    "status": "SETUP_FAIL"
+  }
+}

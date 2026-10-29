@@ -1,0 +1,5 @@
+{"schemaVersion":1,"utc":"2026-10-29T21:20:53.4986691+00:00","pid":58912,"kind":"prepared","data":{"name":"r3-CopyOnlyNoProcess","exitCode":0,"missing":false,"open":true,"external":true,"copy":true}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:55.8222933+00:00","pid":58912,"kind":"tip","data":{"value":"(Copied, Success)"}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:56.0735406+00:00","pid":58912,"kind":"clipboard-owned","data":{"matches":true,"text":"BBDown -e avc --work-dir \u0022C:\\Users\\hp\\AppData\\Local\\Packages\\BiliCopilot.Acceptance55.A187_y1mf40g4r9srg\\LocalState\\owned-downloads\u0022 -ua \u0022Synthetic-acceptance55\u0022 --cookie \u0022synthetic=offline55\u0022 -token \u0022SYNTHETIC-NOT-A-CREDENTIAL\u0022 --cover-only \u0022https://invalid.example/offline55\u0022"}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:57.3337121+00:00","pid":58912,"kind":"clipboard-cleared","data":{}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:57.7997074+00:00","pid":58912,"kind":"setting","data":{"key":"OnlyCopyCommandWhenDownload","value":false}}

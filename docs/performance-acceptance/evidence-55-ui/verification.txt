@@ -1,0 +1,1 @@
+PASS: 7 exact behavior cases; final events, real child termination, UIA command exits and owned clipboard cleanup verified.

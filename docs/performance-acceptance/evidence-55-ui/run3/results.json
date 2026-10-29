@@ -1,0 +1,26 @@
+[
+  {
+    "status": "PASS",
+    "name": "SuccessOpen"
+  },
+  {
+    "status": "PASS",
+    "name": "SuccessDisabled"
+  },
+  {
+    "status": "PASS",
+    "name": "NonzeroExit"
+  },
+  {
+    "status": "PASS",
+    "name": "StartFailure"
+  },
+  {
+    "status": "PASS",
+    "name": "CopyOnlyNoProcess"
+  },
+  {
+    "status": "PASS",
+    "name": "CloseWindowHostAlive"
+  }
+]
