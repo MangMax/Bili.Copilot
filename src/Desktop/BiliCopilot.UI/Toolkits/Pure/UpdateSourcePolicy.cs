@@ -10,7 +10,7 @@ namespace BiliCopilot.UI.Toolkits;
 /// <param name="ElapsedMs">耗时，单位毫秒.</param>
 /// <param name="SupportsRange">是否支持 Range 分段.</param>
 /// <param name="TotalBytes">探测到的文件总大小；未知时为 0.</param>
-internal sealed record UpdateSourceProbe(
+public sealed record UpdateSourceProbe(
     string Url,
     bool Succeeded,
     long ElapsedMs,
@@ -29,7 +29,7 @@ internal sealed record UpdateSourceProbe(
 /// 全部失败时返回 null，由调用方回退直连——加速失败绝不阻断。
 /// </para>
 /// </remarks>
-internal static class UpdateSourcePolicy
+public static class UpdateSourcePolicy
 {
     /// <summary>
     /// 构造候选地址链：直连在前，镜像按给定顺序依次拼接.

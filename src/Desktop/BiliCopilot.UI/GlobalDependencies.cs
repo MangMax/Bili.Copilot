@@ -178,6 +178,9 @@ internal static class GlobalDependencies
     {
         builder.Services
             .AddSingleton<AppUpdateService>()
+            .AddSingleton<UpdateFetcher>()
+            .AddSingleton<UpdateDownloader>()
+            .AddSingleton<UpdateInstaller>()
             .AddSingleton<AppUpdateViewModel>();
         return builder;
     }

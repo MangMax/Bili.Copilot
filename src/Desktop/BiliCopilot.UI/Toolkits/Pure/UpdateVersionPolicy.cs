@@ -11,7 +11,7 @@ namespace BiliCopilot.UI.Toolkits;
 /// 版本以包身份版本（四段式）为准；发布 tag 可能带前导 v，也可能少写末段。
 /// 比较按数值逐段进行，缺位补 0，不做字符串比较。
 /// </remarks>
-internal static class UpdateVersionPolicy
+public static class UpdateVersionPolicy
 {
     /// <summary>
     /// 去掉空白与可选的前导 v/V.

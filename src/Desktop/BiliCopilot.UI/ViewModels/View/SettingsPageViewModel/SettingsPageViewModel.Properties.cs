@@ -265,7 +265,7 @@ public sealed partial class SettingsPageViewModel
     /// <summary>
     /// 更新视图模型.
     /// </summary>
-    internal Core.AppUpdateViewModel Update => this.Get<Core.AppUpdateViewModel>();
+    public Core.AppUpdateViewModel Update => this.Get<Core.AppUpdateViewModel>();
 
     [ObservableProperty]
     public partial string UpdateMirrorPrefixes { get; set; }
