@@ -68,6 +68,7 @@
                                         FontSize="12"
                                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                         MaxLines="1"
+                                        IsHitTestVisible="False"
                                         Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
                                 </Button>
                                 <base:TrimTextBlock
@@ -179,6 +180,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="12"
                                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                        IsHitTestVisible="False"
                                         MaxLines="1"
                                         Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
                                 </Button>
@@ -305,6 +307,7 @@
                                             FontSize="12"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                             MaxLines="1"
+                                            IsHitTestVisible="False"
                                             Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}" />
                                     </Button>
                                     <TextBlock
