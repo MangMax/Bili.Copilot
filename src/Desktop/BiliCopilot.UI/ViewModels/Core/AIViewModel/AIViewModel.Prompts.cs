@@ -14,6 +14,7 @@ public sealed partial class AIViewModel
 {
     private async Task InitializeVideoPromptsAsync()
     {
+        var source = _videoView;
         if (!FileToolkit.IsLocalDataExist("video_summarize.txt", "Prompt"))
         {
             await this.Get<IFileToolkit>().WriteLocalDataAsync("video_summarize.txt", PromptConstants.VideoSummaryPrompt, default, "Prompt");
@@ -41,11 +42,15 @@ public sealed partial class AIViewModel
             "评价《{0}》的内容",
             videoEvaluationPrompt,
             EvaluateVideoAsync);
-        QuickItems = [videoSummaryItem, videoEvaluationItem];
+        if (ReferenceEquals(source, _videoView))
+        {
+            QuickItems = [videoSummaryItem, videoEvaluationItem];
+        }
     }
 
     private async Task InitializeArticlePromptsAsync()
     {
+        var source = _articleDetail;
         if (!FileToolkit.IsLocalDataExist("article_summarize.txt", "Prompt"))
         {
             await this.Get<IFileToolkit>().WriteLocalDataAsync("article_summarize.txt", PromptConstants.ArticleSummaryPrompt, default, "Prompt");
@@ -73,7 +78,10 @@ public sealed partial class AIViewModel
             "评价《{0}》的内容",
             articleEvaluationPrompt,
             EvaluateArticleAsync);
-        QuickItems = [articleSummaryItem, articleEvaluationItem];
+        if (ReferenceEquals(source, _articleDetail))
+        {
+            QuickItems = [articleSummaryItem, articleEvaluationItem];
+        }
     }
 
     private void InitOtherPrompts(AIQuickItemViewModel? currentPrompt)

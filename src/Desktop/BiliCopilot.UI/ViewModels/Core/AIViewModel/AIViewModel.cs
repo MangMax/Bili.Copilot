@@ -39,6 +39,8 @@ public sealed partial class AIViewModel : ViewModelBase
     public async void InjectVideoAsync(VideoPlayerView videoView, VideoPart videoPart)
     {
         Cancel();
+        QuickItems = [];
+        _articleDetail = null;
         _videoView = videoView;
         _videoPart = videoPart;
         var desc = _videoView.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description);
@@ -55,6 +57,10 @@ public sealed partial class AIViewModel : ViewModelBase
     public async void InjectArticleAsync(ArticleDetail article)
     {
         Cancel();
+        QuickItems = [];
+        _videoView = null;
+        _videoPart = null;
+        _subtitles = null;
         _articleDetail = article;
         SourceCover = article.Identifier.Cover?.Uri;
         SourceTitle = article.Identifier.Title;
@@ -76,6 +82,7 @@ public sealed partial class AIViewModel : ViewModelBase
     [RelayCommand]
     private void Clear()
     {
+        Cancel();
         SelectedService = default;
         SelectedModel = default;
         _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
@@ -172,6 +179,8 @@ public sealed partial class AIViewModel : ViewModelBase
     [RelayCommand]
     private void Discard()
     {
+        _generateCancellationTokenSource?.Cancel();
+        _generateCancellationTokenSource = null;
         Erase();
         RequestText = string.Empty;
         IsGenerating = false;
@@ -198,7 +207,6 @@ public sealed partial class AIViewModel : ViewModelBase
         if (_generateCancellationTokenSource is not null)
         {
             _generateCancellationTokenSource.Cancel();
-            _generateCancellationTokenSource.Dispose();
             _generateCancellationTokenSource = default;
         }
 
@@ -232,8 +240,6 @@ public sealed partial class AIViewModel : ViewModelBase
         {
             await AskArticleQuestionAsync(question);
         }
-
-        _lastQuestion = question;
     }
 
     private void Erase()
