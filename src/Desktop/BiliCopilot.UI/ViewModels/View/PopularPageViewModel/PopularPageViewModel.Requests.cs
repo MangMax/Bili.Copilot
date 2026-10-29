@@ -53,11 +53,8 @@ public sealed partial class PopularPageViewModel
                 ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
                 ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
 
-            Videos.Clear();
-            foreach (var video in application.Items)
-            {
-                Videos.Add(video);
-            }
+            // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
+            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
 
             ShowRefreshTip(application.Message);
 
