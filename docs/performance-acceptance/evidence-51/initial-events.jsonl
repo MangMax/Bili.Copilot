@@ -1,0 +1,17 @@
+{"ms":0.034,"kind":"launch","data":{"pid":42488,"identity":"BiliCopilot.Acceptance51B48A"}}
+{"ms":226.9385,"kind":"state","data":{"condition":"loaded","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":0}}
+{"ms":237.5586,"kind":"input-ready","data":null}
+{"ms":12727.7557,"kind":"request","data":{"Id":1,"keyword":"\u003Crecommend\u003E","IsCancellationRequested":false}}
+{"ms":12731.5684,"kind":"state","data":{"condition":"request","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":12789.9823,"kind":"state","data":{"condition":"focus","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":12799.4701,"kind":"cancel","data":{"Id":1,"keyword":"\u003Crecommend\u003E"}}
+{"ms":12802.284,"kind":"state","data":{"condition":"collection","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":12958.7898,"kind":"text","data":{"Text":"bili","reason":"UserInput","keyword":"bili"}}
+{"ms":12960.7297,"kind":"state","data":{"condition":"text","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":13222.0871,"kind":"state","data":{"condition":"collection","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":13222.9074,"kind":"request","data":{"Id":2,"keyword":"bili","IsCancellationRequested":false}}
+{"ms":13223.3145,"kind":"state","data":{"condition":"request","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":13589.2616,"kind":"action","data":"ReleaseNewest"}
+{"ms":13622.8292,"kind":"complete","data":{"Id":2,"Keyword":"bili","cancelled":false}}
+{"ms":13625.3545,"kind":"state","data":{"condition":"collection","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":["bili result"],"requests":2}}
+{"ms":13628.7495,"kind":"state","data":{"condition":"blur","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":["bili result"],"requests":2}}

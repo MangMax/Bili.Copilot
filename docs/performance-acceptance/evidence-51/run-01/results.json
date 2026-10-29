@@ -1,0 +1,54 @@
+{
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\BurstFinalPopup-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\selection.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\SelectionDoesNotRequery-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\OutOfOrderOldNeverPublishes-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\ClearRejectsLateResult-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\EmptyFocusRecommendations-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\UnloadRemountRejectsLateResult-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\ime-composing.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\ime-committed.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\run-01\\ChineseImeComposition-failure.png"
+  ],
+  "appPid": 57744,
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-b48a-layout2",
+  "checks": [
+    {
+      "passed": false,
+      "error": "Timed out: request bili",
+      "name": "BurstFinalPopup"
+    },
+    {
+      "passed": false,
+      "error": "无法覆盖变量 True ，因为它是只读变量或常量。",
+      "name": "SelectionDoesNotRequery"
+    },
+    {
+      "passed": false,
+      "error": "Timed out: request old",
+      "name": "OutOfOrderOldNeverPublishes"
+    },
+    {
+      "passed": false,
+      "error": "Timed out: request clearflight",
+      "name": "ClearRejectsLateResult"
+    },
+    {
+      "passed": false,
+      "error": "Timed out: new recommendation request",
+      "name": "EmptyFocusRecommendations"
+    },
+    {
+      "passed": false,
+      "error": "Timed out: request pending",
+      "name": "UnloadRemountRejectsLateResult"
+    },
+    {
+      "passed": false,
+      "error": "无法覆盖变量 True ，因为它是只读变量或常量。",
+      "name": "ChineseImeComposition"
+    }
+  ],
+  "target": "local"
+}

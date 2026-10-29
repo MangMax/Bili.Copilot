@@ -1,0 +1,11 @@
+
+passed error                                        name
+------ -----                                        ----
+ False Timed out: request bili                      BurstFinalPopup
+ False 无法覆盖变量 True ，因为它是只读变量或常量。 SelectionDoesNotRequery
+ False Timed out: request old                       OutOfOrderOldNeverPublishes
+ False Timed out: request clearflight               ClearRejectsLateResult
+ False Timed out: new recommendation request        EmptyFocusRecommendations
+ False Timed out: request pending                   UnloadRemountRejectsLateResult
+ False 无法覆盖变量 True ，因为它是只读变量或常量。 ChineseImeComposition
+
