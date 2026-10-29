@@ -19,6 +19,10 @@ public sealed partial class PopularPageViewModel
 
     private long _recommendOffset;
     private long _hotOffset;
+    // 切换或刷新后，旧请求和旧调度回调不再拥有当前列表。
+    private long _sectionVersion;
+    // 排队切换尚未执行时，Videos 仍属于之前显示的栏目。
+    private IPopularSectionItemViewModel _displayedSection;
 
     [ObservableProperty]
     private bool _isPartitionLoading;
@@ -30,7 +34,7 @@ public sealed partial class PopularPageViewModel
     private IPopularSectionItemViewModel _selectedSection;
 
     /// <summary>
-    /// 区块加载完成.
+    /// 初始栏目选择已确定，分区目录可能仍在加载.
     /// </summary>
     public event EventHandler SectionInitialized;
 
