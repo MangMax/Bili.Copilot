@@ -1,8 +1,16 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Extensions;
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.IO.Compression;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using Windows.Management.Deployment;
+using Windows.Storage;
 
 namespace BiliCopilot.UI.Update;
 
@@ -66,6 +74,18 @@ internal sealed class AppUpdateService
         "https://gh.llkk.cc/",
         "https://ghfast.top/",
     ];
+
+    /// <summary>下载安装包时用的内置镜像（实测均支持 Range）.</summary>
+    private static readonly string[] DownloadMirrors =
+    [
+        "https://gh-proxy.com/",
+        "https://gh.llkk.cc/",
+        "https://fastgit.cc/",
+        "https://ghfast.top/",
+    ];
+
+    /// <summary>探测时的采样字节数.</summary>
+    private const int ProbeBytes = 64 * 1024;
 
     private static readonly HttpClient SharedHttpClient = new() { Timeout = TimeSpan.FromSeconds(15) };
 
@@ -169,6 +189,307 @@ internal sealed class AppUpdateService
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// 下载安装包到本地更新目录，并校验摘要.
+    /// </summary>
+    /// <param name="asset">要下载的资产.</param>
+    /// <param name="progress">进度回调，取值 0-100.</param>
+    /// <param name="cancellationToken">取消令牌.</param>
+    /// <returns>下载完成的本地路径；失败时返回 null.</returns>
+    public async Task<string?> DownloadAsync(
+        UpdateAsset asset,
+        IProgress<double>? progress,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(asset);
+
+        try
+        {
+            var absoluteUrl = "https://github.com" + asset.DownloadPath;
+            var candidates = UpdateSourcePolicy.BuildCandidates(absoluteUrl, DownloadMirrors.Concat(ParseUserMirrors()));
+            var probes = await ProbeAsync(candidates, cancellationToken).ConfigureAwait(false);
+            var remembered = SettingsToolkit.ReadLocalSetting(SettingNames.UpdateLastSource, string.Empty);
+            var source = UpdateSourcePolicy.Select(probes, remembered) ?? absoluteUrl;
+            SettingsToolkit.WriteLocalSetting(SettingNames.UpdateLastSource, source);
+
+            // 只有沿用上次的源时才续传；换源后内容可能不一致，必须从头下载.
+            var allowResume = !string.IsNullOrEmpty(remembered)
+                && string.Equals(source, remembered, StringComparison.Ordinal);
+            var path = await DownloadWithResumeAsync(source, asset, progress, allowResume, cancellationToken)
+                .ConfigureAwait(false);
+            if (path is null)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(asset.Sha256))
+            {
+                var actual = await ComputeSha256Async(path, cancellationToken).ConfigureAwait(false);
+                if (!string.Equals(actual, asset.Sha256, StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.LogError("更新包摘要不匹配，已丢弃：期望 {Expected}，实际 {Actual}", asset.Sha256, actual);
+                    TryDelete(path);
+                    return null;
+                }
+            }
+
+            // 发布里没有裸 msix 时只能下 zip，这里解出其中的安装包.
+            return asset.IsZip ? ExtractMsix(path) : path;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "下载更新失败");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// 安装已下载的更新包.
+    /// </summary>
+    /// <param name="packagePath">本地 msix 路径.</param>
+    /// <param name="sha256">期望的 sha256，可为 null.</param>
+    /// <param name="cancellationToken">取消令牌.</param>
+    /// <returns>安装是否成功.</returns>
+    public async Task<bool> InstallAsync(string packagePath, string? sha256, CancellationToken cancellationToken)
+    {
+        if (!File.Exists(packagePath))
+        {
+            _logger.LogError("更新包不存在：{Path}", packagePath);
+            return false;
+        }
+
+        try
+        {
+            // Visor 是包内的独立进程，不退出会一直占用包文件，导致注册被推迟.
+            if (System.Diagnostics.Process.GetProcessesByName("BiliCopilot.Visor").Length > 0)
+            {
+                _ = await VisorClient.ShutdownAsync().ConfigureAwait(false);
+            }
+
+            var uri = new Uri(packagePath);
+            var options = new AddPackageOptions
+            {
+                // 应用自身正在运行：延迟注册，等进程退出后再完成，避免安装中途被杀死.
+                DeferRegistrationWhenPackagesAreInUse = true,
+            };
+
+            if (!string.IsNullOrWhiteSpace(sha256))
+            {
+                options.ExpectedDigests.Add(uri, sha256.ToUpperInvariant());
+            }
+
+            var manager = new PackageManager();
+            var result = await manager.AddPackageByUriAsync(uri, options)
+                .AsTask(cancellationToken)
+                .ConfigureAwait(false);
+
+            if (result.ExtendedErrorCode is not null)
+            {
+                _logger.LogError(
+                    "安装更新失败：0x{HResult:X8} {Message}",
+                    result.ExtendedErrorCode.HResult,
+                    result.ErrorText);
+                return false;
+            }
+
+            return true;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "安装更新失败");
+            return false;
+        }
+    }
+
+    private IEnumerable<string> ParseUserMirrors()
+    {
+        var raw = SettingsToolkit.ReadLocalSetting(SettingNames.UpdateMirrorPrefixes, string.Empty);
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return [];
+        }
+
+        return raw.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+
+    private async Task<IReadOnlyList<UpdateSourceProbe>> ProbeAsync(
+        IReadOnlyList<string> candidates,
+        CancellationToken cancellationToken)
+    {
+        var tasks = candidates.Select(url => ProbeOneAsync(url, cancellationToken));
+        return await Task.WhenAll(tasks).ConfigureAwait(false);
+    }
+
+    private async Task<UpdateSourceProbe> ProbeOneAsync(string url, CancellationToken cancellationToken)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        try
+        {
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeout.CancelAfter(TimeSpan.FromSeconds(6));
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(0, ProbeBytes - 1);
+            using var response = await SharedHttpClient
+                .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token)
+                .ConfigureAwait(false);
+
+            var succeeded = response.IsSuccessStatusCode;
+            var supportsRange = response.StatusCode == HttpStatusCode.PartialContent;
+            var total = supportsRange
+                ? response.Content.Headers.ContentRange?.Length ?? 0
+                : response.Content.Headers.ContentLength ?? 0;
+
+            if (succeeded)
+            {
+                await using var stream = await response.Content.ReadAsStreamAsync(timeout.Token).ConfigureAwait(false);
+                var buffer = new byte[8192];
+                _ = await stream.ReadAsync(buffer, timeout.Token).ConfigureAwait(false);
+            }
+
+            return new UpdateSourceProbe(url, succeeded, stopwatch.ElapsedMilliseconds, supportsRange, total);
+        }
+        catch (Exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            return new UpdateSourceProbe(url, false, stopwatch.ElapsedMilliseconds, false, 0);
+        }
+    }
+
+    private async Task<string?> DownloadWithResumeAsync(
+        string url,
+        UpdateAsset asset,
+        IProgress<double>? progress,
+        bool allowResume,
+        CancellationToken cancellationToken)
+    {
+        var directory = Path.Combine(ApplicationData.Current.LocalFolder.Path, "Updates");
+        Directory.CreateDirectory(directory);
+
+        var finalPath = Path.Combine(directory, asset.Name);
+        var partialPath = finalPath + ".part";
+        if (!allowResume && File.Exists(partialPath))
+        {
+            File.Delete(partialPath);
+        }
+
+        long existing = File.Exists(partialPath) ? new FileInfo(partialPath).Length : 0;
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+        if (existing > 0)
+        {
+            request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(existing, null);
+        }
+
+        using var response = await SharedHttpClient
+            .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogWarning("下载源 {Url} 返回 {Status}", url, (int)response.StatusCode);
+            return null;
+        }
+
+        // 只有服务端确实续传时才追加，否则从头写.
+        var append = existing > 0 && response.StatusCode == HttpStatusCode.PartialContent;
+        if (!append)
+        {
+            existing = 0;
+        }
+
+        var total = response.Content.Headers.ContentRange?.Length
+            ?? response.Content.Headers.ContentLength
+            ?? 0;
+
+        await using var input = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        await using (var output = new FileStream(
+            partialPath,
+            append ? FileMode.Append : FileMode.Create,
+            FileAccess.Write,
+            FileShare.None,
+            bufferSize: 81920,
+            useAsync: true))
+        {
+            var buffer = new byte[81920];
+            var written = existing;
+            while (true)
+            {
+                var read = await input.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+                if (read == 0)
+                {
+                    break;
+                }
+
+                await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
+                written += read;
+                if (total > 0)
+                {
+                    progress?.Report(Math.Clamp(written * 100d / total, 0d, 100d));
+                }
+            }
+        }
+
+        if (File.Exists(finalPath))
+        {
+            File.Delete(finalPath);
+        }
+
+        File.Move(partialPath, finalPath);
+        progress?.Report(100d);
+        return finalPath;
+    }
+
+    private string? ExtractMsix(string zipPath)
+    {
+        try
+        {
+            using var archive = ZipFile.OpenRead(zipPath);
+            var entry = archive.Entries.FirstOrDefault(
+                e => e.Name.EndsWith(".msix", StringComparison.OrdinalIgnoreCase));
+            if (entry is null)
+            {
+                _logger.LogError("更新压缩包里没有 msix：{Path}", zipPath);
+                return null;
+            }
+
+            var target = Path.Combine(Path.GetDirectoryName(zipPath)!, entry.Name);
+            entry.ExtractToFile(target, overwrite: true);
+            return target;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "解压更新包失败：{Path}", zipPath);
+            return null;
+        }
+    }
+
+    private static async Task<string> ComputeSha256Async(string path, CancellationToken cancellationToken)
+    {
+        await using var stream = File.OpenRead(path);
+        var hash = await SHA256.HashDataAsync(stream, cancellationToken).ConfigureAwait(false);
+        return Convert.ToHexString(hash);
+    }
+
+    private void TryDelete(string path)
+    {
+        try
+        {
+            File.Delete(path);
+        }
+        catch (IOException ex)
+        {
+            _logger.LogWarning(ex, "无法删除损坏的更新包：{Path}", path);
+        }
     }
 
     private static UpdateCheckResult Failed(string message)

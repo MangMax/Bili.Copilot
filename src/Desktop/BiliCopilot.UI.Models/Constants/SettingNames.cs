@@ -166,4 +166,14 @@ public enum SettingNames
     SponsorBlockColorFiller,
     SponsorBlockColorMusicOfftopic,
     SponsorBlockColorUnknown,
+
+    /// <summary>
+    /// 更新下载记住的加速源地址.
+    /// </summary>
+    UpdateLastSource,
+
+    /// <summary>
+    /// 用户附加的更新加速源前缀（每行一个）.
+    /// </summary>
+    UpdateMirrorPrefixes,
 }
