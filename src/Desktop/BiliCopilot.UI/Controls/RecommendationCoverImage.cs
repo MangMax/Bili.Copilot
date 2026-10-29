@@ -26,6 +26,7 @@ public sealed partial class RecommendationCoverImage : UserControl
     private XamlRoot? _observedRoot;
     private CanvasDevice? _device;
     private long _lastRecovery;
+    private CancellationTokenSource? _recoveryDelay;
     private (Uri? Source, int Width, int Height) _requested;
 
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
@@ -80,6 +81,8 @@ public sealed partial class RecommendationCoverImage : UserControl
 
         _request?.Cancel();
         _request = null;
+        _recoveryDelay?.Cancel();
+        _recoveryDelay = null;
         _requested = default;
         _image.Source = null;
         _loading.IsActive = false;
@@ -99,23 +102,50 @@ public sealed partial class RecommendationCoverImage : UserControl
     {
         // Win2D can notify from another thread. Ignore queued callbacks after
         // recycling and never dispose a device shared with other controls.
-        DispatcherQueue.TryEnqueue(() =>
+        DispatcherQueue.TryEnqueue(() => _ = RecoverDeviceAsync(sender));
+    }
+
+    private async Task RecoverDeviceAsync(CanvasDevice sender)
+    {
+        if (_recoveryDelay is not null || !IsLoaded || !ReferenceEquals(sender, _device))
         {
-            if (!IsLoaded || !ReferenceEquals(sender, _device))
+            return;
+        }
+
+        using var recovery = new CancellationTokenSource();
+        _recoveryDelay = recovery;
+        try
+        {
+            // Throttle consecutive losses without dropping the recovery request.
+            var elapsed = Environment.TickCount64 - _lastRecovery;
+            if (_lastRecovery != 0 && elapsed < 3000)
+            {
+                await Task.Delay((int)(3000 - elapsed), recovery.Token);
+            }
+
+            if (recovery.IsCancellationRequested || !IsLoaded || !ReferenceEquals(sender, _device))
             {
                 return;
             }
 
-            var now = Environment.TickCount64;
-            if (_lastRecovery != 0 && now - _lastRecovery < 3000)
-            {
-                return;
-            }
-
-            _lastRecovery = now;
+            _lastRecovery = Environment.TickCount64;
             _requested = default;
             Reload();
-        });
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, "Unable to recover recommendation cover device");
+        }
+        finally
+        {
+            if (ReferenceEquals(_recoveryDelay, recovery))
+            {
+                _recoveryDelay = null;
+            }
+        }
     }
 
     private async void Reload()
