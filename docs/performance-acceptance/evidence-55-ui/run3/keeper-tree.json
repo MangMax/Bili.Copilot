@@ -1,0 +1,157 @@
+{
+  "depth": 4,
+  "interactive": false,
+  "hideDisabled": false,
+  "hideOffscreen": false,
+  "windows": [
+    {
+      "hwnd": 63708040,
+      "title": "Owned #55 keeper \u2014 harness-only lifecycle control",
+      "windowDpi": 144,
+      "scale": 1.5,
+      "dpiAwareness": "per-monitor-aware",
+      "coordinateSpace": "physical-screen-pixels",
+      "elementCount": 10,
+      "elements": [
+        {
+          "type": "Window",
+          "name": "Owned #55 keeper \u2014 harness-only lifecycle control",
+          "className": "WinUIDesktopWin32WindowClass",
+          "isEnabled": true,
+          "isOffscreen": false,
+          "x": 456,
+          "y": 456,
+          "width": 2880,
+          "height": 1537,
+          "children": [
+            {
+              "type": "Pane",
+              "className": "Microsoft.UI.Content.DesktopChildSiteBridge",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 467,
+              "y": 501,
+              "width": 2858,
+              "height": 1481,
+              "children": [
+                {
+                  "type": "Pane",
+                  "className": "InputSiteWindowClass",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 467,
+                  "y": 501,
+                  "width": 2858,
+                  "height": 1481,
+                  "children": [
+                    {
+                      "type": "Text",
+                      "name": "Host remains alive for close-window boundary only.",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 467,
+                      "y": 501,
+                      "width": 2858,
+                      "height": 1481,
+                      "selector": "lbl-hostremainsaliv-2fb7",
+                      "isInvokable": false
+                    }
+                  ],
+                  "selector": "pn-57f5",
+                  "isInvokable": false
+                }
+              ],
+              "selector": "pn-6e73",
+              "isInvokable": false
+            },
+            {
+              "type": "TitleBar",
+              "automationId": "TitleBar",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 491,
+              "y": 459,
+              "width": 2834,
+              "height": 42,
+              "children": [
+                {
+                  "type": "MenuBar",
+                  "name": "\u7CFB\u7EDF",
+                  "automationId": "SystemMenuBar",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 467,
+                  "y": 467,
+                  "width": 33,
+                  "height": 33,
+                  "children": [
+                    {
+                      "type": "MenuItem",
+                      "name": "\u7CFB\u7EDF",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 467,
+                      "y": 467,
+                      "width": 33,
+                      "height": 33,
+                      "selector": "mnu-a64a",
+                      "expandState": "collapsed",
+                      "isInvokable": true
+                    }
+                  ],
+                  "selector": "SystemMenuBar",
+                  "isInvokable": false
+                },
+                {
+                  "type": "Button",
+                  "name": "\u6700\u5C0F\u5316",
+                  "automationId": "Minimize-Restore",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 3114,
+                  "y": 457,
+                  "width": 71,
+                  "height": 44,
+                  "selector": "Minimize-Restore",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "\u6700\u5927\u5316",
+                  "automationId": "Maximize-Restore",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 3185,
+                  "y": 457,
+                  "width": 70,
+                  "height": 44,
+                  "selector": "Maximize-Restore",
+                  "isInvokable": true
+                },
+                {
+                  "type": "Button",
+                  "name": "\u5173\u95ED",
+                  "automationId": "Close",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 3255,
+                  "y": 457,
+                  "width": 71,
+                  "height": 44,
+                  "selector": "Close",
+                  "isInvokable": true
+                }
+              ],
+              "selector": "TitleBar",
+              "value": "Owned #55 keeper \u2014 harness-only lifecycle control",
+              "isInvokable": false
+            }
+          ],
+          "selector": "win-owned55keeperha-606f",
+          "isInvokable": false
+        }
+      ]
+    }
+  ]
+}

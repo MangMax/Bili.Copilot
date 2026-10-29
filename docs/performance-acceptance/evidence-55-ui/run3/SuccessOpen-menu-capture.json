@@ -1,0 +1,26 @@
+{
+  "filePath": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a18743d3\\docs\\performance-acceptance\\evidence-55-ui\\run3\\SuccessOpen-menu.png",
+  "width": 2570,
+  "height": 1399,
+  "processId": 58912,
+  "windowTitle": "Offline #55 \u2014 real download controls / synthetic adapters",
+  "hwnd": 22091450,
+  "windows": [
+    {
+      "hwnd": 22091450,
+      "title": "Offline #55 \u2014 real download controls / synthetic adapters",
+      "label": "window",
+      "width": 1302,
+      "height": 1371,
+      "captured": true
+    },
+    {
+      "hwnd": 11279070,
+      "title": "PopupHost",
+      "label": "popup",
+      "width": 1260,
+      "height": 197,
+      "captured": true
+    }
+  ]
+}

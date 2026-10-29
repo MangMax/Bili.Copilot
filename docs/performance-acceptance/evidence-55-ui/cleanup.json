@@ -1,0 +1,19 @@
+{
+  "ownedPids": [
+    45116,
+    55640,
+    58912,
+    59160,
+    34496,
+    43200,
+    60496,
+    27564,
+    43448,
+    17600
+  ],
+  "ownedPackageGone": true,
+  "schemaVersion": 1,
+  "utc": "2026-10-29T21:22:47.3091773+00:00",
+  "noKillUsed": true,
+  "ownedProcessesAlive": []
+}

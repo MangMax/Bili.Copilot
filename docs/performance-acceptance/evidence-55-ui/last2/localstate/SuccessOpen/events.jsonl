@@ -1,0 +1,5 @@
+{"schemaVersion":1,"utc":"2026-10-29T21:19:58.7914147+00:00","pid":58912,"kind":"prepared","data":{"name":"SuccessOpen","exitCode":0,"missing":false,"open":true,"external":false,"copy":false}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:01.1576405+00:00","pid":58912,"kind":"process-created","data":{}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:03.328688+00:00","pid":58912,"kind":"process-disposed","data":{"handleCaptured":true,"handleClosed":true}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:03.3321325+00:00","pid":58912,"kind":"folder-adapter","data":{"directory":"C:\\Users\\hp\\AppData\\Local\\Packages\\BiliCopilot.Acceptance55.A187_y1mf40g4r9srg\\LocalState\\owned-downloads"}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:36.2113606+00:00","pid":58912,"kind":"ui-tagged","data":{"toggles":6}}

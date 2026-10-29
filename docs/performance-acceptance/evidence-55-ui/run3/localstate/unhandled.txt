@@ -1,0 +1,12 @@
+Microsoft.UI.Xaml.Markup.XamlParseException: The text associated with this error code could not be found.
+
+Cannot find a Resource with the Name/Key AccentDropDownButtonStyle [Line: 23 Position: 13]
+   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|41_0(Int32 hr)
+   at WinRT.ExceptionHelpers.ThrowExceptionForHR(Int32 hr)
+   at ABI.Microsoft.UI.Xaml.IApplicationStaticsMethods.LoadComponent(IObjectReference _obj, Object component, Uri resourceLocator, ComponentResourceLocation componentResourceLocation)
+   at Microsoft.UI.Xaml.Application.LoadComponent(Object component, Uri resourceLocator, ComponentResourceLocation componentResourceLocation)
+   at BiliCopilot.UI.Controls.Player.DownloadButton.InitializeComponent()
+   at BiliCopilot.UI.Controls.Player.DownloadButton..ctor()
+   at Acceptance55.App.OnLaunched(LaunchActivatedEventArgs args)
+   at Microsoft.UI.Xaml.Application.Microsoft.UI.Xaml.IApplicationOverrides.OnLaunched(LaunchActivatedEventArgs args)
+   at ABI.Microsoft.UI.Xaml.IApplicationOverrides.Do_Abi_OnLaunched_0(IntPtr thisPtr, IntPtr args)

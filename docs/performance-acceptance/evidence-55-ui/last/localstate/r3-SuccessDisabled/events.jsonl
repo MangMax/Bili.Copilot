@@ -1,0 +1,4 @@
+{"schemaVersion":1,"utc":"2026-10-29T21:20:42.6733526+00:00","pid":58912,"kind":"prepared","data":{"name":"r3-SuccessDisabled","exitCode":0,"missing":false,"open":false,"external":false,"copy":false}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:44.9492645+00:00","pid":58912,"kind":"process-created","data":{}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:45.1308785+00:00","pid":58912,"kind":"process-disposed","data":{"handleCaptured":true,"handleClosed":true}}
+{"schemaVersion":1,"utc":"2026-10-29T21:20:45.3804536+00:00","pid":58912,"kind":"setting","data":{"key":"OpenFolderAfterDownload","value":true}}

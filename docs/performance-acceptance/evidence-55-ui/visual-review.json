@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "method": "Each PNG opened individually with view_image",
+  "reviews": [
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/expanded.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real controls and applicable setting states visible; no observed overlap or clipped controls. Dark 150% only; adapters/localization keys remain."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/last2/CloseLastWindowChildSurvives-menu.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real settings and DownloadCover/DownloadDanmaku/DownloadAudio visible; owned window/popup composite. No clipped menu labels; screen placement untested."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/last2/LastWindow-ready.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real controls and applicable setting states visible; no observed overlap or clipped controls. Dark 150% only; adapters/localization keys remain."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run2/Normal-ready.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real controls and applicable setting states visible; no observed overlap or clipped controls. Dark 150% only; adapters/localization keys remain."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run2/SuccessOpen-menu.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real settings and DownloadCover/DownloadDanmaku/DownloadAudio visible; owned window/popup composite. No clipped menu labels; screen placement untested."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run2/SuccessOpen-waiting.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real controls and applicable setting states visible; no observed overlap or clipped controls. Dark 150% only; adapters/localization keys remain."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/CloseWindowHostAlive-menu.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real settings and DownloadCover/DownloadDanmaku/DownloadAudio visible; owned window/popup composite. No clipped menu labels; screen placement untested."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/CopyOnlyNoProcess-copied.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real controls and applicable setting states visible; no observed overlap or clipped controls. Dark 150% only; adapters/localization keys remain."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/CopyOnlyNoProcess-menu.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real settings and DownloadCover/DownloadDanmaku/DownloadAudio visible; owned window/popup composite. No clipped menu labels; screen placement untested."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/keeper.png",
+      "reviewed": true,
+      "result": "NOTE",
+      "observation": "Harness-only keeper text visible; large unused black area. Not a product visual acceptance."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/NonzeroExit-menu.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real settings and DownloadCover/DownloadDanmaku/DownloadAudio visible; owned window/popup composite. No clipped menu labels; screen placement untested."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/Normal-ready.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real controls and applicable setting states visible; no observed overlap or clipped controls. Dark 150% only; adapters/localization keys remain."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/StartFailure-menu.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real settings and DownloadCover/DownloadDanmaku/DownloadAudio visible; owned window/popup composite. No clipped menu labels; screen placement untested."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/SuccessDisabled-menu.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real settings and DownloadCover/DownloadDanmaku/DownloadAudio visible; owned window/popup composite. No clipped menu labels; screen placement untested."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/SuccessOpen-menu.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real settings and DownloadCover/DownloadDanmaku/DownloadAudio visible; owned window/popup composite. No clipped menu labels; screen placement untested."
+    },
+    {
+      "path": "docs/performance-acceptance/evidence-55-ui/run3/SuccessOpen-waiting.png",
+      "reviewed": true,
+      "result": "PASS_LIMITED",
+      "observation": "Real controls and applicable setting states visible; no observed overlap or clipped controls. Dark 150% only; adapters/localization keys remain."
+    }
+  ],
+  "count": 16
+}
