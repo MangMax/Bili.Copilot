@@ -32,6 +32,7 @@ internal class MyImage : IAddChild
     private double _rasterizationScale;
     private bool _providedImage;
     private bool _loaded;
+    private bool _lifecycleCheckQueued;
 
     public TextElement TextElement => _container;
 
@@ -86,12 +87,57 @@ internal class MyImage : IAddChild
     {
         // Keep the lifecycle owner stable when SVG/custom providers return another Image.
         _host.Child = _image;
-        _host.Loaded += LoadImage;
+        _host.Loaded += OnLoaded;
         _host.Unloaded += OnUnloaded;
         _container.Child = _host;
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        // RichTextBlock remeasures inline children by detaching and reattaching them.
+        // Its queued Unloaded can arrive after the same host is already loaded again.
+        if (_host.IsLoaded)
+        {
+            QueueLifecycleCheck();
+            return;
+        }
+
+        ReleaseImage();
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e) => QueueLifecycleCheck();
+
+    private void QueueLifecycleCheck()
+    {
+        if (_lifecycleCheckQueued)
+        {
+            return;
+        }
+
+        _lifecycleCheckQueued = true;
+        if (!_host.DispatcherQueue.TryEnqueue(() =>
+        {
+            _lifecycleCheckQueued = false;
+            // Inline Loaded can run before IsLoaded becomes true. Start providers only
+            // after that transition so synchronous cached results are not discarded.
+            if (_host.IsLoaded)
+            {
+                // SizeChanged may run while the inline is temporarily detached for
+                // layout. Recheck the display constraint once it is attached again.
+                RefreshForDisplay();
+                LoadImage(_host, null);
+            }
+            else
+            {
+                ReleaseImage();
+            }
+        }))
+        {
+            _lifecycleCheckQueued = false;
+        }
+    }
+
+    private void ReleaseImage()
     {
         var previous = _loadCancellation;
         _loadCancellation = null;
