@@ -861,9 +861,6 @@
   <data name="HardwareDecode" xml:space="preserve">
     <value>硬件解码</value>
   </data>
-  <data name="HasUpdate" xml:space="preserve">
-    <value>您已更新到新版本</value>
-  </data>
   <data name="HDFirst" xml:space="preserve">
     <value>高清（1080P）优先</value>
   </data>
@@ -2651,12 +2648,6 @@
   <data name="FailedToSearchUserVideos" xml:space="preserve">
     <value>尝试获取用户视频时失败</value>
   </data>
-  <data name="HasUpdateDescription" xml:space="preserve">
-    <value>点击下方按钮来查看更新内容吧！</value>
-  </data>
-  <data name="OpenUpdate" xml:space="preserve">
-    <value>查看更新</value>
-  </data>
   <data name="DownloadSubtitle" xml:space="preserve">
     <value>下载字幕</value>
   </data>
@@ -3272,5 +3263,77 @@
   </data>
   <data name="Advanced" xml:space="preserve">
     <value>高级</value>
+  </data>
+  <data name="CheckUpdate" xml:space="preserve">
+    <value>检查更新</value>
+  </data>
+  <data name="CheckingUpdate" xml:space="preserve">
+    <value>正在检查更新…</value>
+  </data>
+  <data name="AlreadyUpToDate" xml:space="preserve">
+    <value>已是最新版本</value>
+  </data>
+  <data name="UpdateAvailableFormat" xml:space="preserve">
+    <value>发现新版本 {0}</value>
+  </data>
+  <data name="UpdateDownloadingFormat" xml:space="preserve">
+    <value>正在下载更新 {0}%</value>
+  </data>
+  <data name="UpdateReadyToInstall" xml:space="preserve">
+    <value>更新已就绪，重启即可安装</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>检查更新失败，请稍后重试</value>
+  </data>
+  <data name="UpdateNoPackageForArchitecture" xml:space="preserve">
+    <value>暂无适用于当前架构的更新包</value>
+  </data>
+  <data name="UpdateInstalling" xml:space="preserve">
+    <value>正在安装更新…</value>
+  </data>
+  <data name="UpdateMirrorPrefixes" xml:space="preserve">
+    <value>附加加速源</value>
+  </data>
+  <data name="UpdateMirrorPrefixesDescription" xml:space="preserve">
+    <value>每行一个 https:// 前缀，用于加速更新包下载；留空则只用内置加速源</value>
+  </data>
+  <data name="UpdateFailedWithReasonFormat" xml:space="preserve">
+    <value>更新失败：{0}</value>
+  </data>
+  <data name="UpdateDownloadAction" xml:space="preserve">
+    <value>下载更新</value>
+  </data>
+  <data name="UpdateInstallAction" xml:space="preserve">
+    <value>安装更新并重启</value>
+  </data>
+  <data name="UpdateRetryInstallAction" xml:space="preserve">
+    <value>重试安装更新</value>
+  </data>
+  <data name="UpdateRetryDownloadAction" xml:space="preserve">
+    <value>重试下载更新</value>
+  </data>
+  <data name="UpdateDownloadingUnknown" xml:space="preserve">
+    <value>正在下载更新…</value>
+  </data>
+  <data name="UpdateDownloadFailed" xml:space="preserve">
+    <value>下载更新失败</value>
+  </data>
+  <data name="UpdateInstallFailed" xml:space="preserve">
+    <value>安装更新失败</value>
+  </data>
+  <data name="UpdateOperationFailedFormat" xml:space="preserve">
+    <value>{0}：{1}</value>
+  </data>
+  <data name="UpdatePackageMissing" xml:space="preserve">
+    <value>更新包不存在，请重新检查更新并下载</value>
+  </data>
+  <data name="UpdateDigestMismatch" xml:space="preserve">
+    <value>更新包校验失败</value>
+  </data>
+  <data name="UpdateArchiveMissingPackage" xml:space="preserve">
+    <value>压缩包中没有安装包</value>
+  </data>
+  <data name="UpdateOpenReleaseAction" xml:space="preserve">
+    <value>打开更新发布页</value>
   </data>
 </root>

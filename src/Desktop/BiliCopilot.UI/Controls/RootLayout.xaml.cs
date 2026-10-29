@@ -12,6 +12,9 @@ namespace BiliCopilot.UI.Controls;
 /// </summary>
 public sealed partial class RootLayout : RootLayoutBase
 {
+    /// <summary>
+    /// 应用视图模型，XAML 中绑定初始加载状态.
+    /// </summary>
     private readonly AppViewModel _appViewModel;
 
     /// <summary>
@@ -19,8 +22,8 @@ public sealed partial class RootLayout : RootLayoutBase
     /// </summary>
     public RootLayout()
     {
-        InitializeComponent();
         _appViewModel = this.Get<AppViewModel>();
+        InitializeComponent();
     }
 
     /// <summary>
@@ -54,12 +57,6 @@ public sealed partial class RootLayout : RootLayoutBase
 
     private void OnBackRequested(object sender, EventArgs e)
         => ViewModel.Back();
-
-    private void OnUpdateActionButtonClick(TeachingTip sender, object args)
-        => _appViewModel.ShowUpdateCommand.Execute(default);
-
-    private void OnUpdateCloseButtonClick(TeachingTip sender, object args)
-        => _appViewModel.HideUpdateCommand.Execute(default);
 
     private void OnFavoriteButtonClick(object sender, EventArgs e)
         => ViewModel.NavigateToOver(typeof(FavoritesPage), default);

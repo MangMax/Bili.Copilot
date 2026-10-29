@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.MpvKernel;
 using Richasy.MpvKernel.Core.Enums;
@@ -260,4 +261,15 @@ public sealed partial class SettingsPageViewModel
     /// GPU设备列表.
     /// </summary>
     public ObservableCollection<string> GpuDevices { get; } = [];
+
+    /// <summary>
+    /// 更新视图模型.
+    /// </summary>
+    public Core.AppUpdateViewModel Update => this.Get<Core.AppUpdateViewModel>();
+
+    [ObservableProperty]
+    public partial string UpdateMirrorPrefixes { get; set; }
+
+    partial void OnUpdateMirrorPrefixesChanged(string value)
+        => SettingsToolkit.WriteLocalSetting(SettingNames.UpdateMirrorPrefixes, value ?? string.Empty);
 }
