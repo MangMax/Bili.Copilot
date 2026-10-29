@@ -1,0 +1,8 @@
+IsZoomed
+SetWindowPos
+GetForegroundWindow
+SetForegroundWindow
+SetFocus
+GetWindowLong
+IsIconic
+IsWindow
