@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj (用时 356 毫秒)。
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(87,20): warning CS8632: 只能在 "#nullable" 注释上下文内的代码中使用可为 null 的引用类型的注释。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(258,39): warning CS8632: 只能在 "#nullable" 注释上下文内的代码中使用可为 null 的引用类型的注释。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(154,53): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(291,60): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(298,60): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(375,84): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(376,83): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(380,77): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+
+生成失败。
+
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(87,20): warning CS8632: 只能在 "#nullable" 注释上下文内的代码中使用可为 null 的引用类型的注释。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(258,39): warning CS8632: 只能在 "#nullable" 注释上下文内的代码中使用可为 null 的引用类型的注释。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(154,53): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(291,60): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(298,60): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(375,84): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(376,83): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-2a8cc214\src\Desktop\BiliCopilot.UI\Forms\PlayerWindow.cs(380,77): error CS9260: 功能 'null 条件分配' 在 C# 13.0 中不可用。请使用语言版本 14.0 或更高版本。 [C:\Users\hp\AppData\Local\Temp\bili-54-2a8c\Harness.csproj]
+    2 个警告
+    6 个错误
+
+已用时间 00:00:06.97

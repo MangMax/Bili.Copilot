@@ -1,0 +1,88 @@
+{
+  "depth": 4,
+  "interactive": false,
+  "hideDisabled": false,
+  "hideOffscreen": false,
+  "windows": [
+    {
+      "hwnd": 4138166,
+      "title": "Acceptance54 real PlayerWindow 1",
+      "windowDpi": 144,
+      "scale": 1.5,
+      "dpiAwareness": "per-monitor-aware",
+      "coordinateSpace": "physical-screen-pixels",
+      "elementCount": 5,
+      "elements": [
+        {
+          "type": "Window",
+          "name": "Acceptance54 real PlayerWindow 1",
+          "className": "Microsoft.UI.Windowing.Window",
+          "isEnabled": true,
+          "isOffscreen": false,
+          "x": 0,
+          "y": 0,
+          "width": 3840,
+          "height": 2160,
+          "children": [
+            {
+              "type": "Pane",
+              "className": "Microsoft.UI.Content.DesktopChildSiteBridge",
+              "isEnabled": true,
+              "isOffscreen": false,
+              "x": 0,
+              "y": 0,
+              "width": 3840,
+              "height": 2160,
+              "children": [
+                {
+                  "type": "Pane",
+                  "className": "InputSiteWindowClass",
+                  "isEnabled": true,
+                  "isOffscreen": false,
+                  "x": 0,
+                  "y": 0,
+                  "width": 3840,
+                  "height": 2160,
+                  "children": [
+                    {
+                      "type": "Text",
+                      "name": "Controlled header probe",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 24,
+                      "y": 12,
+                      "width": 3792,
+                      "height": 48,
+                      "selector": "lbl-controlledheade-650b",
+                      "isInvokable": false
+                    },
+                    {
+                      "type": "Text",
+                      "name": "#54 real PlayerWindow\nOffline controlled overlay",
+                      "className": "TextBlock",
+                      "isEnabled": true,
+                      "isOffscreen": false,
+                      "x": 1802,
+                      "y": 1052,
+                      "width": 235,
+                      "height": 56,
+                      "selector": "lbl-54realplayerwin-650c",
+                      "isInvokable": false
+                    }
+                  ],
+                  "selector": "pn-5fbd",
+                  "isInvokable": false
+                }
+              ],
+              "selector": "pn-5523",
+              "isInvokable": false
+            }
+          ],
+          "selector": "win-acceptance54rea-699d",
+          "isInvokable": false
+        }
+      ]
+    }
+  ]
+}

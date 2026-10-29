@@ -1,0 +1,8 @@
+{
+  "diagnosticCases": 3,
+  "firstChanceAssertionRecords": 9,
+  "failed": 3,
+  "postCloseGettingFocus": 0,
+  "closedObservations": 3,
+  "interpretation": "Artifact consistency only; red cases are not passing acceptance"
+}
