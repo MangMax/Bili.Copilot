@@ -1,6 +1,6 @@
 # #49 重挂修复验收；暂停缺陷继续阻断
 
-2026-10-30。按用户中途明确收窄：本轮交付控件重挂修复、真实双引擎复验及只读引擎后续方案，依赖版本不变。**重挂生命周期结构与重挂后公开实时弹幕输出通过；#49 整体验收未通过，暂停 seek / 暂停切换保留阻断。**
+2026-10-30。父级按现有授权限定本轮范围（用户未直接作出中途收窄决定）：本轮交付控件重挂修复、真实双引擎复验及只读引擎后续方案，依赖版本不变。**重挂生命周期结构与重挂后公开实时弹幕输出通过；#49 整体验收未通过，暂停 seek / 暂停切换保留阻断。**
 
 ## 来源与范围
 
@@ -68,6 +68,6 @@ build/UI 后按 winui-code-review 自审：本次生命周期改动无新 must-f
 
 ## 清理
 
-owned PID57036/20256 已通过各自 Close 退出，复查0残留；核对 InstallLocation 精确属于本工作区 layout 后只移除 `BiliCopilot.Acceptance4931F2`，复查0包。执行同 workflow `winapp ui yield --on local --json` 成功，返回 released=false（未释放到活动占用）；操作间 grace 已经过期，本轮无后续桌面操作。**桌面独占槽已释放**。[cleanup.json](evidence-49-remount/cleanup.json)。
+owned PID57036/20256 已通过各自 Close 退出，复查0残留；核对 InstallLocation 精确属于本工作区 layout 后只移除 `BiliCopilot.Acceptance4931F2`，复查0包。执行同 workflow `winapp ui yield --on local --json` 成功，返回 released=false（未释放到活动占用）；操作间 grace 已经过期，本轮无后续桌面操作。无 owned 进程/包残留，原占用 grace 已过期；这不是工具返回 released=true 的证据。[cleanup.json](evidence-49-remount/cleanup.json)。
 
 未触碰 PID9608、Dev/生产包、凭据或父 checkout；没有 push、PR、issue 写操作、引擎仓库写操作或 NuGet 发布。宿主/build/layout 留在本 worktree ignored artifacts 供复核，注册身份已移除。
