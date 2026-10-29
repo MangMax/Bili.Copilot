@@ -35,6 +35,9 @@ public sealed partial class PopularPageViewModel
         // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
         var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
 
+        RefreshTipState = Toolkits.RefreshTipState.Refreshing(
+            ResourceToolkit.GetLocalizedString(StringNames.RefreshingRecommendVideos));
+
         IsVideoLoading = true;
         try
         {
@@ -49,9 +52,7 @@ public sealed partial class PopularPageViewModel
                 Videos,
                 videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Recommend)),
                 p => p.Data.Identifier.Id,
-                isIncremental,
-                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
-                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
+                isIncremental);
 
             Videos.Clear();
             foreach (var video in application.Items)
@@ -59,7 +60,11 @@ public sealed partial class PopularPageViewModel
                 Videos.Add(video);
             }
 
-            ShowRefreshTip(application.Message);
+            RefreshTipState = Toolkits.RefreshTipState.FromRefreshResult(
+                isIncremental,
+                application.AddedCount,
+                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
+                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
 
             _recommendRefreshSnapshot = snapshot;
             _recommendOffset = nextOffset;
@@ -68,19 +73,14 @@ public sealed partial class PopularPageViewModel
         }
         catch (Exception ex)
         {
-            // 失败时列表与快照都保持原样，也不给提示。
+            // 失败时列表与快照都保持原样，浮层收起，不展示「已刷新」。
+            RefreshTipState = Toolkits.RefreshTipState.Failed;
             _logger.LogError(ex, "尝试刷新推荐视频时出错.");
         }
         finally
         {
             IsVideoLoading = false;
         }
-    }
-
-    private void ShowRefreshTip(string message)
-    {
-        RefreshTipMessage = message;
-        IsRefreshTipVisible = true;
     }
 
     private async Task LoadRecommendVideosAsync()
