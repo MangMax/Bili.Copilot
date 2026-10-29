@@ -1,0 +1,27 @@
+{
+  "appPid": 37868,
+  "target": "local",
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-b48a-layout2",
+  "checks": [
+    {
+      "error": "Timed out: ime-mouse-exact",
+      "name": "ImeMouseSelectionExactNode",
+      "passed": false
+    },
+    {
+      "error": "Timed out: q input",
+      "name": "RepeatedUnloadPreventsDebounceDispatch",
+      "passed": false
+    },
+    {
+      "name": "RepeatedUnloadRejectsInFlightCompletion",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\followup-01\\ImeMouseSelectionExactNode-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\followup-01\\RepeatedUnloadPreventsDebounceDispatch-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\followup-01\\repeat-late.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-b48a88b1\\docs\\performance-acceptance\\evidence-51\\followup-01\\repeat-return.png"
+  ]
+}

@@ -1,0 +1,3 @@
+{
+  "Error": "\u0027Harness.csproj\u0027 resolves to a packaged (MSIX) app but no AppxManifest.xml was found in the build output (C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-b48a\\bin\\Debug\\net9.0-windows10.0.22621.0\\win-x64\\). Remove --no-build to rebuild the packaged layout, or point the run at an up-to-date packaged build."
+}
