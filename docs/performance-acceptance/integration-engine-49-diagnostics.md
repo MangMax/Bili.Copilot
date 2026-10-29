@@ -40,6 +40,8 @@
 
 ## 复核范围与本地依赖
 
+后续范围已登记为 [#61：弹幕引擎暂停场景与渲染生命周期契约](https://github.com/MangMax/Bili.Copilot/issues/61)，标签 `scope:L` / `needs-triage`。票面包含先决 Spec/ADR 评审、五个待细化的 ≤M 切片及独立验收条件；母票不承载生产实现。#49 票面已注明最终验收阻断，不关闭、不将当前候选发布或升级正式依赖。此项登记发生于本轮集成复核之后，不改变下述历史复核的操作范围。
+
 命令均为文件只读核验及 Git 文档集成。metadata 复核使用 `pwsh -NoProfile -File .../metadata.ps1 -Root C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-9d663a29/artifacts/engine49-trace/{original,candidate,trace}`，历史 metadata 脚本使用默认原工作区参数；像素脚本从仓库根运行。源/产物清单用 Python hashlib / PowerShell Get-FileHash 逐项断言。
 
 原工作区 `t3-c9d5219a`、`t3-9d663a29` 的 ignored artifacts 是 DLL、ZIP、包、完整 trace 和 dump 的**本地依赖**，不随 Git 文档交付，也未复制到本提交；它们缺失时只能审阅存档，不能声称重跑成功。本页、status 和三份 README 共 5 个 Markdown 文件的 67 个相对链接逐个解析存在，所引用章节锚点也匹配；忽略大 artifacts 作为可移交链接的要求，明确保留其本地依赖限制。历史绝对 skill 链接同样依赖原机器。
