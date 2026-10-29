@@ -10,10 +10,11 @@ namespace BiliCopilot.UI.Toolkits;
 /// <summary>
 /// Releases Atom Feed 的解析结果.
 /// </summary>
+/// <param name="Tag">原始 tag，例如 v2.2610.3.0.</param>
 /// <param name="Version">归一后的版本号，例如 2.2610.3.0.</param>
 /// <param name="Notes">发布说明的纯文本.</param>
 /// <param name="PublishedAt">发布时间；无法解析时为 null.</param>
-internal sealed record UpdateReleaseInfo(string Version, string Notes, DateTimeOffset? PublishedAt);
+internal sealed record UpdateReleaseInfo(string Tag, string Version, string Notes, DateTimeOffset? PublishedAt);
 
 /// <summary>
 /// GitHub Releases Atom Feed 解析.
@@ -64,7 +65,7 @@ internal static partial class UpdateFeedParser
 
         var content = entry.Element(ns + "content")?.Value;
         var updated = entry.Element(ns + "updated")?.Value;
-        return new UpdateReleaseInfo(version, ToPlainText(content), ParseTimestamp(updated));
+        return new UpdateReleaseInfo(tag ?? string.Empty, version, ToPlainText(content), ParseTimestamp(updated));
     }
 
     private static string? ExtractTag(XElement entry, XNamespace ns)

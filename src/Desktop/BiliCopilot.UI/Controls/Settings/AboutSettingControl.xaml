@@ -18,10 +18,22 @@
         <base:SettingsExpander.HeaderIcon>
             <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/StoreLogo.png" />
         </base:SettingsExpander.HeaderIcon>
-        <TextBlock
-            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-            Style="{StaticResource CaptionTextBlockStyle}"
-            Text="{x:Bind ViewModel.PackageVersion, Mode=OneWay}" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBlock
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="{x:Bind ViewModel.PackageVersion, Mode=OneWay}" />
+            <Button
+                Padding="8,2"
+                Command="{x:Bind ViewModel.Update.CheckCommand, Mode=OneWay}"
+                Content="{ext:Locale Name=CheckUpdate}" />
+            <TextBlock
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="{x:Bind ViewModel.Update.StatusText, Mode=OneWay}" />
+        </StackPanel>
         <base:SettingsExpander.Items>
             <base:SettingsCard HorizontalContentAlignment="Stretch" ContentAlignment="Left">
                 <StackPanel x:Name="LinkContainer" Margin="-12,0,0,0">

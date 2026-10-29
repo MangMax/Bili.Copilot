@@ -260,4 +260,9 @@ public sealed partial class SettingsPageViewModel
     /// GPU设备列表.
     /// </summary>
     public ObservableCollection<string> GpuDevices { get; } = [];
+
+    /// <summary>
+    /// 更新视图模型.
+    /// </summary>
+    internal Core.AppUpdateViewModel Update => this.Get<Core.AppUpdateViewModel>();
 }
