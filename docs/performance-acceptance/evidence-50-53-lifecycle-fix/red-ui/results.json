@@ -1,0 +1,46 @@
+[
+  {
+    "passed": true,
+    "name": "UnloadDelay1"
+  },
+  {
+    "passed": false,
+    "name": "ReattachMainSide1",
+    "error": "Reattached control lost lifecycle subscriptions or active state"
+  },
+  {
+    "passed": false,
+    "name": "RemountRefresh1",
+    "error": "Reattached short list must load three pages and an empty page"
+  },
+  {
+    "passed": false,
+    "name": "UnloadDelay2",
+    "error": "Delay escaped unload or lifecycle did not detach once"
+  },
+  {
+    "passed": false,
+    "name": "ReattachMainSide2",
+    "error": "Reattached control lost lifecycle subscriptions or active state"
+  },
+  {
+    "passed": false,
+    "name": "RemountRefresh2",
+    "error": "Reattached short list must load three pages and an empty page"
+  },
+  {
+    "passed": false,
+    "name": "UnloadDelay3",
+    "error": "Delay escaped unload or lifecycle did not detach once"
+  },
+  {
+    "passed": false,
+    "name": "ReattachMainSide3",
+    "error": "Reattached control lost lifecycle subscriptions or active state"
+  },
+  {
+    "passed": false,
+    "name": "RemountRefresh3",
+    "error": "Reattached short list must load three pages and an empty page"
+  }
+]

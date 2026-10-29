@@ -1,0 +1,16 @@
+  正在确定要还原的项目…
+  已还原 C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-8d61526c\externals\bili-kernel\src\BiliKernel.Abstractions\BiliKernel.Abstractions.csproj (用时 255 毫秒)。
+C:\Users\hp\AppData\Local\Temp\bili5053-d26c\Harness.csproj : error NU1605: 错误形式的警告: 检测到包降级: CommunityToolkit.WinUI.Animations 从 8.2.250402 降级到 8.1.240916。直接从项目引用包以选择不同版本。 
+C:\Users\hp\AppData\Local\Temp\bili5053-d26c\Harness.csproj : error NU1605:  Harness -> Richasy.WinUIKernel.Share 0.0.12-preview3 -> CommunityToolkit.WinUI.Animations (>= 8.2.250402) 
+C:\Users\hp\AppData\Local\Temp\bili5053-d26c\Harness.csproj : error NU1605:  Harness -> CommunityToolkit.WinUI.Animations (>= 8.1.240916)
+  未能还原 C:\Users\hp\AppData\Local\Temp\bili5053-d26c\Harness.csproj (用时 2.72 秒)。
+
+生成失败。
+
+C:\Users\hp\AppData\Local\Temp\bili5053-d26c\Harness.csproj : error NU1605: 错误形式的警告: 检测到包降级: CommunityToolkit.WinUI.Animations 从 8.2.250402 降级到 8.1.240916。直接从项目引用包以选择不同版本。 
+C:\Users\hp\AppData\Local\Temp\bili5053-d26c\Harness.csproj : error NU1605:  Harness -> Richasy.WinUIKernel.Share 0.0.12-preview3 -> CommunityToolkit.WinUI.Animations (>= 8.2.250402) 
+C:\Users\hp\AppData\Local\Temp\bili5053-d26c\Harness.csproj : error NU1605:  Harness -> CommunityToolkit.WinUI.Animations (>= 8.1.240916)
+    0 个警告
+    1 个错误
+
+已用时间 00:00:03.48

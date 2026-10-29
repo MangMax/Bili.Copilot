@@ -5,6 +5,63 @@ namespace BiliCopilot.UI.Tests;
 
 public sealed class IncrementVerticalScrollControlTests
 {
+    [Fact]
+    public void RepeatedLoadedEventsKeepOneSubscriptionAndUnloadRemovesIt()
+    {
+        var control = new IncrementVerticalScrollControl();
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        for (var cycle = 0; cycle < 3; cycle++)
+        {
+            control.Load();
+            control.Load();
+            Assert.Equal(1, control.View.ViewChangedSubscriptions);
+            Assert.Equal(1, control.View.SizeChangedSubscriptions);
+            Assert.Equal(1, control.DispatcherQueue.PendingCount);
+            control.DispatcherQueue.Drain();
+            Assert.Equal(cycle + 1, loads);
+            control.Unload();
+            control.Unload();
+            Assert.Equal(0, control.View.ViewChangedSubscriptions);
+            Assert.Equal(0, control.View.SizeChangedSubscriptions);
+            control.View.ChangeView();
+            control.View.Resize();
+            Assert.Equal(0, control.DispatcherQueue.PendingCount);
+        }
+    }
+
+    [Fact]
+    public async Task ThreeRemountsRejectOldDelaysAndAcceptCurrentDelay()
+    {
+        var clock = new ManualClock();
+        var control = new IncrementVerticalScrollControl(clock);
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        control.View.ExtentHeight = 5000;
+        control.Load();
+        control.DispatcherQueue.Drain();
+        for (var cycle = 0; cycle < 3; cycle++)
+        {
+            var oldCheck = control.DelayCheckItemsAsync();
+            control.Unload();
+            control.Load();
+            control.DispatcherQueue.Drain();
+            control.View.ExtentHeight = 300;
+            clock.Advance(500);
+            await oldCheck;
+            Assert.Equal(0, control.DispatcherQueue.PendingCount);
+            Assert.Equal(cycle, loads);
+
+            var currentCheck = control.DelayCheckItemsAsync();
+            clock.Advance(500);
+            await currentCheck;
+            Assert.Equal(1, control.DispatcherQueue.PendingCount);
+            control.DispatcherQueue.Drain();
+            Assert.Equal(cycle + 1, loads);
+            control.View.ExtentHeight = 5000;
+        }
+    }
+
     [Theory]
     [InlineData(799, 1)]
     [InlineData(800, 1)]

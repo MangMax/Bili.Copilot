@@ -1,0 +1,20 @@
+
+NanaZip 7.0 , version 2610.2 (x64) : (c) M2-Team and Contributors. All rights reserved.
+
+Scanning the drive for archives:
+1 file, 27422861 bytes (27 MiB)
+
+Extracting archive: C:\Users\hp\AppData\Local\Temp\bili-deps\ffmpeg-x86_64-git-9a861e968.7z
+--
+Path = C:\Users\hp\AppData\Local\Temp\bili-deps\ffmpeg-x86_64-git-9a861e968.7z
+Type = 7z
+Physical Size = 27422861
+Headers Size = 194
+Method = LZMA2:27 LZMA:20 BCJ2
+Solid = -
+Blocks = 1
+
+Everything is Ok
+
+Size:       107860992
+Compressed: 27422861

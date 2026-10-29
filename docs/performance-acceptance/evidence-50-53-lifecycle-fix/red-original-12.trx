@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="10ee7f8d-2c15-474e-bc6f-c792845f5a12" name="hp@DESKTOP-V1D4VEN 2026-10-30 04:28:02" runUser="DESKTOP-V1D4VEN\hp" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-30T04:28:02.6607375+08:00" queuing="2026-10-30T04:28:02.6607380+08:00" start="2026-10-30T04:27:59.4173130+08:00" finish="2026-10-30T04:28:02.7180480+08:00" />
+  <TestSettings name="default" id="2685a8d0-7e75-4771-8bac-05a48877689b">
+    <Deployment runDeploymentRoot="hp_DESKTOP-V1D4VEN_2026-10-30_04_28_02" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7e5abdcd-dd52-4532-b9f2-88d5822f150d" testId="15faa2ca-aca9-e229-bdf7-54f581f3a7b8" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0009109" startTime="2026-10-30T04:28:02.6347595+08:00" endTime="2026-10-30T04:28:02.6348188+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e5abdcd-dd52-4532-b9f2-88d5822f150d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   0</Message>
+          <StackTrace>   at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl() in C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs:line 197&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="616a9fb1-01d3-41f2-a07a-6ba74b4e3ef8" testId="4d2461d8-04d0-0e09-417f-3a9edbc166a0" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ShortPagesFillViewportThenScrollAndResizeContinueUntilLastPage" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0134298" startTime="2026-10-30T04:28:02.6374573+08:00" endTime="2026-10-30T04:28:02.6375221+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="616a9fb1-01d3-41f2-a07a-6ba74b4e3ef8" />
+    <UnitTestResult executionId="a3bc4813-16ef-4f46-8de1-b25ba013b244" testId="77e0ae2a-4945-20fb-62dd-c394792f5dc9" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.DelayedChecksCoalesceAndCannotLoadWhileUnloaded" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0085722" startTime="2026-10-30T04:28:02.6250182+08:00" endTime="2026-10-30T04:28:02.6251173+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a3bc4813-16ef-4f46-8de1-b25ba013b244" />
+    <UnitTestResult executionId="ebc2828f-3c49-417f-a5e5-1e32bc141561" testId="4cd7a685-6d32-178c-8b8d-dae75f3a6653" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.RejectedEnqueueCanRetryAndCommandIsReadAtExecution" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0272369" startTime="2026-10-30T04:28:02.5376964+08:00" endTime="2026-10-30T04:28:02.5734564+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ebc2828f-3c49-417f-a5e5-1e32bc141561" />
+    <UnitTestResult executionId="c495809d-db9e-4b2f-9ec8-caf7afe6a8b3" testId="0e5b7ea2-7bbf-1e2b-4e16-41e2802029c4" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.DisabledCommandIsNotExecutedAndLaterInputCanRetry" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0003727" startTime="2026-10-30T04:28:02.6378960+08:00" endTime="2026-10-30T04:28:02.6379601+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c495809d-db9e-4b2f-9ec8-caf7afe6a8b3" />
+    <UnitTestResult executionId="2a77060a-1bed-47c2-a87e-6290e17986a0" testId="33c5d819-b7d9-a4f8-7ff9-56eb7c6203e8" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0004619" startTime="2026-10-30T04:28:02.6337430+08:00" endTime="2026-10-30T04:28:02.6338400+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2a77060a-1bed-47c2-a87e-6290e17986a0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   0</Message>
+          <StackTrace>   at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck() in C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs:line 37&#xD;
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f6457b86-2b6d-4d7f-b68b-2aca1f1ecb6e" testId="119cb2e5-d968-bb83-e2f0-4a5a05aa9823" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 799, expectedLoads: 1)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0003589" startTime="2026-10-30T04:28:02.6261860+08:00" endTime="2026-10-30T04:28:02.6262438+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6457b86-2b6d-4d7f-b68b-2aca1f1ecb6e" />
+    <UnitTestResult executionId="b44b29de-4ee7-4b22-b0be-cc6be7ac3168" testId="19cde068-7e67-6aba-e770-a00a8f1e903d" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.BurstQueuesOneCheckAndExecutesLoadMoreOnce" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0004164" startTime="2026-10-30T04:28:02.6335366+08:00" endTime="2026-10-30T04:28:02.6335970+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b44b29de-4ee7-4b22-b0be-cc6be7ac3168" />
+    <UnitTestResult executionId="7e10f7a8-dbb9-4af8-8925-b118c20b25ca" testId="2aaf654f-545a-096f-90cf-78a24b509363" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReentrantLayoutKeepsOneFollowUpCheckWithoutLosingNextPage" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0004034" startTime="2026-10-30T04:28:02.6265484+08:00" endTime="2026-10-30T04:28:02.6266061+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e10f7a8-dbb9-4af8-8925-b118c20b25ca" />
+    <UnitTestResult executionId="908f578e-32cf-4912-b0e1-f2a58ff2a553" testId="1e7d3cb7-783e-f988-f100-8ca2c7e81b5d" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 800, expectedLoads: 1)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0000083" startTime="2026-10-30T04:28:02.6263488+08:00" endTime="2026-10-30T04:28:02.6264063+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="908f578e-32cf-4912-b0e1-f2a58ff2a553" />
+    <UnitTestResult executionId="a7689d0d-60b9-4e5a-9a8e-05ed43993f88" testId="3c9fa9f1-9e6d-4b3b-4ec2-609e9e8a972f" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 801, expectedLoads: 0)" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0003534" startTime="2026-10-30T04:28:02.6259919+08:00" endTime="2026-10-30T04:28:02.6260646+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7689d0d-60b9-4e5a-9a8e-05ed43993f88" />
+    <UnitTestResult executionId="ab2e97c4-baaf-4cb8-b9ba-011577680699" testId="55f32924-7c57-5b67-7130-a870b6ffbb46" testName="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView" computerName="DESKTOP-V1D4VEN" duration="00:00:00.0022777" startTime="2026-10-30T04:28:02.6267525+08:00" endTime="2026-10-30T04:28:02.6275359+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab2e97c4-baaf-4cb8-b9ba-011577680699">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   0</Message>
+          <StackTrace>   at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView() in C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs:line 230&#xD;
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="55f32924-7c57-5b67-7130-a870b6ffbb46">
+      <Execution id="ab2e97c4-baaf-4cb8-b9ba-011577680699" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="UnloadDiscardsQueuedLoadAndReloadChecksCurrentView" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.BurstQueuesOneCheckAndExecutesLoadMoreOnce" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="19cde068-7e67-6aba-e770-a00a8f1e903d">
+      <Execution id="b44b29de-4ee7-4b22-b0be-cc6be7ac3168" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="BurstQueuesOneCheckAndExecutesLoadMoreOnce" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="33c5d819-b7d9-a4f8-7ff9-56eb7c6203e8">
+      <Execution id="2a77060a-1bed-47c2-a87e-6290e17986a0" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="ReloadBeforeQueueDrainsStillHasOneCurrentCheck" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.DisabledCommandIsNotExecutedAndLaterInputCanRetry" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="0e5b7ea2-7bbf-1e2b-4e16-41e2802029c4">
+      <Execution id="c495809d-db9e-4b2f-9ec8-caf7afe6a8b3" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="DisabledCommandIsNotExecutedAndLaterInputCanRetry" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 800, expectedLoads: 1)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="1e7d3cb7-783e-f988-f100-8ca2c7e81b5d">
+      <Execution id="908f578e-32cf-4912-b0e1-f2a58ff2a553" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="QueuedCheckUsesLatestPositionAndThreshold" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 799, expectedLoads: 1)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="119cb2e5-d968-bb83-e2f0-4a5a05aa9823">
+      <Execution id="f6457b86-2b6d-4d7f-b68b-2aca1f1ecb6e" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="QueuedCheckUsesLatestPositionAndThreshold" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReentrantLayoutKeepsOneFollowUpCheckWithoutLosingNextPage" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="2aaf654f-545a-096f-90cf-78a24b509363">
+      <Execution id="7e10f7a8-dbb9-4af8-8925-b118c20b25ca" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="ReentrantLayoutKeepsOneFollowUpCheckWithoutLosingNextPage" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.RejectedEnqueueCanRetryAndCommandIsReadAtExecution" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="4cd7a685-6d32-178c-8b8d-dae75f3a6653">
+      <Execution id="ebc2828f-3c49-417f-a5e5-1e32bc141561" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="RejectedEnqueueCanRetryAndCommandIsReadAtExecution" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="15faa2ca-aca9-e229-bdf7-54f581f3a7b8">
+      <Execution id="7e5abdcd-dd52-4532-b9f2-88d5822f150d" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="OldDelayedCheckCannotLoadIntoReloadedControl" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ShortPagesFillViewportThenScrollAndResizeContinueUntilLastPage" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="4d2461d8-04d0-0e09-417f-3a9edbc166a0">
+      <Execution id="616a9fb1-01d3-41f2-a07a-6ba74b4e3ef8" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="ShortPagesFillViewportThenScrollAndResizeContinueUntilLastPage" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.QueuedCheckUsesLatestPositionAndThreshold(remaining: 801, expectedLoads: 0)" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="3c9fa9f1-9e6d-4b3b-4ec2-609e9e8a972f">
+      <Execution id="a7689d0d-60b9-4e5a-9a8e-05ed43993f88" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="QueuedCheckUsesLatestPositionAndThreshold" />
+    </UnitTest>
+    <UnitTest name="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.DelayedChecksCoalesceAndCannotLoadWhileUnloaded" storage="c:\users\hp\.t3\worktrees\bili.copilot\t3-68f070fa\tests\bilicopilot.ui.tests\bin\release\net9.0\bilicopilot.ui.tests.dll" id="77e0ae2a-4945-20fb-62dd-c394792f5dc9">
+      <Execution id="a3bc4813-16ef-4f46-8de1-b25ba013b244" />
+      <TestMethod codeBase="C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\bin\Release\net9.0\BiliCopilot.UI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests" name="DelayedChecksCoalesceAndCannotLoadWhileUnloaded" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="15faa2ca-aca9-e229-bdf7-54f581f3a7b8" executionId="7e5abdcd-dd52-4532-b9f2-88d5822f150d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4d2461d8-04d0-0e09-417f-3a9edbc166a0" executionId="616a9fb1-01d3-41f2-a07a-6ba74b4e3ef8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="77e0ae2a-4945-20fb-62dd-c394792f5dc9" executionId="a3bc4813-16ef-4f46-8de1-b25ba013b244" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4cd7a685-6d32-178c-8b8d-dae75f3a6653" executionId="ebc2828f-3c49-417f-a5e5-1e32bc141561" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0e5b7ea2-7bbf-1e2b-4e16-41e2802029c4" executionId="c495809d-db9e-4b2f-9ec8-caf7afe6a8b3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="33c5d819-b7d9-a4f8-7ff9-56eb7c6203e8" executionId="2a77060a-1bed-47c2-a87e-6290e17986a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="119cb2e5-d968-bb83-e2f0-4a5a05aa9823" executionId="f6457b86-2b6d-4d7f-b68b-2aca1f1ecb6e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="19cde068-7e67-6aba-e770-a00a8f1e903d" executionId="b44b29de-4ee7-4b22-b0be-cc6be7ac3168" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2aaf654f-545a-096f-90cf-78a24b509363" executionId="7e10f7a8-dbb9-4af8-8925-b118c20b25ca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e7d3cb7-783e-f988-f100-8ca2c7e81b5d" executionId="908f578e-32cf-4912-b0e1-f2a58ff2a553" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c9fa9f1-9e6d-4b3b-4ec2-609e9e8a972f" executionId="a7689d0d-60b9-4e5a-9a8e-05ed43993f88" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="55f32924-7c57-5b67-7130-a870b6ffbb46" executionId="ab2e97c4-baaf-4cb8-b9ba-011577680699" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="12" executed="12" passed="9" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.14)&#xD;
+[xUnit.net 00:00:01.23]   Discovering: BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:01.34]   Discovered:  BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:01.37]   Starting:    BiliCopilot.UI.Tests&#xD;
+[xUnit.net 00:00:01.49]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:01.49]       Expected: 1&#xD;
+[xUnit.net 00:00:01.49]       Actual:   0&#xD;
+[xUnit.net 00:00:01.49]       Stack Trace:&#xD;
+[xUnit.net 00:00:01.49]         C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs(230,0): at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView()&#xD;
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:01.49]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:01.49]       Expected: 1&#xD;
+[xUnit.net 00:00:01.49]       Actual:   0&#xD;
+[xUnit.net 00:00:01.49]       Stack Trace:&#xD;
+[xUnit.net 00:00:01.49]         C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs(37,0): at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck()&#xD;
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:01.49]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:01.49]       Expected: 1&#xD;
+[xUnit.net 00:00:01.49]       Actual:   0&#xD;
+[xUnit.net 00:00:01.49]       Stack Trace:&#xD;
+[xUnit.net 00:00:01.49]         C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-68f070fa\tests\BiliCopilot.UI.Tests\IncrementVerticalScrollControlTests.cs(197,0): at BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl()&#xD;
+[xUnit.net 00:00:01.49]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:01.50]   Finished:    BiliCopilot.UI.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="DESKTOP-V1D4VEN" outcome="Error" timestamp="2026-10-30T04:28:02.6681389+08:00">
+        <Text>[xUnit.net 00:00:01.49]     BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP-V1D4VEN" outcome="Error" timestamp="2026-10-30T04:28:02.6684907+08:00">
+        <Text>[xUnit.net 00:00:01.49]     BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP-V1D4VEN" outcome="Error" timestamp="2026-10-30T04:28:02.6685336+08:00">
+        <Text>[xUnit.net 00:00:01.49]     BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

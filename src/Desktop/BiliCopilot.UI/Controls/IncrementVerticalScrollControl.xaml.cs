@@ -25,6 +25,9 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
     {
         _timeProvider = timeProvider;
         InitializeComponent();
+        // The NuGet base unregisters its lifecycle handlers on the first unload.
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
     }
 
     public object Element
@@ -74,16 +77,26 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
         return View.VerticalOffset;
     }
 
-    protected override void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        if (_isActive)
+        {
+            return;
+        }
+
         _isActive = true;
         View.ViewChanged += OnViewChanged;
         View.SizeChanged += OnViewSizeChanged;
         CheckItemsCount();
     }
 
-    protected override void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        if (!_isActive)
+        {
+            return;
+        }
+
         _isActive = false;
         _loadVersion++;
         // Keep the pending slot until its callback drains, even across a reload.

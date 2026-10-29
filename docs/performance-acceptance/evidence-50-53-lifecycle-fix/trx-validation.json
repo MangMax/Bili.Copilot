@@ -1,0 +1,60 @@
+[
+  {
+    "file": "green-14.trx",
+    "counters": [],
+    "results": 14,
+    "failed": []
+  },
+  {
+    "file": "red-14.trx",
+    "counters": [],
+    "results": 14,
+    "failed": [
+      {
+        "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView",
+        "outcome": "Failed"
+      },
+      {
+        "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl",
+        "outcome": "Failed"
+      },
+      {
+        "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ThreeRemountsRejectOldDelaysAndAcceptCurrentDelay",
+        "outcome": "Failed"
+      },
+      {
+        "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.RepeatedLoadedEventsKeepOneSubscriptionAndUnloadRemovesIt",
+        "outcome": "Failed"
+      },
+      {
+        "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck",
+        "outcome": "Failed"
+      }
+    ]
+  },
+  {
+    "file": "red-original-12.trx",
+    "counters": [],
+    "results": 12,
+    "failed": [
+      {
+        "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.OldDelayedCheckCannotLoadIntoReloadedControl",
+        "outcome": "Failed"
+      },
+      {
+        "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.ReloadBeforeQueueDrainsStillHasOneCurrentCheck",
+        "outcome": "Failed"
+      },
+      {
+        "testName": "BiliCopilot.UI.Tests.IncrementVerticalScrollControlTests.UnloadDiscardsQueuedLoadAndReloadChecksCurrentView",
+        "outcome": "Failed"
+      }
+    ]
+  },
+  {
+    "file": "release-full.trx",
+    "counters": [],
+    "results": 403,
+    "failed": []
+  }
+]

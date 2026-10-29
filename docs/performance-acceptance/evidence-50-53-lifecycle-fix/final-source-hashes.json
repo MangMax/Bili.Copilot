@@ -1,0 +1,17 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "36A910A78C0B480BF98968E2F9D182979436F70507BB283108D3DF45EA0A992E",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularMainBody.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "593CE45E26A358F4E0E422AF389DB92CEB5311B90429A806449AA5C4410C3F1A",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\Popular\\PopularSideBody.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "DA822ADEB0809D1BB24931439E3B9DBEE696FEE45E2699C7D35D4A9D93509B37",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-68f070fa\\src\\Desktop\\BiliCopilot.UI\\Controls\\IncrementVerticalScrollControl.xaml.cs"
+  }
+]

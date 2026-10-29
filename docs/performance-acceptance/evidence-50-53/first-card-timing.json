@@ -1,0 +1,18 @@
+[
+  {
+    "firstCardMs": 11940.8658,
+    "cardUtc": "2026-10-30T04:15:09.434972+08:00",
+    "firstCardElapsedMs": 305.11229999999887,
+    "directoryRequestMs": 11635.7535,
+    "scenario": "Recommend",
+    "directoryReleaseMs": 13789.0564
+  },
+  {
+    "firstCardMs": 19045.89,
+    "cardUtc": "2026-10-30T04:15:16.5399967+08:00",
+    "firstCardElapsedMs": 114.39199999999983,
+    "directoryRequestMs": 18931.498,
+    "scenario": "Hot",
+    "directoryReleaseMs": 20668.678
+  }
+]

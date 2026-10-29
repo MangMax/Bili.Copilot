@@ -1,0 +1,132 @@
+[
+  {
+    "passed": false,
+    "error": "No actual empty page reached",
+    "name": "SlowRecommend"
+  },
+  {
+    "passed": false,
+    "error": "No actual empty page reached",
+    "name": "SlowHot"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Fence ",
+    "name": "Saved restore"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\Saved restore-failure.png ",
+    "name": "Saved restore capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Missing ",
+    "name": "Missing restore"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\Missing restore-failure.png ",
+    "name": "Missing restore capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke DirFail ",
+    "name": "DirFail restore"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\DirFail restore-failure.png ",
+    "name": "DirFail restore capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Recommend ",
+    "name": "EmptyThenRefresh"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\EmptyThenRefresh-failure.png ",
+    "name": "EmptyThenRefresh capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Failure ",
+    "name": "FailureThenRefresh"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\FailureThenRefresh-failure.png ",
+    "name": "FailureThenRefresh capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Rank ",
+    "name": "Rank idle"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\Rank idle-failure.png ",
+    "name": "Rank idle capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Partition ",
+    "name": "Partition idle"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\Partition idle-failure.png ",
+    "name": "Partition idle capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Stale ",
+    "name": "StaleSection"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\StaleSection-failure.png ",
+    "name": "StaleSection capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Long ",
+    "name": "BurstGeometry"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\BurstGeometry-failure.png ",
+    "name": "BurstGeometry capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Recommend ",
+    "name": "UnloadDelay"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\UnloadDelay-failure.png ",
+    "name": "UnloadDelay capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Attach ",
+    "name": "ReattachMainSide"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\ReattachMainSide-failure.png ",
+    "name": "ReattachMainSide capture"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: invoke Refresh ",
+    "name": "RemountRefresh"
+  },
+  {
+    "passed": false,
+    "error": "UI command failed: screenshot --output C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8d61526c\\docs\\performance-acceptance\\evidence-50-53\\run-01\\RemountRefresh-failure.png ",
+    "name": "RemountRefresh capture"
+  }
+]
