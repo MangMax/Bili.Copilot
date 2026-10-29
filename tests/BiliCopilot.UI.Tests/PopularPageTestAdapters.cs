@@ -10,21 +10,6 @@ using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 
 namespace BiliCopilot.UI.Pages { public class PopularPage { } }
-namespace Microsoft.Extensions.Logging
-{
-    public interface ILogger<T> { }
-    public static class LoggerExtensions
-    {
-        public static void LogError<T>(this ILogger<T> logger, Exception exception, string message) { }
-    }
-}
-namespace Microsoft.Extensions.Logging.Abstractions
-{
-    public sealed class NullLogger<T> : Microsoft.Extensions.Logging.ILogger<T>
-    {
-        public static NullLogger<T> Instance { get; } = new();
-    }
-}
 namespace FluentIcons.Common { public enum Symbol { Balloon, Fire, RibbonStar } }
 namespace BiliCopilot.UI.ViewModels.View
 {
