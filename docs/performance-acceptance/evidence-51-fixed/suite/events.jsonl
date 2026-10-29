@@ -1,0 +1,258 @@
+{"ms":0.0334,"kind":"launch","data":{"pid":40820,"identity":"BiliCopilot.Acceptance51FixedD19"}}
+{"ms":269.1974,"kind":"state","data":{"condition":"loaded","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":0}}
+{"ms":279.9783,"kind":"input-ready","data":null}
+{"ms":281.2401,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":7829.8834,"kind":"pipe","data":"begin-BurstFinalPopup"}
+{"ms":7857.2463,"kind":"state","data":{"condition":"begin-BurstFinalPopup","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":0}}
+{"ms":7858.1995,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":8089.7665,"kind":"request","data":{"Id":1,"keyword":"\u003Crecommend\u003E","IsCancellationRequested":false}}
+{"ms":8092.2615,"kind":"state","data":{"condition":"request","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":8094.446,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":8102.3832,"kind":"state","data":{"condition":"focus","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":8108.6053,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":8738.2325,"kind":"cancel","data":{"Id":1,"keyword":"\u003Crecommend\u003E"}}
+{"ms":8740.727,"kind":"state","data":{"condition":"collection","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":8742.8217,"kind":"render","data":{"loaded":true,"text":"bili","open":false,"items":[]}}
+{"ms":8909.3478,"kind":"text","data":{"Text":"bili","reason":"UserInput","keyword":"bili"}}
+{"ms":8911.4613,"kind":"state","data":{"condition":"text","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":8913.6458,"kind":"render","data":{"loaded":true,"text":"bili","open":false,"items":[]}}
+{"ms":9166.064,"kind":"state","data":{"condition":"collection","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":[],"requests":1}}
+{"ms":9167.3601,"kind":"request","data":{"Id":2,"keyword":"bili","IsCancellationRequested":false}}
+{"ms":9167.7591,"kind":"state","data":{"condition":"request","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":9168.6143,"kind":"render","data":{"loaded":true,"text":"bili","open":false,"items":[]}}
+{"ms":9169.9322,"kind":"pipe","data":"ReleaseNewest"}
+{"ms":9171.7444,"kind":"complete","data":{"Id":2,"Keyword":"bili","cancelled":false}}
+{"ms":9201.2901,"kind":"state","data":{"condition":"popup","loaded":true,"text":"bili","keyword":"bili","open":true,"focus":"Unfocused","items":["bili result"],"requests":2}}
+{"ms":9202.6897,"kind":"state","data":{"condition":"collection","loaded":true,"text":"bili","keyword":"bili","open":true,"focus":"Unfocused","items":["bili result"],"requests":2}}
+{"ms":9237.1773,"kind":"render","data":{"loaded":true,"text":"bili","open":true,"items":["bili result"]}}
+{"ms":9242.9098,"kind":"pipe","data":"Fence"}
+{"ms":10107.7896,"kind":"state","data":{"condition":"fence1","loaded":true,"text":"bili","keyword":"bili","open":true,"focus":"Unfocused","items":["bili result"],"requests":2}}
+{"ms":10112.7223,"kind":"render","data":{"loaded":true,"text":"bili","open":true,"items":["bili result"]}}
+{"ms":10126.8184,"kind":"pipe","data":"burst-settled"}
+{"ms":10127.3929,"kind":"state","data":{"condition":"burst-settled","loaded":true,"text":"bili","keyword":"bili","open":true,"focus":"Unfocused","items":["bili result"],"requests":2}}
+{"ms":10131.1478,"kind":"render","data":{"loaded":true,"text":"bili","open":true,"items":["bili result"]}}
+{"ms":10896.1395,"kind":"pipe","data":"begin-SelectionDoesNotRequery"}
+{"ms":10896.9679,"kind":"state","data":{"condition":"begin-SelectionDoesNotRequery","loaded":true,"text":"bili","keyword":"bili","open":true,"focus":"Unfocused","items":["bili result"],"requests":2}}
+{"ms":10900.0344,"kind":"render","data":{"loaded":true,"text":"bili","open":true,"items":["bili result"]}}
+{"ms":11196.4098,"kind":"state","data":{"condition":"popup","loaded":true,"text":"bili","keyword":"bili","open":false,"focus":"Unfocused","items":["bili result"],"requests":2}}
+{"ms":11197.8925,"kind":"state","data":{"condition":"collection","loaded":true,"text":"bili","keyword":"bili result","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":11201.2795,"kind":"navigation-adapter","data":{"route":"global","keyword":"bili"}}
+{"ms":11203.0745,"kind":"submit","data":{"QueryText":"bili","chosen":true}}
+{"ms":11204.4304,"kind":"state","data":{"condition":"submit","loaded":true,"text":"bili result","keyword":"bili result","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":11208.6452,"kind":"pipe","data":"Fence"}
+{"ms":11209.9612,"kind":"render","data":{"loaded":true,"text":"bili result","open":false,"items":[]}}
+{"ms":11215.4307,"kind":"state","data":{"condition":"collection","loaded":true,"text":"bili result","keyword":"bili result","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":11218.707,"kind":"render","data":{"loaded":true,"text":"bili result","open":false,"items":[]}}
+{"ms":11374.9578,"kind":"text","data":{"Text":"bili result","reason":"ProgrammaticChange","keyword":"bili result"}}
+{"ms":11375.5927,"kind":"state","data":{"condition":"text","loaded":true,"text":"bili result","keyword":"bili result","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":11381.5954,"kind":"render","data":{"loaded":true,"text":"bili result","open":false,"items":[]}}
+{"ms":12060.6456,"kind":"state","data":{"condition":"fence2","loaded":true,"text":"bili result","keyword":"bili result","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":12062.6993,"kind":"render","data":{"loaded":true,"text":"bili result","open":false,"items":[]}}
+{"ms":12081.786,"kind":"pipe","data":"selection-settled"}
+{"ms":12082.415,"kind":"state","data":{"condition":"selection-settled","loaded":true,"text":"bili result","keyword":"bili result","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":12087.6916,"kind":"render","data":{"loaded":true,"text":"bili result","open":false,"items":[]}}
+{"ms":12744.797,"kind":"pipe","data":"begin-OutOfOrderOldNeverPublishes"}
+{"ms":12745.4294,"kind":"state","data":{"condition":"begin-OutOfOrderOldNeverPublishes","loaded":true,"text":"bili result","keyword":"bili result","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":12750.3264,"kind":"render","data":{"loaded":true,"text":"bili result","open":false,"items":[]}}
+{"ms":13318.0264,"kind":"state","data":{"condition":"collection","loaded":true,"text":"old","keyword":"old","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":13320.3731,"kind":"render","data":{"loaded":true,"text":"old","open":false,"items":[]}}
+{"ms":13481.5472,"kind":"text","data":{"Text":"old","reason":"UserInput","keyword":"old"}}
+{"ms":13482.1943,"kind":"state","data":{"condition":"text","loaded":true,"text":"old","keyword":"old","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":13487.8013,"kind":"render","data":{"loaded":true,"text":"old","open":false,"items":[]}}
+{"ms":13745.1824,"kind":"state","data":{"condition":"collection","loaded":true,"text":"old","keyword":"old","open":false,"focus":"Unfocused","items":[],"requests":2}}
+{"ms":13746.1154,"kind":"request","data":{"Id":3,"keyword":"old","IsCancellationRequested":false}}
+{"ms":13746.5546,"kind":"state","data":{"condition":"request","loaded":true,"text":"old","keyword":"old","open":false,"focus":"Unfocused","items":[],"requests":3}}
+{"ms":13751.3272,"kind":"render","data":{"loaded":true,"text":"old","open":false,"items":[]}}
+{"ms":14322.9302,"kind":"cancel","data":{"Id":3,"keyword":"old"}}
+{"ms":14323.6571,"kind":"state","data":{"condition":"collection","loaded":true,"text":"new","keyword":"new","open":false,"focus":"Unfocused","items":[],"requests":3}}
+{"ms":14325.1626,"kind":"render","data":{"loaded":true,"text":"new","open":false,"items":[]}}
+{"ms":14487.7902,"kind":"text","data":{"Text":"new","reason":"UserInput","keyword":"new"}}
+{"ms":14488.4824,"kind":"state","data":{"condition":"text","loaded":true,"text":"new","keyword":"new","open":false,"focus":"Unfocused","items":[],"requests":3}}
+{"ms":14494.3861,"kind":"render","data":{"loaded":true,"text":"new","open":false,"items":[]}}
+{"ms":14753.1473,"kind":"state","data":{"condition":"collection","loaded":true,"text":"new","keyword":"new","open":false,"focus":"Unfocused","items":[],"requests":3}}
+{"ms":14754.6426,"kind":"request","data":{"Id":4,"keyword":"new","IsCancellationRequested":false}}
+{"ms":14755.0138,"kind":"state","data":{"condition":"request","loaded":true,"text":"new","keyword":"new","open":false,"focus":"Unfocused","items":[],"requests":4}}
+{"ms":14757.0545,"kind":"render","data":{"loaded":true,"text":"new","open":false,"items":[]}}
+{"ms":14758.509,"kind":"pipe","data":"ReleaseNewest"}
+{"ms":14758.9587,"kind":"complete","data":{"Id":4,"Keyword":"new","cancelled":false}}
+{"ms":14769.3849,"kind":"state","data":{"condition":"popup","loaded":true,"text":"new","keyword":"new","open":true,"focus":"Unfocused","items":["new result"],"requests":4}}
+{"ms":14770.0562,"kind":"state","data":{"condition":"collection","loaded":true,"text":"new","keyword":"new","open":true,"focus":"Unfocused","items":["new result"],"requests":4}}
+{"ms":14784.9873,"kind":"render","data":{"loaded":true,"text":"new","open":true,"items":["new result"]}}
+{"ms":15494.4238,"kind":"pipe","data":"ReleaseOldest"}
+{"ms":15495.0532,"kind":"complete","data":{"Id":1,"Keyword":"\u003Crecommend\u003E","cancelled":true}}
+{"ms":15497.2561,"kind":"pipe","data":"ReleaseOldest"}
+{"ms":15497.7828,"kind":"complete","data":{"Id":3,"Keyword":"old","cancelled":true}}
+{"ms":15501.6705,"kind":"pipe","data":"Fence"}
+{"ms":16364.2522,"kind":"state","data":{"condition":"fence3","loaded":true,"text":"new","keyword":"new","open":true,"focus":"Unfocused","items":["new result"],"requests":4}}
+{"ms":16367.0815,"kind":"pipe","data":"old-settled"}
+{"ms":16367.6709,"kind":"state","data":{"condition":"old-settled","loaded":true,"text":"new","keyword":"new","open":true,"focus":"Unfocused","items":["new result"],"requests":4}}
+{"ms":16369.5272,"kind":"render","data":{"loaded":true,"text":"new","open":true,"items":["new result"]}}
+{"ms":17084.6419,"kind":"pipe","data":"begin-ClearRejectsLateResult"}
+{"ms":17085.2016,"kind":"state","data":{"condition":"begin-ClearRejectsLateResult","loaded":true,"text":"new","keyword":"new","open":true,"focus":"Unfocused","items":["new result"],"requests":4}}
+{"ms":17088.4558,"kind":"render","data":{"loaded":true,"text":"new","open":true,"items":["new result"]}}
+{"ms":17706.3364,"kind":"state","data":{"condition":"popup","loaded":true,"text":"clea","keyword":"clea","open":false,"focus":"Unfocused","items":[],"requests":4}}
+{"ms":17707.0992,"kind":"state","data":{"condition":"collection","loaded":true,"text":"clea","keyword":"clea","open":false,"focus":"Unfocused","items":[],"requests":4}}
+{"ms":17722.9254,"kind":"state","data":{"condition":"collection","loaded":true,"text":"clearfl","keyword":"clearfl","open":false,"focus":"Unfocused","items":[],"requests":4}}
+{"ms":17741.1429,"kind":"state","data":{"condition":"collection","loaded":true,"text":"clearflight","keyword":"clearflight","open":false,"focus":"Unfocused","items":[],"requests":4}}
+{"ms":17745.5489,"kind":"render","data":{"loaded":true,"text":"clearflight","open":false,"items":[]}}
+{"ms":17913.7062,"kind":"text","data":{"Text":"clearflight","reason":"UserInput","keyword":"clearflight"}}
+{"ms":17914.5975,"kind":"state","data":{"condition":"text","loaded":true,"text":"clearflight","keyword":"clearflight","open":false,"focus":"Unfocused","items":[],"requests":4}}
+{"ms":17919.6648,"kind":"render","data":{"loaded":true,"text":"clearflight","open":false,"items":[]}}
+{"ms":18173.3792,"kind":"state","data":{"condition":"collection","loaded":true,"text":"clearflight","keyword":"clearflight","open":false,"focus":"Unfocused","items":[],"requests":4}}
+{"ms":18174.5196,"kind":"request","data":{"Id":5,"keyword":"clearflight","IsCancellationRequested":false}}
+{"ms":18175.0471,"kind":"state","data":{"condition":"request","loaded":true,"text":"clearflight","keyword":"clearflight","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":18176.5537,"kind":"render","data":{"loaded":true,"text":"clearflight","open":false,"items":[]}}
+{"ms":18474.8921,"kind":"pipe","data":"ReleaseNewest"}
+{"ms":18475.4492,"kind":"complete","data":{"Id":5,"Keyword":"clearflight","cancelled":false}}
+{"ms":18486.0131,"kind":"state","data":{"condition":"popup","loaded":true,"text":"clearflight","keyword":"clearflight","open":true,"focus":"Unfocused","items":["clearflight result"],"requests":5}}
+{"ms":18486.5552,"kind":"state","data":{"condition":"collection","loaded":true,"text":"clearflight","keyword":"clearflight","open":true,"focus":"Unfocused","items":["clearflight result"],"requests":5}}
+{"ms":18487.0256,"kind":"pipe","data":"Fence"}
+{"ms":18492.9388,"kind":"state","data":{"condition":"popup","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":18493.754,"kind":"state","data":{"condition":"collection","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":18495.7176,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":18645.3821,"kind":"state","data":{"condition":"collection","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":18646.1141,"kind":"text","data":{"Text":"","reason":"UserInput","keyword":""}}
+{"ms":18646.6827,"kind":"state","data":{"condition":"text","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":18651.3815,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":19340.09,"kind":"state","data":{"condition":"fence4","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":19345.3641,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":19346.9991,"kind":"pipe","data":"clear-settled"}
+{"ms":19347.4142,"kind":"state","data":{"condition":"clear-settled","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":19351.3247,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":20021.8067,"kind":"pipe","data":"begin-EmptyFocusRecommendations"}
+{"ms":20022.4235,"kind":"state","data":{"condition":"begin-EmptyFocusRecommendations","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":20026.3802,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":20232.6537,"kind":"state","data":{"condition":"blur","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":5}}
+{"ms":20237.901,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":20477.4041,"kind":"request","data":{"Id":6,"keyword":"\u003Crecommend\u003E","IsCancellationRequested":false}}
+{"ms":20478.0007,"kind":"state","data":{"condition":"request","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":6}}
+{"ms":20481.2884,"kind":"state","data":{"condition":"focus","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":6}}
+{"ms":20486.9058,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":20506.7461,"kind":"pipe","data":"ReleaseNewest"}
+{"ms":20507.4007,"kind":"complete","data":{"Id":6,"Keyword":"\u003Crecommend\u003E","cancelled":false}}
+{"ms":20508.0572,"kind":"state","data":{"condition":"collection","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":6}}
+{"ms":20517.4614,"kind":"state","data":{"condition":"popup","loaded":true,"text":"","keyword":"","open":true,"focus":"Unfocused","items":["fixture recommendation"],"requests":6}}
+{"ms":20517.9822,"kind":"state","data":{"condition":"collection","loaded":true,"text":"","keyword":"","open":true,"focus":"Unfocused","items":["fixture recommendation"],"requests":6}}
+{"ms":20518.4142,"kind":"pipe","data":"Fence"}
+{"ms":20521.8555,"kind":"render","data":{"loaded":true,"text":"","open":true,"items":["fixture recommendation"]}}
+{"ms":21383.426,"kind":"state","data":{"condition":"fence5","loaded":true,"text":"","keyword":"","open":true,"focus":"Unfocused","items":["fixture recommendation"],"requests":6}}
+{"ms":21389.0046,"kind":"render","data":{"loaded":true,"text":"","open":true,"items":["fixture recommendation"]}}
+{"ms":21390.4932,"kind":"pipe","data":"recommend-settled"}
+{"ms":21390.988,"kind":"state","data":{"condition":"recommend-settled","loaded":true,"text":"","keyword":"","open":true,"focus":"Unfocused","items":["fixture recommendation"],"requests":6}}
+{"ms":21395.5283,"kind":"render","data":{"loaded":true,"text":"","open":true,"items":["fixture recommendation"]}}
+{"ms":22133.6136,"kind":"pipe","data":"begin-UnloadRemountRejectsLateResult"}
+{"ms":22134.3695,"kind":"state","data":{"condition":"begin-UnloadRemountRejectsLateResult","loaded":true,"text":"","keyword":"","open":true,"focus":"Unfocused","items":["fixture recommendation"],"requests":6}}
+{"ms":22139.1768,"kind":"render","data":{"loaded":true,"text":"","open":true,"items":["fixture recommendation"]}}
+{"ms":22436.2227,"kind":"state","data":{"condition":"popup","loaded":true,"text":"pen","keyword":"pen","open":false,"focus":"Unfocused","items":[],"requests":6}}
+{"ms":22437.0614,"kind":"state","data":{"condition":"collection","loaded":true,"text":"pen","keyword":"pen","open":false,"focus":"Unfocused","items":[],"requests":6}}
+{"ms":22440.6586,"kind":"render","data":{"loaded":true,"text":"pen","open":false,"items":[]}}
+{"ms":22458.2399,"kind":"state","data":{"condition":"collection","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":6}}
+{"ms":22460.9449,"kind":"render","data":{"loaded":true,"text":"pending","open":false,"items":[]}}
+{"ms":22627.1767,"kind":"text","data":{"Text":"pending","reason":"UserInput","keyword":"pending"}}
+{"ms":22627.7659,"kind":"state","data":{"condition":"text","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":6}}
+{"ms":22632.8816,"kind":"render","data":{"loaded":true,"text":"pending","open":false,"items":[]}}
+{"ms":22880.4499,"kind":"state","data":{"condition":"collection","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":6}}
+{"ms":22881.1427,"kind":"request","data":{"Id":7,"keyword":"pending","IsCancellationRequested":false}}
+{"ms":22881.5861,"kind":"state","data":{"condition":"request","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":22882.9311,"kind":"render","data":{"loaded":true,"text":"pending","open":false,"items":[]}}
+{"ms":22901.2694,"kind":"pipe","data":"Detach"}
+{"ms":22904.3696,"kind":"state","data":{"condition":"detached","loaded":false,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":22905.1196,"kind":"render","data":{"loaded":false,"text":"pending","open":false,"items":[]}}
+{"ms":22907.1725,"kind":"cancel","data":{"Id":7,"keyword":"pending"}}
+{"ms":22907.62,"kind":"state","data":{"condition":"collection","loaded":false,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":22908.2587,"kind":"state","data":{"condition":"unloaded","loaded":false,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":22909.1505,"kind":"state","data":{"condition":"blur","loaded":false,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":22912.7578,"kind":"render","data":{"loaded":false,"text":"pending","open":false,"items":[]}}
+{"ms":22915.1911,"kind":"pipe","data":"Attach"}
+{"ms":22921.0539,"kind":"state","data":{"condition":"loaded","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":22921.7656,"kind":"render","data":{"loaded":true,"text":"pending","open":false,"items":[]}}
+{"ms":22927.8427,"kind":"pipe","data":"ReleaseNewest"}
+{"ms":22928.4685,"kind":"complete","data":{"Id":7,"Keyword":"pending","cancelled":true}}
+{"ms":22938.1287,"kind":"pipe","data":"Fence"}
+{"ms":23790.0868,"kind":"state","data":{"condition":"fence6","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":23795.6487,"kind":"render","data":{"loaded":true,"text":"pending","open":false,"items":[]}}
+{"ms":23810.9167,"kind":"pipe","data":"remount-settled"}
+{"ms":23811.5404,"kind":"state","data":{"condition":"remount-settled","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":23814.8891,"kind":"render","data":{"loaded":true,"text":"pending","open":false,"items":[]}}
+{"ms":24706.8655,"kind":"state","data":{"condition":"collection","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":7}}
+{"ms":24707.8263,"kind":"request","data":{"Id":8,"keyword":"pending","IsCancellationRequested":false}}
+{"ms":24708.3278,"kind":"state","data":{"condition":"request","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":8}}
+{"ms":24709.6253,"kind":"render","data":{"loaded":true,"text":"pending","open":false,"items":[]}}
+{"ms":24712.92,"kind":"state","data":{"condition":"focus","loaded":true,"text":"pending","keyword":"pending","open":false,"focus":"Unfocused","items":[],"requests":8}}
+{"ms":24718.5334,"kind":"render","data":{"loaded":true,"text":"pending","open":false,"items":[]}}
+{"ms":25314.8696,"kind":"cancel","data":{"Id":8,"keyword":"pending"}}
+{"ms":25315.5332,"kind":"state","data":{"condition":"collection","loaded":true,"text":"res","keyword":"res","open":false,"focus":"Unfocused","items":[],"requests":8}}
+{"ms":25318.3548,"kind":"render","data":{"loaded":true,"text":"res","open":false,"items":[]}}
+{"ms":25333.2646,"kind":"state","data":{"condition":"collection","loaded":true,"text":"resumed","keyword":"resumed","open":false,"focus":"Unfocused","items":[],"requests":8}}
+{"ms":25337.4305,"kind":"render","data":{"loaded":true,"text":"resumed","open":false,"items":[]}}
+{"ms":25502.8404,"kind":"text","data":{"Text":"resumed","reason":"UserInput","keyword":"resumed"}}
+{"ms":25503.5107,"kind":"state","data":{"condition":"text","loaded":true,"text":"resumed","keyword":"resumed","open":false,"focus":"Unfocused","items":[],"requests":8}}
+{"ms":25508.3213,"kind":"render","data":{"loaded":true,"text":"resumed","open":false,"items":[]}}
+{"ms":25768.3357,"kind":"state","data":{"condition":"collection","loaded":true,"text":"resumed","keyword":"resumed","open":false,"focus":"Unfocused","items":[],"requests":8}}
+{"ms":25769.1528,"kind":"request","data":{"Id":9,"keyword":"resumed","IsCancellationRequested":false}}
+{"ms":25769.5886,"kind":"state","data":{"condition":"request","loaded":true,"text":"resumed","keyword":"resumed","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":25770.8324,"kind":"render","data":{"loaded":true,"text":"resumed","open":false,"items":[]}}
+{"ms":25790.7897,"kind":"pipe","data":"ReleaseNewest"}
+{"ms":25791.3517,"kind":"complete","data":{"Id":9,"Keyword":"resumed","cancelled":false}}
+{"ms":25800.7037,"kind":"state","data":{"condition":"popup","loaded":true,"text":"resumed","keyword":"resumed","open":true,"focus":"Unfocused","items":["resumed result"],"requests":9}}
+{"ms":25801.449,"kind":"state","data":{"condition":"collection","loaded":true,"text":"resumed","keyword":"resumed","open":true,"focus":"Unfocused","items":["resumed result"],"requests":9}}
+{"ms":25802.1507,"kind":"pipe","data":"Fence"}
+{"ms":25816.6748,"kind":"render","data":{"loaded":true,"text":"resumed","open":true,"items":["resumed result"]}}
+{"ms":26665.2244,"kind":"state","data":{"condition":"fence7","loaded":true,"text":"resumed","keyword":"resumed","open":true,"focus":"Unfocused","items":["resumed result"],"requests":9}}
+{"ms":26671.1219,"kind":"render","data":{"loaded":true,"text":"resumed","open":true,"items":["resumed result"]}}
+{"ms":26687.1368,"kind":"pipe","data":"resumed-settled"}
+{"ms":26687.8381,"kind":"state","data":{"condition":"resumed-settled","loaded":true,"text":"resumed","keyword":"resumed","open":true,"focus":"Unfocused","items":["resumed result"],"requests":9}}
+{"ms":26689.7169,"kind":"render","data":{"loaded":true,"text":"resumed","open":true,"items":["resumed result"]}}
+{"ms":27638.444,"kind":"pipe","data":"begin-ChineseImeComposition"}
+{"ms":27639.2804,"kind":"state","data":{"condition":"begin-ChineseImeComposition","loaded":true,"text":"resumed","keyword":"resumed","open":true,"focus":"Unfocused","items":["resumed result"],"requests":9}}
+{"ms":27640.2287,"kind":"render","data":{"loaded":true,"text":"resumed","open":true,"items":["resumed result"]}}
+{"ms":27948.0022,"kind":"state","data":{"condition":"popup","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":27948.6952,"kind":"state","data":{"condition":"collection","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":27951.4042,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":28103.0158,"kind":"state","data":{"condition":"collection","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":28103.6224,"kind":"text","data":{"Text":"","reason":"UserInput","keyword":""}}
+{"ms":28103.9539,"kind":"state","data":{"condition":"text","loaded":true,"text":"","keyword":"","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":28108.7008,"kind":"render","data":{"loaded":true,"text":"","open":false,"items":[]}}
+{"ms":28504.0864,"kind":"composition-start","data":{"Text":""}}
+{"ms":28507.376,"kind":"composition-change","data":{"Text":"n"}}
+{"ms":28514.1129,"kind":"state","data":{"condition":"collection","loaded":true,"text":"n","keyword":"n","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":28519.2637,"kind":"composition-change","data":{"Text":"ni"}}
+{"ms":28525.5315,"kind":"pipe","data":"ime-composing"}
+{"ms":28525.978,"kind":"state","data":{"condition":"ime-composing","loaded":true,"text":"n","keyword":"n","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":28551.1785,"kind":"composition-change","data":{"Text":"ni\u0027h"}}
+{"ms":28565.8127,"kind":"render","data":{"loaded":true,"text":"n","open":false,"items":[]}}
+{"ms":28594.7721,"kind":"composition-change","data":{"Text":"ni\u0027ha"}}
+{"ms":28612.0615,"kind":"composition-change","data":{"Text":"ni\u0027hao"}}
+{"ms":28616.1101,"kind":"state","data":{"condition":"collection","loaded":true,"text":"ni\u0027hao","keyword":"ni\u0027hao","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":28625.1368,"kind":"render","data":{"loaded":true,"text":"ni\u0027hao","open":false,"items":[]}}
+{"ms":28827.4885,"kind":"text","data":{"Text":"ni\u0027hao","reason":"UserInput","keyword":"ni\u0027hao"}}
+{"ms":28828.1033,"kind":"state","data":{"condition":"text","loaded":true,"text":"ni\u0027hao","keyword":"ni\u0027hao","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":28833.8256,"kind":"render","data":{"loaded":true,"text":"ni\u0027hao","open":false,"items":[]}}
+{"ms":29092.6218,"kind":"state","data":{"condition":"collection","loaded":true,"text":"ni\u0027hao","keyword":"ni\u0027hao","open":false,"focus":"Unfocused","items":[],"requests":9}}
+{"ms":29093.3583,"kind":"request","data":{"Id":10,"keyword":"ni\u0027hao","IsCancellationRequested":false}}
+{"ms":29093.7793,"kind":"state","data":{"condition":"request","loaded":true,"text":"ni\u0027hao","keyword":"ni\u0027hao","open":false,"focus":"Unfocused","items":[],"requests":10}}
+{"ms":29096.4097,"kind":"render","data":{"loaded":true,"text":"ni\u0027hao","open":false,"items":[]}}
+{"ms":29492.5925,"kind":"composition-end","data":{"Text":"ni\u0027hao"}}
+{"ms":29502.475,"kind":"pipe","data":"ime-committed"}
+{"ms":29503.1375,"kind":"state","data":{"condition":"ime-committed","loaded":true,"text":"ni\u0027hao","keyword":"ni\u0027hao","open":false,"focus":"Unfocused","items":[],"requests":10}}
+{"ms":29504.0114,"kind":"cancel","data":{"Id":10,"keyword":"ni\u0027hao"}}
+{"ms":29504.3895,"kind":"state","data":{"condition":"collection","loaded":true,"text":"\u4F60\u597D","keyword":"\u4F60\u597D","open":false,"focus":"Unfocused","items":[],"requests":10}}
+{"ms":29505.9471,"kind":"render","data":{"loaded":true,"text":"\u4F60\u597D","open":false,"items":[]}}
+{"ms":29665.1813,"kind":"text","data":{"Text":"\u4F60\u597D","reason":"UserInput","keyword":"\u4F60\u597D"}}
+{"ms":29665.7912,"kind":"state","data":{"condition":"text","loaded":true,"text":"\u4F60\u597D","keyword":"\u4F60\u597D","open":false,"focus":"Unfocused","items":[],"requests":10}}
+{"ms":29671.5411,"kind":"render","data":{"loaded":true,"text":"\u4F60\u597D","open":false,"items":[]}}
+{"ms":29929.6634,"kind":"state","data":{"condition":"collection","loaded":true,"text":"\u4F60\u597D","keyword":"\u4F60\u597D","open":false,"focus":"Unfocused","items":[],"requests":10}}
+{"ms":29930.513,"kind":"request","data":{"Id":11,"keyword":"\u4F60\u597D","IsCancellationRequested":false}}
+{"ms":29930.9423,"kind":"state","data":{"condition":"request","loaded":true,"text":"\u4F60\u597D","keyword":"\u4F60\u597D","open":false,"focus":"Unfocused","items":[],"requests":11}}
+{"ms":29934.006,"kind":"render","data":{"loaded":true,"text":"\u4F60\u597D","open":false,"items":[]}}
+{"ms":30206.062,"kind":"pipe","data":"ReleaseNewest"}
+{"ms":30206.7959,"kind":"complete","data":{"Id":11,"Keyword":"\u4F60\u597D","cancelled":false}}
+{"ms":30215.903,"kind":"state","data":{"condition":"popup","loaded":true,"text":"\u4F60\u597D","keyword":"\u4F60\u597D","open":true,"focus":"Unfocused","items":["\u4F60\u597D result"],"requests":11}}
+{"ms":30216.4701,"kind":"state","data":{"condition":"collection","loaded":true,"text":"\u4F60\u597D","keyword":"\u4F60\u597D","open":true,"focus":"Unfocused","items":["\u4F60\u597D result"],"requests":11}}
+{"ms":30223.8079,"kind":"pipe","data":"Fence"}
+{"ms":30232.7424,"kind":"render","data":{"loaded":true,"text":"\u4F60\u597D","open":true,"items":["\u4F60\u597D result"]}}
+{"ms":31090.7097,"kind":"state","data":{"condition":"fence8","loaded":true,"text":"\u4F60\u597D","keyword":"\u4F60\u597D","open":true,"focus":"Unfocused","items":["\u4F60\u597D result"],"requests":11}}
+{"ms":31092.5315,"kind":"render","data":{"loaded":true,"text":"\u4F60\u597D","open":true,"items":["\u4F60\u597D result"]}}
+{"ms":31098.6773,"kind":"pipe","data":"ime-result"}
+{"ms":31099.1629,"kind":"state","data":{"condition":"ime-result","loaded":true,"text":"\u4F60\u597D","keyword":"\u4F60\u597D","open":true,"focus":"Unfocused","items":["\u4F60\u597D result"],"requests":11}}
+{"ms":31103.0913,"kind":"render","data":{"loaded":true,"text":"\u4F60\u597D","open":true,"items":["\u4F60\u597D result"]}}

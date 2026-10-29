@@ -1,0 +1,25 @@
+{
+  "target": "local",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\original-repro\\second-unload.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\original-repro\\SecondUnloadRejectsLateResponse-failure.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\original-repro\\second-remount.png"
+  ],
+  "checks": [
+    {
+      "name": "FirstUnloadCancelsFocusRequest",
+      "passed": true
+    },
+    {
+      "name": "SecondUnloadCancelsDebounce",
+      "passed": true
+    },
+    {
+      "name": "SecondUnloadRejectsLateResponse",
+      "error": "Precondition: request q observed",
+      "passed": false
+    }
+  ],
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-fixed-d19-layout",
+  "appPid": 53184
+}

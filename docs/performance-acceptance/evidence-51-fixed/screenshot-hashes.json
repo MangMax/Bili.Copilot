@@ -1,0 +1,122 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "75F64F0738EB916B4F11A05F860CCC7F8101B518F05F31CDF2FB971036E16BCE",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle\\second-inflight-late.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "D2E8F191A435D8B6B45A74B37AC35A7D854723A638F7AD5A84EC552434545C75",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle\\SelectionTimerUnloadAndLateFocusStayCleared-failure.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "480CF299C683C0BB0AE56BAFD6ADE05E3939AFC2F3B091596F0834EC00E0F1F8",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle\\third-unload.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "480CF299C683C0BB0AE56BAFD6ADE05E3939AFC2F3B091596F0834EC00E0F1F8",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle\\ThirdUnloadCancelsDebounceAndResumes-failure.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "E415D9D2E97D93FA3E0EF3D99C1F5794D7BD68850FBB368507E57232E62342B0",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\final-remount.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "FA7D206648350585A4D4F4726E07815C6E6937DB2D353A1EF7A375063DC71C4E",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\late-focus.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "C1E9BB585833040E8756E163C8947258BE583B825D021651DDF32030D07DB537",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\second-inflight-late.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "2E25F851A36D42467AED71AF2C9C7B4162C472C003CD0246885AE09AE2666D2D",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\third-resumed.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "0546012F853EE5A8245F7FA78E703ED7B061B586DDFA0C104DD98476D3E0D8FA",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\lifecycle-ordered\\third-unload.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "0404D18301797416BD0544458A9B5884A8088014677ADD2DC43371C442C6C0C8",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\mouse\\ime-mouse-exact.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "36254B1F16D69C53C71113990FC6B5C2A07D35DF009E8C91E590FDDD40958ED4",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\original-repro\\second-remount.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "0216C1F3B2CF7E240163B1E72029AA868F6F728D7B6A1F69C3BDCDA9480E83C2",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\original-repro\\second-unload.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "FED3DBE341C8DDA82C42075E4590C7C3FD03FDC8EA9183297CDB744952014A2F",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\original-repro\\SecondUnloadRejectsLateResponse-failure.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "53505D2CE7DB8A73D279532647E2D0221D0693DF66534C894CDBBFC720832D6D",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\burst-final.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "11F81A6616654299890D5F288D9CF6F602D8D1E8689645A68BA57252095D3D0A",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\clear.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "3060BBE3F20F8B64CD7832BBA11B5ACC6B5C31DA04F3503854B6DC983C1D002B",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\ime-committed.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "B230448354C3BBC5EB607C6F8982077C0599AB9BC077F8E5C80CFC1BC5DA9A90",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\ime-composing.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "4A4B4A098E07387D8E19428B206424EBFE94373A2D79C397F998725DE9045B09",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\ime-result.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "389E55B824D7F14CD1CA490BD6399F640BCC7C9997EF5FF2E4263F6954F5580D",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\new-result.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "E9AF5EC51E87062FC06F81D026285A0990948446236965157A9BFE106FAB08CF",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\old-rejected.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "884A29ADDE39237B1395A6D0C813FCECC65CCC17584B7C5A34505F879DD0E573",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\recommend.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "CA687E4BAC46AC30E846D38614789A730EB5231A69A2EA445FC00677CC2D9C1B",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\remount.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "E6FB431CBE669314EDDA351CC9C27C9F84A23F3949A7382081BD24E0E7FFB8AB",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\resumed.png"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "32FDF6F9630A75ED1D466BA1438DBA3603FA2BF2461C64C3A6FB3663709F3D03",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-fixed\\suite\\selection.png"
+  }
+]

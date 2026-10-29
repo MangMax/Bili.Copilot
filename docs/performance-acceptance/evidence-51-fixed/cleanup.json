@@ -1,0 +1,21 @@
+{
+  "ownedPackageGone": true,
+  "ownedPids": [
+    {
+      "id": 53184,
+      "gone": true
+    },
+    {
+      "id": 41864,
+      "gone": true
+    },
+    {
+      "id": 40820,
+      "gone": true
+    },
+    {
+      "id": 15124,
+      "gone": true
+    }
+  ]
+}

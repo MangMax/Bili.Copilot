@@ -1,0 +1,147 @@
+System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::.ctor()
+IL_0000: ldarg.0
+IL_0001: call System.Void BiliCopilot.UI.Controls.Components.AppSearchBoxBase::.ctor()
+IL_0006: nop
+IL_0007: nop
+IL_0008: ldarg.0
+IL_0009: call System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::InitializeComponent()
+IL_000e: nop
+IL_000f: ldarg.0
+IL_0010: ldarg.0
+IL_0011: call Microsoft.UI.Dispatching.DispatcherQueue Microsoft.UI.Xaml.DependencyObject::get_DispatcherQueue()
+IL_0016: callvirt Microsoft.UI.Dispatching.DispatcherQueueTimer Microsoft.UI.Dispatching.DispatcherQueue::CreateTimer()
+IL_001b: stfld Microsoft.UI.Dispatching.DispatcherQueueTimer BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionSuppressionTimer
+IL_0020: ldarg.0
+IL_0021: ldfld Microsoft.UI.Dispatching.DispatcherQueueTimer BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionSuppressionTimer
+IL_0026: ldc.i4 600
+IL_002b: conv.i8
+IL_002c: ldc.i4.0
+IL_002d: conv.i8
+IL_002e: call System.TimeSpan System.TimeSpan::FromMilliseconds(System.Int64,System.Int64)
+IL_0033: callvirt System.Void Microsoft.UI.Dispatching.DispatcherQueueTimer::set_Interval(System.TimeSpan)
+IL_0038: nop
+IL_0039: ldarg.0
+IL_003a: ldfld Microsoft.UI.Dispatching.DispatcherQueueTimer BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionSuppressionTimer
+IL_003f: ldc.i4.0
+IL_0040: callvirt System.Void Microsoft.UI.Dispatching.DispatcherQueueTimer::set_IsRepeating(System.Boolean)
+IL_0045: nop
+IL_0046: ldarg.0
+IL_0047: ldfld Microsoft.UI.Dispatching.DispatcherQueueTimer BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionSuppressionTimer
+IL_004c: ldarg.0
+IL_004d: ldftn System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::OnSuggestionSuppressionTimerTick(Microsoft.UI.Dispatching.DispatcherQueueTimer,System.Object)
+IL_0053: newobj System.Void Windows.Foundation.TypedEventHandler`2<Microsoft.UI.Dispatching.DispatcherQueueTimer,System.Object>::.ctor(System.Object,System.IntPtr)
+IL_0058: callvirt System.Void Microsoft.UI.Dispatching.DispatcherQueueTimer::add_Tick(Windows.Foundation.TypedEventHandler`2<Microsoft.UI.Dispatching.DispatcherQueueTimer,System.Object>)
+IL_005d: nop
+IL_005e: ldarg.0
+IL_005f: ldarg.0
+IL_0060: ldftn System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::OnSearchBoxUnloaded(System.Object,Microsoft.UI.Xaml.RoutedEventArgs)
+IL_0066: newobj System.Void Microsoft.UI.Xaml.RoutedEventHandler::.ctor(System.Object,System.IntPtr)
+IL_006b: call System.Void Microsoft.UI.Xaml.FrameworkElement::add_Unloaded(Microsoft.UI.Xaml.RoutedEventHandler)
+IL_0070: nop
+IL_0071: ret
+System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::OnSearchBoxUnloaded(System.Object,Microsoft.UI.Xaml.RoutedEventArgs)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldarg.0
+IL_0003: ldfld System.Int64 BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionInteractionVersion
+IL_0008: ldc.i4.1
+IL_0009: conv.i8
+IL_000a: add
+IL_000b: stfld System.Int64 BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionInteractionVersion
+IL_0010: ldarg.0
+IL_0011: call !0 Richasy.WinUIKernel.Share.Base.LayoutUserControlBase`1<BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel>::get_ViewModel()
+IL_0016: callvirt CommunityToolkit.Mvvm.Input.IRelayCommand BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel::get_TryCancelSuggestCommand()
+IL_001b: ldnull
+IL_001c: callvirt System.Void System.Windows.Input.ICommand::Execute(System.Object)
+IL_0021: nop
+IL_0022: ldarg.0
+IL_0023: call !0 Richasy.WinUIKernel.Share.Base.LayoutUserControlBase`1<BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel>::get_ViewModel()
+IL_0028: callvirt System.Collections.ObjectModel.ObservableCollection`1<BiliCopilot.UI.ViewModels.Items.SearchSuggestItemViewModel> BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel::get_Suggestion()
+IL_002d: callvirt System.Void System.Collections.ObjectModel.Collection`1<BiliCopilot.UI.ViewModels.Items.SearchSuggestItemViewModel>::Clear()
+IL_0032: nop
+IL_0033: ldarg.0
+IL_0034: call System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::CloseSuggestionList()
+IL_0039: nop
+IL_003a: ldarg.0
+IL_003b: ldfld Microsoft.UI.Dispatching.DispatcherQueueTimer BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionSuppressionTimer
+IL_0040: callvirt System.Void Microsoft.UI.Dispatching.DispatcherQueueTimer::Stop()
+IL_0045: nop
+IL_0046: ldarg.0
+IL_0047: ldc.i4.0
+IL_0048: stfld System.Boolean BiliCopilot.UI.Controls.Components.AppSearchBox::_isSubmittingQuery
+IL_004d: ldarg.0
+IL_004e: ldfld Microsoft.UI.Xaml.Controls.ItemsView BiliCopilot.UI.Controls.Components.AppSearchBox::HotSearchView
+IL_0053: ldnull
+IL_0054: callvirt System.Void Microsoft.UI.Xaml.Controls.ItemsView::set_ItemsSource(System.Object)
+IL_0059: nop
+IL_005a: ret
+System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::OnKeywordChanged(Microsoft.UI.Xaml.Controls.AutoSuggestBox,Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldarg.0
+IL_0003: ldfld System.Int64 BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionInteractionVersion
+IL_0008: ldc.i4.1
+IL_0009: conv.i8
+IL_000a: add
+IL_000b: stfld System.Int64 BiliCopilot.UI.Controls.Components.AppSearchBox::_suggestionInteractionVersion
+IL_0010: ldarg.0
+IL_0011: ldfld Microsoft.UI.Xaml.Controls.AutoSuggestBox BiliCopilot.UI.Controls.Components.AppSearchBox::Box
+IL_0016: callvirt System.String Microsoft.UI.Xaml.Controls.AutoSuggestBox::get_Text()
+IL_001b: call System.Boolean System.String::IsNullOrEmpty(System.String)
+IL_0020: stloc.0
+IL_0021: ldloc.0
+IL_0022: brfalse.s IL_0058
+IL_0024: nop
+IL_0025: ldarg.0
+IL_0026: call !0 Richasy.WinUIKernel.Share.Base.LayoutUserControlBase`1<BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel>::get_ViewModel()
+IL_002b: callvirt CommunityToolkit.Mvvm.Input.IRelayCommand BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel::get_TryCancelSuggestCommand()
+IL_0030: ldnull
+IL_0031: callvirt System.Void System.Windows.Input.ICommand::Execute(System.Object)
+IL_0036: nop
+IL_0037: ldarg.0
+IL_0038: call !0 Richasy.WinUIKernel.Share.Base.LayoutUserControlBase`1<BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel>::get_ViewModel()
+IL_003d: callvirt System.Collections.ObjectModel.ObservableCollection`1<BiliCopilot.UI.ViewModels.Items.SearchSuggestItemViewModel> BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel::get_Suggestion()
+IL_0042: callvirt System.Void System.Collections.ObjectModel.Collection`1<BiliCopilot.UI.ViewModels.Items.SearchSuggestItemViewModel>::Clear()
+IL_0047: nop
+IL_0048: ldarg.0
+IL_0049: call System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::CloseSuggestionList()
+IL_004e: nop
+IL_004f: ldarg.0
+IL_0050: call System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::CloseSuggestionListDeferred()
+IL_0055: nop
+IL_0056: br.s IL_00a6
+IL_0058: ldarg.2
+IL_0059: callvirt Microsoft.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs::get_Reason()
+IL_005e: ldc.i4.0
+IL_005f: ceq
+IL_0061: stloc.1
+IL_0062: ldloc.1
+IL_0063: brfalse.s IL_00a6
+IL_0065: nop
+IL_0066: ldarg.0
+IL_0067: ldfld System.Boolean BiliCopilot.UI.Controls.Components.AppSearchBox::_isSubmittingQuery
+IL_006c: stloc.2
+IL_006d: ldloc.2
+IL_006e: brfalse.s IL_0093
+IL_0070: nop
+IL_0071: ldarg.0
+IL_0072: call !0 Richasy.WinUIKernel.Share.Base.LayoutUserControlBase`1<BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel>::get_ViewModel()
+IL_0077: callvirt CommunityToolkit.Mvvm.Input.IRelayCommand BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel::get_TryCancelSuggestCommand()
+IL_007c: ldnull
+IL_007d: callvirt System.Void System.Windows.Input.ICommand::Execute(System.Object)
+IL_0082: nop
+IL_0083: ldarg.0
+IL_0084: call System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::CloseSuggestionList()
+IL_0089: nop
+IL_008a: ldarg.0
+IL_008b: call System.Void BiliCopilot.UI.Controls.Components.AppSearchBox::CloseSuggestionListDeferred()
+IL_0090: nop
+IL_0091: br.s IL_00a6
+IL_0093: ldarg.0
+IL_0094: call !0 Richasy.WinUIKernel.Share.Base.LayoutUserControlBase`1<BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel>::get_ViewModel()
+IL_0099: callvirt CommunityToolkit.Mvvm.Input.IAsyncRelayCommand BiliCopilot.UI.ViewModels.Components.SearchBoxViewModel::get_DebounceSuggestionsCommand()
+IL_009e: ldnull
+IL_009f: callvirt System.Void System.Windows.Input.ICommand::Execute(System.Object)
+IL_00a4: nop
+IL_00a5: nop
+IL_00a6: ret

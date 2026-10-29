@@ -1,0 +1,17 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "BC68250223D14F53F87082B35428EE2144B7333D124A09AF2A172BC389A232B7",
+    "Path": "C:\\Users\\hp\\.nuget\\packages\\richasy.winuikernel.share\\0.0.12-preview3\\lib\\net9.0-windows10.0.22621\\Richasy.WinUIKernel.Share.dll"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "BC68250223D14F53F87082B35428EE2144B7333D124A09AF2A172BC389A232B7",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-fixed-d19-layout\\Richasy.WinUIKernel.Share.dll"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "2634AD8EEED449D2DEEDB88A818DDB3658B5D4BD549EE66A1BE1F089B437125C",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Components\\AppSearchBox.xaml.cs"
+  }
+]
