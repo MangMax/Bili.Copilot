@@ -206,7 +206,7 @@ public sealed class SearchSuggestionTests
     private sealed class SearchLogger : ILogger<SearchBoxViewModel>
     {
         public List<Exception> Errors { get; } = [];
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+        public IDisposable BeginScope<TState>(TState state) => Microsoft.Extensions.Logging.Abstractions.NullLogger<SearchBoxViewModel>.Instance.BeginScope(state);
         public bool IsEnabled(LogLevel logLevel) => true;
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
