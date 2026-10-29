@@ -4,6 +4,7 @@ using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.Toolkits;
+using BiliCopilot.UI.Update;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.View;
@@ -96,6 +97,7 @@ internal static class GlobalDependencies
             .AddTransient<CommentMainViewModel>()
             .AddSingleton<PinnerViewModel>()
             .AddSingleton<AppViewModel>()
+            .AddUpdateViewModel()
             .AddSingleton<EmoteModuleViewModel>()
             .AddSingleton<NavigationViewModel>()
             .AddSingleton<StartupPageViewModel>()
@@ -169,6 +171,14 @@ internal static class GlobalDependencies
     {
         // 使用工厂注册，避免 DI 尝试注入可选参数中的 HttpClient.
         builder.Services.AddSingleton(_ => new SponsorBlockService());
+        return builder;
+    }
+
+    public static IKernelBuilder AddUpdateViewModel(this IKernelBuilder builder)
+    {
+        builder.Services
+            .AddSingleton<AppUpdateService>()
+            .AddSingleton<AppUpdateViewModel>();
         return builder;
     }
 

@@ -82,6 +82,7 @@
             <base:AppTitleBar.Footer>
                 <StackPanel Orientation="Horizontal">
                     <local:Pinner Margin="0,0,16,0" VerticalAlignment="Center" />
+                    <components:UpdateButton Margin="0,0,8,0" VerticalAlignment="Center" />
                     <components:HeaderAccountControl />
                 </StackPanel>
             </base:AppTitleBar.Footer>
@@ -103,26 +104,6 @@
                 </Grid>
             </Grid>
         </NavigationView>
-
-        <TeachingTip
-            Title="{ext:Locale Name=HasUpdate}"
-            Grid.Row="1"
-            MinWidth="320"
-            ActionButtonClick="OnUpdateActionButtonClick"
-            ActionButtonContent="{ext:Locale Name=OpenUpdate}"
-            CloseButtonClick="OnUpdateCloseButtonClick"
-            IsLightDismissEnabled="False"
-            IsOpen="{x:Bind _appViewModel.IsUpdateShown, Mode=OneWay}"
-            PlacementMargin="0,20,0,0"
-            PreferredPlacement="RightTop"
-            Subtitle="{ext:Locale Name=HasUpdateDescription}">
-            <TeachingTip.IconSource>
-                <ic:SymbolIconSource
-                    Foreground="{ThemeResource SystemFillColorSuccessBrush}"
-                    IconVariant="Filled"
-                    Symbol="CheckmarkCircle" />
-            </TeachingTip.IconSource>
-        </TeachingTip>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="CommonStates">
