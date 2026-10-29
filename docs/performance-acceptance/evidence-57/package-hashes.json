@@ -1,0 +1,17 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "F1C475DD1B15F9CDFD7ACD8A68A2B9C4F2D410EDCFB672922C4781D620D40FFF",
+    "Path": "C:\\Users\\hp\\.nuget\\packages\\danmaku.core\\0.0.1-preview6\\lib\\net9.0-windows10.0.22621\\Danmaku.Core.dll"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "7B0E7F93AC22B9BC51522FCDA68D036EE44F117ECB8AFAA58A45F246E8F44A85",
+    "Path": "C:\\Users\\hp\\.nuget\\packages\\danmaku.legacy\\0.0.1-preview6\\lib\\net8.0-windows10.0.22621\\Danmaku.Legacy.dll"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "01168455037716F645FCB0B51374BD0CCDD4BE4463055300C8FDE4654ECBFFDE",
+    "Path": "C:\\Users\\hp\\.nuget\\packages\\danmaku.share\\0.0.1-preview6\\lib\\net8.0-windows10.0.22621\\Danmaku.Share.dll"
+  }
+]

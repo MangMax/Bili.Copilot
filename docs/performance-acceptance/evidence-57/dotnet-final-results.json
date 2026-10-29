@@ -1,0 +1,81 @@
+{
+  "tests": [
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuRedrawSessionTests.SwitchAndUnloadRejectOldCallbacksEvenAfterReplacementIsQueued",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_CanceledDuringSend_DoesNotRetry(web: True)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuRedrawSessionTests.RejectedDispatchCanBeRetriedAndRedrawCanRequestAnotherFrame",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Load_EmptyMedia_CompletesWithEmptyCountAndNoRequests",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_OrdinaryFailure_RetriesThreeTimes(web: False)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Load_FailedSegment_ReleasesPermitAndPublishesRemainingSegments",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuRedrawSessionTests.ReadyRendererQueuesImmediatelyAndBurstDrawsOnlyLatestState",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Reload_ContinuousSameMediaLoads_OnlyLastResultAndCountPublish",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuRedrawSessionTests.ReplacingPendingRedrawUsesOnlyTheLatestRendererCallback",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_AlreadyCanceled_DoesNotSend(web: True)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_OrdinaryFailure_RetriesThreeTimes(web: True)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Switch_LateOldResult_OnlyCurrentSessionPublishes",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_CanceledDuringSend_DoesNotRetry(web: False)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuCancellationTests.HttpSend_TimeoutWithoutCallerCancellation_KeepsWrappedFailure",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing(close: True)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuCancellationTests.HttpSend_CallerCanceled_PreservesCancellation",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.Close_QueuedCompletionAndLateFailure_PublishesNothingAndRejectsNewLoads",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuLoadSessionTests.CancelOrClose_SixActiveAndQueuedSegments_StopsSchedulingAndPublishing(close: False)",
+      "outcome": "Passed"
+    },
+    {
+      "testName": "BiliCopilot.UI.Tests.DanmakuCancellationTests.Segment_AlreadyCanceled_DoesNotSend(web: False)",
+      "outcome": "Passed"
+    }
+  ],
+  "counters": []
+}

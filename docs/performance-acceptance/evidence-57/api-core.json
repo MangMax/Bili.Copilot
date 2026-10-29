@@ -1,0 +1,109 @@
+{
+  "scope": "project",
+  "projectName": "BiliCopilot.UI",
+  "projectDir": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\src\\Desktop\\BiliCopilot.UI",
+  "caveats": [
+    "No Windows SDK at or below the targeted 10.0.22621.0 is installed; answering from 10.0.28000.0. Results may include APIs that do not exist at your target.",
+    "Installed Windows App Runtime 2.6 does not match the referenced Windows App SDK 1.8.39; its metadata is excluded from this project\u0027s API surface."
+  ],
+  "fullName": "Richasy.Danmaku.DanmakuRenderer",
+  "kind": "Class",
+  "description": "\u5F39\u5E55\u6E32\u67D3\u5668 - \u7EDF\u4E00\u7684\u516C\u5F00 API\uFF0C\u6574\u5408\u6E32\u67D3\u5F15\u64CE\u548C\u8C03\u5EA6\u5668.",
+  "baseType": "System.Object",
+  "totalProperties": 1,
+  "totalEvents": 0,
+  "totalMethods": 21,
+  "totalFields": 1,
+  "descriptionsOmitted": true,
+  "hint": "Unfiltered listing: inherited members are listed by name only under \u0027inherited\u0027, and dependency-property identifiers and member descriptions are omitted. Use --filter \u003Ctext\u003E to search the full surface with signatures and descriptions, or --all for the complete listing.",
+  "properties": [
+    {
+      "name": "DebugMode",
+      "signature": "Boolean DebugMode { get; set; }",
+      "writable": true
+    }
+  ],
+  "events": [],
+  "methods": [
+    {
+      "name": "UpdateConfiguration",
+      "signature": "void UpdateConfiguration(Richasy.Danmaku.DanmakuConfiguration config)"
+    },
+    {
+      "name": "SetDanmakuEnabledType",
+      "signature": "void SetDanmakuEnabledType(System.Nullable\u003CBoolean\u003E isRollingEnabled, System.Nullable\u003CBoolean\u003E isTopEnabled, System.Nullable\u003CBoolean\u003E isBottomEnabled)"
+    },
+    {
+      "name": "UpdateTime",
+      "signature": "void UpdateTime(UInt32 currentMs)"
+    },
+    {
+      "name": "Pause",
+      "signature": "void Pause()"
+    },
+    {
+      "name": "Resume",
+      "signature": "void Resume()"
+    },
+    {
+      "name": "Stop",
+      "signature": "void Stop()"
+    },
+    {
+      "name": "Restart",
+      "signature": "void Restart()"
+    },
+    {
+      "name": "Seek",
+      "signature": "void Seek(UInt32 targetMs)"
+    },
+    {
+      "name": "SetLayerRenderState",
+      "signature": "void SetLayerRenderState(UInt32 layerId, Boolean render)"
+    },
+    {
+      "name": "Clear",
+      "signature": "void Clear()"
+    },
+    {
+      "name": "AddRealtimeDanmaku",
+      "signature": "void AddRealtimeDanmaku(Richasy.Danmaku.Models.DanmakuItem item, Boolean insertToList, System.Nullable\u003CUInt32\u003E layerId)"
+    },
+    {
+      "name": "GetDanmakuList",
+      "signature": "System.Collections.Generic.List\u003CRichasy.Danmaku.Models.DanmakuItem\u003E GetDanmakuList()"
+    },
+    {
+      "name": "SetDanmakuList",
+      "signature": "void SetDanmakuList(System.Collections.Generic.List\u003CRichasy.Danmaku.Models.DanmakuItem\u003E danmakuList)"
+    },
+    {
+      "name": "AddDanmakuList",
+      "signature": "void AddDanmakuList(System.Collections.Generic.List\u003CRichasy.Danmaku.Models.DanmakuItem\u003E danmakuList)"
+    },
+    {
+      "name": "Dispose",
+      "signature": "void Dispose()"
+    }
+  ],
+  "fields": [
+    {
+      "name": "DefaultDanmakuLayerCount",
+      "signature": "const UInt32 DefaultDanmakuLayerCount",
+      "writable": false
+    }
+  ],
+  "inherited": [
+    {
+      "declaringType": "System.Object",
+      "methods": [
+        "Equals",
+        "GetHashCode",
+        "GetType",
+        "ReferenceEquals",
+        "ToString"
+      ]
+    }
+  ],
+  "getForCurrentViewWarning": false
+}

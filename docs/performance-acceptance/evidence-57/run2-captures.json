@@ -1,0 +1,128 @@
+[
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\DirectX-Window.png",
+    "visibleUpperBoundMs": 1494.7631,
+    "name": "DirectX-Window",
+    "captureStartUtc": "2026-10-29T18:15:44.4025844Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:15:44.9367917Z",
+    "commandStartUtc": "2026-10-29T18:15:43.4420286Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\DirectX-Full.png",
+    "visibleUpperBoundMs": 4916.2084,
+    "name": "DirectX-Full",
+    "captureStartUtc": "2026-10-29T18:15:49.4619151Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:15:49.8738438Z",
+    "commandStartUtc": "2026-10-29T18:15:44.9576354Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\DirectX-Dense.png",
+    "visibleUpperBoundMs": 1130.5238,
+    "name": "DirectX-Dense",
+    "captureStartUtc": "2026-10-29T18:15:50.6008105Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:15:51.0062072Z",
+    "commandStartUtc": "2026-10-29T18:15:49.8756834Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\DirectX-Append.png",
+    "visibleUpperBoundMs": 1313.1403,
+    "name": "DirectX-Append",
+    "captureStartUtc": "2026-10-29T18:15:52.6154947Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:15:53.0654099Z",
+    "commandStartUtc": "2026-10-29T18:15:51.7522696Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\DirectX-Replace.png",
+    "visibleUpperBoundMs": 1089.3919,
+    "name": "DirectX-Replace",
+    "captureStartUtc": "2026-10-29T18:15:53.718712Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:15:54.156823Z",
+    "commandStartUtc": "2026-10-29T18:15:53.0674311Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\DirectX-Seek.png",
+    "visibleUpperBoundMs": 1157.6931,
+    "name": "DirectX-Seek",
+    "captureStartUtc": "2026-10-29T18:15:54.8185573Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:15:55.3165811Z",
+    "commandStartUtc": "2026-10-29T18:15:54.158888Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\DirectX-Pause.png",
+    "visibleUpperBoundMs": 1217.498,
+    "name": "DirectX-Pause",
+    "captureStartUtc": "2026-10-29T18:15:55.9216036Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:15:56.5354907Z",
+    "commandStartUtc": "2026-10-29T18:15:55.3179927Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\Win2D-Window.png",
+    "visibleUpperBoundMs": 1142.1311,
+    "name": "Win2D-Window",
+    "captureStartUtc": "2026-10-29T18:15:57.5483301Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:15:57.9894071Z",
+    "commandStartUtc": "2026-10-29T18:15:56.847276Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\Win2D-Full.png",
+    "visibleUpperBoundMs": 5605.4592,
+    "name": "Win2D-Full",
+    "captureStartUtc": "2026-10-29T18:16:02.3857792Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:16:03.5962507Z",
+    "commandStartUtc": "2026-10-29T18:15:57.9907915Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\Win2D-Dense.png",
+    "visibleUpperBoundMs": 2779.1652,
+    "name": "Win2D-Dense",
+    "captureStartUtc": "2026-10-29T18:16:05.4351916Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:16:06.3779983Z",
+    "commandStartUtc": "2026-10-29T18:16:03.5988331Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\Win2D-Append.png",
+    "visibleUpperBoundMs": 1927.1225,
+    "name": "Win2D-Append",
+    "captureStartUtc": "2026-10-29T18:16:08.7527374Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:16:09.536089Z",
+    "commandStartUtc": "2026-10-29T18:16:07.6089665Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\Win2D-Replace.png",
+    "visibleUpperBoundMs": 1959.0111,
+    "name": "Win2D-Replace",
+    "captureStartUtc": "2026-10-29T18:16:10.703738Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:16:11.4969795Z",
+    "commandStartUtc": "2026-10-29T18:16:09.5379684Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\Win2D-Seek.png",
+    "visibleUpperBoundMs": 2104.1845,
+    "name": "Win2D-Seek",
+    "captureStartUtc": "2026-10-29T18:16:12.7146497Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:16:13.6031706Z",
+    "commandStartUtc": "2026-10-29T18:16:11.4989861Z"
+  },
+  {
+    "screenshot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a35e7dde\\_artifacts\\issue57\\run2\\Win2D-Pause.png",
+    "visibleUpperBoundMs": 2028.5919,
+    "name": "Win2D-Pause",
+    "captureStartUtc": "2026-10-29T18:16:14.8400415Z",
+    "visualReview": "PENDING",
+    "captureEndUtc": "2026-10-29T18:16:15.635065Z",
+    "commandStartUtc": "2026-10-29T18:16:13.6064731Z"
+  }
+]
