@@ -1,0 +1,9 @@
+<Application x:Class="Acceptance55.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <Application.Resources><ResourceDictionary>
+  <ResourceDictionary.MergedDictionaries><XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" /></ResourceDictionary.MergedDictionaries>
+  <Style x:Key="MenuFlyoutHeaderSeparatorStyle" TargetType="MenuFlyoutSeparator" />
+  <Style x:Key="IconButtonStyle" TargetType="Button" />
+  <!-- Harness style adapter; production command control and bindings stay linked. -->
+  <Style x:Key="AccentDropDownButtonStyle" TargetType="DropDownButton" />
+ </ResourceDictionary></Application.Resources>
+</Application>
