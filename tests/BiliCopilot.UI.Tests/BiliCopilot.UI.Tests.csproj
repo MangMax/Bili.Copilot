@@ -22,6 +22,14 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <!-- Exercise the real page commands with headless adapters for Windows-only services. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\externals\bili-kernel\src\BiliKernel.Abstractions\BiliKernel.Abstractions.csproj" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\View\PopularPageViewModel\*.cs" Link="Popular\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\PopularSectionType.cs" Link="Popular\PopularSectionType.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\VideoCardStyle.cs" Link="Popular\VideoCardStyle.cs" />
+  </ItemGroup>
+
   <!--
     空降助手的纯逻辑与 WinUI 无关，直接链接源文件进行测试，
     避免测试项目引用 WinUI 可执行项目。
