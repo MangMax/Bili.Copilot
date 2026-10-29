@@ -4,6 +4,54 @@ Date: 2026-10-29 (Asia/Shanghai). Spec: [#39](https://github.com/MangMax/Bili.Co
 
 **Overall: NOT ACCEPTED — partial runtime acceptance completed on 2026-10-30.** An authenticated normal main window is now available. The final-runtime section below supersedes the historical login blocker and old test counts. Remaining history, download and accessibility coverage prevents closing the acceptance ticket as passed.
 
+## CPU profiling and acceptance follow-up (2026-10-30)
+
+Report-only follow-up on integration `cb6cd9ad96d28c0f0636bd58eb8e1116411137eb`; merging `t3/tray-residency-setting` returned already up to date. No application changes, rebuild, repeated test suite, or repeated ten-minute study. The previous 307-test result remains prior evidence, not a new run. Production manifest SHA256 still `058D0578A5EDF4D9BD6AFB6624BE1C62EF55342EC7FB13283F4375B31CF3FFFE`.
+
+Evidence is outside Git at `C:/Users/hp/AppData/Local/Temp/BiliCopilot-tray-spec/t3-evidence/profiling`. PID 9608, HWND 1713510, executable path and registered package location were verified against the retained isolated identity before use. No authentication material was extracted, no app data reset, and no Explorer restart occurred.
+
+### Bounded profiling results
+
+Installed `dotnet-trace` 10.0.750501 into the external evidence `tools` directory only. Collected two 30-second EventPipe traces with `dotnet-common,dotnet-sampled-thread-time`, plus Speedscope exports. `profile.ps1` reused the prior native harness and recorded 32 process/visibility/session observations per phase. All observations were unlocked, debugger-free and at the intended visibility. Both phases used Settings/Application with no open player or initiated download; notifications remained OFF. Unlike the earlier fresh-process idle study, this retained process had already experienced playback before profiling.
+
+| Measurement | Visible Settings | Hidden Settings |
+| --- | ---: | ---: |
+| Process-counter interval, including collector overhead | 32.208 s | 32.104 s |
+| Process CPU time | 7.328 s | 3.922 s |
+| CPU, percent of one core | 22.75% | 12.22% |
+| Raw managed thread-stack samples | 60,596 | 91,368 |
+| UI-thread samples | 10,099 | 15,228 |
+| UI samples ending at native WinUI application loop | 10,086 (99.87%) | 15,227 (99.993%) |
+
+`analyzer/Program.cs` reads raw SampleProfiler events with TraceEvent 3.1.23; `visible-stacks.json`, `hidden-stacks.json` and `summary.json` retain counts and calculations. **These samples include waiting/unmanaged time; their percentages are not CPU shares.** Five waiting/polling managed threads contribute 50,495 visible and 76,140 hidden samples (about 83.33%). The hidden remainder includes one `PlayerInteractivePanel.OnTempControlTimerTick → IDependencyObjectMethods.GetValue` sample (1/91,368 overall, 0.0011%). Visible UI samples additionally include ten `WindowMessageMonitor.NewWindowProc` and three pointer/interop samples. These small counts do not establish a managed hot loop.
+
+Thread CPU deltas narrow the missing attribution: hidden TID 29504 consumed 1.3125 s, while UI TID 12692 consumed 1.15625 s. TID 29504 has no managed stack samples; the UI stacks mostly stop at `IApplicationStaticsMethods.Start`. TIDs 14256 and 21240 consumed 0.4375 s and 0.15625 s respectively. Counter intervals and profiler sample intervals differ slightly; these are not precise per-stack CPU percentages. Native symbols/stacks are required to attribute the cost further.
+
+WPR was installed and initially not recording, but `wpr -start CPU -filemode` failed with `0xc5585011`, “Failed to enable the policy to profile system performance.” The session is not elevated. No Windows policy/privilege changes or additional native collection retries were made. The managed collector was the bounded alternative. Native CPU attribution therefore remains **BLOCKED BY TOOL PERMISSIONS**, not attributed to notifications, chapter rendering, GPU work or the tray library.
+
+The hidden measurement reproduces sustained idle CPU. The visible interval includes initial tracing/provider overhead and pointer callbacks; it is not a clean performance-benefit benchmark. Tracing raised visible private bytes by 23.39 MiB; hidden private bytes fell 1.37 MiB. Do not use these instrumentation-contaminated endpoints as memory savings or leak evidence. No heap dump, retained-object analysis, forced GC or working-set trim was performed. The earlier controlled ten-minute study remains authoritative for its bounded no-growth observation.
+
+### Ranked follow-up proposals, outside the tray change
+
+1. **Native CPU attribution — strongest measured opportunity, medium investigation cost.** Capture 30 seconds of sampled native stacks in an already permitted elevated/dedicated diagnostic session, concentrating on TIDs 29504 and 12692 (rediscover IDs after restart). Resolve WinUI/native worker symbols before choosing an optimization. Current evidence supports the investigation, not a production scheduling/rendering change.
+2. **Player interaction timer lifetime — direct stack plus source evidence, small likely implementation scope.** The hidden trace executes a player-panel timer after all native player windows have closed. `PlayerInteractivePanel.xaml.cs` starts its 500 ms `_tempControlTimer` on load; unload calls `CleanupInteractionState`, which stops only `_holdTimer` and `_tapTimer`. This code predates this follow-up and is present at `1664ad8`. Propose a separate unload/reload lifetime test, stop/restart handling, then verify callbacks cease and old panels can be released. One sample cannot quantify CPU or retained bytes. It also cannot explain the earlier fresh-process idle CPU measured before playback occurred.
+3. **History observability — direct acceptance gap, small-to-medium investigation cost.** Add a separately reviewed diagnostic seam that distinguishes skipped reports, request completion and service result without logging credentials. Current absence of an exception does not establish successful history persistence. Notification toggle behavior and chapter rendering remain unmeasured candidates from the earlier report, not new optimization findings.
+
+### Remaining acceptance matrix: actual follow-up observations
+
+| Check | Result and limit |
+| --- | --- |
+| History after sustained playback | **NOT VERIFIED.** One ordinary public 2:17 video was played through its endpoint. Reviewed frames show progression and endpoint 2:17/2:17. After native close, the actual history page still displayed no recent video history (`player.png`, `player-late.png`, `history-after-long.png/.json`). This weakens the short-play-only explanation but does not establish a server threshold or tray defect. |
+| Paused close/history | **PARTIAL.** Space input followed by two separated captures showed the same mid-video frame (`pause-final-a/b.png`); native player close completed and main could be restored. History remained empty after refresh (`history-after-pause.png`). Exact paused position/state and final saved position were not independently exposed by UIA, so final-position acceptance is not passed. |
+| Immediate-open close | **PARTIAL, not the immediate-close edge.** The measured close occurred 10.286 s after invocation because UI automation was delayed (`exit-cases.json`). Player disappeared and hidden main survived. This cannot validate closing during initial loading or zero-position history. An earlier external-script scalar-array error was corrected; no app fix followed. |
+| Explicit exit during playback | **UNRESOLVED / NOT PASSED.** Two reviewed frames showed active playback before the exit attempt (`exit-playing-before/later.png`). Native tray UIA invocation reported success (`exit-direct.json`), but the process and player survived the following ten-second wait and a later check. A direct mouse alternative was rejected with `foreground_not_target`. A prior menu-handle attempt became stale. Normal player close and AUMID restoration subsequently worked, so command delivery versus app shutdown failure is not isolated. Do not promote this to either PASS or a confirmed production defect. |
+| Keyboard tray menu | **NOT VERIFIED.** HWND-targeted `home enter` reported successful posting but did not synchronously restore the hidden main. The popup later disappeared; the follow-up input targeted a stale HWND. No reliable keyboard action/result pair or Narrator evidence was obtained. |
+| Download continuity and exit | **NOT RUN.** No download was initiated: player UIA exposed native window controls but not the download/panel controls, including after restore/hover and targeted keyboard alternatives. The reviewed implementation starts a separate BBDown process; future acceptance must independently observe app and downloader lifetimes. No task/artifact was created or removed, and no bulk download or credential-bearing command was extracted. |
+
+History source review: both resolvers skip disabled reporting, private playback, position zero, and paused non-exit updates. Exit saves bypass the paused guard and use a four-second request cancellation token. The kernel posts `aid/cid/progress/type` and awaits its HTTP abstraction; no local final-history readback is performed there. Matching log inspection found no progress-report exception; no request payload, token or cookie was copied. These are preexisting behaviors, not proof that the server accepted a report or that the retained reporting flag was enabled.
+
+Final cleanup closed only this session's test players through their native close path and restored the same authenticated main (PID 9608, HWND 1713510, visible, not minimized, no player window; `final-state.json`). Tray/integration settings remain ON and notifications OFF. Cumulative memory/handles after UI automation and repeated playback are not a controlled leak comparison. Overall acceptance remains **NOT ACCEPTED**. Parent owns further integration/review and cleanup; no push, PR change or issue closure was performed.
+
 ## Final runtime acceptance (2026-10-30)
 
 Final application source: `9eb207a5f30b0e766192745f1632a35a91b48c65`, based on requested integration `1664ad8dd5cb2c0ded350000a68933870394b411`. The integration was already merged before this report. All evidence referenced in this section is local under `C:/Users/hp/AppData/Local/Temp/BiliCopilot-tray-spec/t3-evidence/final`; screenshots and package/user data are not committed.
