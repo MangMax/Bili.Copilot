@@ -15,13 +15,8 @@
     mc:Ignorable="d">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
         <controls:IncrementVerticalScrollControl
             x:Name="View"
-            Grid.Row="1"
             LoadMoreCommand="{x:Bind ViewModel.LoadVideosCommand, Mode=OneWay}">
             <controls:IncrementVerticalScrollControl.Element>
                 <Grid Margin="0,16">
@@ -39,14 +34,12 @@
             </controls:IncrementVerticalScrollControl.Element>
         </controls:IncrementVerticalScrollControl>
         <base:LoadingWidget
-            Grid.Row="1"
             Text="{ext:Locale Name=LoadingAndWait}"
             Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}" />
+        <!--  刷新提示为覆盖层，锚定内容区左下角，不占用列表布局行。  -->
         <components:RefreshResultTipControl
-            Grid.Row="0"
-            HorizontalAlignment="Stretch"
-            IsOpen="{x:Bind ViewModel.IsRefreshTipVisible, Mode=OneWay}"
-            Message="{x:Bind ViewModel.RefreshTipMessage, Mode=OneWay}"
+            Message="{x:Bind ViewModel.RefreshTipState.Message, Mode=OneWay}"
+            State="{x:Bind ViewModel.RefreshTipState.Status, Mode=OneWay}"
             UndoCommand="{x:Bind ViewModel.UndoRefreshCommand, Mode=OneWay}" />
     </Grid>
 </local:VideoPartitionDetailControlBase>

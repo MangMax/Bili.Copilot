@@ -3,32 +3,117 @@
     x:Class="BiliCopilot.UI.Controls.Components.RefreshResultTipControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="using:CommunityToolkit.WinUI.Media"
+    xmlns:ui="using:CommunityToolkit.WinUI"
     HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
     IsTabStop="False"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <media:AttachedCardShadow
+            x:Key="TipShadow"
+            BlurRadius="12"
+            CornerRadius="8"
+            InnerContentClipMode="CompositionMaskBrush"
+            Opacity="0.08"
+            Offset="0,1,2" />
+    </UserControl.Resources>
+
     <!--
-        提示条常驻在可视树中，只用 InfoBar.IsOpen 控制展开/收起：
-        这样文案变化发生在元素已进入 UI 自动化树之后，读屏的 LiveSetting 才能播报新增条数。
-        折叠整个控件会让 InfoBar 在设置文案时还不在树里，首次出现时播报会被吞掉。
+        浮层脱离列表布局流：整格叠放在列表之上，容器锚定左下角。
+        可见性挂在带动画容器上，Implicit 动画才能捕捉到显示/收起并播放过渡。
+        容器在加载态与结果态之间保持同一个外框，切换时只换内部内容，避免布局跳动。
     -->
-    <InfoBar
+    <Border
+        Margin="16,0,0,16"
+        Padding="16,12"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Bottom"
         AutomationProperties.AutomationId="RefreshResultTip"
         AutomationProperties.LiveSetting="Polite"
-        IsClosable="False"
-        IsIconVisible="True"
-        IsOpen="{x:Bind IsOpen, Mode=OneWay}"
-        Message="{x:Bind Message, Mode=OneWay}"
-        Severity="Informational">
-        <InfoBar.ActionButton>
+        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="{StaticResource OverlayCornerRadius}"
+        MaxWidth="{x:Bind local:RefreshResultTipControl.GetMaxWidth(ActualWidth), Mode=OneWay}"
+        ui:Effects.Shadow="{StaticResource TipShadow}"
+        Visibility="{x:Bind local:RefreshResultTipControl.GetVisibility(State), Mode=OneWay}">
+        <Grid MinHeight="24" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  固定宽度的图标槽：加载态显示进度环，结果态显示完成图标，切换时文字位置不跳。  -->
+            <Grid
+                Width="16"
+                Height="16"
+                VerticalAlignment="Center">
+                <ProgressRing
+                    Width="16"
+                    Height="16"
+                    MinWidth="16"
+                    MinHeight="16"
+                    AutomationProperties.AccessibilityView="Raw"
+                    IsActive="{x:Bind local:RefreshResultTipControl.IsProgressVisible(State), Mode=OneWay}"
+                    Style="{StaticResource PageProgressRingStyle}"
+                    Visibility="{x:Bind local:RefreshResultTipControl.GetProgressVisibility(State), Mode=OneWay}" />
+                <ic:SymbolIcon
+                    FontSize="16"
+                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                    Symbol="Checkmark"
+                    AutomationProperties.AccessibilityView="Raw"
+                    Visibility="{x:Bind local:RefreshResultTipControl.GetResultVisibility(State), Mode=OneWay}" />
+            </Grid>
+
+            <!--  LiveSetting 放在 TextBlock 上：它自带自动化对等体，文案变化才能被读屏播报。  -->
+            <TextBlock
+                Grid.Column="1"
+                MaxWidth="360"
+                VerticalAlignment="Center"
+                AutomationProperties.AutomationId="RefreshResultTipMessage"
+                AutomationProperties.LiveSetting="Polite"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="{x:Bind Message, Mode=OneWay}"
+                TextWrapping="Wrap" />
+
             <HyperlinkButton
+                Grid.Column="2"
+                VerticalAlignment="Center"
                 AutomationProperties.AutomationId="UndoRefreshButton"
                 AutomationProperties.Name="{ext:Locale Name=UndoRefresh}"
                 Command="{x:Bind UndoCommand, Mode=OneWay}"
-                Content="{ext:Locale Name=UndoRefresh}" />
-        </InfoBar.ActionButton>
-    </InfoBar>
+                Content="{ext:Locale Name=UndoRefresh}"
+                Visibility="{x:Bind local:RefreshResultTipControl.GetUndoVisibility(State), Mode=OneWay}" />
+        </Grid>
+
+        <animations:Implicit.ShowAnimations>
+            <animations:TranslationAnimation
+                From="0,8"
+                To="0,0"
+                Duration="0:0:0.24" />
+            <animations:OpacityAnimation
+                From="0.0"
+                To="1.0"
+                Duration="0:0:0.2" />
+        </animations:Implicit.ShowAnimations>
+        <animations:Implicit.HideAnimations>
+            <animations:TranslationAnimation
+                From="0,0"
+                To="0,8"
+                Duration="0:0:0.24" />
+            <animations:OpacityAnimation
+                From="1.0"
+                To="0.0"
+                Duration="0:0:0.2" />
+        </animations:Implicit.HideAnimations>
+    </Border>
 </UserControl>
