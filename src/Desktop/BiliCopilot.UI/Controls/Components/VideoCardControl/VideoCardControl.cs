@@ -45,7 +45,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             if (_authorButton is not null)
             {
                 _authorButton.Command = ViewModel.ShowUserSpaceCommand;
-                _authorButton.IsEnabled = ViewModel.IsUserValid;
+                _authorButton.IsEnabled = ViewModel.CanOpenUserSpace;
             }
         }
     }
@@ -74,7 +74,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         if (_authorButton is not null)
         {
             _authorButton.Command = newValue?.ShowUserSpaceCommand;
-            _authorButton.IsEnabled = newValue?.IsUserValid ?? false;
+            _authorButton.IsEnabled = newValue?.CanOpenUserSpace ?? false;
         }
     }
 
@@ -180,7 +180,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreatePrivatePlayItem());
-        if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.IsUserValid)
+        if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.CanOpenUserSpace)
         {
             menuFlyout.Items.Add(CreateUserSpaceItem());
         }
