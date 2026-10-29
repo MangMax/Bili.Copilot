@@ -13,11 +13,16 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class PopularPageViewModel
 {
-    private async Task LoadRecommendVideosAsync()
+    private async Task LoadRecommendVideosAsync(long version)
     {
         try
         {
             var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset);
+            if (version != _sectionVersion)
+            {
+                return;
+            }
+
             _recommendOffset = nextOffset;
             TryAddVideos(videos, VideoCardStyle.Recommend);
         }
@@ -27,11 +32,16 @@ public sealed partial class PopularPageViewModel
         }
     }
 
-    private async Task LoadHotVideosAsync()
+    private async Task LoadHotVideosAsync(long version)
     {
         try
         {
             var (videos, nextOffset) = await _service.GetHotVideoListAsync(_hotOffset);
+            if (version != _sectionVersion)
+            {
+                return;
+            }
+
             _hotOffset = nextOffset;
             TryAddVideos(videos, VideoCardStyle.Hot);
         }
@@ -41,12 +51,15 @@ public sealed partial class PopularPageViewModel
         }
     }
 
-    private async Task LoadTotalRankVideosAsync()
+    private async Task LoadTotalRankVideosAsync(long version)
     {
         try
         {
             var videos = await _service.GetGlobalRankingListAsync();
-            TryAddVideos(videos, VideoCardStyle.Rank);
+            if (version == _sectionVersion)
+            {
+                TryAddVideos(videos, VideoCardStyle.Rank);
+            }
         }
         catch (Exception ex)
         {
@@ -54,12 +67,15 @@ public sealed partial class PopularPageViewModel
         }
     }
 
-    private async Task LoadPartitionRankVideosAsync(Partition partition)
+    private async Task LoadPartitionRankVideosAsync(Partition partition, long version)
     {
         try
         {
             var videos = await _service.GetPartitionRankingListAsync(partition);
-            TryAddVideos(videos, VideoCardStyle.Rank);
+            if (version == _sectionVersion)
+            {
+                TryAddVideos(videos, VideoCardStyle.Rank);
+            }
         }
         catch (Exception ex)
         {
