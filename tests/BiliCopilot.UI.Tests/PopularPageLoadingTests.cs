@@ -14,6 +14,47 @@ namespace BiliCopilot.UI.Tests;
 public sealed class PopularPageLoadingTests
 {
     [Theory]
+    [InlineData("Recommend", false)]
+    [InlineData("Recommend", true)]
+    [InlineData("Hot", false)]
+    [InlineData("Hot", true)]
+    [InlineData("Rank", false)]
+    [InlineData("Rank", true)]
+    [InlineData("13", false)]
+    [InlineData("13", true)]
+    public async Task EmptyOrFailedPageDoesNotScheduleMoreLoadingAndManualRetryRecovers(string section, bool fails)
+    {
+        var requests = 0;
+        var recover = false;
+        Task<IReadOnlyList<VideoInformation>> Fetch()
+        {
+            requests++;
+            return recover ? Task.FromResult<IReadOnlyList<VideoInformation>>([Video("recovered")])
+                : fails ? Task.FromException<IReadOnlyList<VideoInformation>>(new IOException("offline"))
+                : Task.FromResult<IReadOnlyList<VideoInformation>>([]);
+        }
+        async Task<(IReadOnlyList<VideoInformation>, long)> FetchPage(long offset) => (await Fetch(), offset + 1);
+        var service = new DiscoveryService { Rank = Fetch, Recommend = FetchPage, Hot = FetchPage };
+        service.Partitions.SetResult([new Partition("13", "Anime")]);
+        var page = CreatePage(service, section);
+        var updates = 0;
+        page.VideoListUpdated += (_, _) => updates++;
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal(1, requests);
+        Assert.Empty(page.Videos);
+        Assert.Equal(0, updates);
+        Assert.False(page.IsVideoLoading);
+        recover = true;
+        await page.LoadVideosCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal(2, requests);
+        Assert.Equal("recovered", Assert.Single(page.Videos).Data.BvId);
+        Assert.Equal(1, updates);
+        Assert.False(page.IsVideoLoading);
+    }
+
+    [Theory]
     [InlineData("Rank")]
     [InlineData("13")]
     public async Task PopulatedRankingStopsLoadMoreNotificationsButRefreshStillLoads(string section)
