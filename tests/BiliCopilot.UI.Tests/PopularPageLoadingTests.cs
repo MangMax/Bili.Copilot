@@ -14,6 +14,40 @@ namespace BiliCopilot.UI.Tests;
 public sealed class PopularPageLoadingTests
 {
     [Theory]
+    [InlineData("Rank")]
+    [InlineData("13")]
+    public async Task PopulatedRankingStopsLoadMoreNotificationsButRefreshStillLoads(string section)
+    {
+        var requests = 0;
+        var service = new DiscoveryService { Rank = () =>
+        {
+            requests++;
+            return Task.FromResult<IReadOnlyList<VideoInformation>>([Video("rank")]);
+        } };
+        service.Partitions.SetResult([new Partition("13", "Anime")]);
+        var page = CreatePage(service, section);
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Single(page.Videos);
+        Assert.Equal(1, requests);
+        var updates = 0;
+        page.VideoListUpdated += (_, _) => updates++;
+        for (var i = 0; i < 3; i++)
+        {
+            await page.LoadVideosCommand.ExecuteAsync(null);
+            PageTestServices.Dispatcher.Drain();
+        }
+        Assert.Equal(0, updates);
+        Assert.Equal(1, requests);
+        Assert.False(page.IsVideoLoading);
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal(2, requests);
+        Assert.Equal(1, updates);
+        Assert.Single(page.Videos);
+    }
+
+    [Theory]
     [InlineData("Recommend")]
     [InlineData("Hot")]
     public async Task BuiltInContentAppearsWhilePartitionsArePending(string savedSection)
