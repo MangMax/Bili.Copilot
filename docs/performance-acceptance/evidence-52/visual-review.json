@@ -1,0 +1,172 @@
+[
+  {
+    "file": "attempt-a\\CachedProvider.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "38D64E6A01430FAC4272701564D8D5199F977BCDDCA30FD02BF80EBBC846C8BC"
+  },
+  {
+    "file": "attempt-a\\ConcurrentHTTP.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "2FABFD592A3B890863B9D3C772EBB1FC10FC5CADED833E608623523FABA29A84"
+  },
+  {
+    "file": "attempt-a\\Detach.png",
+    "review": "Viewed: expected empty content; PASS.",
+    "sha256": "DF0A2230B5D42D16CEA96A0B1660449D38DC9F7FDBD8B34179549BAB61705C06"
+  },
+  {
+    "file": "attempt-a\\EmptyTextReattach.png",
+    "review": "Viewed: expected empty content; PASS.",
+    "sha256": "EE0BC1E8995B19B8565530C481CC91126D934BF1608E5DE949AEC69BA6C13E98"
+  },
+  {
+    "file": "attempt-a\\InitialTemplateLoadedReady.png",
+    "review": "Viewed: legacy content and tail present, image absent; FAIL.",
+    "sha256": "D7E86D1C8B0BB29582B3BEEC3FFE43E6BB531ACFEA2A4021A46B6A9A86A2EFC7"
+  },
+  {
+    "file": "attempt-a\\Landscape.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "11258E9D53A36B46AD7269979124DB99E2B3BDD69CAF8A50BAA7685BDC37D192"
+  },
+  {
+    "file": "attempt-a\\LateProviderClear.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "F8107649CE51FDB9582F9DEB50F656A89953EDD1D699406F77359690B663C984"
+  },
+  {
+    "file": "attempt-a\\LateProviderReattach.png",
+    "review": "Viewed: replacement pink logo present; terminal PASS.",
+    "sha256": "66777C6B71C47CCDBE59B97942B9E3F29AD2239F5AC3D69E3A51B076C3A5394D"
+  },
+  {
+    "file": "attempt-a\\LateProviderReopen.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "363EEE2C53258B444C16314AA487F2A426512D59CC67C840B4DB17E34C71BA4B"
+  },
+  {
+    "file": "attempt-a\\LateProviderUnload.png",
+    "review": "Viewed: replacement pink logo present; terminal PASS.",
+    "sha256": "447C939D3AD20550A13892E2EE67E75D80A56D4390F7D02C694AE6EFF89163B0"
+  },
+  {
+    "file": "attempt-a\\LifecycleBoundariesReady.png",
+    "review": "Viewed: legacy content and tail present, image absent; FAIL.",
+    "sha256": "689985F9B99FE01268B9D7510947A052D754D340CFD5D94F05C869AB884E1B25"
+  },
+  {
+    "file": "attempt-a\\Portrait.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "15E3FDC9CEF6772B06A05CEC0CC5C0F58B2866EB8A06FE54428A27D00F0D8700"
+  },
+  {
+    "file": "attempt-a\\RepeatedAttach1Ready.png",
+    "review": "Viewed: complete legacy fixture including pink logo and tail; table fixture wraps.",
+    "sha256": "6DCFD9CDE27FD4F8F8E10E1B97A16C18D1C0061160C08568F7FB37FE1D9D63FC"
+  },
+  {
+    "file": "attempt-a\\RepeatedAttach2Ready.png",
+    "review": "Viewed: direct capture is partially drawn (code/sections missing) despite ready record; not visual PASS or proof of production content loss.",
+    "sha256": "7C8840D8902EF7C9952874ADB8334F17354A6BE54201B7564597F45E221DEC86"
+  },
+  {
+    "file": "attempt-a\\RepeatedAttach3Ready.png",
+    "review": "Viewed: direct capture is partially drawn (code/sections missing) despite ready record; not visual PASS or proof of production content loss.",
+    "sha256": "C071E6092F4530CCFBD2B2473738C062827EA284C434BE4420705618B2DC653B"
+  },
+  {
+    "file": "attempt-a\\Resize.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "34464B061BB5035D4BCF8D55ECBAB450C89CD5CD9ED8785585045EDCF76E3DD6"
+  },
+  {
+    "file": "attempt-a\\SameInstanceUnchangedTextAttachReady.png",
+    "review": "Viewed: complete legacy fixture including pink logo and tail; table fixture wraps.",
+    "sha256": "A1CE25B2F8DBDC501004E438C051AFDD5C31D01DA3BA9E9228A2BB9E87346249"
+  },
+  {
+    "file": "attempt-a\\SlowBodyClear.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "864C96BD8FCB8F2332AE6ADB24B75403EBCB11DE2FA98CECE4277B07BA027CAB"
+  },
+  {
+    "file": "attempt-a\\SlowBodyReattach.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "BAE71A39F0CE4573308DA3407028CA1190EA49EF7B787466C6F7135659EFC829"
+  },
+  {
+    "file": "attempt-a\\SlowBodyReopen.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "BB6284662DDF256B64E60969814FD8CB3C6BF317B9FEA7C1D6B3CEC3C30D2D4E"
+  },
+  {
+    "file": "attempt-a\\SlowBodyUnload.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "CF5D177073887CB96FC5B21B2970E4F1B93D2E1AF252179B9863087BD1FD3D8F"
+  },
+  {
+    "file": "attempt-a\\Square.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "5BA7A646148388248D4E914CFC1D989872F2B766D46A7324D714C5E62C0D530E"
+  },
+  {
+    "file": "attempt-a\\SvgCharset.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "CD8374B809F941662A732F00758E12E6EE54D729599B9D5DD5C1AF127D6470FF"
+  },
+  {
+    "file": "boundary-c\\Boundary52.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "389C59359AE5C4BFFD02D11EB694F3BBADD38490237A5721E63CF4E272A67609"
+  },
+  {
+    "file": "boundary-c\\Landscape.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "1F37188F7AC56CEDCCD020493B4EB51B8D459ABD9DE36E6D2E4988EF9E81768C"
+  },
+  {
+    "file": "boundary-e\\Boundary52.png",
+    "review": "Viewed: landscape/portrait/square gradient checkerboards visible with 2:1,1:2,1:1 shapes; teal SVG rectangle visible but cafe text absent. FAIL status remains; no full SVG readiness pass.",
+    "sha256": "C8B913A1246374F2840E75DA3035DF829185CFB240474746327281A512EF59B7"
+  },
+  {
+    "file": "diagnostic-b\\CachedProvider.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "202623C497B246C4CF0E07FE947445D397521B18B1953EDF97857A112A49403B"
+  },
+  {
+    "file": "diagnostic-b\\Landscape.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "D21DE97A22FFA042B3E9BC08EA921D11F5CB794E2000B698963C218896C36C5B"
+  },
+  {
+    "file": "diagnostic-b\\Portrait.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "595B971844AA59BFE7DA52107F70FA7713221AC6DB69956311541149264A54E1"
+  },
+  {
+    "file": "diagnostic-b\\Resize.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "B3204EF26A0246918249100D5FA737AAC8CB880374A70E6DBCEF7BE1406B2196"
+  },
+  {
+    "file": "diagnostic-b\\Square.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "B42B694DE1B101E47F180D63BD80588F6B8275C5158573AD7DCF92C0E3ADABE6"
+  },
+  {
+    "file": "diagnostic-b\\SvgCharset.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "9169D26450BE1D63653301478DD0A8F5130BF50131CB3482743C47F9873CDF14"
+  },
+  {
+    "file": "slots-d\\Boundary52.png",
+    "review": "Viewed: landscape checkerboard visible despite readiness timeout; event subscription occurred after Source assignment.",
+    "sha256": "FF419B7DD95FB2B0F3BB1A4A1F86C9AE09A7F9F4943D59420501092D1BE55C34"
+  },
+  {
+    "file": "slots-d\\Slots52.png",
+    "review": "Viewed: empty content with failure/status text; no image acceptance pass.",
+    "sha256": "DD840E85282524EE79481A49E8C4362A78C4596E13C06F8F0AC6378DFB47A257"
+  }
+]

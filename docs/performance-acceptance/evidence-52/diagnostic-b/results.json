@@ -1,0 +1,50 @@
+{
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-84527-layout-b",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\diagnostic-b\\Landscape.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\diagnostic-b\\Portrait.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\diagnostic-b\\Square.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\diagnostic-b\\Resize.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\diagnostic-b\\SvgCharset.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\diagnostic-b\\CachedProvider.png"
+  ],
+  "checks": [
+    {
+      "status": "Landscape: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass49_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Landscape"
+    },
+    {
+      "status": "Portrait: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass49_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Portrait"
+    },
+    {
+      "status": "Square: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass49_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Square"
+    },
+    {
+      "status": "Resize: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass49_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "Resize"
+    },
+    {
+      "status": "SvgCharset: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass49_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "SvgCharset"
+    },
+    {
+      "status": "CachedProvider: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Ready52(String name, Int32 count)\r\n   at Acceptance.App.Case52(String name)\r\n   at Acceptance.App.<>c__DisplayClass49_0.<<Install52>b__1>d.MoveNext()",
+      "passed": false,
+      "name": "CachedProvider"
+    },
+    {
+      "passed": false,
+      "error": "Owned process failed to exit",
+      "name": "Cleanup"
+    }
+  ],
+  "appPid": 46588,
+  "target": "local"
+}

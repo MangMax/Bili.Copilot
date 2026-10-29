@@ -1,0 +1,25 @@
+{
+  "checks": [
+    {
+      "name": "Slots52",
+      "passed": true,
+      "status": "Slots52: PASS | terminal"
+    },
+    {
+      "name": "Boundary52",
+      "passed": false,
+      "status": "Boundary52: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Boundary52()\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__2>d.MoveNext()"
+    },
+    {
+      "name": "Cleanup",
+      "passed": true
+    }
+  ],
+  "target": "local",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\slots-d\\Slots52.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\slots-d\\Boundary52.png"
+  ],
+  "appPid": 35868,
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-84527-layout-d"
+}

@@ -1,0 +1,119 @@
+[
+  {
+    "name": "FirstLoadedImmediate",
+    "passed": false,
+    "expected": "observation in first Loaded event",
+    "blocks": 7,
+    "loaded": true,
+    "instance": 1,
+    "loads": 1,
+    "unloads": 0,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "# Acceptance 46 / 47\n\nOrdered answer: alpha \u2192 beta \u2192 omega. **Bold** and *italic* text.\n\n| Item | Value |\n| --- | --- |\n| fixture | 47 |\n\n\u0060\u0060\u0060csharp\nConsole.WriteLine(\u0022fixture-4647\u0022);\n\u0060\u0060\u0060\n\n[Fixture link](https://example.invalid/acceptance-4647)\n\n![Offline fixture](https://fixture.invalid/image.png)\n\nFINAL-OMEGA\n",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 1521.2784,
+      "text": "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+      "richTexts": [
+        "Acceptance 46 / 47Ordered answer: alpha \u2192 beta \u2192 omega. Bold and italic text.Fixture linkFINAL-OMEGA",
+        "Item",
+        "Value",
+        "fixture",
+        "47",
+        "Console.WriteLine(\u0022fixture-4647\u0022);"
+      ],
+      "links": [
+        "https://example.invalid/acceptance-4647"
+      ],
+      "textEqualsFixture": true,
+      "controlIdentity": 39068398,
+      "blocks": 7,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": true,
+        "finalOmega": true,
+        "hyperlink": true,
+        "image": false,
+        "codeLabel": true,
+        "tableFixture": true,
+        "table47": true,
+        "codeBody": true
+      },
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": true,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:34:23.6673658+00:00"
+  },
+  {
+    "name": "FirstLoadedImmediateReady",
+    "passed": false,
+    "expected": "terminal=timeout; waitedMs=3234.354; original assertion retained; ImageOpened and positive layout size required",
+    "blocks": 1,
+    "loaded": true,
+    "instance": 1,
+    "loads": 1,
+    "unloads": 1,
+    "publications": 0,
+    "generating": false,
+    "markdownText": "![synthetic](http://127.0.0.1:65451/landscape)",
+    "streamingText": "",
+    "diagnostics": {
+      "elapsedMs": 4935.8279,
+      "text": "",
+      "richTexts": [
+        ""
+      ],
+      "links": [],
+      "textEqualsFixture": false,
+      "controlIdentity": 17345954,
+      "blocks": 1,
+      "loaded": true,
+      "predicates": {
+        "document": true,
+        "blocksAtLeastSix": false,
+        "finalOmega": false,
+        "hyperlink": false,
+        "image": false,
+        "codeLabel": false,
+        "tableFixture": false,
+        "table47": false,
+        "codeBody": false
+      },
+      "images": [
+        {
+          "id": null,
+          "source": null,
+          "sourceType": null,
+          "width": 0,
+          "height": 0,
+          "IsLoaded": true,
+          "pixelWidth": null,
+          "pixelHeight": null,
+          "created": null,
+          "opened": null,
+          "failed": null,
+          "failedAt": null
+        }
+      ],
+      "rendered": false
+    },
+    "utc": "2026-10-29T18:34:27.0783413+00:00"
+  }
+]

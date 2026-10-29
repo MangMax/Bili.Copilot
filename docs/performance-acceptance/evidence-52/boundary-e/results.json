@@ -1,0 +1,19 @@
+{
+  "appPid": 50596,
+  "checks": [
+    {
+      "passed": false,
+      "status": "Boundary52: FAIL | System.TimeoutException: The operation has timed out.\r\n   at Acceptance.App.Boundary52()\r\n   at Acceptance.App.<>c__DisplayClass51_0.<<Install52>b__2>d.MoveNext()",
+      "name": "Boundary52"
+    },
+    {
+      "name": "Cleanup",
+      "passed": true
+    }
+  ],
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili-52-84527-layout-e",
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-84527f12\\docs\\performance-acceptance\\evidence-52\\boundary-e\\Boundary52.png"
+  ],
+  "target": "local"
+}
