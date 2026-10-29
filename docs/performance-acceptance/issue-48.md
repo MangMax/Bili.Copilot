@@ -129,3 +129,30 @@ Raw launch attempts: `%TEMP%/issue-48-launch.json`, `issue-48-isolated-launch.js
 - Integration introduced #50's test-only `ILogger`/`NullLogger` declarations, which collided (CS0436) with real logging abstractions brought in by #48's media-service reference. Removed only those redundant logging declarations from `PopularPageTestAdapters.cs`; existing page tests now use real `NullLogger<T>`. No test behavior, runner, production #50 code or package version changed.
 - First postmerge run passed 320 tests but reported CS0436 warnings. After the adapter correction, `dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj --no-restore --logger 'trx;LogFileName=issue-48-postmerge-final.trx'` exited 0 with Passed: 320, Failed: 0, Skipped: 0 and no warnings. Parsed TRX counters confirm total/executed/passed 320, failed/notExecuted 0.
 - Parent subsequently froze integration at the #47 merge for final synchronization; final fixed-tip evidence follows.
+
+### Frozen final integration tip
+
+- Parent froze local `feat/performance-45` at `175b2c07a67a8654d1046112fde0ae095db45913` (#47 included). Merged it once into this branch as `6dac7e5508d522797288d86f185c65e9da7188eb`, without conflicts. Ancestry check exited 0.
+- Final post-freeze test command:
+
+```powershell
+dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj --no-restore --logger 'trx;LogFileName=issue-48-fixed-tip.trx'
+```
+
+Exit 0. Passed: 320, Failed: 0, Skipped: 0. Parsed final TRX: total/executed/passed 320, failed/notExecuted 0; all 15 #48 cases present and passed. No test build warnings after the logging adapter correction.
+
+- Final post-freeze application build command (compile only; no more desktop input):
+
+```powershell
+dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj --no-restore -r win-x64 -p:Platform=x64 -p:SolutionDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-9ac33023/src/ -p:BuildOutDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-9ac33023/_build/issue48/ -v:minimal
+```
+
+Raw log `%TEMP%/issue-48-fixed-tip-build.log`; result recorded at final handoff below. The previous post-#46/#50 application build also exited 0 with 0 warnings/errors (`%TEMP%/issue-48-postmerge-build.log`).
+
+### Final handoff result
+
+- Fixed-tip application build exited **0**, with **0 warnings and 0 errors** (00:01:33.89). Final test run: **320 passed, 0 failed, 0 skipped**, including all **15** ticket cases. Final compilation uses the restored standard Dev manifest; no desktop launch after the frozen-tip merge.
+- Mandatory WinUI code review completed; no unresolved static finding for #48. Login-dependent player UI acceptance remains **blocked/not run** as described above. Release/Native AOT and real playback/network performance sampling remain unverified.
+- Final implementation branch: `t3/implement-performance-issue-48`; worktree `C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-9ac33023`. Scope relative to frozen integration is this ticket plus the documented logging-test-adapter compatibility removal.
+- No issue closure, main-repository PR, integration push/merge, or new worktree performed. Only the explicitly authorized nested ticket branch was pushed. Parent owns integration/review and eventual authenticated UI acceptance.
+- Desktop already released. Integration freeze may be released after the final evidence commit/handoff; no further code edits or desktop input are pending from this implementer.
