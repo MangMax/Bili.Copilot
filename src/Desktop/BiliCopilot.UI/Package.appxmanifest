@@ -76,5 +76,11 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <!--
+      应用内更新需要 MSIX 部署 API（PackageManager.AddPackageByUriAsync）。
+      packageManagement 是受限能力：上架 Microsoft Store 需要审批，
+      但本仓库只通过 GitHub Releases 以 sideload 方式分发，无需审批。
+    -->
+    <rescap:Capability Name="packageManagement" />
   </Capabilities>
 </Package>
