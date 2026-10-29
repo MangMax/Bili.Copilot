@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <local:AIControlBase
     x:Class="BiliCopilot.UI.Controls.AI.AIBody"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -143,8 +143,11 @@
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             CornerRadius="{StaticResource ControlCornerRadius}"
                             Visibility="{x:Bind ViewModel.TempResult, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
-                            <markdown:MarkdownTextBlock
-                                Background="Transparent"
+                            <TextBlock
+                                AutomationProperties.AutomationId="AIStreamingResponse"
+                                IsTextSelectionEnabled="True"
+                                TextWrapping="Wrap"
+                                Style="{StaticResource BodyTextBlockStyle}"
                                 Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                 Text="{x:Bind ViewModel.TempResult, Mode=OneWay}" />
 
