@@ -4,7 +4,7 @@ param(
     [Parameter(Mandatory)][int]$PrimaryProcessId,
     [Parameter(Mandatory)][long]$MainWindowHandle,
     [Parameter(Mandatory)][string]$ResultPath,
-    [int]$Cycles = 1
+    [ValidateRange(1, 100)][int]$Cycles = 1
 )
 
 # Run against an explicitly selected, already launched acceptance package.
@@ -17,6 +17,8 @@ using System.Runtime.InteropServices;
 public static class ActivationAcceptanceWindow {
     [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
     [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr hwnd);
+    [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hwnd, int command);
+    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint processId);
 }
 '@
 function Get-TestProcesses {
@@ -28,8 +30,19 @@ try {
     if ((Get-Process -Id $PrimaryProcessId).Path -ne $ExecutablePath) {
         throw 'Primary process does not match the explicit acceptance executable.'
     }
+    [uint32]$windowProcessId = 0
+    [ActivationAcceptanceWindow]::GetWindowThreadProcessId([IntPtr]$MainWindowHandle, [ref]$windowProcessId) | Out-Null
+    if ($windowProcessId -ne $PrimaryProcessId) { throw 'Window does not belong to the selected acceptance process.' }
     $baseline = @(Get-TestProcesses | ForEach-Object Id)
     for ($cycle = 1; $cycle -le $Cycles; $cycle++) {
+        # A restored window proves this activation was delivered, even if the
+        # secondary exits too quickly to appear in a process enumeration.
+        [ActivationAcceptanceWindow]::ShowWindow([IntPtr]$MainWindowHandle, 6) | Out-Null
+        $minimizeDeadline = [DateTime]::UtcNow.AddSeconds(5)
+        while (-not [ActivationAcceptanceWindow]::IsIconic([IntPtr]$MainWindowHandle)) {
+            if ([DateTime]::UtcNow -ge $minimizeDeadline) { throw 'Could not establish the minimized precondition.' }
+            Start-Sleep -Milliseconds 100
+        }
         Start-Process explorer.exe -ArgumentList "shell:AppsFolder\${PackageFamilyName}!App"
         # Give packaged activation time to start and then require its secondary to leave.
         Start-Sleep -Seconds 2
