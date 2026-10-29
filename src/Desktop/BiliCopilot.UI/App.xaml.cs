@@ -125,7 +125,7 @@ public partial class App : Application
         window.Activate();
     }
 
-    private IDisposable CreateTrayIcon()
+    private ITrayIconSession CreateTrayIcon()
     {
         // A fresh dictionary owns fresh commands and an icon on every enable.
         // Disposed TaskbarIcon resources cannot be reused.
@@ -142,7 +142,7 @@ public partial class App : Application
         });
         try
         {
-            icon.ForceCreate();
+            icon.ForceCreate(enablesEfficiencyMode: false);
             if (!icon.IsCreated)
             {
                 throw new InvalidOperationException("The notification area did not create the tray icon.");
@@ -223,12 +223,47 @@ public partial class App : Application
     private void OnShowHideWindowCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
         => TrayLifecycle?.Restore();
 
-    private sealed class TrayIconSession(TaskbarIcon icon, Action unsubscribe) : IDisposable
+    private sealed class TrayIconSession : ITrayIconSession
     {
+        private readonly TaskbarIcon _icon;
+        private readonly Action _unsubscribe;
+        private bool _disposed;
+
+        public TrayIconSession(TaskbarIcon icon, Action unsubscribe)
+        {
+            _icon = icon;
+            _unsubscribe = unsubscribe;
+            // H.NotifyIcon 2.3.2 subscribes its synchronous recreation handler in
+            // TaskbarIcon's constructor. Subscribe to that SAME message window after
+            // it: IsCreated now reflects the completed attempt, not stale pre-Shell
+            // state or the temporary false state during removal. No cross-HWND race.
+            _icon.TrayIcon.MessageWindow.TaskbarCreated += OnTaskbarCreated;
+        }
+
+        public event EventHandler? HealthChanged;
+
+        public bool IsCreated => !_disposed && _icon.IsCreated;
+
+        private void OnTaskbarCreated(object? sender, EventArgs e)
+        {
+            if (!_disposed)
+            {
+                HealthChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
         public void Dispose()
         {
-            unsubscribe();
-            icon.Dispose();
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+            _icon.TrayIcon.MessageWindow.TaskbarCreated -= OnTaskbarCreated;
+            HealthChanged = null;
+            _unsubscribe();
+            _icon.Dispose();
         }
     }
 }

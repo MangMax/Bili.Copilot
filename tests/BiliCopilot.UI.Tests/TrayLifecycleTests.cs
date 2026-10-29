@@ -6,6 +6,156 @@ namespace BiliCopilot.UI.Tests;
 
 public sealed class TrayLifecycleTests
 {
+    [Fact]
+    public void SuccessfulShellRecreationKeepsResidentWindowHidden()
+    {
+        var desktop = new Desktop { Saved = true };
+        using var lifecycle = desktop.Start();
+        lifecycle.HandleClose();
+        var icon = Assert.Single(desktop.Icons);
+        for (var i = 0; i < 20; i++)
+        {
+            icon.Recreate(true);
+            Assert.False(desktop.Visible);
+            Assert.Same(icon, Assert.Single(desktop.Icons));
+            Assert.Empty(desktop.Failures);
+        }
+
+        lifecycle.Restore();
+        lifecycle.HandleClose();
+        Assert.False(desktop.Visible);
+        Assert.Same(icon, Assert.Single(desktop.Icons));
+    }
+
+    [Fact]
+    public void RepeatedEnableAndRecoveryDoNotAccumulateHealthSubscriptions()
+    {
+        var desktop = new Desktop();
+        using var lifecycle = desktop.Start();
+        for (var i = 0; i < 20; i++)
+        {
+            lifecycle.SetEnabled(true);
+            lifecycle.SetEnabled(true);
+            lifecycle.HandleClose();
+            var icon = Assert.Single(desktop.Icons);
+            Assert.Equal(1, icon.HealthSubscribers);
+            icon.Recreate(false);
+            Assert.True(desktop.Visible);
+            Assert.Single(desktop.Failures);
+            desktop.Failures.Clear();
+
+            lifecycle.HandleClose();
+            var replacement = Assert.Single(desktop.Icons);
+            Assert.NotSame(icon, replacement);
+            Assert.Equal(0, icon.HealthSubscribers);
+            Assert.Equal(1, replacement.HealthSubscribers);
+            lifecycle.SetEnabled(false);
+            Assert.Equal(0, replacement.HealthSubscribers);
+            Assert.Empty(desktop.Icons);
+            Assert.True(desktop.Visible);
+        }
+    }
+
+    [Fact]
+    public void DisabledSessionCannotRestoreWindowOrAffectReplacement()
+    {
+        var desktop = new Desktop { Saved = true };
+        using var lifecycle = desktop.Start();
+        var old = Assert.Single(desktop.Icons);
+        var lateNotification = old.CaptureHealthNotification();
+        lifecycle.SetEnabled(false);
+        desktop.Visible = false; // Playback can hide the window after disable.
+        lateNotification();
+        Assert.False(desktop.Visible);
+        Assert.Empty(desktop.Icons);
+        Assert.Empty(desktop.Failures);
+        Assert.Equal(0, old.HealthSubscribers);
+
+        lifecycle.SetEnabled(true);
+        lifecycle.HandleClose();
+        var replacement = Assert.Single(desktop.Icons);
+        lateNotification();
+        Assert.False(desktop.Visible);
+        Assert.Same(replacement, Assert.Single(desktop.Icons));
+        Assert.Empty(desktop.Failures);
+    }
+
+    [Fact]
+    public async Task ShellFailureDuringAndAfterExitCannotRestoreOrRecreateTray()
+    {
+        var desktop = new Desktop { Saved = true };
+        using var lifecycle = desktop.Start();
+        lifecycle.HandleClose();
+        var icon = Assert.Single(desktop.Icons);
+        var lateNotification = icon.CaptureHealthNotification();
+        var save = new TaskCompletionSource();
+        var exited = false;
+        var exit = lifecycle.ExitAsync(() => save.Task, () => Task.CompletedTask, () => exited = true);
+        icon.Recreate(false);
+        Assert.False(desktop.Visible);
+        Assert.Empty(desktop.Failures);
+        Assert.Empty(desktop.Icons);
+        Assert.False(exited);
+        save.SetResult();
+        await exit;
+        lateNotification();
+        Assert.True(exited);
+        Assert.False(desktop.Visible);
+        Assert.Empty(desktop.Icons);
+        Assert.Empty(desktop.Failures);
+        Assert.Equal(0, icon.HealthSubscribers);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void FailedShellRecreationRestoresAccessAndSubsequentCloseRetries(bool resident)
+    {
+        var desktop = new Desktop { Saved = true };
+        using var lifecycle = desktop.Start();
+        var icon = Assert.Single(desktop.Icons);
+        if (resident)
+        {
+            lifecycle.HandleClose();
+        }
+
+        desktop.Minimized = true;
+        icon.Recreate(false);
+        Assert.True(desktop.Visible);
+        Assert.False(desktop.Minimized);
+        Assert.Empty(desktop.Icons);
+        Assert.Contains("recreate", Assert.Single(desktop.Failures).Message);
+
+        desktop.FailTray = true;
+        Assert.True(lifecycle.HandleClose());
+        Assert.True(desktop.Visible);
+        Assert.Empty(desktop.Icons);
+        desktop.FailTray = false;
+        lifecycle.HandleClose();
+        Assert.False(desktop.Visible);
+        Assert.NotSame(icon, Assert.Single(desktop.Icons));
+    }
+
+    [Fact]
+    public void PostCreationLossPreventsCloseIntoMissingTrayAndCanRetry()
+    {
+        var desktop = new Desktop { Saved = true };
+        using var lifecycle = desktop.Start();
+        var lost = Assert.Single(desktop.Icons);
+        lost.Lose();
+        desktop.FailTray = true;
+
+        Assert.True(lifecycle.HandleClose());
+        Assert.True(desktop.Visible);
+        Assert.Empty(desktop.Icons);
+        Assert.NotEmpty(desktop.Failures);
+
+        desktop.FailTray = false;
+        Assert.True(lifecycle.HandleClose());
+        Assert.False(desktop.Visible);
+        Assert.NotSame(lost, Assert.Single(desktop.Icons));
+    }
+
     [Theory]
     [InlineData(true, true, 1, false, false, 1)]
     [InlineData(true, false, 2, false, true, 0)]
@@ -298,8 +448,29 @@ public sealed class TrayLifecycleTests
             Failures.Add);
     }
 
-    private sealed class Icon(List<Icon> icons) : IDisposable
+    private sealed class Icon(List<Icon> icons) : ITrayIconSession
     {
+        public event EventHandler? HealthChanged;
+        public int HealthSubscribers => HealthChanged?.GetInvocationList().Length ?? 0;
+        public bool IsCreated => icons.Contains(this);
+        public Action CaptureHealthNotification()
+        {
+            var handlers = HealthChanged;
+            return () => handlers?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Lose() => icons.Remove(this);
+        public void Recreate(bool success)
+        {
+            Lose();
+            if (success)
+            {
+                icons.Add(this);
+            }
+
+            HealthChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public void Dispose() => icons.Remove(this);
     }
 }

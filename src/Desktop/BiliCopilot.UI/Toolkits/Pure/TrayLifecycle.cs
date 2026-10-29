@@ -8,11 +8,11 @@ namespace BiliCopilot.UI.Toolkits;
 internal sealed class TrayLifecycle : IDisposable
 {
     private readonly Action<bool> _writeSetting;
-    private readonly Func<IDisposable> _createTray;
+    private readonly Func<ITrayIconSession> _createTray;
     private readonly Action _hideWindow;
     private readonly Action _restoreWindow;
     private readonly Action<Exception> _reportFailure;
-    private IDisposable? _tray;
+    private ITrayIconSession? _tray;
     private bool _enabled;
     private bool _disposed;
     private Task? _exitTask;
@@ -20,7 +20,7 @@ internal sealed class TrayLifecycle : IDisposable
     public TrayLifecycle(
         Func<bool> readSetting,
         Action<bool> writeSetting,
-        Func<IDisposable> createTray,
+        Func<ITrayIconSession> createTray,
         Action hideWindow,
         Action restoreWindow,
         Action<Exception> reportFailure)
@@ -198,7 +198,23 @@ internal sealed class TrayLifecycle : IDisposable
     {
         try
         {
-            _tray ??= _createTray();
+            if (_tray is { IsCreated: false })
+            {
+                ReleaseTray();
+            }
+
+            if (_tray is null)
+            {
+                _tray = _createTray();
+                _tray.HealthChanged += OnTrayHealthChanged;
+            }
+
+            if (!_tray.IsCreated)
+            {
+                ReleaseTray();
+                throw new InvalidOperationException("The notification area did not create the tray icon.");
+            }
+
             return true;
         }
         catch (Exception ex)
@@ -210,7 +226,25 @@ internal sealed class TrayLifecycle : IDisposable
 
     private void ReleaseTray()
     {
-        _tray?.Dispose();
+        var tray = _tray;
         _tray = null;
+        if (tray is not null)
+        {
+            tray.HealthChanged -= OnTrayHealthChanged;
+            tray.Dispose();
+        }
+    }
+
+    private void OnTrayHealthChanged(object? sender, EventArgs e)
+    {
+        if (_disposed || IsExiting || !_enabled || !ReferenceEquals(sender, _tray) || _tray is not { IsCreated: false })
+        {
+            return;
+        }
+
+        // Keep the session alive until the native message has returned. A later close
+        // retries with a fresh session; another Shell restart can also recover this one.
+        _reportFailure(new InvalidOperationException("The notification area failed to recreate the tray icon after TaskbarCreated."));
+        Restore();
     }
 }
