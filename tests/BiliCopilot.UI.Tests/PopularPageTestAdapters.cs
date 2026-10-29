@@ -12,10 +12,10 @@ using Richasy.BiliKernel.Models.Media;
 namespace BiliCopilot.UI.Pages { public class PopularPage { } }
 namespace Microsoft.Extensions.Logging
 {
-    public interface ILogger<T> { }
+    public interface ILogger<T> { void RecordError(Exception exception) { } }
     public static class LoggerExtensions
     {
-        public static void LogError<T>(this ILogger<T> logger, Exception exception, string message) { }
+        public static void LogError<T>(this ILogger<T> logger, Exception exception, string message) => logger.RecordError(exception);
     }
 }
 namespace Microsoft.Extensions.Logging.Abstractions
@@ -72,7 +72,8 @@ namespace BiliCopilot.UI.Toolkits
     public static class SettingsToolkit
     {
         public static string LastSection { get; set; } = "Recommend";
-        public static T ReadLocalSetting<T>(SettingNames name, T fallback) => (T)(object)LastSection;
+        public static bool ShowSearchRecommend { get; set; } = true;
+        public static T ReadLocalSetting<T>(SettingNames name, T fallback) => name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : (T)(object)LastSection;
         public static void WriteLocalSetting<T>(SettingNames name, T value) => LastSection = value!.ToString()!;
     }
     public static class ResourceToolkit
@@ -80,7 +81,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
