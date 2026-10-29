@@ -26,6 +26,7 @@
 
   <!-- Exercise the real page commands with headless adapters for Windows-only services. -->
   <ItemGroup>
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\IncrementVerticalScrollControl.xaml.cs" Link="Scroll\IncrementVerticalScrollControl.xaml.cs" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Components\SearchBoxViewModel\*.cs" Link="Search\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Items\SearchSuggestItemViewModel.cs" Link="Search\SearchSuggestItemViewModel.cs" />
     <ProjectReference Include="..\..\externals\bili-kernel\src\BiliKernel.Abstractions\BiliKernel.Abstractions.csproj" />
