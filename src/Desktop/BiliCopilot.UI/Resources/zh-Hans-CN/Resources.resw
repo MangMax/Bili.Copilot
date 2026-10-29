@@ -877,10 +877,10 @@
     <value>隐藏弹幕</value>
   </data>
   <data name="HideWhenClose" xml:space="preserve">
-    <value>关闭时隐藏</value>
+    <value>关闭时驻留托盘</value>
   </data>
   <data name="HideWhenCloseDescription" xml:space="preserve">
-    <value>关闭窗口时隐藏应用而非退出</value>
+    <value>关闭主窗口后在后台运行，可通过托盘显示主窗口或退出应用。关闭此开关立即移除托盘图标。</value>
   </data>
   <data name="Highlights" xml:space="preserve">
     <value>要点</value>
@@ -1571,6 +1571,9 @@
   </data>
   <data name="QuickSelection" xml:space="preserve">
     <value>快速选择</value>
+  </data>
+  <data name="ShowMainWindow" xml:space="preserve">
+    <value>显示主窗口</value>
   </data>
   <data name="QuitApp" xml:space="preserve">
     <value>退出应用</value>

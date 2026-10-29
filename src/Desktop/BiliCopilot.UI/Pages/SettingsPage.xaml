@@ -65,7 +65,7 @@
                 <settings:NavigationSettingControl />
                 <settings:ScrollSettingControl />
                 <settings:SearchRecommendSettingSection />
-                <!--<settings:CloseBehaviorSettingControl />-->
+                <settings:CloseBehaviorSettingControl />
                 <settings:NotificationSettingControl />
                 <settings:LoggerSettingControl />
                 <TextBlock

@@ -23,6 +23,7 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
     private const int WindowMinWidth = 640;
     private const int WindowMinHeight = 480;
     private bool _isFirstActivated = true;
+    private bool _exitRequested;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.
@@ -39,6 +40,7 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
         this.Get<AppViewModel>().Windows.Add(this);
         Activated += OnActivated;
         Closed += OnClosed;
+        ((App)Application.Current).InitializeTrayLifecycle();
     }
 
     /// <inheritdoc/>
@@ -86,12 +88,31 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
         AppWindow.Changed -= OnWindowChanged;
     }
 
+    internal void RequestExit()
+    {
+        _exitRequested = true;
+        Close();
+    }
+
     private async void OnClosed(object sender, WindowEventArgs e)
     {
         var appVM = this.Get<AppViewModel>();
+        var app = (App)Application.Current;
+        if (appVM.IsClosed)
+        {
+            e.Handled = true;
+            return;
+        }
+
+        if (!_exitRequested && app.TrayLifecycle?.HandleClose() == true)
+        {
+            e.Handled = true;
+            return;
+        }
+
         var windows = appVM.Windows;
         var hasPlayer = appVM.Players.Count > 0;
-        if (hasPlayer)
+        if (hasPlayer && !_exitRequested)
         {
             e.Handled = true;
             appVM.HideAllWindowsCommand.Execute(default);
@@ -99,8 +120,9 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
         }
 
         appVM.IsClosed = true;
+        app.ReleaseTrayResources();
         RootLayout.ViewModel.Back();
-        foreach (var item in windows)
+        foreach (var item in windows.ToArray())
         {
             if (item is not MainWindow)
             {
@@ -108,7 +130,7 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
             }
         }
 
-        foreach (var player in appVM.Players)
+        foreach (var player in appVM.Players.ToArray())
         {
             player.Close();
         }
