@@ -78,5 +78,7 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <!-- 与正式包一致：应用内更新需要 MSIX 部署 API，sideload 分发无需审批。 -->
+    <rescap:Capability Name="packageManagement" />
   </Capabilities>
 </Package>
