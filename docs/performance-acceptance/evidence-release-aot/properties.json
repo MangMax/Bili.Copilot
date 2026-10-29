@@ -1,0 +1,21 @@
+{
+  "Properties": {
+    "PublishAot": "True",
+    "PublishTrimmed": "true",
+    "SelfContained": "true",
+    "WindowsAppSDKSelfContained": "",
+    "RuntimeIdentifier": "win-x64",
+    "Optimize": "true",
+    "DefineConstants": "TRACE;LOCAL_DEV;ARCH_X64;MICROSOFT_WINDOWSAPPSDK_AUTOINITIALIZE_DEPLOYMENTMANAGER;RELEASE",
+    "NoWarn": ";NU1507;CS1998;CS0612;NU1903;IL2104;IL3053;MVVMTK0045;MVVMTK0046;CS1591;WMC1510;IL2067;IL2059;IL3050;IL2075;IL2072;IL2055;IL2060;IL2077;IL2070;IL2058;IL2026;IL2065;IL3000;IL3002;IL2057;IL2093;IL2111;IL2080;IL2090;IL2091;IL2113;IL2087;IL2062;IL2046;IL2122;IL2096;IL2121",
+    "TreatWarningsAsErrors": "true",
+    "CsWinRTAotWarningLevel": "1",
+    "CsWinRTAotOptimizerEnabled": "true",
+    "SuppressTrimAnalysisWarnings": "false",
+    "NETCoreSdkVersion": "10.0.403",
+    "RuntimeFrameworkVersion": "",
+    "IlcPackageVersion": "",
+    "WindowsPackageType": "MSIX",
+    "AppxPackageSigningEnabled": "false"
+  }
+}
