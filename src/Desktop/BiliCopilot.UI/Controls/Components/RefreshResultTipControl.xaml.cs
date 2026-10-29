@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Windows.Input;
 
@@ -22,7 +22,7 @@ public sealed partial class RefreshResultTipControl : UserControl
     /// <see cref="Message"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty MessageProperty =
-        DependencyProperty.Register(nameof(Message), typeof(string), typeof(RefreshResultTipControl), new PropertyMetadata(default));
+        DependencyProperty.Register(nameof(Message), typeof(string), typeof(RefreshResultTipControl), new PropertyMetadata(string.Empty));
 
     /// <summary>
     /// <see cref="UndoCommand"/> 的依赖属性.
@@ -56,9 +56,9 @@ public sealed partial class RefreshResultTipControl : UserControl
     /// <summary>
     /// 撤销刷新命令.
     /// </summary>
-    public ICommand UndoCommand
+    public ICommand? UndoCommand
     {
-        get => (ICommand)GetValue(UndoCommandProperty);
+        get => (ICommand?)GetValue(UndoCommandProperty);
         set => SetValue(UndoCommandProperty, value);
     }
 }
