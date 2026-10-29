@@ -2,11 +2,12 @@
 
 using System.Windows.Input;
 using BiliCopilot.UI.Toolkits;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace BiliCopilot.UI.Controls.Components;
 
 /// <summary>
-/// 刷新提示浮层，锚定在内容区左下角，刷新时展示进度，完成后只提供「撤销刷新」入口.
+/// 刷新提示浮层，居中显示，刷新时展示进度，完成后只提供「撤销刷新」入口.
 /// </summary>
 /// <remarks>
 /// 流行页与分区页复用同一控件。页面只提供状态、文案与撤销命令，
@@ -18,7 +19,7 @@ public sealed partial class RefreshResultTipControl : UserControl
     /// <see cref="State"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty StateProperty =
-        DependencyProperty.Register(nameof(State), typeof(RefreshTipStatus), typeof(RefreshResultTipControl), new PropertyMetadata(RefreshTipStatus.Hidden));
+        DependencyProperty.Register(nameof(State), typeof(RefreshTipStatus), typeof(RefreshResultTipControl), new PropertyMetadata(RefreshTipStatus.Hidden, OnStateChanged));
 
     /// <summary>
     /// <see cref="Message"/> 的依赖属性.
@@ -33,9 +34,50 @@ public sealed partial class RefreshResultTipControl : UserControl
         DependencyProperty.Register(nameof(UndoCommand), typeof(ICommand), typeof(RefreshResultTipControl), new PropertyMetadata(default));
 
     /// <summary>
+    /// <see cref="DismissCommand"/> 的依赖属性.
+    /// </summary>
+    public static readonly DependencyProperty DismissCommandProperty =
+        DependencyProperty.Register(nameof(DismissCommand), typeof(ICommand), typeof(RefreshResultTipControl), new PropertyMetadata(default));
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RefreshResultTipControl"/> class.
     /// </summary>
     public RefreshResultTipControl() => InitializeComponent();
+
+    /// <summary>
+    /// 状态变化时播放一次内容淡入.
+    /// </summary>
+    /// <param name="d">依赖对象.</param>
+    /// <param name="e">变化参数.</param>
+    /// <remarks>
+    /// 刷新中与完成态的容器可见性都是可见，Implicit 显示动画不会触发，
+    /// 因此「正在刷新」变成「撤销刷新」时由这里补一段短淡入，避免内容直接跳变。
+    /// </remarks>
+    private static void OnStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not RefreshResultTipControl control || control.ContentRoot is null)
+        {
+            return;
+        }
+
+        if (e.OldValue is RefreshTipStatus.Hidden || e.NewValue is RefreshTipStatus.Hidden or RefreshTipStatus.Failed)
+        {
+            return;
+        }
+
+        var animation = new DoubleAnimation
+        {
+            From = 0.35,
+            To = 1,
+            Duration = TimeSpan.FromMilliseconds(180),
+        };
+        Storyboard.SetTarget(animation, control.ContentRoot);
+        Storyboard.SetTargetProperty(animation, "Opacity");
+
+        var storyboard = new Storyboard();
+        storyboard.Children.Add(animation);
+        storyboard.Begin();
+    }
 
     /// <summary>
     /// 提示状态.
@@ -53,6 +95,20 @@ public sealed partial class RefreshResultTipControl : UserControl
     {
         get => (string)GetValue(MessageProperty);
         set => SetValue(MessageProperty, value);
+    }
+
+    /// <summary>
+    /// 状态切换时用于播放淡入的内容容器.
+    /// </summary>
+    private FrameworkElement? ContentRoot => FindName("TipContent") as FrameworkElement;
+
+    /// <summary>
+    /// 手动关闭提示的命令.
+    /// </summary>
+    public ICommand? DismissCommand
+    {
+        get => (ICommand?)GetValue(DismissCommandProperty);
+        set => SetValue(DismissCommandProperty, value);
     }
 
     /// <summary>

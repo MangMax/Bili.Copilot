@@ -60,6 +60,7 @@
         <components:RefreshResultTipControl
             Message="{x:Bind ViewModel.RefreshTipState.Message, Mode=OneWay}"
             State="{x:Bind ViewModel.RefreshTipState.Status, Mode=OneWay}"
-            UndoCommand="{x:Bind ViewModel.UndoRefreshCommand, Mode=OneWay}" />
+            UndoCommand="{x:Bind ViewModel.UndoRefreshCommand, Mode=OneWay}"
+            DismissCommand="{x:Bind ViewModel.DismissRefreshTipCommand, Mode=OneWay}" />
     </Grid>
 </local:PopularPageControlBase>
