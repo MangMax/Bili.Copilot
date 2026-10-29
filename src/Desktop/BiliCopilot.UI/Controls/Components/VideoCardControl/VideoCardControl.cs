@@ -17,6 +17,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
 {
     private ButtonBase _rootCard;
     private Button _userButton;
+    private Button _authorButton;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoCardControl"/> class.
@@ -28,6 +29,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         _rootCard = GetTemplateChild("RootCard") as ButtonBase;
         _userButton = GetTemplateChild("UserButton") as Button;
+        _authorButton = GetTemplateChild("AuthorButton") as Button;
         if (ViewModel is not null)
         {
             if (_rootCard is not null)
@@ -38,6 +40,12 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             if (_userButton is not null)
             {
                 _userButton.Command = ViewModel.ShowUserSpaceCommand;
+            }
+
+            if (_authorButton is not null)
+            {
+                _authorButton.Command = ViewModel.ShowUserSpaceCommand;
+                _authorButton.IsEnabled = ViewModel.CanOpenUserSpace;
             }
         }
     }
@@ -61,6 +69,12 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         if (_userButton is not null)
         {
             _userButton.Command = newValue?.ShowUserSpaceCommand;
+        }
+
+        if (_authorButton is not null)
+        {
+            _authorButton.Command = newValue?.ShowUserSpaceCommand;
+            _authorButton.IsEnabled = newValue?.CanOpenUserSpace ?? false;
         }
     }
 
@@ -166,7 +180,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreatePrivatePlayItem());
-        if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.IsUserValid)
+        if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.CanOpenUserSpace)
         {
             menuFlyout.Items.Add(CreateUserSpaceItem());
         }

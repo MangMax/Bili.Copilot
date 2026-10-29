@@ -8,6 +8,7 @@ using BiliCopilot.UI.ViewModels.Core;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
+using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
@@ -91,11 +92,26 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     }
 
     [RelayCommand]
-    private void ShowUserSpace()
+    private async Task ShowUserSpaceAsync()
     {
-        if (Data.Publisher?.User is not null)
+        var user = Data.Publisher?.User;
+        if (user is null && Style == VideoCardStyle.Partition && !string.IsNullOrWhiteSpace(Subtitle))
         {
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.Publisher.User);
+            // 分区列表只返回作者名称，没有用户 ID，点开时再从视频详情补全。
+            try
+            {
+                var detail = await this.Get<IPlayerService>().GetVideoPageDetailAsync(Data.Identifier);
+                user = detail.Information.Publisher?.User;
+            }
+            catch (Exception ex)
+            {
+                this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "获取视频作者信息失败");
+            }
+        }
+
+        if (user is not null)
+        {
+            this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), user);
         }
     }
 

@@ -17,6 +17,10 @@
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundPressed" Color="#C5FFFFFF" />
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundDisabled" Color="#87FFFFFF" />
 
+            <!--  文字按钮悬停/按下背景：用可见的覆盖层，保证在卡片背景上能看清  -->
+            <SolidColorBrush x:Key="TextButtonBackgroundPointerOver" Color="#14000000" />
+            <SolidColorBrush x:Key="TextButtonBackgroundPressed" Color="#24000000" />
+
             <!--  空降片段标记：浅色主题用同一套低饱和 Fluent 色调的深色变体；
                   不透明度由标记矩形统一控制，这里只给不透明基色  -->
             <SolidColorBrush x:Key="SponsorBlockMarkerSponsorBrush" Color="#FFB24E73" />
@@ -42,6 +46,10 @@
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundPressed" Color="#C5FFFFFF" />
             <SolidColorBrush x:Key="BasicPlayerButtonForegroundDisabled" Color="#87FFFFFF" />
 
+            <!--  文字按钮悬停/按下背景：深色主题下用可见的白色覆盖层  -->
+            <SolidColorBrush x:Key="TextButtonBackgroundPointerOver" Color="#1FFFFFFF" />
+            <SolidColorBrush x:Key="TextButtonBackgroundPressed" Color="#30FFFFFF" />
+
             <!--  空降片段标记：深色主题用同一套低饱和 Fluent 色调的浅色变体；
                   不透明度由标记矩形统一控制，这里只给不透明基色  -->
             <SolidColorBrush x:Key="SponsorBlockMarkerSponsorBrush" Color="#FFD88CA8" />
@@ -66,6 +74,9 @@
             <StaticResource x:Key="BasicPlayerButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
             <StaticResource x:Key="BasicPlayerButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
             <StaticResource x:Key="BasicPlayerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+            <StaticResource x:Key="TextButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <StaticResource x:Key="TextButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 
             <!--  高对比度下统一使用系统高亮色，避免自定义颜色不可读  -->
             <StaticResource x:Key="SponsorBlockMarkerSponsorBrush" ResourceKey="SystemColorHighlightColorBrush" />
@@ -154,6 +165,74 @@
         BasedOn="{StaticResource IconButtonStyle}"
         TargetType="Button">
         <Setter Property="CornerRadius" Value="18" />
+    </Style>
+
+    <!--  文字按钮：把既有文本包装成可点击区域，不额外占用内边距或改变文字外观。  -->
+    <Style x:Key="TextButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <!--
+            悬停背景要有内间距，但文字位置不能因此偏移：用等量的负外边距抵消
+            内边距，背景向外扩展，文字仍与下方标题左对齐。
+        -->
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="Margin" Value="-4,-2" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+        <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+        <Setter Property="FocusVisualMargin" Value="-3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid
+                        x:Name="RootGrid"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Storyboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextButtonBackgroundPointerOver}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState.Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Storyboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextButtonBackgroundPressed}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState.Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.Opacity" Value="0.4" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter
+                            x:Name="ContentPresenter"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="AvatarButtonStyle" TargetType="Button">
