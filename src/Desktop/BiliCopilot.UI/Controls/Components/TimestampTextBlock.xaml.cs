@@ -69,19 +69,7 @@ public sealed partial class TimestampTextBlock : UserControl
         }
 
         var paragraph = new Paragraph();
-
-        // RichTextBlock 不会把 Run 里的换行符渲染成换行，这里显式插入 LineBreak.
-        var lines = Text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
-        for (var i = 0; i < lines.Length; i++)
-        {
-            if (i > 0)
-            {
-                paragraph.Inlines.Add(new LineBreak());
-            }
-
-            TimestampTextPresenter.Append(paragraph, lines[i], SeekCommand);
-        }
-
+        TimestampTextPresenter.AppendLines(paragraph, Text, SeekCommand);
         RichBlock.Blocks.Add(paragraph);
     }
 }
