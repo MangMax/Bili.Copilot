@@ -42,7 +42,7 @@ public sealed partial class PopularPageViewModel
         _isRecommendRefreshing = true;
         try
         {
-            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(0, RecommendPageSize);
+            var (videos, nextOffset) = await FetchRecommendBatchAsync();
             var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
             if (!RecommendRefreshResultGuard.ShouldApply(isRecommend, generation, _refreshGeneration))
             {
@@ -79,6 +79,46 @@ public sealed partial class PopularPageViewModel
         {
             _isRecommendRefreshing = false;
         }
+    }
+
+    /// <summary>
+    /// 连续请求多页推荐并合并成一批.
+    /// </summary>
+    /// <returns>合并后的视频与最后一页的偏移量.</returns>
+    /// <remarks>
+    /// 服务端单页只返回约 6 条视频，增量刷新时一次只补 6 个卡片偏少；
+    /// 这里从偏移 0 起连续取若干页，按资源 Id 去重后合并，下一页偏移以最后一页为准。
+    /// 中途某一页失败时保留已取到的部分，避免整次刷新白跑。
+    /// </remarks>
+    private async Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchRecommendBatchAsync()
+    {
+        var videos = new List<VideoInformation>();
+        var seenKeys = new HashSet<string>(StringComparer.Ordinal);
+        var offset = 0L;
+
+        for (var i = 0; i < RecommendRefreshBatchCount; i++)
+        {
+            try
+            {
+                var (page, nextOffset) = await _service.GetRecommendVideoListAsync(offset, RecommendPageSize);
+                offset = nextOffset;
+                foreach (var video in page)
+                {
+                    if (seenKeys.Add(video.Identifier.Id))
+                    {
+                        videos.Add(video);
+                    }
+                }
+            }
+            catch (Exception ex) when (i > 0)
+            {
+                // 第一页失败交给调用方按刷新失败处理；后续页失败则保留已取到的部分。
+                _logger.LogError(ex, "获取推荐视频后续页时出错，保留已取到的部分.");
+                break;
+            }
+        }
+
+        return (videos, offset);
     }
 
     private async Task LoadRecommendVideosAsync()

@@ -24,10 +24,19 @@ public sealed partial class PopularPageViewModel
     /// 推荐流每页请求的条数.
     /// </summary>
     /// <remarks>
-    /// 不传时服务端按默认页大小返回，一页过滤后只剩约 6 条，对桌面端偏少；
-    /// 这里显式请求与桌面客户端相当的数量。服务端仍会过滤非视频卡片，实际返回可能少于该值。
+    /// 服务端对推荐流有自己的页大小，传 ps 也不会改变实际返回（实测固定约 9 条卡片、其中 6 条左右是视频），
+    /// 因此这个值只是「尽力声明」，真正决定一页有多少条的是服务端。
     /// </remarks>
     private const int RecommendPageSize = 30;
+
+    /// <summary>
+    /// 增量刷新时连续取几页推荐.
+    /// </summary>
+    /// <remarks>
+    /// 推荐流单页只有约 6 条视频，点一次刷新只多 6 个卡片对桌面端偏少。
+    /// 这里连续请求多页再合并，用额外的请求次数换取一次刷新补足更多新内容。
+    /// </remarks>
+    private const int RecommendRefreshBatchCount = 3;
     private long _hotOffset;
 
     /// <summary>
