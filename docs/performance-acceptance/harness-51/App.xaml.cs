@@ -11,6 +11,7 @@ public partial class App:Application {
     StackPanel slot=new(); TextBlock status=new(){Text="starting",TextWrapping=TextWrapping.Wrap};
     Fixture fixture=null!; int fence; bool observing; bool renderPending; readonly Dictionary<string,Action> actions=[];
     Microsoft.UI.Dispatching.DispatcherQueueTimer? fenceTimer;
+    bool detachOnKeyword;
     public App(){InitializeComponent();UnhandledException+=(_,e)=>Trace.Write("unhandled",e.Exception.ToString());}
     protected override void OnLaunched(LaunchActivatedEventArgs args) {
         var service=DispatchProxy.Create<ISearchService,Fixture>();fixture=(Fixture)(object)service;
@@ -23,6 +24,7 @@ public partial class App:Application {
         void Button(string id,Action action) {actions.Add(id,action);var b=new Button{Content=id};AutomationProperties.SetAutomationId(b,id);b.Click+=(_,_)=>{Trace.Write("action",id);action();};commands.Children.Add(b);}
         Button("ReleaseNewest",()=>fixture.Complete(false));Button("ReleaseOldest",()=>fixture.Complete(true));
         Button("Detach",()=>{slot.Children.Clear();Snapshot("detached");});
+        Button("ArmLateInput",()=>{detachOnKeyword=true;Snapshot("late-input-armed");});
         Button("Attach",()=>{if(slot.Children.Count==0)slot.Children.Add(control);});
         Button("Fence",()=>{fenceTimer=window.DispatcherQueue.CreateTimer();fenceTimer.Interval=TimeSpan.FromMilliseconds(850);fenceTimer.IsRepeating=false;fenceTimer.Tick+=(_,_)=>{Snapshot("fence"+(++fence));};fenceTimer.Start();});
         Button("Region",()=>{GlobalDependencies.Model.SetExtraRegion("history","History fixture");Snapshot("region");});
@@ -34,7 +36,19 @@ public partial class App:Application {
         control.Loaded+=(_,_)=>{
             box=(AutoSuggestBox)control.FindName("Box");AutomationProperties.SetAutomationId(box,"SearchBox");
             if(!observing){observing=true;
-                box.TextChanged+=(_,e)=>{Trace.Write("text",new{box.Text,reason=e.Reason.ToString(),keyword=GlobalDependencies.Model.Keyword});Snapshot("text");};
+                box.TextChanged+=(_,e)=>{Trace.Write("text",new{box.Text,reason=e.Reason.ToString(),keyword=GlobalDependencies.Model.Keyword,loaded=control.IsLoaded});Snapshot("text");};
+                GlobalDependencies.Model.PropertyChanged+=(_,e)=>{
+                    if(e.PropertyName!=nameof(SearchBoxViewModel.Keyword))return;
+                    Trace.Write("keyword",new{keyword=GlobalDependencies.Model.Keyword,loaded=control.IsLoaded});
+                    if(!detachOnKeyword || GlobalDependencies.Model.Keyword!="q")return;
+                    detachOnKeyword=false;
+                    // Observe real bound input, then detach before AutoSuggestBox's deferred event.
+                    // No production handler invocation or search implementation is involved.
+                    window.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High,()=>{
+                        Trace.Write("controlled-detach",new{keyword=GlobalDependencies.Model.Keyword});
+                        slot.Children.Clear();Snapshot("controlled-detached");
+                    });
+                };
                 box.QuerySubmitted+=(_,e)=>{Trace.Write("submit",new{e.QueryText,chosen=e.ChosenSuggestion!=null});Snapshot("submit");};
                 box.RegisterPropertyChangedCallback(AutoSuggestBox.IsSuggestionListOpenProperty,(_,_)=>Snapshot("popup"));
                 GlobalDependencies.Model.Suggestion.CollectionChanged+=(_,_)=>Snapshot("collection");

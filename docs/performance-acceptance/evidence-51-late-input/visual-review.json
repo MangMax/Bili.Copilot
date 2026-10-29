@@ -1,0 +1,142 @@
+[
+  {
+    "sha256": "022EA27C90A5485ED249B01AB2CFE897C77364AFB5CEAE9DBB1715DAD1E955DB",
+    "observation": "Empty focused input and recommendation popup visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "late/empty-focus.png"
+  },
+  {
+    "sha256": "9F7670F9439B10C3904E4A69E0B7FFAF98B408281E8232471761E71F37BB158E",
+    "observation": "Input removed; q retained only in status; zero items, closed.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "late/late-input-fenced.png"
+  },
+  {
+    "sha256": "3C4E3A4288E19A39FFFF3691AB3261C7D5ADE3E3658B1EA2AA5BFFFC3F0A4F3A",
+    "observation": "Remounted input and resumed result popup visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "late/resumed.png"
+  },
+  {
+    "sha256": "D0134910F91A98EB6163DCAEB3EAD272678028B32CCAC43F2E18EE30B6E26140",
+    "observation": "Remounted empty input visible, popup closed.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "lifecycle/final-remount.png"
+  },
+  {
+    "sha256": "57F8083D18100B5602EE25D1D8320D45DCF18461ED59DB9C80124E86C91270EC",
+    "observation": "Unloaded empty search area; no recommendation.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "lifecycle/late-focus.png"
+  },
+  {
+    "sha256": "A7908CF5A28C2ADB464C85335D5D0CA6DB63A8ADABA15023DCB7B515BB8D553C",
+    "observation": "Input removed; cancelled inflight has no visible result.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "lifecycle/second-inflight-late.png"
+  },
+  {
+    "sha256": "667F278C7253BBAF68656C04C4E3317213AEC93CAC2987479637192B20C0BAB4",
+    "observation": "Remounted resumed input/result visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "lifecycle/third-resumed.png"
+  },
+  {
+    "sha256": "EF2528696A643CF365DED8875986CFE2BCCD75D8AFE89D4A8C53743BFE8C5A2C",
+    "observation": "Input removed; q in status, zero items.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "lifecycle/third-unload.png"
+  },
+  {
+    "sha256": "588FF7DC8E92449352B12FF4404E18284D20B239C66687E31F4E825789F76958",
+    "observation": "你好 result written into input; popup closed.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "mouse/ime-mouse-exact.png"
+  },
+  {
+    "sha256": "05C9D52986282592D37E935C99616FAD2D8A901A7DEF799A91273A282D6E094B",
+    "observation": "bili input/result visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/burst-final.png"
+  },
+  {
+    "sha256": "9F4B1EE798FDAFE10120723E4E9F42BFA027219A5C9B8A6367314F3250251DA4",
+    "observation": "Empty focused input; no popup.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/clear.png"
+  },
+  {
+    "sha256": "8D34F7370B2E5C744ADC0521384E6DC3E516EB5D2B60F2E715054746CCBFFA1F",
+    "observation": "Committed 你好 visible, IME candidate strip closed.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/ime-committed.png"
+  },
+  {
+    "sha256": "2DBA046BD3A571A213F421F750C0C6DAF86E693556356939DB87934B4975ABDA",
+    "observation": "Underlined nihao composition and installed IME candidate strip visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/ime-composing.png"
+  },
+  {
+    "sha256": "CD0085AF1C9FE87ED1B021B799B00DE161410DC2869470754A4EA6E743B8D124",
+    "observation": "你好 input and 你好 result popup visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/ime-result.png"
+  },
+  {
+    "sha256": "B9074AFB9F17761D920B2337D3A82BEA1B6BD133912FC472ED2D417161CF3F07",
+    "observation": "new input/result popup visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/new-result.png"
+  },
+  {
+    "sha256": "DD84D91917947CFD4960FCB0D234C31C0FB66D0784D3651D4F709B72E93E9570",
+    "observation": "GAP: input/popup pixels absent while state/UIA say loaded/open/new result. Do not visually pass.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/old-rejected.png"
+  },
+  {
+    "sha256": "B4327E98A085C927DDE58660B9CCF0DCEA3759DBBEE79CCA0DC2F637A6E235D5",
+    "observation": "Empty input and fixture recommendation visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/recommend.png"
+  },
+  {
+    "sha256": "D065878236F60B12678A319DF01DC306BA93E714EAB1089E0FB3D4FDF28B6170",
+    "observation": "pending text visible after remount; no stale result popup.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/remount.png"
+  },
+  {
+    "sha256": "35509CBDD6FDCD5204178D913F35F9E0E2229C3FC6EA5F553BF5261598D5C125",
+    "observation": "resumed input/result visible.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/resumed.png"
+  },
+  {
+    "sha256": "7D2320E3C44B079596315DEDC1666D49BBB689E447689CEBC8D694619FE7702D",
+    "observation": "bili result written into input; popup closed.",
+    "viewed": true,
+    "gap": "Fixture command toolbar clips Global/Close at right; no full layout approval",
+    "path": "suite/selection.png"
+  }
+]

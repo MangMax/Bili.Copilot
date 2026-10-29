@@ -1,0 +1,44 @@
+{
+  "unloaded": {
+    "ms": 5802.3537,
+    "kind": "state",
+    "data": {
+      "condition": "unloaded",
+      "loaded": false,
+      "text": "q",
+      "keyword": "q",
+      "open": false,
+      "focus": "Unfocused",
+      "items": [],
+      "requests": 1
+    }
+  },
+  "input": {
+    "ms": 5947.7575,
+    "kind": "text",
+    "data": {
+      "Text": "q",
+      "reason": "UserInput",
+      "keyword": "q",
+      "loaded": false
+    }
+  },
+  "final": {
+    "condition": "late-input-old-response",
+    "loaded": false,
+    "text": "q",
+    "keyword": "q",
+    "open": false,
+    "focus": "Unfocused",
+    "items": [],
+    "requests": 1
+  },
+  "keyword": {
+    "ms": 5789.8609,
+    "kind": "keyword",
+    "data": {
+      "keyword": "q",
+      "loaded": true
+    }
+  }
+}

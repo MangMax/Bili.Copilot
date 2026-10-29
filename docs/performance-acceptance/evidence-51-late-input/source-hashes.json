@@ -1,0 +1,32 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "80E2DFD52D369C9E033F1F987D0E575A12106677D2D5FE865E598DF895A2ED4D",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Components\\AppSearchBox.xaml"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "7D167942C6FA781867B2C35AD582607AB57258228389EDD934E2E49E7E113B04",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\Controls\\Components\\AppSearchBox.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "7D0DB8BA7AB1FB0C3367B070D6453E2668741D1B9EECE48C3BD75E32162C5632",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\ViewModels\\Components\\SearchBoxViewModel\\SearchBoxViewModel.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "D99BF52E670B17E57C05C5918B2D5C315C2A80DA8A9456140F1D346915609E1A",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\ViewModels\\Components\\SearchBoxViewModel\\SearchBoxViewModel.Properties.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "80E2DFD52D369C9E033F1F987D0E575A12106677D2D5FE865E598DF895A2ED4D",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-late-7516070-source\\AppSearchBox.xaml"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "BC68250223D14F53F87082B35428EE2144B7333D124A09AF2A172BC389A232B7",
+    "Path": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-late-7516070-layout\\Richasy.WinUIKernel.Share.dll"
+  }
+]

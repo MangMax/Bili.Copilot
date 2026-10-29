@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "passed": true,
+      "name": "LateUserInputAfterUnloadStartsNoWork"
+    },
+    {
+      "passed": true,
+      "name": "RealInputAndEmptyFocusAfterRemount"
+    }
+  ],
+  "captures": [
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\late\\late-input-fenced.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\late\\resumed.png",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\docs\\performance-acceptance\\evidence-51-late-input\\late\\empty-focus.png"
+  ],
+  "layout": "C:\\Users\\hp\\AppData\\Local\\Temp\\bili51-late-7516070-layout",
+  "appPid": 15960,
+  "target": "local"
+}
