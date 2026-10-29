@@ -30,9 +30,12 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         _suggestionSuppressionTimer.Interval = TimeSpan.FromMilliseconds(SuggestionSuppressionMilliseconds);
         _suggestionSuppressionTimer.IsRepeating = false;
         _suggestionSuppressionTimer.Tick += OnSuggestionSuppressionTimerTick;
+        // The base class removes its lifecycle handlers after the first unload.
+        // This control can be reattached, so retain our own cleanup subscription.
+        Unloaded += OnSearchBoxUnloaded;
     }
 
-    protected override void OnControlUnloaded()
+    private void OnSearchBoxUnloaded(object sender, RoutedEventArgs e)
     {
         _suggestionInteractionVersion++;
         ViewModel.TryCancelSuggestCommand.Execute(default);
