@@ -30,11 +30,18 @@ namespace BiliCopilot.UI.Controls.Core {
     // Controlled visual only: no PlayerViewModel, media engine, authentication or network.
     // Production PlayerWindow type-checks this overlay to schedule its own title-bar code.
     public sealed partial class PlayerOverlay:UserControl {
-        public ProbeHeader HeaderBar {get;} = new();
+        public readonly ProbeHeader Probe = new();
+        public Func<bool> Closed;
+        public int LiveHeaderReads, LateHeaderReads;
+        public ProbeHeader HeaderBar { get {
+            var closed=Closed?.Invoke()??false;
+            if(closed)LateHeaderReads++;else LiveHeaderReads++;
+            Acceptance54.Log.Write("header-read",new {closed});return Probe;
+        }}
         public PlayerOverlay() {
             Background=(Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["ApplicationPageBackgroundThemeBrush"];
             IsTabStop=true;
-            var content=new Grid();Content=content;
+            var content=new Grid { Background=Background };Content=content;
             content.Children.Add(HeaderBar);
             content.Children.Add(new TextBlock {Text="#54 real PlayerWindow\nOffline controlled overlay",TextWrapping=TextWrapping.Wrap,
                 HorizontalAlignment=HorizontalAlignment.Center,VerticalAlignment=VerticalAlignment.Center});

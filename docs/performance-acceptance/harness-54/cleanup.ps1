@@ -1,9 +1,9 @@
 param([Parameter(Mandatory)][int]$AppPid,[Parameter(Mandatory)][string]$Evidence,[switch]$KeepPackage)
 $ErrorActionPreference='Stop'
-$env:WINAPP_UI_WORKFLOW_ID='acceptance54-2a8c'
+$env:WINAPP_UI_WORKFLOW_ID='acceptance54-recheck-1d19'
 try {
     if($AppPid -eq 9608){throw 'Protected PID'}
-    $package=Get-AppxPackage -Name BiliCopilot.Acceptance54.2A8C
+    $package=Get-AppxPackage -Name BiliCopilot.Acceptance54.R1D19
     $owned=Get-Process -Id $AppPid -ErrorAction SilentlyContinue
     if($owned){
         if(!$package -or !$owned.Path.StartsWith($package.InstallLocation+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Owned executable mismatch'}
@@ -14,5 +14,5 @@ try {
         Copy-Item "$local/*.json","$local/*.jsonl" $Evidence
     }
     if($package -and !$KeepPackage){Remove-AppxPackage $package.PackageFullName}
-    @{ownedProcessGone=($null -eq (Get-Process -Id $AppPid -ErrorAction SilentlyContinue));ownedPackageGone=($null -eq (Get-AppxPackage -Name BiliCopilot.Acceptance54.2A8C));packageRetained=[bool]$KeepPackage}|ConvertTo-Json|Set-Content "$Evidence/cleanup.json"
+    @{ownedProcessGone=($null -eq (Get-Process -Id $AppPid -ErrorAction SilentlyContinue));ownedPackageGone=($null -eq (Get-AppxPackage -Name BiliCopilot.Acceptance54.R1D19));packageRetained=[bool]$KeepPackage}|ConvertTo-Json|Set-Content "$Evidence/cleanup.json"
 } finally {& winapp ui yield --on local --json|Set-Content "$Evidence/cleanup-yield.json"}

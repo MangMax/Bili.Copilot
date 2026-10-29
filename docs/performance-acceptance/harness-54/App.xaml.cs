@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using PInvoke = Windows.Win32.PInvoke;
 using System.Text.Json;
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Forms;
@@ -29,6 +30,8 @@ public partial class App:Application {
     private IntPtr handle;
     private int instance,lateFocus,liveFocus;
     private bool running;
+    private int nativeResetLive;
+    private int nativeLive,nativeLate,gettingLate,activationLive,activationLate;
     private readonly List<object> results=new();
     public App() {
         InitializeComponent();
@@ -49,6 +52,9 @@ public partial class App:Application {
         Add(panel,"Compact",()=>{player.EnterCompactOverlay();Snapshot("manual-compact");status.Text="CompactOverlay";});
         Add(panel,"Normal",()=>{player.ExitFullScreen();player.ExitCompactOverlay();Snapshot("manual-normal");status.Text="Overlapped";});
         Add(panel,"Top",()=>{player.SetTopMost(true);Snapshot("manual-top");status.Text="Topmost";});
+        Add(panel,"GridFixture",()=>{Create();var content=(Grid)overlay.Content;overlay.Content=null;player.SetUIElement(content);status.Text="Grid fixture";});
+        Add(panel,"GridProbe",()=>{VisualProbe.Dump((FrameworkElement)player.XamlRoot.Content);status.Text="Grid captured";});
+        Add(panel,"VisualProbe",()=>{VisualProbe.Dump(overlay);status.Text="Visual captured";});
         Add(panel,"ClosePlayer",()=>{Close();status.Text="Closed";});
         var run=new Button {Content="Run bounded suite"};AutomationProperties.SetAutomationId(run,"RunTests");
         run.Click+=async(_,_)=>{if(running)return;running=true;run.IsEnabled=false;await Run();running=false;}; panel.Children.Add(run);
@@ -56,12 +62,12 @@ public partial class App:Application {
         diagnose.Click+=async(_,_)=>{
             if(running)return;running=true;diagnose.IsEnabled=false;
             for(var i=1;i<=3;i++)await Case($"QueuedCloseDiagnostic_R{i}",async()=>{
-                Create();player.ResetFocus();player.DelayUpdateTitleBarPadding(true);Close();await VerifyClosed(1800);
+                Create();player.ResetFocus();player.DelayUpdateTitleBarPadding(true);Close();await VerifyClosed(1800,originalOracle:true);
             });
             status.Text="Diagnostic complete";running=false;
         };panel.Children.Add(diagnose);
         Add(panel,"Exit",()=>{Close();controller.Close();Exit();});
-        controller.Content=panel;controller.AppWindow.MoveAndResize(new RectInt32(20,80,420,760));controller.Activate();
+        controller.Content=panel;controller.AppWindow.MoveAndResize(new RectInt32(20,80,420,980));controller.Activate();
         Log.Write("started",new {pid=Environment.ProcessId,thread=Environment.CurrentManagedThreadId});
         Log.Save("identity.json",new {pid=Environment.ProcessId,controllerHwnd=Microsoft.UI.Win32Interop.GetWindowFromWindowId(controller.AppWindow.Id).ToInt64(),local=Log.DirectoryPath});
     }
@@ -73,17 +79,25 @@ public partial class App:Application {
     private void Create() {
         Close(); instance++; lateFocus=0;liveFocus=0;
         player=new PlayerWindow();overlay=new PlayerOverlay(); var p=player;var o=overlay;var id=instance;
+        nativeResetLive=nativeLive=nativeLate=gettingLate=activationLive=activationLate=0;
+        o.Closed=()=>p.IsClosed||p.IsDisposed;
+        BiliCopilot.UI.Forms.PInvoke.Observe=(api,hwnd)=>{
+            var closed=p.IsClosed||p.IsDisposed;
+            if(closed)nativeLate++;else nativeLive++;
+            if(!closed&&api=="SetFocus"&&Environment.StackTrace.Contains("ResetFocus"))nativeResetLive++;
+            Log.Write("native-request",new {id,api,hwnd=((IntPtr)hwnd).ToInt64(),closed,stack=Environment.StackTrace});
+        };
         player.SetUIElement(overlay);handle=player.Handle;
         var nativeHandle=handle;
-        overlay.GettingFocus+=(_,e)=>Log.Write("getting-focus",new {id,p.IsClosed,p.IsDisposed,e.CorrelationId,stack=Environment.StackTrace});
+        overlay.GettingFocus+=(_,e)=>{if(p.IsClosed||p.IsDisposed)gettingLate++;Log.Write("getting-focus",new {id,p.IsClosed,p.IsDisposed,e.CorrelationId,stack=Environment.StackTrace});};
         overlay.GotFocus+=(_,_)=>{if(p.IsClosed||p.IsDisposed)lateFocus++;else liveFocus++;Log.Write("focus",new {id,p.IsClosed,p.IsDisposed,liveFocus,lateFocus,hwndAlive=(bool)PInvoke.IsWindow(new HWND(nativeHandle)),stack=Environment.StackTrace});};
-        p.SetActiveAction(active=>Log.Write("activation-callback",new {id,active,p.IsClosed,p.IsDisposed}));
+        p.SetActiveAction(active=>{if(p.IsClosed||p.IsDisposed)activationLate++;else activationLive++;Log.Write("activation-callback",new {id,active,p.IsClosed,p.IsDisposed});});
         p.GetWindow().Changed+=(w,a)=>{
             if(p.IsClosed||p.IsDisposed){Log.Write("changed-after-close",new {id});return;}
             Log.Write("native-changed",new {id,a.DidPresenterChange,a.DidPositionChange,a.DidSizeChange,a.DidVisibilityChange,
                 mode=w.Presenter.Kind.ToString(),x=w.Position.X,y=w.Position.Y,width=w.Size.Width,height=w.Size.Height,p.IsPresenterChanging,top=p.IsTopMost()});
         };
-        p.GetWindow().Destroying+=(_,_)=>{o.HeaderBar.Destroyed=true;Log.Write("destroying",new {id,p.IsClosed,p.IsDisposed,p.IsPresenterChanging});};
+        p.GetWindow().Destroying+=(_,_)=>{o.Probe.Destroyed=true;Log.Write("destroying",new {id,p.IsClosed,p.IsDisposed,p.IsPresenterChanging});};
         p.GetWindow().Title="Acceptance54 real PlayerWindow "+id;
         p.Show(false);p.GetWindow().MoveAndResize(new RectInt32(500,140,840,570));
         Log.Save("player.json",new {id,hwnd=handle.ToInt64()});Snapshot("created");
@@ -133,7 +147,9 @@ public partial class App:Application {
                 Check(w.Position.X==pos.X&&w.Position.Y==pos.Y&&w.Size.Width==size.Width&&w.Size.Height==size.Height,"geometry not restored");
                 Check(!player.IsTopMost(),"ordinary topmost not cleared");
                 await Task.Delay(1700);Check(w.Presenter.Kind==AppWindowPresenterKind.Overlapped&&!player.IsPresenterChanging,"delayed final mode changed");
-                Check(overlay.HeaderBar.PaddingCalls>0,"live title callback positive control missing");
+                Check(overlay.Probe.PaddingCalls>0,"live title callback positive control missing");
+                Check(nativeResetLive>0&&activationLive>0&&overlay.LiveHeaderReads>0,"live native reset/activation/header access positive controls missing");
+                Log.Write("live-boundaries",new {instance,nativeResetLive,activationLive,overlay.LiveHeaderReads,liveFocus});
             });
             await Case($"RestoreBothModesAndSavedGeometry_R{round}",async()=>{
                 Create();await Until(()=>player.XamlRoot!=null,2000,"XAML not loaded");
@@ -158,25 +174,25 @@ public partial class App:Application {
             });
             await Case($"CloseBeforeQueuedFocusAndTitle_R{round}",async()=>{
                 Create();player.ResetFocus();player.DelayUpdateTitleBarPadding(true);Close();await VerifyClosed(1800);
-                Check(overlay.HeaderBar.AlignmentChanges==0,"queued title ran after close");
+                Check(overlay.Probe.AlignmentChanges==0,"queued title ran after close");
             });
             await Case($"CloseDuringFirstTitleDelay_R{round}",async()=>{
                 Create();player.DelayUpdateTitleBarPadding(true);
-                await Until(()=>overlay.HeaderBar.HorizontalAlignment==HorizontalAlignment.Left,1000,"first title stage not reached");
+                await Until(()=>overlay.Probe.HorizontalAlignment==HorizontalAlignment.Left,1000,"first title stage not reached");
                 Close();await VerifyClosed(1800);
-                Check(overlay.HeaderBar.HorizontalAlignment==HorizontalAlignment.Left,"first delay accessed header after close");
+                Check(overlay.Probe.HorizontalAlignment==HorizontalAlignment.Left,"first delay accessed header after close");
             });
             await Case($"CloseDuringSecondTitleDelay_R{round}",async()=>{
                 Create();player.DelayUpdateTitleBarPadding(true);
-                await Until(()=>overlay.HeaderBar.AlignmentChanges>=2,1400,"second title stage not reached");
-                Check(overlay.HeaderBar.HorizontalAlignment==HorizontalAlignment.Stretch,"second stage not Stretch");
-                var calls=overlay.HeaderBar.PaddingCalls;Close();await VerifyClosed(1200);
-                Check(overlay.HeaderBar.PaddingCalls==calls,"second delay called padding after close");
+                await Until(()=>overlay.Probe.AlignmentChanges>=2,1400,"second title stage not reached");
+                Check(overlay.Probe.HorizontalAlignment==HorizontalAlignment.Stretch,"second stage not Stretch");
+                var calls=overlay.Probe.PaddingCalls;Close();await VerifyClosed(1200);
+                Check(overlay.Probe.PaddingCalls==calls,"second delay called padding after close");
             });
         }
         Log.Save("results.json",results);status.Text="Suite complete";Log.Write("suite-complete",new {count=results.Count});
     }
-    private async Task VerifyClosed(int observationMs) {
+    private async Task VerifyClosed(int observationMs,bool originalOracle=false) {
         Check(player.IsClosed&&player.IsDisposed&&!player.IsPresenterChanging,"closed lifecycle flags");
         Check(!PInvoke.IsWindow(new HWND(handle)),"native HWND still alive");
         // Calls themselves must reject destroyed-window access before touching Presenter.
@@ -186,7 +202,13 @@ public partial class App:Application {
         var barrier=new TaskCompletionSource();
         DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low,()=>barrier.SetResult());
         await barrier.Task.WaitAsync(TimeSpan.FromSeconds(2));
-        Log.Write("closed-observation",new {instance,observationMs,lateFocus,overlay.HeaderBar.AfterDestroyCalls,player.IsClosed,player.IsDisposed,player.IsPresenterChanging});
-        Check(!player.IsPresenterChanging&&lateFocus==0&&overlay.HeaderBar.AfterDestroyCalls==0,"late lifecycle effect");
+        var session=typeof(PlayerWindow).GetField("_presenterChange",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance)!.GetValue(player)!;
+        var sessionClosed=(bool)session.GetType().GetField("_closed",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance)!.GetValue(session)!;
+        var hwndAlive=(bool)PInvoke.IsWindow(new HWND(handle));
+        Log.Write("closed-observation",new {instance,observationMs,lateFocus,nativeLate,gettingLate,activationLate,overlay.LateHeaderReads,overlay.Probe.AfterDestroyCalls,sessionClosed,hwndAlive,player.IsClosed,player.IsDisposed,player.IsPresenterChanging});
+        Check(player.IsClosed&&player.IsDisposed&&sessionClosed&&!player.IsPresenterChanging&&!hwndAlive,"closed native/session boundary");
+        Check(nativeLate==0&&gettingLate==0&&activationLate==0&&overlay.LateHeaderReads==0&&overlay.Probe.AfterDestroyCalls==0,"post-close new request or header/activation access");
+        // Historical notification oracle is intentionally retained, separately selectable.
+        if(originalOracle)Check(!player.IsPresenterChanging&&lateFocus==0&&overlay.Probe.AfterDestroyCalls==0,"late lifecycle effect");
     }
 }
