@@ -5,23 +5,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     HorizontalAlignment="Stretch"
     AutomationProperties.AutomationId="RefreshResultTip"
     IsTabStop="False"
+    Visibility="{x:Bind IsOpen, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
     mc:Ignorable="d">
 
     <InfoBar
-        x:Name="Bar"
         IsClosable="False"
         IsIconVisible="True"
         IsOpen="{x:Bind IsOpen, Mode=OneWay}"
         Message="{x:Bind Message, Mode=OneWay}"
-        Severity="Informational">
+        Severity="Informational"
+        AutomationProperties.LiveSetting="Polite">
         <InfoBar.ActionButton>
             <HyperlinkButton
                 AutomationProperties.AutomationId="UndoRefreshButton"
+                AutomationProperties.Name="{ext:Locale Name=UndoRefresh}"
                 Command="{x:Bind UndoCommand, Mode=OneWay}"
                 Content="{ext:Locale Name=UndoRefresh}" />
         </InfoBar.ActionButton>

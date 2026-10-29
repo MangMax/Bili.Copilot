@@ -227,32 +227,21 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
                 return;
             }
 
-            if (isIncremental)
-            {
-                var incoming = videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Partition));
-                var merged = RecommendVideoMerger.Merge(
-                    Videos,
-                    incoming,
-                    p => p.Data.Identifier.Id);
-                Videos.Clear();
-                foreach (var video in merged.Items)
-                {
-                    Videos.Add(video);
-                }
+            var application = RecommendRefreshApplier.Apply(
+                Videos,
+                videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Partition)),
+                p => p.Data.Identifier.Id,
+                isIncremental,
+                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
+                ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
 
-                ShowRefreshTip(
-                    RefreshResultMessageBuilder.Build(
-                        isIncremental: true,
-                        addedCount: merged.AddedItems.Count,
-                        ResourceToolkit.GetLocalizedString(StringNames.RefreshResultAdded),
-                        ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded)));
-            }
-            else
+            Videos.Clear();
+            foreach (var video in application.Items)
             {
-                Videos.Clear();
-                TryAddVideos(videos, VideoCardStyle.Partition);
-                ShowRefreshTip(ResourceToolkit.GetLocalizedString(StringNames.RefreshResultReloaded));
+                Videos.Add(video);
             }
+
+            ShowRefreshTip(application.Message);
 
             _recommendRefreshSnapshot = snapshot;
             _recommendOffset = offset;

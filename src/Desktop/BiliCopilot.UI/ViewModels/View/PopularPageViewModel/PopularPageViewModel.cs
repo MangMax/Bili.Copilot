@@ -196,14 +196,15 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     /// 清除撤销快照与刷新提示.
     /// </summary>
     /// <remarks>
-    /// 切换分区时 <see cref="Videos"/> 会被分区缓存替换，
-    /// 旧快照指向的列表已不在页面上，必须一并失效。
+    /// 切换分区、走普通刷新或撤销时 <see cref="Videos"/> 会被替换或重载，
+    /// 旧快照指向的列表已不在页面上，必须一并失效；同时递增代次，让仍在路上的推荐刷新结果作废。
     /// </remarks>
     private void ClearRefreshTip()
     {
         _recommendRefreshSnapshot = null;
         IsRefreshTipVisible = false;
         RefreshTipMessage = string.Empty;
+        _refreshGeneration++;
     }
 
     [RelayCommand]

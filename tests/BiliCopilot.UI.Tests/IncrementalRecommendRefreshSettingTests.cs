@@ -1,8 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
-using System.IO;
-using System.Xml.Linq;
 
 namespace BiliCopilot.UI.Tests;
 
@@ -34,7 +32,7 @@ public class IncrementalRecommendRefreshSettingTests
     [Fact]
     public void Resources_ContainNonEmptySettingText()
     {
-        var resources = LoadResources();
+        var resources = ResourcesFileHelper.LoadResources();
 
         foreach (var key in ResourceKeys)
         {
@@ -48,35 +46,5 @@ public class IncrementalRecommendRefreshSettingTests
                 string.IsNullOrWhiteSpace(entry.Element("value")?.Value),
                 $"资源键 {key} 的文案为空.");
         }
-    }
-
-    private static IReadOnlyList<XElement> LoadResources()
-    {
-        var reswPath = Path.Combine(
-            FindRepositoryRoot(),
-            "src",
-            "Desktop",
-            "BiliCopilot.UI",
-            "Resources",
-            "zh-Hans-CN",
-            "Resources.resw");
-
-        return XDocument.Load(reswPath).Root!.Elements("data").ToList();
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = AppContext.BaseDirectory;
-        while (directory is not null)
-        {
-            if (Directory.Exists(Path.Combine(directory, "src", "Desktop", "BiliCopilot.UI")))
-            {
-                return directory;
-            }
-
-            directory = Path.GetDirectoryName(directory);
-        }
-
-        throw new InvalidOperationException("未找到仓库根目录（含 src/Desktop/BiliCopilot.UI）。");
     }
 }

@@ -18,6 +18,8 @@ public sealed record RecommendVideoMergeResult<T>(
 /// <remarks>
 /// 增量刷新时，新一批推荐按原顺序前插，当前列表中与新批次重复的条目被移除，
 /// 其余条目保持原相对顺序排在后面，并以视频资源 Id 作为去重键。
+/// 当前列表内部的重复条目原样保留：本需求不做全列表去重，增量刷新后继续下滑
+/// 也可能偶发与旧内容重复，均属可接受行为。
 /// </remarks>
 public static class RecommendVideoMerger
 {
@@ -29,6 +31,9 @@ public static class RecommendVideoMerger
     /// <param name="incoming">新获取的推荐批次，允许为空或为 null.</param>
     /// <param name="keySelector">取得视频资源 Id 的函数.</param>
     /// <returns>合并结果；新批次中重复的条目只保留一条.</returns>
+    /// <remarks>
+    /// 新批次为 null 或空时不改动当前列表（包括其中的重复条目），新增为空。
+    /// </remarks>
     public static RecommendVideoMergeResult<T> Merge<T>(
         IEnumerable<T>? current,
         IEnumerable<T>? incoming,
@@ -37,7 +42,15 @@ public static class RecommendVideoMerger
         ArgumentNullException.ThrowIfNull(keySelector);
 
         var currentItems = current?.ToList() ?? [];
-        var items = new List<T>(currentItems.Count);
+        var incomingItems = incoming?.ToList() ?? [];
+
+        // 没有新内容时原样返回当前列表，连其中的重复条目也不动。
+        if (incomingItems.Count == 0)
+        {
+            return new RecommendVideoMergeResult<T>(currentItems, []);
+        }
+
+        var items = new List<T>(currentItems.Count + incomingItems.Count);
         var addedItems = new List<T>();
         var incomingKeys = new HashSet<string>(StringComparer.Ordinal);
         var currentKeys = new HashSet<string>(StringComparer.Ordinal);
@@ -47,29 +60,24 @@ public static class RecommendVideoMerger
             _ = currentKeys.Add(keySelector(item));
         }
 
-        if (incoming is not null)
+        foreach (var item in incomingItems)
         {
-            foreach (var item in incoming)
+            var key = keySelector(item);
+            if (!incomingKeys.Add(key))
             {
-                var key = keySelector(item);
-                if (!incomingKeys.Add(key))
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                items.Add(item);
-                if (!currentKeys.Contains(key))
-                {
-                    addedItems.Add(item);
-                }
+            items.Add(item);
+            if (!currentKeys.Contains(key))
+            {
+                addedItems.Add(item);
             }
         }
 
-        var remainingKeys = new HashSet<string>(StringComparer.Ordinal);
         foreach (var item in currentItems)
         {
-            var key = keySelector(item);
-            if (incomingKeys.Contains(key) || !remainingKeys.Add(key))
+            if (incomingKeys.Contains(keySelector(item)))
             {
                 continue;
             }
