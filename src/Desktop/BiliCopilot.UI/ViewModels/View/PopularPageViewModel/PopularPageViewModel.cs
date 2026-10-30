@@ -187,7 +187,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         });
     }
 
-    [RelayCommand]
+    private bool CanRefreshVideo() => !IsRecommendRefreshing;
+
+    [RelayCommand(AllowConcurrentExecutions = true, CanExecute = nameof(CanRefreshVideo))]
     private async Task RefreshVideoAsync()
     {
         if (SelectedSection is null)

@@ -71,6 +71,7 @@ public sealed partial class PopularPageViewModel
     /// 刷新期间挡住下滑追加，避免请求结果与追加结果互相覆盖。
     /// </remarks>
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RefreshVideoCommand))]
     private bool _isRecommendRefreshing;
 
     /// <summary>

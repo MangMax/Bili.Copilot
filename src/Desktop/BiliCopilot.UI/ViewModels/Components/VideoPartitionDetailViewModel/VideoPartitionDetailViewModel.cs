@@ -68,7 +68,9 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         await LoadVideosAsync();
     }
 
-    [RelayCommand]
+    private bool CanRefresh() => !IsRecommendRefreshing;
+
+    [RelayCommand(AllowConcurrentExecutions = true, CanExecute = nameof(CanRefresh))]
     private async Task RefreshAsync()
     {
         if (IsRecommend)

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
@@ -367,6 +367,7 @@ public sealed class PopularPageLoadingTests
         page.SelectSectionCommand.Execute(page.Sections[1]);
         PageTestServices.Dispatcher.Drain();
         Assert.Equal("Hot", Assert.Single(page.Videos).Data.BvId);
+        Assert.True(page.RefreshVideoCommand.CanExecute(null));
         pending.SetException(new IOException("late"));
         await refresh;
         Assert.False(page.CanUndoRefresh);
@@ -405,4 +406,3 @@ public sealed class PopularPageLoadingTests
 
     private static VideoInformation Video(string id) => new(default, null!, bvId: id);
 }
-
