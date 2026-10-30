@@ -25,4 +25,10 @@ links = '''
 </ItemGroup>
 '''
 edit('Harness.csproj', '</Project>', links+'</Project>')
+edit('Fixture.cs', 'new VideoInformation(default,null,bvId:$"{Scenario}', 'new VideoInformation(new($"{Scenario}-{name}-{Page}-{i}","Fixture",null),null,bvId:$"{Scenario}')
+edit('App.xaml.cs', 'using System.Reflection;', 'using System.Reflection;\nusing Richasy.WinUIKernel.Share;\nusing RichasyKernel;')
 
+
+edit('Adapters.cs', 'public Uri Cover=>new("ms-appx:///Assets/Logo.png");', 'public Uri Cover=>null;')
+
+edit('Harness.csproj', '</Project>', '<ItemGroup><Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/RecommendationScrollAnchor.cs" Link="Production/RecommendationScrollAnchor.cs"/></ItemGroup></Project>')

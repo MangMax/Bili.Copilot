@@ -57,6 +57,31 @@ public partial class App
             held.SetException(new IOException("late"));await refresh;
             Require(page.RefreshTipState.Status==RefreshTipStatus.Hidden,"Old failure published into child");
         });
+        await Check("RealControlsRefreshUndoAndRemount", async () => {
+            New("Long");
+            async Task Settle() { await Task.Delay(700); main.UpdateLayout(); }
+            await Settle();
+            Require(vm.Videos.Count==60,"Long initial page missing");
+            var original=vm.Videos.ToArray();
+            scroll.ScrollTo(0,600,new Microsoft.UI.Xaml.Controls.ScrollingScrollOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode.Disabled));
+            await Settle();
+            var before=scroll.VerticalOffset;
+            SettingsToolkit.Incremental=true;
+            service.Scenario="Fresh";service.Page=0;service.Batch=2;
+            await vm.RefreshVideoCommand.ExecuteAsync(null);await Settle();
+            Require(vm.Videos.Count==62,"Incremental refresh did not retain original page");
+            Require(original.All(o=>vm.Videos.Any(v=>ReferenceEquals(v,o))),"Refresh lost identities");
+            Snapshot("incremental-refreshed");
+            vm.UndoRefreshCommand.Execute(null);await Settle();
+            Require(vm.Videos.SequenceEqual(original),"Undo changed references/order");
+            Trace.Write("anchor",new{before,afterUndo=scroll.VerticalOffset,delta=scroll.VerticalOffset-before});
+            Require(Math.Abs(scroll.VerticalOffset-before)<2,"Undo scroll offset changed");
+            slot.Children.Clear();await Settle();
+            slot.Children.Add(side);slot.Children.Add(main);await Settle();
+            Require(Subscribers("VideoListUpdated",typeof(BiliCopilot.UI.Controls.Popular.PopularMainBody))==1,"Remount subscription missing/duplicated");
+            Snapshot("incremental-undone-remounted");
+            SettingsToolkit.Incremental=false;
+        });
         var path=Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path,"integration-results.json");
         File.WriteAllText(path,JsonSerializer.Serialize(results,new JsonSerializerOptions{WriteIndented=true}));
         status.Text="Integration checks finished: "+path;
