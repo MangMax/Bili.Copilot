@@ -1,0 +1,531 @@
+{
+  "sha256": "07772c50693ad6849f387f11e21d3e327de453121d4c76432ec778dbe66f260f",
+  "bytes": 38814879,
+  "streams": {
+    "3": [
+      12868,
+      1800
+    ],
+    "4": [
+      34240,
+      14680
+    ],
+    "14": [
+      1476,
+      48920
+    ],
+    "13": [
+      392996,
+      50396
+    ],
+    "5": [
+      812148,
+      1434853
+    ],
+    "6": [
+      168,
+      1632
+    ],
+    "7": [
+      56,
+      212
+    ],
+    "15": [
+      1364,
+      268
+    ],
+    "21": [
+      524,
+      443392
+    ],
+    "22": [
+      152,
+      443916
+    ],
+    "24": [
+      2416,
+      444068
+    ],
+    "0": [
+      0,
+      0
+    ]
+  },
+  "flags": "0x200121",
+  "thread": 38200,
+  "code": "0xc000027b",
+  "exceptionAt": "CoreMessagingXP.dll+0xb17fc",
+  "parameters": [
+    "0x22498c61d80",
+    "0x1"
+  ],
+  "memoryRanges": 50761,
+  "stowed": [
+    {
+      "size": 56,
+      "signature": "0x53453032",
+      "hresult": "0x8000ffff",
+      "form": 1,
+      "thread": 38200,
+      "nestedType": "0x314f454c",
+      "nestedCaptured": true,
+      "nestedAddress": "0x2247edd10d0",
+      "exception": "combase.dll+0xc4063",
+      "wordSize": 8,
+      "words": 30,
+      "missing": "not captured 0x2247edd20f0 remaining 240 of 240"
+    }
+  ],
+  "pid": 11436,
+  "timestampUtc": "2026-10-30T16:27:25+00:00",
+  "context": {
+    "size": 1232,
+    "rip": "0x7fffae04a708",
+    "rsp": "0x9c985bbcc0"
+  },
+  "nativeStack": {
+    "method": "DbgHelp StackWalk64; dump memory plus timestamp/size-matched PE fallback; no stack scan; stops before unmapped PC",
+    "frames": [
+      {
+        "pc": "0x7fffae04a708",
+        "module": "KERNELBASE.dll+0x10a708",
+        "symbol": "KERNELBASE.dll+0x10a708"
+      },
+      {
+        "pc": "0x7fffafcd3c99",
+        "module": "combase.dll+0xc3c99",
+        "symbol": "combase.dll+0xc3c99"
+      },
+      {
+        "pc": "0x7ffeea9817fc",
+        "module": "CoreMessagingXP.dll+0xb17fc",
+        "symbol": "CoreMessagingXP.dll+0xb17fc"
+      },
+      {
+        "pc": "0x7ffeea908ba2",
+        "module": "CoreMessagingXP.dll+0x38ba2",
+        "symbol": "CoreMessagingXP.dll+0x38ba2"
+      },
+      {
+        "pc": "0x7ffeea90873b",
+        "module": "CoreMessagingXP.dll+0x3873b",
+        "symbol": "CoreMessagingXP.dll+0x3873b"
+      },
+      {
+        "pc": "0x7ffeea922fe3",
+        "module": "CoreMessagingXP.dll+0x52fe3",
+        "symbol": "CoreMessagingXP.dll+0x52fe3"
+      },
+      {
+        "pc": "0x7ffeea8e99d0",
+        "module": "CoreMessagingXP.dll+0x199d0",
+        "symbol": "CoreMessagingXP.dll+0x199d0"
+      },
+      {
+        "pc": "0x7ffeea8e91f4",
+        "module": "CoreMessagingXP.dll+0x191f4",
+        "symbol": "CoreMessagingXP.dll+0x191f4"
+      },
+      {
+        "pc": "0x7ffeea8dc1bc",
+        "module": "CoreMessagingXP.dll+0xc1bc",
+        "symbol": "CoreMessagingXP.dll+0xc1bc"
+      },
+      {
+        "pc": "0x7ffeea8e1f0b",
+        "module": "CoreMessagingXP.dll+0x11f0b",
+        "symbol": "CoreMessagingXP.dll+0x11f0b"
+      },
+      {
+        "pc": "0x7ffeea8e21f1",
+        "module": "CoreMessagingXP.dll+0x121f1",
+        "symbol": "CoreMessagingXP.dll+0x121f1"
+      },
+      {
+        "pc": "0x7ffeea930197",
+        "module": "CoreMessagingXP.dll+0x60197",
+        "symbol": "CoreMessagingXP.dll+0x60197"
+      },
+      {
+        "pc": "0x7ffeea92ff52",
+        "module": "CoreMessagingXP.dll+0x5ff52",
+        "symbol": "CoreMessagingXP.dll+0x5ff52"
+      },
+      {
+        "pc": "0x7fffafa452e6",
+        "module": "user32.dll+0x152e6",
+        "symbol": "user32.dll+0x152e6"
+      },
+      {
+        "pc": "0x7fffafa44b6c",
+        "module": "user32.dll+0x14b6c",
+        "symbol": "user32.dll+0x14b6c"
+      },
+      {
+        "pc": "0x7fffafa6f593",
+        "module": "user32.dll+0x3f593",
+        "symbol": "user32.dll+0x3f593"
+      },
+      {
+        "pc": "0x7fffb0a85d94",
+        "module": "ntdll.dll+0x165d94",
+        "symbol": "ntdll.dll+0x165d94"
+      },
+      {
+        "pc": "0x7fffadf11304",
+        "module": "win32u.dll+0x1304",
+        "symbol": "win32u.dll+0x1304"
+      },
+      {
+        "pc": "0x7fffafa419df",
+        "module": "user32.dll+0x119df",
+        "symbol": "user32.dll+0x119df"
+      },
+      {
+        "pc": "0x7fffafa41968",
+        "module": "user32.dll+0x11968",
+        "symbol": "user32.dll+0x11968"
+      },
+      {
+        "pc": "0x7ffeea9306da",
+        "module": "CoreMessagingXP.dll+0x606da",
+        "symbol": "CoreMessagingXP.dll+0x606da"
+      },
+      {
+        "pc": "0x7ffeea8e240c",
+        "module": "CoreMessagingXP.dll+0x1240c",
+        "symbol": "CoreMessagingXP.dll+0x1240c"
+      },
+      {
+        "pc": "0x7ffeea8e213d",
+        "module": "CoreMessagingXP.dll+0x1213d",
+        "symbol": "CoreMessagingXP.dll+0x1213d"
+      },
+      {
+        "pc": "0x7ffeea8ded88",
+        "module": "CoreMessagingXP.dll+0xed88",
+        "symbol": "CoreMessagingXP.dll+0xed88"
+      },
+      {
+        "pc": "0x7ffeea8dbf80",
+        "module": "CoreMessagingXP.dll+0xbf80",
+        "symbol": "CoreMessagingXP.dll+0xbf80"
+      },
+      {
+        "pc": "0x7ffeea8e4659",
+        "module": "CoreMessagingXP.dll+0x14659",
+        "symbol": "CoreMessagingXP.dll+0x14659"
+      },
+      {
+        "pc": "0x7ffeea97d141",
+        "module": "CoreMessagingXP.dll+0xad141",
+        "symbol": "CoreMessagingXP.dll+0xad141"
+      },
+      {
+        "pc": "0x7ffeea977761",
+        "module": "CoreMessagingXP.dll+0xa7761",
+        "symbol": "CoreMessagingXP.dll+0xa7761"
+      },
+      {
+        "pc": "0x7ffed638566e",
+        "module": "Microsoft.UI.Xaml.dll+0x79566e",
+        "symbol": "Microsoft.UI.Xaml.dll+0x79566e"
+      },
+      {
+        "pc": "0x7ffed61ae83b",
+        "module": "Microsoft.UI.Xaml.dll+0x5be83b",
+        "symbol": "Microsoft.UI.Xaml.dll+0x5be83b"
+      }
+    ],
+    "missingReads": [],
+    "languageObject": {
+      "missing": "not captured 0x7ffe89e2f770 remaining 8 of 24"
+    },
+    "images": [
+      {
+        "name": "ntdll.dll",
+        "sha256": "651ac9041af8e6b5ebd331d53163244c0a27d36d1433f0f15cac1f28c5f2e82c",
+        "timestamp": "0x5fd39a05",
+        "size": 2523136
+      },
+      {
+        "name": "kernel32.dll",
+        "sha256": "e132eba4166256e2f414b91fe7d5386590bc5ea8626aee5af9c9738383cf2ae1",
+        "timestamp": "0x6fd28ce",
+        "size": 831488
+      },
+      {
+        "name": "KERNELBASE.dll",
+        "sha256": "5c29b73622ce0976e1ada566f31f2197ba0f8beaea89c3ec033366126172c3d0",
+        "timestamp": "0xfb9071fb",
+        "size": 4198400
+      },
+      {
+        "name": "user32.dll",
+        "sha256": "f285937030bcb325cad39ee5be4818f6666241229adeadea4ff1ae469dfd7ef3",
+        "timestamp": "0x1d1c21a9",
+        "size": 1929216
+      },
+      {
+        "name": "coreclr.dll",
+        "sha256": "46a09d97ad8dd30d400a86c90af707bee7593b585d3ccb8586c4fffca404d1e2",
+        "timestamp": "0x6adb16e0",
+        "size": 4968448
+      },
+      {
+        "name": "combase.dll",
+        "sha256": "087f72ecc0c979a3b784ab319285ab64d053dfc0c274df5b28fd40cf204a234f",
+        "timestamp": "0x15b851a4",
+        "size": 3715072
+      },
+      {
+        "name": "Microsoft.UI.Xaml.dll",
+        "sha256": "3feb212dd3255f8b977f71197e692e4a4ef5d515eafc9c8b3cac49936783aa4b",
+        "timestamp": "0x198498a7",
+        "size": 15216640
+      },
+      {
+        "name": "CoreMessagingXP.dll",
+        "sha256": "5b13b65289197005846bef49fb9530ea8f60dba34e382eb3d6170c3b5069d16b",
+        "timestamp": "0x6ad8ea81",
+        "size": 1314816
+      }
+    ],
+    "structSizes": [
+      16,
+      112,
+      264
+    ]
+  },
+  "dumpModules": [
+    {
+      "name": "ntdll.dll",
+      "base": 140736155746304,
+      "size": 2523136,
+      "timestamp": "0x5fd39a05",
+      "version": "10.0.26100.9711",
+      "pdb": "ntdll.pdb",
+      "guid": "C031D45B0DA18A6E74D06ED6AB2DD9E1",
+      "age": 1
+    },
+    {
+      "name": "KERNELBASE.dll",
+      "base": 140736111837184,
+      "size": 4198400,
+      "timestamp": "0xfb9071fb",
+      "version": "10.0.26100.9711",
+      "pdb": "kernelbase.pdb",
+      "guid": "79B505276F140450EB83DF0440BF06C6",
+      "age": 1
+    },
+    {
+      "name": "user32.dll",
+      "base": 140736140083200,
+      "size": 1929216,
+      "timestamp": "0x1d1c21a9",
+      "version": "10.0.26100.9549",
+      "pdb": "user32.pdb",
+      "guid": "F0BF56EE0A784974D49A58173A7CBC7E",
+      "age": 1
+    },
+    {
+      "name": "win32u.dll",
+      "base": 140736111640576,
+      "size": 159744,
+      "timestamp": "0x47ebf119",
+      "version": "10.0.26100.9711",
+      "pdb": "win32u.pdb",
+      "guid": "DC2BE92BCDB1EFC31195235C45385FF1",
+      "age": 1
+    },
+    {
+      "name": "coreclr.dll",
+      "base": 140732813737984,
+      "size": 4968448,
+      "timestamp": "0x6adb16e0",
+      "version": "11.0.26.52348",
+      "pdb": "coreclr.pdb",
+      "guid": "0BA84159E8304EC79276E74F5DA22F6A",
+      "age": 1
+    },
+    {
+      "name": "combase.dll",
+      "base": 140736142049280,
+      "size": 3715072,
+      "timestamp": "0x15b851a4",
+      "version": "10.0.26100.9711",
+      "pdb": "combase.pdb",
+      "guid": "4AC91D91223808F3AE6A3164A1B8B404",
+      "age": 1
+    },
+    {
+      "name": "BiliCopilot.UI.dll",
+      "base": 2355298631680,
+      "size": 3653632,
+      "timestamp": "0x9d1ec4a5",
+      "version": "1.0.0.0",
+      "pdb": "BiliCopilot.UI.pdb",
+      "guid": "4B45FC4EDC594CEFBFF4128DC493C2B1",
+      "age": 1
+    },
+    {
+      "name": "Microsoft.UI.Xaml.dll",
+      "base": 140732484485120,
+      "size": 15216640,
+      "timestamp": "0x198498a7",
+      "version": "3.3.0.0",
+      "pdb": "Microsoft.ui.xaml.pdb",
+      "guid": "53A92AA483D857E31AEAAE3726CA602B",
+      "age": 2
+    },
+    {
+      "name": "CoreMessagingXP.dll",
+      "base": 140732833529856,
+      "size": 1314816,
+      "timestamp": "0x6ad8ea81",
+      "version": "12.6.4.0",
+      "pdb": "CoreMessagingXP.pdb",
+      "guid": "8AF1C0CEA6304CF3ADFC047648FC2535",
+      "age": 1
+    }
+  ],
+  "identities": [
+    {
+      "name": "ntdll.dll",
+      "version": "10.0.26100.9711",
+      "sha256": "651ac9041af8e6b5ebd331d53163244c0a27d36d1433f0f15cac1f28c5f2e82c",
+      "pdb": "ntdll.pdb",
+      "guid": "C031D45B0DA18A6E74D06ED6AB2DD9E1",
+      "age": 1,
+      "match": true
+    },
+    {
+      "name": "kernel32.dll",
+      "version": "10.0.26100.9711",
+      "sha256": "e132eba4166256e2f414b91fe7d5386590bc5ea8626aee5af9c9738383cf2ae1",
+      "pdb": "kernel32.pdb",
+      "guid": "E8C3A48CAC7EB60D8781D8C10020C44F",
+      "age": 1,
+      "match": true
+    },
+    {
+      "name": "KERNELBASE.dll",
+      "version": "10.0.26100.9711",
+      "sha256": "5c29b73622ce0976e1ada566f31f2197ba0f8beaea89c3ec033366126172c3d0",
+      "pdb": "kernelbase.pdb",
+      "guid": "79B505276F140450EB83DF0440BF06C6",
+      "age": 1,
+      "match": true
+    },
+    {
+      "name": "user32.dll",
+      "version": "10.0.26100.9549",
+      "sha256": "f285937030bcb325cad39ee5be4818f6666241229adeadea4ff1ae469dfd7ef3",
+      "pdb": "user32.pdb",
+      "guid": "F0BF56EE0A784974D49A58173A7CBC7E",
+      "age": 1,
+      "match": true
+    },
+    {
+      "name": "coreclr.dll",
+      "version": "11.0.26.52348",
+      "sha256": "46a09d97ad8dd30d400a86c90af707bee7593b585d3ccb8586c4fffca404d1e2",
+      "pdb": "coreclr.pdb",
+      "guid": "0BA84159E8304EC79276E74F5DA22F6A",
+      "age": 1,
+      "match": true
+    },
+    {
+      "name": "combase.dll",
+      "version": "10.0.26100.9711",
+      "sha256": "087f72ecc0c979a3b784ab319285ab64d053dfc0c274df5b28fd40cf204a234f",
+      "pdb": "combase.pdb",
+      "guid": "4AC91D91223808F3AE6A3164A1B8B404",
+      "age": 1,
+      "match": true
+    },
+    {
+      "name": "Microsoft.UI.Xaml.dll",
+      "version": "3.3.0.0",
+      "sha256": "3feb212dd3255f8b977f71197e692e4a4ef5d515eafc9c8b3cac49936783aa4b",
+      "pdb": "Microsoft.ui.xaml.pdb",
+      "guid": "53A92AA483D857E31AEAAE3726CA602B",
+      "age": 2,
+      "match": true
+    },
+    {
+      "name": "CoreMessagingXP.dll",
+      "version": "12.6.4.0",
+      "sha256": "5b13b65289197005846bef49fb9530ea8f60dba34e382eb3d6170c3b5069d16b",
+      "pdb": "CoreMessagingXP.pdb",
+      "guid": "8AF1C0CEA6304CF3ADFC047648FC2535",
+      "age": 1,
+      "match": true
+    },
+    {
+      "name": "BiliCopilot.UI.dll",
+      "version": "1.0.0.0",
+      "sha256": "1e4cb5d683a9856c6853871b3a80b381d96f74e5458cb2ce32ad13913cb0d833",
+      "pdb": "BiliCopilot.UI.pdb",
+      "guid": "4B45FC4EDC594CEFBFF4128DC493C2B1",
+      "age": 1,
+      "match": true,
+      "portablePdbSha256": "eb68844411ff7792efe5ae044965082823cfb9fc9c4bdf70a4d1e9dfc417fa38",
+      "portablePdbGuid": "4B45FC4EDC594CEFBFF4128DC493C2B1"
+    }
+  ],
+  "publicSymbols": [
+    {
+      "name": "ntdll.dll",
+      "pdb": "ntdll.pdb",
+      "guid": "C031D45B0DA18A6E74D06ED6AB2DD9E1",
+      "age": 1,
+      "infoAge": 4,
+      "sha256": "c93f4614aa6f40fe370d40eb7ee9589ca0eda170ef2d704b5d278da71c02c249",
+      "publicCount": 6974,
+      "frames": [
+        {
+          "module": "ntdll.dll+0x165d94",
+          "nearestPublic": "KiUserCallbackDispatcherContinue",
+          "displacement": "0x0"
+        }
+      ]
+    },
+    {
+      "name": "CoreMessagingXP.dll",
+      "error": "Incomplete PDB, reject"
+    }
+  ],
+  "incompleteDownloads": [
+    {
+      "name": "combase.pdb",
+      "bytes": 1031433,
+      "sha256": "d5365eb01abd0185d33ecfd70f4931d54ad704589029d5bf4582ba0862492658",
+      "usable": false
+    },
+    {
+      "name": "CoreMessagingXP.pdb",
+      "bytes": 2128345,
+      "sha256": "3cc0ca9fd140d2564edea84a460099be20feab1c87f9728ccaf316b760e62d50",
+      "usable": false
+    },
+    {
+      "name": "kernelbase.pdb",
+      "bytes": 12554240,
+      "sha256": "81658a0fe06f313f0370a4bd988e763bcf791da9a20124b24c3f2db4e3b36b43",
+      "usable": false
+    },
+    {
+      "name": "user32.pdb",
+      "bytes": 1191936,
+      "sha256": "d6ae3086c6a7bfca501341c1277a7a9a061cfa4db8cd5a9ef80784e344268c70",
+      "usable": false
+    }
+  ],
+  "scriptHashes": {
+    "identities.py": "6ae11112f20520591e27cc96b1f0733c0af2666b89fd8eb8ece5253f832f3266",
+    "parse.py": "148f0f927c92eb7c19dc361a5407e05d88a10d95b5bebc5a2147cd8f56169cac",
+    "pdb-publics.py": "f080f387c8c597ebda8f8931b780559a5bd5bdfc212309d208e36d4b10c0e31a",
+    "walk.py": "306e960fc335f3e9baab9d57e199158273ce45718c0ab319990aae99f2479765"
+  }
+}
