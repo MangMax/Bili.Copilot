@@ -1,0 +1,12 @@
+{
+  "status": "PASS_BOUNDED",
+  "reasons": [],
+  "faultRecords": [],
+  "werRecords": [],
+  "reportIds": [],
+  "futureExactEvidenceRevokes": true,
+  "loadedModules": 162,
+  "lastQuerySeconds": 30.066646,
+  "pid": 24552,
+  "exitCode": 0
+}

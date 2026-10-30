@@ -1,0 +1,31 @@
+{
+  "searchCleared": true,
+  "startUtc": "2026-10-30T20:14:15.6210688Z",
+  "endUtc": "2026-10-30T20:14:22.0036643Z",
+  "keyboardPass": true,
+  "case": "Menu",
+  "visiblePass": true,
+  "pass": true,
+  "before": {
+    "foreground": 790566,
+    "foregroundPid": 27828,
+    "minimized": false,
+    "targetForeground": false,
+    "utc": "2026-10-30T20:14:17.8590259Z",
+    "mainHwnd": 14748754,
+    "visible": false,
+    "label": "Menu-precondition"
+  },
+  "failure": null,
+  "foregroundPass": true,
+  "restored": {
+    "foreground": 14748754,
+    "foregroundPid": 24552,
+    "minimized": false,
+    "targetForeground": true,
+    "utc": "2026-10-30T20:14:20.3026993Z",
+    "mainHwnd": 14748754,
+    "visible": true,
+    "label": "Menu-independent-foreground"
+  }
+}

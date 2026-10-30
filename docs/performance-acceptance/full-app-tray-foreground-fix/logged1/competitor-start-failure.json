@@ -1,0 +1,5 @@
+{
+  "noCompetitorReady": true,
+  "startedPid": 35824,
+  "failure": "Competitor launcher constructed wrong script path from empty PSScriptRoot"
+}
