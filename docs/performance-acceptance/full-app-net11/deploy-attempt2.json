@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-30T18:28:37.7433426Z",
+  "appLaunched": false,
+  "stage": "version-update-in-previously-staged-directory",
+  "hresult": "0x80073CF9",
+  "status": "BLOCKED",
+  "reason": "Manifest not at package root"
+}

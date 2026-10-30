@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-30T18:28:46.3337854Z",
+  "reason": "Manifest not at package root",
+  "appLaunched": false,
+  "hresult": "0x80073CF9",
+  "stage": "fresh-layout-disable-development-mode",
+  "status": "BLOCKED"
+}

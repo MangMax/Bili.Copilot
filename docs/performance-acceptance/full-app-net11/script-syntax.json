@@ -1,0 +1,14 @@
+[
+  {
+    "syntax": "PASS",
+    "file": "log-summary.ps1"
+  },
+  {
+    "syntax": "PASS",
+    "file": "observe.ps1"
+  },
+  {
+    "syntax": "PASS",
+    "file": "ui.ps1"
+  }
+]

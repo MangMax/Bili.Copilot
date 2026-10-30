@@ -1,0 +1,19 @@
+{
+  "windowEnd": "2026-10-31T02:38:02.6629235+08:00",
+  "noRawMessageOrUrlSaved": true,
+  "windowStart": "2026-10-31T02:29:09.6243790+08:00",
+  "groups": [
+    {
+      "category": "search-suggestion",
+      "count": 2,
+      "first": "02:31:30.011",
+      "last": "02:31:30.494",
+      "allowedTypes": [
+        "System.Threading.Tasks.TaskCanceledException",
+        "System.IO.IOException",
+        "System.Net.Sockets.SocketException"
+      ]
+    }
+  ],
+  "managedUnhandled": 0
+}

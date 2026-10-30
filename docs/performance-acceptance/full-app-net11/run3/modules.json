@@ -1,0 +1,878 @@
+[
+  {
+    "sha256": "DCFBED8DB0A19844682A0B101E69CB114DB4856B3D17547F6DFB18EE1CFC6A25",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\BiliCopilot.UI.exe",
+    "name": "BiliCopilot.UI.exe",
+    "version": "1.0.0+be7105b003470782c74fbc8aaac0ea6a23a44a60"
+  },
+  {
+    "sha256": "5CAB1C94D75F7B1D709BF18684A46F9CC0788059B745594E44FB1D521CA2D111",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\hostfxr.dll",
+    "name": "hostfxr.dll",
+    "version": "11.0.0-rc.3.26522.148 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "4A24F6BF63C024520A8121E4E82B5003CF81CE61F3F48F2A4B84976F27ACA055",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\hostpolicy.dll",
+    "name": "hostpolicy.dll",
+    "version": "11.0.0-rc.3.26522.148 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "46A09D97AD8DD30D400A86C90AF707BEE7593B585D3CCB8586C4FFFCA404D1E2",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\coreclr.dll",
+    "name": "coreclr.dll",
+    "version": "11,0,26,52348 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "DF53885902E896A2B40988237CBE9CBB9F1BB0743200F05FE9257C56A29C5732",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Private.CoreLib.dll",
+    "name": "System.Private.CoreLib.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "633DEA0CA27AD2AA673D7A085CC36C2880BB44D1948B0F1750E38376380C023F",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\clrjit.dll",
+    "name": "clrjit.dll",
+    "version": "11,0,26,52348 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "ED9C3C8297CB5387C7B8127AC7EE3E1EC4145B831C06B5C5E85F5EA1EE49C562",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\BiliCopilot.UI.dll",
+    "name": "BiliCopilot.UI.dll",
+    "version": "1.0.0+be7105b003470782c74fbc8aaac0ea6a23a44a60"
+  },
+  {
+    "sha256": "826438BF95100D96BEE4B47BEA223C37EA3EE937BBD3A3803072AA841417CFE2",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Runtime.dll",
+    "name": "System.Runtime.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "1F07A4AF41BE3FD5A18D07E30895EEE62DC25E8FFCE9A9B3B648F5CD09B72B12",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Windows.ApplicationModel.WindowsAppRuntime.Projection.dll",
+    "name": "Microsoft.Windows.ApplicationModel.WindowsAppRuntime.Projection.dll",
+    "version": "2.6"
+  },
+  {
+    "sha256": "74E0B49E9FE4023992500CE8173219B4749EC741C27C5C78048FCF76651ACE4B",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Runtime.InteropServices.dll",
+    "name": "System.Runtime.InteropServices.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "42AC514D4AECDD3137B5F6513270DE8082AF81D9F205A62B7379F0F3F229319C",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\WinRT.Runtime.dll",
+    "name": "WinRT.Runtime.dll",
+    "version": "2.3.1.54291+ff5227a4ffca06dfa6de8ca0a5c127c04f294291"
+  },
+  {
+    "sha256": "FFA5034F41C2120885F393D87D881A10AFBAFB9092D4E81E3C9654B27B66881C",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Collections.Concurrent.dll",
+    "name": "System.Collections.Concurrent.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "3F0E995A69701EC0059E0656C1C5A1C0F7B859907B9C1651525E445D2A9D6550",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Collections.dll",
+    "name": "System.Collections.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "7CBF5C974E11338D14E823DA6444268A28D1BD3F29AA487FE4300A0A7688DB26",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Threading.dll",
+    "name": "System.Threading.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "5B899A3F6C1331CB9A834C36AD71D35C6DA0019B8316CD957399447207184D2E",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Memory.dll",
+    "name": "System.Memory.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "D6F031A02E31F8528819599725F18E67FBD659A534495B7DB317F899E79F2763",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Runtime.CompilerServices.Unsafe.dll",
+    "name": "System.Runtime.CompilerServices.Unsafe.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "7EFA98CDCCEB0772C090F28CA2283447B21258D7C169EF441472D90F12FEBC5C",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Private.Uri.dll",
+    "name": "System.Private.Uri.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "F529A5FD14BC7E6085B018B93785DE959D98439FDC2E7FDDE2ECF611E5489AA9",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.ObjectModel.dll",
+    "name": "System.ObjectModel.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "312B34F29129114B49F8636D38D0A81CEEC87EFD198B3B67A148F85D6D02A1B2",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Numerics.Vectors.dll",
+    "name": "System.Numerics.Vectors.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "4626A0E49F174B003FED1FCF431CF3DD765D7A26529906FE3665422F54FA621D",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.ComponentModel.dll",
+    "name": "System.ComponentModel.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "9D69220D9D720C9A8AC4A052F62F3A9CA10C32E188E16BCA8C4540FD57017ED6",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Windows.SDK.NET.dll",
+    "name": "Microsoft.Windows.SDK.NET.dll",
+    "version": "10.0.22621.86+c2ac789f9a9fbc98d9bfadb1e280139262a2d375"
+  },
+  {
+    "sha256": "7FA53E8380789F62341245EF532467475B0FA396FDD6D296F2CA705B79CCF0E9",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.WinUI.dll",
+    "name": "Microsoft.WinUI.dll",
+    "version": "3.0.0.0+ac3d7a70b113e6cb21c626bd6c765f4bfd4ae6a6"
+  },
+  {
+    "sha256": "399726E50F9C8D5DA99F63592F61A1400E48EAFD822B0195B8C3E243BA87A1D1",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Security.Cryptography.dll",
+    "name": "System.Security.Cryptography.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "3C1F72556DEFFB9670E27AC0026F0D9BFD0F0AD0DFDD780CB20A7881B413FEEF",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.InteractiveExperiences.Projection.dll",
+    "name": "Microsoft.InteractiveExperiences.Projection.dll",
+    "version": "1.0.0+17919f43311108265dcb8c020865e15ab595a1d0"
+  },
+  {
+    "sha256": "061A585D226C4CA50DFA11A415A9D749A0A67CF9F1298C3FD6FFB55DA33B5ED0",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Windows.AppNotifications.Projection.dll",
+    "name": "Microsoft.Windows.AppNotifications.Projection.dll",
+    "version": "2.6"
+  },
+  {
+    "sha256": "D32ABF0299FF43F3A480910727405BD7E541038B8EA8B95460CC938F89A9DAC1",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Linq.Expressions.dll",
+    "name": "System.Linq.Expressions.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "396FF96A73E1128A2B695CFB8569CEDBA5E99FA8AA0EEA57F76A1AF91C19E32A",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.WinUIKernel.Share.dll",
+    "name": "Richasy.WinUIKernel.Share.dll",
+    "version": "1.0.0+3f1086f6cfa8c1e0c3a64b930a8577dc5496c616"
+  },
+  {
+    "sha256": "000B7031687712C9738EFBDB1CF6B852FEA366282D32EA1AD4EEF8EC8A2542F7",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.Mvvm.dll",
+    "name": "CommunityToolkit.Mvvm.dll",
+    "version": "8.4.2.1+35dfe7b12d"
+  },
+  {
+    "sha256": "935C86F065B432599F3463BA2C97A454DD07ED1FAFFEE6D5B674A3F5C32AF7DF",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\FluentIcons.WinUI.dll",
+    "name": "FluentIcons.WinUI.dll",
+    "version": "2.2.344+874f2da40bef0c36a009ca081a5a6bd58ea077c2"
+  },
+  {
+    "sha256": "D05ABEB239E8EDD4749216C3344436635E94E828E54C06A4D35737B04DF6A632",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\FluentIcons.Common.dll",
+    "name": "FluentIcons.Common.dll",
+    "version": "2.1.344+874f2da40bef0c36a009ca081a5a6bd58ea077c2"
+  },
+  {
+    "sha256": "325E509312DE69EB59B2C655B542E0DD97B34DA0D6DEDBC6BF7386F3E60CC3D8",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Net.Http.dll",
+    "name": "System.Net.Http.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "38BE44AB9E843CC6A3540F27EDE2799B2B67EF9DD60E458A70CDCDCD353E6A7F",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Graphics.Canvas.Interop.dll",
+    "name": "Microsoft.Graphics.Canvas.Interop.dll",
+    "version": "1.4.0+57e06e2c24703526f500035129251d063881a44d"
+  },
+  {
+    "sha256": "4703F9998B9E261B8805369581B8667C0A09410C7C452B5B588CEE618873B2B5",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\BiliCopilot.UI.Models.dll",
+    "name": "BiliCopilot.UI.Models.dll",
+    "version": "1.0.0+be7105b003470782c74fbc8aaac0ea6a23a44a60"
+  },
+  {
+    "sha256": "C78E4ED59F0A1E204917F134EEAD5D6450D8C422E651F8E71CC071BF8CF175AF",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\netstandard.dll",
+    "name": "netstandard.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "E50B6D835F083FB42667D75EA4CDD10C69751EFB054D68A812BD5C2F7F6D1264",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.WinUIKernel.AI.dll",
+    "name": "Richasy.WinUIKernel.AI.dll",
+    "version": "1.0.0+3f1086f6cfa8c1e0c3a64b930a8577dc5496c616"
+  },
+  {
+    "sha256": "17A41A07EE7487D11FBF981B018ADD5A9D74E338A54CC0889C514AA348DEEC21",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.WinUI.Media.dll",
+    "name": "CommunityToolkit.WinUI.Media.dll",
+    "version": "8.2.251219"
+  },
+  {
+    "sha256": "943AC384E855EA755771DB4EE7644C21065BCC93ECF4F1116EAC590AE69E0EEB",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.WinUI.Extensions.dll",
+    "name": "CommunityToolkit.WinUI.Extensions.dll",
+    "version": "8.2.251219"
+  },
+  {
+    "sha256": "336B63FB560642B644C8325E2370D3FF3C501FC2B8B91AC4D7DAC7053BCFB25F",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.WinUI.Animations.dll",
+    "name": "CommunityToolkit.WinUI.Animations.dll",
+    "version": "8.2.251219"
+  },
+  {
+    "sha256": "4F94757F49D26AC84DF24830BF55B43DC7E7DB77873961649E35EF612174FA01",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Abstractions.dll",
+    "name": "Richasy.BiliKernel.Abstractions.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "9C9780C2F7156D3E8C56A045568BE477ABADAF8F6838807F5931BE019AE62439",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Web.WebView2.Core.Projection.dll",
+    "name": "Microsoft.Web.WebView2.Core.Projection.dll",
+    "version": "1.0.4314.35"
+  },
+  {
+    "sha256": "4D842139EF1995296966123A7EBABBA80BD75A9A9C3910C1028C0BB41EC678C0",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Core.dll",
+    "name": "Richasy.AgentKernel.Core.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "7CFBB2691120EF6DDDFB05478F7AB0051E0E483F9F0D6BB87249EC238355213E",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.WinUI.Controls.Primitives.dll",
+    "name": "CommunityToolkit.WinUI.Controls.Primitives.dll",
+    "version": "8.2.251219"
+  },
+  {
+    "sha256": "7E0B03FAE3C2090A58727A53639D20DCF94B30C10D99DB36469BFE6C33FADCA6",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.MpvKernel.Core.dll",
+    "name": "Richasy.MpvKernel.Core.dll",
+    "version": "1.0.0+c1ef0f403097129c3b6db4c466cc4147054471d2"
+  },
+  {
+    "sha256": "FD80E78D625385FB8C12DF2F3386BE8553B245D7C59F97AA8CD86E836D94CC25",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.MpvKernel.dll",
+    "name": "Richasy.MpvKernel.dll",
+    "version": "1.0.0+c1ef0f403097129c3b6db4c466cc4147054471d2"
+  },
+  {
+    "sha256": "D4D66F42B613D50AD6756E10F18600210F5859A1CC74215972E244CC88C9A5D2",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\WinUIEx.dll",
+    "name": "WinUIEx.dll",
+    "version": "2.9.3+72f2975d2a237c0d7ad1113fe617d5894e66feb6"
+  },
+  {
+    "sha256": "5F9BEFC63A787908A95BC216DDF28F97E97CA06CFDCED829EDD70E706F6AC1D1",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\H.NotifyIcon.WinUI.dll",
+    "name": "H.NotifyIcon.WinUI.dll",
+    "version": "2.4.1+bcaaabecf16566dd910a3798fe874014e251b28d"
+  },
+  {
+    "sha256": "0027E443A6121AF8FB616C0200D3C63BF4ABB72E3C548E119FEE1EAE321A8368",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\H.NotifyIcon.dll",
+    "name": "H.NotifyIcon.dll",
+    "version": "2.4.1+bcaaabecf16566dd910a3798fe874014e251b28d"
+  },
+  {
+    "sha256": "7B72DA2ECCA0107CE24AAC941F84359312A208AF3B7569BBB6801FF7F5107C79",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Drawing.Common.dll",
+    "name": "System.Drawing.Common.dll",
+    "version": "10.0.14+0427b9abbead3fa64c6655eb4290c537397131fa"
+  },
+  {
+    "sha256": "EAA2C333B39A372933A704881657407681AFDC6749E64E86D5BF1D73311A524E",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Private.Windows.GdiPlus.dll",
+    "name": "System.Private.Windows.GdiPlus.dll",
+    "version": "10.0.14+0427b9abbead3fa64c6655eb4290c537397131fa"
+  },
+  {
+    "sha256": "C8C765FE176A116D2C2C3F15CD712E0D8977BD9AFC6B5C379F2838075CE2F018",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Private.Windows.Core.dll",
+    "name": "System.Private.Windows.Core.dll",
+    "version": "10.0.14+0427b9abbead3fa64c6655eb4290c537397131fa"
+  },
+  {
+    "sha256": "D94425856D05E19B919E9FFB559F0CD6FC01B34E005EFB3FEAD2EDC5DA9DAA5C",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Drawing.Primitives.dll",
+    "name": "System.Drawing.Primitives.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "FD8478E233DD84A843062128613E357618E51FACA3BB626EF269C89C3CD41059",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.WinUI.Controls.Segmented.dll",
+    "name": "CommunityToolkit.WinUI.Controls.Segmented.dll",
+    "version": "8.2.251219"
+  },
+  {
+    "sha256": "00C8298AD65E959723D8DBFA21D733ADEB33B9DFC262323F0C182E4535A52CCC",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.WinUI.Controls.Sizers.dll",
+    "name": "CommunityToolkit.WinUI.Controls.Sizers.dll",
+    "version": "8.2.251219"
+  },
+  {
+    "sha256": "71345EE6DBF43BA7F195DFC6F478765ADAA496FD5A99C6E0DE1FBED689351940",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.MpvKernel.WinUI.dll",
+    "name": "Richasy.MpvKernel.WinUI.dll",
+    "version": "1.0.0+c1ef0f403097129c3b6db4c466cc4147054471d2"
+  },
+  {
+    "sha256": "FA6047957B0BE28B1F934EEDEF53459BC3DFD2F90D95D395951FC377FCEE5CDA",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.WinUI.Triggers.dll",
+    "name": "CommunityToolkit.WinUI.Triggers.dll",
+    "version": "8.2.250402"
+  },
+  {
+    "sha256": "C6765636A837B5C591C10B55780424E6A543506B8DF2EE05A3480BDD1D87138E",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Definitions.dll",
+    "name": "Richasy.AgentKernel.Definitions.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "F1FADBAA2085036419CB5F2D8888B0EA191FBF227BA113046F5E39F29F0F83D4",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Windows.AppLifecycle.Projection.dll",
+    "name": "Microsoft.Windows.AppLifecycle.Projection.dll",
+    "version": "2.6"
+  },
+  {
+    "sha256": "9B93AAD3B3DBB008D65A11A82138A647650CB0F791F1862EB4DDA556B4AE40E4",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Windows.Storage.Projection.dll",
+    "name": "Microsoft.Windows.Storage.Projection.dll",
+    "version": "2.6"
+  },
+  {
+    "sha256": "2BF0AF6A2A4A7664549C58D23AF5A498D11BBE710066AAE8FF98942B8490BD35",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\RichasyKernel.Abstractions.dll",
+    "name": "RichasyKernel.Abstractions.dll",
+    "version": "0.0.1+c76c4579a520dd98ee7ca5e607c33f377f2bbc3e"
+  },
+  {
+    "sha256": "792A65EEEEF6469994D4001F247AA253EAAD3261DF1A110867E9D2DC4A8DD6D6",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Net.Primitives.dll",
+    "name": "System.Net.Primitives.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "62C6257253F6788265A94F4C76492D157900891087382C1BDA1BAE3828F4C41E",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Diagnostics.Tracing.dll",
+    "name": "System.Diagnostics.Tracing.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "A3F481399515CCA37B4288476A507FEF563D4C4100EAF30DD962BB9B5B2E92A9",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Diagnostics.DiagnosticSource.dll",
+    "name": "System.Diagnostics.DiagnosticSource.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "8ADE54E9E58C25936E0E6549B23BA372C97B53AA4D07CE87DC577CF9D985A436",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Net.Security.dll",
+    "name": "System.Net.Security.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "D63A2574C0940514DBA4A1F62DEC582A2AD8CD136777E143F517C40A3066E1CB",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Core.dll",
+    "name": "Richasy.BiliKernel.Core.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "B2383851FF305F66B60E3D351CE13B8F3623154FF4C8DD3CF48B0315711DE06B",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Resolvers.WinUICookies.dll",
+    "name": "Richasy.BiliKernel.Resolvers.WinUICookies.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "44DC0A9EC394F1A99A9FCA9E74C159CFE12F6735D08EDCC5129CA849BC6E4CF2",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Resolvers.WinUIToken.dll",
+    "name": "Richasy.BiliKernel.Resolvers.WinUIToken.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "36A23863F9C44B782B2055544C79356DD92C6DC21A265C3CE9830FB6C7EE9DFB",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Resolvers.WinUIQRCode.dll",
+    "name": "Richasy.BiliKernel.Resolvers.WinUIQRCode.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "EFDCC1D9257604B3ADA73D548359ABA57BD12106E2E247EBA804F53E655A38DD",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Authorizers.TV.dll",
+    "name": "Richasy.BiliKernel.Authorizers.TV.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "1E2F8AE413E82868BC79CACFDE2F6397BD5390F87F0A9BF3CC96EB7D2800D83F",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Services.User.dll",
+    "name": "Richasy.BiliKernel.Services.User.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "AE778DDB0268061F0B9337A968F13348F6E5D955B533606CD66D0E957430950F",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Services.Comment.dll",
+    "name": "Richasy.BiliKernel.Services.Comment.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "51797293E2BBCE849C8CBAB4B4B0922D8B72425A1CC12FDF451DA9C11CB8A2C5",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Services.Media.dll",
+    "name": "Richasy.BiliKernel.Services.Media.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "AB88C854A9BE4C4139987799F0B492B884A5A0243D47E76D03B3E654248DE5EF",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Services.Article.dll",
+    "name": "Richasy.BiliKernel.Services.Article.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "FF1EC8AB666BC8A780ED0A5E835B40ABC77E88582E08CBD6014CD919742E9D06",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Services.Moment.dll",
+    "name": "Richasy.BiliKernel.Services.Moment.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "3AEE95802395A430A0BACA29CF41FDACF1AB32A4547C94C2FB723CA809233DE5",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Services.Search.dll",
+    "name": "Richasy.BiliKernel.Services.Search.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "ACDA651F62781A6A1E402D9C41C948679666DBEC92EFB40ED5FC021995DAC6BA",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.OpenAI.dll",
+    "name": "Richasy.AgentKernel.Connectors.OpenAI.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "406E5B1A5E0E5782E8B8CF183AD4610FE5606EA2A82F910D4B4C2C1A4CE2C8BD",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Azure.dll",
+    "name": "Richasy.AgentKernel.Connectors.Azure.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "A7E6D239970108DED1015110E3F51F2B442C05A603B829A7B318786B46DA0E86",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.XAI.dll",
+    "name": "Richasy.AgentKernel.Connectors.XAI.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "571A7816233AA143C66FC99242675BFFD4EDB44D09213177D8479BEA3F95FEDB",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.ZhiPu.dll",
+    "name": "Richasy.AgentKernel.Connectors.ZhiPu.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "1E6E6F02F4D528A37E7F33C293DB5BD0C62282D003756DB4F4B0427411F1B3C8",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.LingYi.dll",
+    "name": "Richasy.AgentKernel.Connectors.LingYi.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "0D26DFE4C8F4E090151CD00B5D11EC6D33386D98C454959C180E9C43B46267FF",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Anthropic.dll",
+    "name": "Richasy.AgentKernel.Connectors.Anthropic.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "448C6A00ED420CF39F69D5FF27A393E06C7FD9D9A4410A45633EA5FA3046067D",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Moonshot.dll",
+    "name": "Richasy.AgentKernel.Connectors.Moonshot.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "04C6757A83C77447B91E53653005E1678B960B3701D18D734FE0AA12A26F9F77",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Google.dll",
+    "name": "Richasy.AgentKernel.Connectors.Google.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "40263339C51E74388B68EE52D9B61F10CEEBD259F57AEECD38E8EEF90CDF2816",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.DeepSeek.dll",
+    "name": "Richasy.AgentKernel.Connectors.DeepSeek.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "92171869C2E65FEC70B9AAF3F11679A11CFB0B403158EE69B9E325C7C55A15EC",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Ali.dll",
+    "name": "Richasy.AgentKernel.Connectors.Ali.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "0D079EBB379EB8EC487271403C3CA5064F239BFB9963D77C96996EBE4C264DC7",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Baidu.dll",
+    "name": "Richasy.AgentKernel.Connectors.Baidu.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "38703D8633FA1375CD42B9FFC2EA5AE22493384AC23BAC92CB0666A477B0015B",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Tencent.dll",
+    "name": "Richasy.AgentKernel.Connectors.Tencent.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "1CC7CB273199076571C1F5CC3C4F60B8A4C2CDD79B02F7B87C93F96AB3C76BBB",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.IFlyTek.dll",
+    "name": "Richasy.AgentKernel.Connectors.IFlyTek.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "FD9A5A264EBAC4E3A03685E27FEBCB77080A1E98214066D15F3E4D92B4D7F14C",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Volcano.dll",
+    "name": "Richasy.AgentKernel.Connectors.Volcano.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "AB59F1E4FF3A86CEF8DBB66D50401180467BE22701E46C1623899194CEFB2F48",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.SiliconFlow.dll",
+    "name": "Richasy.AgentKernel.Connectors.SiliconFlow.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "D1ABD5631419CCE3430BAB11BBBA56D261F1C08D02978D6120CD0CC1F9CAFFF1",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.OpenRouter.dll",
+    "name": "Richasy.AgentKernel.Connectors.OpenRouter.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "F38BE8E7CAA60D0939CCEE25CDF698AE901392D463460885BE99880CD56B17B5",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.TogetherAI.dll",
+    "name": "Richasy.AgentKernel.Connectors.TogetherAI.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "22E74B9C0ACA0D170E380B796CFD82E643EE7A1810802C66AF8EF542E276886D",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Groq.dll",
+    "name": "Richasy.AgentKernel.Connectors.Groq.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "AB3EB7E37CED9CD42B717FB3358CE83FB6E1858234895A8AB532B907F50D12E6",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Ollama.dll",
+    "name": "Richasy.AgentKernel.Connectors.Ollama.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "7BB3A7803F933FEF507D3DD6ECAE9EADD18B0739384976CD2D22E764BC684B16",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Mistral.dll",
+    "name": "Richasy.AgentKernel.Connectors.Mistral.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "9C5A4CEC73BE94E780D307670DC5A93ADE96D558AF5EBF493A781F821D23D584",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.AgentKernel.Connectors.Perplexity.dll",
+    "name": "Richasy.AgentKernel.Connectors.Perplexity.dll",
+    "version": "1.0.0+6d0f0af68dcce2d1549bed7d77d6104ce622f763"
+  },
+  {
+    "sha256": "53FEB67ECE2EB1E84B78139ECD365F2E4A97D9D7E39698398F5A13457C3610DC",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.MpvKernel.Player.dll",
+    "name": "Richasy.MpvKernel.Player.dll",
+    "version": "1.0.0+c1ef0f403097129c3b6db4c466cc4147054471d2"
+  },
+  {
+    "sha256": "70CE2DDE26BBC3DB85E2106222089EF4CD59E722AA2925D18F4645C2E6A8ED5C",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\RichasyKernel.Core.dll",
+    "name": "RichasyKernel.Core.dll",
+    "version": "0.0.1+c76c4579a520dd98ee7ca5e607c33f377f2bbc3e"
+  },
+  {
+    "sha256": "D3175BF7CEF0E06CE09EE1A4C33FFF1BAEB106FD4AFD8B866799A0174E11D6B6",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Extensions.Logging.Abstractions.dll",
+    "name": "Microsoft.Extensions.Logging.Abstractions.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "F9CB6AE9D7AF8F0697123FE09B2541F3D262F4D19D77D6789159CB9730E1759F",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+    "name": "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "3EE17790B1BF00EABCA2176288DE6C058977BC5B07E6D9839CF6A88433D72311",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Serilog.dll",
+    "name": "Serilog.dll",
+    "version": "4.4.0-main-497f80f+497f80fda4f9e8f98b9c13ba34b1f0530f8c4449"
+  },
+  {
+    "sha256": "4F4282671C2AC68284B4DC99F7A76EAC9CBD4E659978CEF642CFF9E6C01B676D",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Serilog.Sinks.File.dll",
+    "name": "Serilog.Sinks.File.dll",
+    "version": "7.0.0-main-23c732a+23c732a8658a0df2a5434fe69b0011800b14f0da"
+  },
+  {
+    "sha256": "2C034725ABD90AFE30A1426E6477CB0693BC79170E1DFDB3CEF7146E296A1F71",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Extensions.Logging.dll",
+    "name": "Microsoft.Extensions.Logging.dll",
+    "version": "10.0.0+b0f34d51fccc69fd334253924abd8d6853fad7aa"
+  },
+  {
+    "sha256": "2197F562151B02E04D16407D0890F3DDD22E4DDC39A25D7BA5C2787D1F051408",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Linq.dll",
+    "name": "System.Linq.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "ABD0A3B611E754DED0D2ED26CC3723E2B9321722BA9AAF9136E0EC81F12AED75",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Text.Encoding.Extensions.dll",
+    "name": "System.Text.Encoding.Extensions.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "6EBDCA7AE2B7953C8E23C4CEF8DB8914BA447D93B9C9CA22DA7D4D79E842C7C7",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Extensions.Options.dll",
+    "name": "Microsoft.Extensions.Options.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "80D3EDBE3E3AC0B4C5BC764474220E7DA11DF8D285E0098F3DC1B65A734C8507",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Serilog.Extensions.Logging.dll",
+    "name": "Serilog.Extensions.Logging.dll",
+    "version": "10.0.0-main-538cf2f+538cf2fd64baf760950e202a00dd426c6b76e18c"
+  },
+  {
+    "sha256": "6DB462A8F8811057A518B8C504D944B6A65B48F8478AD2E26C038F471E3D5912",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Text.Json.dll",
+    "name": "System.Text.Json.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "0F93CE18692E0B789C41299D0D2AF2B477644FC4B13482BD0680B29289603996",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Google.Protobuf.dll",
+    "name": "Google.Protobuf.dll",
+    "version": "3.36.2+2c74169b34066ceb8ddb6b882fcb3fb32d737a55"
+  },
+  {
+    "sha256": "D64A0A8C18814429E77123C6262C5D85F066D6343B5933388B6FD8EB34E9A355",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Net.WebSockets.Client.dll",
+    "name": "System.Net.WebSockets.Client.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "AC3871AB06D1FA31B94F7BF20468DE74B5D1A08C937182BC308CD2C2A0B456AE",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Extensions.AI.Abstractions.dll",
+    "name": "Microsoft.Extensions.AI.Abstractions.dll",
+    "version": "9.9.1+54f611c53feaaecb28108edd16725b7577c8a9aa"
+  },
+  {
+    "sha256": "D646A5CCA5E8116AE46B43715297083FA8A38DB636EAB60E66EEEF350D74CD5D",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Extensions.DependencyInjection.dll",
+    "name": "Microsoft.Extensions.DependencyInjection.dll",
+    "version": "10.0.0+b0f34d51fccc69fd334253924abd8d6853fad7aa"
+  },
+  {
+    "sha256": "77676E0D66B3E72094E9E273C3BA8867EC1C2D5AF7AA476AA1213BFD2790A881",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Diagnostics.Process.dll",
+    "name": "System.Diagnostics.Process.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "18D8C16840B13C25532BAB3A37F24B705E6538AEC8FDC8F82C9860642F44448C",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.ComponentModel.Primitives.dll",
+    "name": "System.ComponentModel.Primitives.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "C46AB22C450D76591EBC0E308F67D3F65C667BF610660287A3B1DA294BC1A72D",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Win32.Primitives.dll",
+    "name": "Microsoft.Win32.Primitives.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "B192BEFF30DC3F07F75D9DCE45F204700B3EF0AB18B3356DF6B4FD9A0B124774",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\BiliCopilot.Visor.Models.dll",
+    "name": "BiliCopilot.Visor.Models.dll",
+    "version": "1.0.0+be7105b003470782c74fbc8aaac0ea6a23a44a60"
+  },
+  {
+    "sha256": "28392DCE9DDDC9761DD76640FF74D58F55890182B3EAA9796B92A86CF016DEC6",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Win32.Registry.dll",
+    "name": "Microsoft.Win32.Registry.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "84CF8547C184559561BD5C02DA182BCD6A62DE4A99539EB5086C7BF81D53929A",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.IO.Pipes.dll",
+    "name": "System.IO.Pipes.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "F993975034754F02204ED076AE504E54D2956F993B5732EB1B916485C0D8DE2F",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Threading.Overlapped.dll",
+    "name": "System.Threading.Overlapped.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "FD5CCF29AE4C8F81AF0DF9394F18CA2876594CF79019F7D3630148C03BBB9915",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Security.AccessControl.dll",
+    "name": "System.Security.AccessControl.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "58C62F9D846AB820873D2D7B334A150A096B492859926B543DFA69D25B37772F",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Security.Principal.Windows.dll",
+    "name": "System.Security.Principal.Windows.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "2B9F16CB67953D2F9664B356650A558BD5E37FB3FCEB49E0FBCF9C481BA32A69",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Text.Encodings.Web.dll",
+    "name": "System.Text.Encodings.Web.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "7F82C6A4BB9335A4BB996066CFDA5C3D3F1EF30B0BF027F3AB02400FD1724F03",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Reflection.Emit.dll",
+    "name": "System.Reflection.Emit.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "038610CEE38AFE857FF37CDAAF2C902756D3DC11A47E52F3841CD794F4E412D2",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Windows.ApplicationModel.Resources.Projection.dll",
+    "name": "Microsoft.Windows.ApplicationModel.Resources.Projection.dll",
+    "version": "2.6"
+  },
+  {
+    "sha256": "E00E76C930111923AC39029451096126126D4E167FE9D8DF018EB2C49C9C477B",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Collections.Immutable.dll",
+    "name": "System.Collections.Immutable.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "84A504B0FF5A9C9798B7073A9F8291358A0E38FD428F38E8FB1210F8FB15076C",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.IO.Pipelines.dll",
+    "name": "System.IO.Pipelines.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "2B551A47E25323AA1D0BB65F318D770996AC461C25E305D86CFD7D5BBA6FC931",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\CommunityToolkit.Diagnostics.dll",
+    "name": "CommunityToolkit.Diagnostics.dll",
+    "version": "8.4.0.1+638b41dad3"
+  },
+  {
+    "sha256": "1233AB4CCF3AFE3D8ECE36837D372D681548088C9291CD8F502B308131BFC222",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Threading.ThreadPool.dll",
+    "name": "System.Threading.ThreadPool.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "D3ECA878DF948E946FD5300C12A3832DE17B36D719E9F8F21CDE0FEA4DAD43DA",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Net.Sockets.dll",
+    "name": "System.Net.Sockets.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "3B6029063AC2D599B1AF40BF8F16E3069AC346FB095DE7CB2FCAC09FB44A93F2",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Net.NameResolution.dll",
+    "name": "System.Net.NameResolution.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "63E30E86B553F5861F68EF0634E3A86D2626C4A11CC1324FD004C179482ED219",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Runtime.Intrinsics.dll",
+    "name": "System.Runtime.Intrinsics.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "B69269C6C71DBD77BA2B71FB10BAD38876959328633AA721383C594BCA4FEA4D",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Collections.NonGeneric.dll",
+    "name": "System.Collections.NonGeneric.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "DE7F611B9DFEC167246505358FB7A89273C0A0E884978F64F2C367CCE56FCDD3",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Security.Claims.dll",
+    "name": "System.Security.Claims.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "013A84BB91BE609D5DE8307445AD2E6C66A6F5815CF4EBF611D477606CDEE7DE",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\ComputeSharp.D2D1.WinUI.dll",
+    "name": "ComputeSharp.D2D1.WinUI.dll",
+    "version": "3.2.0+9a7c9e0c755bf68447f7293e5729547750fe6be3"
+  },
+  {
+    "sha256": "DB92EE35E344E2D1F67849BB4CD8DEB483F14D3D127BABA8606A88735406CCEB",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Graphics.Canvas.dll",
+    "name": "Microsoft.Graphics.Canvas.dll",
+    "version": "1.4.0 (57e06e2c24703526f500035129251d063881a44d)"
+  },
+  {
+    "sha256": "680F28E1AF737F614409B29A08EB2EDDC887B13DE588A7CD615079DA89E27A34",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Microsoft.Windows.AppNotifications.Builder.Projection.dll",
+    "name": "Microsoft.Windows.AppNotifications.Builder.Projection.dll",
+    "version": "2.6"
+  },
+  {
+    "sha256": "6C2C4D0F3C74C91A76A2CFA4D2778F53631C3038F051C17EE14960073AFCFACA",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Richasy.BiliKernel.Grpc.dll",
+    "name": "Richasy.BiliKernel.Grpc.dll",
+    "version": "1.0.0+0ae5e4e000a41a07f6696746706df11c06e8835b"
+  },
+  {
+    "sha256": "1624EC73DF065C14760B29F14DE0B11ECED282B1268CC5E89FDBCEC37B24B358",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Net.NetworkInformation.dll",
+    "name": "System.Net.NetworkInformation.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "D5E5622DBB7B5767EBCC7DB8C4463DFBCC4DC62E268B9964623F8B40436BF380",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Web.HttpUtility.dll",
+    "name": "System.Web.HttpUtility.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "CEC1CA37BA306D2D34589E62BC589BE9802F9F2E075EA854161B95AFBDE6A808",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Collections.Specialized.dll",
+    "name": "System.Collections.Specialized.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "F9D9840381FCBA72E1A1B4E32BD8CD96A1DCB78852668663293FD18A9B194F7E",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\ComputeSharp.D2D1.dll",
+    "name": "ComputeSharp.D2D1.dll",
+    "version": "3.2.0+9a7c9e0c755bf68447f7293e5729547750fe6be3"
+  },
+  {
+    "sha256": "4678A441386FC3D58A32756CA456DB9A526AD672967D885A209523132273FD25",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\ComputeSharp.Core.dll",
+    "name": "ComputeSharp.Core.dll",
+    "version": "3.2.0+9a7c9e0c755bf68447f7293e5729547750fe6be3"
+  },
+  {
+    "sha256": "2769ED8265B691A5482C72506ED274DC52446FA1641997A8C12C66F5B9263D39",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\Humanizer.dll",
+    "name": "Humanizer.dll",
+    "version": "3.0.10+90f0cb1d74"
+  },
+  {
+    "sha256": "1E181E2B9CA93C8E8C1AA6EE0CC589F4B0E13ECAD3B2A6637A9367F120F57E8D",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\zh-Hans\\Humanizer.resources.dll",
+    "name": "Humanizer.resources.dll",
+    "version": "3.0.10+90f0cb1d74"
+  },
+  {
+    "sha256": "7B59C16F6F0104CB515FC684B384E74CF91795FF7736A2F9FB4E4DC7D6B37701",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Reflection.Emit.Lightweight.dll",
+    "name": "System.Reflection.Emit.Lightweight.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "F2F763595C136DEDB758EE4B749BB021A6C896E66F2A639CA08D0AC2F5BB1E80",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Reflection.Emit.ILGeneration.dll",
+    "name": "System.Reflection.Emit.ILGeneration.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  },
+  {
+    "sha256": "4A78CD4712B0A52FE568980F6EBD94AAD31E6B0E35CA165A09E33B4331629776",
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout-v2\\System.Reflection.Primitives.dll",
+    "name": "System.Reflection.Primitives.dll",
+    "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70"
+  }
+]

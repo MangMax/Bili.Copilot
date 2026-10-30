@@ -1,0 +1,26 @@
+[
+  {
+    "type": "Text",
+    "automationId": null,
+    "selector": "lbl-000026-4276",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 498,
+    "y": 1702,
+    "width": 67,
+    "height": 24,
+    "safeName": "00:00:26"
+  },
+  {
+    "type": "Text",
+    "automationId": null,
+    "selector": "lbl-001755-4277",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 2928,
+    "y": 1702,
+    "width": 67,
+    "height": 24,
+    "safeName": "00:17:55"
+  }
+]
