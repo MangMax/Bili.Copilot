@@ -1,0 +1,52 @@
+[
+  {
+    "name": "PopularExactSequenceReferencesCursorUndo",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularEmptyRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularFailedRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularOldReturnAfterSectionSwitch",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionExactSequenceReferencesCursorUndo",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionEmptyRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionFailedRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionOldReturnAfterSectionSwitch",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularOldAutomaticPageArrivesDuringRefresh",
+    "status": "FAIL",
+    "detail": "System.InvalidOperationException: late old auto publication\r\n   at BiliCopilot.UI.ControlledRefresh.Require(Boolean value, String reason) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 98\r\n   at BiliCopilot.UI.ControlledRefresh.\u003C\u003Ec.\u003C\u003CRun\u003Eb__32_0\u003Ed.MoveNext() in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 194\r\n--- End of stack trace from previous location ---\r\n   at BiliCopilot.UI.ControlledRefresh.Case(String name, Func\u00601 test) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 152"
+  },
+  {
+    "name": "EmptyAutomaticPageStopsAndManualLoadRecovers",
+    "status": "PASS"
+  },
+  {
+    "name": "FailedAutomaticPageStopsAndManualLoadRecovers",
+    "status": "PASS"
+  },
+  {
+    "name": "VisibleRefreshUndoThenAutomaticAppend",
+    "status": "FAIL",
+    "detail": "System.TimeoutException: visible refresh finish\r\n   at BiliCopilot.UI.ControlledRefresh.Until(Func\u00601 predicate, String reason) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 97\r\n   at BiliCopilot.UI.ControlledRefresh.\u003C\u003Ec.\u003C\u003CRun\u003Eb__32_1\u003Ed.MoveNext() in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 210\r\n--- End of stack trace from previous location ---\r\n   at BiliCopilot.UI.ControlledRefresh.Case(String name, Func\u00601 test) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 152"
+  }
+]

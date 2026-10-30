@@ -1,0 +1,51 @@
+[
+  {
+    "name": "PopularExactSequenceReferencesCursorUndo",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularEmptyRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularFailedRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularOldReturnAfterSectionSwitch",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionExactSequenceReferencesCursorUndo",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionEmptyRefreshPreservesSnapshotAndManualRecovery",
+    "status": "FAIL",
+    "detail": "System.TimeoutException: service request 2\r\n   at BiliCopilot.UI.ControlledRefresh.Until(Func\u00601 predicate, String reason) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 97\r\n   at BiliCopilot.UI.ControlledRefresh.Next(Int32 index) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 99\r\n   at BiliCopilot.UI.ControlledRefresh.Refresh(Boolean partition, String[] ids, Int64 cursor, Boolean fail) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 142\r\n   at BiliCopilot.UI.ControlledRefresh.\u003C\u003Ec__DisplayClass32_2.\u003C\u003CRun\u003Eb__11\u003Ed.MoveNext() in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 176\r\n--- End of stack trace from previous location ---\r\n   at BiliCopilot.UI.ControlledRefresh.Case(String name, Func\u00601 test) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\fixture\\ControlledRefresh.cs:line 153"
+  },
+  {
+    "name": "PartitionFailedRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionOldReturnAfterSectionSwitch",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularOldAutomaticPageArrivesDuringRefresh",
+    "status": "PASS"
+  },
+  {
+    "name": "EmptyAutomaticPageStopsAndManualLoadRecovers",
+    "status": "PASS"
+  },
+  {
+    "name": "FailedAutomaticPageStopsAndManualLoadRecovers",
+    "status": "PASS"
+  },
+  {
+    "name": "VisibleRefreshUndoThenAutomaticAppend",
+    "status": "PASS"
+  }
+]
