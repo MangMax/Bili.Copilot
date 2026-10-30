@@ -1,0 +1,6 @@
+diff --git a/C:/Users/hp/AppData/Local/Temp/gc47-d0e5-current-e/source/src/Desktop/BiliCopilot.UI/Controls/Markdown/MarkdownTextBlock.xaml.cs b/C:/Users/hp/AppData/Local/Temp/gc47-d0e5-historical-e/source/src/Desktop/BiliCopilot.UI/Controls/Markdown/MarkdownTextBlock.xaml.cs
+index 5981107..289775c 100644
+--- a/C:/Users/hp/AppData/Local/Temp/gc47-d0e5-current-e/source/src/Desktop/BiliCopilot.UI/Controls/Markdown/MarkdownTextBlock.xaml.cs
++++ b/C:/Users/hp/AppData/Local/Temp/gc47-d0e5-historical-e/source/src/Desktop/BiliCopilot.UI/Controls/Markdown/MarkdownTextBlock.xaml.cs
+@@ -131,0 +132 @@ public partial class MarkdownTextBlock : Control
++        GC.Collect();
