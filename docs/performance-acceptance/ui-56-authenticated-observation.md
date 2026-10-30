@@ -4,7 +4,7 @@
 
 ## 来源与安全边界
 
-开始 HEAD 和本地父 feat/performance-45 均为 `c49f738bdea215c5584ddebefbdc017d34d7b0bc`，工作区 clean。kernel 为 `2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d`。已读 AGENTS、docs/agents、#56（gh）和任务列出的六份交接文档；按用户指令自行工作，未启动子代理。
+开始 HEAD 和本地父 feat/performance-45 均为 `c49f738bdea215c5584ddebefbdc017d34d7b0bc`，工作区 clean。kernel 为 `2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d`。已读 AGENTS、docs/agents、#56（gh）和任务列出的六份交接文档；按父级任务约束自行工作，未启动子代理。
 
 应用 winui-ui-testing（local/owned HWND、UIA过滤、截图核对、yield）、winui-dev-workflow（核验既有 packaged Debug x64/JIT 产物）、winui-code-review（分页、缓存、虚拟化及证据边界），提交前使用 verification-before-completion。为诊断辅助代码读取 code-testing/run-tests；未修改正式测试或运行 .NET test。只构建 docs 下的小观察器，不重跑403或完整应用build；**未运行 WinUIAnalyzer**，普通诊断工具编译不等于该分析器。
 
@@ -77,3 +77,5 @@ PR #27 未合入，本轮不验撤销/快照/diff峰值。真实50页、完整VM
 14:52:23 持有已验证的owned进程句柄调用CloseMainWindow，退出码0；owned进程0，三个观察器均已退出。`winapp ui yield --on local --json`退出0，**released:false**（当时无可释放租约），不改写为true。此后无桌面输入。见 [cleanup](evidence-56-authenticated/cleanup.json)。包仍注册到指定新layout，旧layout保留；后续仍需按AUMID激活并重新发现PID/HWND，不复用本报告句柄。
 
 生产src/tests/externals与固定kernel未变。提交前复算53行、十轮30点、来源hash、新旧layout和PowerShell/Python语法，检查新增文档链接、敏感输出与diff whitespace；具体见 [verification](evidence-56-authenticated/verification.json)。仅docs实验，没有重跑403或完整应用build。最后同步本地父分支并报告最终提交SHA/clean状态，避免自引用。
+
+父工作区的后续独立只读复算、来源核验与未验边界见 [集成复核](integration-ui-56-authenticated.md)。原视觉、登录与清理记录不升级为合并阶段的新运行验证。
