@@ -16,8 +16,8 @@ public sealed partial class PopularPageViewModel
 {
     private async Task RefreshRecommendVideosAsync()
     {
-        // 推荐刷新用左下角浮层表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
-        if (IsVideoLoading || _isRecommendRefreshing)
+        // 推荐刷新在头部按钮旁表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
+        if (IsVideoLoading || IsRecommendRefreshing)
         {
             return;
         }
@@ -36,10 +36,10 @@ public sealed partial class PopularPageViewModel
         // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
         var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
 
-        RefreshTipState = Toolkits.RefreshTipState.Refreshing(
-            ResourceToolkit.GetLocalizedString(StringNames.RefreshingRecommendVideos));
+        // 新一次刷新会替换旧快照，撤销入口先收起，成功后重新出现。
+        CanUndoRefresh = false;
 
-        _isRecommendRefreshing = true;
+        IsRecommendRefreshing = true;
         try
         {
             var (videos, nextOffset) = await FetchRecommendBatchAsync(isIncremental ? RecommendRefreshBatchCount : 1, generation);
@@ -51,7 +51,7 @@ public sealed partial class PopularPageViewModel
 
             if (videos.Count == 0)
             {
-                RefreshTipState = Toolkits.RefreshTipState.Failed;
+                CanUndoRefresh = _recommendRefreshSnapshot is not null;
                 return;
             }
 
@@ -67,22 +67,21 @@ public sealed partial class PopularPageViewModel
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
             RecommendationListChanged?.Invoke(this, EventArgs.Empty);
 
-            RefreshTipState = Toolkits.RefreshTipState.Completed;
-
             _recommendRefreshSnapshot = snapshot;
+            CanUndoRefresh = true;
             _recommendOffset = nextOffset;
             _videoCache.Remove(SelectedSection);
             if (Videos.Count > previousCount) VideoListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            // 失败时列表与快照都保持原样，浮层收起，不展示「已刷新」。
-            if (generation == _refreshGeneration) RefreshTipState = Toolkits.RefreshTipState.Failed;
+            // A stale refresh must not publish into the current section.
+            if (generation == _refreshGeneration) CanUndoRefresh = _recommendRefreshSnapshot is not null;
             _logger.LogError(ex, "尝试刷新推荐视频时出错.");
         }
         finally
         {
-            if (generation == _refreshGeneration) _isRecommendRefreshing = false;
+            if (generation == _refreshGeneration) IsRecommendRefreshing = false;
         }
     }
 

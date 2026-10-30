@@ -369,7 +369,7 @@ public sealed class PopularPageLoadingTests
         Assert.Equal("Hot", Assert.Single(page.Videos).Data.BvId);
         pending.SetException(new IOException("late"));
         await refresh;
-        Assert.Equal(RefreshTipStatus.Hidden, page.RefreshTipState.Status);
+        Assert.False(page.CanUndoRefresh);
     }
 
     private sealed class DiscoveryService : IVideoDiscoveryService
