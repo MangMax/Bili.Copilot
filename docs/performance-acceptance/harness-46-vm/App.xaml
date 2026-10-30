@@ -1,0 +1,7 @@
+<Application x:Class="Acceptance46.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:c="using:Richasy.WinUIKernel.Share.Converters">
+<Application.Resources><ResourceDictionary><ResourceDictionary.MergedDictionaries>
+<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/><ResourceDictionary Source="Themes/Generic.xaml"/><ResourceDictionary Source="Styles.xaml"/>
+</ResourceDictionary.MergedDictionaries>
+<c:BoolToVisibilityConverter x:Key="BoolToVisibilityReverseConverter" IsReverse="True"/>
+<c:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/><c:ObjectToBoolConverter x:Key="ObjectToBoolConverter"/><c:ObjectToBoolConverter x:Key="ObjectToBoolReverseConverter" IsReverse="True"/>
+</ResourceDictionary></Application.Resources></Application>
