@@ -27,7 +27,13 @@ public sealed partial class Pinner : PinnerBase
         => ViewModel.InitializeCommand.Execute(default);
 
     protected override void OnControlUnloaded()
-        => Repeater.ItemsSource = null;
+    {
+        // x:Load leaves this field null when the flyout was never opened.
+        if (Repeater is not null)
+        {
+            Repeater.ItemsSource = null;
+        }
+    }
 
     private async void OnItemClick(object sender, RoutedEventArgs e)
     {
