@@ -13,55 +13,41 @@ namespace BiliCopilot.UI.Controls.VideoPartition;
 /// </summary>
 public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailControlBase
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPartitionMainHeader"/> class.
-    /// </summary>
-    public VideoPartitionMainHeader() => InitializeComponent();
+    private VideoPartitionDetailViewModel? _subscribedViewModel;
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    public VideoPartitionMainHeader()
     {
-        Selector.SelectionChanged += OnSelectorChanged;
-        if (ViewModel is null)
-        {
-            return;
-        }
-
-        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-        InitializeChildPartitions();
-        ApplyUndoRefreshVisibility(animate: false);
+        InitializeComponent();
+        Loaded += (_, _) => Attach();
+        Unloaded += (_, _) => Detach();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-    {
-        if (ViewModel is not null)
-        {
-            ViewModel.Initialized -= OnViewModelInitialized;
-            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-        }
-
-        Selector.SelectionChanged -= OnSelectorChanged;
-    }
-
-    /// <inheritdoc/>
     protected override void OnViewModelChanged(VideoPartitionDetailViewModel? oldValue, VideoPartitionDetailViewModel? newValue)
     {
-        if (oldValue is not null)
-        {
-            oldValue.Initialized -= OnViewModelInitialized;
-            oldValue.PropertyChanged -= OnViewModelPropertyChanged;
-        }
+        Detach();
+        if (IsLoaded) Attach();
+    }
 
-        if (newValue is null)
-        {
-            return;
-        }
-
-        newValue.Initialized += OnViewModelInitialized;
-        newValue.PropertyChanged += OnViewModelPropertyChanged;
+    private void Attach()
+    {
+        Detach();
+        _subscribedViewModel = ViewModel;
+        Selector.SelectionChanged += OnSelectorChanged;
+        if (_subscribedViewModel is null) return;
+        _subscribedViewModel.Initialized += OnViewModelInitialized;
+        _subscribedViewModel.PropertyChanged += OnViewModelPropertyChanged;
         InitializeChildPartitions();
         ApplyUndoRefreshVisibility(animate: false);
+    }
+
+    private void Detach()
+    {
+        if (Selector is not null) Selector.SelectionChanged -= OnSelectorChanged;
+        if (_subscribedViewModel is null) return;
+        _subscribedViewModel.Initialized -= OnViewModelInitialized;
+        _subscribedViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        _subscribedViewModel = null;
+        UndoRefreshButtonAnimator.Apply(UndoRefreshButton, UndoRefreshButton.Visibility == Visibility.Visible, false);
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

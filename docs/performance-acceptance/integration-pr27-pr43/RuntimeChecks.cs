@@ -55,7 +55,7 @@ public partial class App
             await page.ChangeChildPartitionCommand.ExecuteAsync(page.Children[1]);
             Require(page.Videos.Single().Data.BvId=="child","Pending old refresh blocked child");
             held.SetException(new IOException("late"));await refresh;
-            Require(page.RefreshTipState.Status==RefreshTipStatus.Hidden,"Old failure published into child");
+            Require(!page.CanUndoRefresh,"Old failure published into child");
         });
         await Check("RealControlsRefreshUndoAndRemount", async () => {
             New("Long");
@@ -82,6 +82,36 @@ public partial class App
             Snapshot("incremental-undone-remounted");
             SettingsToolkit.Incremental=false;
         });
+        await Check("PopularHeaderUndoSurvivesRemount", async () => {
+            New("Long"); await Task.Delay(800);
+            var header = new BiliCopilot.UI.Controls.Popular.PopularMainHeader();
+            slot.Children.Add(header); await Task.Delay(200);
+            var undo=(Button)header.FindName("UndoRefreshButton");
+            vm.CanUndoRefresh=true; await Task.Delay(250);
+            Require(undo.Visibility==Visibility.Visible,"Initial undo is hidden");
+            slot.Children.Remove(header); await Task.Delay(150);
+            vm.CanUndoRefresh=false;
+            slot.Children.Add(header); await Task.Delay(250);
+            Require(undo.Visibility==Visibility.Collapsed,"Remount did not read current undo state");
+            vm.CanUndoRefresh=true; await Task.Delay(250);
+            Require(undo.Visibility==Visibility.Visible,"Remounted header lost subscription");
+            slot.Children.Remove(header);
+        });
+        await Check("PartitionHeaderUndoSurvivesRemount", async () => {
+            var (page,f)=PartitionPage(); await page.InitializeCommand.ExecuteAsync(null);
+            var header=new BiliCopilot.UI.Controls.VideoPartition.VideoPartitionMainHeader {ViewModel=page};
+            slot.Children.Add(header); await Task.Delay(200);
+            var undo=(Button)header.FindName("UndoRefreshButton");
+            page.CanUndoRefresh=true; await Task.Delay(250);
+            Require(undo.Visibility==Visibility.Visible,"Initial partition undo is hidden");
+            slot.Children.Remove(header); await Task.Delay(150); page.CanUndoRefresh=false; await Task.Delay(250);
+            Require(undo.Visibility==Visibility.Visible,"Detached partition header still responds to old VM");
+            slot.Children.Add(header); await Task.Delay(250);
+            Require(undo.Visibility==Visibility.Collapsed,"Partition remount retained stale undo");
+            page.CanUndoRefresh=true; await Task.Delay(250);
+            Require(undo.Visibility==Visibility.Visible,"Partition header lost subscription");
+            slot.Children.Remove(header);
+        });
         var path=Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path,"integration-results.json");
         File.WriteAllText(path,JsonSerializer.Serialize(results,new JsonSerializerOptions{WriteIndented=true}));
         status.Text="Integration checks finished: "+path;
@@ -97,3 +127,4 @@ public class PartitionFixture:DispatchProxy
         _ => throw new NotSupportedException(method.Name)
     };
 }
+
