@@ -8,6 +8,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "2.0.15",
     "selected": "2.0.15",
     "latestStable": "2.0.15",
     "latestAvailable": "2.0.15",
@@ -22,6 +24,8 @@
     "old": "0.1.230830",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "0.1.230830",
     "latestStable": "0.1.230830",
     "latestAvailable": "0.1.230830",
@@ -36,6 +40,8 @@
     "old": "0.1.240801-build.1708",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "0.1.240801-build.1708",
     "latestStable": null,
     "latestAvailable": "0.1.250828-build.13",
@@ -52,6 +58,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "8.4.0",
     "selected": "8.4.2",
     "latestStable": "8.4.2",
     "latestAvailable": "8.4.2",
@@ -68,6 +76,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "8.2.250402",
     "selected": "8.2.251219",
     "latestStable": "8.2.251219",
     "latestAvailable": "8.3.260402-preview2",
@@ -84,6 +94,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "8.2.250402",
     "selected": "8.2.251219",
     "latestStable": "8.2.251219",
     "latestAvailable": "8.3.260402-preview2",
@@ -100,6 +112,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "8.2.250402",
     "selected": "8.2.251219",
     "latestStable": "8.2.251219",
     "latestAvailable": "8.3.260402-preview2",
@@ -114,6 +128,8 @@
     "old": "8.1.240916",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "8.1.240916",
     "latestStable": "8.2.251219",
     "latestAvailable": "8.3.260402-preview2",
@@ -130,6 +146,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "8.2.250402",
     "selected": "8.2.251219",
     "latestStable": "8.2.251219",
     "latestAvailable": "8.3.260402-preview2",
@@ -146,6 +164,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "8.2.250402",
     "selected": "8.2.251219",
     "latestStable": "8.2.251219",
     "latestAvailable": "8.3.260402-preview2",
@@ -162,6 +182,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "8.2.250402",
     "selected": "8.2.251219",
     "latestStable": "8.2.251219",
     "latestAvailable": "8.3.260402-preview2",
@@ -178,6 +200,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "3.2.0",
     "selected": "3.2.0",
     "latestStable": "3.2.0",
     "latestAvailable": "3.2.0",
@@ -194,6 +218,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.1-preview6",
     "selected": "0.0.1-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.1-preview6",
@@ -210,6 +236,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.1-preview6",
     "selected": "0.0.1-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.1-preview6",
@@ -226,6 +254,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.1-preview6",
     "selected": "0.0.1-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.1-preview6",
@@ -242,6 +272,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "1.2.315",
     "selected": "2.2.344",
     "latestStable": "2.2.344",
     "latestAvailable": "2.2.344",
@@ -256,6 +288,8 @@
     "old": "4.0.2",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "4.0.2",
     "latestStable": "4.0.2",
     "latestAvailable": "4.0.2",
@@ -270,6 +304,8 @@
     "old": "3.27.2",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "3.29.3",
     "selected": "3.27.2",
     "latestStable": "3.36.2",
     "latestAvailable": "4.0.0-rc2",
@@ -284,6 +320,8 @@
     "old": "2.63.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "2.67.0",
     "selected": "2.63.0",
     "latestStable": "2.85.0",
     "latestAvailable": "2.85.0",
@@ -298,6 +336,8 @@
     "old": "2.64.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "2.64.0",
     "latestStable": "2.85.0",
     "latestAvailable": "2.85.0",
@@ -314,6 +354,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "2.3.2",
     "selected": "2.3.2",
     "latestStable": "2.4.1",
     "latestAvailable": "2.5.0-dev.2",
@@ -330,6 +372,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "1.12.4",
     "selected": "1.13.1",
     "latestStable": "1.13.1",
     "latestAvailable": "1.13.1",
@@ -344,6 +388,8 @@
     "old": "2.14.1",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "2.14.1",
     "selected": "2.14.1",
     "latestStable": "3.0.10",
     "latestAvailable": "3.0.10",
@@ -360,6 +406,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.44.0",
     "selected": "1.5.1",
     "latestStable": "1.5.1",
     "latestAvailable": "1.5.1",
@@ -374,6 +422,8 @@
     "old": "6.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "6.0.0",
     "selected": "6.0.0",
     "latestStable": "6.0.0",
     "latestAvailable": "6.0.0",
@@ -388,6 +438,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "9.0.2",
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -402,6 +454,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -418,6 +472,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI.ResourceGenerator\\BiliCopilot.UI.ResourceGenerator.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": null,
     "selected": "5.9.0",
     "latestStable": "5.9.0",
     "latestAvailable": "5.9.0",
@@ -434,6 +490,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI.ResourceGenerator\\BiliCopilot.UI.ResourceGenerator.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": null,
     "selected": "5.9.0",
     "latestStable": "5.9.0",
     "latestAvailable": "5.9.0",
@@ -448,6 +506,8 @@
     "old": "4.3.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "4.3.0",
     "latestStable": "5.9.0",
     "latestAvailable": "5.9.0",
@@ -462,6 +522,8 @@
     "old": "4.4.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "4.4.0",
     "latestStable": "5.9.0",
     "latestAvailable": "5.9.0",
@@ -476,6 +538,8 @@
     "old": "3.3.4",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "3.3.4",
     "latestStable": "5.6.0",
     "latestAvailable": "5.6.0",
@@ -492,6 +556,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "1.0.3595.46",
     "selected": "1.0.4314.35",
     "latestStable": "1.0.4314.35",
     "latestAvailable": "1.0.4314.35",
@@ -508,6 +574,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.3.257",
     "selected": "0.3.367",
     "latestStable": "0.3.367",
     "latestAvailable": "0.3.367",
@@ -524,6 +592,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "2.3.0-prerelease.251015.2",
     "selected": "2.3.1",
     "latestStable": "2.3.1",
     "latestAvailable": "3.0.0-preview.260319.2",
@@ -538,6 +608,8 @@
     "old": "5.3.15",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "5.3.15",
     "latestStable": "6.2.2",
     "latestAvailable": "6.2.2",
@@ -554,6 +626,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -570,6 +644,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -586,6 +662,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -602,6 +680,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -618,6 +698,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -634,6 +716,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -650,6 +734,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -666,6 +752,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -682,6 +770,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -698,6 +788,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -714,6 +806,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -730,6 +824,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -746,6 +842,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -762,6 +860,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -778,6 +878,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -794,6 +896,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -810,6 +914,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -826,6 +932,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -842,6 +950,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -858,6 +968,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -874,6 +986,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -890,6 +1004,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -906,6 +1022,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.8-preview5",
     "selected": "0.0.8-preview6",
     "latestStable": null,
     "latestAvailable": "0.0.8-preview6",
@@ -922,6 +1040,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.2-preview2",
     "selected": "0.0.2-preview2",
     "latestStable": null,
     "latestAvailable": "0.0.2-preview2",
@@ -938,6 +1058,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.2-preview2",
     "selected": "0.0.2-preview2",
     "latestStable": null,
     "latestAvailable": "0.0.2-preview2",
@@ -954,6 +1076,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.2-preview2",
     "selected": "0.0.2-preview2",
     "latestStable": null,
     "latestAvailable": "0.0.2-preview2",
@@ -970,6 +1094,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.2-preview2",
     "selected": "0.0.2-preview2",
     "latestStable": null,
     "latestAvailable": "0.0.2-preview2",
@@ -986,6 +1112,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.12-preview3",
     "selected": "0.0.12-preview4",
     "latestStable": null,
     "latestAvailable": "0.0.12-preview4",
@@ -1002,6 +1130,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.1",
     "selected": "0.0.1",
     "latestStable": "0.0.1",
     "latestAvailable": "0.0.1",
@@ -1018,6 +1148,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "2.0.1",
     "selected": "2.1.0",
     "latestStable": "2.1.0",
     "latestAvailable": "2.1.0",
@@ -1034,6 +1166,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "4.3.1-dev-02385",
     "selected": "4.4.0",
     "latestStable": "4.4.0",
     "latestAvailable": "4.4.1-dev-02453",
@@ -1050,6 +1184,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "9.0.3-dev-02320",
     "selected": "10.0.0",
     "latestStable": "10.0.0",
     "latestAvailable": "10.0.0",
@@ -1066,6 +1202,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "7.0.0",
     "selected": "7.0.0",
     "latestStable": "7.0.0",
     "latestAvailable": "8.0.0-nblumhardt-02322",
@@ -1080,6 +1218,8 @@
     "old": "1.1.118",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "1.1.118",
     "latestStable": "1.1.118",
     "latestAvailable": "1.3.151-beta",
@@ -1094,6 +1234,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1108,6 +1250,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1124,6 +1268,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "10.0.26100.6901",
     "selected": "10.0.28000.2957",
     "latestStable": "10.0.28000.2957",
     "latestAvailable": "10.0.29648.1000-preview",
@@ -1140,6 +1286,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "1.8.251106002",
     "selected": "2.6.4",
     "latestStable": "2.6.4",
     "latestAvailable": "2.6.4",
@@ -1154,6 +1302,8 @@
     "old": "8.4.1",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "8.4.1",
     "latestStable": "8.9.0",
     "latestAvailable": "8.9.0",
@@ -1168,6 +1318,8 @@
     "old": "1.4.1",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "1.6.0",
     "selected": "1.4.1",
     "latestStable": "1.8.1",
     "latestAvailable": "1.8.1",
@@ -1182,6 +1334,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "10.0.0-rc.1.25451.107",
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1196,6 +1350,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "7.0.1",
     "latestAvailable": "7.0.1",
@@ -1212,6 +1368,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "10.0.0",
     "selected": "10.0.14",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1226,6 +1384,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "10.0.0-rc.1.25451.107",
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1240,6 +1400,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "9.0.0",
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1254,6 +1416,8 @@
     "old": "4.3.2",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "4.3.2",
     "selected": "4.3.2",
     "latestStable": "4.3.2",
     "latestAvailable": "4.3.2",
@@ -1270,6 +1434,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "4.3.0",
     "selected": "4.3.0",
     "latestStable": "4.3.0",
     "latestAvailable": "4.3.0",
@@ -1284,6 +1450,8 @@
     "old": "9.0.1",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "10.0.0-rc.1.25451.107",
     "selected": "9.0.1",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1298,6 +1466,8 @@
     "old": "4.5.4",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "4.5.4",
     "selected": "4.5.4",
     "latestStable": "4.6.3",
     "latestAvailable": "4.6.3",
@@ -1312,6 +1482,8 @@
     "old": "4.5.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "4.5.0",
     "latestStable": "4.6.2",
     "latestAvailable": "4.6.2",
@@ -1328,6 +1500,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "1.3.2",
     "selected": "1.4.0",
     "latestStable": "1.4.0",
     "latestAvailable": "1.4.0",
@@ -1342,6 +1516,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1356,6 +1532,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1370,6 +1548,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1384,6 +1564,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1398,6 +1580,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1412,6 +1596,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "9.0.0",
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1426,6 +1612,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "10.0.0-rc.1.25451.107",
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1440,6 +1628,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1454,6 +1644,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1468,6 +1660,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.11.0",
     "latestAvailable": "10.11.0",
@@ -1482,6 +1676,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "9.0.0",
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1496,6 +1692,8 @@
     "old": "9.0.2",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "10.0.0-rc.1.25451.107",
     "selected": "9.0.2",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1510,6 +1708,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1524,6 +1724,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1538,6 +1740,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.11.0",
     "latestAvailable": "10.11.0",
@@ -1552,6 +1756,8 @@
     "old": "17.10.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "17.10.0",
     "latestStable": "18.11.0",
     "latestAvailable": "18.11.0",
@@ -1566,6 +1772,8 @@
     "old": "[4.18.4]",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "[4.18.4]",
     "latestStable": "4.21.0",
     "latestAvailable": "4.21.0",
@@ -1580,6 +1788,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1594,6 +1804,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -1608,6 +1820,8 @@
     "old": "23.5.2",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "23.5.2",
     "latestStable": "31.12.5",
     "latestAvailable": "31.12.5",
@@ -1622,6 +1836,8 @@
     "old": "3.5.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": "3.7.6-beta",
     "selected": "3.5.0",
     "latestStable": "3.8.3",
     "latestAvailable": "3.8.3",
@@ -1638,6 +1854,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "2.9.0",
     "selected": "2.9.3",
     "latestStable": "2.9.3",
     "latestAvailable": "2.9.3",
@@ -1652,6 +1870,8 @@
     "old": "2.7.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "2.7.0",
     "latestStable": "2.9.3",
     "latestAvailable": "2.9.3",
@@ -1666,6 +1886,8 @@
     "old": "2.0.3",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "2.0.3",
     "latestStable": "2.0.3",
     "latestAvailable": "2.0.3",
@@ -1680,6 +1902,8 @@
     "old": "2.5.7",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "2.5.7",
     "latestStable": "4.0.1",
     "latestAvailable": "4.0.1",
@@ -1694,6 +1918,8 @@
     "old": "1.9.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "1.9.0",
     "latestStable": "1.9.0",
     "latestAvailable": "1.9.0",
@@ -1708,6 +1934,8 @@
     "old": "6.0.2",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "6.0.2",
     "latestStable": "10.1.0",
     "latestAvailable": "10.1.0",
@@ -1722,6 +1950,8 @@
     "old": "0.49.1",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "0.49.1",
     "latestStable": "0.57.2",
     "latestAvailable": "0.57.3-alpha.0.29",
@@ -1736,6 +1966,8 @@
     "old": "9.0.0",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "9.0.0",
     "latestStable": "10.0.403",
     "latestAvailable": "11.0.100-rc.3.26522.148",
@@ -1752,6 +1984,8 @@
     "references": [
       "src\\Directory.Packages.props"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "9.0.0",
     "selected": "10.0.403",
     "latestStable": "10.0.403",
     "latestAvailable": "11.0.100-rc.3.26522.148",
@@ -1768,6 +2002,8 @@
     "references": [
       "src\\Directory.Packages.props"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "17.14.15",
     "selected": "18.12.1",
     "latestStable": "18.12.1",
     "latestAvailable": "18.12.1",
@@ -1784,6 +2020,8 @@
     "references": [
       "src\\Directory.Packages.props"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "1.20.0",
     "selected": "2.2.0",
     "latestStable": "2.2.0",
     "latestAvailable": "2.2.0",
@@ -1800,6 +2038,8 @@
     "references": [
       "src\\Directory.Packages.props"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.3.0",
     "selected": "0.4.2",
     "latestStable": "0.4.2",
     "latestAvailable": "0.4.2",
@@ -1816,6 +2056,8 @@
     "references": [
       "src\\Directory.Packages.props"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "4.11.0",
     "selected": "5.0.1",
     "latestStable": "5.0.1",
     "latestAvailable": "5.0.1",
@@ -1832,6 +2074,8 @@
     "references": [
       "src\\Directory.Packages.props"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "4.12.0",
     "selected": "5.0.1",
     "latestStable": "5.0.1",
     "latestAvailable": "5.0.1",
@@ -1848,6 +2092,8 @@
     "references": [
       "src\\Directory.Packages.props"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "4.12.0",
     "selected": "5.0.1",
     "latestStable": "5.0.1",
     "latestAvailable": "5.0.1",
@@ -1864,6 +2110,8 @@
     "references": [
       "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "8.4.0",
     "selected": "8.4.2",
     "latestStable": "8.4.2",
     "latestAvailable": "8.4.2",
@@ -1880,6 +2128,8 @@
     "references": [
       "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": null,
     "selected": "10.1.0",
     "latestStable": "10.1.0",
     "latestAvailable": "10.1.0",
@@ -1896,6 +2146,8 @@
     "references": [
       "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": null,
     "selected": "18.11.0",
     "latestStable": "18.11.0",
     "latestAvailable": "18.11.0",
@@ -1912,6 +2164,8 @@
     "references": [
       "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": null,
     "selected": "2.9.3",
     "latestStable": "2.9.3",
     "latestAvailable": "2.9.3",
@@ -1928,6 +2182,8 @@
     "references": [
       "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": null,
     "selected": "4.0.1",
     "latestStable": "4.0.1",
     "latestAvailable": "4.0.1",
@@ -1942,6 +2198,8 @@
     "old": "4.0.2",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "4.0.2",
     "latestStable": "4.0.2",
     "latestAvailable": "4.0.2",
@@ -1958,6 +2216,8 @@
     "references": [
       "externals\\bili-kernel\\src\\BiliKernel.Grpc\\BiliKernel.Grpc.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "3.29.3",
     "selected": "3.36.2",
     "latestStable": "3.36.2",
     "latestAvailable": "4.0.0-rc2",
@@ -1974,6 +2234,8 @@
     "references": [
       "externals\\bili-kernel\\src\\BiliKernel.Grpc\\BiliKernel.Grpc.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "2.67.0",
     "selected": "2.85.0",
     "latestStable": "2.85.0",
     "latestAvailable": "2.85.0",
@@ -1990,6 +2252,8 @@
     "references": [
       "externals\\bili-kernel\\src\\BiliKernel.Grpc\\BiliKernel.Grpc.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": null,
     "selected": "2.85.0",
     "latestStable": "2.85.0",
     "latestAvailable": "2.85.0",
@@ -2006,6 +2270,8 @@
     "references": [
       "externals\\bili-kernel\\src\\Services\\Services.User\\Services.User.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "2.14.1",
     "selected": "3.0.10",
     "latestStable": "3.0.10",
     "latestAvailable": "3.0.10",
@@ -2022,6 +2288,8 @@
     "references": [
       "externals\\bili-kernel\\src\\BiliKernel.Abstractions\\BiliKernel.Abstractions.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "9.0.2",
     "selected": "10.0.14",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -2038,6 +2306,8 @@
     "references": [
       "externals\\bili-kernel\\src\\BiliKernel.Abstractions\\BiliKernel.Abstractions.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "6.0.0",
     "selected": "6.0.0",
     "latestStable": "6.0.0",
     "latestAvailable": "6.0.0",
@@ -2054,6 +2324,8 @@
     "references": [
       "externals\\bili-kernel\\src\\Samples\\Bili.Console\\Bili.Console.csproj"
     ],
+    "scope": "kernel-sample-only",
+    "oldResolvedApp": null,
     "selected": "9.0.1",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -2072,6 +2344,8 @@
       "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIQRCode\\Resolvers.WinUIQRCode.csproj",
       "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIToken\\Resolvers.WinUIToken.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "10.0.26100.6901",
     "selected": "10.0.28000.2957",
     "latestStable": "10.0.28000.2957",
     "latestAvailable": "10.0.29648.1000-preview",
@@ -2090,6 +2364,8 @@
       "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIQRCode\\Resolvers.WinUIQRCode.csproj",
       "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIToken\\Resolvers.WinUIToken.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "1.8.251106002",
     "selected": "2.6.4",
     "latestStable": "2.6.4",
     "latestAvailable": "2.6.4",
@@ -2104,6 +2380,8 @@
     "old": "8.5.1",
     "kind": "PackageVersion",
     "references": [],
+    "scope": "unused-central",
+    "oldResolvedApp": null,
     "selected": "8.5.1",
     "latestStable": "8.9.0",
     "latestAvailable": "8.9.0",
@@ -2120,6 +2398,8 @@
     "references": [
       "externals\\bili-kernel\\src\\Authorizers\\Authorizers.Tv\\Authorizers.Tv.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "1.6.0",
     "selected": "1.8.1",
     "latestStable": "1.8.1",
     "latestAvailable": "1.8.1",
@@ -2136,6 +2416,8 @@
     "references": [
       "externals\\bili-kernel\\src\\BiliKernel.Abstractions\\BiliKernel.Abstractions.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "0.0.1",
     "selected": "0.0.1",
     "latestStable": "0.0.1",
     "latestAvailable": "0.0.1",
@@ -2152,6 +2434,8 @@
     "references": [
       "externals\\bili-kernel\\src\\Samples\\Bili.Console\\Bili.Console.csproj"
     ],
+    "scope": "kernel-sample-only",
+    "oldResolvedApp": "0.0.1",
     "selected": "0.0.1",
     "latestStable": "0.0.1",
     "latestAvailable": "0.0.1",
@@ -2168,6 +2452,8 @@
     "references": [
       "externals\\bili-kernel\\src\\Samples\\Bili.Console\\Bili.Console.csproj"
     ],
+    "scope": "kernel-sample-only",
+    "oldResolvedApp": null,
     "selected": "0.49.2-preview.0.69",
     "latestStable": "0.57.2",
     "latestAvailable": "0.57.3-alpha.0.29",
@@ -2184,6 +2470,8 @@
     "references": [
       "externals\\bili-kernel\\src\\Authorizers\\Authorizers.Tv\\Authorizers.Tv.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "9.0.2",
     "selected": "10.0.14",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -2200,6 +2488,8 @@
     "references": [
       "externals\\bili-kernel\\src\\BiliKernel.Abstractions\\BiliKernel.Abstractions.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "10.0.0-rc.1.25451.107",
     "selected": "10.0.14",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",
@@ -2216,6 +2506,8 @@
     "references": [
       "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
     ],
+    "scope": "app-and-tests",
+    "oldResolvedApp": "9.0.1",
     "selected": "10.0.14",
     "latestStable": "10.0.14",
     "latestAvailable": "11.0.0-rc.3.26522.148",

@@ -2,9 +2,24 @@ param([Parameter(Mandatory)][string]$Destination,[Parameter(Mandatory)][Validate
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path "$PSScriptRoot/../../..").Path
 $old="$PSScriptRoot/../integration-pr27-pr43"
+if($RunId.Length -gt 8 -and $Kind -eq 'controls'){throw 'Controls RunId must be at most 8 characters for the MSIX identity limit'}
 if($Kind -eq 'player') {
     & "$old/prepare-player.ps1" -Destination $Destination
     Copy-Item "$old/run-main.ps1" "$Destination/run-main.ps1"
+    Copy-Item "$PSScriptRoot/FontRuntimeChecks.cs" "$Destination/FontRuntimeChecks.cs"
+    $main=Get-Content "$Destination/MainRuntimeChecks.cs" -Raw
+    # Only replace the standalone post-sampling open, not the earlier assigned player.
+    $main=$main.Replace('        await Offline48.Open();','        await FontRuntimeChecks.Run(await Offline48.Open());')
+    Set-Content "$Destination/MainRuntimeChecks.cs" $main
+    $runner=Get-Content "$Destination/run-main.ps1" -Raw
+    $runner=$runner.Replace('    & winapp ui invoke ExitMain', @'
+    Copy-Item "$state/font-results.json" $Evidence -Force
+    $font=Get-Content "$state/font-results.json" -Raw | ConvertFrom-Json
+    & winapp ui screenshot -w $font.hwnd --on local -a $AppPid --output "$Evidence/font-settings.png" --json
+    if($font.status -ne 'PASS'){throw 'First subtitle font settings check failed'}
+    & winapp ui invoke ExitMain
+'@)
+    Set-Content "$Destination/run-main.ps1" $runner
     $before='Mang.BiliCopilot.Integration2743.Player'
     $after="Mang.BiliCopilot.DependencyUpgrade.$RunId"
 } else {
@@ -27,6 +42,15 @@ if($Kind -eq 'player') {
         foreach($ref in $project.Project.ItemGroup.PackageReference) {
             if($ref -and $versions.ContainsKey($ref.Include)) {$ref.Version=$versions[$ref.Include]}
         }
+        # These are transitive in the old minimal fixture. Pin the actual app
+        # closure explicitly so the graphics replay cannot silently test Win2D 1.3.
+        $group=$project.CreateElement('ItemGroup')
+        foreach($name in 'Microsoft.Graphics.Win2D','Microsoft.Windows.CsWinRT','CommunityToolkit.WinUI.Extensions','CommunityToolkit.WinUI.Media','WinUIEx') {
+            if(!$versions.ContainsKey($name)){throw "Missing production dependency $name"}
+            $ref=$project.CreateElement('PackageReference');$ref.SetAttribute('Include',$name);$ref.SetAttribute('Version',$versions[$name]);[void]$group.AppendChild($ref)
+        }
+        [void]$project.Project.AppendChild($group)
+        $property=$project.CreateElement('CsWinRTGenerateProjection');$property.InnerText='false';[void]$project.Project.PropertyGroup.AppendChild($property)
         $project.Save("$Destination/Harness.csproj")
     }
 }
@@ -37,9 +61,13 @@ foreach($file in Get-ChildItem $Destination -File | Where-Object Extension -in '
     $text=$text.Replace('$sourceRoot=(Resolve-Path "$PSScriptRoot/../../..").Path',"`$sourceRoot='$($root.Replace("'","''"))'")
     $text=$text.Replace('git -C $sourceRoot rev-parse HEAD | Set-Content "$Layout/source-provenance.txt"','Copy-Item "$PSScriptRoot/source-provenance.txt" "$Layout/source-provenance.txt" -Force')
     $text=$text.Replace('git -C $sourceRoot diff -- src | Add-Content "$Layout/source-provenance.txt"','')
+    # First activation after a new Windows App SDK registration can exceed 20s.
+    # This is readiness only, outside the measured Player -> Main sequence.
+    $text=$text.Replace("'--value','READY','-t','20000'", "'--value','READY','-t','120000'")
     Set-Content $file.FullName $text
 }
 Copy-Item "$root/nuget.config" $Destination
 git -C $root rev-parse HEAD | Set-Content "$Destination/source-provenance.txt"
 git -C $root diff -- src | Add-Content "$Destination/source-provenance.txt"
+if($Kind -eq 'player'){& "$PSScriptRoot/harden-runner.ps1" -Path "$Destination/run-ui.ps1"}
 Write-Output "Prepared $after at $Destination"

@@ -12,8 +12,12 @@ $program=[regex]::Match($legacy,"(?s)@'\r?\n(.*?)\r?\n'@").Groups[1].Value
 if(!$program){throw 'Historical benchmark program not found'}
 Set-Content "$Destination/Program.cs" $program
 $dotnet=if($Framework -eq 'net11.0'){"$root/artifacts/dependency-upgrade/sdk11/dotnet.exe"}else{'dotnet'}
+$previousRoot=$env:DOTNET_ROOT
+$previousPath=$env:PATH
 if($Framework -eq 'net11.0') {
     '{"sdk":{"version":"11.0.100-rc.3.26522.148","rollForward":"disable","allowPrerelease":true}}' | Set-Content "$Destination/global.json"
+    $env:DOTNET_ROOT=Split-Path $dotnet
+    $env:PATH="$env:DOTNET_ROOT;$previousPath"
 }
 Push-Location $Destination
 try {
@@ -21,4 +25,4 @@ try {
     if($LASTEXITCODE -ne 0){throw 'Measurement failed'}
     git -C $root rev-parse HEAD | Set-Content "$Destination/source-sha.txt"
     Get-FileHash "$root/src/Desktop/BiliCopilot.UI/Toolkits/Pure/RecommendListDiff.cs" | ConvertTo-Json | Set-Content "$Destination/source-hash.json"
-} finally {Pop-Location}
+} finally {Pop-Location;$env:DOTNET_ROOT=$previousRoot;$env:PATH=$previousPath}
