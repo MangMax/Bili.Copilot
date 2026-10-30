@@ -166,4 +166,5 @@ public enum SettingNames
     SponsorBlockColorFiller,
     SponsorBlockColorMusicOfftopic,
     SponsorBlockColorUnknown,
+    IncrementalRecommendRefresh,
 }

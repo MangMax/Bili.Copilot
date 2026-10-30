@@ -87,6 +87,8 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
+        ClearRefreshSnapshot();
+
         if (Videos.Count > 0 && _displayedSection == SelectedSection)
         {
             _videoCache[SelectedSection] = Videos.ToList();
@@ -131,7 +133,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsVideoLoading || SelectedSection is null || _displayedSection != SelectedSection)
+        if (IsVideoLoading || IsRecommendRefreshing || SelectedSection is null || _displayedSection != SelectedSection)
         {
             return;
         }
@@ -185,7 +187,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         });
     }
 
-    [RelayCommand]
+    private bool CanRefreshVideo() => !IsRecommendRefreshing;
+
+    [RelayCommand(AllowConcurrentExecutions = true, CanExecute = nameof(CanRefreshVideo))]
     private async Task RefreshVideoAsync()
     {
         if (SelectedSection is null)
@@ -196,21 +200,63 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         ++_sectionVersion;
         IsVideoLoading = false;
         _displayedSection = SelectedSection;
+        if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend })
+        {
+            await RefreshRecommendVideosAsync();
+            return;
+        }
+
+        ClearRefreshSnapshot();
         Videos.Clear();
         _videoCache.Remove(SelectedSection);
-        if (SelectedSection is PopularSectionItemViewModel section)
+        if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Hot })
         {
-            if (section.Type == PopularSectionType.Recommend)
-            {
-                _recommendOffset = 0;
-            }
-            else if (section.Type == PopularSectionType.Hot)
-            {
-                _hotOffset = 0;
-            }
+            _hotOffset = 0;
         }
 
         await LoadVideosAsync();
+    }
+
+    [RelayCommand]
+    private void UndoRefresh()
+    {
+        if (_recommendRefreshSnapshot is null)
+        {
+            return;
+        }
+
+        var snapshot = _recommendRefreshSnapshot;
+        ++_sectionVersion;
+        IsVideoLoading = false;
+
+        // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        RecommendationListChanging?.Invoke(true);
+        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
+
+        for (var i = 0; i < snapshot.Items.Count; i++)
+        {
+            if (!ReferenceEquals(Videos[i], snapshot.Items[i])) Videos[i] = snapshot.Items[i];
+        }
+
+        RecommendationListChanged?.Invoke(this, EventArgs.Empty);
+        _recommendOffset = snapshot.Offset;
+        ClearRefreshSnapshot();
+        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 清除撤销快照.
+    /// </summary>
+    /// <remarks>
+    /// 切换分区、走普通刷新或撤销时 <see cref="Videos"/> 会被替换或重载，
+    /// 旧快照指向的列表已不在页面上，必须一并失效；同时递增代次，让仍在路上的推荐刷新结果作废。
+    /// </remarks>
+    private void ClearRefreshSnapshot()
+    {
+        _recommendRefreshSnapshot = null;
+        CanUndoRefresh = false;
+        _refreshGeneration++;
+        IsRecommendRefreshing = false;
     }
 
     [RelayCommand]
