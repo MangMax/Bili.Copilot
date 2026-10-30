@@ -1,0 +1,539 @@
+{
+  "candidate": "79ffd4f1b5ef6898b18426b9159f9342c3483450",
+  "sourceCheckout": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff",
+  "arms": {
+    "player9common": {
+      "allFiles": 895,
+      "dlls": 357,
+      "sourceFiles": 630,
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "9.0.22"
+        }
+      ]
+    },
+    "player10common": {
+      "allFiles": 897,
+      "dlls": 359,
+      "sourceFiles": 630,
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.14"
+        }
+      ]
+    },
+    "player10final": {
+      "allFiles": 897,
+      "dlls": 359,
+      "sourceFiles": 630,
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.14"
+        }
+      ]
+    }
+  },
+  "runs": [
+    {
+      "run": "r1-net9",
+      "arm": "player9common",
+      "dlls": 357,
+      "coreclr": {
+        "name": "coreclr.dll",
+        "sha256": "03A85B6BA7087B41AC63F5C23C534074A4BE81EAA23AC5AAE9ED252C2C28DD1C",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\r1-net9\\layout\\coreclr.dll",
+        "version": "9,0,2226,52218 @Commit: faaecba82df8933d7af60972138ce25f9c776cbd"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "9.0.22"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 31.25059407379304,
+          "firstHalf": 25.52367224631872,
+          "lastHalf": 36.97645974330251,
+          "privateMiBMedian": 459.1875
+        },
+        "hidden": {
+          "full": 4.166621667152586,
+          "firstHalf": 4.687611737038293,
+          "lastHalf": 3.6456676863458717,
+          "privateMiBMedian": 458.64453125
+        },
+        "restored": {
+          "full": 37.5032215267294,
+          "firstHalf": 47.92503885145253,
+          "lastHalf": 27.083254972450007,
+          "privateMiBMedian": 458.30859375
+        }
+      },
+      "observerMs": {
+        "median": 48.67829999966489,
+        "max": 61.93200000052457
+      }
+    },
+    {
+      "run": "r2-net10",
+      "arm": "player10common",
+      "dlls": 359,
+      "coreclr": {
+        "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+        "version": "10,0,1426,52326 @Commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+        "name": "coreclr.dll",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\r2-net10\\layout\\coreclr.dll"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.14"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 44.793010456980376,
+          "firstHalf": 45.30387353842733,
+          "lastHalf": 44.281922117056396,
+          "privateMiBMedian": 470.73828125
+        },
+        "hidden": {
+          "full": 3.1251213588794973,
+          "firstHalf": 2.083527240268573,
+          "lastHalf": 4.166602500988156,
+          "privateMiBMedian": 470.34375
+        },
+        "restored": {
+          "full": 42.4515696242327,
+          "firstHalf": 50.532008150055425,
+          "lastHalf": 34.37331421809297,
+          "privateMiBMedian": 470.53125
+        }
+      },
+      "observerMs": {
+        "median": 51.49139999957697,
+        "max": 83.38529999855382
+      }
+    },
+    {
+      "run": "r3-net9",
+      "arm": "player9common",
+      "dlls": 357,
+      "coreclr": {
+        "sha256": "03A85B6BA7087B41AC63F5C23C534074A4BE81EAA23AC5AAE9ED252C2C28DD1C",
+        "name": "coreclr.dll",
+        "version": "9,0,2226,52218 @Commit: faaecba82df8933d7af60972138ce25f9c776cbd",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\r3-net9\\layout\\coreclr.dll"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "9.0.22"
+        }
+      ]
+    },
+    {
+      "run": "r4-net10",
+      "arm": "player10common",
+      "dlls": 359,
+      "coreclr": {
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\r4-net10\\layout\\coreclr.dll",
+        "version": "10,0,1426,52326 @Commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+        "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+        "name": "coreclr.dll"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.14"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 53.12494235943671,
+          "firstHalf": 38.02227260309169,
+          "lastHalf": 68.22643601727471,
+          "privateMiBMedian": 473.8828125
+        },
+        "hidden": {
+          "full": 3.6459995301451404,
+          "firstHalf": 3.1254686952856363,
+          "lastHalf": 4.166421708845961,
+          "privateMiBMedian": 474.01171875
+        },
+        "restored": {
+          "full": 51.04443863490613,
+          "firstHalf": 33.858301103812366,
+          "lastHalf": 68.22824558535385,
+          "privateMiBMedian": 473.64453125
+        }
+      },
+      "observerMs": {
+        "median": 46.35579999740003,
+        "max": 77.65020000078948
+      }
+    },
+    {
+      "run": "r5-net9",
+      "arm": "player9common",
+      "dlls": 357,
+      "coreclr": {
+        "version": "9,0,2226,52218 @Commit: faaecba82df8933d7af60972138ce25f9c776cbd",
+        "name": "coreclr.dll",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\r5-net9\\layout\\coreclr.dll",
+        "sha256": "03A85B6BA7087B41AC63F5C23C534074A4BE81EAA23AC5AAE9ED252C2C28DD1C"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "9.0.22"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 48.18275356007646,
+          "firstHalf": 57.836728769630454,
+          "lastHalf": 38.5345935135757,
+          "privateMiBMedian": 473.44921875
+        },
+        "hidden": {
+          "full": 2.3438493518675063,
+          "firstHalf": 3.1249415740090396,
+          "lastHalf": 1.562661693814192,
+          "privateMiBMedian": 473.0
+        },
+        "restored": {
+          "full": 47.923059043641764,
+          "firstHalf": 60.95229271509424,
+          "lastHalf": 34.89667376156074,
+          "privateMiBMedian": 472.73828125
+        }
+      },
+      "observerMs": {
+        "median": 67.44379999872763,
+        "max": 132.34060000104364
+      }
+    },
+    {
+      "run": "final-net10",
+      "arm": "player10final",
+      "dlls": 359,
+      "coreclr": {
+        "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\final-net10\\layout\\coreclr.dll",
+        "version": "10,0,1426,52326 @Commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+        "name": "coreclr.dll"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.14"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 52.09435259126526,
+          "firstHalf": 70.31057255283494,
+          "lastHalf": 33.86942360012109,
+          "privateMiBMedian": 425.96484375
+        },
+        "hidden": {
+          "full": 1.3025610432540986,
+          "firstHalf": 1.5633404413991001,
+          "lastHalf": 1.0418707691503293,
+          "privateMiBMedian": 425.47265625
+        },
+        "restored": {
+          "full": 45.577801011712474,
+          "firstHalf": 59.89872604247939,
+          "lastHalf": 31.2551895074808,
+          "privateMiBMedian": 425.37890625
+        }
+      },
+      "observerMs": {
+        "median": 51.330899997992674,
+        "max": 90.40599999934784
+      }
+    },
+    {
+      "run": "v3-r1-net9",
+      "arm": "player9common",
+      "dlls": 357,
+      "coreclr": {
+        "sha256": "03A85B6BA7087B41AC63F5C23C534074A4BE81EAA23AC5AAE9ED252C2C28DD1C",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\v3-r1-net9\\layout\\coreclr.dll",
+        "version": "9,0,2226,52218 @Commit: faaecba82df8933d7af60972138ce25f9c776cbd",
+        "name": "coreclr.dll"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "9.0.22"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 32.81207885696814,
+          "firstHalf": 33.33190628331769,
+          "lastHalf": 32.292220262964506,
+          "privateMiBMedian": 470.390625
+        },
+        "hidden": {
+          "full": 1.3020973894747059,
+          "firstHalf": 1.0416062743349235,
+          "lastHalf": 1.5626243380186395,
+          "privateMiBMedian": 470.3203125
+        },
+        "restored": {
+          "full": 47.39564288184273,
+          "firstHalf": 57.81369481636441,
+          "lastHalf": 36.978105271783534,
+          "privateMiBMedian": 469.8671875
+        }
+      },
+      "observerMs": {
+        "median": 10.785899998154491,
+        "max": 15.773700000863755
+      }
+    },
+    {
+      "run": "v3-r2-net10",
+      "arm": "player10common",
+      "dlls": 359,
+      "coreclr": {
+        "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+        "version": "10,0,1426,52326 @Commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\v3-r2-net10\\layout\\coreclr.dll",
+        "name": "coreclr.dll"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.14"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 51.042668293958855,
+          "firstHalf": 73.95408023417772,
+          "lastHalf": 28.127721544575923,
+          "privateMiBMedian": 422.2109375
+        },
+        "hidden": {
+          "full": 1.3020844270842118,
+          "firstHalf": 0.5208322170162447,
+          "lastHalf": 2.083341298641584,
+          "privateMiBMedian": 422.3828125
+        },
+        "restored": {
+          "full": 50.00186198600549,
+          "firstHalf": 64.58413805169647,
+          "lastHalf": 35.41886322650166,
+          "privateMiBMedian": 421.890625
+        }
+      },
+      "observerMs": {
+        "median": 10.976300000038464,
+        "max": 15.939799999614479
+      }
+    },
+    {
+      "run": "v3-r3-net9",
+      "arm": "player9common",
+      "dlls": 357,
+      "coreclr": {
+        "sha256": "03A85B6BA7087B41AC63F5C23C534074A4BE81EAA23AC5AAE9ED252C2C28DD1C",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\v3-r3-net9\\layout\\coreclr.dll",
+        "version": "9,0,2226,52218 @Commit: faaecba82df8933d7af60972138ce25f9c776cbd",
+        "name": "coreclr.dll"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "9.0.22"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 53.90483949003303,
+          "firstHalf": 63.543191703267546,
+          "lastHalf": 44.26745425099165,
+          "privateMiBMedian": 470.62109375
+        },
+        "hidden": {
+          "full": 4.427037107687453,
+          "firstHalf": 5.729456787259879,
+          "lastHalf": 3.1247765159836294,
+          "privateMiBMedian": 470.48046875
+        },
+        "restored": {
+          "full": 62.761818138066744,
+          "firstHalf": 78.12498177084089,
+          "lastHalf": 47.39796118580375,
+          "privateMiBMedian": 469.9296875
+        }
+      },
+      "observerMs": {
+        "median": 10.398000002169283,
+        "max": 15.820000000530854
+      }
+    },
+    {
+      "run": "v3-r4-net10",
+      "arm": "player10common",
+      "dlls": 359,
+      "coreclr": {
+        "version": "10,0,1426,52326 @Commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+        "name": "coreclr.dll",
+        "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\artifacts\\net10-adaptation\\v3-r4-net10\\layout\\coreclr.dll"
+      },
+      "runtime": [
+        {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.14"
+        }
+      ],
+      "phases": {
+        "visible": {
+          "full": 47.91356641935187,
+          "firstHalf": 36.97899113972183,
+          "lastHalf": 58.846830624606184,
+          "privateMiBMedian": 480.39453125
+        },
+        "hidden": {
+          "full": 2.8644623670875045,
+          "firstHalf": 4.687609611938251,
+          "lastHalf": 1.0415543419744964,
+          "privateMiBMedian": 480.41015625
+        },
+        "restored": {
+          "full": 43.48771270937122,
+          "firstHalf": 33.33246635588256,
+          "lastHalf": 53.64261370366042,
+          "privateMiBMedian": 480.109375
+        }
+      },
+      "observerMs": {
+        "median": 10.581600003206404,
+        "max": 15.601800001604715
+      }
+    }
+  ],
+  "packageCoverage": {
+    "metadataRows": 85,
+    "uncoveredActualReferences": []
+  },
+  "currentProductionSnapshots": [
+    {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\src\\_build\\x64\\Debug\\BiliCopilot.UI\\bin\\BiliCopilot.UI.dll",
+      "sha256": "BF5485EF808A10D8EBD92B5E78E0229AF249AAECD8D18F961FCD7EA833654723",
+      "bytes": 4060160
+    },
+    {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\src\\_build\\x64\\Debug\\BiliCopilot.UI\\bin\\BiliCopilot.UI.runtimeconfig.json",
+      "sha256": "4BAA3D364EC508447E66171EC87C1120197694D25388FCCCB1FE2BF8CD256E35",
+      "bytes": 1027,
+      "runtime": {
+        "runtimeOptions": {
+          "tfm": "net10.0",
+          "includedFrameworks": [
+            {
+              "name": "Microsoft.NETCore.App",
+              "version": "10.0.14"
+            }
+          ],
+          "configProperties": {
+            "CSWINRT_ENABLE_DYNAMIC_OBJECTS_SUPPORT": true,
+            "CSWINRT_USE_EXCEPTION_RESOURCE_KEYS": false,
+            "CSWINRT_ENABLE_DEFAULT_CUSTOM_TYPE_MAPPINGS": true,
+            "CSWINRT_ENABLE_ICUSTOMPROPERTYPROVIDER_SUPPORT": true,
+            "CSWINRT_ENABLE_IREFERENCE_SUPPORT": true,
+            "CSWINRT_ENABLE_IDYNAMICINTERFACECASTABLE": true,
+            "CSWINRT_ENABLE_MANIFEST_FREE_ACTIVATION": true,
+            "CSWINRT_MANIFEST_FREE_ACTIVATION_REPORT_ORIGINAL_EXCEPTION": false,
+            "CSWINRT_LOAD_COMPONENTS_IN_DEFAULT_ALC": false,
+            "CSWINRT_SUPPRESS_CUSTOM_PROPERTY_NOT_SUPPORTED_EXCEPTION": false,
+            "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": false,
+            "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+            "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false
+          }
+        }
+      }
+    },
+    {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\src\\_build\\x64\\Debug\\BiliCopilot.UI\\bin\\coreclr.dll",
+      "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+      "bytes": 4613456
+    },
+    {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\src\\_build\\x64\\Release\\BiliCopilot.UI\\bin\\BiliCopilot.UI.dll",
+      "sha256": "63C85350453663E9E501C5DB4C92B696B9B948D442FEC4A5772448D5D2BFF04A",
+      "bytes": 3544064
+    },
+    {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\src\\_build\\x64\\Release\\BiliCopilot.UI\\bin\\BiliCopilot.UI.runtimeconfig.json",
+      "sha256": "2320986BBA98A23EEBAC9C345B07DB6D73F8945450B4928613004A25412DFA40",
+      "bytes": 1099,
+      "runtime": {
+        "runtimeOptions": {
+          "tfm": "net10.0",
+          "includedFrameworks": [
+            {
+              "name": "Microsoft.NETCore.App",
+              "version": "10.0.14"
+            }
+          ],
+          "configProperties": {
+            "CSWINRT_ENABLE_DYNAMIC_OBJECTS_SUPPORT": true,
+            "CSWINRT_USE_EXCEPTION_RESOURCE_KEYS": false,
+            "CSWINRT_ENABLE_DEFAULT_CUSTOM_TYPE_MAPPINGS": true,
+            "CSWINRT_ENABLE_ICUSTOMPROPERTYPROVIDER_SUPPORT": true,
+            "CSWINRT_ENABLE_IREFERENCE_SUPPORT": true,
+            "CSWINRT_ENABLE_IDYNAMICINTERFACECASTABLE": true,
+            "CSWINRT_ENABLE_MANIFEST_FREE_ACTIVATION": true,
+            "CSWINRT_MANIFEST_FREE_ACTIVATION_REPORT_ORIGINAL_EXCEPTION": false,
+            "CSWINRT_LOAD_COMPONENTS_IN_DEFAULT_ALC": false,
+            "CSWINRT_SUPPRESS_CUSTOM_PROPERTY_NOT_SUPPORTED_EXCEPTION": false,
+            "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": false,
+            "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+            "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+            "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false
+          }
+        }
+      }
+    },
+    {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\src\\_build\\x64\\Release\\BiliCopilot.UI\\bin\\coreclr.dll",
+      "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+      "bytes": 4613456
+    },
+    {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\src\\_build\\x64\\Release\\BiliCopilot.Visor\\bin\\BiliCopilot.Visor.dll",
+      "sha256": "F0D82B22FB3BD9E7AE8EC472A540E11D19794570A343F03DB30D883C4BA833AF",
+      "bytes": 32768
+    },
+    {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-8545a6ff\\src\\_build\\x64\\Release\\BiliCopilot.Visor\\bin\\BiliCopilot.Visor.runtimeconfig.json",
+      "sha256": "C230A317A54DD960BCBEB5F347F52E18DC665A26F7EFDA2159FCED9A5AC7E097",
+      "bytes": 342,
+      "runtime": {
+        "runtimeOptions": {
+          "tfm": "net10.0",
+          "framework": {
+            "name": "Microsoft.NETCore.App",
+            "version": "10.0.0"
+          },
+          "configProperties": {
+            "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+            "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
+          }
+        }
+      }
+    }
+  ]
+}

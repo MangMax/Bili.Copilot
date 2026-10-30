@@ -1,0 +1,262 @@
+[
+  {
+    "run": "v3-r1-net9",
+    "protocol": "external-os-v3",
+    "phases": {
+      "visible": {
+        "cpuMsPerSecond": 32.81207885696814,
+        "privateMiBMedian": 470.390625,
+        "workingSetMiBMedian": 540.78515625,
+        "handleRange": [
+          4557,
+          4604
+        ],
+        "threadRange": [
+          251,
+          266
+        ],
+        "elapsedSeconds": 60.0007700999995
+      },
+      "hidden": {
+        "cpuMsPerSecond": 1.3020973894747059,
+        "privateMiBMedian": 470.3203125,
+        "workingSetMiBMedian": 540.7265625,
+        "handleRange": [
+          4539,
+          4571
+        ],
+        "threadRange": [
+          244,
+          254
+        ],
+        "elapsedSeconds": 59.999352299997554
+      },
+      "restored": {
+        "cpuMsPerSecond": 47.39564288184273,
+        "privateMiBMedian": 469.8671875,
+        "workingSetMiBMedian": 542.453125,
+        "handleRange": [
+          4533,
+          4544
+        ],
+        "threadRange": [
+          243,
+          247
+        ],
+        "elapsedSeconds": 60.000241099998675
+      }
+    },
+    "dllCount": 357,
+    "observerSampleMsMedian": 10.785899998154491,
+    "observerSampleMsMax": 15.773700000863755,
+    "fontCount": 108
+  },
+  {
+    "run": "v3-r2-net10",
+    "protocol": "external-os-v3",
+    "phases": {
+      "visible": {
+        "cpuMsPerSecond": 51.042668293958855,
+        "privateMiBMedian": 422.2109375,
+        "workingSetMiBMedian": 535.7578125,
+        "handleRange": [
+          4446,
+          4493
+        ],
+        "threadRange": [
+          251,
+          267
+        ],
+        "elapsedSeconds": 59.99882260000231
+      },
+      "hidden": {
+        "cpuMsPerSecond": 1.3020844270842118,
+        "privateMiBMedian": 422.3828125,
+        "workingSetMiBMedian": 535.375,
+        "handleRange": [
+          4410,
+          4445
+        ],
+        "threadRange": [
+          243,
+          254
+        ],
+        "elapsedSeconds": 59.999949600001855
+      },
+      "restored": {
+        "cpuMsPerSecond": 50.00186198600549,
+        "privateMiBMedian": 421.890625,
+        "workingSetMiBMedian": 534.58984375,
+        "handleRange": [
+          4408,
+          4415
+        ],
+        "threadRange": [
+          243,
+          246
+        ],
+        "elapsedSeconds": 59.997765699998126
+      }
+    },
+    "dllCount": 359,
+    "observerSampleMsMedian": 10.976300000038464,
+    "observerSampleMsMax": 15.939799999614479,
+    "fontCount": 108
+  },
+  {
+    "run": "v3-r3-net9",
+    "protocol": "external-os-v3",
+    "phases": {
+      "visible": {
+        "cpuMsPerSecond": 53.90483949003303,
+        "privateMiBMedian": 470.62109375,
+        "workingSetMiBMedian": 539.03515625,
+        "handleRange": [
+          4568,
+          4614
+        ],
+        "threadRange": [
+          255,
+          269
+        ],
+        "elapsedSeconds": 60.001570000000356
+      },
+      "hidden": {
+        "cpuMsPerSecond": 4.427037107687453,
+        "privateMiBMedian": 470.48046875,
+        "workingSetMiBMedian": 538.98828125,
+        "handleRange": [
+          4541,
+          4580
+        ],
+        "threadRange": [
+          246,
+          258
+        ],
+        "elapsedSeconds": 60.00062650000109
+      },
+      "restored": {
+        "cpuMsPerSecond": 62.761818138066744,
+        "privateMiBMedian": 469.9296875,
+        "workingSetMiBMedian": 539.05078125,
+        "handleRange": [
+          4535,
+          4544
+        ],
+        "threadRange": [
+          246,
+          249
+        ],
+        "elapsedSeconds": 59.998660199998994
+      }
+    },
+    "dllCount": 357,
+    "observerSampleMsMedian": 10.398000002169283,
+    "observerSampleMsMax": 15.820000000530854,
+    "fontCount": 108
+  },
+  {
+    "run": "v3-r4-net10",
+    "protocol": "external-os-v3",
+    "phases": {
+      "visible": {
+        "cpuMsPerSecond": 47.91356641935187,
+        "privateMiBMedian": 480.39453125,
+        "workingSetMiBMedian": 538.47265625,
+        "handleRange": [
+          4663,
+          4708
+        ],
+        "threadRange": [
+          250,
+          264
+        ],
+        "elapsedSeconds": 60.00388229999953
+      },
+      "hidden": {
+        "cpuMsPerSecond": 2.8644623670875045,
+        "privateMiBMedian": 480.41015625,
+        "workingSetMiBMedian": 538.55859375,
+        "handleRange": [
+          4643,
+          4670
+        ],
+        "threadRange": [
+          244,
+          253
+        ],
+        "elapsedSeconds": 60.0025338000014
+      },
+      "restored": {
+        "cpuMsPerSecond": 43.48771270937122,
+        "privateMiBMedian": 480.109375,
+        "workingSetMiBMedian": 539.8046875,
+        "handleRange": [
+          4637,
+          4644
+        ],
+        "threadRange": [
+          244,
+          247
+        ],
+        "elapsedSeconds": 60.002580899999884
+      }
+    },
+    "dllCount": 359,
+    "observerSampleMsMedian": 10.581600003206404,
+    "observerSampleMsMax": 15.601800001604715,
+    "fontCount": 108
+  },
+  {
+    "run": "final-net10",
+    "protocol": "external-os-v2",
+    "phases": {
+      "visible": {
+        "cpuMsPerSecond": 52.09435259126526,
+        "privateMiBMedian": 425.96484375,
+        "workingSetMiBMedian": 526.59375,
+        "handleRange": [
+          4443,
+          4489
+        ],
+        "threadRange": [
+          250,
+          267
+        ],
+        "elapsedSeconds": 59.987308499999926
+      },
+      "hidden": {
+        "cpuMsPerSecond": 1.3025610432540986,
+        "privateMiBMedian": 425.47265625,
+        "workingSetMiBMedian": 526.3125,
+        "handleRange": [
+          4412,
+          4448
+        ],
+        "threadRange": [
+          242,
+          253
+        ],
+        "elapsedSeconds": 59.977995199998986
+      },
+      "restored": {
+        "cpuMsPerSecond": 45.577801011712474,
+        "privateMiBMedian": 425.37890625,
+        "workingSetMiBMedian": 527.7734375,
+        "handleRange": [
+          4411,
+          4419
+        ],
+        "threadRange": [
+          242,
+          245
+        ],
+        "elapsedSeconds": 59.99357009999949
+      }
+    },
+    "dllCount": 359,
+    "observerSampleMsMedian": 51.330899997992674,
+    "observerSampleMsMax": 90.40599999934784,
+    "fontCount": 108
+  }
+]

@@ -1,0 +1,162 @@
+# Exact dependency inventory
+
+Latest means stable if available; preview-only packages retain their channel. Unreferenced central declarations are inventoried separately and are not runtime upgrades. See dependency-upgrade.md for attempted-version blockers.
+
+## App and test referenced declarations
+
+| Area / package | Old declaration / app resolved | Latest stable / available | Selected | Checked UTC |
+|---|---|---|---|---|
+| src / [ColorCode.WinUI](https://api.nuget.org/v3-flatcontainer/colorcode.winui/index.json) | 2.0.15 / 2.0.15 | 2.0.15 | 2.0.15 | 2026-10-30T10:51:08.823789+00:00 |
+| src / [CommunityToolkit.Mvvm](https://api.nuget.org/v3-flatcontainer/communitytoolkit.mvvm/index.json) | 8.2.2 / 8.4.0 | 8.4.2 | 8.4.2 | 2026-10-30T10:51:08.869084+00:00 |
+| src / [CommunityToolkit.WinUI.Animations](https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.animations/index.json) | 8.0.240109 / 8.2.250402 | 8.2.251219 | 8.2.251219 | 2026-10-30T10:51:08.948773+00:00 |
+| src / [CommunityToolkit.WinUI.Controls.Primitives](https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.controls.primitives/index.json) | 8.2.250402 / 8.2.250402 | 8.2.251219 | 8.2.251219 | 2026-10-30T10:51:08.949279+00:00 |
+| src / [CommunityToolkit.WinUI.Controls.Segmented](https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.controls.segmented/index.json) | 8.2.250402 / 8.2.250402 | 8.2.251219 | 8.2.251219 | 2026-10-30T10:52:34.044102+00:00 |
+| src / [CommunityToolkit.WinUI.Controls.Sizers](https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.controls.sizers/index.json) | 8.2.250402 / 8.2.250402 | 8.2.251219 | 8.2.251219 | 2026-10-30T10:51:08.950345+00:00 |
+| src / [CommunityToolkit.WinUI.Extensions](https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.extensions/index.json) | 8.0.240109 / 8.2.250402 | 8.2.251219 | 8.2.251219 | 2026-10-30T10:51:08.950668+00:00 |
+| src / [CommunityToolkit.WinUI.Media](https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.media/index.json) | 8.0.240109 / 8.2.250402 | 8.2.251219 | 8.2.251219 | 2026-10-30T10:51:09.993074+00:00 |
+| src / [ComputeSharp.D2D1.WinUI](https://api.nuget.org/v3-flatcontainer/computesharp.d2d1.winui/index.json) | 3.2.0 / 3.2.0 | 3.2.0 | 3.2.0 | 2026-10-30T10:51:09.993849+00:00 |
+| src / [Danmaku.Core](https://api.nuget.org/v3-flatcontainer/danmaku.core/index.json) | 0.0.1-preview6 / 0.0.1-preview6 | 0.0.1-preview6 | 0.0.1-preview6 | 2026-10-30T10:51:09.995184+00:00 |
+| src / [Danmaku.Legacy](https://api.nuget.org/v3-flatcontainer/danmaku.legacy/index.json) | 0.0.1-preview6 / 0.0.1-preview6 | 0.0.1-preview6 | 0.0.1-preview6 | 2026-10-30T10:51:10.008859+00:00 |
+| src / [Danmaku.Share](https://api.nuget.org/v3-flatcontainer/danmaku.share/index.json) | 0.0.1-preview6 / 0.0.1-preview6 | 0.0.1-preview6 | 0.0.1-preview6 | 2026-10-30T10:51:10.085928+00:00 |
+| src / [FluentIcons.WinUI](https://api.nuget.org/v3-flatcontainer/fluenticons.winui/index.json) | 1.2.315 / 1.2.315 | 2.2.344 | 2.2.344 | 2026-10-30T10:51:10.086121+00:00 |
+| src / [H.NotifyIcon.WinUI](https://api.nuget.org/v3-flatcontainer/h.notifyicon.winui/index.json) | 2.3.2 / 2.3.2 | 2.4.1 | 2.3.2 | 2026-10-30T10:51:11.494607+00:00 |
+| src / [HtmlAgilityPack](https://api.nuget.org/v3-flatcontainer/htmlagilitypack/index.json) | 1.12.4 / 1.12.4 | 1.13.1 | 1.13.1 | 2026-10-30T10:51:11.832781+00:00 |
+| src / [Markdig](https://api.nuget.org/v3-flatcontainer/markdig/index.json) | 0.44.0 / 0.44.0 | 1.5.1 | 1.5.1 | 2026-10-30T10:51:12.405807+00:00 |
+| src / [Microsoft.CodeAnalysis.Analyzers](https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/index.json) | 3.3.4 / not in app graph | 5.9.0 | 5.9.0 | 2026-10-30T10:51:13.406008+00:00 |
+| src / [Microsoft.CodeAnalysis.Common](https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.common/index.json) | 4.10.0 / not in app graph | 5.9.0 | 5.9.0 | 2026-10-30T10:51:13.987612+00:00 |
+| src / [Microsoft.Web.WebView2](https://api.nuget.org/v3-flatcontainer/microsoft.web.webview2/index.json) | 1.0.3595.46 / 1.0.3595.46 | 1.0.4314.35 | 1.0.4314.35 | 2026-10-30T10:51:18.927847+00:00 |
+| src / [Microsoft.Windows.CsWin32](https://api.nuget.org/v3-flatcontainer/microsoft.windows.cswin32/index.json) | 0.3.257 / 0.3.257 | 0.3.367 | 0.3.367 | 2026-10-30T10:51:19.057886+00:00 |
+| src / [Microsoft.Windows.CsWinRT](https://api.nuget.org/v3-flatcontainer/microsoft.windows.cswinrt/index.json) | 2.2.0 / 2.3.0-prerelease.251015.2 | 2.3.1 | 2.3.1 | 2026-10-30T10:51:19.249695+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Ali](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.ali/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:20.933767+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Anthropic](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.anthropic/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:21.221493+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Azure](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.azure/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:21.224436+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Baidu](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.baidu/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:21.376497+00:00 |
+| src / [Richasy.AgentKernel.Connectors.DeepSeek](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.deepseek/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:21.919222+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Google](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.google/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:22.502824+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Groq](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.groq/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:22.710065+00:00 |
+| src / [Richasy.AgentKernel.Connectors.IFlyTek](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.iflytek/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.308305+00:00 |
+| src / [Richasy.AgentKernel.Connectors.LingYi](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.lingyi/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.314722+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Mistral](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.mistral/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.373618+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Moonshot](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.moonshot/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.389264+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Ollama](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.ollama/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.558000+00:00 |
+| src / [Richasy.AgentKernel.Connectors.OpenAI](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.openai/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.559542+00:00 |
+| src / [Richasy.AgentKernel.Connectors.OpenRouter](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.openrouter/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.606287+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Perplexity](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.perplexity/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.903505+00:00 |
+| src / [Richasy.AgentKernel.Connectors.SiliconFlow](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.siliconflow/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.928433+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Tencent](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.tencent/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:23.966426+00:00 |
+| src / [Richasy.AgentKernel.Connectors.TogetherAI](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.togetherai/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:24.172600+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Volcano](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.volcano/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:24.667241+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Windows](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.windows/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:25.369421+00:00 |
+| src / [Richasy.AgentKernel.Connectors.XAI](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.xai/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:25.744734+00:00 |
+| src / [Richasy.AgentKernel.Connectors.Youdao](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.youdao/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:25.761189+00:00 |
+| src / [Richasy.AgentKernel.Connectors.ZhiPu](https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.zhipu/index.json) | 0.0.8-preview5 / 0.0.8-preview5 | 0.0.8-preview6 | 0.0.8-preview6 | 2026-10-30T10:51:25.788096+00:00 |
+| src / [Richasy.MpvKernel](https://api.nuget.org/v3-flatcontainer/richasy.mpvkernel/index.json) | 0.0.2-preview2 / 0.0.2-preview2 | 0.0.2-preview2 | 0.0.2-preview2 | 2026-10-30T10:51:25.788373+00:00 |
+| src / [Richasy.MpvKernel.Core](https://api.nuget.org/v3-flatcontainer/richasy.mpvkernel.core/index.json) | 0.0.2-preview2 / 0.0.2-preview2 | 0.0.2-preview2 | 0.0.2-preview2 | 2026-10-30T10:51:26.251281+00:00 |
+| src / [Richasy.MpvKernel.Player](https://api.nuget.org/v3-flatcontainer/richasy.mpvkernel.player/index.json) | 0.0.2-preview2 / 0.0.2-preview2 | 0.0.2-preview2 | 0.0.2-preview2 | 2026-10-30T10:51:26.280387+00:00 |
+| src / [Richasy.MpvKernel.WinUI](https://api.nuget.org/v3-flatcontainer/richasy.mpvkernel.winui/index.json) | 0.0.2-preview2 / 0.0.2-preview2 | 0.0.2-preview2 | 0.0.2-preview2 | 2026-10-30T10:51:26.304538+00:00 |
+| src / [Richasy.WinUIKernel.AI](https://api.nuget.org/v3-flatcontainer/richasy.winuikernel.ai/index.json) | 0.0.12-preview3 / 0.0.12-preview3 | 0.0.12-preview4 | 0.0.12-preview4 | 2026-10-30T10:51:26.304892+00:00 |
+| src / [RichasyKernel.Core](https://api.nuget.org/v3-flatcontainer/richasykernel.core/index.json) | 0.0.1 / 0.0.1 | 0.0.1 | 0.0.1 | 2026-10-30T10:51:26.669985+00:00 |
+| src / [Roman-Numerals](https://api.nuget.org/v3-flatcontainer/roman-numerals/index.json) | 2.0.1 / 2.0.1 | 2.1.0 | 2.1.0 | 2026-10-30T10:51:26.948359+00:00 |
+| src / [Serilog](https://api.nuget.org/v3-flatcontainer/serilog/index.json) | 4.3.1-dev-02385 / 4.3.1-dev-02385 | 4.4.0 | 4.4.0 | 2026-10-30T10:51:27.619369+00:00 |
+| src / [Serilog.Extensions.Logging](https://api.nuget.org/v3-flatcontainer/serilog.extensions.logging/index.json) | 9.0.3-dev-02320 / 9.0.3-dev-02320 | 10.0.0 | 10.0.0 | 2026-10-30T10:51:27.727773+00:00 |
+| src / [Serilog.Sinks.File](https://api.nuget.org/v3-flatcontainer/serilog.sinks.file/index.json) | 7.0.0 / 7.0.0 | 7.0.0 | 7.0.0 | 2026-10-30T10:51:27.853671+00:00 |
+| src / [Microsoft.Windows.SDK.BuildTools](https://api.nuget.org/v3-flatcontainer/microsoft.windows.sdk.buildtools/index.json) | 10.0.26100.6901 / 10.0.26100.6901 | 10.0.28000.2957 | 10.0.28000.2957 | 2026-10-30T10:51:19.539014+00:00 |
+| src / [Microsoft.WindowsAppSDK](https://api.nuget.org/v3-flatcontainer/microsoft.windowsappsdk/index.json) | 1.8.251106002 / 1.8.251106002 | 2.6.4 | 2.6.4 | 2026-10-30T10:51:19.565429+00:00 |
+| src / [System.Management](https://api.nuget.org/v3-flatcontainer/system.management/index.json) | 10.0.0 / 10.0.0 | 10.0.14 | 10.0.14 | 2026-10-30T10:51:28.592792+00:00 |
+| src / [System.Runtime.InteropServices.WindowsRuntime](https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices.windowsruntime/index.json) | 4.3.0 / 4.3.0 | 4.3.0 | 4.3.0 | 2026-10-30T10:51:29.918649+00:00 |
+| src / [Microsoft.Graphics.Win2D](https://api.nuget.org/v3-flatcontainer/microsoft.graphics.win2d/index.json) | 1.3.2 / 1.3.2 | 1.4.0 | 1.4.0 | 2026-10-30T10:51:18.435354+00:00 |
+| src / [WinUIEx](https://api.nuget.org/v3-flatcontainer/winuiex/index.json) | 2.3.4 / 2.9.0 | 2.9.3 | 2.9.3 | 2026-10-30T10:51:31.647343+00:00 |
+| src / [Microsoft.CodeAnalysis.NetAnalyzers](https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.netanalyzers/index.json) | 9.0.0 / 9.0.0 | 10.0.403 | 10.0.403 | 2026-10-30T10:51:14.490206+00:00 |
+| src / [Microsoft.VisualStudio.Threading.Analyzers](https://api.nuget.org/v3-flatcontainer/microsoft.visualstudio.threading.analyzers/index.json) | 17.14.15 / 17.14.15 | 18.12.1 | 18.12.1 | 2026-10-30T10:51:18.817826+00:00 |
+| src / [xunit.analyzers](https://api.nuget.org/v3-flatcontainer/xunit.analyzers/index.json) | 1.20.0 / 1.20.0 | 2.2.0 | 2.2.0 | 2026-10-30T10:51:32.297511+00:00 |
+| src / [Moq.Analyzers](https://api.nuget.org/v3-flatcontainer/moq.analyzers/index.json) | 0.3.0 / 0.3.0 | 0.4.2 | 0.4.2 | 2026-10-30T10:51:19.610227+00:00 |
+| src / [Roslynator.Analyzers](https://api.nuget.org/v3-flatcontainer/roslynator.analyzers/index.json) | [4.11.0] / 4.11.0 | 5.0.1 | 5.0.1 | 2026-10-30T10:51:27.097906+00:00 |
+| src / [Roslynator.CodeAnalysis.Analyzers](https://api.nuget.org/v3-flatcontainer/roslynator.codeanalysis.analyzers/index.json) | [4.12.0] / 4.12.0 | 5.0.1 | 5.0.1 | 2026-10-30T10:51:27.149419+00:00 |
+| src / [Roslynator.Formatting.Analyzers](https://api.nuget.org/v3-flatcontainer/roslynator.formatting.analyzers/index.json) | [4.12.0] / 4.12.0 | 5.0.1 | 5.0.1 | 2026-10-30T10:51:27.190216+00:00 |
+| tests / [CommunityToolkit.Mvvm](https://api.nuget.org/v3-flatcontainer/communitytoolkit.mvvm/index.json) | 8.4.0 / 8.4.0 | 8.4.2 | 8.4.2 | 2026-10-30T10:51:08.869084+00:00 |
+| tests / [coverlet.collector](https://api.nuget.org/v3-flatcontainer/coverlet.collector/index.json) | 6.0.4 / not in app graph | 10.1.0 | 10.1.0 | 2026-10-30T10:51:31.649425+00:00 |
+| tests / [Microsoft.NET.Test.Sdk](https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/index.json) | 17.14.1 / not in app graph | 18.11.0 | 18.11.0 | 2026-10-30T10:51:18.461507+00:00 |
+| tests / [xunit](https://api.nuget.org/v3-flatcontainer/xunit/index.json) | 2.9.3 / not in app graph | 2.9.3 | 2.9.3 | 2026-10-30T10:51:31.760657+00:00 |
+| tests / [xunit.runner.visualstudio](https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/index.json) | 3.1.4 / not in app graph | 4.0.1 | 4.0.1 | 2026-10-30T10:51:32.429560+00:00 |
+| externals/bili-kernel/src / [Google.Protobuf](https://api.nuget.org/v3-flatcontainer/google.protobuf/index.json) | 3.29.3 / 3.29.3 | 3.36.2 | 3.36.2 | 2026-10-30T10:51:10.307068+00:00 |
+| externals/bili-kernel/src / [Grpc.Net.Client](https://api.nuget.org/v3-flatcontainer/grpc.net.client/index.json) | 2.67.0 / 2.67.0 | 2.85.0 | 2.85.0 | 2026-10-30T10:51:10.875172+00:00 |
+| externals/bili-kernel/src / [Grpc.Tools](https://api.nuget.org/v3-flatcontainer/grpc.tools/index.json) | 2.69.0 / not in app graph | 2.85.0 | 2.85.0 | 2026-10-30T10:51:10.917704+00:00 |
+| externals/bili-kernel/src / [Humanizer.Core.zh-Hans](https://api.nuget.org/v3-flatcontainer/humanizer.core.zh-hans/index.json) | 2.14.1 / 2.14.1 | 3.0.10 | 3.0.10 | 2026-10-30T10:51:12.188867+00:00 |
+| externals/bili-kernel/src / [Microsoft.Bcl.AsyncInterfaces](https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/index.json) | 9.0.1 / 9.0.2 | 10.0.14 | 10.0.14 | 2026-10-30T10:51:12.427810+00:00 |
+| externals/bili-kernel/src / [Microsoft.Bcl.HashCode](https://api.nuget.org/v3-flatcontainer/microsoft.bcl.hashcode/index.json) | 6.0.0 / 6.0.0 | 6.0.0 | 6.0.0 | 2026-10-30T10:51:12.748631+00:00 |
+| externals/bili-kernel/src / [Microsoft.Windows.SDK.BuildTools](https://api.nuget.org/v3-flatcontainer/microsoft.windows.sdk.buildtools/index.json) | 10.0.22621.756 / 10.0.26100.6901 | 10.0.28000.2957 | 10.0.28000.2957 | 2026-10-30T10:51:19.539014+00:00 |
+| externals/bili-kernel/src / [Microsoft.WindowsAppSDK](https://api.nuget.org/v3-flatcontainer/microsoft.windowsappsdk/index.json) | 1.6.250108002 / 1.8.251106002 | 2.6.4 | 2.6.4 | 2026-10-30T10:51:19.565429+00:00 |
+| externals/bili-kernel/src / [QRCoder](https://api.nuget.org/v3-flatcontainer/qrcoder/index.json) | 1.6.0 / 1.6.0 | 1.8.1 | 1.8.1 | 2026-10-30T10:51:20.605341+00:00 |
+| externals/bili-kernel/src / [RichasyKernel.Abstractions](https://api.nuget.org/v3-flatcontainer/richasykernel.abstractions/index.json) | 0.0.1 / 0.0.1 | 0.0.1 | 0.0.1 | 2026-10-30T10:51:26.396320+00:00 |
+| externals/bili-kernel/src / [System.Drawing.Common](https://api.nuget.org/v3-flatcontainer/system.drawing.common/index.json) | 9.0.1 / 9.0.2 | 10.0.14 | 10.0.14 | 2026-10-30T10:51:28.021188+00:00 |
+| externals/bili-kernel/src / [System.Text.Json](https://api.nuget.org/v3-flatcontainer/system.text.json/index.json) | 9.0.1 / 10.0.0-rc.1.25451.107 | 10.0.14 | 10.0.14 | 2026-10-30T10:51:30.062322+00:00 |
+| src / [System.Reflection.Metadata](https://api.nuget.org/v3-flatcontainer/system.reflection.metadata/index.json) | (absent) / 9.0.1 | 10.0.14 | 10.0.14 | 2026-10-30T11:12:00.024119+00:00 |
+## Kernel sample only (outside app closure)
+
+| Area / package | Old declaration / app resolved | Latest stable / available | Selected | Checked UTC |
+|---|---|---|---|---|
+| externals/bili-kernel/src / [Microsoft.Extensions.Hosting](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting/index.json) | 9.0.1 / not in app graph | 10.0.14 | 9.0.1 | 2026-10-30T10:51:16.014016+00:00 |
+| externals/bili-kernel/src / [RichasyKernel.Core](https://api.nuget.org/v3-flatcontainer/richasykernel.core/index.json) | 0.0.1 / 0.0.1 | 0.0.1 | 0.0.1 | 2026-10-30T10:51:26.669985+00:00 |
+| externals/bili-kernel/src / [Spectre.Console](https://api.nuget.org/v3-flatcontainer/spectre.console/index.json) | 0.49.2-preview.0.69 / not in app graph | 0.57.2 | 0.49.2-preview.0.69 | 2026-10-30T10:51:27.874371+00:00 |
+## Central declarations with no direct reference
+
+| Area / package | Old declaration / app resolved | Latest stable / available | Selected | Checked UTC |
+|---|---|---|---|---|
+| src / [CommunityToolkit.Labs.WinUI.SegmentedControl](https://pkgs.dev.azure.com/dotnet/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/_packaging/9c12ba9d-e4eb-4290-9266-e0fb1a871009/nuget/v3/flat2/communitytoolkit.labs.winui.segmentedcontrol/index.json) | 0.1.230830 / not in app graph | 0.1.230830 | 0.1.230830 | 2026-10-30T10:52:38.779551+00:00 |
+| src / [CommunityToolkit.Labs.WinUI.Shimmer](https://pkgs.dev.azure.com/dotnet/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/_packaging/5be56589-b331-4246-87a9-6b82c0d086b3/nuget/v3/flat2/communitytoolkit.labs.winui.shimmer/index.json) | 0.1.240801-build.1708 / not in app graph | 0.1.250828-build.13 | 0.1.240801-build.1708 | 2026-10-30T10:52:48.969003+00:00 |
+| src / [CommunityToolkit.WinUI.Controls.SettingsControls](https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.controls.settingscontrols/index.json) | 8.1.240916 / not in app graph | 8.2.251219 | 8.1.240916 | 2026-10-30T10:51:08.950108+00:00 |
+| src / [Flurl.Http](https://api.nuget.org/v3-flatcontainer/flurl.http/index.json) | 4.0.2 / not in app graph | 4.0.2 | 4.0.2 | 2026-10-30T10:51:10.299011+00:00 |
+| src / [Google.Protobuf](https://api.nuget.org/v3-flatcontainer/google.protobuf/index.json) | 3.27.2 / 3.29.3 | 3.36.2 | 3.27.2 | 2026-10-30T10:51:10.307068+00:00 |
+| src / [Grpc.Net.Client](https://api.nuget.org/v3-flatcontainer/grpc.net.client/index.json) | 2.63.0 / 2.67.0 | 2.85.0 | 2.63.0 | 2026-10-30T10:51:10.875172+00:00 |
+| src / [Grpc.Tools](https://api.nuget.org/v3-flatcontainer/grpc.tools/index.json) | 2.64.0 / not in app graph | 2.85.0 | 2.64.0 | 2026-10-30T10:51:10.917704+00:00 |
+| src / [Humanizer.Core.zh-Hans](https://api.nuget.org/v3-flatcontainer/humanizer.core.zh-hans/index.json) | 2.14.1 / 2.14.1 | 3.0.10 | 2.14.1 | 2026-10-30T10:51:12.188867+00:00 |
+| src / [Microsoft.Bcl.HashCode](https://api.nuget.org/v3-flatcontainer/microsoft.bcl.hashcode/index.json) | 6.0.0 / 6.0.0 | 6.0.0 | 6.0.0 | 2026-10-30T10:51:12.748631+00:00 |
+| src / [Microsoft.Bcl.AsyncInterfaces](https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/index.json) | 9.0.0 / 9.0.2 | 10.0.14 | 9.0.0 | 2026-10-30T10:51:12.427810+00:00 |
+| src / [Microsoft.Bcl.Numerics](https://api.nuget.org/v3-flatcontainer/microsoft.bcl.numerics/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:13.074939+00:00 |
+| src / [Microsoft.CodeAnalysis.CSharp](https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/index.json) | 4.3.0 / not in app graph | 5.9.0 | 4.3.0 | 2026-10-30T10:51:13.616436+00:00 |
+| src / [Microsoft.CodeAnalysis.CSharp.CodeStyle](https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp.codestyle/index.json) | 4.4.0 / not in app graph | 5.9.0 | 4.4.0 | 2026-10-30T10:51:13.934632+00:00 |
+| src / [Microsoft.CodeAnalysis.Metrics](https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.metrics/index.json) | 3.3.4 / not in app graph | 5.6.0 | 3.3.4 | 2026-10-30T10:51:14.175581+00:00 |
+| src / [NLog.Extensions.Logging](https://api.nuget.org/v3-flatcontainer/nlog.extensions.logging/index.json) | 5.3.15 / not in app graph | 6.2.2 | 5.3.15 | 2026-10-30T10:51:20.519491+00:00 |
+| src / [StyleCop.Analyzers](https://api.nuget.org/v3-flatcontainer/stylecop.analyzers/index.json) | 1.1.118 / not in app graph | 1.1.118 | 1.1.118 | 2026-10-30T10:51:27.973569+00:00 |
+| src / [Microsoft.Bcl.TimeProvider](https://api.nuget.org/v3-flatcontainer/microsoft.bcl.timeprovider/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:13.075137+00:00 |
+| src / [Microsoft.Extensions.Logging.Debug](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.debug/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:17.355756+00:00 |
+| src / [Polly](https://api.nuget.org/v3-flatcontainer/polly/index.json) | 8.4.1 / not in app graph | 8.9.0 | 8.4.1 | 2026-10-30T10:51:20.557245+00:00 |
+| src / [QRCoder](https://api.nuget.org/v3-flatcontainer/qrcoder/index.json) | 1.4.1 / 1.6.0 | 1.8.1 | 1.4.1 | 2026-10-30T10:51:20.605341+00:00 |
+| src / [System.Diagnostics.DiagnosticSource](https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/index.json) | 9.0.0 / 10.0.0-rc.1.25451.107 | 10.0.14 | 9.0.0 | 2026-10-30T10:51:28.021016+00:00 |
+| src / [System.Linq.Async](https://api.nuget.org/v3-flatcontainer/system.linq.async/index.json) | 9.0.0 / not in app graph | 7.0.1 | 9.0.0 | 2026-10-30T10:51:28.500775+00:00 |
+| src / [System.Memory.Data](https://api.nuget.org/v3-flatcontainer/system.memory.data/index.json) | 9.0.0 / 10.0.0-rc.1.25451.107 | 10.0.14 | 9.0.0 | 2026-10-30T10:51:29.160135+00:00 |
+| src / [System.Numerics.Tensors](https://api.nuget.org/v3-flatcontainer/system.numerics.tensors/index.json) | 9.0.0 / 9.0.0 | 10.0.14 | 9.0.0 | 2026-10-30T10:51:29.305656+00:00 |
+| src / [System.Private.Uri](https://api.nuget.org/v3-flatcontainer/system.private.uri/index.json) | 4.3.2 / 4.3.2 | 4.3.2 | 4.3.2 | 2026-10-30T10:51:29.752435+00:00 |
+| src / [System.Text.Json](https://api.nuget.org/v3-flatcontainer/system.text.json/index.json) | 9.0.1 / 10.0.0-rc.1.25451.107 | 10.0.14 | 9.0.1 | 2026-10-30T10:51:30.062322+00:00 |
+| src / [System.Threading.Tasks.Extensions](https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/index.json) | 4.5.4 / 4.5.4 | 4.6.3 | 4.5.4 | 2026-10-30T10:51:30.701136+00:00 |
+| src / [System.ValueTuple](https://api.nuget.org/v3-flatcontainer/system.valuetuple/index.json) | 4.5.0 / not in app graph | 4.6.2 | 4.5.0 | 2026-10-30T10:51:31.064589+00:00 |
+| src / [Microsoft.Extensions.Configuration](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:14.513163+00:00 |
+| src / [Microsoft.Extensions.Configuration.Binder](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:14.780916+00:00 |
+| src / [Microsoft.Extensions.Configuration.EnvironmentVariables](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.environmentvariables/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:15.099657+00:00 |
+| src / [Microsoft.Extensions.Configuration.Json](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.json/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:15.316474+00:00 |
+| src / [Microsoft.Extensions.Configuration.UserSecrets](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.usersecrets/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:15.944927+00:00 |
+| src / [Microsoft.Extensions.DependencyInjection](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/index.json) | 9.0.0 / 9.0.0 | 10.0.14 | 9.0.0 | 2026-10-30T10:51:15.995961+00:00 |
+| src / [Microsoft.Extensions.DependencyInjection.Abstractions](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/index.json) | 9.0.0 / 10.0.0-rc.1.25451.107 | 10.0.14 | 9.0.0 | 2026-10-30T10:51:16.011018+00:00 |
+| src / [Microsoft.Extensions.Hosting](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:16.014016+00:00 |
+| src / [Microsoft.Extensions.Http](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.http/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:16.070635+00:00 |
+| src / [Microsoft.Extensions.Http.Resilience](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.http.resilience/index.json) | 9.0.0 / not in app graph | 10.11.0 | 9.0.0 | 2026-10-30T10:51:16.199477+00:00 |
+| src / [Microsoft.Extensions.Logging](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/index.json) | 9.0.0 / 9.0.0 | 10.0.14 | 9.0.0 | 2026-10-30T10:51:16.606332+00:00 |
+| src / [Microsoft.Extensions.Logging.Abstractions](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/index.json) | 9.0.2 / 10.0.0-rc.1.25451.107 | 10.0.14 | 9.0.2 | 2026-10-30T10:51:16.706611+00:00 |
+| src / [Microsoft.Extensions.Logging.Console](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.console/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:16.788254+00:00 |
+| src / [Microsoft.Extensions.Options.DataAnnotations](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options.dataannotations/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:52:36.773761+00:00 |
+| src / [Microsoft.Extensions.TimeProvider.Testing](https://api.nuget.org/v3-flatcontainer/microsoft.extensions.timeprovider.testing/index.json) | 9.0.0 / not in app graph | 10.11.0 | 9.0.0 | 2026-10-30T10:51:18.279298+00:00 |
+| src / [Microsoft.NET.Test.Sdk](https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/index.json) | 17.10.0 / not in app graph | 18.11.0 | 17.10.0 | 2026-10-30T10:51:18.461507+00:00 |
+| src / [Moq](https://api.nuget.org/v3-flatcontainer/moq/index.json) | [4.18.4] / not in app graph | 4.21.0 | [4.18.4] | 2026-10-30T10:51:19.589188+00:00 |
+| src / [System.Threading.Channels](https://api.nuget.org/v3-flatcontainer/system.threading.channels/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:30.530610+00:00 |
+| src / [System.Threading.Tasks.Dataflow](https://api.nuget.org/v3-flatcontainer/system.threading.tasks.dataflow/index.json) | 9.0.0 / not in app graph | 10.0.14 | 9.0.0 | 2026-10-30T10:51:30.532937+00:00 |
+| src / [Verify.Xunit](https://api.nuget.org/v3-flatcontainer/verify.xunit/index.json) | 23.5.2 / not in app graph | 31.12.5 | 23.5.2 | 2026-10-30T10:51:31.070358+00:00 |
+| src / [Vortice.Direct3D11](https://api.nuget.org/v3-flatcontainer/vortice.direct3d11/index.json) | 3.5.0 / 3.7.6-beta | 3.8.3 | 3.5.0 | 2026-10-30T10:51:31.097454+00:00 |
+| src / [xunit](https://api.nuget.org/v3-flatcontainer/xunit/index.json) | 2.7.0 / not in app graph | 2.9.3 | 2.7.0 | 2026-10-30T10:51:31.760657+00:00 |
+| src / [xunit.abstractions](https://api.nuget.org/v3-flatcontainer/xunit.abstractions/index.json) | 2.0.3 / not in app graph | 2.0.3 | 2.0.3 | 2026-10-30T10:51:32.277018+00:00 |
+| src / [xunit.runner.visualstudio](https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/index.json) | 2.5.7 / not in app graph | 4.0.1 | 2.5.7 | 2026-10-30T10:51:32.429560+00:00 |
+| src / [xretry](https://api.nuget.org/v3-flatcontainer/xretry/index.json) | 1.9.0 / not in app graph | 1.9.0 | 1.9.0 | 2026-10-30T10:51:31.713616+00:00 |
+| src / [coverlet.collector](https://api.nuget.org/v3-flatcontainer/coverlet.collector/index.json) | 6.0.2 / not in app graph | 10.1.0 | 6.0.2 | 2026-10-30T10:51:31.649425+00:00 |
+| src / [Spectre.Console](https://api.nuget.org/v3-flatcontainer/spectre.console/index.json) | 0.49.1 / not in app graph | 0.57.2 | 0.49.1 | 2026-10-30T10:51:27.874371+00:00 |
+| src / [Microsoft.SourceLink.GitHub](https://api.nuget.org/v3-flatcontainer/microsoft.sourcelink.github/index.json) | 9.0.0 / not in app graph | 10.0.403 | 9.0.0 | 2026-10-30T10:51:18.530692+00:00 |
+| externals/bili-kernel/src / [Flurl.Http](https://api.nuget.org/v3-flatcontainer/flurl.http/index.json) | 4.0.2 / not in app graph | 4.0.2 | 4.0.2 | 2026-10-30T10:51:10.299011+00:00 |
+| externals/bili-kernel/src / [Polly](https://api.nuget.org/v3-flatcontainer/polly/index.json) | 8.5.1 / not in app graph | 8.9.0 | 8.5.1 | 2026-10-30T10:51:20.557245+00:00 |

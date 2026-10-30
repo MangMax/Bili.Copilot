@@ -106,29 +106,37 @@ public static class RecommendListDiff
             targetKept[--targetEnd] = true;
         }
 
-        // Only the changed middle requires LCS; a retained long tail is not quadratic.
-        var lengths = new int[currentEnd - start + 1, targetEnd - start + 1];
-        for (var i = currentEnd - 1; i >= start; i--)
+        // A pure insertion/removal has no competing middle to match.
+        // Only allocate LCS storage when both changed middles are non-empty.
+        if (currentEnd > start && targetEnd > start)
         {
-            for (var j = targetEnd - 1; j >= start; j--)
+            var lengths = new int[currentEnd - start + 1][];
+            for (var i = 0; i < lengths.Length; i++)
             {
-                lengths[i - start, j - start] = string.Equals(currentKeys[i], targetKeys[j], StringComparison.Ordinal)
-                    ? lengths[i - start + 1, j - start + 1] + 1
-                    : Math.Max(lengths[i - start + 1, j - start], lengths[i - start, j - start + 1]);
+                lengths[i] = new int[targetEnd - start + 1];
             }
-        }
+            for (var i = currentEnd - 1; i >= start; i--)
+            {
+                for (var j = targetEnd - 1; j >= start; j--)
+                {
+                    lengths[i - start][j - start] = string.Equals(currentKeys[i], targetKeys[j], StringComparison.Ordinal)
+                        ? lengths[i - start + 1][j - start + 1] + 1
+                        : Math.Max(lengths[i - start + 1][j - start], lengths[i - start][j - start + 1]);
+                }
+            }
 
-        var x = start;
-        var y = start;
-        while (x < currentEnd && y < targetEnd)
-        {
-            if (string.Equals(currentKeys[x], targetKeys[y], StringComparison.Ordinal))
+            var x = start;
+            var y = start;
+            while (x < currentEnd && y < targetEnd)
             {
-                currentKept[x++] = true;
-                targetKept[y++] = true;
+                if (string.Equals(currentKeys[x], targetKeys[y], StringComparison.Ordinal))
+                {
+                    currentKept[x++] = true;
+                    targetKept[y++] = true;
+                }
+                else if (lengths[x - start + 1][y - start] >= lengths[x - start][y - start + 1]) x++;
+                else y++;
             }
-            else if (lengths[x - start + 1, y - start] >= lengths[x - start, y - start + 1]) x++;
-            else y++;
         }
 
         var removedIndices = new List<int>();
