@@ -1,0 +1,29 @@
+{
+  "checkedUtc": "2026-10-30T14:34:17.289238+00:00",
+  "channels": [
+    {
+      "channel-version": "9.0",
+      "latest-release": "9.0.22",
+      "latest-runtime": "9.0.22",
+      "latest-sdk": "9.0.320",
+      "support-phase": "maintenance",
+      "release-type": "sts"
+    },
+    {
+      "channel-version": "10.0",
+      "latest-release": "10.0.14",
+      "latest-runtime": "10.0.14",
+      "latest-sdk": "10.0.403",
+      "support-phase": "active",
+      "release-type": "lts"
+    },
+    {
+      "channel-version": "11.0",
+      "latest-release": "11.0.0-rc.3",
+      "latest-runtime": "11.0.0-rc.3.26522.148",
+      "latest-sdk": "11.0.100-rc.3.26522.148",
+      "support-phase": "go-live",
+      "release-type": "sts"
+    }
+  ]
+}
