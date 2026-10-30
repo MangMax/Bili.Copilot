@@ -126,6 +126,10 @@ public partial class App : Application
         }
 
         window.Activate();
+        // Activate sets the active window, but a caption-button close can leave
+        // the restored window in the background. Request foreground as well.
+        // Windows may still decline the request under its foreground policy.
+        _ = window.SetForegroundWindow();
     }
 
     private ITrayIconSession CreateTrayIcon()

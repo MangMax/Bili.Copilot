@@ -1,0 +1,147 @@
+{
+  "exits": {
+    "run2": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "pid": 38392,
+      "lastQueryAfterExit": 30.050865,
+      "collectionEndAfterExit": 30.055156
+    },
+    "logged1": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "pid": 23988,
+      "lastQueryAfterExit": 30.079264,
+      "collectionEndAfterExit": 30.080665
+    },
+    "green1": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "pid": 39832,
+      "lastQueryAfterExit": 30.250949,
+      "collectionEndAfterExit": 30.253937
+    },
+    "physical-red": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "pid": 28264,
+      "lastQueryAfterExit": 30.101042,
+      "collectionEndAfterExit": 30.104001
+    },
+    "physical-green": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "pid": 10552,
+      "lastQueryAfterExit": 30.135611,
+      "collectionEndAfterExit": 30.138446
+    }
+  },
+  "cases": {
+    "logged1/Mouse": {
+      "visible": true,
+      "foreground": false,
+      "keyboard": false
+    },
+    "logged1/Invoke": {
+      "visible": true,
+      "foreground": false,
+      "keyboard": true
+    },
+    "logged1/Aumid": {
+      "visible": true,
+      "foreground": false,
+      "keyboard": true
+    },
+    "run2/Mouse": {
+      "visible": true,
+      "foreground": false,
+      "keyboard": true
+    },
+    "run2/Menu": {
+      "visible": true,
+      "foreground": true,
+      "keyboard": true
+    },
+    "green1/Mouse": {
+      "visible": true,
+      "foreground": true,
+      "keyboard": true
+    },
+    "green1/Invoke": {
+      "visible": true,
+      "foreground": true,
+      "keyboard": true
+    },
+    "green1/Aumid": {
+      "visible": true,
+      "foreground": true,
+      "keyboard": true
+    },
+    "green1/Menu": {
+      "visible": true,
+      "foreground": true,
+      "keyboard": true
+    },
+    "physical-red/Mouse": {
+      "visible": true,
+      "foreground": true,
+      "keyboard": true
+    },
+    "physical-green/Mouse": {
+      "visible": true,
+      "foreground": true,
+      "keyboard": true
+    }
+  },
+  "live": true,
+  "fixtureSourceDelta": [
+    "App.xaml.cs"
+  ],
+  "packages": 134,
+  "payloadDelta": [
+    "BiliCopilot.UI.dll",
+    "BiliCopilot.UI.pdb"
+  ],
+  "sameCriticalRuntimeModules": 6,
+  "trayTests": {
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0
+  },
+  "suiteTests": {
+    "passed": 487,
+    "failed": 0,
+    "skipped": 0
+  },
+  "yield": {
+    "exit": 0,
+    "output": [
+      "{",
+      "  \"released\": false",
+      "}"
+    ],
+    "utc": "2026-10-30T19:51:23.3703112Z"
+  },
+  "run1Exit": "BLOCKED: missing persisted observation",
+  "protectedPayloadFiles": 670
+}
