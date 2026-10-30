@@ -99,6 +99,9 @@ app runtimeconfig 为自包含 net10 / 10.0.14；测试 LatestPatch 限于 net10
 独立 [audit.py](net10-integration/audit.py) 检查每个冻结文件 hash、双向文件集合、
 activation 内容完整性、原始文件未覆盖、manifest/TFM/runtime、TRX 和祖先。
 所有归档采用 gzip 原始字节，不对 JSON 做 newline 规范化。
+最终执行 `python docs/performance-acceptance/net10-integration/audit.py --tracked` 通过。
+仓库忽略规则匹配 Debug/Release/obj，因此将清单中的 174 份 gzip 显式纳入 Git；
+tracked 检查防止本地存在但交付缺少 resolved assets。大体积生产二进制仍保持 ignored。
 
 ## 保护边界与后续
 

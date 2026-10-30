@@ -5,6 +5,7 @@ import hashlib
 import json
 import pathlib
 import subprocess
+import sys
 import xml.etree.ElementTree as ET
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
@@ -111,4 +112,7 @@ for prefix, args in [('', []), ('externals/bili-kernel/', ['-C', 'externals/bili
 summary['sourceHashesGzipSha256'] = sha(HERE / 'source-hashes.json.gz')
 (HERE / 'archive-ledger.json').write_text(json.dumps(ledger, indent=2), encoding='utf-8')
 (HERE / 'summary.json').write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding='utf-8')
+if '--tracked' in sys.argv:
+    for item in ledger:
+        subprocess.run(['git', 'ls-files', '--error-unmatch', str((HERE / 'evidence' / (item['path'] + '.gz')).relative_to(ROOT))], cwd=ROOT, stdout=subprocess.DEVNULL, check=True)
 print(json.dumps({'closure': 'PASS', 'frozenSets': 'PASS', 'freshTests': counters, 'archives': len(ledger), 'summarySha256': sha(HERE / 'summary.json')}))
