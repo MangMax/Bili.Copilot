@@ -5,13 +5,13 @@ using System.Xml.Linq;
 namespace BiliCopilot.UI.Tests;
 
 /// <summary>
-/// 刷新结果提示条所用资源键的契约。
+/// 头部刷新入口所用资源键的契约。
 /// </summary>
 /// <remarks>
-/// 提示条通过 <c>{ext:Locale Name=...}</c> 与 <c>StringNames</c> 查资源，
-/// 键名写错或缺键只会让按钮文案变空，不会让构建失败，因此在这里固定住。
+/// 撤销刷新与刷新进度环通过 <c>{ext:Locale Name=...}</c> 与 <c>StringNames</c> 查资源，
+/// 键名写错或缺键只会让按钮文案、无障碍名称变空，不会让构建失败，因此在这里固定住。
 /// </remarks>
-public class RefreshResultTipResourceTests
+public class RefreshActionResourceTests
 {
     private static readonly string[] ResourceKeys =
     [
@@ -20,7 +20,7 @@ public class RefreshResultTipResourceTests
     ];
 
     [Fact]
-    public void Resources_ContainTipText()
+    public void Resources_ContainRefreshActionText()
     {
         var resources = ResourcesFileHelper.LoadResources();
 

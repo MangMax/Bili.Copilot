@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <local:PopularPageControlBase
     x:Class="BiliCopilot.UI.Controls.Popular.PopularMainHeader"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:extensions="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
@@ -33,19 +34,90 @@
             VerticalAlignment="Center"
             Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
             ContentTemplateSelector="{StaticResource SectionSelector}" />
-        <Button
+        <!--
+            撤销刷新与刷新按钮并排，两者外观一致：撤销只在推荐分区刷新完成后出现，
+            位置固定在刷新按钮左侧。
+            刷新进度就地画在刷新按钮的图标位置，不另起浮层或独立进度控件。
+        -->
+        <StackPanel
             Grid.Column="1"
             VerticalAlignment="Center"
-            AutomationProperties.Name="{extensions:Locale Name=Refresh}"
-            Command="{x:Bind ViewModel.RefreshVideoCommand}">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <ic:SymbolIcon
-                    VerticalAlignment="Center"
-                    FontSize="12"
-                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                    Symbol="ArrowSync" />
-                <TextBlock VerticalAlignment="Center" Text="{extensions:Locale Name=Refresh}" />
-            </StackPanel>
-        </Button>
+            Orientation="Horizontal"
+            Spacing="8">
+            <!--
+                撤销入口的显示与淡出由 code-behind 驱动（UndoRefreshButtonAnimator）：
+                容器上不能套重排过渡，否则撤销折叠时刷新按钮的相对偏移变化，会被一并动画。
+                刷新按钮本身右对齐、撤销折叠时并不位移，因此这里不需要任何补位过渡。
+            -->
+            <Button
+                x:Name="UndoRefreshButton"
+                AutomationProperties.AutomationId="UndoRefreshButton"
+                AutomationProperties.Name="{extensions:Locale Name=UndoRefresh}"
+                Command="{x:Bind ViewModel.UndoRefreshCommand, Mode=OneWay}"
+                Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ic:SymbolIcon
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                        Symbol="ArrowUndo" />
+                    <TextBlock VerticalAlignment="Center" Text="{extensions:Locale Name=UndoRefresh}" />
+                </StackPanel>
+                <!--  出现时淡入并轻微放大；消失由 code-behind 的淡出接管。  -->
+                <animations:Implicit.ShowAnimations>
+                    <animations:OpacityAnimation
+                        From="0"
+                        To="1"
+                        Duration="0:0:0.18" />
+                    <animations:ScaleAnimation
+                        From="0.96"
+                        To="1"
+                        Duration="0:0:0.22" />
+                </animations:Implicit.ShowAnimations>
+            </Button>
+            <Button
+                AutomationProperties.AutomationId="RefreshRecommendButton"
+                AutomationProperties.Name="{extensions:Locale Name=Refresh}"
+                Command="{x:Bind ViewModel.RefreshVideoCommand}"
+                IsEnabled="{x:Bind ViewModel.IsRecommendRefreshing, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Grid
+                        Width="14"
+                        Height="14"
+                        VerticalAlignment="Center">
+                        <!--  图标与进度环原位交叉淡入淡出，切换时不闪断。  -->
+                        <ic:SymbolIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                            Symbol="ArrowSync"
+                            Visibility="{x:Bind ViewModel.IsRecommendRefreshing, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+                        <ProgressRing
+                            Width="14"
+                            Height="14"
+                            MinWidth="14"
+                            MinHeight="14"
+                            AutomationProperties.AutomationId="RefreshProgressRing"
+                            AutomationProperties.Name="{extensions:Locale Name=RefreshingRecommendVideos}"
+                            IsActive="{x:Bind ViewModel.IsRecommendRefreshing, Mode=OneWay}"
+                            Visibility="{x:Bind ViewModel.IsRecommendRefreshing, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <!--  进度环原地淡入并轻微放大，替代原来的静态图标。  -->
+                            <animations:Implicit.ShowAnimations>
+                                <animations:OpacityAnimation
+                                    From="0"
+                                    To="1"
+                                    Duration="0:0:0.16" />
+                                <animations:ScaleAnimation
+                                    From="0.8"
+                                    To="1"
+                                    Duration="0:0:0.2" />
+                            </animations:Implicit.ShowAnimations>
+                        </ProgressRing>
+                    </Grid>
+                    <TextBlock VerticalAlignment="Center" Text="{extensions:Locale Name=Refresh}" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
     </Grid>
 </local:PopularPageControlBase>
