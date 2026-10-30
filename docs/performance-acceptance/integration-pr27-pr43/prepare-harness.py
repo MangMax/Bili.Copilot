@@ -45,3 +45,9 @@ edit('App.xaml','<local:CountConverter x:Key="CountConverter" />','<local:CountC
 shutil.copy2(ui/'Controls/Components/PartitionItemControl.xaml',dest)
 edit('Harness.csproj','</Project>','<ItemGroup><Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Components/PartitionItemControl.xaml.cs" Link="PartitionItemControl.xaml.cs"/></ItemGroup></Project>')
 
+
+edit('App.xaml.cs','slot.ColumnDefinitions.Add(new(){Width=new GridLength(220)});','slot.RowDefinitions.Add(new(){Height=GridLength.Auto});slot.RowDefinitions.Add(new(){Height=new GridLength(1,GridUnitType.Star)});slot.ColumnDefinitions.Add(new(){Width=new GridLength(220)});')
+edit('App.xaml.cs','main=new();side=new();Grid.SetColumn(main,1);','main=new();side=new();Grid.SetRow(main,1);Grid.SetRow(side,1);Grid.SetColumn(main,1);')
+edit('Adapters.cs','public Uri Cover=>null;','public Uri Cover=>new(System.IO.Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath,"Assets","Logo.png"));')
+edit('Adapters.cs','public Uri Avatar=>Cover;','public Uri Avatar=>null;')
+edit('Fixture.cs','new Partition("13","Anime",new(new Uri("ms-appx:///Assets/Logo.png")))','new Partition("13","Anime")')

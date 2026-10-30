@@ -60,6 +60,7 @@ public sealed partial class VideoPartitionDetailViewModel
     /// 刷新期间挡住下滑追加，避免请求结果与追加结果互相覆盖。
     /// </remarks>
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
     private bool _isRecommendRefreshing;
 
     /// <summary>

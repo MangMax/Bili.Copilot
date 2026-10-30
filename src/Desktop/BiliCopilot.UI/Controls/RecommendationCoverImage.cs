@@ -203,7 +203,11 @@ public sealed partial class RecommendationCoverImage : UserControl
 
             using var stream = await OpenAsync(key.Source, token);
             using var random = stream.AsRandomAccessStream();
-            var decoder = await BitmapDecoder.CreateAsync(random).AsTask(token);
+            // Canceling the WinRT wrapper can complete before WIC stops using the
+            // adapted stream (native AV on rapid unload/remount). Keep the stream
+            // alive until native decoding completes, then reject stale results.
+            var decoder = await BitmapDecoder.CreateAsync(random).AsTask();
+            token.ThrowIfCancellationRequested();
             // Never enlarge the source; UniformToFill needs enough pixels on BOTH axes.
             var (outputWidth, outputHeight) = CoverDecodeSize.Calculate(
                 decoder.OrientedPixelWidth, decoder.OrientedPixelHeight, key.Item2, key.Item3, 1);
@@ -212,7 +216,7 @@ public sealed partial class RecommendationCoverImage : UserControl
             ImageSource result;
             var pixels = await decoder.GetPixelDataAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied,
                 new BitmapTransform { ScaledWidth = width, ScaledHeight = height, InterpolationMode = BitmapInterpolationMode.Fant },
-                ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb).AsTask(token);
+                ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb).AsTask();
             token.ThrowIfCancellationRequested();
             var device = CanvasDevice.GetSharedDevice();
             if (!ReferenceEquals(_device, device))
