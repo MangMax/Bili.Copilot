@@ -75,7 +75,11 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
         }
 
         MoveAndResize();
-        this.Get<ILogger<App>>().LogInformation($"App version: {this.Get<IAppToolkit>().GetPackageVersion()}");
+        var logger = this.Get<ILogger<App>>();
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("App version: {Version}", this.Get<IAppToolkit>().GetPackageVersion());
+        }
         var localTheme = SettingsToolkit.ReadLocalSetting(SettingNames.AppTheme, ElementTheme.Default);
         this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
         AppWindow.Changed += OnWindowChanged;

@@ -326,7 +326,11 @@ public sealed partial class AppViewModel : ViewModelBase
 
             if (response?.Success == true)
             {
-                this.Get<ILogger<AppViewModel>>().LogInformation($"Visor scroll accelerate {(enabled ? "enabled" : "disabled")}.");
+                var logger = this.Get<ILogger<AppViewModel>>();
+                if (logger.IsEnabled(LogLevel.Information))
+                {
+                    logger.LogInformation("Visor scroll accelerate {State}.", enabled ? "enabled" : "disabled");
+                }
             }
             else
             {

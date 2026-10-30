@@ -277,7 +277,10 @@ public sealed partial class PlayerViewModel
 
             _sponsorBlockSegments = segments;
             NotifySponsorBlockSegmentsChanged();
-            logger.LogDebug("空降助手已加载 {Count} 个片段", segments.Count);
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("空降助手已加载 {Count} 个片段", segments.Count);
+            }
         }
         catch (Exception ex)
         {
