@@ -1,14 +1,23 @@
 """Render captured metadata and actual selected manifest versions, without querying again."""
-import json,pathlib,xml.etree.ElementTree as ET
+import datetime,json,pathlib,xml.etree.ElementTree as ET
 root=pathlib.Path(__file__).resolve().parents[3]
 data=json.loads((root/'artifacts/dependency-upgrade/inventory.json').read_text(encoding='utf-8-sig'))
 out=pathlib.Path(__file__).parent
 result=[]
+current_refs={}
+for area in ['src','tests','externals/bili-kernel/src']:
+    refs={}
+    for p in (root/area).rglob('*'):
+        if p.suffix not in ('.csproj','.props') or {'bin','obj','_build'}.intersection(p.parts):continue
+        for node in ET.parse(p).iter('PackageReference'):
+            refs.setdefault(node.get('Include'),[]).append(str(p.relative_to(root)))
+    current_refs[area]=refs
 for row in data['rows']:
     meta=data['metadata'][row['id']]
     nodes=ET.parse(root/row['file']).iter(row['kind'])
     selected=next(n.get('Version') for n in nodes if n.get('Include')==row['id'])
-    result.append({**row,'selected':selected,'latestStable':meta.get('latestStable'),'latestAvailable':meta.get('latestAvailable'),'source':meta['source'],'checkedUtc':meta['checkedUtc'],'metadataError':meta.get('error')})
+    checked=datetime.datetime.fromisoformat(meta['checkedUtc'].replace('Z','+00:00')).astimezone(datetime.timezone.utc).isoformat()
+    result.append({**row,'references':current_refs[row['area']].get(row['id'],[]),'selected':selected,'latestStable':meta.get('latestStable'),'latestAvailable':meta.get('latestAvailable'),'source':meta['source'],'checkedUtc':checked,'metadataError':meta.get('error')})
 (out/'versions.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
 lines=['# Exact dependency inventory','', 'Latest means stable if available; preview-only packages retain their channel. Unreferenced central declarations are inventoried separately and are not runtime upgrades. See dependency-upgrade.md for attempted-version blockers.','']
 for used in (True,False):

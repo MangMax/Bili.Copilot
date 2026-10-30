@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$Destination,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z][A-Za-z0-9]+$')][string]$RunId,[ValidateSet('player','controls')][string]$Kind='player')
+param([Parameter(Mandatory)][string]$Destination,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z][A-Za-z0-9]+$')][string]$RunId,[ValidateSet('player','controls')][string]$Kind='player',[switch]$UseCurrentPackages)
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path "$PSScriptRoot/../../..").Path
 $old="$PSScriptRoot/../integration-pr27-pr43"
@@ -19,6 +19,16 @@ if($Kind -eq 'player') {
     $runner=Get-Content "$Destination/run-controls.ps1" -Raw
     $runner=$runner.Replace(" UI @('invoke','IntegrationChecks')", " UI @('wait-for','IntegrationChecks','-t','20000') | Out-Null`n UI @('invoke','IntegrationChecks')")
     Set-Content "$Destination/run-controls.ps1" $runner
+    if($UseCurrentPackages) {
+        $assets=Get-Content "$root/src/Desktop/BiliCopilot.UI/obj/project.assets.json" -Raw | ConvertFrom-Json
+        $versions=@{}
+        foreach($key in $assets.libraries.PSObject.Properties.Name) {$parts=$key.Split('/');$versions[$parts[0]]=$parts[1]}
+        [xml]$project=Get-Content "$Destination/Harness.csproj"
+        foreach($ref in $project.Project.ItemGroup.PackageReference) {
+            if($ref -and $versions.ContainsKey($ref.Include)) {$ref.Version=$versions[$ref.Include]}
+        }
+        $project.Save("$Destination/Harness.csproj")
+    }
 }
 foreach($file in Get-ChildItem $Destination -File | Where-Object Extension -in '.ps1','.appxmanifest','.cs') {
     $text=Get-Content $file.FullName -Raw
