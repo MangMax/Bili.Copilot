@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
+using Microsoft.Extensions.Logging;
 using Richasy.WinUIKernel.Share.Toolkits;
 
 namespace BiliCopilot.UI.Controls.Danmaku;
@@ -27,7 +28,7 @@ public sealed partial class DanmakuDisplayOptions : DanmakuControlBase
         }
         catch (Exception ex)
         {
-            Serilog.Log.Warning(ex, "Unable to load danmaku font choices");
+            this.Get<ILogger<DanmakuDisplayOptions>>().LogWarning(ex, "Unable to load danmaku font choices");
         }
     }
 
