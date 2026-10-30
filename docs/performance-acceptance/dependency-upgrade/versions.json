@@ -1,0 +1,2198 @@
+[
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "ColorCode.WinUI",
+    "old": "2.0.15",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "2.0.15",
+    "latestStable": "2.0.15",
+    "latestAvailable": "2.0.15",
+    "source": "https://api.nuget.org/v3-flatcontainer/colorcode.winui/index.json",
+    "checkedUtc": "2026-10-30T18:51:08.823789+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.Labs.WinUI.SegmentedControl",
+    "old": "0.1.230830",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "0.1.230830",
+    "latestStable": "0.1.230830",
+    "latestAvailable": "0.1.230830",
+    "source": "https://pkgs.dev.azure.com/dotnet/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/_packaging/9c12ba9d-e4eb-4290-9266-e0fb1a871009/nuget/v3/flat2/communitytoolkit.labs.winui.segmentedcontrol/index.json",
+    "checkedUtc": "2026-10-30T10:52:38.7795510Z",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.Labs.WinUI.Shimmer",
+    "old": "0.1.240801-build.1708",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "0.1.240801-build.1708",
+    "latestStable": null,
+    "latestAvailable": "0.1.250828-build.13",
+    "source": "https://pkgs.dev.azure.com/dotnet/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/_packaging/5be56589-b331-4246-87a9-6b82c0d086b3/nuget/v3/flat2/communitytoolkit.labs.winui.shimmer/index.json",
+    "checkedUtc": "2026-10-30T10:52:48.9690035Z",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.Mvvm",
+    "old": "8.2.2",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "8.2.2",
+    "latestStable": "8.4.2",
+    "latestAvailable": "8.4.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.mvvm/index.json",
+    "checkedUtc": "2026-10-30T18:51:08.869084+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.WinUI.Animations",
+    "old": "8.0.240109",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "8.0.240109",
+    "latestStable": "8.2.251219",
+    "latestAvailable": "8.3.260402-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.animations/index.json",
+    "checkedUtc": "2026-10-30T18:51:08.948773+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.WinUI.Controls.Primitives",
+    "old": "8.2.250402",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "8.2.250402",
+    "latestStable": "8.2.251219",
+    "latestAvailable": "8.3.260402-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.controls.primitives/index.json",
+    "checkedUtc": "2026-10-30T18:51:08.949279+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.WinUI.Controls.Segmented",
+    "old": "8.2.250402",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "8.2.250402",
+    "latestStable": "8.2.251219",
+    "latestAvailable": "8.3.260402-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.controls.segmented/index.json",
+    "checkedUtc": "2026-10-30T10:52:34.0441020Z",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.WinUI.Controls.SettingsControls",
+    "old": "8.1.240916",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "8.1.240916",
+    "latestStable": "8.2.251219",
+    "latestAvailable": "8.3.260402-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.controls.settingscontrols/index.json",
+    "checkedUtc": "2026-10-30T18:51:08.950108+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.WinUI.Controls.Sizers",
+    "old": "8.2.250402",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "8.2.250402",
+    "latestStable": "8.2.251219",
+    "latestAvailable": "8.3.260402-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.controls.sizers/index.json",
+    "checkedUtc": "2026-10-30T18:51:08.950345+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.WinUI.Extensions",
+    "old": "8.0.240109",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "8.0.240109",
+    "latestStable": "8.2.251219",
+    "latestAvailable": "8.3.260402-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.extensions/index.json",
+    "checkedUtc": "2026-10-30T18:51:08.950668+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "CommunityToolkit.WinUI.Media",
+    "old": "8.0.240109",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "8.0.240109",
+    "latestStable": "8.2.251219",
+    "latestAvailable": "8.3.260402-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.winui.media/index.json",
+    "checkedUtc": "2026-10-30T18:51:09.993074+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "ComputeSharp.D2D1.WinUI",
+    "old": "3.2.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "3.2.0",
+    "latestStable": "3.2.0",
+    "latestAvailable": "3.2.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/computesharp.d2d1.winui/index.json",
+    "checkedUtc": "2026-10-30T18:51:09.993849+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Danmaku.Core",
+    "old": "0.0.1-preview6",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.1-preview6",
+    "latestStable": null,
+    "latestAvailable": "0.0.1-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/danmaku.core/index.json",
+    "checkedUtc": "2026-10-30T18:51:09.995184+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Danmaku.Legacy",
+    "old": "0.0.1-preview6",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.1-preview6",
+    "latestStable": null,
+    "latestAvailable": "0.0.1-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/danmaku.legacy/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.008859+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Danmaku.Share",
+    "old": "0.0.1-preview6",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.1-preview6",
+    "latestStable": null,
+    "latestAvailable": "0.0.1-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/danmaku.share/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.085928+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "FluentIcons.WinUI",
+    "old": "1.2.315",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "1.2.315",
+    "latestStable": "2.2.344",
+    "latestAvailable": "2.2.344",
+    "source": "https://api.nuget.org/v3-flatcontainer/fluenticons.winui/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.086121+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Flurl.Http",
+    "old": "4.0.2",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "4.0.2",
+    "latestStable": "4.0.2",
+    "latestAvailable": "4.0.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/flurl.http/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.299011+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Google.Protobuf",
+    "old": "3.27.2",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "3.27.2",
+    "latestStable": "3.36.2",
+    "latestAvailable": "4.0.0-rc2",
+    "source": "https://api.nuget.org/v3-flatcontainer/google.protobuf/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.307068+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Grpc.Net.Client",
+    "old": "2.63.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "2.63.0",
+    "latestStable": "2.85.0",
+    "latestAvailable": "2.85.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/grpc.net.client/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.875172+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Grpc.Tools",
+    "old": "2.64.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "2.64.0",
+    "latestStable": "2.85.0",
+    "latestAvailable": "2.85.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/grpc.tools/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.917704+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "H.NotifyIcon.WinUI",
+    "old": "2.3.2",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "2.3.2",
+    "latestStable": "2.4.1",
+    "latestAvailable": "2.5.0-dev.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/h.notifyicon.winui/index.json",
+    "checkedUtc": "2026-10-30T18:51:11.494607+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "HtmlAgilityPack",
+    "old": "1.12.4",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "1.12.4",
+    "latestStable": "1.13.1",
+    "latestAvailable": "1.13.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/htmlagilitypack/index.json",
+    "checkedUtc": "2026-10-30T18:51:11.832781+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Humanizer.Core.zh-Hans",
+    "old": "2.14.1",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "2.14.1",
+    "latestStable": "3.0.10",
+    "latestAvailable": "3.0.10",
+    "source": "https://api.nuget.org/v3-flatcontainer/humanizer.core.zh-hans/index.json",
+    "checkedUtc": "2026-10-30T18:51:12.188867+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Markdig",
+    "old": "0.44.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.44.0",
+    "latestStable": "1.5.1",
+    "latestAvailable": "1.5.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/markdig/index.json",
+    "checkedUtc": "2026-10-30T18:51:12.405807+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Bcl.HashCode",
+    "old": "6.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "6.0.0",
+    "latestStable": "6.0.0",
+    "latestAvailable": "6.0.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.bcl.hashcode/index.json",
+    "checkedUtc": "2026-10-30T18:51:12.748631+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Bcl.AsyncInterfaces",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/index.json",
+    "checkedUtc": "2026-10-30T18:51:12.42781+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Bcl.Numerics",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.bcl.numerics/index.json",
+    "checkedUtc": "2026-10-30T18:51:13.074939+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.CodeAnalysis.Analyzers",
+    "old": "3.3.4",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI.ResourceGenerator\\BiliCopilot.UI.ResourceGenerator.csproj"
+    ],
+    "selected": "3.3.4",
+    "latestStable": "5.9.0",
+    "latestAvailable": "5.9.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:13.406008+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.CodeAnalysis.Common",
+    "old": "4.10.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI.ResourceGenerator\\BiliCopilot.UI.ResourceGenerator.csproj"
+    ],
+    "selected": "4.10.0",
+    "latestStable": "5.9.0",
+    "latestAvailable": "5.9.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.common/index.json",
+    "checkedUtc": "2026-10-30T18:51:13.987612+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.CodeAnalysis.CSharp",
+    "old": "4.3.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "4.3.0",
+    "latestStable": "5.9.0",
+    "latestAvailable": "5.9.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/index.json",
+    "checkedUtc": "2026-10-30T18:51:13.616436+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.CodeAnalysis.CSharp.CodeStyle",
+    "old": "4.4.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "4.4.0",
+    "latestStable": "5.9.0",
+    "latestAvailable": "5.9.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp.codestyle/index.json",
+    "checkedUtc": "2026-10-30T18:51:13.934632+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.CodeAnalysis.Metrics",
+    "old": "3.3.4",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "3.3.4",
+    "latestStable": "5.6.0",
+    "latestAvailable": "5.6.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.metrics/index.json",
+    "checkedUtc": "2026-10-30T18:51:14.175581+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Web.WebView2",
+    "old": "1.0.3595.46",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "1.0.3595.46",
+    "latestStable": "1.0.4314.35",
+    "latestAvailable": "1.0.4314.35",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.web.webview2/index.json",
+    "checkedUtc": "2026-10-30T18:51:18.927847+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Windows.CsWin32",
+    "old": "0.3.257",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.3.257",
+    "latestStable": "0.3.367",
+    "latestAvailable": "0.3.367",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.windows.cswin32/index.json",
+    "checkedUtc": "2026-10-30T18:51:19.057886+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Windows.CsWinRT",
+    "old": "2.2.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "2.2.0",
+    "latestStable": "2.3.1",
+    "latestAvailable": "3.0.0-preview.260319.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.windows.cswinrt/index.json",
+    "checkedUtc": "2026-10-30T18:51:19.249695+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "NLog.Extensions.Logging",
+    "old": "5.3.15",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "5.3.15",
+    "latestStable": "6.2.2",
+    "latestAvailable": "6.2.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/nlog.extensions.logging/index.json",
+    "checkedUtc": "2026-10-30T18:51:20.519491+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Ali",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.ali/index.json",
+    "checkedUtc": "2026-10-30T18:51:20.933767+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Anthropic",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.anthropic/index.json",
+    "checkedUtc": "2026-10-30T18:51:21.221493+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Azure",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.azure/index.json",
+    "checkedUtc": "2026-10-30T18:51:21.224436+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Baidu",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.baidu/index.json",
+    "checkedUtc": "2026-10-30T18:51:21.376497+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.DeepSeek",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.deepseek/index.json",
+    "checkedUtc": "2026-10-30T18:51:21.919222+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Google",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.google/index.json",
+    "checkedUtc": "2026-10-30T18:51:22.502824+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Groq",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.groq/index.json",
+    "checkedUtc": "2026-10-30T18:51:22.710065+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.IFlyTek",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.iflytek/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.308305+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.LingYi",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.lingyi/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.314722+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Mistral",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.mistral/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.373618+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Moonshot",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.moonshot/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.389264+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Ollama",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.ollama/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.558+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.OpenAI",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.openai/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.559542+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.OpenRouter",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.openrouter/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.606287+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Perplexity",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.perplexity/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.903505+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.SiliconFlow",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.siliconflow/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.928433+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Tencent",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.tencent/index.json",
+    "checkedUtc": "2026-10-30T18:51:23.966426+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.TogetherAI",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.togetherai/index.json",
+    "checkedUtc": "2026-10-30T18:51:24.1726+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Volcano",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.volcano/index.json",
+    "checkedUtc": "2026-10-30T18:51:24.667241+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Windows",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.windows/index.json",
+    "checkedUtc": "2026-10-30T18:51:25.369421+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.XAI",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.xai/index.json",
+    "checkedUtc": "2026-10-30T18:51:25.744734+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.Youdao",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.youdao/index.json",
+    "checkedUtc": "2026-10-30T18:51:25.761189+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.AgentKernel.Connectors.ZhiPu",
+    "old": "0.0.8-preview5",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.8-preview5",
+    "latestStable": null,
+    "latestAvailable": "0.0.8-preview6",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.agentkernel.connectors.zhipu/index.json",
+    "checkedUtc": "2026-10-30T18:51:25.788096+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.MpvKernel",
+    "old": "0.0.2-preview2",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.2-preview2",
+    "latestStable": null,
+    "latestAvailable": "0.0.2-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.mpvkernel/index.json",
+    "checkedUtc": "2026-10-30T18:51:25.788373+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.MpvKernel.Core",
+    "old": "0.0.2-preview2",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.2-preview2",
+    "latestStable": null,
+    "latestAvailable": "0.0.2-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.mpvkernel.core/index.json",
+    "checkedUtc": "2026-10-30T18:51:26.251281+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.MpvKernel.Player",
+    "old": "0.0.2-preview2",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.2-preview2",
+    "latestStable": null,
+    "latestAvailable": "0.0.2-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.mpvkernel.player/index.json",
+    "checkedUtc": "2026-10-30T18:51:26.280387+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.MpvKernel.WinUI",
+    "old": "0.0.2-preview2",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.2-preview2",
+    "latestStable": null,
+    "latestAvailable": "0.0.2-preview2",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.mpvkernel.winui/index.json",
+    "checkedUtc": "2026-10-30T18:51:26.304538+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Richasy.WinUIKernel.AI",
+    "old": "0.0.12-preview3",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.12-preview3",
+    "latestStable": null,
+    "latestAvailable": "0.0.12-preview4",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasy.winuikernel.ai/index.json",
+    "checkedUtc": "2026-10-30T18:51:26.304892+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "RichasyKernel.Core",
+    "old": "0.0.1",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "0.0.1",
+    "latestStable": "0.0.1",
+    "latestAvailable": "0.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasykernel.core/index.json",
+    "checkedUtc": "2026-10-30T18:51:26.669985+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Roman-Numerals",
+    "old": "2.0.1",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "2.0.1",
+    "latestStable": "2.1.0",
+    "latestAvailable": "2.1.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/roman-numerals/index.json",
+    "checkedUtc": "2026-10-30T18:51:26.948359+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Serilog",
+    "old": "4.3.1-dev-02385",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "4.3.1-dev-02385",
+    "latestStable": "4.4.0",
+    "latestAvailable": "4.4.1-dev-02453",
+    "source": "https://api.nuget.org/v3-flatcontainer/serilog/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.619369+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Serilog.Extensions.Logging",
+    "old": "9.0.3-dev-02320",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "9.0.3-dev-02320",
+    "latestStable": "10.0.0",
+    "latestAvailable": "10.0.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/serilog.extensions.logging/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.727773+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Serilog.Sinks.File",
+    "old": "7.0.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "7.0.0",
+    "latestStable": "7.0.0",
+    "latestAvailable": "8.0.0-nblumhardt-02322",
+    "source": "https://api.nuget.org/v3-flatcontainer/serilog.sinks.file/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.853671+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "StyleCop.Analyzers",
+    "old": "1.1.118",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "1.1.118",
+    "latestStable": "1.1.118",
+    "latestAvailable": "1.3.151-beta",
+    "source": "https://api.nuget.org/v3-flatcontainer/stylecop.analyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.973569+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Bcl.TimeProvider",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.bcl.timeprovider/index.json",
+    "checkedUtc": "2026-10-30T18:51:13.075137+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Logging.Debug",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.debug/index.json",
+    "checkedUtc": "2026-10-30T18:51:17.355756+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Windows.SDK.BuildTools",
+    "old": "10.0.26100.6901",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "10.0.26100.6901",
+    "latestStable": "10.0.28000.2957",
+    "latestAvailable": "10.0.29648.1000-preview",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.windows.sdk.buildtools/index.json",
+    "checkedUtc": "2026-10-30T18:51:19.539014+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.WindowsAppSDK",
+    "old": "1.8.251106002",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "1.8.251106002",
+    "latestStable": "2.6.4",
+    "latestAvailable": "2.6.4",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.windowsappsdk/index.json",
+    "checkedUtc": "2026-10-30T18:51:19.565429+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Polly",
+    "old": "8.4.1",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "8.4.1",
+    "latestStable": "8.9.0",
+    "latestAvailable": "8.9.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/polly/index.json",
+    "checkedUtc": "2026-10-30T18:51:20.557245+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "QRCoder",
+    "old": "1.4.1",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "1.4.1",
+    "latestStable": "1.8.1",
+    "latestAvailable": "1.8.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/qrcoder/index.json",
+    "checkedUtc": "2026-10-30T18:51:20.605341+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Diagnostics.DiagnosticSource",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/index.json",
+    "checkedUtc": "2026-10-30T18:51:28.021016+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Linq.Async",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "7.0.1",
+    "latestAvailable": "7.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.linq.async/index.json",
+    "checkedUtc": "2026-10-30T18:51:28.500775+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Management",
+    "old": "10.0.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "10.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.management/index.json",
+    "checkedUtc": "2026-10-30T18:51:28.592792+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Memory.Data",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.memory.data/index.json",
+    "checkedUtc": "2026-10-30T18:51:29.160135+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Numerics.Tensors",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.numerics.tensors/index.json",
+    "checkedUtc": "2026-10-30T18:51:29.305656+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Private.Uri",
+    "old": "4.3.2",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "4.3.2",
+    "latestStable": "4.3.2",
+    "latestAvailable": "4.3.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.private.uri/index.json",
+    "checkedUtc": "2026-10-30T18:51:29.752435+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Runtime.InteropServices.WindowsRuntime",
+    "old": "4.3.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "4.3.0",
+    "latestStable": "4.3.0",
+    "latestAvailable": "4.3.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices.windowsruntime/index.json",
+    "checkedUtc": "2026-10-30T18:51:29.918649+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Text.Json",
+    "old": "9.0.1",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.1",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.text.json/index.json",
+    "checkedUtc": "2026-10-30T18:51:30.062322+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Threading.Tasks.Extensions",
+    "old": "4.5.4",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "4.5.4",
+    "latestStable": "4.6.3",
+    "latestAvailable": "4.6.3",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/index.json",
+    "checkedUtc": "2026-10-30T18:51:30.701136+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.ValueTuple",
+    "old": "4.5.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "4.5.0",
+    "latestStable": "4.6.2",
+    "latestAvailable": "4.6.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.valuetuple/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.064589+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Graphics.Win2D",
+    "old": "1.3.2",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj"
+    ],
+    "selected": "1.3.2",
+    "latestStable": "1.4.0",
+    "latestAvailable": "1.4.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.graphics.win2d/index.json",
+    "checkedUtc": "2026-10-30T18:51:18.435354+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Configuration",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/index.json",
+    "checkedUtc": "2026-10-30T18:51:14.513163+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Configuration.Binder",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/index.json",
+    "checkedUtc": "2026-10-30T18:51:14.780916+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Configuration.EnvironmentVariables",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.environmentvariables/index.json",
+    "checkedUtc": "2026-10-30T18:51:15.099657+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Configuration.Json",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.json/index.json",
+    "checkedUtc": "2026-10-30T18:51:15.316474+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Configuration.UserSecrets",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.usersecrets/index.json",
+    "checkedUtc": "2026-10-30T18:51:15.944927+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.DependencyInjection",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/index.json",
+    "checkedUtc": "2026-10-30T18:51:15.995961+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/index.json",
+    "checkedUtc": "2026-10-30T18:51:16.011018+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Hosting",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting/index.json",
+    "checkedUtc": "2026-10-30T18:51:16.014016+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Http",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.http/index.json",
+    "checkedUtc": "2026-10-30T18:51:16.070635+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Http.Resilience",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.11.0",
+    "latestAvailable": "10.11.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.http.resilience/index.json",
+    "checkedUtc": "2026-10-30T18:51:16.199477+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Logging",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/index.json",
+    "checkedUtc": "2026-10-30T18:51:16.606332+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Logging.Abstractions",
+    "old": "9.0.2",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.2",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/index.json",
+    "checkedUtc": "2026-10-30T18:51:16.706611+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Logging.Console",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.console/index.json",
+    "checkedUtc": "2026-10-30T18:51:16.788254+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Options.DataAnnotations",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options.dataannotations/index.json",
+    "checkedUtc": "2026-10-30T10:52:36.7737613Z",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.TimeProvider.Testing",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.11.0",
+    "latestAvailable": "10.11.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.timeprovider.testing/index.json",
+    "checkedUtc": "2026-10-30T18:51:18.279298+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.NET.Test.Sdk",
+    "old": "17.10.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "17.10.0",
+    "latestStable": "18.11.0",
+    "latestAvailable": "18.11.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/index.json",
+    "checkedUtc": "2026-10-30T18:51:18.461507+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Moq",
+    "old": "[4.18.4]",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "[4.18.4]",
+    "latestStable": "4.21.0",
+    "latestAvailable": "4.21.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/moq/index.json",
+    "checkedUtc": "2026-10-30T18:51:19.589188+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Threading.Channels",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.threading.channels/index.json",
+    "checkedUtc": "2026-10-30T18:51:30.53061+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "System.Threading.Tasks.Dataflow",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.threading.tasks.dataflow/index.json",
+    "checkedUtc": "2026-10-30T18:51:30.532937+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Verify.Xunit",
+    "old": "23.5.2",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "23.5.2",
+    "latestStable": "31.12.5",
+    "latestAvailable": "31.12.5",
+    "source": "https://api.nuget.org/v3-flatcontainer/verify.xunit/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.070358+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Vortice.Direct3D11",
+    "old": "3.5.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "3.5.0",
+    "latestStable": "3.8.3",
+    "latestAvailable": "3.8.3",
+    "source": "https://api.nuget.org/v3-flatcontainer/vortice.direct3d11/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.097454+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "WinUIEx",
+    "old": "2.3.4",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "2.3.4",
+    "latestStable": "2.9.3",
+    "latestAvailable": "2.9.3",
+    "source": "https://api.nuget.org/v3-flatcontainer/winuiex/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.647343+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "xunit",
+    "old": "2.7.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "2.7.0",
+    "latestStable": "2.9.3",
+    "latestAvailable": "2.9.3",
+    "source": "https://api.nuget.org/v3-flatcontainer/xunit/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.760657+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "xunit.abstractions",
+    "old": "2.0.3",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "2.0.3",
+    "latestStable": "2.0.3",
+    "latestAvailable": "2.0.3",
+    "source": "https://api.nuget.org/v3-flatcontainer/xunit.abstractions/index.json",
+    "checkedUtc": "2026-10-30T18:51:32.277018+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "xunit.runner.visualstudio",
+    "old": "2.5.7",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "2.5.7",
+    "latestStable": "4.0.1",
+    "latestAvailable": "4.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/index.json",
+    "checkedUtc": "2026-10-30T18:51:32.42956+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "xretry",
+    "old": "1.9.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "1.9.0",
+    "latestStable": "1.9.0",
+    "latestAvailable": "1.9.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/xretry/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.713616+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "coverlet.collector",
+    "old": "6.0.2",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "6.0.2",
+    "latestStable": "10.1.0",
+    "latestAvailable": "10.1.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/coverlet.collector/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.649425+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Spectre.Console",
+    "old": "0.49.1",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "0.49.1",
+    "latestStable": "0.57.2",
+    "latestAvailable": "0.57.3-alpha.0.29",
+    "source": "https://api.nuget.org/v3-flatcontainer/spectre.console/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.874371+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.SourceLink.GitHub",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "9.0.0",
+    "latestStable": "10.0.403",
+    "latestAvailable": "11.0.100-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.sourcelink.github/index.json",
+    "checkedUtc": "2026-10-30T18:51:18.530692+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.CodeAnalysis.NetAnalyzers",
+    "old": "9.0.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Directory.Packages.props"
+    ],
+    "selected": "9.0.0",
+    "latestStable": "10.0.403",
+    "latestAvailable": "11.0.100-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.netanalyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:14.490206+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Microsoft.VisualStudio.Threading.Analyzers",
+    "old": "17.14.15",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Directory.Packages.props"
+    ],
+    "selected": "17.14.15",
+    "latestStable": "18.12.1",
+    "latestAvailable": "18.12.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.visualstudio.threading.analyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:18.817826+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "xunit.analyzers",
+    "old": "1.20.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Directory.Packages.props"
+    ],
+    "selected": "1.20.0",
+    "latestStable": "2.2.0",
+    "latestAvailable": "2.2.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/xunit.analyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:32.297511+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Moq.Analyzers",
+    "old": "0.3.0",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Directory.Packages.props"
+    ],
+    "selected": "0.3.0",
+    "latestStable": "0.4.2",
+    "latestAvailable": "0.4.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/moq.analyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:19.610227+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Roslynator.Analyzers",
+    "old": "[4.11.0]",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Directory.Packages.props"
+    ],
+    "selected": "[4.11.0]",
+    "latestStable": "5.0.1",
+    "latestAvailable": "5.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/roslynator.analyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.097906+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Roslynator.CodeAnalysis.Analyzers",
+    "old": "[4.12.0]",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Directory.Packages.props"
+    ],
+    "selected": "[4.12.0]",
+    "latestStable": "5.0.1",
+    "latestAvailable": "5.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/roslynator.codeanalysis.analyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.149419+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "src",
+    "file": "src\\Directory.Packages.props",
+    "id": "Roslynator.Formatting.Analyzers",
+    "old": "[4.12.0]",
+    "kind": "PackageVersion",
+    "references": [
+      "src\\Directory.Packages.props"
+    ],
+    "selected": "[4.12.0]",
+    "latestStable": "5.0.1",
+    "latestAvailable": "5.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/roslynator.formatting.analyzers/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.190216+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "tests",
+    "file": "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj",
+    "id": "CommunityToolkit.Mvvm",
+    "old": "8.4.0",
+    "kind": "PackageReference",
+    "references": [
+      "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
+    ],
+    "selected": "8.4.0",
+    "latestStable": "8.4.2",
+    "latestAvailable": "8.4.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/communitytoolkit.mvvm/index.json",
+    "checkedUtc": "2026-10-30T18:51:08.869084+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "tests",
+    "file": "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj",
+    "id": "coverlet.collector",
+    "old": "6.0.4",
+    "kind": "PackageReference",
+    "references": [
+      "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
+    ],
+    "selected": "10.1.0",
+    "latestStable": "10.1.0",
+    "latestAvailable": "10.1.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/coverlet.collector/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.649425+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "tests",
+    "file": "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj",
+    "id": "Microsoft.NET.Test.Sdk",
+    "old": "17.14.1",
+    "kind": "PackageReference",
+    "references": [
+      "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
+    ],
+    "selected": "18.11.0",
+    "latestStable": "18.11.0",
+    "latestAvailable": "18.11.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/index.json",
+    "checkedUtc": "2026-10-30T18:51:18.461507+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "tests",
+    "file": "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj",
+    "id": "xunit",
+    "old": "2.9.3",
+    "kind": "PackageReference",
+    "references": [
+      "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
+    ],
+    "selected": "2.9.3",
+    "latestStable": "2.9.3",
+    "latestAvailable": "2.9.3",
+    "source": "https://api.nuget.org/v3-flatcontainer/xunit/index.json",
+    "checkedUtc": "2026-10-30T18:51:31.760657+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "tests",
+    "file": "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj",
+    "id": "xunit.runner.visualstudio",
+    "old": "3.1.4",
+    "kind": "PackageReference",
+    "references": [
+      "tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj"
+    ],
+    "selected": "4.0.1",
+    "latestStable": "4.0.1",
+    "latestAvailable": "4.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/index.json",
+    "checkedUtc": "2026-10-30T18:51:32.42956+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Flurl.Http",
+    "old": "4.0.2",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "4.0.2",
+    "latestStable": "4.0.2",
+    "latestAvailable": "4.0.2",
+    "source": "https://api.nuget.org/v3-flatcontainer/flurl.http/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.299011+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Google.Protobuf",
+    "old": "3.29.3",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\BiliKernel.Grpc\\BiliKernel.Grpc.csproj"
+    ],
+    "selected": "3.29.3",
+    "latestStable": "3.36.2",
+    "latestAvailable": "4.0.0-rc2",
+    "source": "https://api.nuget.org/v3-flatcontainer/google.protobuf/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.307068+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Grpc.Net.Client",
+    "old": "2.67.0",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\BiliKernel.Grpc\\BiliKernel.Grpc.csproj"
+    ],
+    "selected": "2.67.0",
+    "latestStable": "2.85.0",
+    "latestAvailable": "2.85.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/grpc.net.client/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.875172+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Grpc.Tools",
+    "old": "2.69.0",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\BiliKernel.Grpc\\BiliKernel.Grpc.csproj"
+    ],
+    "selected": "2.69.0",
+    "latestStable": "2.85.0",
+    "latestAvailable": "2.85.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/grpc.tools/index.json",
+    "checkedUtc": "2026-10-30T18:51:10.917704+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Humanizer.Core.zh-Hans",
+    "old": "2.14.1",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\Services\\Services.User\\Services.User.csproj"
+    ],
+    "selected": "2.14.1",
+    "latestStable": "3.0.10",
+    "latestAvailable": "3.0.10",
+    "source": "https://api.nuget.org/v3-flatcontainer/humanizer.core.zh-hans/index.json",
+    "checkedUtc": "2026-10-30T18:51:12.188867+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Microsoft.Bcl.AsyncInterfaces",
+    "old": "9.0.1",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\BiliKernel.Abstractions\\BiliKernel.Abstractions.csproj"
+    ],
+    "selected": "9.0.1",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/index.json",
+    "checkedUtc": "2026-10-30T18:51:12.42781+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Microsoft.Bcl.HashCode",
+    "old": "6.0.0",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\BiliKernel.Abstractions\\BiliKernel.Abstractions.csproj"
+    ],
+    "selected": "6.0.0",
+    "latestStable": "6.0.0",
+    "latestAvailable": "6.0.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.bcl.hashcode/index.json",
+    "checkedUtc": "2026-10-30T18:51:12.748631+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Microsoft.Extensions.Hosting",
+    "old": "9.0.1",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\Samples\\Bili.Console\\Bili.Console.csproj"
+    ],
+    "selected": "9.0.1",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting/index.json",
+    "checkedUtc": "2026-10-30T18:51:16.014016+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Microsoft.Windows.SDK.BuildTools",
+    "old": "10.0.22621.756",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUICookies\\Resolvers.WinUICookies.csproj",
+      "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIQRCode\\Resolvers.WinUIQRCode.csproj",
+      "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIToken\\Resolvers.WinUIToken.csproj"
+    ],
+    "selected": "10.0.22621.756",
+    "latestStable": "10.0.28000.2957",
+    "latestAvailable": "10.0.29648.1000-preview",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.windows.sdk.buildtools/index.json",
+    "checkedUtc": "2026-10-30T18:51:19.539014+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Microsoft.WindowsAppSDK",
+    "old": "1.6.250108002",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUICookies\\Resolvers.WinUICookies.csproj",
+      "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIQRCode\\Resolvers.WinUIQRCode.csproj",
+      "externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIToken\\Resolvers.WinUIToken.csproj"
+    ],
+    "selected": "1.6.250108002",
+    "latestStable": "2.6.4",
+    "latestAvailable": "2.6.4",
+    "source": "https://api.nuget.org/v3-flatcontainer/microsoft.windowsappsdk/index.json",
+    "checkedUtc": "2026-10-30T18:51:19.565429+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Polly",
+    "old": "8.5.1",
+    "kind": "PackageVersion",
+    "references": [],
+    "selected": "8.5.1",
+    "latestStable": "8.9.0",
+    "latestAvailable": "8.9.0",
+    "source": "https://api.nuget.org/v3-flatcontainer/polly/index.json",
+    "checkedUtc": "2026-10-30T18:51:20.557245+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "QRCoder",
+    "old": "1.6.0",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\Authorizers\\Authorizers.Tv\\Authorizers.Tv.csproj"
+    ],
+    "selected": "1.6.0",
+    "latestStable": "1.8.1",
+    "latestAvailable": "1.8.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/qrcoder/index.json",
+    "checkedUtc": "2026-10-30T18:51:20.605341+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "RichasyKernel.Abstractions",
+    "old": "0.0.1",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\BiliKernel.Abstractions\\BiliKernel.Abstractions.csproj"
+    ],
+    "selected": "0.0.1",
+    "latestStable": "0.0.1",
+    "latestAvailable": "0.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasykernel.abstractions/index.json",
+    "checkedUtc": "2026-10-30T18:51:26.39632+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "RichasyKernel.Core",
+    "old": "0.0.1",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\Samples\\Bili.Console\\Bili.Console.csproj"
+    ],
+    "selected": "0.0.1",
+    "latestStable": "0.0.1",
+    "latestAvailable": "0.0.1",
+    "source": "https://api.nuget.org/v3-flatcontainer/richasykernel.core/index.json",
+    "checkedUtc": "2026-10-30T18:51:26.669985+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "Spectre.Console",
+    "old": "0.49.2-preview.0.69",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\Samples\\Bili.Console\\Bili.Console.csproj"
+    ],
+    "selected": "0.49.2-preview.0.69",
+    "latestStable": "0.57.2",
+    "latestAvailable": "0.57.3-alpha.0.29",
+    "source": "https://api.nuget.org/v3-flatcontainer/spectre.console/index.json",
+    "checkedUtc": "2026-10-30T18:51:27.874371+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "System.Drawing.Common",
+    "old": "9.0.1",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\Authorizers\\Authorizers.Tv\\Authorizers.Tv.csproj"
+    ],
+    "selected": "9.0.1",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.drawing.common/index.json",
+    "checkedUtc": "2026-10-30T18:51:28.021188+08:00",
+    "metadataError": null
+  },
+  {
+    "area": "externals/bili-kernel/src",
+    "file": "externals\\bili-kernel\\src\\Directory.Packages.props",
+    "id": "System.Text.Json",
+    "old": "9.0.1",
+    "kind": "PackageVersion",
+    "references": [
+      "externals\\bili-kernel\\src\\BiliKernel.Abstractions\\BiliKernel.Abstractions.csproj"
+    ],
+    "selected": "9.0.1",
+    "latestStable": "10.0.14",
+    "latestAvailable": "11.0.0-rc.3.26522.148",
+    "source": "https://api.nuget.org/v3-flatcontainer/system.text.json/index.json",
+    "checkedUtc": "2026-10-30T18:51:30.062322+08:00",
+    "metadataError": null
+  }
+]

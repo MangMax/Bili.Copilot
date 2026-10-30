@@ -402,6 +402,8 @@
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Sinks.File" />
     <PackageReference Include="System.Management" />
+    <!-- System.Drawing.Common 10's net9 assets reference Metadata/Immutable 10. -->
+    <PackageReference Include="System.Reflection.Metadata" />
     <PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" />
   </ItemGroup>
   <ItemGroup>
