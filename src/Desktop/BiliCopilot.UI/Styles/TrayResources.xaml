@@ -5,7 +5,7 @@
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:tb="using:H.NotifyIcon">
     <XamlUICommand x:Key="QuitCommand" Label="{ext:Locale Name=QuitApp}" />
-    <XamlUICommand x:Key="ShowHideWindowCommand">
+    <XamlUICommand x:Key="ShowHideWindowCommand" Label="{ext:Locale Name=ShowMainWindow}">
         <XamlUICommand.IconSource>
             <SymbolIconSource Symbol="OpenPane" />
         </XamlUICommand.IconSource>
@@ -23,7 +23,8 @@
         Visibility="Visible">
         <tb:TaskbarIcon.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Command="{StaticResource QuitCommand}" />
+                <MenuFlyoutItem AutomationProperties.AutomationId="TrayShowMainWindow" Command="{StaticResource ShowHideWindowCommand}" />
+                <MenuFlyoutItem AutomationProperties.AutomationId="TrayQuitApp" Command="{StaticResource QuitCommand}" />
             </MenuFlyout>
         </tb:TaskbarIcon.ContextFlyout>
     </tb:TaskbarIcon>

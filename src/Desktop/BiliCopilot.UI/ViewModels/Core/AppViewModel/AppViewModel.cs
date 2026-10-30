@@ -135,6 +135,11 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenPlayerAsync(MediaSnapshot snapshot)
     {
+        if (IsClosed)
+        {
+            return;
+        }
+
         var playerVM = this.Get<PlayerViewModel>();
         this.Get<AppViewModel>().Players.Add(playerVM);
         await playerVM.InitializeAsync(snapshot);
