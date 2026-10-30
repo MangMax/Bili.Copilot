@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Items;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Input;
 using Richasy.MpvKernel.Core.Enums;
@@ -350,7 +351,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         }
         catch (Exception ex)
         {
-            Serilog.Log.Warning(ex, "Unable to load subtitle font choices");
+            this.Get<ILogger<PlayerOverlay>>().LogWarning(ex, "Unable to load subtitle font choices");
             return;
         }
 

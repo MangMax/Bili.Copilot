@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Toolkits;
+using Microsoft.Extensions.Logging;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Microsoft.UI;
@@ -137,7 +138,7 @@ public sealed partial class RecommendationCoverImage : UserControl
         }
         catch (Exception ex)
         {
-            Serilog.Log.Warning(ex, "Unable to recover recommendation cover device");
+            this.Get<ILogger<RecommendationCoverImage>>().LogWarning(ex, "Unable to recover recommendation cover device");
         }
         finally
         {
@@ -231,7 +232,7 @@ public sealed partial class RecommendationCoverImage : UserControl
         }
         catch (Exception ex)
         {
-            Serilog.Log.Warning(ex, "Unable to load recommendation cover");
+            this.Get<ILogger<RecommendationCoverImage>>().LogWarning(ex, "Unable to load recommendation cover");
             // As with an ordinary cover without HolderImage: end loading and
             // leave the cover empty. A later source/reload may retry.
         }
