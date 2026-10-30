@@ -80,6 +80,9 @@ public sealed partial class VideoPartitionDetailViewModel
     /// </summary>
     public event EventHandler VideoListUpdated;
 
+    public event Action<bool>? RecommendationListChanging;
+    public event EventHandler? RecommendationListChanged;
+
     /// <summary>
     /// 显示的视频列表.
     /// </summary>

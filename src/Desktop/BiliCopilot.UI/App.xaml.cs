@@ -145,6 +145,9 @@ public partial class App : Application
         });
         try
         {
+            // IconSource loads asynchronously in H.NotifyIcon 2.3.2 and can update an
+            // already disposed tray after a quick disable. Own a synchronous icon instead.
+            icon.Icon = new System.Drawing.Icon(Path.Combine(AppContext.BaseDirectory, "Assets", "logo.ico"));
             icon.ForceCreate(enablesEfficiencyMode: false);
             if (!icon.IsCreated)
             {
@@ -266,7 +269,9 @@ public partial class App : Application
             _icon.TrayIcon.MessageWindow.TaskbarCreated -= OnTaskbarCreated;
             HealthChanged = null;
             _unsubscribe();
+            var image = _icon.Icon;
             _icon.Dispose();
+            image?.Dispose();
         }
     }
 }

@@ -98,6 +98,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         IsVideoLoading = false;
 
         // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        RecommendationListChanging?.Invoke(true);
         RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
 
         for (var i = 0; i < snapshot.Items.Count; i++)
@@ -105,6 +106,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
             if (!ReferenceEquals(Videos[i], snapshot.Items[i])) Videos[i] = snapshot.Items[i];
         }
 
+        RecommendationListChanged?.Invoke(this, EventArgs.Empty);
         _recommendOffset = snapshot.Offset;
         ClearRefreshTip();
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
@@ -272,7 +274,9 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
                 isIncremental);
 
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
+            RecommendationListChanging?.Invoke(false);
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
+            RecommendationListChanged?.Invoke(this, EventArgs.Empty);
 
             RefreshTipState = Toolkits.RefreshTipState.Completed;
 

@@ -91,6 +91,9 @@ public sealed partial class PopularPageViewModel
     /// </summary>
     public event EventHandler VideoListUpdated;
 
+    public event Action<bool>? RecommendationListChanging;
+    public event EventHandler? RecommendationListChanged;
+
     /// <summary>
     /// 分区列表.
     /// </summary>
