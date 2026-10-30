@@ -1,3 +1,5 @@
+// Copyright (c) Bili Copilot. All rights reserved.
+
 using BiliCopilot.UI.Toolkits;
 
 namespace BiliCopilot.UI.Tests;
