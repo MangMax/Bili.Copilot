@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
+using Microsoft.Extensions.Logging;
 using Richasy.WinUIKernel.Share.Toolkits;
 
 namespace BiliCopilot.UI.Controls.Danmaku;
@@ -13,11 +14,22 @@ public sealed partial class DanmakuDisplayOptions : DanmakuControlBase
 {
     public DanmakuDisplayOptions() => InitializeComponent();
 
-    protected override void OnControlLoaded()
+    protected override async void OnControlLoaded()
     {
         var renderer = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuRenderer, DanmakuRendererType.Win2D);
         RendererComboBox.SelectedIndex = renderer == DanmakuRendererType.DirectX ? 0 : 1;
-        DanmakuFontComboBox.SelectedItem = ViewModel.Fonts.FirstOrDefault(p => p.LocalName == ViewModel.DanmakuFontFamily);
+        try
+        {
+            await ViewModel.ReloadFontsCommand.ExecuteAsync(default);
+            if (IsLoaded)
+            {
+                DanmakuFontComboBox.SelectedItem = ViewModel.Fonts.FirstOrDefault(p => p.LocalName == ViewModel.DanmakuFontFamily);
+            }
+        }
+        catch (Exception ex)
+        {
+            this.Get<ILogger<DanmakuDisplayOptions>>().LogWarning(ex, "Unable to load danmaku font choices");
+        }
     }
 
     private void OnRendererChanged(object sender, SelectionChangedEventArgs e)
