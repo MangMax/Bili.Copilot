@@ -1,0 +1,371 @@
+{
+  "merge": "5e628048815afc1602d882bcf7e9aa4cbde74b21",
+  "review": "cec615167b60352b4a63a732709c5107af65d8c1",
+  "includedAncestors": [
+    "79ffd4f1",
+    "60abad78",
+    "cce01fd6",
+    "0ac4a89f",
+    "42836305",
+    "f19f030",
+    "2f1ae8f"
+  ],
+  "net11Excluded": true,
+  "kernel": "0ae5e4e000a41a07f6696746706df11c06e8835b",
+  "bundleSha256": "45cbd6e124dc6466691beb639f85025ee0b232f31fe07df273bf7eb635483c50",
+  "kernelLocalOnly": true,
+  "stages": {
+    "Debug": {
+      "directory": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\net10-integration\\5e628048815afc1602d882bcf7e9aa4cbde74b21\\Debug",
+      "files": 1311,
+      "manifestSha256": "071294641f1bfbe2a366a7835c423796aac44154e80050eaeb324e7582ceca72",
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj",
+        "-t:Rebuild",
+        "-c",
+        "Debug",
+        "-p:Platform=x64",
+        "-p:PublishAot=false",
+        "-p:SolutionDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80/src/",
+        "-p:AppxPackageSigningEnabled=false",
+        "-p:GenerateAppxPackageOnBuild=false"
+      ],
+      "runtimeconfigs": {
+        "outputs\\BiliCopilot.UI\\BiliCopilot.UI.runtimeconfig.json": {
+          "runtimeOptions": {
+            "tfm": "net10.0",
+            "includedFrameworks": [
+              {
+                "name": "Microsoft.NETCore.App",
+                "version": "10.0.14"
+              }
+            ],
+            "configProperties": {
+              "CSWINRT_ENABLE_DYNAMIC_OBJECTS_SUPPORT": true,
+              "CSWINRT_USE_EXCEPTION_RESOURCE_KEYS": false,
+              "CSWINRT_ENABLE_DEFAULT_CUSTOM_TYPE_MAPPINGS": true,
+              "CSWINRT_ENABLE_ICUSTOMPROPERTYPROVIDER_SUPPORT": true,
+              "CSWINRT_ENABLE_IREFERENCE_SUPPORT": true,
+              "CSWINRT_ENABLE_IDYNAMICINTERFACECASTABLE": true,
+              "CSWINRT_ENABLE_MANIFEST_FREE_ACTIVATION": true,
+              "CSWINRT_MANIFEST_FREE_ACTIVATION_REPORT_ORIGINAL_EXCEPTION": false,
+              "CSWINRT_LOAD_COMPONENTS_IN_DEFAULT_ALC": false,
+              "CSWINRT_SUPPRESS_CUSTOM_PROPERTY_NOT_SUPPORTED_EXCEPTION": false,
+              "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": false,
+              "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+              "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false
+            }
+          }
+        }
+      },
+      "extraDllsOutsideRecipe": [
+        "microsoft.extensions.configuration.abstractions.dll",
+        "microsoft.extensions.diagnostics.abstractions.dll",
+        "microsoft.extensions.fileproviders.abstractions.dll",
+        "microsoft.extensions.hosting.abstractions.dll",
+        "mscordaccore_amd64_amd64_9.0.2226.52218.dll",
+        "runtimes\\win-x64\\native\\webview2loader.dll",
+        "winrt.host.shim.dll"
+      ],
+      "acceptedForHandoff": false,
+      "keyHashes": {
+        "BiliCopilot.UI.dll": "7ced45643cb2cbe5a533792a1aac3a1ce01008e271f035cd31bcf66d52b93a95",
+        "BiliCopilot.UI.runtimeconfig.json": "4baa3d364ec508447e66171ec87c1120197694d25388fcccb1fe2bf8cd256e35",
+        "coreclr.dll": "1bc65b8d45474b19adf3ca85ce881087aff599ffc72b2c1a323e878227757b65",
+        "AppxManifest.xml": "d3872de079d2010ec7c1d1e8401f29201b50397e2e873b84bdb468abf7e80623"
+      },
+      "activationFiles": 682,
+      "recipeAddedFiles": 90,
+      "identity": {
+        "Name": "Mang.BiliCopilot.Dev",
+        "Publisher": "CN=BiliCopilotDev",
+        "Version": "2.2610.0.1",
+        "ProcessorArchitecture": "x64"
+      }
+    },
+    "Release": {
+      "directory": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\net10-integration\\5e628048815afc1602d882bcf7e9aa4cbde74b21\\Release",
+      "files": 1279,
+      "manifestSha256": "875e4f2e954ac3c61b5f3d2ac764060ae8177f1b11ab8aa30125b9bd8d47736b",
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj",
+        "-t:Rebuild",
+        "-c",
+        "Release",
+        "-p:Platform=x64",
+        "-p:PublishAot=false",
+        "-p:SolutionDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80/src/",
+        "-p:AppxPackageSigningEnabled=false",
+        "-p:GenerateAppxPackageOnBuild=false"
+      ],
+      "runtimeconfigs": {
+        "outputs\\BiliCopilot.UI\\BiliCopilot.UI.runtimeconfig.json": {
+          "runtimeOptions": {
+            "tfm": "net10.0",
+            "includedFrameworks": [
+              {
+                "name": "Microsoft.NETCore.App",
+                "version": "10.0.14"
+              }
+            ],
+            "configProperties": {
+              "CSWINRT_ENABLE_DYNAMIC_OBJECTS_SUPPORT": true,
+              "CSWINRT_USE_EXCEPTION_RESOURCE_KEYS": false,
+              "CSWINRT_ENABLE_DEFAULT_CUSTOM_TYPE_MAPPINGS": true,
+              "CSWINRT_ENABLE_ICUSTOMPROPERTYPROVIDER_SUPPORT": true,
+              "CSWINRT_ENABLE_IREFERENCE_SUPPORT": true,
+              "CSWINRT_ENABLE_IDYNAMICINTERFACECASTABLE": true,
+              "CSWINRT_ENABLE_MANIFEST_FREE_ACTIVATION": true,
+              "CSWINRT_MANIFEST_FREE_ACTIVATION_REPORT_ORIGINAL_EXCEPTION": false,
+              "CSWINRT_LOAD_COMPONENTS_IN_DEFAULT_ALC": false,
+              "CSWINRT_SUPPRESS_CUSTOM_PROPERTY_NOT_SUPPORTED_EXCEPTION": false,
+              "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": false,
+              "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+              "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+              "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false
+            }
+          }
+        }
+      },
+      "extraDllsOutsideRecipe": [],
+      "acceptedForHandoff": true,
+      "keyHashes": {
+        "BiliCopilot.UI.dll": "7bdedb93504e76e813663307e84769e378b0ebc266ee3163460573087ec4ea7f",
+        "BiliCopilot.UI.runtimeconfig.json": "2320986bba98a23eebac9c345b07db6d73f8945450b4928613004a25412dfa40",
+        "coreclr.dll": "1bc65b8d45474b19adf3ca85ce881087aff599ffc72b2c1a323e878227757b65",
+        "AppxManifest.xml": "44c719aea9e645714d7265ac4d1f8d3c404f6c14bff0e60f87771d2c9ac0da1f"
+      },
+      "activationFiles": 666,
+      "recipeAddedFiles": 90,
+      "identity": {
+        "Name": "Mang.BiliCopilot",
+        "Publisher": "CN=Mang",
+        "Version": "2.2610.0.0",
+        "ProcessorArchitecture": "x64"
+      }
+    },
+    "Visor": {
+      "directory": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\net10-integration\\5e628048815afc1602d882bcf7e9aa4cbde74b21\\Visor",
+      "files": 35,
+      "manifestSha256": "da304bda689a167c02fbd552343ce180428c17a9ba0b148aa4e43208fc781c42",
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.Visor\\BiliCopilot.Visor.csproj",
+        "-c",
+        "Release",
+        "-p:Platform=x64",
+        "-p:PublishAot=false",
+        "-p:SolutionDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80/src/"
+      ],
+      "runtimeconfigs": {
+        "outputs\\BiliCopilot.Visor\\BiliCopilot.Visor.runtimeconfig.json": {
+          "runtimeOptions": {
+            "tfm": "net10.0",
+            "framework": {
+              "name": "Microsoft.NETCore.App",
+              "version": "10.0.0"
+            },
+            "configProperties": {
+              "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+              "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
+            }
+          }
+        }
+      }
+    },
+    "RuntimeGate": {
+      "directory": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\net10-integration\\5e628048815afc1602d882bcf7e9aa4cbde74b21\\RuntimeGate",
+      "files": 26,
+      "manifestSha256": "f1b577f1dd62b6f71522db95cf73569bf7e13d7d8f3568158fea1a89d19aaacd",
+      "command": [
+        "dotnet",
+        "msbuild",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj",
+        "-t:ValidateRuntimeDependencies",
+        "-p:Platform=x64",
+        "-p:PublishAot=false",
+        "-p:SolutionDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80/src/"
+      ],
+      "runtimeconfigs": {}
+    },
+    "Tests": {
+      "directory": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\net10-integration\\5e628048815afc1602d882bcf7e9aa4cbde74b21\\Tests",
+      "files": 242,
+      "manifestSha256": "0db1821b9cd17352a09dcbcb170e36ccbb0a4569d9db511cbfd26a28f4496389",
+      "command": [
+        "dotnet",
+        "test",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj",
+        "-c",
+        "Release",
+        "--logger",
+        "trx;LogFileName=integration-net10.trx",
+        "--results-directory",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\net10-integration\\5e628048815afc1602d882bcf7e9aa4cbde74b21\\Tests\\trx"
+      ],
+      "runtimeconfigs": {
+        "outputs\\tests\\net10.0\\BiliCopilot.UI.Tests.runtimeconfig.json": {
+          "runtimeOptions": {
+            "tfm": "net10.0",
+            "rollForward": "LatestPatch",
+            "framework": {
+              "name": "Microsoft.NETCore.App",
+              "version": "10.0.0"
+            },
+            "configProperties": {
+              "MSTest.EnableParentProcessQuery": true,
+              "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": true,
+              "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+              "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
+            }
+          }
+        },
+        "outputs\\tests\\net9.0\\BiliCopilot.UI.Tests.runtimeconfig.json": {
+          "runtimeOptions": {
+            "tfm": "net9.0",
+            "rollForward": "LatestMajor",
+            "framework": {
+              "name": "Microsoft.NETCore.App",
+              "version": "9.0.0"
+            },
+            "configProperties": {
+              "MSTest.EnableParentProcessQuery": true,
+              "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": true,
+              "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+              "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
+            }
+          }
+        }
+      }
+    },
+    "DebugClean": {
+      "directory": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\net10-integration\\5e628048815afc1602d882bcf7e9aa4cbde74b21\\DebugClean",
+      "files": 1875,
+      "manifestSha256": "a088e381d5df80200c2d845e4b9bfc17311f42830af19038b0d831eb7509e69f",
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj",
+        "-t:Rebuild",
+        "-c",
+        "Debug",
+        "-p:Platform=x64",
+        "-p:PublishAot=false",
+        "-p:SolutionDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80/src/",
+        "-p:AppxPackageSigningEnabled=false",
+        "-p:GenerateAppxPackageOnBuild=false",
+        "-p:BuildOutDir=C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1d19cc80/artifacts/net10-integration/5e628048815afc1602d882bcf7e9aa4cbde74b21/DebugClean/build-output/"
+      ],
+      "runtimeconfigs": {
+        "outputs\\BiliCopilot.UI\\BiliCopilot.UI.runtimeconfig.json": {
+          "runtimeOptions": {
+            "tfm": "net10.0",
+            "includedFrameworks": [
+              {
+                "name": "Microsoft.NETCore.App",
+                "version": "10.0.14"
+              }
+            ],
+            "configProperties": {
+              "CSWINRT_ENABLE_DYNAMIC_OBJECTS_SUPPORT": true,
+              "CSWINRT_USE_EXCEPTION_RESOURCE_KEYS": false,
+              "CSWINRT_ENABLE_DEFAULT_CUSTOM_TYPE_MAPPINGS": true,
+              "CSWINRT_ENABLE_ICUSTOMPROPERTYPROVIDER_SUPPORT": true,
+              "CSWINRT_ENABLE_IREFERENCE_SUPPORT": true,
+              "CSWINRT_ENABLE_IDYNAMICINTERFACECASTABLE": true,
+              "CSWINRT_ENABLE_MANIFEST_FREE_ACTIVATION": true,
+              "CSWINRT_MANIFEST_FREE_ACTIVATION_REPORT_ORIGINAL_EXCEPTION": false,
+              "CSWINRT_LOAD_COMPONENTS_IN_DEFAULT_ALC": false,
+              "CSWINRT_SUPPRESS_CUSTOM_PROPERTY_NOT_SUPPORTED_EXCEPTION": false,
+              "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": false,
+              "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+              "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false
+            }
+          }
+        }
+      },
+      "extraDllsOutsideRecipe": [],
+      "acceptedForHandoff": true,
+      "keyHashes": {
+        "BiliCopilot.UI.dll": "7ced45643cb2cbe5a533792a1aac3a1ce01008e271f035cd31bcf66d52b93a95",
+        "BiliCopilot.UI.runtimeconfig.json": "4baa3d364ec508447e66171ec87c1120197694d25388fcccb1fe2bf8cd256e35",
+        "coreclr.dll": "1bc65b8d45474b19adf3ca85ce881087aff599ffc72b2c1a323e878227757b65",
+        "AppxManifest.xml": "d3872de079d2010ec7c1d1e8401f29201b50397e2e873b84bdb468abf7e80623"
+      },
+      "activationFiles": 666,
+      "recipeAddedFiles": 90,
+      "identity": {
+        "Name": "Mang.BiliCopilot.Dev",
+        "Publisher": "CN=BiliCopilotDev",
+        "Version": "2.2610.0.1",
+        "ProcessorArchitecture": "x64"
+      }
+    }
+  },
+  "auditedUtc": "2026-10-30T16:00:57.552430+00:00",
+  "freshTests": {
+    "total": "487",
+    "executed": "487",
+    "passed": "487",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "resolvedGraphs": [
+    {
+      "path": "src/Desktop/BiliCopilot.UI/obj/project.assets.json",
+      "stage": "Release",
+      "sha256": "9930563e69332e7dc587a0c2b6035f849135b29b202449c7ff124dac2e81e102",
+      "targets": [
+        "net10.0-windows10.0.22621.0",
+        "net10.0-windows10.0.22621.0/win-arm64",
+        "net10.0-windows10.0.22621.0/win-x64",
+        "net10.0-windows10.0.22621.0/win-x86"
+      ],
+      "reviewedLibrarySetEqual": true
+    },
+    {
+      "path": "src/Desktop/BiliCopilot.Visor/obj/project.assets.json",
+      "stage": "Visor",
+      "sha256": "38895a8d7ba0566f152a5460b64e58546c868f0ba7b2caf4764ccad8e8e767df",
+      "targets": [
+        "net10.0"
+      ],
+      "reviewedLibrarySetEqual": true
+    },
+    {
+      "path": "src/Desktop/BiliCopilot.Visor.Models/obj/project.assets.json",
+      "stage": "Release",
+      "sha256": "17e16203836591a977792efe3d35188aecf68f567ceef6d7bdb48dc989149f0f",
+      "targets": [
+        "net10.0"
+      ],
+      "reviewedLibrarySetEqual": true
+    },
+    {
+      "path": "tests/BiliCopilot.UI.Tests/obj/project.assets.json",
+      "stage": "Tests",
+      "sha256": "afab78834885840083ced3ef23401a00377bb26770daacceb6b858ba1438eb53",
+      "targets": [
+        "net10.0"
+      ],
+      "reviewedLibrarySetEqual": true
+    }
+  ],
+  "sourceHashesGzipSha256": "0b55ee0cb298ca04a3b8038f77c2a073052afb2ea4717c6e33ef1f107679a602"
+}

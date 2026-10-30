@@ -1,6 +1,10 @@
 # 性能规格 #45 验收状态
 
-最新 PR27/43 本地集成（2026-10-30）：指定 `d3ab56c` 以 `--no-ff` 合入为 **`2b12951179fb757d6b2559a1ea2a97fe2c52003d`**，最新生产来源 `65e5312`，PR27 f19f030 / PR43 2f1ae8f 均为祖先。独立 Standards/Spec 审查无新增 blocker；fresh Release **487 passed / 0 failed / 0 skipped**，新测试 DLL 指向 merge，Debug x64 JIT **0 warnings / 0 errors**、显式 runtime 文件门禁通过。见 [独立集成复核](integration-pr27-pr43-review.md) 和 [原交接/重放基线](integration-pr27-pr43.md)。以下旧记录仍按各自 SHA 解读。
+最新 .NET10 **有限兼容采用**（2026-10-31）：指定独立 review `cec615167b60352b4a63a732709c5107af65d8c1` 以 `--no-ff` 合入为 **`5e628048815afc1602d882bcf7e9aa4cbde74b21`**，完整候选 `79ffd4f1`、稳定依赖/调查及 PR27/43 均保留，net11 候选未合入。kernel **`0ae5e4e000a41a07f6696746706df11c06e8835b`** 从已验证 bundle 恢复，取消/pageSize 祖先通过，仍 **local-only**。Fresh 全套 **487 passed / 0 failed / 0 skipped**；DebugClean/Release x64 JIT 各 **1 existing protobuf warning / 0 errors**，Visor Release JIT 0/0，runtime 文件门禁通过。每步立即独立封存原始输出、assets、runtimeconfig 和完整 raw-byte hash 清单。初次 Debug 共享输出有历史 DLL 残留，保留但不交接；全新 BuildOutDir 重建后的 DebugClean 与 Release 各 666 个 activation 文件、DLL 集合与 recipe 精确一致。见 [本轮集成与冻结产物](integration-net10-adoption.md)。
+
+性能 **HOLD**，同源 net9 native crash 未解，非已证明 net10 修复或全面稳定性 PASS；**#49 pause FAIL、AOT BLOCKED、最新认证首页未验**。RC 仍实验且历史 production output 已覆盖；五份旧 JSON 哈希修复仍待父处理。能力审计仅“未建立足够适用性”，不是所有包不存在 ≤M 机会。本轮不部署/启动应用、不读凭据或触碰保护注册/layout/login/PID9608/Dev，无远端/PR/issue操作；冻结产物只供父后续同身份认证更新。以下记录均按各自历史 SHA 解读。
+
+此前 PR27/43 本地集成（2026-10-30）：指定 `d3ab56c` 以 `--no-ff` 合入为 **`2b12951179fb757d6b2559a1ea2a97fe2c52003d`**，当时生产来源 `65e5312`，PR27 f19f030 / PR43 2f1ae8f 均为祖先。独立 Standards/Spec 审查无新增 blocker；fresh Release **487 passed / 0 failed / 0 skipped**，新测试 DLL 指向 merge，Debug x64 JIT **0 warnings / 0 errors**、显式 runtime 文件门禁通过。见 [独立集成复核](integration-pr27-pr43-review.md) 和 [原交接/重放基线](integration-pr27-pr43.md)。
 
 kernel 更新为 **`98d0b9d0f0c81bd3904b1425ef3b90f637af37d7`**，同时保留 2ca79bd 取消链与 f02c33f pageSize，父 nested clean，已用 committed bundle 恢复精确对象；**local-only，后续须发布专用 kernel 分支**。本轮没有 push/PR/issue、依赖升级、UI 启动或认证包操作。Controls 7/7 为 3838c9d 源码闭包证据；65e5312 Player 15/15、Main 4/4、20 循环及183样本仅复核已有受控证据，不等于 fresh UI 或认证首页/A-B收益。Caa6a7be 认证包仍旧 c3b32c5；AOT BLOCKED、#49 FAIL、#56预算及硬件/DPI/异常退出注入缺口继续保留。
 
