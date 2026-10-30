@@ -10,7 +10,12 @@ namespace BiliCopilot.UI.Toolkits;
 /// <param name="Offset">刷新前用于继续加载的偏移量.</param>
 public sealed record RecommendRefreshSnapshot<T>(
     IReadOnlyList<T> Items,
-    long Offset)
+    long Offset);
+
+/// <summary>
+/// 创建与原列表解耦的推荐刷新快照.
+/// </summary>
+public static class RecommendRefreshSnapshot
 {
     /// <summary>
     /// 记录一份快照.
@@ -22,6 +27,6 @@ public sealed record RecommendRefreshSnapshot<T>(
     /// 必须复制内容：页面刷新时会 Clear 并重填同一个集合，
     /// 若快照持有集合引用，刷新后快照会被一并改写，撤销就恢复不回去了。
     /// </remarks>
-    public static RecommendRefreshSnapshot<T> Capture(IEnumerable<T>? items, long offset)
+    public static RecommendRefreshSnapshot<T> Capture<T>(IEnumerable<T>? items, long offset)
         => new(items?.ToList() ?? [], offset);
 }

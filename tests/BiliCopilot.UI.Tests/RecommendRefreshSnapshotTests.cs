@@ -17,7 +17,7 @@ public class RecommendRefreshSnapshotTests
     public void Capture_CopiesItemsSoLaterMutationsOfSourceDoNotLeak()
     {
         var source = new List<string> { "a", "b" };
-        var snapshot = RecommendRefreshSnapshot<string>.Capture(source, 42);
+        var snapshot = RecommendRefreshSnapshot.Capture<string>(source, 42);
 
         source.Clear();
         source.Add("c");
@@ -29,7 +29,7 @@ public class RecommendRefreshSnapshotTests
     [Fact]
     public void Capture_NullSource_ProducesEmptySnapshot()
     {
-        var snapshot = RecommendRefreshSnapshot<string>.Capture(null, 0);
+        var snapshot = RecommendRefreshSnapshot.Capture<string>(null, 0);
 
         Assert.Empty(snapshot.Items);
         Assert.Equal(0, snapshot.Offset);
@@ -40,7 +40,7 @@ public class RecommendRefreshSnapshotTests
     {
         var source = new[] { "x", "y", "z" };
 
-        var snapshot = RecommendRefreshSnapshot<string>.Capture(source, 7);
+        var snapshot = RecommendRefreshSnapshot.Capture<string>(source, 7);
 
         Assert.Equal(new[] { "x", "y", "z" }, snapshot.Items);
         Assert.Equal(7, snapshot.Offset);
