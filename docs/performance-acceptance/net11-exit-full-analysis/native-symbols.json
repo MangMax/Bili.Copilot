@@ -1,0 +1,129 @@
+[
+  {
+    "name": "CoreMessagingXP.dll",
+    "pdb": "CoreMessagingXP.pdb",
+    "guid": "8AF1C0CEA6304CF3ADFC047648FC2535",
+    "age": 1,
+    "infoAge": 2,
+    "sha256": "5e47226ec06ca15c4e8b7afb4fccc4d6e114c6e7dd48bb416acf7c4a8e71680d",
+    "publicCount": 8800,
+    "frames": [
+      {
+        "module": "CoreMessagingXP.dll+0xb17bc",
+        "nearestPublic": "?TimerCallback@DispatcherQueueTimer@Dispatching@UI@Microsoft@@CAJPEAX@Z",
+        "displacement": "0x1cc"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x38ba2",
+        "nearestPublic": "?set_Enabled@Dispatcher@_Microsoft_CoreUI_IExportMessageGroupStable@InterfaceImplementation$@DispatchGroup@CoreUI@Microsoft@@UEBAXPEAVObject@System@@_N@Z",
+        "displacement": "0x32"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x3873b",
+        "nearestPublic": "?ImportAdapter$@TimeoutHandler@Dispatch@CoreUI@Microsoft@@SAXPEAV?$Box$1@U?$FunctionPointerAndUserData$1@P6AJPEAX@Z@CFlat@@@CFlat@@@Z",
+        "displacement": "0x5b"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x52fe3",
+        "nearestPublic": "?Callback_OnDispatch@TimeoutManager@Dispatch@CoreUI@Microsoft@@UEAAXXZ",
+        "displacement": "0x1e3"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x199d0",
+        "nearestPublic": "?Callback_DispatchNextItem@Dispatcher@Dispatch@CoreUI@Microsoft@@AEAA_NPEAVDispatchItem@234@@Z",
+        "displacement": "0x1f0"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x191f4",
+        "nearestPublic": "?Callback_DispatchLoop@Dispatcher@Dispatch@CoreUI@Microsoft@@QEAA?AW4Dispatcher$LoopExitState@234@W4RunnablePriorityMask@234@@Z",
+        "displacement": "0x1f4"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0xc1bc",
+        "nearestPublic": "?Callback_RunCoreLoop@EventLoop@Dispatch@CoreUI@Microsoft@@QEAA?AW4Dispatcher$LoopExitState@234@W4RunMode@234@@Z",
+        "displacement": "0x1ac"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x11f0b",
+        "nearestPublic": "?DrainCoreMessagingQueue@UserAdapter@Dispatch@CoreUI@Microsoft@@AEAAXW4UserAdapter$UserPriority@234@PEAPEAX@Z",
+        "displacement": "0x14b"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x121f1",
+        "nearestPublic": "?OnUserDispatch@UserAdapter@Dispatch@CoreUI@Microsoft@@AEAAX_NW4UserAdapter$UserPriority@234@PEAPEAX@Z",
+        "displacement": "0x91"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x60197",
+        "nearestPublic": "?DoWork@UserAdapter@Dispatch@CoreUI@Microsoft@@CAXPEAUHWND__@@W4UserAdapter$UserPriority@234@_N@Z",
+        "displacement": "0xb7"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x5ff52",
+        "nearestPublic": "?WindowProc@UserAdapter@Dispatch@CoreUI@Microsoft@@CA_JPEAUHWND__@@I_K_J@Z",
+        "displacement": "0x92"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x606da",
+        "nearestPublic": "?DispatchNextUserQueueItemNative@UserAdapter@Dispatch@CoreUI@Microsoft@@CA?AW4UserAdapter$DispatchedMessageCategory@234@_N@Z",
+        "displacement": "0xba"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x1240c",
+        "nearestPublic": "?IterateCoreLoop@UserAdapter@Dispatch@CoreUI@Microsoft@@AEAA_NU?$Ref@_N@CFlat@@@Z",
+        "displacement": "0x12c"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x1213d",
+        "nearestPublic": "?RunIntegratedLoop@UserAdapter@Dispatch@CoreUI@Microsoft@@AEAAXXZ",
+        "displacement": "0xcd"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0xed88",
+        "nearestPublic": "?Callback_Run@Win32EventLoopBridge@Dispatch@CoreUI@Microsoft@@UEAAXW4RunMode@234@@Z",
+        "displacement": "0x328"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0xbf80",
+        "nearestPublic": "?Callback_Run@EventLoop@Dispatch@CoreUI@Microsoft@@AEAAXW4RunMode@234@W4ExitOptions@34@PEA_N@Z",
+        "displacement": "0xf0"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0x14659",
+        "nearestPublic": "?RunUntilExitFlag@ExportAdapter$@IExportMessageLoopExtensions@CoreUI@Microsoft@@UEAAJW4MsgExitOptions@@PEB_N@Z",
+        "displacement": "0xf9"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0xad141",
+        "nearestPublic": "?Run@DispatcherQueue@Dispatching@UI@Microsoft@@AEAAXW4MsgExitOptions@@PEB_N@Z",
+        "displacement": "0x51"
+      },
+      {
+        "module": "CoreMessagingXP.dll+0xa7761",
+        "nearestPublic": "?ShutdownQueue@DispatcherQueueController@Dispatching@UI@Microsoft@@UEAAJXZ",
+        "displacement": "0x111"
+      }
+    ]
+  },
+  {
+    "name": "combase.dll",
+    "pdb": "combase.pdb",
+    "guid": "4AC91D91223808F3AE6A3164A1B8B404",
+    "age": 1,
+    "infoAge": 4,
+    "sha256": "9ecd353dbf659a029b637324e88a5b2a24771cd62b360392bb3a521dcc5c6b29",
+    "publicCount": 27652,
+    "frames": [
+      {
+        "module": "combase.dll+0xc4063",
+        "nearestPublic": "RoCaptureErrorContext",
+        "displacement": "0xf3"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.UI.Xaml.dll",
+    "status": "UNAVAILABLE",
+    "reason": "[Errno 2] No such file or directory: 'artifacts\\\\exit-full-analysis\\\\symbols\\\\Microsoft.ui.xaml.pdb'"
+  }
+]

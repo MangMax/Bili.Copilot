@@ -1,0 +1,140 @@
+[
+  {
+    "id": "Azure.Core",
+    "version": "1.53.0",
+    "sha256": "ce2a7001c04158d09bd6e577b5458e230c107d861eb84016bf53fc6a00b2a86f",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Azure.Identity",
+    "version": "1.21.0",
+    "sha256": "47712e11f5016aa55617b4330b8943e4ef1fb1f9875bbb5857ae9fcaeee57a0d",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Iced",
+    "version": "1.21.0",
+    "sha256": "d31613617e3ddf91239bbc94a8c587849b4236e8f8a2a2ba59ea2397a1487c7a",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Bcl.AsyncInterfaces",
+    "version": "10.0.3",
+    "sha256": "fb04dc99ccd40f5a929e7599d668a28ebeb6fe095c45b35646911987f3815368",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Diagnostics.NETCore.Client",
+    "version": "0.2.661903",
+    "sha256": "ccd047e3e2fef5c08cfa93086850d4872f5a08930f38b6a61aaaeb46bb8ec86d",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Diagnostics.Runtime",
+    "version": "4.2.751201",
+    "sha256": "17c84b6aa5eacda66775f3550aebd99686c27099ebfe7ae78b37efa2ed6c8aea",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.Configuration.Abstractions",
+    "version": "10.0.3",
+    "sha256": "39f70f783bfb449befbfb9ecfb008c01009d1bf1ded8ab7157a311970be9df92",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+    "version": "10.0.3",
+    "sha256": "4a107de2312db2ae57e6beb10d943ec28b59606dce3ca3821cd1b2e01ecd545b",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+    "version": "8.0.2",
+    "sha256": "51f2df1100245f10da54f0bb7e813f277155117777d4fbbab902214e27372606",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.Diagnostics.Abstractions",
+    "version": "10.0.3",
+    "sha256": "26094ab42ebe8df8a0811514e405c2ea6474716d6ddccdf7c11ed65cac898c1b",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.FileProviders.Abstractions",
+    "version": "10.0.3",
+    "sha256": "b9601987f45d3048b04ccdb7d752a50ca2b62c1a3cd6d2185cf4d4cc95db71e0",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.Hosting.Abstractions",
+    "version": "10.0.3",
+    "sha256": "77ccd7c937e055da24f82820e440b4e031f888f42d2f1954f42b06cb9f9dafab",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.Logging.Abstractions",
+    "version": "10.0.3",
+    "sha256": "9484ad4883d3c5aa024685011ec04f5d96ee563e62a34db7f745a4c9ea727e5c",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.Logging.Abstractions",
+    "version": "8.0.3",
+    "sha256": "e4c498d5a13051b4577a148f1d8c3470167215c507e2392069b75dc61322bb74",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.Options",
+    "version": "10.0.3",
+    "sha256": "28361a54149d344ba1b37535eb8455d27db4723c2ba62eee23bd41d23fd416c0",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Extensions.Primitives",
+    "version": "10.0.3",
+    "sha256": "c341be216f64cfbd2e835044b894de4b537bc1ead0866b3781097a383ccd2294",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Identity.Client",
+    "version": "4.83.1",
+    "sha256": "583b75c602b985dc52620e9c20ae705ed638fcf07e05a4f7f7780d2dac3313c0",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Identity.Client.Extensions.Msal",
+    "version": "4.83.1",
+    "sha256": "b78846e4a4b37c17e17d9edd243052db0afbbf69e70f04633ecefc67388cfdbf",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.IdentityModel.Abstractions",
+    "version": "8.14.0",
+    "sha256": "6e40aecf55a3e7a37e2c758bbc728b702b4846a04afb7939bc3daa7c1ef15ca9",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "Microsoft.Security.AntiSSRF",
+    "version": "1.0.0",
+    "sha256": "b936dfa86c59a1a5d6b9b5c83531035b0e84e8c51d5664f9c3de5254946bf5aa",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "System.ClientModel",
+    "version": "1.10.0",
+    "sha256": "4d5adfc7f21a8268991dddc722b93094817ff6b6db20e3547aa3a96a623af15b",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "System.Memory.Data",
+    "version": "10.0.3",
+    "sha256": "1de7cac82b8d27b6ce34e56a1a2d9649c1ba5c8a05c9f192c1340cf4e974ebe5",
+    "source": "https://api.nuget.org/v3/index.json"
+  },
+  {
+    "id": "System.Security.Cryptography.ProtectedData",
+    "version": "4.5.0",
+    "sha256": "67e5f5676944acb2fb627b768c5b3392eebf220ae780edd5d5b49f6530621487",
+    "source": "https://api.nuget.org/v3/index.json"
+  }
+]

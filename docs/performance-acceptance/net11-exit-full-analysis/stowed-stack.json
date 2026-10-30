@@ -1,0 +1,145 @@
+{
+  "sha256": "eeab35bb591c37016da7ec29ceb607a55ece8d6135d08e5d4511704d8a1a0d3d",
+  "bytes": 1550491329,
+  "pid": 38208,
+  "thread": 39912,
+  "code": "0xc000027b",
+  "exceptionAt": "CoreMessagingXP.dll+0xb17fc",
+  "stowed": [
+    {
+      "size": 56,
+      "signature": "0x53453032",
+      "hresult": "0x8000ffff",
+      "form": 1,
+      "thread": 39912,
+      "nestedType": "0x314f454c",
+      "nestedCaptured": true,
+      "nestedAddress": "0x1fb6ca435d0",
+      "exception": "combase.dll+0xc4063",
+      "wordSize": 8,
+      "words": 30,
+      "stack": [
+        {
+          "address": "0x7fffafcd4063",
+          "location": "combase.dll+0xc4063"
+        },
+        {
+          "address": "0x7fff3bed17bc",
+          "location": "CoreMessagingXP.dll+0xb17bc"
+        },
+        {
+          "address": "0x7fff3be58ba2",
+          "location": "CoreMessagingXP.dll+0x38ba2"
+        },
+        {
+          "address": "0x7fff3be5873b",
+          "location": "CoreMessagingXP.dll+0x3873b"
+        },
+        {
+          "address": "0x7fff3be72fe3",
+          "location": "CoreMessagingXP.dll+0x52fe3"
+        },
+        {
+          "address": "0x7fff3be399d0",
+          "location": "CoreMessagingXP.dll+0x199d0"
+        },
+        {
+          "address": "0x7fff3be391f4",
+          "location": "CoreMessagingXP.dll+0x191f4"
+        },
+        {
+          "address": "0x7fff3be2c1bc",
+          "location": "CoreMessagingXP.dll+0xc1bc"
+        },
+        {
+          "address": "0x7fff3be31f0b",
+          "location": "CoreMessagingXP.dll+0x11f0b"
+        },
+        {
+          "address": "0x7fff3be321f1",
+          "location": "CoreMessagingXP.dll+0x121f1"
+        },
+        {
+          "address": "0x7fff3be80197",
+          "location": "CoreMessagingXP.dll+0x60197"
+        },
+        {
+          "address": "0x7fff3be7ff52",
+          "location": "CoreMessagingXP.dll+0x5ff52"
+        },
+        {
+          "address": "0x7fffafa452e6",
+          "location": "user32.dll+0x152e6"
+        },
+        {
+          "address": "0x7fffafa44b6c",
+          "location": "user32.dll+0x14b6c"
+        },
+        {
+          "address": "0x7fffafa6f593",
+          "location": "user32.dll+0x3f593"
+        },
+        {
+          "address": "0x7fffb0a85d94",
+          "location": "ntdll.dll+0x165d94"
+        },
+        {
+          "address": "0x7fffadf11304",
+          "location": "win32u.dll+0x1304"
+        },
+        {
+          "address": "0x7fffafa419df",
+          "location": "user32.dll+0x119df"
+        },
+        {
+          "address": "0x7fffafa41968",
+          "location": "user32.dll+0x11968"
+        },
+        {
+          "address": "0x7fff3be806da",
+          "location": "CoreMessagingXP.dll+0x606da"
+        },
+        {
+          "address": "0x7fff3be3240c",
+          "location": "CoreMessagingXP.dll+0x1240c"
+        },
+        {
+          "address": "0x7fff3be3213d",
+          "location": "CoreMessagingXP.dll+0x1213d"
+        },
+        {
+          "address": "0x7fff3be2ed88",
+          "location": "CoreMessagingXP.dll+0xed88"
+        },
+        {
+          "address": "0x7fff3be2bf80",
+          "location": "CoreMessagingXP.dll+0xbf80"
+        },
+        {
+          "address": "0x7fff3be34659",
+          "location": "CoreMessagingXP.dll+0x14659"
+        },
+        {
+          "address": "0x7fff3becd141",
+          "location": "CoreMessagingXP.dll+0xad141"
+        },
+        {
+          "address": "0x7fff3bec7761",
+          "location": "CoreMessagingXP.dll+0xa7761"
+        },
+        {
+          "address": "0x7ffed764566e",
+          "location": "Microsoft.UI.Xaml.dll+0x79566e"
+        },
+        {
+          "address": "0x7ffed746e83b",
+          "location": "Microsoft.UI.Xaml.dll+0x5be83b"
+        },
+        {
+          "address": "0x7ffe90e1034f",
+          "location": "unmapped-code-address"
+        }
+      ]
+    }
+  ]
+}
