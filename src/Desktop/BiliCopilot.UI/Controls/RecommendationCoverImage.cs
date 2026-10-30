@@ -28,6 +28,7 @@ public sealed partial class RecommendationCoverImage : UserControl
     private CanvasDevice? _device;
     private long _lastRecovery;
     private CancellationTokenSource? _recoveryDelay;
+    private long? _cornerRadiusToken;
     private (Uri? Source, int Width, int Height) _requested;
 
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
@@ -54,6 +55,14 @@ public sealed partial class RecommendationCoverImage : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs args)
     {
+        if (_cornerRadiusToken is null)
+        {
+            // Track later changes too: a one-off copy in Loaded goes stale when a
+            // template or style updates the corner radius after first layout.
+            _cornerRadiusToken = RegisterPropertyChangedCallback(
+                CornerRadiusProperty, OnCornerRadiusChanged);
+        }
+
         _root.CornerRadius = CornerRadius;
         CompositionTarget.SurfaceContentsLost += OnSurfaceContentsLost;
         _observedRoot = XamlRoot;
@@ -65,8 +74,17 @@ public sealed partial class RecommendationCoverImage : UserControl
         Reload();
     }
 
+    private void OnCornerRadiusChanged(DependencyObject sender, DependencyProperty property)
+        => _root.CornerRadius = CornerRadius;
+
     private void OnUnloaded(object sender, RoutedEventArgs args)
     {
+        if (_cornerRadiusToken is not null)
+        {
+            UnregisterPropertyChangedCallback(CornerRadiusProperty, _cornerRadiusToken.Value);
+            _cornerRadiusToken = null;
+        }
+
         CompositionTarget.SurfaceContentsLost -= OnSurfaceContentsLost;
         if (_device is not null)
         {

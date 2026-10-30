@@ -23,6 +23,7 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
     private const int WindowMinWidth = 640;
     private const int WindowMinHeight = 480;
     private bool _isFirstActivated = true;
+    private bool _forceClose;
     private InputKeyboardSource? _keyboardSource;
 
     /// <summary>
@@ -93,7 +94,7 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
         }
     }
 
-    internal async Task RequestExitAsync()
+    internal async Task<bool> RequestExitAsync()
     {
         var app = (App)Application.Current;
         var appVM = this.Get<AppViewModel>();
@@ -127,15 +128,24 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
                 Close();
                 app.Exit();
             });
+
+            return true;
         }
         catch (Exception ex)
         {
             this.Get<ILogger<App>>().LogError(ex, "退出应用时失败");
+            return false;
         }
     }
 
     private async void OnClosed(object sender, WindowEventArgs e)
     {
+        if (_forceClose)
+        {
+            // The unified exit failed; let the native close proceed so the window is not stuck.
+            return;
+        }
+
         // Window.Closed has no async deferral: cancel native destruction before any await.
         e.Handled = true;
         var appVM = this.Get<AppViewModel>();
@@ -157,7 +167,11 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
             return;
         }
 
-        await RequestExitAsync();
+        if (!await RequestExitAsync())
+        {
+            _forceClose = true;
+            Close();
+        }
     }
 
     private void OnWindowKeyUp(InputKeyboardSource sender, KeyEventArgs args)
