@@ -79,7 +79,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        ClearRefreshTip();
+        ClearRefreshSnapshot();
 
         if (Videos.Count > 0)
         {
@@ -117,7 +117,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsVideoLoading || _isRecommendRefreshing)
+        if (IsVideoLoading || IsRecommendRefreshing)
         {
             return;
         }
@@ -126,9 +126,6 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         {
             return;
         }
-
-        // 下滑加载会重新出现「加载中」提示，此时撤销入口已无意义，先收起避免同时出现两个提示。
-        DismissRefreshTipForLoadMore();
 
         IsVideoLoading = true;
         if (SelectedSection is PopularSectionItemViewModel section)
@@ -164,7 +161,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        ClearRefreshTip();
+        ClearRefreshSnapshot();
         Videos.Clear();
         _videoCache.Remove(SelectedSection);
         if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Hot })
@@ -189,44 +186,23 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
 
         _recommendOffset = snapshot.Offset;
-        ClearRefreshTip();
+        ClearRefreshSnapshot();
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
-    /// 清除撤销快照与刷新提示.
+    /// 清除撤销快照.
     /// </summary>
     /// <remarks>
     /// 切换分区、走普通刷新或撤销时 <see cref="Videos"/> 会被替换或重载，
     /// 旧快照指向的列表已不在页面上，必须一并失效；同时递增代次，让仍在路上的推荐刷新结果作废。
     /// </remarks>
-    private void ClearRefreshTip()
+    private void ClearRefreshSnapshot()
     {
         _recommendRefreshSnapshot = null;
-        RefreshTipState = Toolkits.RefreshTipState.Hidden;
+        CanUndoRefresh = false;
         _refreshGeneration++;
     }
-
-    /// <summary>
-    /// 下滑加载时收起刷新提示.
-    /// </summary>
-    /// <remarks>
-    /// 下拉加载会显示页面中央的「加载中，请稍后」，如果此时左下角还挂着「撤销刷新」，
-    /// 屏幕上会同时出现两个提示。加载本身意味着用户已经接受了刷新结果，撤销入口可以收起。
-    /// </remarks>
-    private void DismissRefreshTipForLoadMore()
-    {
-        if (RefreshTipState.Status is Toolkits.RefreshTipStatus.Completed)
-        {
-            ClearRefreshTip();
-        }
-    }
-
-    /// <summary>
-    /// 手动关闭刷新提示.
-    /// </summary>
-    [RelayCommand]
-    private void DismissRefreshTip() => ClearRefreshTip();
 
     [RelayCommand]
     private async Task PlayCuratedListAsync()

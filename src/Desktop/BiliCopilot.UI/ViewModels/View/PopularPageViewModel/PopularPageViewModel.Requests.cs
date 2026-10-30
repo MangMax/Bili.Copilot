@@ -16,8 +16,8 @@ public sealed partial class PopularPageViewModel
 {
     private async Task RefreshRecommendVideosAsync()
     {
-        // 推荐刷新用左下角浮层表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
-        if (IsVideoLoading || _isRecommendRefreshing)
+        // 推荐刷新在头部按钮旁表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
+        if (IsVideoLoading || IsRecommendRefreshing)
         {
             return;
         }
@@ -36,16 +36,18 @@ public sealed partial class PopularPageViewModel
         // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
         var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
 
-        RefreshTipState = Toolkits.RefreshTipState.Refreshing(
-            ResourceToolkit.GetLocalizedString(StringNames.RefreshingRecommendVideos));
+        // 新一次刷新会替换旧快照，撤销入口先收起，成功后重新出现。
+        CanUndoRefresh = false;
 
-        _isRecommendRefreshing = true;
+        IsRecommendRefreshing = true;
         try
         {
             var (videos, nextOffset) = await FetchRecommendBatchAsync();
             var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
             if (!RecommendRefreshResultGuard.ShouldApply(isRecommend, generation, _refreshGeneration))
             {
+                // 结果已作废：撤销入口按当前快照还原，不留下一个指向旧列表的入口。
+                CanUndoRefresh = _recommendRefreshSnapshot is not null;
                 return;
             }
 
@@ -58,22 +60,21 @@ public sealed partial class PopularPageViewModel
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
 
-            RefreshTipState = Toolkits.RefreshTipState.Completed;
-
             _recommendRefreshSnapshot = snapshot;
+            CanUndoRefresh = true;
             _recommendOffset = nextOffset;
             _videoCache.Remove(SelectedSection);
             VideoListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            // 失败时列表与快照都保持原样，浮层收起，不展示「已刷新」。
-            RefreshTipState = Toolkits.RefreshTipState.Failed;
+            // 失败时列表没变，之前那次刷新的快照仍然指向当前列表刷新前的样子，撤销入口恢复原状。
+            CanUndoRefresh = _recommendRefreshSnapshot is not null;
             _logger.LogError(ex, "尝试刷新推荐视频时出错.");
         }
         finally
         {
-            _isRecommendRefreshing = false;
+            IsRecommendRefreshing = false;
         }
     }
 

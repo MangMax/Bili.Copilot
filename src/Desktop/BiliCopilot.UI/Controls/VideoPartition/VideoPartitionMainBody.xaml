@@ -36,11 +36,5 @@
         <base:LoadingWidget
             Text="{ext:Locale Name=LoadingAndWait}"
             Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}" />
-        <!--  刷新提示为覆盖层，锚定内容区左下角，不占用列表布局行。  -->
-        <components:RefreshResultTipControl
-            Message="{x:Bind ViewModel.RefreshTipState.Message, Mode=OneWay}"
-            State="{x:Bind ViewModel.RefreshTipState.Status, Mode=OneWay}"
-            UndoCommand="{x:Bind ViewModel.UndoRefreshCommand, Mode=OneWay}"
-            DismissCommand="{x:Bind ViewModel.DismissRefreshTipCommand, Mode=OneWay}" />
     </Grid>
 </local:VideoPartitionDetailControlBase>
