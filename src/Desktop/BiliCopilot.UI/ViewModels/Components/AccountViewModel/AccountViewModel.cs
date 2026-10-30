@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
@@ -71,6 +72,11 @@ public sealed partial class AccountViewModel : ViewModelBase
             if (result == ContentDialogResult.Primary)
             {
                 await SignOutAsync();
+            }
+            else if (this.Get<AppViewModel>().Windows.OfType<MainWindow>().FirstOrDefault() is { } mainWindow)
+            {
+                // Share the tray-aware exit so players and tray resources are cleaned up.
+                await mainWindow.RequestExitAsync();
             }
             else
             {

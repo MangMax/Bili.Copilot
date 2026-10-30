@@ -27,4 +27,28 @@ public sealed class CoverDecodeSizeTests
     [Fact]
     public void InvalidLayoutIsRejectedBeforeDecoding()
         => Assert.Throws<ArgumentOutOfRangeException>(() => CoverDecodeSize.Calculate(1920, 1080, double.NaN, 144, 1.5));
+
+    [Fact]
+    public void EmptySourceIsReportedAgainstTheSourceSize()
+    {
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(
+            () => CoverDecodeSize.Calculate(0, 1080, 256, 144, 1.5));
+        Assert.Equal("sourceWidth", exception.ParamName);
+    }
+
+    [Fact]
+    public void InvalidDisplayHeightIsReportedAgainstDisplayHeight()
+    {
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(
+            () => CoverDecodeSize.Calculate(1920, 1080, 256, 0, 1.5));
+        Assert.Equal("displayHeight", exception.ParamName);
+    }
+
+    [Fact]
+    public void InvalidRasterizationScaleIsReportedAgainstRasterizationScale()
+    {
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(
+            () => CoverDecodeSize.Calculate(1920, 1080, 256, 144, double.NaN));
+        Assert.Equal("rasterizationScale", exception.ParamName);
+    }
 }
