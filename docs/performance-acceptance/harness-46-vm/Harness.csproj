@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net9.0-windows10.0.22621.0</TargetFramework><TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion><Platforms>x64</Platforms><PlatformTarget>x64</PlatformTarget><RuntimeIdentifier>win-x64</RuntimeIdentifier><SelfContained>true</SelfContained><UseWinUI>true</UseWinUI><EnableMsixTooling>true</EnableMsixTooling><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><LangVersion>preview</LangVersion><ApplicationManifest>app.manifest</ApplicationManifest><AppxPackageSigningEnabled>false</AppxPackageSigningEnabled></PropertyGroup>
+<ItemGroup>
+<PackageReference Include="RichasyKernel.Core" Version="0.0.1"/>
+<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251106002"/><PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6901"/>
+<PackageReference Include="Richasy.WinUIKernel.AI" Version="0.0.12-preview3"/><PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
+<PackageReference Include="ComputeSharp.D2D1.WinUI" Version="3.2.0"/><PackageReference Include="FluentIcons.WinUI" Version="1.2.315"/>
+<PackageReference Include="Markdig" Version="0.44.0"/><PackageReference Include="ColorCode.WinUI" Version="2.0.15"/><PackageReference Include="HtmlAgilityPack" Version="1.12.4"/><PackageReference Include="Roman-Numerals" Version="2.0.1"/>
+<ProjectReference Include="$(SourceRoot)/externals/bili-kernel/src/BiliKernel.Abstractions/BiliKernel.Abstractions.csproj"/>
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/ViewModels/Core/AIViewModel/*.cs" Link="Production/%(Filename)%(Extension)"/>
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/ViewModels/Items/AIQuickItemViewModel.cs" Link="Production/AIQuickItemViewModel.cs"/>
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/AI/AIControlBase.cs" Link="Production/AIControlBase.cs"/>
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/AI/AIBody.xaml.cs;$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/AI/AIFooter.xaml.cs;$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/AI/AIHeader.xaml.cs;$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/AI/AIPanel.xaml.cs" Link="%(Filename)%(Extension)"/>
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/Markdown/**/*.cs" Link="Production/Markdown/%(RecursiveDir)%(Filename)%(Extension)"/>
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Toolkits/Pure/StreamingResponseSession.cs;$(SourceRoot)/src/Desktop/BiliCopilot.UI/Toolkits/Pure/SubtitlePreference.cs" Link="Production/%(Filename)%(Extension)"/>
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI/Controls/BasicCoverImage.cs;$(SourceRoot)/src/Desktop/BiliCopilot.UI/Extensions/BasicScaleEffect.cs;$(SourceRoot)/src/Desktop/BiliCopilot.UI/Extensions/LocaleExtension.cs" Link="Production/%(Filename)%(Extension)"/>
+<Compile Include="$(SourceRoot)/src/Desktop/BiliCopilot.UI.Models/Constants/SettingNames.cs;$(SourceRoot)/src/Desktop/BiliCopilot.UI.Models/Constants/PromptConstants.cs" Link="Production/%(Filename)%(Extension)"/>
+<Content Include="Assets/**"/>
+</ItemGroup></Project>
