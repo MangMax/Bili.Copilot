@@ -8,12 +8,24 @@ internal static class CoverDecodeSize
     public static (uint Width, uint Height) Calculate(uint sourceWidth, uint sourceHeight,
         double displayWidth, double displayHeight, double rasterizationScale)
     {
-        if (sourceWidth == 0 || sourceHeight == 0 ||
-            !double.IsFinite(displayWidth) || displayWidth <= 0 ||
-            !double.IsFinite(displayHeight) || displayHeight <= 0 ||
-            !double.IsFinite(rasterizationScale) || rasterizationScale <= 0)
+        if (sourceWidth == 0 || sourceHeight == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(sourceWidth));
+        }
+
+        if (!double.IsFinite(displayWidth) || displayWidth <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(displayWidth));
+        }
+
+        if (!double.IsFinite(displayHeight) || displayHeight <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(displayHeight));
+        }
+
+        if (!double.IsFinite(rasterizationScale) || rasterizationScale <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(rasterizationScale));
         }
 
         var ratio = Math.Min(1, Math.Max(displayWidth * rasterizationScale / sourceWidth,
