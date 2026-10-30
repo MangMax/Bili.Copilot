@@ -1,0 +1,734 @@
+[
+  {
+    "path": "Tests/command.log",
+    "rawBytes": 3247,
+    "rawSha256": "5d9f4a60c55139c352117f6d177bd77e9ccd90dc82d727b940a808b1bafe73fd",
+    "gzipSha256": "02110c0d7db0a406a43ae98b7d6cd62a2bfa121199d72bae62332c671c1c0dcc"
+  },
+  {
+    "path": "Tests/files.json",
+    "rawBytes": 71153,
+    "rawSha256": "466b2d23c290895899671d114bffdbcad1fdb5e01a1ebcd73541aab8f7e519de",
+    "gzipSha256": "be08f6639c7b1ab6effec33099416b8846ab100e772d27a8ab959bb365eea42f"
+  },
+  {
+    "path": "Tests/provenance.json",
+    "rawBytes": 3075,
+    "rawSha256": "62b822e0fb12a045cd8c2699e44cb9f6a4362f781102a7bd289b9c971d44b250",
+    "gzipSha256": "474a0db5cfefc79a3ce2d8eb2796b1a9fe6673f90a13026853cfa46807482e11"
+  },
+  {
+    "path": "Tests/sdk.log",
+    "rawBytes": 1944,
+    "rawSha256": "898bf2c7564309582f93bdeb39b77e447c67c39ca220c687e7de8f0d2459200c",
+    "gzipSha256": "f65e48a71d580a06ab72bdfdcb62b72c600faeaef522228fbda6fb9b21b1d805"
+  },
+  {
+    "path": "Tests/source-config/global.json",
+    "rawBytes": 126,
+    "rawSha256": "deda6cf4c81b0d7ba2fb9634ec2f4b667dea625404c081dce8c2f21e6f2c59f6",
+    "gzipSha256": "97f969e6a95bdf9a2b939de7308f6541c6968d3677f3b1527f84b176f56af822"
+  },
+  {
+    "path": "Tests/trx/integration-tray.trx",
+    "rawBytes": 712593,
+    "rawSha256": "7dc01aa1183b97cb54f7cdd4d6471fdee932119fbbebbbf8434c5f9fe412a530",
+    "gzipSha256": "308fa04aecf71db4fb64a8f12fed6927a420325cc1ea38ba0139b980b455718f"
+  },
+  {
+    "path": "Tests/source-config/src/Directory.Build.props",
+    "rawBytes": 1381,
+    "rawSha256": "f3ad96527a0e2bf2dde7bef9ea7233b56a41545dafcfe6d3803996d9f3f381d5",
+    "gzipSha256": "04fde6ccfdfee880701ceab7e8a7d3fe9386b4c209c9ea77c71874896fe2209e"
+  },
+  {
+    "path": "Tests/source-config/src/Directory.Packages.props",
+    "rawBytes": 12016,
+    "rawSha256": "fdda9e95fa9b25482cf651cffe5938586e46af7ee17994c5524a2a5fecf7a360",
+    "gzipSha256": "e6d86da97b2228aa9a32815585fb11797c2369754a6e4bb704f7ea35721be6a1"
+  },
+  {
+    "path": "Tests/source-config/externals/bili-kernel/src/Directory.Packages.props",
+    "rawBytes": 1412,
+    "rawSha256": "ac4442b143e9b714d1fed1890769809aab6d1bbf9a25cba3e6b80c1609e2c1b2",
+    "gzipSha256": "90e3cce0224944149ce966eb7ddcfc7d9075b981ddd41cc77525a8959c1f1a44"
+  },
+  {
+    "path": "Tests/resolved-assets/tests/BiliCopilot.UI.Tests/obj/project.assets.json",
+    "rawBytes": 98316,
+    "rawSha256": "4c1992fb9bc2e475e2442e4e5a72f33692b4f23ff3810a9ab6c9fc4bc9c6d03c",
+    "gzipSha256": "4122869d80bf4733bae2c84c72cb6daf550699d52a130a95b71da8561ecd185d"
+  },
+  {
+    "path": "Tests/resolved-assets/src/Desktop/BiliCopilot.Visor.Models/obj/project.assets.json",
+    "rawBytes": 123489,
+    "rawSha256": "e84ea7abcbba8b60baa9a35e2f802828326a62f4b410694924cba00e878d04d9",
+    "gzipSha256": "f5d7e830f384a60d42276a7c4a3dced1eea804e6b6732fadeeee392844385ae9"
+  },
+  {
+    "path": "Tests/resolved-assets/src/Desktop/BiliCopilot.Visor/obj/project.assets.json",
+    "rawBytes": 124071,
+    "rawSha256": "38895a8d7ba0566f152a5460b64e58546c868f0ba7b2caf4764ccad8e8e767df",
+    "gzipSha256": "87d7e757bb2c71e88f63c6738d9ba3c72b9ba67a52b10c414df8032bc8de07d5"
+  },
+  {
+    "path": "Tests/resolved-assets/src/Desktop/BiliCopilot.UI.ResourceGenerator/obj/project.assets.json",
+    "rawBytes": 136742,
+    "rawSha256": "1f1e8f32adf26435aad714c73be9e85275612745412e7eb8ae0aeefac0860172",
+    "gzipSha256": "3e3fc4b0b8f42f6d3a55edf2babfe7ae1195ce716746fdd47a2832bb442b499f"
+  },
+  {
+    "path": "Tests/resolved-assets/src/Desktop/BiliCopilot.UI.Models/obj/project.assets.json",
+    "rawBytes": 135837,
+    "rawSha256": "eb0353d5f1d591c9742029b47b0723da4318e0573e1d87716645adee37348643",
+    "gzipSha256": "fcc010b0fdbf659d02b000ca5d2417f1977d816d53d99ca45a6fca1c2a79b2f4"
+  },
+  {
+    "path": "Tests/resolved-assets/src/Desktop/BiliCopilot.UI/obj/project.assets.json",
+    "rawBytes": 846460,
+    "rawSha256": "631bdd21448fffa029172b44f0bd227abc300cbee2436a100435acdf31ac9b40",
+    "gzipSha256": "62eb0c1ec111f83ea87b7872919da009270943e12b80f02c4ddd6941a272088b"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Services/Services.User/obj/project.assets.json",
+    "rawBytes": 77883,
+    "rawSha256": "e4681637f75ce198298b6394d395252dcf9a57133903cb8eb78ad382db6ff424",
+    "gzipSha256": "889371f9bf70835e663f7acb702f4c3a063546930e007f0b4679cbda65703faf"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Services/Services.Search/obj/project.assets.json",
+    "rawBytes": 67007,
+    "rawSha256": "e7f482f127959af57b9058bf6d6adf84db5a3b0fa2033244669ab1deebd33dc8",
+    "gzipSha256": "de44e2c2c55e1f35ab1309be5a75211ef1da1154d5fb16f0118d264d136a5a04"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Services/Services.Moment/obj/project.assets.json",
+    "rawBytes": 67007,
+    "rawSha256": "a3c7390070a7dabd574f16e2a6fc123142e202f2b5f03e4efaa2738c4a44f991",
+    "gzipSha256": "cfd7501ac448562251fc93cc0182ac6c3963a7d8f1e9ec50cf1c33f9fb2c3e3b"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Services/Services.Media/obj/project.assets.json",
+    "rawBytes": 67001,
+    "rawSha256": "8dbdd224e26cf45cb87682b86963229292d98ab48cd9075299381e8ea8545bc2",
+    "gzipSha256": "ae20b75534b7073bb7a530e7bbe5769c11b7e30a0d34fa756bbfb10424a8ad56"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Services/Services.Comment/obj/project.assets.json",
+    "rawBytes": 67013,
+    "rawSha256": "046caede2696e4ad6c2630f81a31995a54bf5e021b693bb9ffce74d0e7899b8f",
+    "gzipSha256": "39c5e23b22a87d1307a9ab685a11f84edf82896f40dccf0418e44c0d726cde6d"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Services/Services.Article/obj/project.assets.json",
+    "rawBytes": 67013,
+    "rawSha256": "7c30c32bcbafff2da2c2e6a2cd5c1f3ed1757919087885d9e3347ed1bde53c4e",
+    "gzipSha256": "fa025c926c785621f6c89a31db05a3572d80e9c083c9d6106d8ede9cc36c7180"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUIToken/obj/project.assets.json",
+    "rawBytes": 263680,
+    "rawSha256": "61f172641be748478257bd89bd1a24e966a7272932a50a6e41f347dac86c02d2",
+    "gzipSha256": "372a23bcda110b20746759f381fba3d31a31002a22aaa8b48b7d5a920af613fc"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUIQRCode/obj/project.assets.json",
+    "rawBytes": 263686,
+    "rawSha256": "5facf9b5182806528137b6ba1a7956c0e2344b46910dbc778dd7c056b6bdc8e2",
+    "gzipSha256": "61d3b3d182e4e4c934da7633b0f617e4f6def96f97bfdf7579335dafb34d63af"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUICookies/obj/project.assets.json",
+    "rawBytes": 263692,
+    "rawSha256": "8820108e296925dd565187b1370cc77b8b28e0c86e8882f3c552ea133ec4aa3e",
+    "gzipSha256": "c2f65724c3187ca3e7fce5aa09e9d6ca5b8857d23bb20770b235a42abde2e89c"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/BiliKernel.Grpc/obj/project.assets.json",
+    "rawBytes": 50815,
+    "rawSha256": "eed526287f291b920678aeea05ef9bee39143ea0f062b73f71d7750f43e01e49",
+    "gzipSha256": "6809006b074ead507fb7ebf2df0ab3f0e57da35c446ed2b19c4100b148bc7fb1"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/BiliKernel.Core/obj/project.assets.json",
+    "rawBytes": 65710,
+    "rawSha256": "77d55360133d86ee5e9e824f3473c65dac4887cc86c8bbd23b45d3397d4d3632",
+    "gzipSha256": "ee3be846a8c60524f2b4048c6ea60a54f415cc266fa2da562dfd3532399299c3"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/BiliKernel.Abstractions/obj/project.assets.json",
+    "rawBytes": 46699,
+    "rawSha256": "2e93ab765ce2acb99a6f4029bb12a538b31361b16dabb32855993f3e4a000682",
+    "gzipSha256": "fe5730372ec7a2dd438e5c8709fd1202cdef96f693cb1871580f3d78e9e51063"
+  },
+  {
+    "path": "Tests/resolved-assets/externals/bili-kernel/src/Authorizers/Authorizers.Tv/obj/project.assets.json",
+    "rawBytes": 78290,
+    "rawSha256": "d5317a4041143c61d714811ce83f03c2acacdfdf741a091bfb55fd5af4c06684",
+    "gzipSha256": "0b942d8a45f2541bb6288d7d05f08b54a5623d6739c6ad516e8da8fa8b5e15f5"
+  },
+  {
+    "path": "Tests/outputs/tests/net10.0/BiliCopilot.UI.Tests.runtimeconfig.json",
+    "rawBytes": 492,
+    "rawSha256": "2ae6995e11f0d16127c2836aa4806c6ff621d4762e7d976b25c4911830007d3d",
+    "gzipSha256": "0e909635e500270c18471a9b21a1c605be1f3f07655d4b38ed412af0aa86a757"
+  },
+  {
+    "path": "Tests/outputs/tests/net11.0/BiliCopilot.UI.Tests.runtimeconfig.json",
+    "rawBytes": 507,
+    "rawSha256": "0cf783ce2fd1c0b64abbeca0102c3c39197b60878260cd5259a916018726b77d",
+    "gzipSha256": "98099566bacc0865aec49e3d466da419885dafb6150f31c7bf76e6d031c3aa47"
+  },
+  {
+    "path": "Tests/outputs/tests/net9.0/BiliCopilot.UI.Tests.runtimeconfig.json",
+    "rawBytes": 490,
+    "rawSha256": "ce6dff1fba71982793c2e3171b5e763db6fe5ab61d1bd1c98ac4a4c98ced68e3",
+    "gzipSha256": "b5f0c74f2a86402ac635aebc7e09930c9e700d0102fd5484acae871f6757490c"
+  },
+  {
+    "path": "DebugClean/activation-preparation.json",
+    "rawBytes": 27908,
+    "rawSha256": "258b539638316741b2c0677c02aff1b6cfe2fb35971eb93fe8b3fd74ae41c58f",
+    "gzipSha256": "4190d1a5c111355c3a8603aefa0efaf69a0cf25399a4179efa24b202916846e7"
+  },
+  {
+    "path": "DebugClean/command.log",
+    "rawBytes": 8323,
+    "rawSha256": "02f549c387e0a1297a0ec728a9f6570d5bd2da5cafb41e7ca8ae5f1e428be62b",
+    "gzipSha256": "272fdff312e99ccd47e26419cc16ddd0b031f545fba668d26980534b9e9eaad8"
+  },
+  {
+    "path": "DebugClean/files.json",
+    "rawBytes": 357116,
+    "rawSha256": "1cf777d58823d89ddc1a228392710d2cf39fa34deb98b700ac2a419e3633844b",
+    "gzipSha256": "3e706ba82e34eead990c82e484c04481e2e7c908cdce84fff16ff67aec50b769"
+  },
+  {
+    "path": "DebugClean/provenance.json",
+    "rawBytes": 2552,
+    "rawSha256": "9a4f4e59922dbf50d3f17f210729601762cb9a08f4c82133f097cd696c4d3613",
+    "gzipSha256": "50bc5a19394d8dd2eaaa6247072a09b2946f9dec21b8699ef6f4377bc4e7ccfe"
+  },
+  {
+    "path": "DebugClean/sdk.log",
+    "rawBytes": 1944,
+    "rawSha256": "898bf2c7564309582f93bdeb39b77e447c67c39ca220c687e7de8f0d2459200c",
+    "gzipSha256": "f65e48a71d580a06ab72bdfdcb62b72c600faeaef522228fbda6fb9b21b1d805"
+  },
+  {
+    "path": "DebugClean/activation/BiliCopilot.UI.runtimeconfig.json",
+    "rawBytes": 1041,
+    "rawSha256": "9bf95d77aaa2ff606a03ef304b39c95060c599f9bbdbc17a066a1ad5450fef0f",
+    "gzipSha256": "f019a164d887f95abda990f05533bdfa59ccadc4f1566b8f1d7592aeaf5118dd"
+  },
+  {
+    "path": "DebugClean/source-config/global.json",
+    "rawBytes": 126,
+    "rawSha256": "deda6cf4c81b0d7ba2fb9634ec2f4b667dea625404c081dce8c2f21e6f2c59f6",
+    "gzipSha256": "97f969e6a95bdf9a2b939de7308f6541c6968d3677f3b1527f84b176f56af822"
+  },
+  {
+    "path": "DebugClean/source-config/src/Directory.Build.props",
+    "rawBytes": 1381,
+    "rawSha256": "f3ad96527a0e2bf2dde7bef9ea7233b56a41545dafcfe6d3803996d9f3f381d5",
+    "gzipSha256": "04fde6ccfdfee880701ceab7e8a7d3fe9386b4c209c9ea77c71874896fe2209e"
+  },
+  {
+    "path": "DebugClean/source-config/src/Directory.Packages.props",
+    "rawBytes": 12016,
+    "rawSha256": "fdda9e95fa9b25482cf651cffe5938586e46af7ee17994c5524a2a5fecf7a360",
+    "gzipSha256": "e6d86da97b2228aa9a32815585fb11797c2369754a6e4bb704f7ea35721be6a1"
+  },
+  {
+    "path": "DebugClean/source-config/externals/bili-kernel/src/Directory.Packages.props",
+    "rawBytes": 1412,
+    "rawSha256": "ac4442b143e9b714d1fed1890769809aab6d1bbf9a25cba3e6b80c1609e2c1b2",
+    "gzipSha256": "90e3cce0224944149ce966eb7ddcfc7d9075b981ddd41cc77525a8959c1f1a44"
+  },
+  {
+    "path": "DebugClean/resolved-assets/tests/BiliCopilot.UI.Tests/obj/project.assets.json",
+    "rawBytes": 98316,
+    "rawSha256": "4c1992fb9bc2e475e2442e4e5a72f33692b4f23ff3810a9ab6c9fc4bc9c6d03c",
+    "gzipSha256": "4122869d80bf4733bae2c84c72cb6daf550699d52a130a95b71da8561ecd185d"
+  },
+  {
+    "path": "DebugClean/resolved-assets/src/Desktop/BiliCopilot.Visor.Models/obj/project.assets.json",
+    "rawBytes": 123489,
+    "rawSha256": "e84ea7abcbba8b60baa9a35e2f802828326a62f4b410694924cba00e878d04d9",
+    "gzipSha256": "f5d7e830f384a60d42276a7c4a3dced1eea804e6b6732fadeeee392844385ae9"
+  },
+  {
+    "path": "DebugClean/resolved-assets/src/Desktop/BiliCopilot.Visor/obj/project.assets.json",
+    "rawBytes": 124071,
+    "rawSha256": "38895a8d7ba0566f152a5460b64e58546c868f0ba7b2caf4764ccad8e8e767df",
+    "gzipSha256": "87d7e757bb2c71e88f63c6738d9ba3c72b9ba67a52b10c414df8032bc8de07d5"
+  },
+  {
+    "path": "DebugClean/resolved-assets/src/Desktop/BiliCopilot.UI.ResourceGenerator/obj/project.assets.json",
+    "rawBytes": 136742,
+    "rawSha256": "1f1e8f32adf26435aad714c73be9e85275612745412e7eb8ae0aeefac0860172",
+    "gzipSha256": "3e3fc4b0b8f42f6d3a55edf2babfe7ae1195ce716746fdd47a2832bb442b499f"
+  },
+  {
+    "path": "DebugClean/resolved-assets/src/Desktop/BiliCopilot.UI.Models/obj/project.assets.json",
+    "rawBytes": 135837,
+    "rawSha256": "eb0353d5f1d591c9742029b47b0723da4318e0573e1d87716645adee37348643",
+    "gzipSha256": "fcc010b0fdbf659d02b000ca5d2417f1977d816d53d99ca45a6fca1c2a79b2f4"
+  },
+  {
+    "path": "DebugClean/resolved-assets/src/Desktop/BiliCopilot.UI/obj/project.assets.json",
+    "rawBytes": 846460,
+    "rawSha256": "631bdd21448fffa029172b44f0bd227abc300cbee2436a100435acdf31ac9b40",
+    "gzipSha256": "62eb0c1ec111f83ea87b7872919da009270943e12b80f02c4ddd6941a272088b"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Services/Services.User/obj/project.assets.json",
+    "rawBytes": 77883,
+    "rawSha256": "e4681637f75ce198298b6394d395252dcf9a57133903cb8eb78ad382db6ff424",
+    "gzipSha256": "889371f9bf70835e663f7acb702f4c3a063546930e007f0b4679cbda65703faf"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Services/Services.Search/obj/project.assets.json",
+    "rawBytes": 67007,
+    "rawSha256": "e7f482f127959af57b9058bf6d6adf84db5a3b0fa2033244669ab1deebd33dc8",
+    "gzipSha256": "de44e2c2c55e1f35ab1309be5a75211ef1da1154d5fb16f0118d264d136a5a04"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Services/Services.Moment/obj/project.assets.json",
+    "rawBytes": 67007,
+    "rawSha256": "a3c7390070a7dabd574f16e2a6fc123142e202f2b5f03e4efaa2738c4a44f991",
+    "gzipSha256": "cfd7501ac448562251fc93cc0182ac6c3963a7d8f1e9ec50cf1c33f9fb2c3e3b"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Services/Services.Media/obj/project.assets.json",
+    "rawBytes": 67001,
+    "rawSha256": "8dbdd224e26cf45cb87682b86963229292d98ab48cd9075299381e8ea8545bc2",
+    "gzipSha256": "ae20b75534b7073bb7a530e7bbe5769c11b7e30a0d34fa756bbfb10424a8ad56"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Services/Services.Comment/obj/project.assets.json",
+    "rawBytes": 67013,
+    "rawSha256": "046caede2696e4ad6c2630f81a31995a54bf5e021b693bb9ffce74d0e7899b8f",
+    "gzipSha256": "39c5e23b22a87d1307a9ab685a11f84edf82896f40dccf0418e44c0d726cde6d"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Services/Services.Article/obj/project.assets.json",
+    "rawBytes": 67013,
+    "rawSha256": "7c30c32bcbafff2da2c2e6a2cd5c1f3ed1757919087885d9e3347ed1bde53c4e",
+    "gzipSha256": "fa025c926c785621f6c89a31db05a3572d80e9c083c9d6106d8ede9cc36c7180"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUIToken/obj/project.assets.json",
+    "rawBytes": 263680,
+    "rawSha256": "61f172641be748478257bd89bd1a24e966a7272932a50a6e41f347dac86c02d2",
+    "gzipSha256": "372a23bcda110b20746759f381fba3d31a31002a22aaa8b48b7d5a920af613fc"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUIQRCode/obj/project.assets.json",
+    "rawBytes": 263686,
+    "rawSha256": "5facf9b5182806528137b6ba1a7956c0e2344b46910dbc778dd7c056b6bdc8e2",
+    "gzipSha256": "61d3b3d182e4e4c934da7633b0f617e4f6def96f97bfdf7579335dafb34d63af"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUICookies/obj/project.assets.json",
+    "rawBytes": 263692,
+    "rawSha256": "8820108e296925dd565187b1370cc77b8b28e0c86e8882f3c552ea133ec4aa3e",
+    "gzipSha256": "c2f65724c3187ca3e7fce5aa09e9d6ca5b8857d23bb20770b235a42abde2e89c"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/BiliKernel.Grpc/obj/project.assets.json",
+    "rawBytes": 50815,
+    "rawSha256": "eed526287f291b920678aeea05ef9bee39143ea0f062b73f71d7750f43e01e49",
+    "gzipSha256": "6809006b074ead507fb7ebf2df0ab3f0e57da35c446ed2b19c4100b148bc7fb1"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/BiliKernel.Core/obj/project.assets.json",
+    "rawBytes": 65710,
+    "rawSha256": "77d55360133d86ee5e9e824f3473c65dac4887cc86c8bbd23b45d3397d4d3632",
+    "gzipSha256": "ee3be846a8c60524f2b4048c6ea60a54f415cc266fa2da562dfd3532399299c3"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/BiliKernel.Abstractions/obj/project.assets.json",
+    "rawBytes": 46699,
+    "rawSha256": "2e93ab765ce2acb99a6f4029bb12a538b31361b16dabb32855993f3e4a000682",
+    "gzipSha256": "fe5730372ec7a2dd438e5c8709fd1202cdef96f693cb1871580f3d78e9e51063"
+  },
+  {
+    "path": "DebugClean/resolved-assets/externals/bili-kernel/src/Authorizers/Authorizers.Tv/obj/project.assets.json",
+    "rawBytes": 78290,
+    "rawSha256": "d5317a4041143c61d714811ce83f03c2acacdfdf741a091bfb55fd5af4c06684",
+    "gzipSha256": "0b942d8a45f2541bb6288d7d05f08b54a5623d6739c6ad516e8da8fa8b5e15f5"
+  },
+  {
+    "path": "DebugClean/outputs/BiliCopilot.UI/BiliCopilot.UI.runtimeconfig.json",
+    "rawBytes": 1041,
+    "rawSha256": "9bf95d77aaa2ff606a03ef304b39c95060c599f9bbdbc17a066a1ad5450fef0f",
+    "gzipSha256": "f019a164d887f95abda990f05533bdfa59ccadc4f1566b8f1d7592aeaf5118dd"
+  },
+  {
+    "path": "DebugClean/build-output/BiliCopilot.UI/bin/BiliCopilot.UI.runtimeconfig.json",
+    "rawBytes": 1041,
+    "rawSha256": "9bf95d77aaa2ff606a03ef304b39c95060c599f9bbdbc17a066a1ad5450fef0f",
+    "gzipSha256": "f019a164d887f95abda990f05533bdfa59ccadc4f1566b8f1d7592aeaf5118dd"
+  },
+  {
+    "path": "Release/activation-preparation.json",
+    "rawBytes": 27908,
+    "rawSha256": "7a96500aa92111305fd02ddc15a85f7fadbfdb307ecd56fcad8980f9cd3fe5d5",
+    "gzipSha256": "7a97b7bc71a4ae43c018575b8cb3272ad09f35e9565c88e092873fd4106869cb"
+  },
+  {
+    "path": "Release/command.log",
+    "rawBytes": 9725,
+    "rawSha256": "2984933811f0ed0ea957a5f44c0d7042ac880658d735885ece12b0de4f7a0c28",
+    "gzipSha256": "b5d699c1ff0e4281bbe496b92f4040491a825efb11c02a839645936be9643d17"
+  },
+  {
+    "path": "Release/files.json",
+    "rawBytes": 356543,
+    "rawSha256": "b47f52f99873d918c634cfecc119e2f5314bd5dd6e480fb180f7bc61d9d18f1e",
+    "gzipSha256": "858f29f965d067907a756d8e227882bd61714f4853106142fd61239331567d08"
+  },
+  {
+    "path": "Release/provenance.json",
+    "rawBytes": 2627,
+    "rawSha256": "45db11405a8497b7d2526f7b5c677be847f422c60e8512464e98209ad6a928fc",
+    "gzipSha256": "31cab9ab4238ee5e88b96ff4c4f08ca35b9546f2115d826c6839a63cb2150487"
+  },
+  {
+    "path": "Release/sdk.log",
+    "rawBytes": 1944,
+    "rawSha256": "898bf2c7564309582f93bdeb39b77e447c67c39ca220c687e7de8f0d2459200c",
+    "gzipSha256": "f65e48a71d580a06ab72bdfdcb62b72c600faeaef522228fbda6fb9b21b1d805"
+  },
+  {
+    "path": "Release/activation/BiliCopilot.UI.runtimeconfig.json",
+    "rawBytes": 1113,
+    "rawSha256": "0b974365b30fe3e6c366bd09dc28f4fc5b52f04925c8ba8ab839257caa0d42f1",
+    "gzipSha256": "298cb93edc5dba991b231b2976396c10d026ffaa5cfe1c7b6aef5053c3c5d0a5"
+  },
+  {
+    "path": "Release/source-config/global.json",
+    "rawBytes": 126,
+    "rawSha256": "deda6cf4c81b0d7ba2fb9634ec2f4b667dea625404c081dce8c2f21e6f2c59f6",
+    "gzipSha256": "97f969e6a95bdf9a2b939de7308f6541c6968d3677f3b1527f84b176f56af822"
+  },
+  {
+    "path": "Release/source-config/src/Directory.Build.props",
+    "rawBytes": 1381,
+    "rawSha256": "f3ad96527a0e2bf2dde7bef9ea7233b56a41545dafcfe6d3803996d9f3f381d5",
+    "gzipSha256": "04fde6ccfdfee880701ceab7e8a7d3fe9386b4c209c9ea77c71874896fe2209e"
+  },
+  {
+    "path": "Release/source-config/src/Directory.Packages.props",
+    "rawBytes": 12016,
+    "rawSha256": "fdda9e95fa9b25482cf651cffe5938586e46af7ee17994c5524a2a5fecf7a360",
+    "gzipSha256": "e6d86da97b2228aa9a32815585fb11797c2369754a6e4bb704f7ea35721be6a1"
+  },
+  {
+    "path": "Release/source-config/externals/bili-kernel/src/Directory.Packages.props",
+    "rawBytes": 1412,
+    "rawSha256": "ac4442b143e9b714d1fed1890769809aab6d1bbf9a25cba3e6b80c1609e2c1b2",
+    "gzipSha256": "90e3cce0224944149ce966eb7ddcfc7d9075b981ddd41cc77525a8959c1f1a44"
+  },
+  {
+    "path": "Release/resolved-assets/tests/BiliCopilot.UI.Tests/obj/project.assets.json",
+    "rawBytes": 98316,
+    "rawSha256": "4c1992fb9bc2e475e2442e4e5a72f33692b4f23ff3810a9ab6c9fc4bc9c6d03c",
+    "gzipSha256": "4122869d80bf4733bae2c84c72cb6daf550699d52a130a95b71da8561ecd185d"
+  },
+  {
+    "path": "Release/resolved-assets/src/Desktop/BiliCopilot.Visor.Models/obj/project.assets.json",
+    "rawBytes": 123489,
+    "rawSha256": "e84ea7abcbba8b60baa9a35e2f802828326a62f4b410694924cba00e878d04d9",
+    "gzipSha256": "f5d7e830f384a60d42276a7c4a3dced1eea804e6b6732fadeeee392844385ae9"
+  },
+  {
+    "path": "Release/resolved-assets/src/Desktop/BiliCopilot.Visor/obj/project.assets.json",
+    "rawBytes": 124071,
+    "rawSha256": "38895a8d7ba0566f152a5460b64e58546c868f0ba7b2caf4764ccad8e8e767df",
+    "gzipSha256": "87d7e757bb2c71e88f63c6738d9ba3c72b9ba67a52b10c414df8032bc8de07d5"
+  },
+  {
+    "path": "Release/resolved-assets/src/Desktop/BiliCopilot.UI.ResourceGenerator/obj/project.assets.json",
+    "rawBytes": 136742,
+    "rawSha256": "1f1e8f32adf26435aad714c73be9e85275612745412e7eb8ae0aeefac0860172",
+    "gzipSha256": "3e3fc4b0b8f42f6d3a55edf2babfe7ae1195ce716746fdd47a2832bb442b499f"
+  },
+  {
+    "path": "Release/resolved-assets/src/Desktop/BiliCopilot.UI.Models/obj/project.assets.json",
+    "rawBytes": 135837,
+    "rawSha256": "eb0353d5f1d591c9742029b47b0723da4318e0573e1d87716645adee37348643",
+    "gzipSha256": "fcc010b0fdbf659d02b000ca5d2417f1977d816d53d99ca45a6fca1c2a79b2f4"
+  },
+  {
+    "path": "Release/resolved-assets/src/Desktop/BiliCopilot.UI/obj/project.assets.json",
+    "rawBytes": 846460,
+    "rawSha256": "631bdd21448fffa029172b44f0bd227abc300cbee2436a100435acdf31ac9b40",
+    "gzipSha256": "62eb0c1ec111f83ea87b7872919da009270943e12b80f02c4ddd6941a272088b"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Services/Services.User/obj/project.assets.json",
+    "rawBytes": 77883,
+    "rawSha256": "e4681637f75ce198298b6394d395252dcf9a57133903cb8eb78ad382db6ff424",
+    "gzipSha256": "889371f9bf70835e663f7acb702f4c3a063546930e007f0b4679cbda65703faf"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Services/Services.Search/obj/project.assets.json",
+    "rawBytes": 67007,
+    "rawSha256": "e7f482f127959af57b9058bf6d6adf84db5a3b0fa2033244669ab1deebd33dc8",
+    "gzipSha256": "de44e2c2c55e1f35ab1309be5a75211ef1da1154d5fb16f0118d264d136a5a04"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Services/Services.Moment/obj/project.assets.json",
+    "rawBytes": 67007,
+    "rawSha256": "a3c7390070a7dabd574f16e2a6fc123142e202f2b5f03e4efaa2738c4a44f991",
+    "gzipSha256": "cfd7501ac448562251fc93cc0182ac6c3963a7d8f1e9ec50cf1c33f9fb2c3e3b"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Services/Services.Media/obj/project.assets.json",
+    "rawBytes": 67001,
+    "rawSha256": "8dbdd224e26cf45cb87682b86963229292d98ab48cd9075299381e8ea8545bc2",
+    "gzipSha256": "ae20b75534b7073bb7a530e7bbe5769c11b7e30a0d34fa756bbfb10424a8ad56"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Services/Services.Comment/obj/project.assets.json",
+    "rawBytes": 67013,
+    "rawSha256": "046caede2696e4ad6c2630f81a31995a54bf5e021b693bb9ffce74d0e7899b8f",
+    "gzipSha256": "39c5e23b22a87d1307a9ab685a11f84edf82896f40dccf0418e44c0d726cde6d"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Services/Services.Article/obj/project.assets.json",
+    "rawBytes": 67013,
+    "rawSha256": "7c30c32bcbafff2da2c2e6a2cd5c1f3ed1757919087885d9e3347ed1bde53c4e",
+    "gzipSha256": "fa025c926c785621f6c89a31db05a3572d80e9c083c9d6106d8ede9cc36c7180"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUIToken/obj/project.assets.json",
+    "rawBytes": 263680,
+    "rawSha256": "61f172641be748478257bd89bd1a24e966a7272932a50a6e41f347dac86c02d2",
+    "gzipSha256": "372a23bcda110b20746759f381fba3d31a31002a22aaa8b48b7d5a920af613fc"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUIQRCode/obj/project.assets.json",
+    "rawBytes": 263686,
+    "rawSha256": "5facf9b5182806528137b6ba1a7956c0e2344b46910dbc778dd7c056b6bdc8e2",
+    "gzipSha256": "61d3b3d182e4e4c934da7633b0f617e4f6def96f97bfdf7579335dafb34d63af"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUICookies/obj/project.assets.json",
+    "rawBytes": 263692,
+    "rawSha256": "8820108e296925dd565187b1370cc77b8b28e0c86e8882f3c552ea133ec4aa3e",
+    "gzipSha256": "c2f65724c3187ca3e7fce5aa09e9d6ca5b8857d23bb20770b235a42abde2e89c"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/BiliKernel.Grpc/obj/project.assets.json",
+    "rawBytes": 50815,
+    "rawSha256": "eed526287f291b920678aeea05ef9bee39143ea0f062b73f71d7750f43e01e49",
+    "gzipSha256": "6809006b074ead507fb7ebf2df0ab3f0e57da35c446ed2b19c4100b148bc7fb1"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/BiliKernel.Core/obj/project.assets.json",
+    "rawBytes": 65710,
+    "rawSha256": "77d55360133d86ee5e9e824f3473c65dac4887cc86c8bbd23b45d3397d4d3632",
+    "gzipSha256": "ee3be846a8c60524f2b4048c6ea60a54f415cc266fa2da562dfd3532399299c3"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/BiliKernel.Abstractions/obj/project.assets.json",
+    "rawBytes": 46699,
+    "rawSha256": "2e93ab765ce2acb99a6f4029bb12a538b31361b16dabb32855993f3e4a000682",
+    "gzipSha256": "fe5730372ec7a2dd438e5c8709fd1202cdef96f693cb1871580f3d78e9e51063"
+  },
+  {
+    "path": "Release/resolved-assets/externals/bili-kernel/src/Authorizers/Authorizers.Tv/obj/project.assets.json",
+    "rawBytes": 78290,
+    "rawSha256": "d5317a4041143c61d714811ce83f03c2acacdfdf741a091bfb55fd5af4c06684",
+    "gzipSha256": "0b942d8a45f2541bb6288d7d05f08b54a5623d6739c6ad516e8da8fa8b5e15f5"
+  },
+  {
+    "path": "Release/outputs/BiliCopilot.UI/BiliCopilot.UI.runtimeconfig.json",
+    "rawBytes": 1113,
+    "rawSha256": "0b974365b30fe3e6c366bd09dc28f4fc5b52f04925c8ba8ab839257caa0d42f1",
+    "gzipSha256": "298cb93edc5dba991b231b2976396c10d026ffaa5cfe1c7b6aef5053c3c5d0a5"
+  },
+  {
+    "path": "Release/build-output/BiliCopilot.UI/bin/BiliCopilot.UI.runtimeconfig.json",
+    "rawBytes": 1113,
+    "rawSha256": "0b974365b30fe3e6c366bd09dc28f4fc5b52f04925c8ba8ab839257caa0d42f1",
+    "gzipSha256": "298cb93edc5dba991b231b2976396c10d026ffaa5cfe1c7b6aef5053c3c5d0a5"
+  },
+  {
+    "path": "RuntimeGate/command.log",
+    "rawBytes": 61,
+    "rawSha256": "e0f14c36a232c0cf2a3f239df091c2e4c7d25e92f86531c48e4c15217b17f56e",
+    "gzipSha256": "6adae53b1c47f0f5cc8cf4fb26a43d4bee9696e3497228350bb863cd243074fc"
+  },
+  {
+    "path": "RuntimeGate/files.json",
+    "rawBytes": 5344,
+    "rawSha256": "1456df72659b9f8d9d4db3c6e6ae4ef409a6d48cca7ce535371257047cda7746",
+    "gzipSha256": "2e1ccdae9c21b765c1af1d50a3ecf1b7515fe7b192068a56a01cf10e2e2a1a2e"
+  },
+  {
+    "path": "RuntimeGate/provenance.json",
+    "rawBytes": 1067,
+    "rawSha256": "4f3147240289936d36e15a723549810c471ec9694ea3f1c7754607fafc8241e0",
+    "gzipSha256": "be853981a2479f15900ec444f8b9a78ec0fb9c7c2a3dc2af7f8dbdb374ff86b2"
+  },
+  {
+    "path": "RuntimeGate/sdk.log",
+    "rawBytes": 1944,
+    "rawSha256": "898bf2c7564309582f93bdeb39b77e447c67c39ca220c687e7de8f0d2459200c",
+    "gzipSha256": "f65e48a71d580a06ab72bdfdcb62b72c600faeaef522228fbda6fb9b21b1d805"
+  },
+  {
+    "path": "RuntimeGate/source-config/global.json",
+    "rawBytes": 126,
+    "rawSha256": "deda6cf4c81b0d7ba2fb9634ec2f4b667dea625404c081dce8c2f21e6f2c59f6",
+    "gzipSha256": "97f969e6a95bdf9a2b939de7308f6541c6968d3677f3b1527f84b176f56af822"
+  },
+  {
+    "path": "RuntimeGate/source-config/src/Directory.Build.props",
+    "rawBytes": 1381,
+    "rawSha256": "f3ad96527a0e2bf2dde7bef9ea7233b56a41545dafcfe6d3803996d9f3f381d5",
+    "gzipSha256": "04fde6ccfdfee880701ceab7e8a7d3fe9386b4c209c9ea77c71874896fe2209e"
+  },
+  {
+    "path": "RuntimeGate/source-config/src/Directory.Packages.props",
+    "rawBytes": 12016,
+    "rawSha256": "fdda9e95fa9b25482cf651cffe5938586e46af7ee17994c5524a2a5fecf7a360",
+    "gzipSha256": "e6d86da97b2228aa9a32815585fb11797c2369754a6e4bb704f7ea35721be6a1"
+  },
+  {
+    "path": "RuntimeGate/source-config/externals/bili-kernel/src/Directory.Packages.props",
+    "rawBytes": 1412,
+    "rawSha256": "ac4442b143e9b714d1fed1890769809aab6d1bbf9a25cba3e6b80c1609e2c1b2",
+    "gzipSha256": "90e3cce0224944149ce966eb7ddcfc7d9075b981ddd41cc77525a8959c1f1a44"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/tests/BiliCopilot.UI.Tests/obj/project.assets.json",
+    "rawBytes": 98316,
+    "rawSha256": "4c1992fb9bc2e475e2442e4e5a72f33692b4f23ff3810a9ab6c9fc4bc9c6d03c",
+    "gzipSha256": "4122869d80bf4733bae2c84c72cb6daf550699d52a130a95b71da8561ecd185d"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/src/Desktop/BiliCopilot.Visor.Models/obj/project.assets.json",
+    "rawBytes": 123489,
+    "rawSha256": "e84ea7abcbba8b60baa9a35e2f802828326a62f4b410694924cba00e878d04d9",
+    "gzipSha256": "f5d7e830f384a60d42276a7c4a3dced1eea804e6b6732fadeeee392844385ae9"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/src/Desktop/BiliCopilot.Visor/obj/project.assets.json",
+    "rawBytes": 124071,
+    "rawSha256": "38895a8d7ba0566f152a5460b64e58546c868f0ba7b2caf4764ccad8e8e767df",
+    "gzipSha256": "87d7e757bb2c71e88f63c6738d9ba3c72b9ba67a52b10c414df8032bc8de07d5"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/src/Desktop/BiliCopilot.UI.ResourceGenerator/obj/project.assets.json",
+    "rawBytes": 136742,
+    "rawSha256": "1f1e8f32adf26435aad714c73be9e85275612745412e7eb8ae0aeefac0860172",
+    "gzipSha256": "3e3fc4b0b8f42f6d3a55edf2babfe7ae1195ce716746fdd47a2832bb442b499f"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/src/Desktop/BiliCopilot.UI.Models/obj/project.assets.json",
+    "rawBytes": 135837,
+    "rawSha256": "eb0353d5f1d591c9742029b47b0723da4318e0573e1d87716645adee37348643",
+    "gzipSha256": "fcc010b0fdbf659d02b000ca5d2417f1977d816d53d99ca45a6fca1c2a79b2f4"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/src/Desktop/BiliCopilot.UI/obj/project.assets.json",
+    "rawBytes": 846460,
+    "rawSha256": "631bdd21448fffa029172b44f0bd227abc300cbee2436a100435acdf31ac9b40",
+    "gzipSha256": "62eb0c1ec111f83ea87b7872919da009270943e12b80f02c4ddd6941a272088b"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Services/Services.User/obj/project.assets.json",
+    "rawBytes": 77883,
+    "rawSha256": "e4681637f75ce198298b6394d395252dcf9a57133903cb8eb78ad382db6ff424",
+    "gzipSha256": "889371f9bf70835e663f7acb702f4c3a063546930e007f0b4679cbda65703faf"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Services/Services.Search/obj/project.assets.json",
+    "rawBytes": 67007,
+    "rawSha256": "e7f482f127959af57b9058bf6d6adf84db5a3b0fa2033244669ab1deebd33dc8",
+    "gzipSha256": "de44e2c2c55e1f35ab1309be5a75211ef1da1154d5fb16f0118d264d136a5a04"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Services/Services.Moment/obj/project.assets.json",
+    "rawBytes": 67007,
+    "rawSha256": "a3c7390070a7dabd574f16e2a6fc123142e202f2b5f03e4efaa2738c4a44f991",
+    "gzipSha256": "cfd7501ac448562251fc93cc0182ac6c3963a7d8f1e9ec50cf1c33f9fb2c3e3b"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Services/Services.Media/obj/project.assets.json",
+    "rawBytes": 67001,
+    "rawSha256": "8dbdd224e26cf45cb87682b86963229292d98ab48cd9075299381e8ea8545bc2",
+    "gzipSha256": "ae20b75534b7073bb7a530e7bbe5769c11b7e30a0d34fa756bbfb10424a8ad56"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Services/Services.Comment/obj/project.assets.json",
+    "rawBytes": 67013,
+    "rawSha256": "046caede2696e4ad6c2630f81a31995a54bf5e021b693bb9ffce74d0e7899b8f",
+    "gzipSha256": "39c5e23b22a87d1307a9ab685a11f84edf82896f40dccf0418e44c0d726cde6d"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Services/Services.Article/obj/project.assets.json",
+    "rawBytes": 67013,
+    "rawSha256": "7c30c32bcbafff2da2c2e6a2cd5c1f3ed1757919087885d9e3347ed1bde53c4e",
+    "gzipSha256": "fa025c926c785621f6c89a31db05a3572d80e9c083c9d6106d8ede9cc36c7180"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUIToken/obj/project.assets.json",
+    "rawBytes": 263680,
+    "rawSha256": "61f172641be748478257bd89bd1a24e966a7272932a50a6e41f347dac86c02d2",
+    "gzipSha256": "372a23bcda110b20746759f381fba3d31a31002a22aaa8b48b7d5a920af613fc"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUIQRCode/obj/project.assets.json",
+    "rawBytes": 263686,
+    "rawSha256": "5facf9b5182806528137b6ba1a7956c0e2344b46910dbc778dd7c056b6bdc8e2",
+    "gzipSha256": "61d3b3d182e4e4c934da7633b0f617e4f6def96f97bfdf7579335dafb34d63af"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Resolvers/Resolvers.WinUICookies/obj/project.assets.json",
+    "rawBytes": 263692,
+    "rawSha256": "8820108e296925dd565187b1370cc77b8b28e0c86e8882f3c552ea133ec4aa3e",
+    "gzipSha256": "c2f65724c3187ca3e7fce5aa09e9d6ca5b8857d23bb20770b235a42abde2e89c"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/BiliKernel.Grpc/obj/project.assets.json",
+    "rawBytes": 50815,
+    "rawSha256": "eed526287f291b920678aeea05ef9bee39143ea0f062b73f71d7750f43e01e49",
+    "gzipSha256": "6809006b074ead507fb7ebf2df0ab3f0e57da35c446ed2b19c4100b148bc7fb1"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/BiliKernel.Core/obj/project.assets.json",
+    "rawBytes": 65710,
+    "rawSha256": "77d55360133d86ee5e9e824f3473c65dac4887cc86c8bbd23b45d3397d4d3632",
+    "gzipSha256": "ee3be846a8c60524f2b4048c6ea60a54f415cc266fa2da562dfd3532399299c3"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/BiliKernel.Abstractions/obj/project.assets.json",
+    "rawBytes": 46699,
+    "rawSha256": "2e93ab765ce2acb99a6f4029bb12a538b31361b16dabb32855993f3e4a000682",
+    "gzipSha256": "fe5730372ec7a2dd438e5c8709fd1202cdef96f693cb1871580f3d78e9e51063"
+  },
+  {
+    "path": "RuntimeGate/resolved-assets/externals/bili-kernel/src/Authorizers/Authorizers.Tv/obj/project.assets.json",
+    "rawBytes": 78290,
+    "rawSha256": "d5317a4041143c61d714811ce83f03c2acacdfdf741a091bfb55fd5af4c06684",
+    "gzipSha256": "0b942d8a45f2541bb6288d7d05f08b54a5623d6739c6ad516e8da8fa8b5e15f5"
+  },
+  {
+    "path": "candidate-graphs/tests/BiliCopilot.UI.Tests/obj/project.assets.json",
+    "rawBytes": 98719,
+    "rawSha256": "0a6ff52c8096159e6f6e1c82c7d5ca6ddbcedf1247c0f4c69402e7ed06a10cb2",
+    "gzipSha256": "c60be9964a4c5275d19bfb07400b6b84f5d53d30ddc282a156d54e46885bef74"
+  },
+  {
+    "path": "candidate-graphs/src/Desktop/BiliCopilot.UI/obj/project.assets.json",
+    "rawBytes": 847663,
+    "rawSha256": "4c4f865636d366a6ed9a57e306a40f07a291e89f2a88896f041a6ba6d62aedb3",
+    "gzipSha256": "c890439e8f2cdc446363d48927cedb0265776bb1107feec44920f82b532757de"
+  }
+]
