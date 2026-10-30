@@ -107,14 +107,18 @@ public static class RecommendListDiff
         }
 
         // Only the changed middle requires LCS; a retained long tail is not quadratic.
-        var lengths = new int[currentEnd - start + 1, targetEnd - start + 1];
+        var lengths = new int[currentEnd - start + 1][];
+        for (var i = 0; i < lengths.Length; i++)
+        {
+            lengths[i] = new int[targetEnd - start + 1];
+        }
         for (var i = currentEnd - 1; i >= start; i--)
         {
             for (var j = targetEnd - 1; j >= start; j--)
             {
-                lengths[i - start, j - start] = string.Equals(currentKeys[i], targetKeys[j], StringComparison.Ordinal)
-                    ? lengths[i - start + 1, j - start + 1] + 1
-                    : Math.Max(lengths[i - start + 1, j - start], lengths[i - start, j - start + 1]);
+                lengths[i - start][j - start] = string.Equals(currentKeys[i], targetKeys[j], StringComparison.Ordinal)
+                    ? lengths[i - start + 1][j - start + 1] + 1
+                    : Math.Max(lengths[i - start + 1][j - start], lengths[i - start][j - start + 1]);
             }
         }
 
@@ -127,7 +131,7 @@ public static class RecommendListDiff
                 currentKept[x++] = true;
                 targetKept[y++] = true;
             }
-            else if (lengths[x - start + 1, y - start] >= lengths[x - start, y - start + 1]) x++;
+            else if (lengths[x - start + 1][y - start] >= lengths[x - start][y - start + 1]) x++;
             else y++;
         }
 

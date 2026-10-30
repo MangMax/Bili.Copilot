@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -34,7 +34,7 @@ public sealed partial class PopularPageViewModel
 
         // 无论增量还是重载，都先记下刷新前的列表与偏移，成功后才有东西可撤销。
         // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
-        var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
+        var snapshot = RecommendRefreshSnapshot.Capture<VideoItemViewModel>(Videos, _recommendOffset);
 
         // 新一次刷新会替换旧快照，撤销入口先收起，成功后重新出现。
         CanUndoRefresh = false;
