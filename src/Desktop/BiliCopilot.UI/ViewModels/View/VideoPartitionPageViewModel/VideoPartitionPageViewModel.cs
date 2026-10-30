@@ -64,6 +64,10 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
             return;
         }
 
+        // 切换主分区页签时清除离开页签的推荐刷新状态：分区视图模型会被缓存复用，
+        // 若不清理，切回来时旧的撤销提示还会显示，也可能把列表撤销成离开前的样子。
+        SelectedPartition?.ClearRefreshTip();
+
         if (_partitionCache.TryGetValue(partition.Data, out var detail))
         {
             SelectedPartition = detail;
