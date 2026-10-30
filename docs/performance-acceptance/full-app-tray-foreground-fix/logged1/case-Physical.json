@@ -1,0 +1,31 @@
+{
+  "restored": {
+    "foreground": 14748754,
+    "visible": true,
+    "mainHwnd": 14748754,
+    "label": "Physical-independent-foreground",
+    "utc": "2026-10-30T20:14:27.6393153Z",
+    "foregroundPid": 24552,
+    "minimized": false,
+    "targetForeground": true
+  },
+  "searchCleared": true,
+  "before": {
+    "foreground": 790566,
+    "visible": false,
+    "mainHwnd": 14748754,
+    "label": "Physical-precondition",
+    "utc": "2026-10-30T20:14:25.7369076Z",
+    "foregroundPid": 27828,
+    "minimized": false,
+    "targetForeground": false
+  },
+  "startUtc": "2026-10-30T20:14:22.7949338Z",
+  "visiblePass": true,
+  "case": "Physical",
+  "failure": null,
+  "keyboardPass": true,
+  "endUtc": "2026-10-30T20:14:29.3387340Z",
+  "foregroundPass": true,
+  "pass": true
+}

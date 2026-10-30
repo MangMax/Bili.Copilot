@@ -1,0 +1,5 @@
+{
+  "productVerdict": "none",
+  "failure": "Initial window discovery returned no unique main before startup completed",
+  "preserved": true
+}

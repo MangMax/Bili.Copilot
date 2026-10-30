@@ -1,0 +1,31 @@
+{
+  "visiblePass": true,
+  "restored": {
+    "targetForeground": true,
+    "label": "Mouse-independent-foreground",
+    "foregroundPid": 24552,
+    "visible": true,
+    "minimized": false,
+    "utc": "2026-10-30T20:14:13.1878980Z",
+    "foreground": 14748754,
+    "mainHwnd": 14748754
+  },
+  "before": {
+    "targetForeground": false,
+    "label": "Mouse-precondition",
+    "foregroundPid": 27828,
+    "visible": false,
+    "minimized": false,
+    "utc": "2026-10-30T20:14:11.4184953Z",
+    "foreground": 790566,
+    "mainHwnd": 14748754
+  },
+  "startUtc": "2026-10-30T20:14:09.2770644Z",
+  "searchCleared": true,
+  "failure": null,
+  "keyboardPass": true,
+  "pass": true,
+  "endUtc": "2026-10-30T20:14:14.7989479Z",
+  "foregroundPass": true,
+  "case": "Mouse"
+}

@@ -1,0 +1,4 @@
+{
+  "failure": "Player discovery incorrectly required main window class; actual player Microsoft.UI.Windowing.Window",
+  "productVerdict": "none"
+}

@@ -1,0 +1,4 @@
+{
+  "failure": "Log summary wrapper attempted setting absent managedLogScan property; verifier rejected missing scan",
+  "fixed": "Add-Member only; raw observer result retained"
+}

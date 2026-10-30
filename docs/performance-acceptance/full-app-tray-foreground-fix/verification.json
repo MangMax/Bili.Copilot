@@ -1,0 +1,31 @@
+{
+  "newFiles": 670,
+  "oldFiles": 670,
+  "oldAndNewHashesPass": true,
+  "runs": {
+    "logged1": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "loadedModules": 162,
+      "lastQuerySeconds": 30.066646,
+      "pid": 24552,
+      "exitCode": 0
+    },
+    "logged2": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "loadedModules": 148,
+      "lastQuerySeconds": 30.067722,
+      "pid": 16612,
+      "exitCode": 0
+    }
+  }
+}

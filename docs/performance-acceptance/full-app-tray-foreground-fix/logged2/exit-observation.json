@@ -1,0 +1,312 @@
+{
+  "terminated": true,
+  "startUtc": "2026-10-30T20:16:11.2147562Z",
+  "package": "Mang.BiliCopilot.PerfAcceptance.Caa6a7be_2.2610.0.3_x64__y1mf40g4r9srg",
+  "managedUnhandled": 0,
+  "handleRetained": true,
+  "lastQueryUtc": "2026-10-30T20:17:29.2241838Z",
+  "queries": [
+    {
+      "utc": "2026-10-30T20:16:59.1940407Z",
+      "startedSecondsAfterExit": 0.0049692,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:16:59.7166983Z",
+      "startedSecondsAfterExit": 0.5418486,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:00.2516213Z",
+      "startedSecondsAfterExit": 1.0703804,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:00.7771936Z",
+      "startedSecondsAfterExit": 1.5991376,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:01.3012183Z",
+      "startedSecondsAfterExit": 2.125131,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:01.8405350Z",
+      "startedSecondsAfterExit": 2.6561809,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:02.3619070Z",
+      "startedSecondsAfterExit": 3.1839231,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:02.8874130Z",
+      "startedSecondsAfterExit": 3.7121076,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:03.4158870Z",
+      "startedSecondsAfterExit": 4.2399093,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:03.9480141Z",
+      "startedSecondsAfterExit": 4.7709254,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:04.4783467Z",
+      "startedSecondsAfterExit": 5.3008958,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:05.0015787Z",
+      "startedSecondsAfterExit": 5.8254442,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:05.5301465Z",
+      "startedSecondsAfterExit": 6.3526931,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:06.0603547Z",
+      "startedSecondsAfterExit": 6.8843584,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:06.5894211Z",
+      "startedSecondsAfterExit": 7.4149242,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:07.1197985Z",
+      "startedSecondsAfterExit": 7.946831,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:07.6541572Z",
+      "startedSecondsAfterExit": 8.4718281,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:08.1797108Z",
+      "startedSecondsAfterExit": 9.0010963,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:08.7046332Z",
+      "startedSecondsAfterExit": 9.5272094,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:09.2269675Z",
+      "startedSecondsAfterExit": 10.0480045,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:09.7519796Z",
+      "startedSecondsAfterExit": 10.5758058,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:10.2827119Z",
+      "startedSecondsAfterExit": 11.10785,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:10.8063344Z",
+      "startedSecondsAfterExit": 11.6330518,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:11.3409020Z",
+      "startedSecondsAfterExit": 12.1625867,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:11.8665442Z",
+      "startedSecondsAfterExit": 12.6884028,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:12.3873694Z",
+      "startedSecondsAfterExit": 13.2136023,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:12.9171968Z",
+      "startedSecondsAfterExit": 13.7417826,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:13.4446325Z",
+      "startedSecondsAfterExit": 14.2717131,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:13.9762771Z",
+      "startedSecondsAfterExit": 14.8021928,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:14.4954107Z",
+      "startedSecondsAfterExit": 15.3205129,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:15.0133961Z",
+      "startedSecondsAfterExit": 15.838656,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:15.5440141Z",
+      "startedSecondsAfterExit": 16.3710762,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:16.0712579Z",
+      "startedSecondsAfterExit": 16.8983488,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:16.5977722Z",
+      "startedSecondsAfterExit": 17.4248308,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:17.1157305Z",
+      "startedSecondsAfterExit": 17.9412483,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:17.6433798Z",
+      "startedSecondsAfterExit": 18.4705569,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:18.1739203Z",
+      "startedSecondsAfterExit": 18.9990783,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:18.6981789Z",
+      "startedSecondsAfterExit": 19.5259331,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:19.2278374Z",
+      "startedSecondsAfterExit": 20.0537778,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:19.7548899Z",
+      "startedSecondsAfterExit": 20.5810421,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:20.2846622Z",
+      "startedSecondsAfterExit": 21.1106848,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:20.8160185Z",
+      "startedSecondsAfterExit": 21.6409398,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:21.3462182Z",
+      "startedSecondsAfterExit": 22.1715775,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:21.8751589Z",
+      "startedSecondsAfterExit": 22.7007829,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:22.4021099Z",
+      "startedSecondsAfterExit": 23.2287338,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:22.9279584Z",
+      "startedSecondsAfterExit": 23.754269,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:23.4541520Z",
+      "startedSecondsAfterExit": 24.2810004,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:23.9815080Z",
+      "startedSecondsAfterExit": 24.8080691,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:24.4994293Z",
+      "startedSecondsAfterExit": 25.3235591,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:25.0238486Z",
+      "startedSecondsAfterExit": 25.8503644,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:25.5529570Z",
+      "startedSecondsAfterExit": 26.3789449,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:26.0708482Z",
+      "startedSecondsAfterExit": 26.8982621,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:26.5933299Z",
+      "startedSecondsAfterExit": 27.4200196,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:27.1163502Z",
+      "startedSecondsAfterExit": 27.9427502,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:27.6420533Z",
+      "startedSecondsAfterExit": 28.4691878,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:28.1711723Z",
+      "startedSecondsAfterExit": 28.9968493,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:28.6987895Z",
+      "startedSecondsAfterExit": 29.5244985,
+      "ok": true
+    },
+    {
+      "utc": "2026-10-30T20:17:29.2241838Z",
+      "startedSecondsAfterExit": 30.0504649,
+      "ok": true
+    }
+  ],
+  "observationComplete": true,
+  "pid": 16612,
+  "creationFileTime": 134378649712147562,
+  "queryComplete": true,
+  "copyError": null,
+  "exe": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-233185ea\\artifacts\\full-app-tray-foreground-fix\\layout-v3\\BiliCopilot.UI.exe",
+  "collectionEndUtc": "2026-10-30T20:17:29.2249391Z",
+  "terminationUtc": "2026-10-30T20:16:59.1564611Z",
+  "bookmark": 6578,
+  "forced": false,
+  "exitCode": 0,
+  "managedLogScan": "complete"
+}

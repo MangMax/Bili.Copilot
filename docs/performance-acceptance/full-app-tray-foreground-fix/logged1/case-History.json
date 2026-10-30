@@ -1,0 +1,13 @@
+{
+  "searchCleared": null,
+  "startUtc": "2026-10-30T20:11:47.8420617Z",
+  "restored": null,
+  "pass": false,
+  "before": null,
+  "failure": "调用“Click”并传入“4”个参数时发生异常：“Point not owned by expected root HWND: 329928”",
+  "case": "History",
+  "foregroundPass": false,
+  "visiblePass": false,
+  "endUtc": "2026-10-30T20:11:48.8369110Z",
+  "keyboardPass": false
+}

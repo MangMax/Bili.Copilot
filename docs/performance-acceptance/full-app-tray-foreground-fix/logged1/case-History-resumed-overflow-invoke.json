@@ -1,0 +1,22 @@
+{
+  "foregroundPass": false,
+  "restored": null,
+  "endUtc": "2026-10-30T20:12:35.5115393Z",
+  "case": "History",
+  "keyboardPass": false,
+  "searchCleared": null,
+  "before": {
+    "mainHwnd": 14748754,
+    "targetForeground": false,
+    "utc": "2026-10-30T20:12:34.7486695Z",
+    "minimized": false,
+    "label": "History-precondition",
+    "visible": false,
+    "foregroundPid": 27828,
+    "foreground": 790566
+  },
+  "failure": "调用“Click”并传入“4”个参数时发生异常：“Point not owned by expected root HWND: 329928”",
+  "visiblePass": false,
+  "startUtc": "2026-10-30T20:12:34.1366161Z",
+  "pass": false
+}

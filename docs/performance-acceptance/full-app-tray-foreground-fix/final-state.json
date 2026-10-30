@@ -1,0 +1,18 @@
+{
+  "yieldExitCode": 0,
+  "yieldReleased": true,
+  "utc": "2026-10-30T20:18:23.5918084Z",
+  "version": "2.2610.0.3",
+  "observerAndCompetitorProcesses": 0,
+  "searchCleared": true,
+  "newLayoutRetained": true,
+  "residencyRestored": "Off",
+  "family": "Mang.BiliCopilot.PerfAcceptance.Caa6a7be_y1mf40g4r9srg",
+  "installLocation": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-233185ea\\artifacts\\full-app-tray-foreground-fix\\layout-v3",
+  "oldLayoutRetained": true,
+  "ownedProcesses": 0,
+  "kernelClean": true,
+  "kernel": "0ae5e4e000a41a07f6696746706df11c06e8835b",
+  "parentTip": "1384779e798aba1a368bae2c566b976ff101a935",
+  "noInputAfterYield": true
+}

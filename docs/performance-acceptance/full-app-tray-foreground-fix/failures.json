@@ -1,0 +1,59 @@
+[
+  {
+    "stage": "startup discovery",
+    "error": "main not unique",
+    "cause": "first query before main became available"
+  },
+  {
+    "stage": "player discovery",
+    "error": "player unique required",
+    "cause": "initially filtered main-window class; actual player class Microsoft.UI.Windowing.Window"
+  },
+  {
+    "stage": "competitor launch",
+    "error": "empty PSScriptRoot constructed /docs/... instead of workspace path",
+    "firstPid": 35824
+  },
+  {
+    "stage": "history setup",
+    "error": "Point not owned by expected root HWND: 329928",
+    "results": [
+      "case-History.json",
+      "case-History-resumed.json",
+      "case-History-resumed-overflow-invoke.json",
+      "case-History-resumed-visible-overflow.json"
+    ],
+    "cause": "first competitor obscured; later overflow HWND/UIA geometry remained enumerable behind another window; no target click sent"
+  },
+  {
+    "stage": "overflow opening",
+    "error": "No unique offline app icon",
+    "cause": "toggle/hidden overflow preparation; no target activation"
+  },
+  {
+    "stage": "crop helper",
+    "error": "ModuleNotFoundError: No module named 'PIL'",
+    "resolution": "System.Drawing crop, private raw removed"
+  },
+  {
+    "stage": "exit preparation",
+    "error": "foreground_not_target: Target window is not in the foreground — refusing to click to avoid acting on the wrong window. Activate the intended window manually, check for a blocking dialog, then retry."
+  },
+  {
+    "stage": "exit preparation",
+    "error": "Unique target tray icon required",
+    "cause": "overflow toggled closed; opened once and exact icon re-inspected"
+  },
+  {
+    "stage": "log summary",
+    "error": "在此对象上找不到属性“managedLogScan”。请验证该属性是否存在，以及是否可以设置。",
+    "verifier": "KeyError: 'managedLogScan'",
+    "resolution": "Add-Member; original observer output retained"
+  },
+  {
+    "stage": "private-output handling",
+    "error": "One exploratory player tree printed native mpv title containing media query data to tool output",
+    "persistedInDeliverable": false,
+    "mitigation": "No further full application trees printed; inspections withheld in action files; no auth storage read"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "path": "logged1\\main-restored.png",
+    "sha256": "2a0cb55b119c12804d2e1a762e3cec0cee09e13243e920547e745db8b95e4ff6",
+    "reviewed": true,
+    "note": "Public video/danmaku or app content; main/reopen header account region cropped; tray screenshot menu only."
+  },
+  {
+    "path": "logged1\\player-caption-hover.png",
+    "sha256": "00c796b2ce9fd8ae931bfc047eaed8a6edae3532a8a184dbe475c525fe46b097",
+    "reviewed": true,
+    "note": "Public video/danmaku or app content; main/reopen header account region cropped; tray screenshot menu only."
+  },
+  {
+    "path": "logged1\\player-hover.png",
+    "sha256": "25e08c1a75bf734bafcc3d40a8e61eda00bdcdfa44edf92fcc115c8ec89e7874",
+    "reviewed": true,
+    "note": "Public video/danmaku or app content; main/reopen header account region cropped; tray screenshot menu only."
+  },
+  {
+    "path": "logged1\\player-initial.png",
+    "sha256": "03b5afb7f18d063d0f187e2d2f6a1d7f858b4e2be2b2b5b06e1a7f87c5e483d9",
+    "reviewed": true,
+    "note": "Public video/danmaku or app content; main/reopen header account region cropped; tray screenshot menu only."
+  },
+  {
+    "path": "logged1\\player-short-p.png",
+    "sha256": "058275fecafddf937e03c2f96742013f2853449f4a9cc5e845f782b1378c64e0",
+    "reviewed": true,
+    "note": "Public video/danmaku or app content; main/reopen header account region cropped; tray screenshot menu only."
+  },
+  {
+    "path": "logged1\\player-short-playing.png",
+    "sha256": "89c04c51d8707115f447fce0f9930eff11c6e4807f91b2d6086296698ca080c6",
+    "reviewed": true,
+    "note": "Public video/danmaku or app content; main/reopen header account region cropped; tray screenshot menu only."
+  },
+  {
+    "path": "logged1\\tray-exit-menu.png",
+    "sha256": "851ae2c977d9f34b68a610c3c4e9083b84fda38dce5a9b4b8258273844f7b82e",
+    "reviewed": true,
+    "note": "Public video/danmaku or app content; main/reopen header account region cropped; tray screenshot menu only."
+  },
+  {
+    "path": "logged2\\reopen.png",
+    "sha256": "50b0817cf637b8a2ea8270365a794ae723ee43cbf98a06183b70938304028d49",
+    "reviewed": true,
+    "note": "Public video/danmaku or app content; main/reopen header account region cropped; tray screenshot menu only."
+  }
+]
