@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "packageFamily": "Mang.BiliCopilot.PerfAcceptance.Caa6a7be_y1mf40g4r9srg",
+  "window": "2026-10-30 [12:45:00,13:08:00) UTC+08",
+  "boundary": "Serilog timestamp header through before next timestamp header",
+  "hashDefinition": "SHA256 UTF8 decoded block text; aggregate hashes joined by LF",
+  "groups": [
+    {
+      "category": "danmaku-segment",
+      "kind": "kernel-empty-response",
+      "exceptionChain": "RichasyKernel.KernelException",
+      "methods": "ThrowIfResponseInvalidAsync,SendAsync,GetSegmentDanmakusWithGrpcAsync",
+      "numericCodes": "",
+      "count": 1953,
+      "firstTime": "12:49:34.546",
+      "lastTime": "13:01:30.303",
+      "firstBlockSha256": "BDF0E8DEBFEDABA9FFB42D39D23833FF2B36FB8CB51CFB2CB627D99B4A5C67AA",
+      "lastBlockSha256": "A1B7269F1C9F307204DA8FD645637353149AEC13910DA1FDE91ECBC588AC3298",
+      "orderedBlockHashesSha256": "B8F36C462515BFB584F8C345EBB2D1A68F76BBCE0B0EBCA28255382C988BBA15"
+    },
+    {
+      "category": "other",
+      "kind": "not-classified",
+      "exceptionChain": "System.Threading.Tasks.TaskCanceledException",
+      "methods": "",
+      "numericCodes": "",
+      "count": 9,
+      "firstTime": "12:59:04.262",
+      "lastTime": "12:59:04.302",
+      "firstBlockSha256": "4259BA3A29EB00559B77F1B12A43C579071E5AFA2BF220E431A303BAC11E0C39",
+      "lastBlockSha256": "9EB3164A6BE479695CC7FB225EB8FCE2B1431CA53712199B0A0004C93346D49C",
+      "orderedBlockHashesSha256": "DB9469CE87888B18786B7E666E96750F9E0E589A463BC5EDE6FF6929D1C13435"
+    },
+    {
+      "category": "search-suggestion",
+      "kind": "not-classified",
+      "exceptionChain": "System.Threading.Tasks.TaskCanceledException > System.Threading.Tasks.TaskCanceledException > System.IO.IOException > System.Net.Sockets.SocketException",
+      "methods": "SendAsync",
+      "numericCodes": "995",
+      "count": 6,
+      "firstTime": "12:47:08.280",
+      "lastTime": "13:00:48.289",
+      "firstBlockSha256": "406DC1CF8631C64606B571E7E5C54AD4865F8C60333402652198C320E4963BB3",
+      "lastBlockSha256": "94107BA8E379172C4B191A20A35E01C2802383EB2D8B6E47C8243BF48222016E",
+      "orderedBlockHashesSha256": "008D5CEF11CC86472888FAED68CFE94192C7B77146607AF9FC412735888EC5CD"
+    }
+  ],
+  "segmentMinuteCounts": [
+    {
+      "minute": "12:49",
+      "count": 315
+    },
+    {
+      "minute": "12:50",
+      "count": 315
+    },
+    {
+      "minute": "12:54",
+      "count": 404
+    },
+    {
+      "minute": "12:55",
+      "count": 49
+    },
+    {
+      "minute": "12:56",
+      "count": 246
+    },
+    {
+      "minute": "12:57",
+      "count": 309
+    },
+    {
+      "minute": "13:01",
+      "count": 315
+    }
+  ],
+  "note": "Exception chains are serialized outer-to-inner type order; no request correlation or response payload retained."
+}
