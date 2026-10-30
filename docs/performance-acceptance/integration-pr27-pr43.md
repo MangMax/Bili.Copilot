@@ -41,3 +41,9 @@ Kernel merge: 98d0b9d0f0c81bd3904b1425ef3b90f637af37d7, parents 2ca79bd3376b911b
 Conflicts resolved: SettingsPage keeps both opt-in incremental refresh and close behavior; Resources keeps both localization sets. PlayerViewModel combines PR43 awaitable/idempotent CloseAsync + DisposeAsync and history-before-player-disposal with #48 immediate danmaku cancellation at both CloseAsync and DisposeAsync entry, before any native-close or initialization await. #54 presenter close fence remains in PlayerWindow Dispose/Destroy; #55 process lifetime policy is unchanged.
 
 Fresh stage-c/stage-c.trx: 479 passed, 0 failed, 0 skipped. Complete Release x64 JIT build stage-c-build.log: 0 warnings, 0 errors. These prove build/unit gates only; native combined runtime checks follow in D.
+
+## Resumption on latest heads (2026-10-30)
+
+Preserved baseline/history through old integration HEAD `5814fe58e0894b2b3d942eac511f623aa9a2de92`, including baseline `67252ea` and PR27 merge `1f3851b`. Old worktree `t3-5a9e2d03` is read-only for this task; its uncommitted state is separately captured in `artifacts/integration-latest/old-uncommitted.patch`. Old evidence above belongs only to its stated source, not latest PRs. Latest GitHub specs/PR bodies/review endpoints read and pull refs fetched: PR27 `f19f030934741cff805445cc2834aead1b39b93e`, PR43 `2f1ae8f98453017a52ad5db0032f47aee42f9e1b`. Review/comment endpoints empty. No dependency changes authorized.
+
+Old thread has no active run (interrupted). Its Controls harness PID 46892 was identified by exact executable path `Temp/bili-integration2743-controls-layout/Harness.exe` and stopped before new desktop work. The Controls, Player and Normal Integration2743 packages are inherited owned temporary identities. No other app or credentials touched.
