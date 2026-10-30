@@ -129,3 +129,7 @@ git diff --exit-code 6b9ebef -- src tests externals
 所有失败与完整轮owned进程/注册包均清理，collector已Stop/WaitForExit；未递归删除临时构建目录。最后run-5 `yield.json` 为 **released:true**；额外最终 [yield](evidence-56/final-yield.json) 为 **released:false**，表示已无可释放租约，不改写为true。最终owned包不存在，桌面独占已交还。报告提交SHA和最终clean状态在交付消息提供，避免自引用。
 
 最终harness/报告whitespace检查通过；全暂存 `diff --check` 仅因attempt-b与run-1原始failure-capture-error.txt的尾空白/空行非零，为保留原失败输出未改写。来源hash是本机原样字节；跨checkout若发生Git行尾转换，需先核对规范化文本差异，不把CRLF/LF变化当作生产行为漂移。
+
+## 父级集成复核补记
+
+历史六张缺图文字与同 SHA256 原图的独立查看/像素复核存在分歧，未删除原判断、未替换图片；当前限定结论及父 checkout 行尾差异导致的原 verify 失败见 [集成复核](integration-ui-56-cache.md)。不能继续把“六张原图缺封面”当作已独立证实的事实，也不因此签完整视觉通过。
