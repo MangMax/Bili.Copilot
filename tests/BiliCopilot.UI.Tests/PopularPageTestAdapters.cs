@@ -57,8 +57,9 @@ namespace BiliCopilot.UI.Toolkits
     public static class SettingsToolkit
     {
         public static string LastSection { get; set; } = "Recommend";
+        public static bool IncrementalRecommendRefresh { get; set; }
         public static bool ShowSearchRecommend { get; set; } = true;
-        public static T ReadLocalSetting<T>(SettingNames name, T fallback) => name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : (T)(object)LastSection;
+        public static T ReadLocalSetting<T>(SettingNames name, T fallback) => name == SettingNames.IncrementalRecommendRefresh ? (T)(object)IncrementalRecommendRefresh : name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : (T)(object)LastSection;
         public static void WriteLocalSetting<T>(SettingNames name, T value) => LastSection = value!.ToString()!;
     }
     public static class ResourceToolkit
@@ -66,7 +67,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }

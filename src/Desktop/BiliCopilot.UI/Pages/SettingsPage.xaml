@@ -65,6 +65,7 @@
                 <settings:NavigationSettingControl />
                 <settings:ScrollSettingControl />
                 <settings:SearchRecommendSettingSection />
+                <settings:IncrementalRecommendRefreshSettingControl />
                 <!--<settings:CloseBehaviorSettingControl />-->
                 <settings:NotificationSettingControl />
                 <settings:LoggerSettingControl />

@@ -87,6 +87,8 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
+        ClearRefreshTip();
+
         if (Videos.Count > 0 && _displayedSection == SelectedSection)
         {
             _videoCache[SelectedSection] = Videos.ToList();
@@ -131,7 +133,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsVideoLoading || SelectedSection is null || _displayedSection != SelectedSection)
+        if (IsVideoLoading || _isRecommendRefreshing || SelectedSection is null || _displayedSection != SelectedSection)
         {
             return;
         }
@@ -142,6 +144,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         {
             return;
         }
+
+        // 下滑加载会重新出现「加载中」提示，此时撤销入口已无意义，先收起避免同时出现两个提示。
+        DismissRefreshTipForLoadMore();
 
         IsVideoLoading = true;
         var version = _sectionVersion;
@@ -196,22 +201,83 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         ++_sectionVersion;
         IsVideoLoading = false;
         _displayedSection = SelectedSection;
+        if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend })
+        {
+            await RefreshRecommendVideosAsync();
+            return;
+        }
+
+        ClearRefreshTip();
         Videos.Clear();
         _videoCache.Remove(SelectedSection);
-        if (SelectedSection is PopularSectionItemViewModel section)
+        if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Hot })
         {
-            if (section.Type == PopularSectionType.Recommend)
-            {
-                _recommendOffset = 0;
-            }
-            else if (section.Type == PopularSectionType.Hot)
-            {
-                _hotOffset = 0;
-            }
+            _hotOffset = 0;
         }
 
         await LoadVideosAsync();
     }
+
+    [RelayCommand]
+    private void UndoRefresh()
+    {
+        if (_recommendRefreshSnapshot is null)
+        {
+            return;
+        }
+
+        var snapshot = _recommendRefreshSnapshot;
+        ++_sectionVersion;
+        IsVideoLoading = false;
+
+        // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
+
+        for (var i = 0; i < snapshot.Items.Count; i++)
+        {
+            if (!ReferenceEquals(Videos[i], snapshot.Items[i])) Videos[i] = snapshot.Items[i];
+        }
+
+        _recommendOffset = snapshot.Offset;
+        ClearRefreshTip();
+        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 清除撤销快照与刷新提示.
+    /// </summary>
+    /// <remarks>
+    /// 切换分区、走普通刷新或撤销时 <see cref="Videos"/> 会被替换或重载，
+    /// 旧快照指向的列表已不在页面上，必须一并失效；同时递增代次，让仍在路上的推荐刷新结果作废。
+    /// </remarks>
+    private void ClearRefreshTip()
+    {
+        _recommendRefreshSnapshot = null;
+        RefreshTipState = Toolkits.RefreshTipState.Hidden;
+        _refreshGeneration++;
+        _isRecommendRefreshing = false;
+    }
+
+    /// <summary>
+    /// 下滑加载时收起刷新提示.
+    /// </summary>
+    /// <remarks>
+    /// 下拉加载会显示页面中央的「加载中，请稍后」，如果此时左下角还挂着「撤销刷新」，
+    /// 屏幕上会同时出现两个提示。加载本身意味着用户已经接受了刷新结果，撤销入口可以收起。
+    /// </remarks>
+    private void DismissRefreshTipForLoadMore()
+    {
+        if (RefreshTipState.Status is Toolkits.RefreshTipStatus.Completed)
+        {
+            ClearRefreshTip();
+        }
+    }
+
+    /// <summary>
+    /// 手动关闭刷新提示.
+    /// </summary>
+    [RelayCommand]
+    private void DismissRefreshTip() => ClearRefreshTip();
 
     [RelayCommand]
     private async Task PlayCuratedListAsync()

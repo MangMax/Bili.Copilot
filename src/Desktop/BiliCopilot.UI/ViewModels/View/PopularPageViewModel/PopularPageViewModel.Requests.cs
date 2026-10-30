@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Models;
@@ -13,16 +14,126 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class PopularPageViewModel
 {
-    private async Task LoadRecommendVideosAsync(long version)
+    private async Task RefreshRecommendVideosAsync()
     {
+        // 推荐刷新用左下角浮层表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
+        if (IsVideoLoading || _isRecommendRefreshing)
+        {
+            return;
+        }
+
+        var isIncremental = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
+            && Videos.Count > 0;
+
+        // 新一次刷新本身就改变了列表状态，之前发起的刷新即使还在路上也必须失效。
+        _refreshGeneration++;
+
+        // 记录发起刷新时的代次：请求期间用户可能切到别的分区（甚至切走又切回），
+        // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
+        var generation = _refreshGeneration;
+
+        // 无论增量还是重载，都先记下刷新前的列表与偏移，成功后才有东西可撤销。
+        // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
+        var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
+
+        RefreshTipState = Toolkits.RefreshTipState.Refreshing(
+            ResourceToolkit.GetLocalizedString(StringNames.RefreshingRecommendVideos));
+
+        _isRecommendRefreshing = true;
         try
         {
-            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset);
-            if (version != _sectionVersion)
+            var (videos, nextOffset) = await FetchRecommendBatchAsync(isIncremental ? RecommendRefreshBatchCount : 1, generation);
+            var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
+            if (!RecommendRefreshResultGuard.ShouldApply(isRecommend, generation, _refreshGeneration))
             {
                 return;
             }
 
+            if (videos.Count == 0)
+            {
+                RefreshTipState = Toolkits.RefreshTipState.Failed;
+                return;
+            }
+
+            var previousCount = Videos.Count;
+            var application = RecommendRefreshApplier.Apply(
+                Videos,
+                videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Recommend)),
+                p => p.Data.Identifier.Id,
+                isIncremental);
+
+            // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
+            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
+
+            RefreshTipState = Toolkits.RefreshTipState.Completed;
+
+            _recommendRefreshSnapshot = snapshot;
+            _recommendOffset = nextOffset;
+            _videoCache.Remove(SelectedSection);
+            if (Videos.Count > previousCount) VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            // 失败时列表与快照都保持原样，浮层收起，不展示「已刷新」。
+            if (generation == _refreshGeneration) RefreshTipState = Toolkits.RefreshTipState.Failed;
+            _logger.LogError(ex, "尝试刷新推荐视频时出错.");
+        }
+        finally
+        {
+            if (generation == _refreshGeneration) _isRecommendRefreshing = false;
+        }
+    }
+
+    /// <summary>
+    /// 连续请求多页推荐并合并成一批.
+    /// </summary>
+    /// <returns>合并后的视频与最后一页的偏移量.</returns>
+    /// <remarks>
+    /// 服务端单页只返回约 6 条视频，增量刷新时一次只补 6 个卡片偏少；
+    /// 这里从偏移 0 起连续取若干页，按资源 Id 去重后合并，下一页偏移以最后一页为准。
+    /// 中途某一页失败时保留已取到的部分，避免整次刷新白跑。
+    /// </remarks>
+    private async Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchRecommendBatchAsync(int batchCount, int generation)
+    {
+        var videos = new List<VideoInformation>();
+        var seenKeys = new HashSet<string>(StringComparer.Ordinal);
+        var offset = 0L;
+
+        for (var i = 0; i < batchCount; i++)
+        {
+            try
+            {
+                var (page, nextOffset) = await _service.GetRecommendVideoListAsync(offset, RecommendPageSize);
+                if (generation != _refreshGeneration || page is null || page.Count == 0) break;
+                var previousCount = videos.Count;
+                foreach (var video in page)
+                {
+                    if (seenKeys.Add(video.Identifier.Id))
+                    {
+                        videos.Add(video);
+                    }
+                }
+
+                if (videos.Count == previousCount || nextOffset == offset) break;
+                offset = nextOffset;
+            }
+            catch (Exception ex) when (i > 0)
+            {
+                // 第一页失败交给调用方按刷新失败处理；后续页失败则保留已取到的部分。
+                _logger.LogError(ex, "获取推荐视频后续页时出错，保留已取到的部分.");
+                break;
+            }
+        }
+
+        return (videos, offset);
+    }
+
+    private async Task LoadRecommendVideosAsync(long version)
+    {
+        try
+        {
+            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset, RecommendPageSize);
+            if (version != _sectionVersion) return;
             _recommendOffset = nextOffset;
             TryAddVideos(videos, VideoCardStyle.Recommend);
         }
