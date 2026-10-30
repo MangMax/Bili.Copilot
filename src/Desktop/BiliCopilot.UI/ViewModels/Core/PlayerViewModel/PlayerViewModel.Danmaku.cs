@@ -43,7 +43,7 @@ public sealed partial class PlayerViewModel
                 var connector = (VideoConnectorViewModel)Connector;
                 aid = connector._view.Information.Identifier.Id;
                 cid = connector._part.Identifier.Id;
-                duration = connector._view.Information.Duration ?? 0;
+                duration = connector._part.Duration;
                 Danmaku.Title = connector._view.Information.Identifier.Title;
             }
             else if (_snapshot.Type == Models.Constants.BiliMediaType.Pgc)
