@@ -1,9 +1,10 @@
 # Read only the explicitly authorized package log. Never emit exception messages or raw blocks.
 [CmdletBinding()]
 param(
-    [ValidatePattern('^\d{2}:\d{2}:\d{2}\.\d{3}$')][string]$StartTime='12:45:00.000',
-    [ValidatePattern('^\d{2}:\d{2}:\d{2}\.\d{3}$')][string]$EndTime='13:08:00.000'
+    [ValidatePattern('\A(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\.[0-9]{3}\z')][string]$StartTime='12:45:00.000',
+    [ValidatePattern('\A(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\.[0-9]{3}\z')][string]$EndTime='13:08:00.000'
 )
+# Fixed log date and local UTC+08 clock, inclusive start / exclusive end; no overnight windows.
 $ErrorActionPreference = 'Stop'
 if ($StartTime -ge $EndTime) { throw 'Expected a nonempty same-day time window' }
 $package = Get-AppxPackage -Name 'Mang.BiliCopilot.PerfAcceptance.Caa6a7be'

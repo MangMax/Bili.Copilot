@@ -5,7 +5,7 @@
 ## 来源、构建和安全更新
 
 - 工作区 `C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-1630ecee`，分支 `t3/full-app-duration-acceptance`。构建源码 **`c3b32c527cf7f80f2c0aaea81e92a822480efb56`**；kernel **`2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d`**。文档提交不改变实际被测源码。
-- 先读 AGENTS、docs/agents 和五份交接/诊断报告；使用 winui-packaging、winui-dev-workflow、winui-ui-testing、code-review、verification-before-completion；对资产检查和启动延迟按 systematic-debugging 核对。遵守用户禁止子代理的要求，审查由本代理完成。
+- 先读 AGENTS、docs/agents 和五份交接/诊断报告；使用 winui-packaging、winui-dev-workflow、winui-ui-testing、code-review、verification-before-completion；对资产检查和启动延迟按 systematic-debugging 核对。遵守父级任务不启动子代理的要求，审查由本代理完成。
 - 精确核对旧注册包 Identity/Publisher/family/InstallLocation，更新脚本内再次确认 owned EXE 进程为零。没有操作 PID9608、Dev/生产包，没有卸载、清理 app data、读取/复制认证文件或向用户请求登录。
 - `winapp run --help` 明确默认重新部署保留 app data，只有 `--clean` 才清理。本轮使用 `--no-launch`，未使用 `--clean`、`--unregister-on-exit`，没有执行卸载命令。工具没有要求先卸载或删除数据。同版本成功更新注册，无需提高版本。
 - 全新 ignored `artifacts/full-app-duration-fix/build` 和 `layout`；未覆盖旧 layout。kernel 项目使用本工作区自己的 bin/obj。运行时三项资产已存在于本工作区，逐项与原主 checkout `C:/WorkFile/Project/Bili.Copilot` 哈希相等，无需复制。初次普通 `check-ignore` 因主 checkout 跟踪状态未返回匹配，随后用 `--no-index` 核对忽略规则；该检查失败没有更改资产。详见 [资产来源](evidence-full-app-duration-fix/runtime-assets.json)。
@@ -65,7 +65,7 @@ P1画面为Python应用场景讲解，P2为Python起源，P8为命令提示符�
 
 ## 本轮白名单日志
 
-仅允许读取该精确包 `LocalState/Logger/log-2026-10-30.txt`，共享只读、内存分块。开始前记录安全边界；最终窗口 **[14:11:43.752,14:19:02.885)**。对已提交 [analyze-48-live-errors.ps1](analyze-48-live-errors.ps1) 只增加可选StartTime/EndTime参数，默认历史窗口不变，分类白名单不变。
+仅允许读取该精确包 `LocalState/Logger/log-2026-10-30.txt`，共享只读、整文件读入内存后按时间头分块。开始前记录安全边界；最终窗口 **[14:11:43.752,14:19:02.885)**。对已提交 [analyze-48-live-errors.ps1](analyze-48-live-errors.ps1) 只增加可选StartTime/EndTime参数，默认历史窗口不变，分类白名单不变。
 
 ```powershell
 ./docs/performance-acceptance/analyze-48-live-errors.ps1 `
