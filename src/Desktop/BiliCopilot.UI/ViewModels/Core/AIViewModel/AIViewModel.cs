@@ -183,6 +183,7 @@ public sealed partial class AIViewModel : ViewModelBase
         _generateCancellationTokenSource = null;
         Erase();
         RequestText = string.Empty;
+        ProgressTip = default;
         IsGenerating = false;
         _currentPrompt = default;
         CheckQuickItemsShown();

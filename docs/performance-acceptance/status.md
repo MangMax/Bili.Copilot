@@ -2,13 +2,15 @@
 
 截至生产代码基线 `778caac89fbb62414a43b99f566754e8dad55a05`，调查证据集成基线 `bcce5f3106088469db93196515bc233799f8934c`。最新 #49 文档诊断集成 `1cddcd6614591d1a28f6ac5a91cae484f57748c9`（父起点 `51154f0`），正式代码/依赖未改。这是进度账本，不是最终验收报告。所有工单保持开放，PR #60 保持 Draft。
 
-最近完整生产集成验证为 #49 重挂修复合入 `7aa05616f990183261e21295e5c9a2a70a6323de` 后的新跑 Release **403 passed / 0 failed / 0 skipped**，TRX 已解析；Debug x64 与运行库门禁通过（Debug 零警告/错误，Release 保留 protobuf unused import 警告）。见 [#49 重挂集成](integration-49-remount-fix.md)。此后 #49 诊断与本次 #52 补充验收均为 docs-only，未重跑 403/build，不代表新增生产验证。kernel 保持 `2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d`。
+本轮 #46 修复之前的完整生产集成验证为 #49 重挂修复合入 `7aa05616f990183261e21295e5c9a2a70a6323de` 后的新跑 Release **403 passed / 0 failed / 0 skipped**，TRX 已解析；Debug x64 与运行库门禁通过（Debug 零警告/错误，Release 保留 protobuf unused import 警告）。见 [#49 重挂集成](integration-49-remount-fix.md)。随后 #49 诊断与 #52 补充验收均为 docs-only，未重跑 403/build，不代表新增生产验证。kernel 保持 `2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d`。
+
+最新 #46 一行生产修复独立验证：Release **403 passed / 0 failed / 0 skipped**（TRX 403 条已解析）、Debug x64 及 runtime gate 零警告/错误；真实 VM 六入口离线 38/38 通过，详见 [Discard 修复复验](ui-46-discard-fix.md)。测试版本以该报告源码 hash 为准，原红保留；不改变认证、AOT 或性能未验边界。
 
 历史验证记录：#52 生命周期修复合入 `ca362d7` 后，401 passed / 0 failed / 0 skipped，TRX 已解析；Debug x64 构建和运行库文件门禁通过，零警告/错误。本次生产改动仅 MyImage，kernel 仍为 `2ca79bd`；其他票未重做 UI 验收。测试通过不能替代下表的真实 UI、发布产物或性能证据。`21a9362` 搜索小改在 `84d2793` 合并后新跑完整 Release 401/0/0、TRX 解析及 Debug x64 零警告/错误；当时桌面复验发现卸载后迟到输入缺陷；`7516070` guard 修复的新独立复验已验证原顺序不再产生请求/结果，完整 Release 401/0/0 与 Debug x64 零警告/错误再次通过；#51 仍只有限验收。
 
 | 票 | 已交付证据 | 尚需完成的主要验收 |
 | --- | --- | --- |
-| #46 AI 流式更新 | 实现、行为测试、WinUI 静态审核；离线真实文本呈现、最终刷新、协调器取消及代码复制 | 认证 AIViewModel 的来源切换/重新生成/取消、生产全文复制、输入响应与实际性能 |
+| #46 AI 流式更新 | Discard 同步清进度一行修复；新独立身份真实 VM 六入口/产品面板离线 10/10 场景、38/38 断言，原 DiscardClearsProgress 红→绿；取消/清空/迟到异常/重新生成/切源/生产全文复制与实际输入通过。fresh Release 403/0/0、Debug x64/runtime gate 通过，8 图逐张复核。见 [独立复验](ui-46-discard-fix.md)，原 37/1 和全部证据保留 | **有限真实 VM/产品面板离线通过，未关闭**：生成中 Discard/Regenerate 按钮禁用，竞态为命令级；认证真实供应商、完整应用、Release/AOT UI 和实际性能仍未验。代理调度样本不证明输入延迟/收益；专用 WinUIAnalyzer 未运行；owned 进程/包清理且 yield released:true |
 | #47 Markdown 清理 | 删除强制 GC；真实清理/重挂载修复保留。新增同源 Release JIT 三组 EventPipe 对照（仅恢复历史 GC 一行）：当前总暂停8.25–16.15 ms，历史93.53–109.43 ms/50周期，零报告丢事件；八轮各176功能断言，有限弱引用观察，父级独立重算、六份原nettrace离线解析与八轮57源文件/实际DLL hash复核一致，见[集成复核](integration-ui-47-gc.md)及[原GC对照](ui-47-gc-comparison.md) | **有限实验通过，未关闭**：当前最大单次暂停更长；真实控件自然分配GC后完整存活、诱发事件逐个归因、对象根/native内存/长期无泄漏/full app/AOT未验。原4张不完整记录保留，但父级读取相同hash原图与历史文字存在分歧，未签全部捕获可靠性通过；earlier readiness失败保留。已有EventPipe pause trace，WPR失败不再等于无暂停证据。未重跑403/build |
 | #48 弹幕取消链 | 会话和 HTTP/retry 测试；kernel 专用提交远端可达；独立包真实启动 | 登录后视频/番剧换 P、重载、加载中关闭；当前独立身份停在登录页 |
 | #49 重绘合并 | 自持幂等 Loaded/Unloaded 修复已合入；历史重挂结构 20/20、父级 403/0/0 和 build 记录保留。新增 docs 调度候选、独立架构审查与 trace 证据；历史 26 项屏障结果不等于完整验收。父级独立重算确认 frozen 两图白字/渲染区域像素相同，撤回“该两图证明白字消失”；历史含钩子 DLL 与新 clean/trace 产物明确分账。见[当前权威更正与集成复核](integration-engine-49-diagnostics.md)及[原重挂集成](integration-49-remount-fix.md) | **整票 FAIL/未关闭，候选不可发布**：其他暂停 seek/双向暂停切换首帧失败、render 线程所有权、UI 等待与关闭安全仍阻断。trace 有限窗口未复现不是修复；clean 对照未做 UI 行为验收。patch 仅在 docs，未应用到正式引擎/依赖。下一步先按架构分切片设计，不标原 M 票完成；完整播放器/登录/性能/AOT 缺口保留。本轮未重跑 403/build 或动态 UI |
