@@ -1,0 +1,49 @@
+{
+  "portableFiles": 400,
+  "liveRuns": [
+    {
+      "run": "a1-net10",
+      "dlls": 359,
+      "loadedLocalModules": 150,
+      "coreclr": {
+        "name": "coreclr.dll",
+        "version": "10,0,1426,52326 @Commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+        "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4f1b2236\\artifacts\\runtime-final-baseline\\a1-net10\\layout\\coreclr.dll"
+      }
+    },
+    {
+      "run": "b1-net11",
+      "dlls": 363,
+      "loadedLocalModules": 151,
+      "coreclr": {
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4f1b2236\\artifacts\\runtime-final-baseline\\b1-net11\\layout\\coreclr.dll",
+        "version": "11,0,26,52348 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70",
+        "name": "coreclr.dll",
+        "sha256": "46A09D97AD8DD30D400A86C90AF707BEE7593B585D3CCB8586C4FFFCA404D1E2"
+      }
+    },
+    {
+      "run": "b2-net11",
+      "dlls": 363,
+      "loadedLocalModules": 151,
+      "coreclr": {
+        "sha256": "46A09D97AD8DD30D400A86C90AF707BEE7593B585D3CCB8586C4FFFCA404D1E2",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4f1b2236\\artifacts\\runtime-final-baseline\\b2-net11\\layout\\coreclr.dll",
+        "version": "11,0,26,52348 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70",
+        "name": "coreclr.dll"
+      }
+    },
+    {
+      "run": "a2-net10",
+      "dlls": 359,
+      "loadedLocalModules": 150,
+      "coreclr": {
+        "version": "10,0,1426,52326 @Commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4f1b2236\\artifacts\\runtime-final-baseline\\a2-net10\\layout\\coreclr.dll",
+        "sha256": "1BC65B8D45474B19ADF3CA85CE881087AFF599FFC72B2C1A323E878227757B65",
+        "name": "coreclr.dll"
+      }
+    }
+  ]
+}
