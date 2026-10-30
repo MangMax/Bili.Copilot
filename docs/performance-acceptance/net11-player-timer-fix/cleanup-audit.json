@@ -1,0 +1,83 @@
+[
+  {
+    "registrationAbsent": true,
+    "run": "stop1",
+    "checkedPids": [
+      31716,
+      35232,
+      0
+    ],
+    "yield": {
+      "released": false
+    },
+    "live": []
+  },
+  {
+    "registrationAbsent": true,
+    "run": "green1",
+    "checkedPids": [
+      24844,
+      39284,
+      21640,
+      6560
+    ],
+    "yield": {
+      "released": false
+    },
+    "live": []
+  },
+  {
+    "registrationAbsent": true,
+    "run": "final1",
+    "checkedPids": [
+      40300,
+      38676,
+      37776,
+      39112
+    ],
+    "yield": {
+      "released": false
+    },
+    "live": []
+  },
+  {
+    "registrationAbsent": true,
+    "run": "final2",
+    "checkedPids": [
+      10064,
+      40412,
+      39832,
+      26508
+    ],
+    "yield": {
+      "released": false
+    },
+    "live": []
+  },
+  {
+    "registrationAbsent": true,
+    "run": "controls1",
+    "checkedPids": [
+      40740,
+      31872,
+      0
+    ],
+    "yield": {
+      "released": false
+    },
+    "live": []
+  },
+  {
+    "registrationAbsent": true,
+    "run": "controls2",
+    "checkedPids": [
+      22968,
+      40644,
+      0
+    ],
+    "yield": {
+      "released": false
+    },
+    "live": []
+  }
+]
