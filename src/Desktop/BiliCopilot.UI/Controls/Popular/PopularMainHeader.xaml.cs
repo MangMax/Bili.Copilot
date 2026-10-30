@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using BiliCopilot.UI.Controls.Components;
+using BiliCopilot.UI.ViewModels.View;
 
 namespace BiliCopilot.UI.Controls.Popular;
 
@@ -10,33 +11,37 @@ namespace BiliCopilot.UI.Controls.Popular;
 /// </summary>
 public sealed partial class PopularMainHeader : PopularPageControlBase
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PopularMainHeader"/> class.
-    /// </summary>
+    private PopularPageViewModel? _subscribedViewModel;
+
     public PopularMainHeader()
     {
         InitializeComponent();
+        // The restored NuGet base unregisters its lifecycle handlers on first unload.
+        Loaded += (_, _) => Attach();
+        Unloaded += (_, _) => Detach();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    protected override void OnViewModelChanged(PopularPageViewModel? oldValue, PopularPageViewModel? newValue)
     {
-        if (ViewModel is null)
-        {
-            return;
-        }
+        Detach();
+        if (IsLoaded) Attach();
+    }
 
-        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+    private void Attach()
+    {
+        Detach();
+        _subscribedViewModel = ViewModel;
+        if (_subscribedViewModel is null) return;
+        _subscribedViewModel.PropertyChanged += OnViewModelPropertyChanged;
         ApplyUndoRefreshVisibility(animate: false);
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void Detach()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-        }
+        if (_subscribedViewModel is null) return;
+        _subscribedViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        _subscribedViewModel = null;
+        UndoRefreshButtonAnimator.Apply(UndoRefreshButton, UndoRefreshButton.Visibility == Visibility.Visible, false);
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
