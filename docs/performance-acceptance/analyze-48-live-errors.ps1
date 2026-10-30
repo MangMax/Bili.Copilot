@@ -1,7 +1,11 @@
 # Read only the explicitly authorized package log. Never emit exception messages or raw blocks.
 [CmdletBinding()]
-param()
+param(
+    [ValidatePattern('^\d{2}:\d{2}:\d{2}\.\d{3}$')][string]$StartTime='12:45:00.000',
+    [ValidatePattern('^\d{2}:\d{2}:\d{2}\.\d{3}$')][string]$EndTime='13:08:00.000'
+)
 $ErrorActionPreference = 'Stop'
+if ($StartTime -ge $EndTime) { throw 'Expected a nonempty same-day time window' }
 $package = Get-AppxPackage -Name 'Mang.BiliCopilot.PerfAcceptance.Caa6a7be'
 $family = 'Mang.BiliCopilot.PerfAcceptance.Caa6a7be_y1mf40g4r9srg'
 if (@($package).Count -ne 1 -or $package.PackageFamilyName -ne $family) { throw 'Package identity mismatch' }
@@ -25,7 +29,7 @@ try {
     $rows = @(foreach ($block in $blocks) {
         if ($block -notmatch '^2026-10-30 (\d{2}:\d{2}:\d{2}\.\d{3})') { continue }
         $time = $Matches[1]
-        if ($time -lt '12:45:00.000' -or $time -ge '13:08:00.000') { continue }
+        if ($time -lt $StartTime -or $time -ge $EndTime) { continue }
         $header = ($block -split '\r?\n', 2)[0]
         $segment = $header.Contains('获取弹幕分片失败')
         $types = @([regex]::Matches($block, '(?m)^\s*(?:---> )?((?:RichasyKernel|System|Google\.Protobuf)\.[A-Za-z.]+Exception)(?:[: (]|$)') | ForEach-Object {
@@ -49,7 +53,7 @@ try {
             firstTime=$first.time; lastTime=$last.time; firstBlockSha256=$first.hash; lastBlockSha256=$last.hash;
             orderedBlockHashesSha256=(Get-BlockHash (($_.Group.hash) -join "`n")) }
     })
-    [ordered]@{ schema=1; packageFamily=$family; window='2026-10-30 [12:45:00,13:08:00) UTC+08';
+    [ordered]@{ schema=1; packageFamily=$family; window="2026-10-30 [$StartTime,$EndTime) UTC+08";
         boundary='Serilog timestamp header through before next timestamp header';
         hashDefinition='SHA256 UTF8 decoded block text; aggregate hashes joined by LF';
         groups=$groups;
