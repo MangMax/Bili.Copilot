@@ -60,7 +60,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         }
 
         // 排序会重载列表，推荐子分区的撤销快照必须失效，避免撤销回排序前的列表。
-        ClearRefreshTip();
+        ClearRefreshSnapshot();
         SelectedSortType = sortType;
         _childPartitionVideoCache.Clear();
         Videos.Clear();
@@ -78,7 +78,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         }
 
         // 非推荐子分区的刷新行为保持不变，但必须让推荐子分区的撤销状态失效，避免串场。
-        ClearRefreshTip();
+        ClearRefreshSnapshot();
         _childPartitionVideoCache.Remove(CurrentPartition.Data.Id);
         _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
         Videos.Clear();
@@ -108,46 +108,25 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
         RecommendationListChanged?.Invoke(this, EventArgs.Empty);
         _recommendOffset = snapshot.Offset;
-        ClearRefreshTip();
+        ClearRefreshSnapshot();
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
-    /// 清除撤销快照与刷新提示.
+    /// 清除撤销快照.
     /// </summary>
     /// <remarks>
     /// 切换子分区、切换排序或走普通刷新时 <see cref="Videos"/> 会被替换或重载，
     /// 旧快照指向的列表已不在页面上，必须一并失效，否则撤销会把推荐列表撤销到别的子分区。
     /// </remarks>
-    internal void ClearRefreshTip()
+    internal void ClearRefreshSnapshot()
     {
         _recommendRefreshSnapshot = null;
-        RefreshTipState = Toolkits.RefreshTipState.Hidden;
+        CanUndoRefresh = false;
         _refreshGeneration++;
-        _isRecommendRefreshing = false;
+        IsRecommendRefreshing = false;
         IsVideoLoading = false;
     }
-
-    /// <summary>
-    /// 下滑加载时收起刷新提示.
-    /// </summary>
-    /// <remarks>
-    /// 下拉加载会显示页面中央的「加载中，请稍后」，如果此时左下角还挂着「撤销刷新」，
-    /// 屏幕上会同时出现两个提示。加载本身意味着用户已经接受了刷新结果，撤销入口可以收起。
-    /// </remarks>
-    private void DismissRefreshTipForLoadMore()
-    {
-        if (RefreshTipState.Status is Toolkits.RefreshTipStatus.Completed)
-        {
-            ClearRefreshTip();
-        }
-    }
-
-    /// <summary>
-    /// 手动关闭刷新提示.
-    /// </summary>
-    [RelayCommand]
-    private void DismissRefreshTip() => ClearRefreshTip();
 
     [RelayCommand]
     private async Task ChangeChildPartitionAsync(PartitionViewModel partition)
@@ -157,7 +136,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
             return;
         }
 
-        ClearRefreshTip();
+        ClearRefreshSnapshot();
         if (Videos.Count > 0)
         {
             if (IsRecommend)
@@ -201,13 +180,10 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsVideoLoading || _isRecommendRefreshing)
+        if (IsVideoLoading || IsRecommendRefreshing)
         {
             return;
         }
-
-        // 下滑加载会重新出现「加载中」提示，此时撤销入口已无意义，先收起避免同时出现两个提示。
-        DismissRefreshTipForLoadMore();
 
         IsVideoLoading = true;
         var generation = _refreshGeneration;
@@ -228,8 +204,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
     private async Task RefreshRecommendVideosAsync()
     {
-        // 推荐刷新用左下角浮层表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
-        if (IsVideoLoading || _isRecommendRefreshing)
+        // 推荐刷新在头部按钮旁表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
+        if (IsVideoLoading || IsRecommendRefreshing)
         {
             return;
         }
@@ -248,10 +224,10 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
         var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
 
-        RefreshTipState = Toolkits.RefreshTipState.Refreshing(
-            ResourceToolkit.GetLocalizedString(StringNames.RefreshingRecommendVideos));
+        // 新一次刷新会替换旧快照，撤销入口先收起，成功后重新出现。
+        CanUndoRefresh = false;
 
-        _isRecommendRefreshing = true;
+        IsRecommendRefreshing = true;
         try
         {
             var (videos, offset) = await _service.GetPartitionRecommendVideoListAsync(Data.Data, 0);
@@ -262,7 +238,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
             if (videos is null || videos.Count == 0)
             {
-                RefreshTipState = Toolkits.RefreshTipState.Failed;
+                CanUndoRefresh = _recommendRefreshSnapshot is not null;
                 return;
             }
 
@@ -278,9 +254,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
             RecommendationListChanged?.Invoke(this, EventArgs.Empty);
 
-            RefreshTipState = Toolkits.RefreshTipState.Completed;
-
             _recommendRefreshSnapshot = snapshot;
+            CanUndoRefresh = true;
             _recommendOffset = offset;
 
             // 刷新后的列表才是当前推荐列表，旧的缓存不能再被切回推荐子分区时复用。
@@ -289,13 +264,13 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         }
         catch (Exception ex)
         {
-            // 失败时列表、偏移与快照都保持原样，浮层收起，不展示「已刷新」。
-            if (generation == _refreshGeneration) RefreshTipState = Toolkits.RefreshTipState.Failed;
+            // A stale refresh must not publish into the current section.
+            if (generation == _refreshGeneration) CanUndoRefresh = _recommendRefreshSnapshot is not null;
             _logger.LogError(ex, "尝试刷新分区推荐视频时出错.");
         }
         finally
         {
-            if (generation == _refreshGeneration) _isRecommendRefreshing = false;
+            if (generation == _refreshGeneration) IsRecommendRefreshing = false;
         }
     }
 

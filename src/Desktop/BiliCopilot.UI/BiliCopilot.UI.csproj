@@ -132,7 +132,6 @@
     <None Remove="Controls\Components\PlayerEpisodePresenter.xaml" />
     <None Remove="Controls\Components\PlayerSeasonPresenter.xaml" />
     <None Remove="Controls\Components\RecommendLivePresenter.xaml" />
-    <None Remove="Controls\Components\RefreshResultTipControl.xaml" />
     <None Remove="Controls\Components\SearchLivePresenter.xaml" />
     <None Remove="Controls\Components\ShimmerLayout\ShimmerLayout.xaml" />
     <None Remove="Controls\Components\TimelineSeasonPresenter.xaml" />
@@ -541,11 +540,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\Components\SideBottomLoadingWidget.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Controls\Components\RefreshResultTipControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
