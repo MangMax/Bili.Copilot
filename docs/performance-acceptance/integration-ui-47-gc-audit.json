@@ -1,0 +1,134 @@
+[
+  {
+    "run": "final1-current",
+    "sourceFiles": 57,
+    "sourceManifestMatches": true,
+    "builtLayoutRecordedModuleHash": "686EF504EB5F085FB666CE14E4708F044309656BC3DAF36BD408B4504706D70B",
+    "rawNettraceHashVerified": true,
+    "offlineParseMatchesCommittedEvents": true,
+    "events": 14,
+    "counts": [
+      2,
+      2,
+      2
+    ],
+    "pauseTotalMs": 16.148199999999406,
+    "fullySuspendedTotalMs": 16.06569999999988,
+    "collectionTotalMs": 11.020300000000816,
+    "boundaryCrossings": 0,
+    "duplicateCounts": 0,
+    "lost": 0
+  },
+  {
+    "run": "final2-historical",
+    "sourceFiles": 57,
+    "sourceManifestMatches": true,
+    "builtLayoutRecordedModuleHash": "8051E02E01846652481D15DBB59EA83D4D0B1DBFED98CC7D07FE428AD62F6797",
+    "rawNettraceHashVerified": true,
+    "offlineParseMatchesCommittedEvents": true,
+    "events": 784,
+    "counts": [
+      101,
+      101,
+      101
+    ],
+    "pauseTotalMs": 107.3092000000006,
+    "fullySuspendedTotalMs": 105.43649999999639,
+    "collectionTotalMs": 72.38750000000186,
+    "boundaryCrossings": 0,
+    "duplicateCounts": 0,
+    "lost": 0
+  },
+  {
+    "run": "final3-historical",
+    "sourceFiles": 57,
+    "sourceManifestMatches": true,
+    "builtLayoutRecordedModuleHash": "8051E02E01846652481D15DBB59EA83D4D0B1DBFED98CC7D07FE428AD62F6797",
+    "rawNettraceHashVerified": true,
+    "offlineParseMatchesCommittedEvents": true,
+    "events": 784,
+    "counts": [
+      101,
+      101,
+      101
+    ],
+    "pauseTotalMs": 109.43409999999585,
+    "fullySuspendedTotalMs": 107.76230000000419,
+    "collectionTotalMs": 75.32710000000179,
+    "boundaryCrossings": 0,
+    "duplicateCounts": 0,
+    "lost": 0
+  },
+  {
+    "run": "final4-current",
+    "sourceFiles": 57,
+    "sourceManifestMatches": true,
+    "builtLayoutRecordedModuleHash": "686EF504EB5F085FB666CE14E4708F044309656BC3DAF36BD408B4504706D70B",
+    "rawNettraceHashVerified": true,
+    "offlineParseMatchesCommittedEvents": true,
+    "events": 14,
+    "counts": [
+      2,
+      2,
+      2
+    ],
+    "pauseTotalMs": 8.250199999999722,
+    "fullySuspendedTotalMs": 8.187799999999925,
+    "collectionTotalMs": 5.644500000000107,
+    "boundaryCrossings": 0,
+    "duplicateCounts": 0,
+    "lost": 0
+  },
+  {
+    "run": "final5-current",
+    "sourceFiles": 57,
+    "sourceManifestMatches": true,
+    "builtLayoutRecordedModuleHash": "686EF504EB5F085FB666CE14E4708F044309656BC3DAF36BD408B4504706D70B",
+    "rawNettraceHashVerified": true,
+    "offlineParseMatchesCommittedEvents": true,
+    "events": 14,
+    "counts": [
+      2,
+      2,
+      2
+    ],
+    "pauseTotalMs": 9.632499999999936,
+    "fullySuspendedTotalMs": 9.566699999999855,
+    "collectionTotalMs": 6.858899999999949,
+    "boundaryCrossings": 0,
+    "duplicateCounts": 0,
+    "lost": 0
+  },
+  {
+    "run": "final6-historical",
+    "sourceFiles": 57,
+    "sourceManifestMatches": true,
+    "builtLayoutRecordedModuleHash": "8051E02E01846652481D15DBB59EA83D4D0B1DBFED98CC7D07FE428AD62F6797",
+    "rawNettraceHashVerified": true,
+    "offlineParseMatchesCommittedEvents": true,
+    "events": 784,
+    "counts": [
+      101,
+      101,
+      101
+    ],
+    "pauseTotalMs": 93.5269000000012,
+    "fullySuspendedTotalMs": 92.04170000000136,
+    "collectionTotalMs": 64.39369999999622,
+    "boundaryCrossings": 0,
+    "duplicateCounts": 0,
+    "lost": 0
+  },
+  {
+    "run": "final7-current-untraced",
+    "sourceFiles": 57,
+    "sourceManifestMatches": true,
+    "builtLayoutRecordedModuleHash": "686EF504EB5F085FB666CE14E4708F044309656BC3DAF36BD408B4504706D70B"
+  },
+  {
+    "run": "final8-historical-untraced",
+    "sourceFiles": 57,
+    "sourceManifestMatches": true,
+    "builtLayoutRecordedModuleHash": "8051E02E01846652481D15DBB59EA83D4D0B1DBFED98CC7D07FE428AD62F6797"
+  }
+]
