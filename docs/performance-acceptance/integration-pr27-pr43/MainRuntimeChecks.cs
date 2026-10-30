@@ -43,6 +43,7 @@ internal static class MainRuntimeChecks
         Check(app.TrayLifecycle.IsResident && !main.AppWindow.IsVisible && vm.Players.Count==0,"ClosingPlayerPreservesIntentionalResidency");
         app.TrayLifecycle.Restore();
         // Keep a real player alive for the explicit-exit path; UI runner invokes this last.
+        await IdleBaseline.Measure(main);
         await Offline48.Open();
         var exit=new Button {Content="Exit main and player"};
         AutomationProperties.SetAutomationId(exit,"ExitMain");

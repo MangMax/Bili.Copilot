@@ -16,6 +16,7 @@ $fixture=$fixture.Replace('Settings["PlayerVolume"]=0d;', 'Settings["PlayerVolum
 $fixture=$fixture.Replace('Host.Content=new StackPanel', 'var mainRun=new Button {Content="Main lifetime checks"};AutomationProperties.SetAutomationId(mainRun,"MainChecks");mainRun.Click+=async (_,_)=>await MainRuntimeChecks.Run(); Host.Content=new StackPanel')
 $fixture=$fixture.Replace('Status,run,next}', 'Status,run,next,mainRun}')
 Copy-Item "$PSScriptRoot/MainRuntimeChecks.cs" "$Destination/MainRuntimeChecks.cs"
+Copy-Item "$PSScriptRoot/IdleBaseline.cs" "$Destination/IdleBaseline.cs"
 $fixture=$fixture.Replace('Check(Errors.Count==0,"unexpected boundary error");','Check(!Errors.Any(e=>!e.StartsWith("Failed to load image from ms-appx:")),"unexpected boundary error: "+string.Join(" | ",Errors));')
 $fixture=$fixture.Replace('await Capture("results");',@'
 await Case("RealTrayEnableDisableRecreate",async()=>{
@@ -37,3 +38,14 @@ await Capture("results");
 $fixture | Set-Content "$Destination/Fixture.cs"
 $runner=Get-Content "$PSScriptRoot/../harness-48-duration-fix/run-ui.ps1" -Raw
 $runner.Replace('offline48-durationfix-1d19','integration2743').Replace('Mang.BiliCopilot.Offline48.D1d19DurationFix','Mang.BiliCopilot.Integration2743.Player').Replace('Count -ne 12','Count -ne 13').Replace('Expected twelve','Expected thirteen') | Set-Content "$Destination/run-ui.ps1"
+Copy-Item "$PSScriptRoot/ExtraRuntimeChecks.cs" "$Destination/ExtraRuntimeChecks.cs"
+$font=Get-Content "$Destination/Toolkits/FontCatalog.cs" -Raw
+$font=$font.Replace('() => toolkit.GetFontsAsync()', 'async () => { FontProbe.Calls++; var watch = System.Diagnostics.Stopwatch.StartNew(); var result = await toolkit.GetFontsAsync(); FontProbe.EnumerationMilliseconds = watch.Elapsed.TotalMilliseconds; return result; }')
+$font | Set-Content "$Destination/Toolkits/FontCatalog.cs"
+$fixture=Get-Content "$Destination/Fixture.cs" -Raw
+$fixture=$fixture.Replace('Status.Text="RUNNING";'+[Environment]::NewLine+'        await Case("VideoPartDurationBounds"', 'Status.Text="RUNNING";'+[Environment]::NewLine+'        await Case("FontCatalogDeferredUntilPicker", ExtraRuntimeChecks.Fonts);'+[Environment]::NewLine+'        await Case("ModesCloseWithoutLateAccess", ExtraRuntimeChecks.Modes);'+[Environment]::NewLine+'        await Case("VideoPartDurationBounds"')
+# Source fixture may use LF independent of this host shell.
+if(!$fixture.Contains('await Case("FontCatalogDeferredUntilPicker"')) { $fixture=$fixture.Replace('await Case("VideoPartDurationBounds"','await Case("FontCatalogDeferredUntilPicker", ExtraRuntimeChecks.Fonts);'+[Environment]::NewLine+'        await Case("ModesCloseWithoutLateAccess", ExtraRuntimeChecks.Modes);'+[Environment]::NewLine+'        await Case("VideoPartDurationBounds"') }
+$fixture | Set-Content "$Destination/Fixture.cs"
+$runner=Get-Content "$Destination/run-ui.ps1" -Raw
+$runner.Replace('Count -ne 13','Count -ne 15').Replace('Expected thirteen','Expected fifteen') | Set-Content "$Destination/run-ui.ps1"
