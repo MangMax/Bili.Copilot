@@ -1,5 +1,9 @@
 # 性能规格 #45 验收状态
 
+最新 **11 RC3 主候选、x64 Release JIT 离线退出有限通过**（2026-10-31）：精确候选 `885012ab65474ddf0121d889130b583dad9bdfc8` 独立审查后以 `--no-ff` 合入 **`be7105b003470782c74fbc8aaac0ea6a23a44a60`**。生产变化仅 RC SDK/TFM 和 panel 本地幂等 Loaded/Unloaded、Stop、GetValue 前 managed guard。真实 NuGet base 首卸载自注销 IL 已重验；Stop-only 三项红仍保留。原始 RC dump/原生 red、两次 runner 失败不被 accepted=true 或后续绿例覆盖。最终 clean fixture PID40300/10064 retained exit=0，exact-PID/path/creation-time 与 WER 门禁有限通过；本轮未重跑 UI。Fresh Release **487 passed / 0 failed / 0 skipped**，DebugClean/Release JIT 各 **1 existing warning / 0 errors**，runtime 文件门禁 exit0；独立冻结、graph/hash/DLL闭包核验通过。kernel `0ae5e4e000a41a07f6696746706df11c06e8835b` clean，bundle local-only 可恢复。详见 [RC3 timer 集成审查](integration-net11-player-timer-fix.md)。
+
+**AOT BLOCKED、#49 pause FAIL、认证最新组合未验、历史 net9 crash 未归因、性能 HOLD**。本轮有限退出通过不是全面验收、整体稳定保证或总体性能收益；无 push/PR/issue、部署/注册/桌面操作，不触碰 Caa6a7be/Dev/PID9608。下面 net10 及 RC 旧结论均为当时 SHA 的历史状态，当前主候选以上述 RC3 为准。
+
 最新 .NET10 **有限兼容采用**（2026-10-31）：指定独立 review `cec615167b60352b4a63a732709c5107af65d8c1` 以 `--no-ff` 合入为 **`5e628048815afc1602d882bcf7e9aa4cbde74b21`**，完整候选 `79ffd4f1`、稳定依赖/调查及 PR27/43 均保留，net11 候选未合入。kernel **`0ae5e4e000a41a07f6696746706df11c06e8835b`** 从已验证 bundle 恢复，取消/pageSize 祖先通过，仍 **local-only**。Fresh 全套 **487 passed / 0 failed / 0 skipped**；DebugClean/Release x64 JIT 各 **1 existing protobuf warning / 0 errors**，Visor Release JIT 0/0，runtime 文件门禁通过。每步立即独立封存原始输出、assets、runtimeconfig 和完整 raw-byte hash 清单。初次 Debug 共享输出有历史 DLL 残留，保留但不交接；全新 BuildOutDir 重建后的 DebugClean 与 Release 各 666 个 activation 文件、DLL 集合与 recipe 精确一致。见 [本轮集成与冻结产物](integration-net10-adoption.md)。
 
 性能 **HOLD**，同源 net9 native crash 未解，非已证明 net10 修复或全面稳定性 PASS；**#49 pause FAIL、AOT BLOCKED、最新认证首页未验**。RC 仍实验且历史 production output 已覆盖；五份旧 JSON 哈希修复仍待父处理。能力审计仅“未建立足够适用性”，不是所有包不存在 ≤M 机会。本轮不部署/启动应用、不读凭据或触碰保护注册/layout/login/PID9608/Dev，无远端/PR/issue操作；冻结产物只供父后续同身份认证更新。以下记录均按各自历史 SHA 解读。
