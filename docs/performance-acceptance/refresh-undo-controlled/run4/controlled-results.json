@@ -1,0 +1,50 @@
+[
+  {
+    "name": "PopularExactSequenceReferencesCursorUndo",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularEmptyRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularFailedRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularOldReturnAfterSectionSwitch",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionExactSequenceReferencesCursorUndo",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionEmptyRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionFailedRefreshPreservesSnapshotAndManualRecovery",
+    "status": "PASS"
+  },
+  {
+    "name": "PartitionOldReturnAfterSectionSwitch",
+    "status": "PASS"
+  },
+  {
+    "name": "PopularOldAutomaticPageArrivesDuringRefresh",
+    "status": "PASS"
+  },
+  {
+    "name": "EmptyAutomaticPageStopsAndManualLoadRecovers",
+    "status": "PASS"
+  },
+  {
+    "name": "FailedAutomaticPageStopsAndManualLoadRecovers",
+    "status": "PASS"
+  },
+  {
+    "name": "VisibleRefreshUndoThenAutomaticAppend",
+    "status": "PASS"
+  }
+]

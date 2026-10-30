@@ -1,0 +1,315 @@
+{
+  "exe": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run3\\layout\\BiliCopilot.UI.exe",
+  "terminationUtc": "2026-10-30T19:05:33.8361860Z",
+  "collectionEndUtc": "2026-10-30T19:06:04.3894926Z",
+  "bookmark": 6551,
+  "startUtc": "2026-10-30T19:04:53.1385191Z",
+  "package": "Mang.BiliCopilot.UndoControlled.T283.run3_2.2610.0.1_x64__y1mf40g4r9srg",
+  "pid": 34924,
+  "managedUnhandled": 0,
+  "forced": false,
+  "queryComplete": true,
+  "terminated": true,
+  "queries": [
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 0.0007619,
+      "utc": "2026-10-30T19:05:33.8662886Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 0.5467898,
+      "utc": "2026-10-30T19:05:34.4003745Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 1.0750483,
+      "utc": "2026-10-30T19:05:34.9291513Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 1.5921905,
+      "utc": "2026-10-30T19:05:35.4462353Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 2.1196286,
+      "utc": "2026-10-30T19:05:35.9713277Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 2.6487723,
+      "utc": "2026-10-30T19:05:36.5003737Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 3.1774549,
+      "utc": "2026-10-30T19:05:37.0298681Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 3.6924119,
+      "utc": "2026-10-30T19:05:37.5451070Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 4.2084964,
+      "utc": "2026-10-30T19:05:38.0613520Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 4.7358696,
+      "utc": "2026-10-30T19:05:38.5896771Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 5.265763,
+      "utc": "2026-10-30T19:05:39.1171770Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 5.7942188,
+      "utc": "2026-10-30T19:05:39.6471910Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 6.319218,
+      "utc": "2026-10-30T19:05:40.1719740Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 6.8440927,
+      "utc": "2026-10-30T19:05:40.6954631Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 7.3729212,
+      "utc": "2026-10-30T19:05:41.2260724Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 7.8984917,
+      "utc": "2026-10-30T19:05:41.7529156Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 8.427389,
+      "utc": "2026-10-30T19:05:42.2806698Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 8.9549696,
+      "utc": "2026-10-30T19:05:42.8097260Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 9.4823555,
+      "utc": "2026-10-30T19:05:43.3348057Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 10.0119409,
+      "utc": "2026-10-30T19:05:43.8661507Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 10.5384962,
+      "utc": "2026-10-30T19:05:44.3897873Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 11.0663078,
+      "utc": "2026-10-30T19:05:44.9182325Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 11.5921542,
+      "utc": "2026-10-30T19:05:45.4456860Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 12.1202259,
+      "utc": "2026-10-30T19:05:45.9723836Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 12.6354097,
+      "utc": "2026-10-30T19:05:46.4870633Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 13.1608405,
+      "utc": "2026-10-30T19:05:47.0135260Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 13.6870097,
+      "utc": "2026-10-30T19:05:47.5390923Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 14.2158362,
+      "utc": "2026-10-30T19:05:48.0688006Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 14.7440836,
+      "utc": "2026-10-30T19:05:48.5961078Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 15.2601793,
+      "utc": "2026-10-30T19:05:49.1116547Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 15.7889044,
+      "utc": "2026-10-30T19:05:49.6421414Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 16.3179378,
+      "utc": "2026-10-30T19:05:50.1693622Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 16.8326312,
+      "utc": "2026-10-30T19:05:50.6854787Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 17.3630189,
+      "utc": "2026-10-30T19:05:51.2140059Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 17.891034,
+      "utc": "2026-10-30T19:05:51.7417124Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 18.4073568,
+      "utc": "2026-10-30T19:05:52.2601205Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 18.9341269,
+      "utc": "2026-10-30T19:05:52.7860585Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 19.4627912,
+      "utc": "2026-10-30T19:05:53.3139035Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 19.9897769,
+      "utc": "2026-10-30T19:05:53.8436448Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 20.519765,
+      "utc": "2026-10-30T19:05:54.3732194Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 21.0491941,
+      "utc": "2026-10-30T19:05:54.8998372Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 21.5645771,
+      "utc": "2026-10-30T19:05:55.4163099Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 22.0795205,
+      "utc": "2026-10-30T19:05:55.9309740Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 22.6084822,
+      "utc": "2026-10-30T19:05:56.4623782Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 23.1329759,
+      "utc": "2026-10-30T19:05:56.9856232Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 23.661273,
+      "utc": "2026-10-30T19:05:57.5132054Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 24.1887964,
+      "utc": "2026-10-30T19:05:58.0425112Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 24.7186986,
+      "utc": "2026-10-30T19:05:58.5722120Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 25.2347152,
+      "utc": "2026-10-30T19:05:59.0871521Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 25.7620192,
+      "utc": "2026-10-30T19:05:59.6148365Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 26.2788074,
+      "utc": "2026-10-30T19:06:00.1306742Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 26.805113,
+      "utc": "2026-10-30T19:06:00.6570760Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 27.3319664,
+      "utc": "2026-10-30T19:06:01.1842212Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 27.8555588,
+      "utc": "2026-10-30T19:06:01.7080881Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 28.3859046,
+      "utc": "2026-10-30T19:06:02.2385208Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 28.9147794,
+      "utc": "2026-10-30T19:06:02.7667348Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 29.4448155,
+      "utc": "2026-10-30T19:06:03.2987979Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 29.9725797,
+      "utc": "2026-10-30T19:06:03.8260462Z"
+    },
+    {
+      "ok": true,
+      "startedSecondsAfterExit": 30.4999902,
+      "utc": "2026-10-30T19:06:04.3534390Z"
+    }
+  ],
+  "exitCode": 0,
+  "handleRetained": true,
+  "lastQueryUtc": "2026-10-30T19:06:04.3534390Z",
+  "observationComplete": true,
+  "creationFileTime": 134378606931385191
+}

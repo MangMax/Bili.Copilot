@@ -1,0 +1,37 @@
+[
+  {
+    "sha256": "858752FA06F74C479ABD0AFC0F7B8DC9365E89B5CB5164251FA0C07229A9D9AD",
+    "reviewed": true,
+    "path": "run2\\before-refresh.png"
+  },
+  {
+    "sha256": "9A7E00C4B4DF85B57CAB94ACCB4F8C97A3E526EEB152BA37E406B176CCA189D7",
+    "reviewed": true,
+    "path": "run3\\after-refresh.png"
+  },
+  {
+    "sha256": "7489F8439718EA61A942D31767332D6B4600AE24CE0119D14FCB6FB45F73B544",
+    "reviewed": true,
+    "path": "run3\\after-undo.png"
+  },
+  {
+    "sha256": "9C78A704DF5380BDA96BEA414D933612A545B8DD71F18301599DB819511AA8E5",
+    "reviewed": true,
+    "path": "run3\\before-refresh.png"
+  },
+  {
+    "sha256": "129251C96604677493E679A5B0129B87C3797D2A8959492A3E42D024659DB3AB",
+    "reviewed": true,
+    "path": "run4\\after-refresh.png"
+  },
+  {
+    "sha256": "27E126934C66B4696B5797E8B82472F8A89DE8F1AF416DA2A40BEC04161BBB18",
+    "reviewed": true,
+    "path": "run4\\after-undo.png"
+  },
+  {
+    "sha256": "C584968993C7F7FB1677C9C46814E5B9C8ABB791312C8215F0698DAEFFCE76AA",
+    "reviewed": true,
+    "path": "run4\\before-refresh.png"
+  }
+]

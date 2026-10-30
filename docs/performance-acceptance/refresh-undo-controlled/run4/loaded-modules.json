@@ -1,0 +1,526 @@
+[
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\BiliCopilot.UI.exe",
+    "sha256": "141EA971A0A392547C35E54E02E8EBFF26F885CF2ED6BBF611C6CE2593E164D1"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\hostfxr.dll",
+    "sha256": "5CAB1C94D75F7B1D709BF18684A46F9CC0788059B745594E44FB1D521CA2D111"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\hostpolicy.dll",
+    "sha256": "4A24F6BF63C024520A8121E4E82B5003CF81CE61F3F48F2A4B84976F27ACA055"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\coreclr.dll",
+    "sha256": "46A09D97AD8DD30D400A86C90AF707BEE7593B585D3CCB8586C4FFFCA404D1E2"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Private.CoreLib.dll",
+    "sha256": "DF53885902E896A2B40988237CBE9CBB9F1BB0743200F05FE9257C56A29C5732"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\clrjit.dll",
+    "sha256": "633DEA0CA27AD2AA673D7A085CC36C2880BB44D1948B0F1750E38376380C023F"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\BiliCopilot.UI.dll",
+    "sha256": "4BFFC1E01B88D61251EBE52B3AC9E4BEA57D25B03B42216B24B711B20CF9A3F9"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Runtime.dll",
+    "sha256": "826438BF95100D96BEE4B47BEA223C37EA3EE937BBD3A3803072AA841417CFE2"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Windows.ApplicationModel.WindowsAppRuntime.Projection.dll",
+    "sha256": "1F07A4AF41BE3FD5A18D07E30895EEE62DC25E8FFCE9A9B3B648F5CD09B72B12"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Runtime.InteropServices.dll",
+    "sha256": "74E0B49E9FE4023992500CE8173219B4749EC741C27C5C78048FCF76651ACE4B"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\WinRT.Runtime.dll",
+    "sha256": "42AC514D4AECDD3137B5F6513270DE8082AF81D9F205A62B7379F0F3F229319C"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Collections.Concurrent.dll",
+    "sha256": "FFA5034F41C2120885F393D87D881A10AFBAFB9092D4E81E3C9654B27B66881C"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Collections.dll",
+    "sha256": "3F0E995A69701EC0059E0656C1C5A1C0F7B859907B9C1651525E445D2A9D6550"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Threading.dll",
+    "sha256": "7CBF5C974E11338D14E823DA6444268A28D1BD3F29AA487FE4300A0A7688DB26"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Memory.dll",
+    "sha256": "5B899A3F6C1331CB9A834C36AD71D35C6DA0019B8316CD957399447207184D2E"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Runtime.CompilerServices.Unsafe.dll",
+    "sha256": "D6F031A02E31F8528819599725F18E67FBD659A534495B7DB317F899E79F2763"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Private.Uri.dll",
+    "sha256": "7EFA98CDCCEB0772C090F28CA2283447B21258D7C169EF441472D90F12FEBC5C"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.ObjectModel.dll",
+    "sha256": "F529A5FD14BC7E6085B018B93785DE959D98439FDC2E7FDDE2ECF611E5489AA9"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Numerics.Vectors.dll",
+    "sha256": "312B34F29129114B49F8636D38D0A81CEEC87EFD198B3B67A148F85D6D02A1B2"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.ComponentModel.dll",
+    "sha256": "4626A0E49F174B003FED1FCF431CF3DD765D7A26529906FE3665422F54FA621D"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Windows.SDK.NET.dll",
+    "sha256": "9D69220D9D720C9A8AC4A052F62F3A9CA10C32E188E16BCA8C4540FD57017ED6"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.WinUI.dll",
+    "sha256": "7FA53E8380789F62341245EF532467475B0FA396FDD6D296F2CA705B79CCF0E9"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Security.Cryptography.dll",
+    "sha256": "399726E50F9C8D5DA99F63592F61A1400E48EAFD822B0195B8C3E243BA87A1D1"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.InteractiveExperiences.Projection.dll",
+    "sha256": "3C1F72556DEFFB9670E27AC0026F0D9BFD0F0AD0DFDD780CB20A7881B413FEEF"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Windows.AppNotifications.Projection.dll",
+    "sha256": "061A585D226C4CA50DFA11A415A9D749A0A67CF9F1298C3FD6FFB55DA33B5ED0"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Linq.Expressions.dll",
+    "sha256": "D32ABF0299FF43F3A480910727405BD7E541038B8EA8B95460CC938F89A9DAC1"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.WinUIKernel.Share.dll",
+    "sha256": "396FF96A73E1128A2B695CFB8569CEDBA5E99FA8AA0EEA57F76A1AF91C19E32A"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.Mvvm.dll",
+    "sha256": "000B7031687712C9738EFBDB1CF6B852FEA366282D32EA1AD4EEF8EC8A2542F7"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\FluentIcons.WinUI.dll",
+    "sha256": "935C86F065B432599F3463BA2C97A454DD07ED1FAFFEE6D5B674A3F5C32AF7DF"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\FluentIcons.Common.dll",
+    "sha256": "D05ABEB239E8EDD4749216C3344436635E94E828E54C06A4D35737B04DF6A632"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Net.Http.dll",
+    "sha256": "325E509312DE69EB59B2C655B542E0DD97B34DA0D6DEDBC6BF7386F3E60CC3D8"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Graphics.Canvas.Interop.dll",
+    "sha256": "38BE44AB9E843CC6A3540F27EDE2799B2B67EF9DD60E458A70CDCDCD353E6A7F"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\BiliCopilot.UI.Models.dll",
+    "sha256": "5297F61A6AA88B6CC42146A5CEC14E45DC585E2634A72A1F16D4629B8BBC2F8F"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\netstandard.dll",
+    "sha256": "C78E4ED59F0A1E204917F134EEAD5D6450D8C422E651F8E71CC071BF8CF175AF"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.WinUIKernel.AI.dll",
+    "sha256": "E50B6D835F083FB42667D75EA4CDD10C69751EFB054D68A812BD5C2F7F6D1264"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.WinUI.Media.dll",
+    "sha256": "17A41A07EE7487D11FBF981B018ADD5A9D74E338A54CC0889C514AA348DEEC21"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.WinUI.Extensions.dll",
+    "sha256": "943AC384E855EA755771DB4EE7644C21065BCC93ECF4F1116EAC590AE69E0EEB"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.WinUI.Animations.dll",
+    "sha256": "336B63FB560642B644C8325E2370D3FF3C501FC2B8B91AC4D7DAC7053BCFB25F"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Abstractions.dll",
+    "sha256": "0F7069DD632EF888124521F0E1540B7977DB44F4CB4D0D2C217615F5F9030B8A"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Web.WebView2.Core.Projection.dll",
+    "sha256": "9C9780C2F7156D3E8C56A045568BE477ABADAF8F6838807F5931BE019AE62439"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Core.dll",
+    "sha256": "4D842139EF1995296966123A7EBABBA80BD75A9A9C3910C1028C0BB41EC678C0"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.WinUI.Controls.Primitives.dll",
+    "sha256": "7CFBB2691120EF6DDDFB05478F7AB0051E0E483F9F0D6BB87249EC238355213E"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.MpvKernel.Core.dll",
+    "sha256": "7E0B03FAE3C2090A58727A53639D20DCF94B30C10D99DB36469BFE6C33FADCA6"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.MpvKernel.dll",
+    "sha256": "FD80E78D625385FB8C12DF2F3386BE8553B245D7C59F97AA8CD86E836D94CC25"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\WinUIEx.dll",
+    "sha256": "D4D66F42B613D50AD6756E10F18600210F5859A1CC74215972E244CC88C9A5D2"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\H.NotifyIcon.WinUI.dll",
+    "sha256": "5F9BEFC63A787908A95BC216DDF28F97E97CA06CFDCED829EDD70E706F6AC1D1"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\H.NotifyIcon.dll",
+    "sha256": "0027E443A6121AF8FB616C0200D3C63BF4ABB72E3C548E119FEE1EAE321A8368"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Drawing.Common.dll",
+    "sha256": "7B72DA2ECCA0107CE24AAC941F84359312A208AF3B7569BBB6801FF7F5107C79"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Private.Windows.GdiPlus.dll",
+    "sha256": "EAA2C333B39A372933A704881657407681AFDC6749E64E86D5BF1D73311A524E"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Private.Windows.Core.dll",
+    "sha256": "C8C765FE176A116D2C2C3F15CD712E0D8977BD9AFC6B5C379F2838075CE2F018"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Drawing.Primitives.dll",
+    "sha256": "D94425856D05E19B919E9FFB559F0CD6FC01B34E005EFB3FEAD2EDC5DA9DAA5C"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.WinUI.Controls.Segmented.dll",
+    "sha256": "FD8478E233DD84A843062128613E357618E51FACA3BB626EF269C89C3CD41059"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.WinUI.Controls.Sizers.dll",
+    "sha256": "00C8298AD65E959723D8DBFA21D733ADEB33B9DFC262323F0C182E4535A52CCC"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.MpvKernel.WinUI.dll",
+    "sha256": "71345EE6DBF43BA7F195DFC6F478765ADAA496FD5A99C6E0DE1FBED689351940"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.WinUI.Triggers.dll",
+    "sha256": "FA6047957B0BE28B1F934EEDEF53459BC3DFD2F90D95D395951FC377FCEE5CDA"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Definitions.dll",
+    "sha256": "C6765636A837B5C591C10B55780424E6A543506B8DF2EE05A3480BDD1D87138E"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Windows.AppLifecycle.Projection.dll",
+    "sha256": "F1FADBAA2085036419CB5F2D8888B0EA191FBF227BA113046F5E39F29F0F83D4"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Windows.Storage.Projection.dll",
+    "sha256": "9B93AAD3B3DBB008D65A11A82138A647650CB0F791F1862EB4DDA556B4AE40E4"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Net.Primitives.dll",
+    "sha256": "792A65EEEEF6469994D4001F247AA253EAAD3261DF1A110867E9D2DC4A8DD6D6"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Diagnostics.Tracing.dll",
+    "sha256": "62C6257253F6788265A94F4C76492D157900891087382C1BDA1BAE3828F4C41E"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Diagnostics.DiagnosticSource.dll",
+    "sha256": "A3F481399515CCA37B4288476A507FEF563D4C4100EAF30DD962BB9B5B2E92A9"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Net.Security.dll",
+    "sha256": "8ADE54E9E58C25936E0E6549B23BA372C97B53AA4D07CE87DC577CF9D985A436"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\RichasyKernel.Abstractions.dll",
+    "sha256": "2BF0AF6A2A4A7664549C58D23AF5A498D11BBE710066AAE8FF98942B8490BD35"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Core.dll",
+    "sha256": "29AAA282B485D15A74DA3C5DFBDDD1B95C7FE0C170E7F1AF6DEF6A1B988679D7"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Resolvers.WinUICookies.dll",
+    "sha256": "3F09DFB7F76C8C08B32BF05B2A658A3C82A5AD92B20DC6C2EB0A056DE02C223B"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Resolvers.WinUIToken.dll",
+    "sha256": "3EC3BF49157992DF9F81CF3E1A10C9B09C5FC5A2FA52A0D8D78B4FDC83C1A982"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Resolvers.WinUIQRCode.dll",
+    "sha256": "3D91DB2509DBCA5EC1CC88FD2CE03DD5F1759095DA58DEBEDEBD79312B9052EA"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Authorizers.TV.dll",
+    "sha256": "C14D71DBD99EFFA5FFB7406DDB4C6394E11B6CCF792CA2597D5CE1FF00F22AF5"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Services.User.dll",
+    "sha256": "97770830C98E6D4436606CF7C6DD5BFF16BB0BCEB9B869DFD87D33A1A5CEF116"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Services.Comment.dll",
+    "sha256": "426CF69C1D574DCF7A61302ABCF2E9C03D54349F893F96E1EECF25CAB4E8F040"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Services.Media.dll",
+    "sha256": "09F6745838319D6BDE3608E96C4B70C6CEBA59514D964D306289F68E3CDA0F0A"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Services.Article.dll",
+    "sha256": "917AE472ED2C8A46D6234E32D7F7ECE6FF1756B7668EDA079F11D0F2618DB733"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Services.Moment.dll",
+    "sha256": "E628EBC2E142A3FE2B5D1ED330350E092203355417EFD3E6878C528CA33F3D79"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.BiliKernel.Services.Search.dll",
+    "sha256": "5E12F731DD1E0E3D5A8A812A8F4389BD72E186405D006EB4176D6D7628D577A7"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.OpenAI.dll",
+    "sha256": "ACDA651F62781A6A1E402D9C41C948679666DBEC92EFB40ED5FC021995DAC6BA"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Azure.dll",
+    "sha256": "406E5B1A5E0E5782E8B8CF183AD4610FE5606EA2A82F910D4B4C2C1A4CE2C8BD"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.XAI.dll",
+    "sha256": "A7E6D239970108DED1015110E3F51F2B442C05A603B829A7B318786B46DA0E86"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.ZhiPu.dll",
+    "sha256": "571A7816233AA143C66FC99242675BFFD4EDB44D09213177D8479BEA3F95FEDB"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.LingYi.dll",
+    "sha256": "1E6E6F02F4D528A37E7F33C293DB5BD0C62282D003756DB4F4B0427411F1B3C8"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Anthropic.dll",
+    "sha256": "0D26DFE4C8F4E090151CD00B5D11EC6D33386D98C454959C180E9C43B46267FF"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Moonshot.dll",
+    "sha256": "448C6A00ED420CF39F69D5FF27A393E06C7FD9D9A4410A45633EA5FA3046067D"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Google.dll",
+    "sha256": "04C6757A83C77447B91E53653005E1678B960B3701D18D734FE0AA12A26F9F77"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.DeepSeek.dll",
+    "sha256": "40263339C51E74388B68EE52D9B61F10CEEBD259F57AEECD38E8EEF90CDF2816"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Ali.dll",
+    "sha256": "92171869C2E65FEC70B9AAF3F11679A11CFB0B403158EE69B9E325C7C55A15EC"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Baidu.dll",
+    "sha256": "0D079EBB379EB8EC487271403C3CA5064F239BFB9963D77C96996EBE4C264DC7"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Tencent.dll",
+    "sha256": "38703D8633FA1375CD42B9FFC2EA5AE22493384AC23BAC92CB0666A477B0015B"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.IFlyTek.dll",
+    "sha256": "1CC7CB273199076571C1F5CC3C4F60B8A4C2CDD79B02F7B87C93F96AB3C76BBB"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Volcano.dll",
+    "sha256": "FD9A5A264EBAC4E3A03685E27FEBCB77080A1E98214066D15F3E4D92B4D7F14C"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.SiliconFlow.dll",
+    "sha256": "AB59F1E4FF3A86CEF8DBB66D50401180467BE22701E46C1623899194CEFB2F48"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.OpenRouter.dll",
+    "sha256": "D1ABD5631419CCE3430BAB11BBBA56D261F1C08D02978D6120CD0CC1F9CAFFF1"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.TogetherAI.dll",
+    "sha256": "F38BE8E7CAA60D0939CCEE25CDF698AE901392D463460885BE99880CD56B17B5"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Groq.dll",
+    "sha256": "22E74B9C0ACA0D170E380B796CFD82E643EE7A1810802C66AF8EF542E276886D"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Ollama.dll",
+    "sha256": "AB3EB7E37CED9CD42B717FB3358CE83FB6E1858234895A8AB532B907F50D12E6"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Mistral.dll",
+    "sha256": "7BB3A7803F933FEF507D3DD6ECAE9EADD18B0739384976CD2D22E764BC684B16"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.AgentKernel.Connectors.Perplexity.dll",
+    "sha256": "9C5A4CEC73BE94E780D307670DC5A93ADE96D558AF5EBF493A781F821D23D584"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Richasy.MpvKernel.Player.dll",
+    "sha256": "53FEB67ECE2EB1E84B78139ECD365F2E4A97D9D7E39698398F5A13457C3610DC"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\RichasyKernel.Core.dll",
+    "sha256": "70CE2DDE26BBC3DB85E2106222089EF4CD59E722AA2925D18F4645C2E6A8ED5C"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Extensions.Logging.Abstractions.dll",
+    "sha256": "D3175BF7CEF0E06CE09EE1A4C33FFF1BAEB106FD4AFD8B866799A0174E11D6B6"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+    "sha256": "F9CB6AE9D7AF8F0697123FE09B2541F3D262F4D19D77D6789159CB9730E1759F"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Serilog.dll",
+    "sha256": "3EE17790B1BF00EABCA2176288DE6C058977BC5B07E6D9839CF6A88433D72311"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Serilog.Sinks.File.dll",
+    "sha256": "4F4282671C2AC68284B4DC99F7A76EAC9CBD4E659978CEF642CFF9E6C01B676D"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Extensions.Logging.dll",
+    "sha256": "2C034725ABD90AFE30A1426E6477CB0693BC79170E1DFDB3CEF7146E296A1F71"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Linq.dll",
+    "sha256": "2197F562151B02E04D16407D0890F3DDD22E4DDC39A25D7BA5C2787D1F051408"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Text.Encoding.Extensions.dll",
+    "sha256": "ABD0A3B611E754DED0D2ED26CC3723E2B9321722BA9AAF9136E0EC81F12AED75"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Extensions.Options.dll",
+    "sha256": "6EBDCA7AE2B7953C8E23C4CEF8DB8914BA447D93B9C9CA22DA7D4D79E842C7C7"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Serilog.Extensions.Logging.dll",
+    "sha256": "80D3EDBE3E3AC0B4C5BC764474220E7DA11DF8D285E0098F3DC1B65A734C8507"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Text.Json.dll",
+    "sha256": "6DB462A8F8811057A518B8C504D944B6A65B48F8478AD2E26C038F471E3D5912"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Google.Protobuf.dll",
+    "sha256": "0F93CE18692E0B789C41299D0D2AF2B477644FC4B13482BD0680B29289603996"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Net.WebSockets.Client.dll",
+    "sha256": "D64A0A8C18814429E77123C6262C5D85F066D6343B5933388B6FD8EB34E9A355"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Extensions.AI.Abstractions.dll",
+    "sha256": "AC3871AB06D1FA31B94F7BF20468DE74B5D1A08C937182BC308CD2C2A0B456AE"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Reflection.DispatchProxy.dll",
+    "sha256": "CD7A6321DA50DDDCCB96996EEDE10761EF13C5C6EAB15591D695E408858DDC54"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Text.RegularExpressions.dll",
+    "sha256": "C2A823AE83DDD266BE83D45FEAB4C9E28205ABC954CE621C0CE127E108AF879E"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Runtime.Loader.dll",
+    "sha256": "5D6BBD917BFFCC64202D4BD24367D1DD71EF789E5B6E6DE172E7835855C41F9A"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Reflection.Emit.dll",
+    "sha256": "7F82C6A4BB9335A4BB996066CFDA5C3D3F1EF30B0BF027F3AB02400FD1724F03"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Reflection.Primitives.dll",
+    "sha256": "4A78CD4712B0A52FE568980F6EBD94AAD31E6B0E35CA165A09E33B4331629776"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Reflection.Emit.ILGeneration.dll",
+    "sha256": "F2F763595C136DEDB758EE4B749BB021A6C896E66F2A639CA08D0AC2F5BB1E80"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Net.WebSockets.dll",
+    "sha256": "FF4A585196B1667D32B5B2BF553727F6B4ABB092CE725C5CCB57CE9122C724A7"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Extensions.DependencyInjection.dll",
+    "sha256": "D646A5CCA5E8116AE46B43715297083FA8A38DB636EAB60E66EEEF350D74CD5D"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Threading.ThreadPool.dll",
+    "sha256": "1233AB4CCF3AFE3D8ECE36837D372D681548088C9291CD8F502B308131BFC222"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Reflection.Emit.Lightweight.dll",
+    "sha256": "7B59C16F6F0104CB515FC684B384E74CF91795FF7736A2F9FB4E4DC7D6B37701"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\CommunityToolkit.Diagnostics.dll",
+    "sha256": "2B551A47E25323AA1D0BB65F318D770996AC461C25E305D86CFD7D5BBA6FC931"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Microsoft.Windows.ApplicationModel.Resources.Projection.dll",
+    "sha256": "038610CEE38AFE857FF37CDAAF2C902756D3DC11A47E52F3841CD794F4E412D2"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Collections.Immutable.dll",
+    "sha256": "E00E76C930111923AC39029451096126126D4E167FE9D8DF018EB2C49C9C477B"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Text.Encodings.Web.dll",
+    "sha256": "2B9F16CB67953D2F9664B356650A558BD5E37FB3FCEB49E0FBCF9C481BA32A69"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.IO.Pipelines.dll",
+    "sha256": "84A504B0FF5A9C9798B7073A9F8291358A0E38FD428F38E8FB1210F8FB15076C"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\Humanizer.dll",
+    "sha256": "2769ED8265B691A5482C72506ED274DC52446FA1641997A8C12C66F5B9263D39"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\zh-Hans\\Humanizer.resources.dll",
+    "sha256": "1E181E2B9CA93C8E8C1AA6EE0CC589F4B0E13ECAD3B2A6637A9367F120F57E8D"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\ComputeSharp.D2D1.WinUI.dll",
+    "sha256": "013A84BB91BE609D5DE8307445AD2E6C66A6F5815CF4EBF611D477606CDEE7DE"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Diagnostics.StackTrace.dll",
+    "sha256": "F83A817309E828F720D40A4131C58E8306A46D1BBD44242CA733ACB1CCE321CF"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.Reflection.Metadata.dll",
+    "sha256": "ADC76B0D818354BE0ED34A76994121911F48E290702D318A33B65F87CD6A38CC"
+  },
+  {
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-2831208f\\artifacts\\refresh-undo\\run4\\layout\\System.IO.MemoryMappedFiles.dll",
+    "sha256": "C5A0C5ED25C9310FAD64B55667D7FCEC2FDC260B5637BABFAFA708751A1D0D02"
+  }
+]
