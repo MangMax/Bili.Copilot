@@ -29,7 +29,7 @@ foreach($arm in 'player10final','player10common','player9common'){
   $s=$s.Replace('<PackageReference Include="System.Management" />','<PackageReference Include="System.Management" />'+"`n    <PackageReference Include=`"System.Reflection.Metadata`" />")
   Set-Content $p $s
  }
- & dotnet build "$fixture/BiliCopilot.UI.csproj" -c Release -p:Platform=x64 -p:PublishAot=false -p:AppxPackageSigningEnabled=false -p:GenerateAppxPackageOnBuild=false "-p:SolutionDir=$root/src/" *> "$Destination/$arm-build.log"
+ & dotnet build "$fixture/BiliCopilot.UI.csproj" -c Release -p:Platform=x64 -p:PublishAot=false -p:AppxPackageSigningEnabled=false -p:GenerateAppxPackageOnBuild=false "-p:SolutionDir=$root/src/" "-p:BuildOutDir=$Destination/$arm-references/" *> "$Destination/$arm-build.log"
  if($LASTEXITCODE -ne 0){throw "$arm build failed"}
  $outputs=@(Get-ChildItem "$fixture/bin" -Recurse -Filter AppxManifest.xml | Where-Object FullName -Like '*\Release\*')
  if($outputs.Count -ne 1){throw 'Build output ambiguity'}

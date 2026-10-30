@@ -1,0 +1,14 @@
+{
+  "pack": "C:\\Program Files\\dotnet\\packs\\Microsoft.NETCore.App.Ref\\11.0.0-rc.3.26522.148\\ref\\net11.0",
+  "names": {
+    "ReadOnlyMemoryStream": [
+      "System.Runtime.dll"
+    ],
+    "RunAndCaptureTextAsync": [
+      "System.Diagnostics.Process.dll"
+    ],
+    "KillOnParentExit": [
+      "System.Diagnostics.Process.dll"
+    ]
+  }
+}

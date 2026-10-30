@@ -31,6 +31,12 @@ The structure and counter are verified against
 
 ## Prepare
 
+`prepare-arms.ps1 -Destination <fresh-absolute-directory>` automates the three
+serial builds and immediate freezes described below. The accepted outputs in
+this report were built/frozen serially before adding the per-arm BuildOutDir
+hardening; the hardened output property is evaluated separately, without
+rebuilding or replacing those accepted outputs.
+
 Use the historical `dependency-upgrade/prepare.ps1` with a fresh absolute
 destination and RunId; then run `prepare-observer.ps1 -Fixture <destination>`.
 The full-source host substitutes offline dependencies/launch and instruments
@@ -85,3 +91,14 @@ a population estimate. No threshold was supplied. #49 pause stays FAIL; no
 authenticated-home, cold-start, physical device-loss/DPI transition, long leak
 or AOT acceptance is implied. Historical JSON/hash and overwritten RC output
 issues remain parent follow-ups.
+
+## Final verification and archive
+
+After native cleanup, run `final-validation.ps1` for serial Debug/Release JIT
+rebuilds, Visor, runtime-asset validation and the full suite. It refuses active
+owned native registrations. Run `finish-evidence.ps1` after the fixed recorded
+run IDs exist to regenerate the comparison, chart, compressed small evidence
+and fresh two-way DLL verification. `verify.py --live` additionally requires
+the retained layouts; without `--live` it verifies portable archived evidence.
+Archive hashes are computed over raw bytes before gzip compression, avoiding
+the historical text-newline hash problem. Original old evidence is not rewritten.
