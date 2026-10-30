@@ -1,5 +1,9 @@
 # 性能规格 #45 验收状态
 
+最新 PR27/43 本地集成（2026-10-30）：指定 `d3ab56c` 以 `--no-ff` 合入为 **`2b12951179fb757d6b2559a1ea2a97fe2c52003d`**，最新生产来源 `65e5312`，PR27 f19f030 / PR43 2f1ae8f 均为祖先。独立 Standards/Spec 审查无新增 blocker；fresh Release **487 passed / 0 failed / 0 skipped**，新测试 DLL 指向 merge，Debug x64 JIT **0 warnings / 0 errors**、显式 runtime 文件门禁通过。见 [独立集成复核](integration-pr27-pr43-review.md) 和 [原交接/重放基线](integration-pr27-pr43.md)。以下旧记录仍按各自 SHA 解读。
+
+kernel 更新为 **`98d0b9d0f0c81bd3904b1425ef3b90f637af37d7`**，同时保留 2ca79bd 取消链与 f02c33f pageSize，父 nested clean，已用 committed bundle 恢复精确对象；**local-only，后续须发布专用 kernel 分支**。本轮没有 push/PR/issue、依赖升级、UI 启动或认证包操作。Controls 7/7 为 3838c9d 源码闭包证据；65e5312 Player 15/15、Main 4/4、20 循环及183样本仅复核已有受控证据，不等于 fresh UI 或认证首页/A-B收益。Caa6a7be 认证包仍旧 c3b32c5；AOT BLOCKED、#49 FAIL、#56预算及硬件/DPI/异常退出注入缺口继续保留。
+
 截至生产代码基线 `778caac89fbb62414a43b99f566754e8dad55a05`，调查证据集成基线 `bcce5f3106088469db93196515bc233799f8934c`。最新 #49 文档诊断集成 `1cddcd6614591d1a28f6ac5a91cae484f57748c9`（父起点 `51154f0`），正式代码/依赖未改。这是进度账本，不是最终验收报告。所有工单保持开放，PR #60 保持 Draft。
 
 本轮 #46 修复之前的完整生产集成验证为 #49 重挂修复合入 `7aa05616f990183261e21295e5c9a2a70a6323de` 后的新跑 Release **403 passed / 0 failed / 0 skipped**，TRX 已解析；Debug x64 与运行库门禁通过（Debug 零警告/错误，Release 保留 protobuf unused import 警告）。见 [#49 重挂集成](integration-49-remount-fix.md)。随后 #49 诊断与 #52 补充验收均为 docs-only，未重跑 403/build，不代表新增生产验证。kernel 保持 `2ca79bd3376b911b1b6d3e5f76ed8ddaa5dd972d`。
