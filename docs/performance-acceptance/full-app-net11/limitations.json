@@ -1,0 +1,19 @@
+{
+  "overall": "PARTIAL / performance HOLD",
+  "emptyPage": "No actual empty page observed; unmatched search returned cards",
+  "undoExactSequence": "Not proven; virtualized UIA counts differ and loading continues",
+  "trayForeground": "First tray restore returned same HWND but not foreground; click/focus returned foreground_not_target; exact UIA Invoke subsequently used",
+  "runnerFailuresPreserved": [
+    "same-version registration retained old install location",
+    "DisableDevelopmentMode loose layout attempts returned 0x80073CF9",
+    "navigation-transition inspect failed once",
+    "hidden full-screen control rejected before invocation while part overlay remained open",
+    "old part-tab selector failed after remount; rediscovered current selector",
+    "shift string was inserted literally; vk=0x10 corrected IME probe",
+    "log aggregation first used wrong timezone window; invalid summary retained",
+    "initial kernel bundle ref not found; list-heads supplied exact ref",
+    "PowerShell exploratory syntax and rg wildcard path errors; no application mutation"
+  ],
+  "historical": ["AOT BLOCKED", "#49 pause FAIL", "historical net9 crash unassigned", "kernel local-only bundle", "#56 unresolved"],
+  "notClaimed": ["matched A/B benefit", "steady-state measurements", "50 pages", "all network cancelled", "complete danmaku", "hardware GPU loss", "physical DPI transition"]
+}

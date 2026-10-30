@@ -1,0 +1,28 @@
+{
+  "groups": [
+    {
+      "count": 68,
+      "category": "other-exception",
+      "allowedTypes": [
+        "System.Threading.Tasks.TaskCanceledException"
+      ],
+      "first": "02:40:30.560",
+      "last": "02:41:29.700"
+    },
+    {
+      "count": 1,
+      "category": "search-suggestion",
+      "allowedTypes": [
+        "System.Threading.Tasks.TaskCanceledException",
+        "System.IO.IOException",
+        "System.Net.Sockets.SocketException"
+      ],
+      "first": "02:39:14.641",
+      "last": "02:39:14.641"
+    }
+  ],
+  "noRawMessageOrUrlSaved": true,
+  "windowStart": "2026-10-31T02:38:26.6674603+08:00",
+  "windowEnd": "2026-10-31T02:43:51.3625388+08:00",
+  "managedUnhandled": 0
+}

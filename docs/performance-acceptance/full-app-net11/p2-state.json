@@ -1,0 +1,62 @@
+[
+  {
+    "type": "Button",
+    "automationId": "WidgetButton",
+    "selector": "WidgetButton",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 475,
+    "y": 1567,
+    "width": 627,
+    "height": 120,
+    "safeName": ""
+  },
+  {
+    "type": "Button",
+    "automationId": "CompactOverlayButton",
+    "selector": "CompactOverlayButton",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 2886,
+    "y": 1597,
+    "width": 60,
+    "height": 60,
+    "safeName": ""
+  },
+  {
+    "type": "Button",
+    "automationId": "FullScreenButton",
+    "selector": "FullScreenButton",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 2958,
+    "y": 1597,
+    "width": 60,
+    "height": 60,
+    "safeName": ""
+  },
+  {
+    "type": "Text",
+    "automationId": null,
+    "selector": "lbl-000019-da3f",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 498,
+    "y": 1702,
+    "width": 67,
+    "height": 24,
+    "safeName": "00:00:19"
+  },
+  {
+    "type": "Text",
+    "automationId": null,
+    "selector": "lbl-000655-da40",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 2928,
+    "y": 1702,
+    "width": 67,
+    "height": 24,
+    "safeName": "00:06:55"
+  }
+]

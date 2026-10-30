@@ -1,0 +1,34 @@
+{
+  "payloadFiles": 670,
+  "payloadHashEqualExceptAcceptanceManifest": true,
+  "deployedManifestSha256": "ead860442444bbe3c1e34897640991cdd466787778eddacadc95741f24ad37ce",
+  "runs": {
+    "run1": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "loadedPackageModules": 163
+    },
+    "run2": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "loadedPackageModules": 146
+    },
+    "run3": {
+      "status": "PASS_BOUNDED",
+      "reasons": [],
+      "faultRecords": [],
+      "werRecords": [],
+      "reportIds": [],
+      "futureExactEvidenceRevokes": true,
+      "loadedPackageModules": 146
+    }
+  }
+}

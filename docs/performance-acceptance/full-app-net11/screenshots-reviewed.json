@@ -1,0 +1,67 @@
+[
+  {
+    "visuallyReviewed": true,
+    "file": "home-after-undo.png",
+    "sha256": "6318EBF67624B3235745CE76695ABF8ABF81CD035FC71D1639EA19BE81DC8921"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "home-initial.png",
+    "sha256": "3CCA1337E75C151B6A9A56546EBC748B9B6986B919A0CBE1DF9F706E1F8C1418"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "p1-normal.png",
+    "sha256": "B349A89D0DEB2DEB3A2F4010D4F4D50C48EEA86D8329369D10F1ABD428191535"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "p2-compact.png",
+    "sha256": "690AB7973659B9C13DC43623985CE743011125F86EB7CCAEC3867953D3746FF8"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "p2-fullscreen.png",
+    "sha256": "54453C08DC89EB62469C33E9A72782EC988FF55E44354A4AF10ABBDC08A198A6"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "p2-normal.png",
+    "sha256": "EA42A0BE6DB68A00B5AB64C47DF6470C977F8182907D98F22757F3F54BA63B61"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "p8-font.png",
+    "sha256": "6126DCD8A89299DA61143B2FF0C2B622CF9BED1B955948E63B0F8C4CE53D26C3"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "pgc-first.png",
+    "sha256": "0CFD8A335330BF33AB543573E3B8909269DD24343C17DB4BD305F915A2F5C416"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "pgc-free-episode1.png",
+    "sha256": "6054E5CABE7F6E68EFB703DFE60E4BBD490091B0BA0FE71B79E6E8E66A118BF8"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "pgc-second-playing.png",
+    "sha256": "51DE5E9A0E440D25AC209ACFCAB9285AE8893A68C5CD2706B6BAD78813C59718"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "pgc-second.png",
+    "sha256": "44A2E35769FC2AB9AB43BB85BB0D48B286C46B7F8E4155CFFA357C01B1238DF3"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "player-opening.png",
+    "sha256": "B3B8332F67D910DDFDB32C7037289AF3D8466A495AD3919618E412B8E917F179"
+  },
+  {
+    "visuallyReviewed": true,
+    "file": "tray-menu.png",
+    "sha256": "851AE2C977D9F34B68A610C3C4E9083B84FDA38DCE5A9B4B8258273844F7B82E"
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "appLaunched": false,
+  "status": "BLOCKED",
+  "expected": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4d615e72\\artifacts\\full-app-net11\\layout",
+  "stage": "same-version-registration",
+  "actual": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1630ecee\\artifacts\\full-app-duration-fix\\layout",
+  "utc": "2026-10-30T18:28:29.8532529Z"
+}

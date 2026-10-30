@@ -1,0 +1,38 @@
+[
+  {
+    "type": "Text",
+    "automationId": "Block",
+    "selector": "lbl-block-dbe8",
+    "isEnabled": true,
+    "isOffscreen": true,
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "safeName": "已加载 662 条弹幕"
+  },
+  {
+    "type": "Text",
+    "automationId": null,
+    "selector": "lbl-000013-da3f",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 498,
+    "y": 1702,
+    "width": 67,
+    "height": 24,
+    "safeName": "00:00:13"
+  },
+  {
+    "type": "Text",
+    "automationId": null,
+    "selector": "lbl-000145-da40",
+    "isEnabled": true,
+    "isOffscreen": false,
+    "x": 2928,
+    "y": 1702,
+    "width": 67,
+    "height": 24,
+    "safeName": "00:01:45"
+  }
+]
