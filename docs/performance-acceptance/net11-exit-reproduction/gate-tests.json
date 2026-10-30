@@ -1,0 +1,13 @@
+{
+  "red": {
+    "run": 10,
+    "failures": 9,
+    "errors": 0
+  },
+  "green": {
+    "run": 10,
+    "failures": 0,
+    "errors": 0
+  },
+  "mutation": "legacy disappearance/zero-managed acceptance ignores target exit and events"
+}
