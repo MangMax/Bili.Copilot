@@ -7,6 +7,9 @@ export const shared = defineConfig({
     cleanUrls: true,
     metaChunk: true,
 
+    // docs/internal 存放验收记录、性能测量等内部材料，不发布到站点.
+    srcExclude: ['internal/**'],
+
     markdown: {
         codeTransformers: [
           {

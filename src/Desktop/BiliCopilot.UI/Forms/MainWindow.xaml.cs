@@ -23,6 +23,8 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
     private const int WindowMinWidth = 640;
     private const int WindowMinHeight = 480;
     private bool _isFirstActivated = true;
+    private bool _forceClose;
+    private InputKeyboardSource? _keyboardSource;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.
@@ -39,6 +41,7 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
         this.Get<AppViewModel>().Windows.Add(this);
         Activated += OnActivated;
         Closed += OnClosed;
+        ((App)Application.Current).InitializeTrayLifecycle();
     }
 
     /// <inheritdoc/>
@@ -84,41 +87,91 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
         Activated -= OnActivated;
         Closed -= OnClosed;
         AppWindow.Changed -= OnWindowChanged;
+        if (_keyboardSource is not null)
+        {
+            _keyboardSource.KeyUp -= OnWindowKeyUp;
+            _keyboardSource = null;
+        }
+    }
+
+    internal async Task<bool> RequestExitAsync()
+    {
+        var app = (App)Application.Current;
+        var appVM = this.Get<AppViewModel>();
+        try
+        {
+            await app.TrayLifecycle!.ExitAsync(async () =>
+            {
+                appVM.IsClosed = true;
+                // Even a synchronous save must let the canceled native close event return first.
+                await Task.Yield();
+                SaveCurrentWindowStats();
+                await this.Get<SettingsPageViewModel>().CheckSaveServicesAsync();
+            }, async () =>
+            {
+                // CloseAsync includes an already running native-close cleanup.
+                await Task.WhenAll(appVM.Players.ToArray().Select(player => player.CloseAsync()));
+            }, () =>
+            {
+                app.ReleaseTrayResources();
+                RootLayout.ViewModel.Back();
+                foreach (var window in appVM.Windows.ToArray())
+                {
+                    if (window is not MainWindow)
+                    {
+                        window.Close();
+                    }
+                }
+
+                appVM.Windows.Remove(this);
+                UnregisterEventHandlers();
+                Close();
+                app.Exit();
+            });
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            this.Get<ILogger<App>>().LogError(ex, "退出应用时失败");
+            return false;
+        }
     }
 
     private async void OnClosed(object sender, WindowEventArgs e)
     {
+        if (_forceClose)
+        {
+            // The unified exit failed; let the native close proceed so the window is not stuck.
+            return;
+        }
+
+        // Window.Closed has no async deferral: cancel native destruction before any await.
+        e.Handled = true;
         var appVM = this.Get<AppViewModel>();
-        var windows = appVM.Windows;
+        var app = (App)Application.Current;
+        if (appVM.IsClosed)
+        {
+            return;
+        }
+
+        if (app.TrayLifecycle?.HandleClose() == true)
+        {
+            return;
+        }
+
         var hasPlayer = appVM.Players.Count > 0;
         if (hasPlayer)
         {
-            e.Handled = true;
             appVM.HideAllWindowsCommand.Execute(default);
             return;
         }
 
-        appVM.IsClosed = true;
-        RootLayout.ViewModel.Back();
-        foreach (var item in windows)
+        if (!await RequestExitAsync())
         {
-            if (item is not MainWindow)
-            {
-                item.Close();
-            }
+            _forceClose = true;
+            Close();
         }
-
-        foreach (var player in appVM.Players)
-        {
-            player.Close();
-        }
-
-        appVM.Windows.Remove(this);
-        await this.Get<SettingsPageViewModel>().CheckSaveServicesAsync();
-        UnregisterEventHandlers();
-        SaveCurrentWindowStats();
-        App.Current?.Exit();
-        Environment.Exit(0);
     }
 
     private void OnWindowKeyUp(InputKeyboardSource sender, KeyEventArgs args)
@@ -229,8 +282,11 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
 
     private void OnRootLayoutLoaded(object sender, RoutedEventArgs e)
     {
-        var keyboardSource = InputKeyboardSource.GetForIsland(RootLayout.XamlRoot?.ContentIsland);
-        keyboardSource.KeyUp += OnWindowKeyUp;
+        if (_keyboardSource is null)
+        {
+            _keyboardSource = InputKeyboardSource.GetForIsland(RootLayout.XamlRoot?.ContentIsland);
+            _keyboardSource.KeyUp += OnWindowKeyUp;
+        }
     }
 
     private bool IsCursorInWindow()

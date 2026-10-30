@@ -65,8 +65,6 @@ public sealed partial class AppViewModel : ViewModelBase
 
         var ffmpegFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/ffmpeg/{identifier}/ffmpeg.exe")).AsTask();
         FFmpegPath = ffmpegFile.Path;
-
-        _ = await this.Get<IFontToolkit>().GetFontsAsync();
     }
 
     [RelayCommand]
@@ -135,6 +133,11 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenPlayerAsync(MediaSnapshot snapshot)
     {
+        if (IsClosed)
+        {
+            return;
+        }
+
         var playerVM = this.Get<PlayerViewModel>();
         this.Get<AppViewModel>().Players.Add(playerVM);
         await playerVM.InitializeAsync(snapshot);

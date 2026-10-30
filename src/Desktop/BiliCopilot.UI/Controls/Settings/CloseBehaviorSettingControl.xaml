@@ -15,6 +15,9 @@
         <base:SettingsCard.HeaderIcon>
             <ic:SymbolIcon Symbol="DismissCircle" />
         </base:SettingsCard.HeaderIcon>
-        <ToggleSwitch IsOn="{x:Bind ViewModel.HideWhenCloseWindow, Mode=TwoWay}" />
+        <ToggleSwitch
+            AutomationProperties.AutomationId="TrayResidencyToggle"
+            AutomationProperties.Name="{ext:Locale Name=HideWhenClose}"
+            IsOn="{x:Bind ViewModel.HideWhenCloseWindow, Mode=TwoWay}" />
     </base:SettingsCard>
 </local:SettingsPageControlBase>
