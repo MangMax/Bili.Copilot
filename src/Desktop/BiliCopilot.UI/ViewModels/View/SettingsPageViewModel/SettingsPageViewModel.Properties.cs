@@ -188,6 +188,9 @@ public sealed partial class SettingsPageViewModel
     public partial bool ScrollAccelerate { get; set; }
 
     [ObservableProperty]
+    public partial bool IncrementalRecommendRefresh { get; set; }
+
+    [ObservableProperty]
     public partial bool CacheOnDisk { get; set; }
 
     [ObservableProperty]

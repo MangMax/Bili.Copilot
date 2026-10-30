@@ -111,6 +111,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         DownloadWithDanmaku = SettingsToolkit.ReadLocalSetting(SettingNames.DownloadWithDanmaku, false);
         UseWebPlayerWhenLive = SettingsToolkit.ReadLocalSetting(SettingNames.UseWebPlayerWhenLive, false);
         ShowSearchRecommend = SettingsToolkit.ReadLocalSetting(SettingNames.ShowSearchRecommend, false);
+        IncrementalRecommendRefresh = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false);
 
         ScreenshotAction = SettingsToolkit.ReadLocalSetting(SettingNames.ScreenshotAction, ScreenshotAction.Open);
         var customScreenshotFolderPath = SettingsToolkit.ReadLocalSetting(SettingNames.CustomScreenshotFolderPath, string.Empty);
@@ -501,6 +502,9 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 
     partial void OnShowSearchRecommendChanged(bool value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.ShowSearchRecommend, value);
+
+    partial void OnIncrementalRecommendRefreshChanged(bool value)
+        => SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, value);
 
     partial void OnIsPopularNavVisibleChanged(bool value)
         => WriteNavVisibleSetting(typeof(PopularPage), value);

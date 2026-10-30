@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Models;
@@ -13,11 +14,115 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class PopularPageViewModel
 {
+    private async Task RefreshRecommendVideosAsync()
+    {
+        // 推荐刷新在头部按钮旁表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
+        if (IsVideoLoading || IsRecommendRefreshing)
+        {
+            return;
+        }
+
+        var isIncremental = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
+            && Videos.Count > 0;
+
+        // 新一次刷新本身就改变了列表状态，之前发起的刷新即使还在路上也必须失效。
+        _refreshGeneration++;
+
+        // 记录发起刷新时的代次：请求期间用户可能切到别的分区（甚至切走又切回），
+        // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
+        var generation = _refreshGeneration;
+
+        // 无论增量还是重载，都先记下刷新前的列表与偏移，成功后才有东西可撤销。
+        // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
+        var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
+
+        // 新一次刷新会替换旧快照，撤销入口先收起，成功后重新出现。
+        CanUndoRefresh = false;
+
+        IsRecommendRefreshing = true;
+        try
+        {
+            var (videos, nextOffset) = await FetchRecommendBatchAsync();
+            var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
+            if (!RecommendRefreshResultGuard.ShouldApply(isRecommend, generation, _refreshGeneration))
+            {
+                // 结果已作废：撤销入口按当前快照还原，不留下一个指向旧列表的入口。
+                CanUndoRefresh = _recommendRefreshSnapshot is not null;
+                return;
+            }
+
+            var application = RecommendRefreshApplier.Apply(
+                Videos,
+                videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Recommend)),
+                p => p.Data.Identifier.Id,
+                isIncremental);
+
+            // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
+            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
+
+            _recommendRefreshSnapshot = snapshot;
+            CanUndoRefresh = true;
+            _recommendOffset = nextOffset;
+            _videoCache.Remove(SelectedSection);
+            VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            // 失败时列表没变，之前那次刷新的快照仍然指向当前列表刷新前的样子，撤销入口恢复原状。
+            CanUndoRefresh = _recommendRefreshSnapshot is not null;
+            _logger.LogError(ex, "尝试刷新推荐视频时出错.");
+        }
+        finally
+        {
+            IsRecommendRefreshing = false;
+        }
+    }
+
+    /// <summary>
+    /// 连续请求多页推荐并合并成一批.
+    /// </summary>
+    /// <returns>合并后的视频与最后一页的偏移量.</returns>
+    /// <remarks>
+    /// 服务端单页只返回约 6 条视频，增量刷新时一次只补 6 个卡片偏少；
+    /// 这里从偏移 0 起连续取若干页，按资源 Id 去重后合并，下一页偏移以最后一页为准。
+    /// 中途某一页失败时保留已取到的部分，避免整次刷新白跑。
+    /// </remarks>
+    private async Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchRecommendBatchAsync()
+    {
+        var videos = new List<VideoInformation>();
+        var seenKeys = new HashSet<string>(StringComparer.Ordinal);
+        var offset = 0L;
+
+        for (var i = 0; i < RecommendRefreshBatchCount; i++)
+        {
+            try
+            {
+                var (page, nextOffset) = await _service.GetRecommendVideoListAsync(offset, RecommendPageSize);
+                offset = nextOffset;
+                foreach (var video in page)
+                {
+                    if (seenKeys.Add(video.Identifier.Id))
+                    {
+                        videos.Add(video);
+                    }
+                }
+            }
+            catch (Exception ex) when (i > 0)
+            {
+                // 第一页失败交给调用方按刷新失败处理；后续页失败则保留已取到的部分。
+                _logger.LogError(ex, "获取推荐视频后续页时出错，保留已取到的部分.");
+                break;
+            }
+        }
+
+        return (videos, offset);
+    }
+
     private async Task LoadRecommendVideosAsync()
     {
         try
         {
-            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset);
+            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset, RecommendPageSize);
             _recommendOffset = nextOffset;
             TryAddVideos(videos, VideoCardStyle.Recommend);
         }

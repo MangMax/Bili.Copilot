@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using System.ComponentModel;
+using BiliCopilot.UI.Controls.Components;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models;
@@ -25,7 +27,9 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
             return;
         }
 
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         InitializeChildPartitions();
+        ApplyUndoRefreshVisibility(animate: false);
     }
 
     /// <inheritdoc/>
@@ -34,6 +38,7 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
         if (ViewModel is not null)
         {
             ViewModel.Initialized -= OnViewModelInitialized;
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
         Selector.SelectionChanged -= OnSelectorChanged;
@@ -45,6 +50,7 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
         if (oldValue is not null)
         {
             oldValue.Initialized -= OnViewModelInitialized;
+            oldValue.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
         if (newValue is null)
@@ -53,7 +59,31 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
         }
 
         newValue.Initialized += OnViewModelInitialized;
+        newValue.PropertyChanged += OnViewModelPropertyChanged;
         InitializeChildPartitions();
+        ApplyUndoRefreshVisibility(animate: false);
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(VideoPartitionDetailViewModel.CanUndoRefresh))
+        {
+            ApplyUndoRefreshVisibility(animate: true);
+        }
+    }
+
+    private void ApplyUndoRefreshVisibility(bool animate)
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        UndoRefreshButtonAnimator.Apply(
+            UndoRefreshButton,
+            ViewModel.CanUndoRefresh,
+            animate,
+            () => !ViewModel.CanUndoRefresh);
     }
 
     private void OnViewModelInitialized(object? sender, EventArgs e)

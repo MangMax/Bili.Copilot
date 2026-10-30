@@ -3273,4 +3273,16 @@
   <data name="Advanced" xml:space="preserve">
     <value>高级</value>
   </data>
+  <data name="IncrementalRecommendRefresh" xml:space="preserve">
+    <value>推荐视频增量刷新</value>
+  </data>
+  <data name="IncrementalRecommendRefreshDescription" xml:space="preserve">
+    <value>刷新推荐视频时保留当前列表，仅在顶部插入新视频</value>
+  </data>
+  <data name="UndoRefresh" xml:space="preserve">
+    <value>撤销刷新</value>
+  </data>
+  <data name="RefreshingRecommendVideos" xml:space="preserve">
+    <value>正在刷新推荐视频</value>
+  </data>
 </root>

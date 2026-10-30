@@ -267,6 +267,7 @@
     <None Remove="Controls\Settings\CacheSettingControl.xaml" />
     <None Remove="Controls\Settings\CloseBehaviorSettingControl.xaml" />
     <None Remove="Controls\Settings\DownloadSettingControl.xaml" />
+    <None Remove="Controls\Settings\IncrementalRecommendRefreshSettingControl.xaml" />
     <None Remove="Controls\Settings\LayoutSettingSection.xaml" />
     <None Remove="Controls\Settings\LoggerSettingControl.xaml" />
     <None Remove="Controls\Settings\MpvExtraSettingControl.xaml" />
@@ -1371,6 +1372,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Settings\SearchRecommendSettingSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Settings\IncrementalRecommendRefreshSettingControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Player\VideoAISection.xaml">

@@ -59,6 +59,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
             return;
         }
 
+        // 排序会重载列表，推荐子分区的撤销快照必须失效，避免撤销回排序前的列表。
+        ClearRefreshSnapshot();
         SelectedSortType = sortType;
         _childPartitionVideoCache.Clear();
         Videos.Clear();
@@ -71,17 +73,48 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     {
         if (IsRecommend)
         {
-            _recommendOffset = 0;
-            _recommendVideoCache?.Clear();
-        }
-        else
-        {
-            _childPartitionVideoCache.Remove(CurrentPartition.Data.Id);
-            _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
+            await RefreshRecommendVideosAsync();
+            return;
         }
 
+        // 非推荐子分区的刷新行为保持不变，但必须让推荐子分区的撤销状态失效，避免串场。
+        ClearRefreshSnapshot();
+        _childPartitionVideoCache.Remove(CurrentPartition.Data.Id);
+        _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
         Videos.Clear();
         await LoadVideosAsync();
+    }
+
+    [RelayCommand]
+    private void UndoRefresh()
+    {
+        if (_recommendRefreshSnapshot is null)
+        {
+            return;
+        }
+
+        var snapshot = _recommendRefreshSnapshot;
+
+        // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
+
+        _recommendOffset = snapshot.Offset;
+        ClearRefreshSnapshot();
+        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 清除撤销快照.
+    /// </summary>
+    /// <remarks>
+    /// 切换子分区、切换排序或走普通刷新时 <see cref="Videos"/> 会被替换或重载，
+    /// 旧快照指向的列表已不在页面上，必须一并失效，否则撤销会把推荐列表撤销到别的子分区。
+    /// </remarks>
+    internal void ClearRefreshSnapshot()
+    {
+        _recommendRefreshSnapshot = null;
+        CanUndoRefresh = false;
+        _refreshGeneration++;
     }
 
     [RelayCommand]
@@ -92,6 +125,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
             return;
         }
 
+        ClearRefreshSnapshot();
         IsRecommend = partition.Data.Id == Data.Data.Id;
         if (Videos.Count > 0)
         {
@@ -135,7 +169,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsVideoLoading)
+        if (IsVideoLoading || IsRecommendRefreshing)
         {
             return;
         }
@@ -152,6 +186,71 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
         IsVideoLoading = false;
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    private async Task RefreshRecommendVideosAsync()
+    {
+        // 推荐刷新在头部按钮旁表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
+        if (IsVideoLoading || IsRecommendRefreshing)
+        {
+            return;
+        }
+
+        var isIncremental = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
+            && Videos.Count > 0;
+
+        // 新一次刷新本身就改变了列表状态，之前发起的刷新即使还在路上也必须失效。
+        _refreshGeneration++;
+
+        // 记录发起刷新时的代次：请求期间用户可能切到别的子分区（甚至切走又切回），
+        // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
+        var generation = _refreshGeneration;
+
+        // 无论增量还是重载，都先记下刷新前的列表与偏移，成功后才有东西可撤销。
+        // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
+        var snapshot = RecommendRefreshSnapshot<VideoItemViewModel>.Capture(Videos, _recommendOffset);
+
+        // 新一次刷新会替换旧快照，撤销入口先收起，成功后重新出现。
+        CanUndoRefresh = false;
+
+        IsRecommendRefreshing = true;
+        try
+        {
+            var (videos, offset) = await _service.GetPartitionRecommendVideoListAsync(Data.Data, 0);
+            if (!RecommendRefreshResultGuard.ShouldApply(IsRecommend, generation, _refreshGeneration))
+            {
+                // 结果已作废：撤销入口按当前快照还原，不留下一个指向旧列表的入口。
+                CanUndoRefresh = _recommendRefreshSnapshot is not null;
+                return;
+            }
+
+            var application = RecommendRefreshApplier.Apply(
+                Videos,
+                videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Partition)),
+                p => p.Data.Identifier.Id,
+                isIncremental);
+
+            // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
+            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
+
+            _recommendRefreshSnapshot = snapshot;
+            CanUndoRefresh = true;
+            _recommendOffset = offset;
+
+            // 刷新后的列表才是当前推荐列表，旧的缓存不能再被切回推荐子分区时复用。
+            _recommendVideoCache?.Clear();
+            VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            // 失败时列表没变，之前那次刷新的快照仍然指向当前列表刷新前的样子，撤销入口恢复原状。
+            CanUndoRefresh = _recommendRefreshSnapshot is not null;
+            _logger.LogError(ex, "尝试刷新分区推荐视频时出错.");
+        }
+        finally
+        {
+            IsRecommendRefreshing = false;
+        }
     }
 
     private async Task LoadRecommendVideosAsync()
