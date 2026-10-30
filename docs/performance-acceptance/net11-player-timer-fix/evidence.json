@@ -1,0 +1,1360 @@
+{
+  "historicalRed": {
+    "status": "BLOCKED",
+    "reasons": [
+      "exact-process-application-error",
+      "nonzero-target-exit-code"
+    ],
+    "faultRecords": [
+      6525
+    ],
+    "werRecords": [
+      6526
+    ],
+    "reportIds": [
+      "babd1140-1684-4cc9-9890-6acb730a0d9b"
+    ],
+    "futureExactEvidenceRevokes": true
+  },
+  "historicalDump": {
+    "Algorithm": "SHA256",
+    "Hash": "EEAB35BB591C37016DA7EC29CEB607A55ECE8D6135D08E5D4511704D8A1A0D3D",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-bc1a3769\\artifacts\\exit-reproduction\\original1\\crash-full.dmp"
+  },
+  "variants": {
+    "stop-only": {
+      "files": 901,
+      "dlls": 363,
+      "packages": 134,
+      "packageGraphMatchesHistorical": true,
+      "sourceDifferences": [
+        "App.xaml.cs",
+        "Controls\\Core\\PlayerInteractivePanel.xaml.cs",
+        "Forms\\MainWindow.xaml.cs",
+        "Forms\\PlayerWindow.cs",
+        "GlobalDependencies.cs",
+        "Toolkits\\FontCatalog.cs",
+        "Toolkits\\Pure\\TrayLifecycle.cs"
+      ],
+      "panelSha256": "3e891c2fd5f673ce95293981df5a7998ec454efeffacb859882784e4e1d08a4b",
+      "uiDllSha256": "55ab40e3d3c447eb9a36d8fcbc8c8564e3b5819e9d045f5067850fd2c82668a5",
+      "coreclrSha256": "46a09d97ad8dd30d400a86c90af707bee7593b585d3ccb8586c4fffca404d1e2"
+    },
+    "green": {
+      "files": 901,
+      "dlls": 363,
+      "packages": 134,
+      "packageGraphMatchesHistorical": true,
+      "sourceDifferences": [
+        "App.xaml.cs",
+        "Controls\\Core\\PlayerInteractivePanel.xaml.cs",
+        "Forms\\MainWindow.xaml.cs",
+        "Forms\\PlayerWindow.cs",
+        "GlobalDependencies.cs",
+        "Toolkits\\FontCatalog.cs",
+        "Toolkits\\Pure\\TrayLifecycle.cs"
+      ],
+      "panelSha256": "f9c272d6e354715b683a5631eb008640721e564bd4c38f7c3986969653de6437",
+      "uiDllSha256": "a1caf409a5d87f08ecadf56160b78e299c549715bd8956e3cba2dda38b42b338",
+      "coreclrSha256": "46a09d97ad8dd30d400a86c90af707bee7593b585d3ccb8586c4fffca404d1e2"
+    },
+    "final": {
+      "files": 901,
+      "dlls": 363,
+      "packages": 134,
+      "packageGraphMatchesHistorical": true,
+      "sourceDifferences": [
+        "App.xaml.cs",
+        "GlobalDependencies.cs",
+        "Toolkits\\FontCatalog.cs"
+      ],
+      "panelSha256": "320c0c7564519aa9e6a1c195a2ab065d6321460afa37b6ea26fc1095aea4af8a",
+      "uiDllSha256": "a3cfe4c5a6bd5b84f471191f029616ff653c900640d55b2d74ca6699f8442f6c",
+      "coreclrSha256": "46a09d97ad8dd30d400a86c90af707bee7593b585d3ccb8586c4fffca404d1e2"
+    }
+  },
+  "runs": {
+    "stop1": {
+      "pid": 31716,
+      "exitCode": null,
+      "handleRetained": true,
+      "startUtc": "2026-10-30T17:50:13.8364016Z",
+      "collectionEndUtc": "2026-10-30T17:51:30.9197504Z",
+      "verdict": {
+        "status": "BLOCKED",
+        "reasons": [
+          "missing-terminated",
+          "unknown-target-exit-code"
+        ],
+        "faultRecords": [],
+        "werRecords": [],
+        "reportIds": [],
+        "futureExactEvidenceRevokes": true
+      },
+      "cleanup": {
+        "observerLauncherPid": 0,
+        "observerIdentity": null,
+        "pid": 31716,
+        "utc": "2026-10-30T17:51:32.5098262Z",
+        "registrationAbsent": true,
+        "processAbsent": true,
+        "observerAbsent": true,
+        "identity": "Mang.BiliCopilot.TimerFix.E497.stop1"
+      },
+      "hashGate": {
+        "missing": 0,
+        "extra": 0,
+        "count": 363,
+        "mismatched": 0
+      },
+      "yieldResult": {
+        "released": false
+      },
+      "timer": [
+        {
+          "name": "LoadedTimerRuns1",
+          "status": "PASS",
+          "detail": {
+            "loaded": 1,
+            "running": true
+          }
+        },
+        {
+          "name": "LoadedTimerTicks1",
+          "status": "PASS",
+          "detail": {
+            "before": 2,
+            "after": 3
+          }
+        },
+        {
+          "name": "UnloadedTimerStops1",
+          "status": "PASS",
+          "detail": {
+            "unloaded": 1,
+            "running": false
+          }
+        },
+        {
+          "name": "NoReadAfterUnload1",
+          "status": "PASS",
+          "detail": {
+            "before": 3,
+            "after": 3
+          }
+        },
+        {
+          "name": "LoadedTimerRuns2",
+          "status": "FAIL",
+          "detail": {
+            "loaded": 2,
+            "running": false
+          }
+        },
+        {
+          "name": "LoadedTimerTicks2",
+          "status": "FAIL",
+          "detail": {
+            "before": 3,
+            "after": 3
+          }
+        },
+        {
+          "name": "UnloadedTimerStops2",
+          "status": "PASS",
+          "detail": {
+            "unloaded": 2,
+            "running": false
+          }
+        },
+        {
+          "name": "NoReadAfterUnload2",
+          "status": "PASS",
+          "detail": {
+            "before": 3,
+            "after": 3
+          }
+        },
+        {
+          "name": "LateTickDoesNotReadClosedVm",
+          "status": "FAIL",
+          "detail": {
+            "before": 3,
+            "after": 4
+          }
+        }
+      ]
+    },
+    "green1": {
+      "pid": 24844,
+      "exitCode": 0,
+      "handleRetained": true,
+      "startUtc": "2026-10-30T17:53:40.8065876Z",
+      "collectionEndUtc": "2026-10-30T17:58:37.9641933Z",
+      "verdict": {
+        "status": "PASS_BOUNDED",
+        "reasons": [],
+        "faultRecords": [],
+        "werRecords": [],
+        "reportIds": [],
+        "futureExactEvidenceRevokes": true
+      },
+      "cleanup": {
+        "registrationAbsent": true,
+        "pid": 24844,
+        "observerLauncherPid": 21640,
+        "observerAbsent": true,
+        "utc": "2026-10-30T17:58:39.8278511Z",
+        "processAbsent": true,
+        "identity": "Mang.BiliCopilot.TimerFix.E497.green1",
+        "observerIdentity": {
+          "pid": 24844,
+          "observerPid": 6560,
+          "observerExe": "C:\\Users\\hp\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+          "protocol": "external-os-v3"
+        }
+      },
+      "hashGate": {
+        "missing": 0,
+        "count": 363,
+        "extra": 0,
+        "mismatched": 0
+      },
+      "yieldResult": {
+        "released": false
+      },
+      "timer": [
+        {
+          "name": "LoadedTimerRuns1",
+          "status": "PASS",
+          "detail": {
+            "loaded": 1,
+            "running": true
+          }
+        },
+        {
+          "name": "LoadedTimerTicks1",
+          "status": "PASS",
+          "detail": {
+            "before": 2,
+            "after": 3
+          }
+        },
+        {
+          "name": "UnloadedTimerStops1",
+          "status": "PASS",
+          "detail": {
+            "unloaded": 1,
+            "running": false
+          }
+        },
+        {
+          "name": "NoReadAfterUnload1",
+          "status": "PASS",
+          "detail": {
+            "before": 3,
+            "after": 3
+          }
+        },
+        {
+          "name": "LoadedTimerRuns2",
+          "status": "PASS",
+          "detail": {
+            "loaded": 2,
+            "running": true
+          }
+        },
+        {
+          "name": "LoadedTimerTicks2",
+          "status": "PASS",
+          "detail": {
+            "before": 5,
+            "after": 6
+          }
+        },
+        {
+          "name": "UnloadedTimerStops2",
+          "status": "PASS",
+          "detail": {
+            "unloaded": 2,
+            "running": false
+          }
+        },
+        {
+          "name": "NoReadAfterUnload2",
+          "status": "PASS",
+          "detail": {
+            "before": 6,
+            "after": 6
+          }
+        },
+        {
+          "name": "LateTickDoesNotReadClosedVm",
+          "status": "PASS",
+          "detail": {
+            "before": 6,
+            "after": 6
+          }
+        }
+      ],
+      "player": [
+        {
+          "name": "FontCatalogDeferredUntilPicker",
+          "status": "PASS"
+        },
+        {
+          "name": "ModesCloseWithoutLateAccess",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPartDurationBounds",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoSwitchLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "PgcSwitchLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "RepeatedReloadLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "DirectDisposeInFlight",
+          "status": "PASS"
+        },
+        {
+          "name": "WindowDestroyInFlight",
+          "status": "PASS"
+        },
+        {
+          "name": "VmCancellationReachesHttpHandler",
+          "status": "PASS"
+        },
+        {
+          "name": "EmptyBodyRetriesThreeTimes",
+          "status": "PASS"
+        },
+        {
+          "name": "FiveByteEmptyFrameParsesOnce",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPartZeroDoesNotFallbackToArticle",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPart360RequestsOneSegment",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPart361RequestsTwoSegments",
+          "status": "PASS"
+        },
+        {
+          "name": "RealTrayEnableDisableRecreate",
+          "status": "PASS"
+        }
+      ],
+      "main": [
+        {
+          "name": "NativeMainCloseHidesToTray",
+          "status": "PASS"
+        },
+        {
+          "name": "RestoreSameMainHwnd",
+          "status": "PASS"
+        },
+        {
+          "name": "DisableTrayRestoresHiddenMain",
+          "status": "PASS"
+        },
+        {
+          "name": "ClosingPlayerPreservesIntentionalResidency",
+          "status": "PASS"
+        }
+      ],
+      "loadedRuntime": {
+        "version": "11,0,26,52348 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70",
+        "name": "coreclr.dll",
+        "sha256": "46A09D97AD8DD30D400A86C90AF707BEE7593B585D3CCB8586C4FFFCA404D1E2",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-e497cf43\\artifacts\\exit-reproduction\\green1\\layout\\coreclr.dll"
+      },
+      "explicitExit": {
+        "kind": "explicit-exit",
+        "data": {
+          "players": 1
+        }
+      }
+    },
+    "final1": {
+      "pid": 40300,
+      "exitCode": 0,
+      "handleRetained": true,
+      "startUtc": "2026-10-30T17:59:11.2129317Z",
+      "collectionEndUtc": "2026-10-30T18:03:54.1286826Z",
+      "verdict": {
+        "status": "PASS_BOUNDED",
+        "reasons": [],
+        "faultRecords": [],
+        "werRecords": [],
+        "reportIds": [],
+        "futureExactEvidenceRevokes": true
+      },
+      "cleanup": {
+        "observerLauncherPid": 37776,
+        "observerAbsent": true,
+        "registrationAbsent": true,
+        "processAbsent": true,
+        "identity": "Mang.BiliCopilot.TimerFix.E497.final1",
+        "utc": "2026-10-30T18:03:55.9515637Z",
+        "observerIdentity": {
+          "pid": 40300,
+          "observerPid": 39112,
+          "observerExe": "C:\\Users\\hp\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+          "protocol": "external-os-v3"
+        },
+        "pid": 40300
+      },
+      "hashGate": {
+        "mismatched": 0,
+        "extra": 0,
+        "missing": 0,
+        "count": 363
+      },
+      "yieldResult": {
+        "released": false
+      },
+      "timer": [
+        {
+          "name": "LoadedTimerRuns1",
+          "status": "PASS",
+          "detail": {
+            "loaded": 1,
+            "running": true
+          }
+        },
+        {
+          "name": "LoadedTimerTicks1",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": false
+          }
+        },
+        {
+          "name": "UnloadedTimerStops1",
+          "status": "PASS",
+          "detail": {
+            "unloaded": 1,
+            "running": false
+          }
+        },
+        {
+          "name": "NoReadAfterUnload1",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": true
+          }
+        },
+        {
+          "name": "LoadedTimerRuns2",
+          "status": "PASS",
+          "detail": {
+            "loaded": 2,
+            "running": true
+          }
+        },
+        {
+          "name": "LoadedTimerTicks2",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": false
+          }
+        },
+        {
+          "name": "UnloadedTimerStops2",
+          "status": "PASS",
+          "detail": {
+            "unloaded": 2,
+            "running": false
+          }
+        },
+        {
+          "name": "NoReadAfterUnload2",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": true
+          }
+        },
+        {
+          "name": "LateTickDoesNotReadClosedVm",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": true
+          }
+        }
+      ],
+      "player": [
+        {
+          "name": "FontCatalogDeferredUntilPicker",
+          "status": "PASS"
+        },
+        {
+          "name": "ModesCloseWithoutLateAccess",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPartDurationBounds",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoSwitchLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "PgcSwitchLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "RepeatedReloadLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "DirectDisposeInFlight",
+          "status": "PASS"
+        },
+        {
+          "name": "WindowDestroyInFlight",
+          "status": "PASS"
+        },
+        {
+          "name": "VmCancellationReachesHttpHandler",
+          "status": "PASS"
+        },
+        {
+          "name": "EmptyBodyRetriesThreeTimes",
+          "status": "PASS"
+        },
+        {
+          "name": "FiveByteEmptyFrameParsesOnce",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPartZeroDoesNotFallbackToArticle",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPart360RequestsOneSegment",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPart361RequestsTwoSegments",
+          "status": "PASS"
+        },
+        {
+          "name": "RealTrayEnableDisableRecreate",
+          "status": "PASS"
+        }
+      ],
+      "main": [
+        {
+          "name": "NativeMainCloseHidesToTray",
+          "status": "PASS"
+        },
+        {
+          "name": "RestoreSameMainHwnd",
+          "status": "PASS"
+        },
+        {
+          "name": "DisableTrayRestoresHiddenMain",
+          "status": "PASS"
+        },
+        {
+          "name": "ClosingPlayerPreservesIntentionalResidency",
+          "status": "PASS"
+        }
+      ],
+      "loadedRuntime": {
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-e497cf43\\artifacts\\exit-reproduction\\final1\\layout\\coreclr.dll",
+        "sha256": "46A09D97AD8DD30D400A86C90AF707BEE7593B585D3CCB8586C4FFFCA404D1E2",
+        "version": "11,0,26,52348 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70",
+        "name": "coreclr.dll"
+      },
+      "explicitExit": {
+        "kind": "explicit-exit",
+        "data": {
+          "players": 1
+        }
+      }
+    },
+    "final2": {
+      "pid": 10064,
+      "exitCode": 0,
+      "handleRetained": true,
+      "startUtc": "2026-10-30T18:07:18.6992304Z",
+      "collectionEndUtc": "2026-10-30T18:11:54.7792658Z",
+      "verdict": {
+        "status": "PASS_BOUNDED",
+        "reasons": [],
+        "faultRecords": [],
+        "werRecords": [],
+        "reportIds": [],
+        "futureExactEvidenceRevokes": true
+      },
+      "cleanup": {
+        "pid": 10064,
+        "identity": "Mang.BiliCopilot.TimerFix.E497.final2",
+        "registrationAbsent": true,
+        "observerAbsent": true,
+        "utc": "2026-10-30T18:11:56.4242820Z",
+        "observerLauncherPid": 39832,
+        "processAbsent": true,
+        "observerIdentity": {
+          "pid": 10064,
+          "observerPid": 26508,
+          "observerExe": "C:\\Users\\hp\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+          "protocol": "external-os-v3"
+        }
+      },
+      "hashGate": {
+        "mismatched": 0,
+        "missing": 0,
+        "count": 363,
+        "extra": 0
+      },
+      "yieldResult": {
+        "released": false
+      },
+      "timer": [
+        {
+          "name": "LoadedTimerRuns1",
+          "status": "PASS",
+          "detail": {
+            "loaded": 1,
+            "running": true
+          }
+        },
+        {
+          "name": "LoadedTimerTicks1",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": false
+          }
+        },
+        {
+          "name": "UnloadedTimerStops1",
+          "status": "PASS",
+          "detail": {
+            "unloaded": 1,
+            "running": false
+          }
+        },
+        {
+          "name": "NoReadAfterUnload1",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": true
+          }
+        },
+        {
+          "name": "LoadedTimerRuns2",
+          "status": "PASS",
+          "detail": {
+            "loaded": 2,
+            "running": true
+          }
+        },
+        {
+          "name": "LoadedTimerTicks2",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": false
+          }
+        },
+        {
+          "name": "UnloadedTimerStops2",
+          "status": "PASS",
+          "detail": {
+            "unloaded": 2,
+            "running": false
+          }
+        },
+        {
+          "name": "NoReadAfterUnload2",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": true
+          }
+        },
+        {
+          "name": "LateTickDoesNotReadClosedVm",
+          "status": "PASS",
+          "detail": {
+            "IsVolumeChanging": true
+          }
+        }
+      ],
+      "player": [
+        {
+          "name": "FontCatalogDeferredUntilPicker",
+          "status": "PASS"
+        },
+        {
+          "name": "ModesCloseWithoutLateAccess",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPartDurationBounds",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoSwitchLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "PgcSwitchLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "RepeatedReloadLateSuccessAndError",
+          "status": "PASS"
+        },
+        {
+          "name": "DirectDisposeInFlight",
+          "status": "PASS"
+        },
+        {
+          "name": "WindowDestroyInFlight",
+          "status": "PASS"
+        },
+        {
+          "name": "VmCancellationReachesHttpHandler",
+          "status": "PASS"
+        },
+        {
+          "name": "EmptyBodyRetriesThreeTimes",
+          "status": "PASS"
+        },
+        {
+          "name": "FiveByteEmptyFrameParsesOnce",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPartZeroDoesNotFallbackToArticle",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPart360RequestsOneSegment",
+          "status": "PASS"
+        },
+        {
+          "name": "VideoPart361RequestsTwoSegments",
+          "status": "PASS"
+        },
+        {
+          "name": "RealTrayEnableDisableRecreate",
+          "status": "PASS"
+        }
+      ],
+      "main": [
+        {
+          "name": "NativeMainCloseHidesToTray",
+          "status": "PASS"
+        },
+        {
+          "name": "RestoreSameMainHwnd",
+          "status": "PASS"
+        },
+        {
+          "name": "DisableTrayRestoresHiddenMain",
+          "status": "PASS"
+        },
+        {
+          "name": "ClosingPlayerPreservesIntentionalResidency",
+          "status": "PASS"
+        }
+      ],
+      "loadedRuntime": {
+        "version": "11,0,26,52348 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70",
+        "sha256": "46A09D97AD8DD30D400A86C90AF707BEE7593B585D3CCB8586C4FFFCA404D1E2",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-e497cf43\\artifacts\\exit-reproduction\\final2\\layout\\coreclr.dll",
+        "name": "coreclr.dll"
+      },
+      "explicitExit": {
+        "kind": "explicit-exit",
+        "data": {
+          "players": 1
+        }
+      }
+    },
+    "controls1": {
+      "pid": 40740,
+      "exitCode": null,
+      "handleRetained": true,
+      "startUtc": "2026-10-30T18:04:45.6193445Z",
+      "collectionEndUtc": "2026-10-30T18:05:54.0607423Z",
+      "verdict": {
+        "status": "BLOCKED",
+        "reasons": [
+          "missing-terminated",
+          "unknown-target-exit-code"
+        ],
+        "faultRecords": [],
+        "werRecords": [],
+        "reportIds": [],
+        "futureExactEvidenceRevokes": true
+      },
+      "cleanup": {
+        "observerIdentity": null,
+        "utc": "2026-10-30T18:05:55.4611415Z",
+        "observerAbsent": true,
+        "registrationAbsent": true,
+        "observerLauncherPid": 0,
+        "processAbsent": true,
+        "pid": 40740,
+        "identity": "Mang.BiliCopilot.TimerFix.E497.controls1"
+      },
+      "hashGate": {
+        "missing": 0,
+        "count": 264,
+        "extra": 0,
+        "mismatched": 0
+      },
+      "yieldResult": {
+        "released": false
+      },
+      "controls": [
+        {
+          "name": "PartitionSwitchPreservesCacheOwnershipAndCursor",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "PartitionEmptyRefreshPreservesUndoAndStopsNotification",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "PartitionLateRefreshDoesNotBlockChildOrPublishFailure",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "RealControlsRefreshUndoAndRemount",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "PopularHeaderUndoSurvivesRemount",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "PartitionHeaderUndoSurvivesRemount",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "CoverResizeUnloadFailureAndConsecutiveRecovery",
+          "status": "PASS",
+          "detail": ""
+        }
+      ]
+    },
+    "controls2": {
+      "pid": 22968,
+      "exitCode": 0,
+      "handleRetained": true,
+      "startUtc": "2026-10-30T18:06:09.7771894Z",
+      "collectionEndUtc": "2026-10-30T18:07:03.0162752Z",
+      "verdict": {
+        "status": "PASS_BOUNDED",
+        "reasons": [],
+        "faultRecords": [],
+        "werRecords": [],
+        "reportIds": [],
+        "futureExactEvidenceRevokes": true
+      },
+      "cleanup": {
+        "observerLauncherPid": 0,
+        "identity": "Mang.BiliCopilot.TimerFix.E497.controls2",
+        "utc": "2026-10-30T18:07:04.3204004Z",
+        "pid": 22968,
+        "registrationAbsent": true,
+        "observerAbsent": true,
+        "processAbsent": true,
+        "observerIdentity": null
+      },
+      "hashGate": {
+        "mismatched": 0,
+        "extra": 0,
+        "count": 264,
+        "missing": 0
+      },
+      "yieldResult": {
+        "released": false
+      },
+      "controls": [
+        {
+          "name": "PartitionSwitchPreservesCacheOwnershipAndCursor",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "PartitionEmptyRefreshPreservesUndoAndStopsNotification",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "PartitionLateRefreshDoesNotBlockChildOrPublishFailure",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "RealControlsRefreshUndoAndRemount",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "PopularHeaderUndoSurvivesRemount",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "PartitionHeaderUndoSurvivesRemount",
+          "status": "PASS",
+          "detail": ""
+        },
+        {
+          "name": "CoverResizeUnloadFailureAndConsecutiveRecovery",
+          "status": "PASS",
+          "detail": ""
+        }
+      ]
+    }
+  },
+  "sdkArchive": {
+    "Algorithm": "SHA512",
+    "Hash": "DAE0A0450D92B5315034DB134259ACFFE9EC0043D93DCED4FB2A9B8700520E87A99005D6845AD80716F4A8F30DF24AE5363CA7C9BE391797B4F53170E9B2C088",
+    "Path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-d48c749d\\artifacts\\dependency-upgrade\\dotnet11.zip"
+  },
+  "timerTrace": {
+    "instances": 17,
+    "starts": 18,
+    "stops": 18,
+    "reads": 42,
+    "readAfterStop": [],
+    "finalStates": {
+      "24072164": "timer-stop",
+      "34946365": "timer-stop",
+      "3729370": "timer-stop",
+      "11298190": "timer-stop",
+      "44106452": "timer-stop",
+      "50357636": "timer-stop",
+      "60643585": "timer-stop",
+      "11239976": "timer-stop",
+      "34514252": "timer-stop",
+      "57595826": "timer-stop",
+      "50545838": "timer-stop",
+      "61609343": "timer-stop",
+      "33075383": "timer-stop",
+      "33898173": "timer-stop",
+      "64243124": "timer-stop",
+      "60856484": "timer-stop",
+      "13037352": "timer-stop"
+    },
+    "exitTail": [
+      {
+        "sequence": 650,
+        "utc": "2026-10-30T17:58:03.6225546Z",
+        "ticks": 278013850221,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "timer-vm-read",
+        "owner": {
+          "id": 13037352
+        }
+      },
+      {
+        "sequence": 651,
+        "utc": "2026-10-30T17:58:04.1333865Z",
+        "ticks": 278018958541,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "timer-vm-read",
+        "owner": {
+          "id": 13037352
+        }
+      },
+      {
+        "sequence": 652,
+        "utc": "2026-10-30T17:58:04.6409761Z",
+        "ticks": 278024034433,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "timer-vm-read",
+        "owner": {
+          "id": 13037352
+        }
+      },
+      {
+        "sequence": 653,
+        "utc": "2026-10-30T17:58:05.1417067Z",
+        "ticks": 278029041742,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "timer-vm-read",
+        "owner": {
+          "id": 13037352
+        }
+      },
+      {
+        "sequence": 654,
+        "utc": "2026-10-30T17:58:05.5016239Z",
+        "ticks": 278032640912,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "explicit-exit",
+        "owner": {
+          "players": 1
+        }
+      },
+      {
+        "sequence": 655,
+        "utc": "2026-10-30T17:58:05.5153113Z",
+        "ticks": 278032777788,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "settings-save-start",
+        "owner": null
+      },
+      {
+        "sequence": 656,
+        "utc": "2026-10-30T17:58:05.5180043Z",
+        "ticks": 278032804715,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "settings-save-complete",
+        "owner": null
+      },
+      {
+        "sequence": 657,
+        "utc": "2026-10-30T17:58:05.5209149Z",
+        "ticks": 278032833822,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "players-close-start",
+        "owner": {
+          "count": 1
+        }
+      },
+      {
+        "sequence": 658,
+        "utc": "2026-10-30T17:58:05.5237062Z",
+        "ticks": 278032861736,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "player-destroy-start",
+        "owner": {
+          "IsClosed": false,
+          "IsDisposed": false
+        }
+      },
+      {
+        "sequence": 659,
+        "utc": "2026-10-30T17:58:05.5359817Z",
+        "ticks": 278032984491,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "player-destroying",
+        "owner": {
+          "IsClosed": false,
+          "IsDisposed": false
+        }
+      },
+      {
+        "sequence": 660,
+        "utc": "2026-10-30T17:58:05.552112Z",
+        "ticks": 278033145793,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "player-destroy-complete",
+        "owner": {
+          "IsClosed": true,
+          "IsDisposed": false
+        }
+      },
+      {
+        "sequence": 661,
+        "utc": "2026-10-30T17:58:05.609041Z",
+        "ticks": 278033715083,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "xaml-source-dispose-start",
+        "owner": {
+          "IsClosed": true,
+          "IsDisposed": true
+        }
+      },
+      {
+        "sequence": 662,
+        "utc": "2026-10-30T17:58:05.6100361Z",
+        "ticks": 278033725034,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "xaml-source-dispose-complete",
+        "owner": {
+          "IsClosed": true,
+          "IsDisposed": true
+        }
+      },
+      {
+        "sequence": 663,
+        "utc": "2026-10-30T17:58:05.6117394Z",
+        "ticks": 278033742066,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "players-close-complete",
+        "owner": null
+      },
+      {
+        "sequence": 664,
+        "utc": "2026-10-30T17:58:05.6129496Z",
+        "ticks": 278033754169,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "tray-dispose-start",
+        "owner": null
+      },
+      {
+        "sequence": 665,
+        "utc": "2026-10-30T17:58:05.6155146Z",
+        "ticks": 278033779818,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "tray-dispose-complete",
+        "owner": null
+      },
+      {
+        "sequence": 666,
+        "utc": "2026-10-30T17:58:05.6171954Z",
+        "ticks": 278033796628,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "tray-release-start",
+        "owner": null
+      },
+      {
+        "sequence": 667,
+        "utc": "2026-10-30T17:58:05.6190929Z",
+        "ticks": 278033815602,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "tray-release-complete",
+        "owner": null
+      },
+      {
+        "sequence": 668,
+        "utc": "2026-10-30T17:58:05.6524494Z",
+        "ticks": 278034149173,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "main-close-start",
+        "owner": null
+      },
+      {
+        "sequence": 669,
+        "utc": "2026-10-30T17:58:05.7409713Z",
+        "ticks": 278035034386,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "main-close-complete",
+        "owner": null
+      },
+      {
+        "sequence": 670,
+        "utc": "2026-10-30T17:58:05.7420425Z",
+        "ticks": 278035045098,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "app-exit-start",
+        "owner": null
+      },
+      {
+        "sequence": 671,
+        "utc": "2026-10-30T17:58:05.7434174Z",
+        "ticks": 278035058847,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "fixture-controller-closed",
+        "owner": null
+      },
+      {
+        "sequence": 672,
+        "utc": "2026-10-30T17:58:05.8253469Z",
+        "ticks": 278035878143,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "app-exit-return",
+        "owner": null
+      },
+      {
+        "sequence": 673,
+        "utc": "2026-10-30T17:58:05.8414649Z",
+        "ticks": 278036039322,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "dispatcher-shutdown-starting",
+        "owner": null
+      },
+      {
+        "sequence": 674,
+        "utc": "2026-10-30T17:58:05.8513634Z",
+        "ticks": 278036138307,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "timer-vm-read",
+        "owner": {
+          "id": 13037352
+        }
+      },
+      {
+        "sequence": 675,
+        "utc": "2026-10-30T17:58:05.853076Z",
+        "ticks": 278036155433,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "timer-stop",
+        "owner": {
+          "id": 13037352,
+          "running": false
+        }
+      },
+      {
+        "sequence": 676,
+        "utc": "2026-10-30T17:58:06.7225785Z",
+        "ticks": 278044850457,
+        "pid": 24844,
+        "tid": 5764,
+        "managedThread": 2,
+        "stage": "dispatcher-shutdown-completed",
+        "owner": null
+      }
+    ]
+  },
+  "suite": {
+    "counters": {
+      "total": "487",
+      "executed": "487",
+      "passed": "487",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "trxSha256": "584e61f1a57325bc77b505332b414a2136157ff8685c290df14cf4d48be09335"
+  },
+  "builds": {
+    "DebugClean": {
+      "logSha256": "da50426cc1a50c469670587ca130821715ef5c819bd1c28a6b84d001a4e53c8a",
+      "assetsSha256": "4bfc29de518ed884c2403118144da8387fc85949843df3e551bc6c13447bf17b",
+      "runtime": {
+        "runtimeOptions": {
+          "tfm": "net11.0",
+          "includedFrameworks": [
+            {
+              "name": "Microsoft.NETCore.App",
+              "version": "11.0.0-rc.3.26522.148"
+            }
+          ],
+          "configProperties": {
+            "CSWINRT_ENABLE_DYNAMIC_OBJECTS_SUPPORT": true,
+            "CSWINRT_USE_EXCEPTION_RESOURCE_KEYS": false,
+            "CSWINRT_ENABLE_DEFAULT_CUSTOM_TYPE_MAPPINGS": true,
+            "CSWINRT_ENABLE_ICUSTOMPROPERTYPROVIDER_SUPPORT": true,
+            "CSWINRT_ENABLE_IREFERENCE_SUPPORT": true,
+            "CSWINRT_ENABLE_IDYNAMICINTERFACECASTABLE": true,
+            "CSWINRT_ENABLE_MANIFEST_FREE_ACTIVATION": true,
+            "CSWINRT_MANIFEST_FREE_ACTIVATION_REPORT_ORIGINAL_EXCEPTION": false,
+            "CSWINRT_LOAD_COMPONENTS_IN_DEFAULT_ALC": false,
+            "CSWINRT_SUPPRESS_CUSTOM_PROPERTY_NOT_SUPPORTED_EXCEPTION": false,
+            "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": false,
+            "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+            "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false
+          }
+        }
+      },
+      "uiDllSha256": "e0e3cd599de575b1c32ec8f81e29ec39485de2bf839260bb4643be77f27a148b"
+    },
+    "ReleaseJIT": {
+      "logSha256": "635607c6fb760c238d28d26294deeab396e31fdfd38eb1e41ba1bbcaa9f5bf8d",
+      "assetsSha256": "4bfc29de518ed884c2403118144da8387fc85949843df3e551bc6c13447bf17b",
+      "runtime": {
+        "runtimeOptions": {
+          "tfm": "net11.0",
+          "includedFrameworks": [
+            {
+              "name": "Microsoft.NETCore.App",
+              "version": "11.0.0-rc.3.26522.148"
+            }
+          ],
+          "configProperties": {
+            "CSWINRT_ENABLE_DYNAMIC_OBJECTS_SUPPORT": true,
+            "CSWINRT_USE_EXCEPTION_RESOURCE_KEYS": false,
+            "CSWINRT_ENABLE_DEFAULT_CUSTOM_TYPE_MAPPINGS": true,
+            "CSWINRT_ENABLE_ICUSTOMPROPERTYPROVIDER_SUPPORT": true,
+            "CSWINRT_ENABLE_IREFERENCE_SUPPORT": true,
+            "CSWINRT_ENABLE_IDYNAMICINTERFACECASTABLE": true,
+            "CSWINRT_ENABLE_MANIFEST_FREE_ACTIVATION": true,
+            "CSWINRT_MANIFEST_FREE_ACTIVATION_REPORT_ORIGINAL_EXCEPTION": false,
+            "CSWINRT_LOAD_COMPONENTS_IN_DEFAULT_ALC": false,
+            "CSWINRT_SUPPRESS_CUSTOM_PROPERTY_NOT_SUPPORTED_EXCEPTION": false,
+            "MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT": false,
+            "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+            "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+            "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false
+          }
+        }
+      },
+      "uiDllSha256": "a5eb09bf3a9cc00075b9aded547b29ab0b9c8de9b41ee4339a0963dc0acb34fc"
+    }
+  }
+}

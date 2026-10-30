@@ -1,0 +1,98 @@
+[
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\src\\Desktop\\BiliCopilot.Visor.Models\\obj\\project.assets.json",
+    "sha256": "cef1012ac04c0f68a5198be371e54ee64f697a4d06f9f0987b721c9c4b14a571"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\src\\Desktop\\BiliCopilot.UI.ResourceGenerator\\obj\\project.assets.json",
+    "sha256": "b958dd5b6d6c5907d7533909f4291336c50beae8f47130786e0578c8d02280f5"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\src\\Desktop\\BiliCopilot.UI.Models\\obj\\project.assets.json",
+    "sha256": "7dfc5538c4d71519471d5ff3670eb344747ea9bb2089050c27af41e05e8ce8a3"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Services\\Services.User\\obj\\project.assets.json",
+    "sha256": "baa16ecb483956747304f50af0dc80bc0b2801b5c1e102aef4a622d99b1e3f98"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Services\\Services.Search\\obj\\project.assets.json",
+    "sha256": "d2e6d481fe37907189cddb4ebaf98e8969b7a06df2806cdb8e8769177a411c73"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Services\\Services.Moment\\obj\\project.assets.json",
+    "sha256": "03a7aa8a424ca130893b83f9772f1bc467dac02f738f2bc99ae6be9abc46b16b"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Services\\Services.Media\\obj\\project.assets.json",
+    "sha256": "e3659cec0cc6210840f89231d52885c5cae1b3431ab8c130afae3a961d6be504"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Services\\Services.Comment\\obj\\project.assets.json",
+    "sha256": "1e7bedb4a0c08350540d9bf02f47a17dc3361c0cc5d7008c35976fe97e52b291"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Services\\Services.Article\\obj\\project.assets.json",
+    "sha256": "801b4b7b8748aa34ed6ccc39b9e938daedf13b8184fa2d57f266a67b3763e768"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIToken\\obj\\project.assets.json",
+    "sha256": "b4c213567d4000c38f48ef67dda26161255f9b4591b31bc3cd8edce865c39d01"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUIQRCode\\obj\\project.assets.json",
+    "sha256": "9b3f27762c9bca1d73022c5bad59637903c5a5c13d9f399a6cacf895b7422d3a"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Resolvers\\Resolvers.WinUICookies\\obj\\project.assets.json",
+    "sha256": "176aad522e11b3747447e91f40d6995b0d4900d19ea52c18a73cf4d2054dbc26"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\BiliKernel.Grpc\\obj\\project.assets.json",
+    "sha256": "eb12e3ed3f793e6bd236eff9c6f99473b205deede0a213fc4a2af860d50eafbc"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\BiliKernel.Core\\obj\\project.assets.json",
+    "sha256": "d9bf6705e6b0dff391e54f63e8c4aba77a8fe71d59c5b2e259dac74a7918dec3"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\BiliKernel.Abstractions\\obj\\project.assets.json",
+    "sha256": "b2007bfe6ed4353f19bfde6b64c4568315c007b181e46ea06db509135e48f58e"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\source\\externals\\bili-kernel\\src\\Authorizers\\Authorizers.Tv\\obj\\project.assets.json",
+    "sha256": "225b85930d8ce6be0479cc4dbcabd8eb233898ab8a2c6fb76554e39382919951"
+  },
+  {
+    "path": "artifacts\\timer-fix\\stop-only\\frozen-assets\\fixture\\obj\\project.assets.json",
+    "sha256": "38184e82db20f3bc3b66a10ce84f7215b38f675d497d29e699e2a6d5915e2a73"
+  },
+  {
+    "path": "artifacts\\timer-fix\\green\\frozen-assets\\fixture\\obj\\project.assets.json",
+    "sha256": "2856fe6e4892b8ace15f11a912c10518008879f20abbaaf8d1b885c815065c08"
+  },
+  {
+    "path": "artifacts\\timer-fix\\final\\frozen-assets\\fixture\\obj\\project.assets.json",
+    "sha256": "5a4eb1cf97d58693b84a54142ff1a38129d8395e1305658b52acfb9096db0787"
+  },
+  {
+    "path": "artifacts\\timer-fix\\controls\\frozen-assets\\fixture\\obj\\project.assets.json",
+    "sha256": "fd29b7edf1d72f0833052e7a7abba55e321810dd336420504ca1610bcd38ae93"
+  },
+  {
+    "path": "artifacts\\timer-fix\\frozen-production-debug\\assets.json",
+    "sha256": "4bfc29de518ed884c2403118144da8387fc85949843df3e551bc6c13447bf17b"
+  },
+  {
+    "path": "artifacts\\timer-fix\\frozen-production-release\\assets.json",
+    "sha256": "4bfc29de518ed884c2403118144da8387fc85949843df3e551bc6c13447bf17b"
+  },
+  {
+    "path": "artifacts\\timer-fix\\frozen-production-debug-missing-native\\assets.json",
+    "sha256": "4bfc29de518ed884c2403118144da8387fc85949843df3e551bc6c13447bf17b"
+  },
+  {
+    "path": "artifacts\\timer-fix\\tests\\assets.json",
+    "sha256": "5507c319b15b1958328c6fe05d61f492d42f006ec32b19296a2b5480ba1d3fa2"
+  }
+]

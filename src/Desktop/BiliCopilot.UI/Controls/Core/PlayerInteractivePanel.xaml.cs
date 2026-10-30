@@ -22,6 +22,7 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
     private bool _isLeftButton;
     private bool _isRightButton;
     private bool _isHolding;
+    private bool _isInteractionActive;
 
     public PlayerInteractivePanel()
     {
@@ -37,6 +38,9 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
         _tempControlTimer.Tick += OnTempControlTimerTick;
         HorizontalAlignment = HorizontalAlignment.Stretch;
         VerticalAlignment = VerticalAlignment.Stretch;
+        // The base detaches its lifecycle handlers on the first unload.
+        Loaded += OnPanelLoaded;
+        Unloaded += OnPanelUnloaded;
     }
 
     internal static string GetPanscanText(bool usingPanscan)
@@ -107,11 +111,28 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
         e.Handled = true;
     }
 
-    protected override void OnControlLoaded()
-        => _tempControlTimer.Start();
+    private void OnPanelLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_isInteractionActive)
+        {
+            return;
+        }
 
-    protected override void OnControlUnloaded()
-        => CleanupInteractionState();
+        _isInteractionActive = true;
+        _tempControlTimer.Start();
+    }
+
+    private void OnPanelUnloaded(object sender, RoutedEventArgs e)
+    {
+        if (!_isInteractionActive)
+        {
+            return;
+        }
+
+        _isInteractionActive = false;
+        _tempControlTimer.Stop();
+        CleanupInteractionState();
+    }
 
     /// <inheritdoc/>
     protected override void OnPointerMoved(PointerRoutedEventArgs e)
@@ -195,6 +216,12 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
 
     private void OnTempControlTimerTick(DispatcherQueueTimer sender, object args)
     {
+        // ViewModel is a dependency property; even reading it after teardown can fail.
+        if (!_isInteractionActive)
+        {
+            return;
+        }
+
         if (ViewModel == null)
         {
             return;

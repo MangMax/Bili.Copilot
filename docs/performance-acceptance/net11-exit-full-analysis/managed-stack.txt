@@ -1,0 +1,18 @@
+Reader X64 PID=38208
+CLR 11.0.26.52348 Core 7ffef0860000
+DAC_HANDLE kind=RefCounted targetMatchesHolder=true
+LEO=1fb6ca435d0 dispatch=1fb6ca435c0 wrapper=1fb6ca43540 handle=1fb7cd99f88 holder=1eb92c6c788 type=System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder
+LEO object=1eb92c6aad0 type=System.Runtime.InteropServices.COMException
+LEO HR=8000ffff
+LEOFRAME 00007ffe93fcc14f WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|41_0(Int32) module=WinRT.Runtime.dll token=60006ba reportedIL=26 mappingCoversIP=True nativeStart=7ffe93fcc0f0
+LEOFRAME 00007ffe9388a041 BiliCopilot.UI.Controls.Core.PlayerInteractivePanel.OnTempControlTimerTick(Microsoft.UI.Dispatching.DispatcherQueueTimer, System.Object) module=BiliCopilot.UI.dll token=600227b reportedIL=0 mappingCoversIP=False nativeStart=7ffe938899c0
+LEOFRAME 00007ffe92df3f02 WinRT.GenericTypeInstantiations.Windows_Foundation_TypedEventHandler_2_Microsoft_UI_Dispatching_DispatcherQueueTimer__object.Do_Abi_Invoke(IntPtr, IntPtr, IntPtr) module=Microsoft.InteractiveExperiences.Projection.dll token=6003981 reportedIL=-1 mappingCoversIP=True nativeStart=7ffe92df3c90
+JIT=ABI.Microsoft.UI.Xaml.IApplicationStaticsMethods.Start(WinRT.IObjectReference, Microsoft.UI.Xaml.ApplicationInitializationCallback) native=7ffe90e10240
+THREAD 39912 managed=2
+00007fffae04a708 0000002ed937d1b8 Runtime InlinedCallFrame
+00007ffe90e1034f 0000002ed937d1b8 Runtime InlinedCallFrame
+00007ffe90e1034f 0000002ed937d140 ManagedMethod ABI.Microsoft.UI.Xaml.IApplicationStaticsMethods.Start(WinRT.IObjectReference, Microsoft.UI.Xaml.ApplicationInitializationCallback)
+00007ffe90e1010c 0000002ed937d270 ManagedMethod Microsoft.UI.Xaml.Application.Start(Microsoft.UI.Xaml.ApplicationInitializationCallback)
+00007ffe90e0fee0 0000002ed937d2b0 ManagedMethod BiliCopilot.UI.Program.Main(System.String[])
+00007ffe8cc60929 0000002ed937d300 ManagedMethod System.Environment.CallEntryPoint(IntPtr, System.String[]*, Int32*, Boolean, System.Exception*)
+THREAD CurrentExceptionPresent=False

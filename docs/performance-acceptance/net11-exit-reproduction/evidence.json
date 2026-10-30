@@ -1,0 +1,1226 @@
+{
+  "status": "HOLD",
+  "production": "f6ed3ec063df8701bb57115abb40c4f7bcffc386",
+  "kernel": "0ae5e4e000a41a07f6696746706df11c06e8835b",
+  "originalAttempts": 1,
+  "controllerComparisons": 0,
+  "historicalAcceptedSha256": "42652c0186d209a7500488f47e7dc8c4ff00b8088c353d3c54b0b83d27453caa",
+  "observation": {
+    "queryComplete": true,
+    "collectionEndUtc": "2026-10-30T17:13:44.7506704Z",
+    "launchTicks": 248418488203,
+    "terminated": true,
+    "pid": 38208,
+    "terminationUtc": "2026-10-30T17:13:14.6387526Z",
+    "bookmark": 6522,
+    "handleRetained": true,
+    "exitCode": 3221226107,
+    "startUtc": "2026-10-30T17:08:44.0226859Z",
+    "queries": [
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251124239347,
+        "ok": true,
+        "utc": "2026-10-30T17:13:14.6614552Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251129466145,
+        "ok": true,
+        "utc": "2026-10-30T17:13:15.1841343Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251134729483,
+        "ok": true,
+        "utc": "2026-10-30T17:13:15.7104726Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251139955505,
+        "ok": true,
+        "utc": "2026-10-30T17:13:16.2330740Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251145232569,
+        "ok": true,
+        "utc": "2026-10-30T17:13:16.7607801Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251150487408,
+        "ok": true,
+        "utc": "2026-10-30T17:13:17.2862630Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251155716791,
+        "ok": true,
+        "utc": "2026-10-30T17:13:17.8092035Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251161018113,
+        "ok": true,
+        "utc": "2026-10-30T17:13:18.3393358Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251166327704,
+        "ok": true,
+        "utc": "2026-10-30T17:13:18.8702931Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251171604810,
+        "ok": true,
+        "utc": "2026-10-30T17:13:19.3980050Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251176861844,
+        "ok": true,
+        "utc": "2026-10-30T17:13:19.9237066Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251182174619,
+        "ok": true,
+        "utc": "2026-10-30T17:13:20.4549851Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251187481191,
+        "ok": true,
+        "utc": "2026-10-30T17:13:20.9856419Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251192770185,
+        "ok": true,
+        "utc": "2026-10-30T17:13:21.5145413Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251198001085,
+        "ok": true,
+        "utc": "2026-10-30T17:13:22.0376318Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251203290446,
+        "ok": true,
+        "utc": "2026-10-30T17:13:22.5665665Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251208570068,
+        "ok": true,
+        "utc": "2026-10-30T17:13:23.0945300Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251213836306,
+        "ok": true,
+        "utc": "2026-10-30T17:13:23.6211514Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251219078078,
+        "ok": true,
+        "utc": "2026-10-30T17:13:24.1453330Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251224356422,
+        "ok": true,
+        "utc": "2026-10-30T17:13:24.6731621Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251229634609,
+        "ok": true,
+        "utc": "2026-10-30T17:13:25.2009844Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251234879261,
+        "ok": true,
+        "utc": "2026-10-30T17:13:25.7254506Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251240185258,
+        "ok": true,
+        "utc": "2026-10-30T17:13:26.2560432Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251245413239,
+        "ok": true,
+        "utc": "2026-10-30T17:13:26.7788434Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251250689796,
+        "ok": true,
+        "utc": "2026-10-30T17:13:27.3065048Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251255967626,
+        "ok": true,
+        "utc": "2026-10-30T17:13:27.8342883Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251261206372,
+        "ok": true,
+        "utc": "2026-10-30T17:13:28.3581627Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251266526772,
+        "ok": true,
+        "utc": "2026-10-30T17:13:28.8902044Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251271761615,
+        "ok": true,
+        "utc": "2026-10-30T17:13:29.4136880Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251277039507,
+        "ok": true,
+        "utc": "2026-10-30T17:13:29.9414768Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251282333809,
+        "ok": true,
+        "utc": "2026-10-30T17:13:30.4709080Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251287551991,
+        "ok": true,
+        "utc": "2026-10-30T17:13:30.9927263Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251292843046,
+        "ok": true,
+        "utc": "2026-10-30T17:13:31.5218318Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251298208177,
+        "ok": true,
+        "utc": "2026-10-30T17:13:32.0583436Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251303388731,
+        "ok": true,
+        "utc": "2026-10-30T17:13:32.5764000Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251308678586,
+        "ok": true,
+        "utc": "2026-10-30T17:13:33.1053848Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251313963223,
+        "ok": true,
+        "utc": "2026-10-30T17:13:33.6338486Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251319223913,
+        "ok": true,
+        "utc": "2026-10-30T17:13:34.1599185Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251324513888,
+        "ok": true,
+        "utc": "2026-10-30T17:13:34.6889160Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251329813920,
+        "ok": true,
+        "utc": "2026-10-30T17:13:35.2189192Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251335073998,
+        "ok": true,
+        "utc": "2026-10-30T17:13:35.7449258Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251340378908,
+        "ok": true,
+        "utc": "2026-10-30T17:13:36.2754175Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251345665111,
+        "ok": true,
+        "utc": "2026-10-30T17:13:36.8040383Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251350987005,
+        "ok": true,
+        "utc": "2026-10-30T17:13:37.3362273Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251356306002,
+        "ok": true,
+        "utc": "2026-10-30T17:13:37.8681263Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251361600984,
+        "ok": true,
+        "utc": "2026-10-30T17:13:38.3976247Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251366893184,
+        "ok": true,
+        "utc": "2026-10-30T17:13:38.9268441Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251372277814,
+        "ok": true,
+        "utc": "2026-10-30T17:13:39.4653078Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251377615320,
+        "ok": true,
+        "utc": "2026-10-30T17:13:39.9990586Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251382838689,
+        "ok": true,
+        "utc": "2026-10-30T17:13:40.5213959Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251388079790,
+        "ok": true,
+        "utc": "2026-10-30T17:13:41.0455051Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251393356285,
+        "ok": true,
+        "utc": "2026-10-30T17:13:41.5731552Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251398655107,
+        "ok": true,
+        "utc": "2026-10-30T17:13:42.1030301Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251403871003,
+        "ok": true,
+        "utc": "2026-10-30T17:13:42.6246279Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251409131985,
+        "ok": true,
+        "utc": "2026-10-30T17:13:43.1507253Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251414389861,
+        "ok": true,
+        "utc": "2026-10-30T17:13:43.6765128Z"
+      },
+      {
+        "visibleRecords": [
+          "6525",
+          "6526"
+        ],
+        "ticks": 251419665550,
+        "ok": true,
+        "utc": "2026-10-30T17:13:44.2040826Z"
+      }
+    ],
+    "creationFileTime": 134378537240226859,
+    "observationComplete": true,
+    "exitRequest": [
+      {
+        "sequence": 608,
+        "utc": "2026-10-30T17:12:58.751758Z",
+        "ticks": 250965142252,
+        "pid": 38208,
+        "tid": 39912,
+        "managedThread": 2,
+        "stage": "explicit-exit",
+        "owner": {
+          "players": 1
+        }
+      }
+    ],
+    "package": "Mang.BiliCopilot.ExitDiag.XBC1.original1_2.2610.0.1_x64__y1mf40g4r9srg",
+    "managedUnhandled": 0,
+    "terminationTicks": 251124012454,
+    "exe": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-bc1a3769\\artifacts\\exit-reproduction\\original1\\layout/BiliCopilot.UI.exe"
+  },
+  "events": [
+    {
+      "id": 1000,
+      "record": 6525,
+      "utc": "2026-10-30T17:13:06.1033549Z",
+      "data": {
+        "ModuleName": "CoreMessagingXP.dll",
+        "ModuleVersion": "12.6.4.0",
+        "ExceptionCode": "c000027b",
+        "FaultingOffset": "00000000000b17fc",
+        "ProcessId": "0x9540",
+        "ProcessCreationTime": "0x1dd689151a3ec2b",
+        "AppPath": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-bc1a3769\\artifacts\\exit-reproduction\\original1\\layout\\BiliCopilot.UI.exe",
+        "IntegratorReportId": "babd1140-1684-4cc9-9890-6acb730a0d9b",
+        "PackageFullName": "Mang.BiliCopilot.ExitDiag.XBC1.original1_2.2610.0.1_x64__y1mf40g4r9srg"
+      }
+    },
+    {
+      "id": 1001,
+      "record": 6526,
+      "utc": "2026-10-30T17:13:12.9144788Z",
+      "data": {
+        "P1": "Mang.BiliCopilot.ExitDiag.XBC1.original1_2.2610.0.1_x64__y1mf40g4r9srg",
+        "P5": "combase.dll",
+        "P8": "8000ffff",
+        "P9": "00000000000c4063",
+        "ReportId": "babd1140-1684-4cc9-9890-6acb730a0d9b"
+      }
+    }
+  ],
+  "verdict": {
+    "status": "BLOCKED",
+    "reasons": [
+      "exact-process-application-error",
+      "nonzero-target-exit-code"
+    ],
+    "faultRecords": [
+      6525
+    ],
+    "werRecords": [
+      6526
+    ],
+    "reportIds": [
+      "babd1140-1684-4cc9-9890-6acb730a0d9b"
+    ],
+    "futureExactEvidenceRevokes": true
+  },
+  "exitStages": [
+    {
+      "sequence": 608,
+      "utc": "2026-10-30T17:12:58.751758Z",
+      "ticks": 250965142252,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "explicit-exit",
+      "owner": {
+        "players": 1
+      }
+    },
+    {
+      "sequence": 609,
+      "utc": "2026-10-30T17:12:58.7595866Z",
+      "ticks": 250965220539,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "settings-save-start",
+      "owner": null
+    },
+    {
+      "sequence": 610,
+      "utc": "2026-10-30T17:12:58.7610261Z",
+      "ticks": 250965234932,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "settings-save-complete",
+      "owner": null
+    },
+    {
+      "sequence": 611,
+      "utc": "2026-10-30T17:12:58.7626637Z",
+      "ticks": 250965251309,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "players-close-start",
+      "owner": {
+        "count": 1
+      }
+    },
+    {
+      "sequence": 612,
+      "utc": "2026-10-30T17:12:58.7640801Z",
+      "ticks": 250965265471,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "player-destroy-start",
+      "owner": {
+        "IsClosed": false,
+        "IsDisposed": false
+      }
+    },
+    {
+      "sequence": 613,
+      "utc": "2026-10-30T17:12:58.7740724Z",
+      "ticks": 250965365396,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "player-destroying",
+      "owner": {
+        "IsClosed": false,
+        "IsDisposed": false
+      }
+    },
+    {
+      "sequence": 614,
+      "utc": "2026-10-30T17:12:58.7838198Z",
+      "ticks": 250965462871,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "player-destroy-complete",
+      "owner": {
+        "IsClosed": true,
+        "IsDisposed": false
+      }
+    },
+    {
+      "sequence": 615,
+      "utc": "2026-10-30T17:12:58.7887959Z",
+      "ticks": 250965512632,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "xaml-source-dispose-start",
+      "owner": {
+        "IsClosed": true,
+        "IsDisposed": true
+      }
+    },
+    {
+      "sequence": 616,
+      "utc": "2026-10-30T17:12:58.7896584Z",
+      "ticks": 250965521259,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "xaml-source-dispose-complete",
+      "owner": {
+        "IsClosed": true,
+        "IsDisposed": true
+      }
+    },
+    {
+      "sequence": 617,
+      "utc": "2026-10-30T17:12:58.7910177Z",
+      "ticks": 250965534854,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "players-close-complete",
+      "owner": null
+    },
+    {
+      "sequence": 618,
+      "utc": "2026-10-30T17:12:58.7920254Z",
+      "ticks": 250965544926,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "tray-dispose-start",
+      "owner": null
+    },
+    {
+      "sequence": 619,
+      "utc": "2026-10-30T17:12:58.7943438Z",
+      "ticks": 250965568109,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "tray-dispose-complete",
+      "owner": null
+    },
+    {
+      "sequence": 620,
+      "utc": "2026-10-30T17:12:58.795458Z",
+      "ticks": 250965579251,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "tray-release-start",
+      "owner": null
+    },
+    {
+      "sequence": 621,
+      "utc": "2026-10-30T17:12:58.7967996Z",
+      "ticks": 250965592667,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "tray-release-complete",
+      "owner": null
+    },
+    {
+      "sequence": 622,
+      "utc": "2026-10-30T17:12:58.8194441Z",
+      "ticks": 250965819113,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "main-close-start",
+      "owner": null
+    },
+    {
+      "sequence": 623,
+      "utc": "2026-10-30T17:12:58.878241Z",
+      "ticks": 250966407085,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "main-close-complete",
+      "owner": null
+    },
+    {
+      "sequence": 624,
+      "utc": "2026-10-30T17:12:58.8788135Z",
+      "ticks": 250966412806,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "app-exit-start",
+      "owner": null
+    },
+    {
+      "sequence": 625,
+      "utc": "2026-10-30T17:12:58.8948448Z",
+      "ticks": 250966573121,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "fixture-controller-closed",
+      "owner": null
+    },
+    {
+      "sequence": 626,
+      "utc": "2026-10-30T17:12:58.9224134Z",
+      "ticks": 250966848808,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "app-exit-return",
+      "owner": null
+    },
+    {
+      "sequence": 627,
+      "utc": "2026-10-30T17:12:58.9292517Z",
+      "ticks": 250966917190,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "dispatcher-shutdown-starting",
+      "owner": null
+    },
+    {
+      "sequence": 628,
+      "utc": "2026-10-30T17:12:59.2072423Z",
+      "ticks": 250969697095,
+      "pid": 38208,
+      "tid": 39912,
+      "managedThread": 2,
+      "stage": "first-chance",
+      "owner": {
+        "type": "System.Runtime.InteropServices.COMException",
+        "hresult": -2147418113,
+        "frames": [
+          {
+            "type": "WinRT.ExceptionHelpers",
+            "method": "<ThrowExceptionForHR>g__Throw|41_0",
+            "line": 121,
+            "il": 26,
+            "native": 95
+          }
+        ]
+      }
+    }
+  ],
+  "traceStageCounts": {
+    "trace-initialized": 1,
+    "activation-callback-resumed": 34,
+    "focus-callback": 35,
+    "player-destroy-start": 15,
+    "player-destroying": 16,
+    "player-destroy-complete": 15,
+    "xaml-source-dispose-start": 16,
+    "xaml-source-dispose-complete": 16,
+    "first-chance": 456,
+    "tray-dispose-start": 5,
+    "tray-dispose-complete": 5,
+    "fixture-controller-created": 1,
+    "explicit-exit": 1,
+    "settings-save-start": 1,
+    "settings-save-complete": 1,
+    "players-close-start": 1,
+    "players-close-complete": 1,
+    "tray-release-start": 1,
+    "tray-release-complete": 1,
+    "main-close-start": 1,
+    "main-close-complete": 1,
+    "app-exit-start": 1,
+    "fixture-controller-closed": 1,
+    "app-exit-return": 1,
+    "dispatcher-shutdown-starting": 1
+  },
+  "dump": {
+    "sha256": "eeab35bb591c37016da7ec29ceb607a55ece8d6135d08e5d4511704d8a1a0d3d",
+    "bytes": 1550491329,
+    "flags": "0x221826",
+    "thread": 39912,
+    "code": "0xc000027b",
+    "exceptionAt": "CoreMessagingXP.dll+0xb17fc",
+    "parameters": [
+      "0x1fbbddf9730",
+      "0x1"
+    ],
+    "memoryRanges": 6091,
+    "stowed": [
+      {
+        "size": 56,
+        "signature": "0x53453032",
+        "hresult": "0x8000ffff",
+        "form": 1,
+        "thread": 39912,
+        "nestedType": "0x314f454c",
+        "nestedCaptured": true,
+        "nestedAddress": "0x1fb6ca435d0",
+        "exception": "combase.dll+0xc4063",
+        "wordSize": 8,
+        "words": 30,
+        "stack": [
+          {
+            "address": "0x7fffafcd4063",
+            "location": "combase.dll+0xc4063"
+          },
+          {
+            "address": "0x7fff3bed17bc",
+            "location": "CoreMessagingXP.dll+0xb17bc"
+          },
+          {
+            "address": "0x7fff3be58ba2",
+            "location": "CoreMessagingXP.dll+0x38ba2"
+          },
+          {
+            "address": "0x7fff3be5873b",
+            "location": "CoreMessagingXP.dll+0x3873b"
+          },
+          {
+            "address": "0x7fff3be72fe3",
+            "location": "CoreMessagingXP.dll+0x52fe3"
+          },
+          {
+            "address": "0x7fff3be399d0",
+            "location": "CoreMessagingXP.dll+0x199d0"
+          },
+          {
+            "address": "0x7fff3be391f4",
+            "location": "CoreMessagingXP.dll+0x191f4"
+          },
+          {
+            "address": "0x7fff3be2c1bc",
+            "location": "CoreMessagingXP.dll+0xc1bc"
+          },
+          {
+            "address": "0x7fff3be31f0b",
+            "location": "CoreMessagingXP.dll+0x11f0b"
+          },
+          {
+            "address": "0x7fff3be321f1",
+            "location": "CoreMessagingXP.dll+0x121f1"
+          },
+          {
+            "address": "0x7fff3be80197",
+            "location": "CoreMessagingXP.dll+0x60197"
+          },
+          {
+            "address": "0x7fff3be7ff52",
+            "location": "CoreMessagingXP.dll+0x5ff52"
+          },
+          {
+            "address": "0x7fffafa452e6",
+            "location": "user32.dll+0x152e6"
+          },
+          {
+            "address": "0x7fffafa44b6c",
+            "location": "user32.dll+0x14b6c"
+          },
+          {
+            "address": "0x7fffafa6f593",
+            "location": "user32.dll+0x3f593"
+          },
+          {
+            "address": "0x7fffb0a85d94",
+            "location": "ntdll.dll+0x165d94"
+          },
+          {
+            "address": "0x7fffadf11304",
+            "location": "win32u.dll+0x1304"
+          },
+          {
+            "address": "0x7fffafa419df",
+            "location": "user32.dll+0x119df"
+          },
+          {
+            "address": "0x7fffafa41968",
+            "location": "user32.dll+0x11968"
+          },
+          {
+            "address": "0x7fff3be806da",
+            "location": "CoreMessagingXP.dll+0x606da"
+          },
+          {
+            "address": "0x7fff3be3240c",
+            "location": "CoreMessagingXP.dll+0x1240c"
+          },
+          {
+            "address": "0x7fff3be3213d",
+            "location": "CoreMessagingXP.dll+0x1213d"
+          },
+          {
+            "address": "0x7fff3be2ed88",
+            "location": "CoreMessagingXP.dll+0xed88"
+          },
+          {
+            "address": "0x7fff3be2bf80",
+            "location": "CoreMessagingXP.dll+0xbf80"
+          },
+          {
+            "address": "0x7fff3be34659",
+            "location": "CoreMessagingXP.dll+0x14659"
+          },
+          {
+            "address": "0x7fff3becd141",
+            "location": "CoreMessagingXP.dll+0xad141"
+          },
+          {
+            "address": "0x7fff3bec7761",
+            "location": "CoreMessagingXP.dll+0xa7761"
+          },
+          {
+            "address": "0x7ffed764566e",
+            "location": "Microsoft.UI.Xaml.dll+0x79566e"
+          },
+          {
+            "address": "0x7ffed746e83b",
+            "location": "Microsoft.UI.Xaml.dll+0x5be83b"
+          },
+          {
+            "address": "0x7ffe90e1034f",
+            "location": "unmapped-code-address"
+          }
+        ]
+      }
+    ],
+    "pid": 38208,
+    "timestampUtc": "2026-10-30T17:12:59+00:00",
+    "context": {
+      "size": 1232,
+      "rip": "0x7fffae04a708",
+      "rsp": "0x2ed937bb80"
+    }
+  },
+  "moduleIdentities": [
+    {
+      "name": "coreclr.dll",
+      "base": 140732933734400,
+      "size": 4968448,
+      "timestamp": "0x6adb16e0",
+      "version": "11.0.26.52348",
+      "pdb": "coreclr.pdb",
+      "guid": "0BA84159E8304EC79276E74F5DA22F6A",
+      "age": 1
+    },
+    {
+      "name": "combase.dll",
+      "base": 140736142049280,
+      "size": 3715072,
+      "timestamp": "0x15b851a4",
+      "version": "10.0.26100.9711",
+      "pdb": "combase.pdb",
+      "guid": "4AC91D91223808F3AE6A3164A1B8B404",
+      "age": 1
+    },
+    {
+      "name": "System.Private.CoreLib.dll",
+      "base": 140731256995840,
+      "size": 18214912,
+      "timestamp": "0xa3adf26a",
+      "version": "11.0.26.52348",
+      "pdb": "System.Private.CoreLib.ni.pdb",
+      "guid": "072A734B394C9793AE66E4E04673098D",
+      "age": 1
+    },
+    {
+      "name": "BiliCopilot.UI.dll",
+      "base": 2178945253376,
+      "size": 3661824,
+      "timestamp": "0xbb752919",
+      "version": "1.0.0.0",
+      "pdb": "BiliCopilot.UI.pdb",
+      "guid": "EAD36DF5E4BA46DE9B2B85EF7DB7CAC9",
+      "age": 1
+    },
+    {
+      "name": "Microsoft.UI.Xaml.dll",
+      "base": 140732504145920,
+      "size": 15216640,
+      "timestamp": "0x198498a7",
+      "version": "3.3.0.0",
+      "pdb": "Microsoft.ui.xaml.pdb",
+      "guid": "53A92AA483D857E31AEAAE3726CA602B",
+      "age": 2
+    },
+    {
+      "name": "CoreMessagingXP.dll",
+      "base": 140734198054912,
+      "size": 1314816,
+      "timestamp": "0x6ad8ea81",
+      "version": "12.6.4.0",
+      "pdb": "CoreMessagingXP.pdb",
+      "guid": "8AF1C0CEA6304CF3ADFC047648FC2535",
+      "age": 1
+    }
+  ],
+  "loadedModules": [
+    {
+      "version": "11,0,26,52348 @Commit: 5254d8bcf59917edc1e1abc33bdf2442b77b1c70",
+      "sha256": "46A09D97AD8DD30D400A86C90AF707BEE7593B585D3CCB8586C4FFFCA404D1E2",
+      "name": "coreclr.dll",
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-bc1a3769\\artifacts\\exit-reproduction\\original1\\layout\\coreclr.dll"
+    },
+    {
+      "version": "10.0.26100.8875",
+      "sha256": "087F72ECC0C979A3B784AB319285AB64D053DFC0C274DF5B28FD40CF204A234F",
+      "name": "combase.dll",
+      "path": "C:\\WINDOWS\\System32\\combase.dll"
+    },
+    {
+      "version": "11.0.0-rc.3.26522.148+5254d8bcf59917edc1e1abc33bdf2442b77b1c70",
+      "sha256": "DF53885902E896A2B40988237CBE9CBB9F1BB0743200F05FE9257C56A29C5732",
+      "name": "System.Private.CoreLib.dll",
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-bc1a3769\\artifacts\\exit-reproduction\\original1\\layout\\System.Private.CoreLib.dll"
+    },
+    {
+      "version": "1.0.0+e04c311feb111f7e789e241ec7146c5edab39979",
+      "sha256": "8C3E8CB206CEE9C779CE407BB97DE492EF476DCB09DA51B988BA2858DB6FE6A8",
+      "name": "BiliCopilot.UI.dll",
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-bc1a3769\\artifacts\\exit-reproduction\\original1\\layout\\BiliCopilot.UI.dll"
+    },
+    {
+      "version": "2.0",
+      "sha256": "3FEB212DD3255F8B977F71197E692E4A4EF5D515EAFC9C8B3CAC49936783AA4B",
+      "name": "Microsoft.UI.Xaml.dll",
+      "path": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsAppRuntime.2_2.6.4.0_x64__8wekyb3d8bbwe\\Microsoft.UI.Xaml.dll"
+    },
+    {
+      "version": "12.6.4.0",
+      "sha256": "5B13B65289197005846BEF49FB9530EA8F60DBA34E382EB3D6170C3B5069D16B",
+      "name": "CoreMessagingXP.dll",
+      "path": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsAppRuntime.2_2.6.4.0_x64__8wekyb3d8bbwe\\CoreMessagingXP.dll"
+    }
+  ],
+  "cleanup": {
+    "processAbsent": true,
+    "observerAbsent": true,
+    "utc": "2026-10-30T17:13:46.6525239Z",
+    "observerIdentity": {
+      "pid": 38208,
+      "observerPid": 37336,
+      "observerExe": "C:\\Users\\hp\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "protocol": "external-os-v3"
+    },
+    "registrationAbsent": true,
+    "observerLauncherPid": 30904,
+    "pid": 38208,
+    "identity": "Mang.BiliCopilot.ExitDiag.XBC1.original1"
+  },
+  "finalCleanup": {
+    "collectorAbsent": true,
+    "ownedPathProcesses": [],
+    "utc": "2026-10-30T17:21:10.0231301Z",
+    "ownedRegistrationAbsent": true,
+    "buildWorkersAbsent": true
+  },
+  "collectorStopped": {
+    "pid": 38208,
+    "utc": "2026-10-30T17:13:14.390275+00:00"
+  },
+  "yields": {
+    "player": {
+      "released": true
+    },
+    "main": {
+      "released": false
+    },
+    "outer": {
+      "released": false
+    }
+  },
+  "packageComparison": {
+    "original": "docs/performance-acceptance/net11-primary/evidence/player-freeze/graphs/artifacts/net11-primary/f6ed3ec063df8701bb57115abb40c4f7bcffc386/player-fixture/obj/project.assets.json.gz",
+    "originalPackages": 134,
+    "diagnosticPackages": 134,
+    "missing": [],
+    "extra": [],
+    "different": []
+  },
+  "hwnd": {
+    "mainHwnd": 11275372,
+    "controllerHwnd": 12848372,
+    "pid": 38208
+  },
+  "artifacts": [
+    {
+      "path": "artifacts\\exit-reproduction\\original1\\crash-full.dmp",
+      "bytes": 1550491329,
+      "sha256": "eeab35bb591c37016da7ec29ceb607a55ece8d6135d08e5d4511704d8a1a0d3d"
+    },
+    {
+      "path": "artifacts\\exit-reproduction\\original1\\exit-trace.jsonl",
+      "bytes": 474987,
+      "sha256": "781deddea266fefb921197d0e92a3781f80530af65d911fb0d1a310d29396228"
+    },
+    {
+      "path": "artifacts\\exit-reproduction\\build.log",
+      "bytes": 1235874,
+      "sha256": "9ca9ba935931c73488290edde45ffb3c00bc273843a24e2ffacd7b87bf2ad811"
+    },
+    {
+      "path": "artifacts\\exit-reproduction\\build-final.log",
+      "bytes": 1232109,
+      "sha256": "46ba13ffab6a52b0da70942a0f97fa637fc744c4cac390bbfd95f3c99b4daff9"
+    },
+    {
+      "path": "artifacts\\exit-reproduction\\fixture\\frozen-all-files.json",
+      "bytes": 149768,
+      "sha256": "a765e306db6b19c424aa16c8c0a87182c0a61740c31162ea983a0561bc5bb2d3"
+    },
+    {
+      "path": "artifacts\\exit-reproduction\\fixture-input-files.json",
+      "bytes": 297165,
+      "sha256": "839bce712e12b4c389db166c1706183f9d7e85f25432f2fee52c2a273fb5512c"
+    },
+    {
+      "path": "artifacts\\exit-reproduction\\source-comparison.json",
+      "bytes": 171690,
+      "sha256": "8090ca0c0f235ee901b08cc0cdbc8a326099cc422cdd31d7a1510e2939039959"
+    },
+    {
+      "path": "artifacts\\exit-reproduction\\replay.ps1",
+      "bytes": 10821,
+      "sha256": "289165f01dc05b5a882c8c2fba6681505be161773f93c47108270c6fd5041b90"
+    },
+    {
+      "path": "artifacts\\exit-reproduction\\symbols\\CoreMessagingXP.pdb",
+      "bytes": 1441034,
+      "sha256": "e906acf097a5fa58f29a25075b91737ab21eb08a64375f534a03c857a7efd4b6"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+[
+  {
+    "name": "coreclr.dll",
+    "sha256": "46a09d97ad8dd30d400a86c90af707bee7593b585d3ccb8586c4fffca404d1e2",
+    "machine": "0x8664",
+    "timestamp": "0x6adb16e0",
+    "sizeOfImage": 4968448,
+    "codeView": [
+      {
+        "guid": "0BA84159E8304EC79276E74F5DA22F6A",
+        "age": 1
+      }
+    ],
+    "frozenManifestMatch": true,
+    "dumpModuleMatch": true,
+    "dumpVersion": "11.0.26.52348"
+  },
+  {
+    "name": "mscordaccore.dll",
+    "sha256": "6bf2f1d90753b2c72deb6654dc32ba73959bfa85e64058ae38c341feb726c819",
+    "machine": "0x8664",
+    "timestamp": "0x6adb162f",
+    "sizeOfImage": 1478656,
+    "codeView": [
+      {
+        "guid": "2C2CB465842645DCA263F8D88D9AC962",
+        "age": 1
+      }
+    ],
+    "frozenManifestMatch": true
+  },
+  {
+    "name": "System.Private.CoreLib.dll",
+    "sha256": "df53885902e896a2b40988237cbe9cbb9f1bb0743200f05fe9257c56a29c5732",
+    "machine": "0x8664",
+    "timestamp": "0xa3adf26a",
+    "sizeOfImage": 18214912,
+    "codeView": [
+      {
+        "guid": "072A734B394C9793AE66E4E04673098D",
+        "age": 1
+      },
+      {
+        "guid": "BB3B56819F31C28765FF20194436B9F8",
+        "age": 1
+      }
+    ],
+    "frozenManifestMatch": true,
+    "dumpModuleMatch": true,
+    "dumpVersion": "11.0.26.52348"
+  },
+  {
+    "name": "BiliCopilot.UI.dll",
+    "sha256": "8c3e8cb206cee9c779ce407bb97de492ef476dcb09da51b988ba2858db6fe6a8",
+    "machine": "0x8664",
+    "timestamp": "0xbb752919",
+    "sizeOfImage": 3661824,
+    "codeView": [
+      {
+        "guid": "EAD36DF5E4BA46DE9B2B85EF7DB7CAC9",
+        "age": 1
+      }
+    ],
+    "frozenManifestMatch": true,
+    "dumpModuleMatch": true,
+    "dumpVersion": "1.0.0.0"
+  },
+  {
+    "name": "WinRT.Runtime.dll",
+    "sha256": "42ac514d4aecdd3137b5f6513270de8082af81d9f205a62b7379f0f3f229319c",
+    "machine": "0x14c",
+    "timestamp": "0xf72d3d0c",
+    "sizeOfImage": 614400,
+    "codeView": [
+      {
+        "guid": "CE94161CD5194F8CB5433B920667E5C8",
+        "age": 1
+      }
+    ],
+    "frozenManifestMatch": true,
+    "dumpModuleMatch": true,
+    "dumpVersion": "2.3.1.54291"
+  },
+  {
+    "name": "Richasy.WinUIKernel.Share.dll",
+    "sha256": "396ff96a73e1128a2b695cfb8569cedba5e99fa8aa0eea57f76a1af91c19e32a",
+    "machine": "0x14c",
+    "timestamp": "0xb98d4307",
+    "sizeOfImage": 704512,
+    "codeView": [
+      {
+        "guid": "66411FE7992F4053A9FB70F664C09E44",
+        "age": 1
+      }
+    ],
+    "frozenManifestMatch": true,
+    "dumpModuleMatch": true,
+    "dumpVersion": "1.0.0.0"
+  },
+  {
+    "name": "Microsoft.WinUI.dll",
+    "sha256": "7fa53e8380789f62341245ef532467475b0fa396fdd6d296f2ca705b79ccf0e9",
+    "machine": "0x14c",
+    "timestamp": "0xcb8021e1",
+    "sizeOfImage": 7356416,
+    "codeView": [
+      {
+        "guid": "9FE3F7069DAD4994A0AD73149191CB71",
+        "age": 1
+      }
+    ],
+    "frozenManifestMatch": true,
+    "dumpModuleMatch": true,
+    "dumpVersion": "3.0.0.0"
+  },
+  {
+    "name": "Microsoft.InteractiveExperiences.Projection.dll",
+    "sha256": "3c1f72556deffb9670e27ac0026f0d9bfd0f0ad0dfdd780cb20a7881b413feef",
+    "machine": "0x14c",
+    "timestamp": "0xae928980",
+    "sizeOfImage": 1622016,
+    "codeView": [
+      {
+        "guid": "8DA306EE9B854C38BE858303E25103BB",
+        "age": 1
+      }
+    ],
+    "frozenManifestMatch": true,
+    "dumpModuleMatch": true,
+    "dumpVersion": "10.0.0.0"
+  },
+  {
+    "name": "mscordaccore.dll",
+    "sha256": "6bf2f1d90753b2c72deb6654dc32ba73959bfa85e64058ae38c341feb726c819",
+    "machine": "0x8664",
+    "timestamp": "0x6adb162f",
+    "sizeOfImage": 1478656,
+    "codeView": [
+      {
+        "guid": "2C2CB465842645DCA263F8D88D9AC962",
+        "age": 1
+      }
+    ],
+    "sameAsFrozenDAC": true
+  },
+  {
+    "source": "src/Desktop/BiliCopilot.UI/Controls/Core/PlayerInteractivePanel.xaml.cs",
+    "rcAndNet10ParentEqual": true,
+    "sha256": "0183f3c8b0c0ec18c8d7f3123d61a8c1d03629ba60c3d5a217c71467ebc77b00"
+  }
+]

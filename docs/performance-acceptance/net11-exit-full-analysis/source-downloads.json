@@ -1,0 +1,20 @@
+[
+  {
+    "file": "ComWrappers.cs.txt",
+    "url": "https://raw.githubusercontent.com/dotnet/runtime/v11.0.0-rc.3.26522.148/src/libraries/System.Private.CoreLib/src/System/Runtime/InteropServices/ComWrappers.cs",
+    "sha256": "e81289d935f4b565eac29ad96c85d29e3422b2f048064bb5585ff2ff047543ee",
+    "qualification": "RC3 tag; PE-commit raw URL returned 404; layout independently corroborated by DAC handle and managed fields"
+  },
+  {
+    "file": "ExceptionHelpers.cs.txt",
+    "url": "https://raw.githubusercontent.com/microsoft/CsWinRT/ff5227a4ffca06dfa6de8ca0a5c127c04f294291/src/WinRT.Runtime/ExceptionHelpers.cs",
+    "qualification": "Commit from frozen WinRT.Runtime.dll ProductVersion",
+    "sha256": "785ed358918e897e2841aca74766829e1f11896ae82a29004155e2e141b5a39d"
+  },
+  {
+    "file": "DependencyObject.cpp.txt",
+    "url": "https://raw.githubusercontent.com/microsoft/microsoft-ui-xaml/main/dxaml/xcp/dxaml/lib/DependencyObject.cpp",
+    "qualification": "Upstream context only; NOT a mapping to captured native image",
+    "sha256": "5cf7232dde8b40c5eaba1074bb6c198a0306e07a5976f011253722d3b77653ec"
+  }
+]

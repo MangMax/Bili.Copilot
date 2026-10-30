@@ -1,0 +1,91 @@
+MODULE Richasy.WinUIKernel.Share.dll METHOD Richasy.WinUIKernel.Share.Base.LayoutUserControlBase..ctor TOKEN 60005b7
+IL_0000 ldarg.0
+IL_0001 call Microsoft.UI.Xaml.Controls.UserControl..ctor
+IL_0006 ldarg.0
+IL_0007 ldarg.0
+IL_0008 ldftn Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnLoaded
+IL_000e newobj Microsoft.UI.Xaml.RoutedEventHandler..ctor
+IL_0013 call Microsoft.UI.Xaml.FrameworkElement.add_Loaded
+IL_0018 ldarg.0
+IL_0019 ldarg.0
+IL_001a ldftn Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnUnloaded
+IL_0020 newobj Microsoft.UI.Xaml.RoutedEventHandler..ctor
+IL_0025 call Microsoft.UI.Xaml.FrameworkElement.add_Unloaded
+IL_002a ret
+MODULE Richasy.WinUIKernel.Share.dll METHOD Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.get_ControlBindings TOKEN 60005b8
+IL_0000 ldarg.0
+IL_0001 ldfld <ControlBindings>k__BackingField
+IL_0006 ret
+MODULE Richasy.WinUIKernel.Share.dll METHOD Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnControlLoaded TOKEN 60005b9
+IL_0000 ret
+MODULE Richasy.WinUIKernel.Share.dll METHOD Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnControlUnloaded TOKEN 60005ba
+IL_0000 ret
+MODULE Richasy.WinUIKernel.Share.dll METHOD Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnLoaded TOKEN 60005bb
+IL_0000 ldarg.0
+IL_0001 ldfld _isBindingsInitialized
+IL_0006 stloc.0
+IL_0007 ldloca.s 00
+IL_0009 call TypeSpecification:1b000084.get_HasValue
+IL_000e brfalse.s 09
+IL_0010 ldloca.s 00
+IL_0012 call TypeSpecification:1b000084.GetValueOrDefault
+IL_0017 brtrue.s 28
+IL_0019 ldarg.0
+IL_001a callvirt Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.get_ControlBindings
+IL_001f dup
+IL_0020 brtrue.s 03
+IL_0022 pop
+IL_0023 br.s 10
+IL_0025 call Richasy.WinUIKernel.Share.Base.ControlBindings.get_Initialize
+IL_002a dup
+IL_002b brtrue.s 03
+IL_002d pop
+IL_002e br.s 05
+IL_0030 callvirt System.Action.Invoke
+IL_0035 ldarg.0
+IL_0036 ldc.i4.1
+IL_0037 newobj TypeSpecification:1b000084..ctor
+IL_003c stfld _isBindingsInitialized
+IL_0041 ldarg.0
+IL_0042 callvirt Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnControlLoaded
+IL_0047 ret
+MODULE Richasy.WinUIKernel.Share.dll METHOD Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnUnloaded TOKEN 60005bc
+IL_0000 ldarg.0
+IL_0001 ldarg.0
+IL_0002 ldftn Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnLoaded
+IL_0008 newobj Microsoft.UI.Xaml.RoutedEventHandler..ctor
+IL_000d call Microsoft.UI.Xaml.FrameworkElement.remove_Loaded
+IL_0012 ldarg.0
+IL_0013 ldarg.0
+IL_0014 ldftn Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnUnloaded
+IL_001a newobj Microsoft.UI.Xaml.RoutedEventHandler..ctor
+IL_001f call Microsoft.UI.Xaml.FrameworkElement.remove_Unloaded
+IL_0024 ldarg.0
+IL_0025 ldfld _isBindingsInitialized
+IL_002a stloc.0
+IL_002b ldloca.s 00
+IL_002d call TypeSpecification:1b000084.get_HasValue
+IL_0032 brfalse.s 09
+IL_0034 ldloca.s 00
+IL_0036 call TypeSpecification:1b000084.GetValueOrDefault
+IL_003b brfalse.s 28
+IL_003d ldarg.0
+IL_003e callvirt Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.get_ControlBindings
+IL_0043 dup
+IL_0044 brtrue.s 03
+IL_0046 pop
+IL_0047 br.s 10
+IL_0049 call Richasy.WinUIKernel.Share.Base.ControlBindings.get_StopTracking
+IL_004e dup
+IL_004f brtrue.s 03
+IL_0051 pop
+IL_0052 br.s 05
+IL_0054 callvirt System.Action.Invoke
+IL_0059 ldarg.0
+IL_005a ldc.i4.0
+IL_005b newobj TypeSpecification:1b000084..ctor
+IL_0060 stfld _isBindingsInitialized
+IL_0065 ldarg.0
+IL_0066 callvirt Richasy.WinUIKernel.Share.Base.LayoutUserControlBase.OnControlUnloaded
+IL_006b ret
+MODULE Richasy.WinUIKernel.Share.dll METHOD Richasy.WinUIKernel.Share.Base.LayoutUserControlBase`1.get_ViewModel TOKEN 60005bd

@@ -1,0 +1,24 @@
+00007ffe93889beb mov r8,[rdi]
+00007ffe93889bee mov rax,[r8+30h]
+00007ffe93889bf2 lea r8,[rbp-58h]
+00007ffe93889bf6 mov rcx,rdi
+00007ffe93889bf9 xor r10d,r10d
+00007ffe93889bfc mov [rbp-0F0h],r10
+00007ffe93889c03 lea r10,[7FFE93889C22h]
+00007ffe93889c0a mov [rbp-0E0h],r10
+00007ffe93889c11 lea r10,[rbp-100h]
+00007ffe93889c18 mov [rsi+8],r10
+00007ffe93889c1c mov byte ptr [rsi+4],0
+00007ffe93889c20 call rax
+00007ffe93889c22 mov byte ptr [rsi+4],1
+00007ffe93889c26 cmp dword ptr [7FFEF0CC2AA8h],0
+00007ffe93889c2d je short 00007FFE93889C35h
+00007ffe93889c2f call qword ptr [7FFEF0CB1750h]
+00007ffe93889c35 mov rcx,[rbp-0F8h]
+00007ffe93889c3c mov [rsi+8],rcx
+00007ffe93889c40 test eax,eax
+00007ffe93889c42 jl 00007FFE9388A03Ah
+00007ffe93889c48 mov rbx,[rbp-58h]
+00007ffe9388a03a mov ecx,eax
+00007ffe9388a03c call qword ptr [7FFE90FC5788h] WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|41_0(Int32)
+00007ffe9388a042 jmp 00007FFE93889C48h
