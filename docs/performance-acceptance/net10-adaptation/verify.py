@@ -1,6 +1,13 @@
-import gzip, hashlib, json, pathlib, sys, xml.etree.ElementTree as ET
+import gzip, hashlib, json, pathlib, subprocess, sys, xml.etree.ElementTree as ET
 here=pathlib.Path(__file__).parent
 ledger=json.loads((here/'evidence/ledger.json').read_text(encoding='utf-8'))
+if '--tracked' in sys.argv:
+    root=here.resolve().parents[2]
+    tracked=set(subprocess.check_output(['git','ls-files','-z'],cwd=root).decode('utf-8').split('\0'))
+    for entry in ledger:
+        if 'archive' in entry:
+            path=(here/'evidence'/entry['archive']).resolve().relative_to(root).as_posix()
+            assert path in tracked,('Archive missing from Git index',path)
 for entry in ledger:
     if 'archive' in entry:
         raw=gzip.decompress((here/'evidence'/entry['archive']).read_bytes())
@@ -51,4 +58,4 @@ if '--live' in sys.argv:
 trx=gzip.decompress((here/'evidence/tests-final/final-net10.trx.gz').read_bytes())
 tree=ET.fromstring(trx); counters=tree.find('.//{*}Counters').attrib
 assert counters['passed']=='487' and counters['failed']=='0' and counters['executed']=='487',counters
-print(json.dumps(dict(archiveHashes='PASS',nativeCompletedRuns=9,failedRunRetained=True,completedRunDlls=total,controls=7,tests=counters,liveDllCheck='PASS' if '--live' in sys.argv else 'not requested')))
+print(json.dumps(dict(archiveHashes='PASS',trackedArchiveCheck='PASS' if '--tracked' in sys.argv else 'not requested',nativeCompletedRuns=9,failedRunRetained=True,completedRunDlls=total,controls=7,tests=counters,liveDllCheck='PASS' if '--live' in sys.argv else 'not requested')))

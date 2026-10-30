@@ -100,5 +100,8 @@ owned native registrations. Run `finish-evidence.ps1` after the fixed recorded
 run IDs exist to regenerate the comparison, chart, compressed small evidence
 and fresh two-way DLL verification. `verify.py --live` additionally requires
 the retained layouts; without `--live` it verifies portable archived evidence.
+Add `--tracked` to check that every compressed archive referenced by the ledger
+is in the Git index. The four `evidence/*/obj/project.assets.json.gz` snapshots
+are intentionally tracked despite the repository's general obj-directory ignore.
 Archive hashes are computed over raw bytes before gzip compression, avoiding
 the historical text-newline hash problem. Original old evidence is not rewritten.
