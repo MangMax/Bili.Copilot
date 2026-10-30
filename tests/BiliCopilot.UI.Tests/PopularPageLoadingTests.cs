@@ -324,6 +324,55 @@ public sealed class PopularPageLoadingTests
         Assert.False(page.IsVideoLoading);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task EmptyRefreshPreservesListCursorAndPreviousUndo(bool incremental)
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        SettingsToolkit.IncrementalRecommendRefresh = incremental;
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        var original = Assert.Single(page.Videos);
+        service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("fresh")], 7));
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        var beforeEmpty = page.Videos.ToArray();
+        var calls = 0;
+        service.Recommend = _ => { calls++; return Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([], 99)); };
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        Assert.Equal(1, calls);
+        Assert.Equal(beforeEmpty, page.Videos);
+        page.UndoRefreshCommand.Execute(null);
+        Assert.Same(original, Assert.Single(page.Videos));
+        long cursor = -1;
+        service.Recommend = offset => { cursor = offset; return Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([], offset)); };
+        await page.LoadVideosCommand.ExecuteAsync(null);
+        Assert.Equal(1, cursor);
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+    }
+
+    [Fact]
+    public async Task PendingRefreshDoesNotBlockAnotherSectionOrPublishLateFailure()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        var pending = new TaskCompletionSource<(IReadOnlyList<VideoInformation>, long)>();
+        service.Recommend = _ => pending.Task;
+        var refresh = page.RefreshVideoCommand.ExecuteAsync(null);
+        page.SelectSectionCommand.Execute(page.Sections[1]);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal("Hot", Assert.Single(page.Videos).Data.BvId);
+        Assert.True(page.RefreshVideoCommand.CanExecute(null));
+        pending.SetException(new IOException("late"));
+        await refresh;
+        Assert.False(page.CanUndoRefresh);
+    }
+
     private sealed class DiscoveryService : IVideoDiscoveryService
     {
         public List<string> Requests { get; } = new();
@@ -338,7 +387,7 @@ public sealed class PopularPageLoadingTests
             Requests.Add("partitions");
             return Partitions.Task;
         }
-        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, CancellationToken cancellationToken = default)
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, int pageSize = 0, CancellationToken cancellationToken = default)
         {
             Requests.Add("Recommend");
             return Recommend(offset);
@@ -357,4 +406,3 @@ public sealed class PopularPageLoadingTests
 
     private static VideoInformation Video(string id) => new(default, null!, bvId: id);
 }
-
