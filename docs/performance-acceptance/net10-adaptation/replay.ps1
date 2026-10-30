@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$Fixture,[Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Run)
+param([Parameter(Mandatory)][string]$Fixture,[Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Run,[ValidateSet('v2','v3')][string]$Protocol='v3')
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath("$PSScriptRoot/../../..")
 $out="$root/artifacts/net10-adaptation/$Run"
@@ -43,7 +43,8 @@ try {
  if($LASTEXITCODE -ne 0){throw 'Player failed'}
  @((Get-Process -Id $appPid).Modules | ForEach-Object { @{name=$_.ModuleName;path=$_.FileName;sha256=(Get-FileHash $_.FileName).Hash;version=$_.FileVersionInfo.ProductVersion} }) | ConvertTo-Json -Depth 4 | Set-Content "$out/modules.json"
  $python=(Get-Command python).Source
- Copy-Item "$PSScriptRoot/observe.py" "$out/observe.py"
+ $observerScript=if($Protocol -eq 'v3'){'observe-fast.py'}else{'observe.py'}
+ Copy-Item "$PSScriptRoot/$observerScript" "$out/observe.py"
  Get-FileHash "$out/observe.py" | ConvertTo-Json | Set-Content "$out/observer-source-hash.json"
  $arguments=@("`"$out/observe.py`"",$appPid,"`"$layout/BiliCopilot.UI.exe`"","`"$state`"","`"$out`"")
  $observer=Start-Process $python -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput "$out/observer.stdout" -RedirectStandardError "$out/observer.stderr"
@@ -57,8 +58,11 @@ try {
  if(!$observer.WaitForExit(5000)){throw 'Observer did not finish'}
  $observer.Refresh(); if($observer.ExitCode -ne 0){throw 'Observer failed'}
  if(Get-Process -Id $appPid -ErrorAction SilentlyContinue){throw 'Explicit exit failed'}
- @{explicitExit=$true;pid=$appPid;protocol='external-os-v2'} | ConvertTo-Json | Set-Content "$out/accepted.json"
+ @{explicitExit=$true;pid=$appPid;protocol="external-os-$Protocol"} | ConvertTo-Json | Set-Content "$out/accepted.json"
 } finally {
+ if($state -and (Test-Path $state)){
+  foreach($file in Get-ChildItem -LiteralPath $state -Filter 'observe-*.json'){Copy-Item $file.FullName $out}
+ }
  if($observer -and !$observer.HasExited){Stop-Process -Id $observer.Id}
  if($observerIdentity){
   $child=Get-Process -Id $observerIdentity.observerPid -ErrorAction SilentlyContinue

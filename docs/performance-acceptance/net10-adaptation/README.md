@@ -1,4 +1,4 @@
-# Stable runtime acceptance, external observer protocol v2
+# Stable runtime acceptance, external observer protocols v2/v3
 
 Use PowerShell, Python 3 (standard library only), SDK pinned by root global.json
 and winapp 0.7.1. Run only with exclusive desktop ownership at existing 150% DPI.
@@ -13,11 +13,21 @@ There are no per-sample callbacks, UI updates or process enumeration on the UI
 dispatcher. The original `integration-pr27-pr43/IdleBaseline.cs` is untouched.
 
 Counters: GetProcessTimes, GetProcessMemoryInfo (PrivateUsage/WorkingSetSize),
-GetProcessHandleCount, Toolhelp thread snapshot filtered by target PID. Thread
-enumeration is still observer work, but occurs externally. Per-sample wall
+GetProcessHandleCount, Toolhelp process snapshot `PROCESSENTRY32W.cntThreads`
+filtered by target PID (v3). The preserved v2 implementation enumerates all
+system threads and was found to cost tens of milliseconds per sample. V3
+enumerates processes instead, retaining the same OS counter meanings. See
+`observer-probe.json` for 20 alternating self-process probes, and each native
+run for actual overhead. Per-sample wall
 overhead is recorded; no claim of zero overhead or native CPU attribution.
 CPU ms/s uses cumulative kernel+user deltas divided by monotonic elapsed time.
-Do not compare these samples by subtraction with protocol v1.
+Visibility/DPI/HWND are phase-boundary assertions copied into rows, not repeated
+UI queries; the final 20-cycle check separately verifies the live window.
+Do not subtract samples across v1, v2 and v3. V3 is the final comparison protocol;
+v2 remains native compatibility and diagnostic evidence. This is a measurement
+improvement using a long-standing Windows API, not a new .NET API performance win.
+The structure and counter are verified against
+[Microsoft's PROCESSENTRY32W documentation](https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-processentry32w).
 
 ## Prepare
 
@@ -46,7 +56,7 @@ recipe content once, removes recipes and freezes hashes of every file.
 
 ## Replay
 
-After all builds finish, run `replay.ps1 -Fixture <absolute path> -Run <fresh-id>`
+After all builds finish, run `replay.ps1 -Fixture <absolute path> -Run <fresh-id> -Protocol v3`
 in order net9, net10-common, net9, net10-common. Run final net10/2.4.1 separately.
 Never run builds or benchmarks concurrently. The runner creates a new identity
 `Mang.BiliCopilot.Runtime.N854.<fresh-id>`, checks the frozen DLL set, activates

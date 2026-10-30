@@ -1,0 +1,489 @@
+{
+  "processEntryBytes": 568,
+  "rows": [
+    {
+      "repetition": 0,
+      "observer": "observe",
+      "wallMs": 40.123399998265086,
+      "counters": {
+        "cpuMilliseconds": 78.125,
+        "privateBytes": 10305536,
+        "workingSet": 18767872,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 0,
+      "observer": "observe-fast",
+      "wallMs": 11.585399999603396,
+      "counters": {
+        "cpuMilliseconds": 109.375,
+        "privateBytes": 10305536,
+        "workingSet": 18776064,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 1,
+      "observer": "observe",
+      "wallMs": 42.08750000179862,
+      "counters": {
+        "cpuMilliseconds": 125.0,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 1,
+      "observer": "observe-fast",
+      "wallMs": 9.73370000065188,
+      "counters": {
+        "cpuMilliseconds": 171.875,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 2,
+      "observer": "observe",
+      "wallMs": 41.098699999565724,
+      "counters": {
+        "cpuMilliseconds": 171.875,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 2,
+      "observer": "observe-fast",
+      "wallMs": 8.61100000111037,
+      "counters": {
+        "cpuMilliseconds": 218.75,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 3,
+      "observer": "observe",
+      "wallMs": 40.89449999810313,
+      "counters": {
+        "cpuMilliseconds": 234.375,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 3,
+      "observer": "observe-fast",
+      "wallMs": 8.367500002350425,
+      "counters": {
+        "cpuMilliseconds": 265.625,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 4,
+      "observer": "observe",
+      "wallMs": 39.66769999897224,
+      "counters": {
+        "cpuMilliseconds": 281.25,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 4,
+      "observer": "observe-fast",
+      "wallMs": 10.50030000260449,
+      "counters": {
+        "cpuMilliseconds": 312.5,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 5,
+      "observer": "observe",
+      "wallMs": 40.33239999989746,
+      "counters": {
+        "cpuMilliseconds": 328.125,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 5,
+      "observer": "observe-fast",
+      "wallMs": 8.499399998981971,
+      "counters": {
+        "cpuMilliseconds": 359.375,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 6,
+      "observer": "observe",
+      "wallMs": 39.83189999780734,
+      "counters": {
+        "cpuMilliseconds": 375.0,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 6,
+      "observer": "observe-fast",
+      "wallMs": 8.707599998160731,
+      "counters": {
+        "cpuMilliseconds": 421.875,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 7,
+      "observer": "observe",
+      "wallMs": 42.514199998549884,
+      "counters": {
+        "cpuMilliseconds": 421.875,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 7,
+      "observer": "observe-fast",
+      "wallMs": 9.240699997462798,
+      "counters": {
+        "cpuMilliseconds": 468.75,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 8,
+      "observer": "observe",
+      "wallMs": 40.420799999992596,
+      "counters": {
+        "cpuMilliseconds": 468.75,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 8,
+      "observer": "observe-fast",
+      "wallMs": 10.25389999995241,
+      "counters": {
+        "cpuMilliseconds": 515.625,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 9,
+      "observer": "observe",
+      "wallMs": 40.735500002483604,
+      "counters": {
+        "cpuMilliseconds": 531.25,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 9,
+      "observer": "observe-fast",
+      "wallMs": 9.981700000935234,
+      "counters": {
+        "cpuMilliseconds": 562.5,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 10,
+      "observer": "observe",
+      "wallMs": 41.10270000091987,
+      "counters": {
+        "cpuMilliseconds": 578.125,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 10,
+      "observer": "observe-fast",
+      "wallMs": 8.299000000988599,
+      "counters": {
+        "cpuMilliseconds": 625.0,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 11,
+      "observer": "observe",
+      "wallMs": 40.239300000393996,
+      "counters": {
+        "cpuMilliseconds": 625.0,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 11,
+      "observer": "observe-fast",
+      "wallMs": 11.094299999967916,
+      "counters": {
+        "cpuMilliseconds": 671.875,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 12,
+      "observer": "observe",
+      "wallMs": 40.27490000225953,
+      "counters": {
+        "cpuMilliseconds": 671.875,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 12,
+      "observer": "observe-fast",
+      "wallMs": 8.487899998726789,
+      "counters": {
+        "cpuMilliseconds": 718.75,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 13,
+      "observer": "observe",
+      "wallMs": 40.89620000013383,
+      "counters": {
+        "cpuMilliseconds": 734.375,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 13,
+      "observer": "observe-fast",
+      "wallMs": 12.993800002732314,
+      "counters": {
+        "cpuMilliseconds": 765.625,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 14,
+      "observer": "observe",
+      "wallMs": 40.28499999913038,
+      "counters": {
+        "cpuMilliseconds": 781.25,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 14,
+      "observer": "observe-fast",
+      "wallMs": 8.368200000404613,
+      "counters": {
+        "cpuMilliseconds": 828.125,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 15,
+      "observer": "observe",
+      "wallMs": 39.74490000109654,
+      "counters": {
+        "cpuMilliseconds": 828.125,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 15,
+      "observer": "observe-fast",
+      "wallMs": 9.186200000840472,
+      "counters": {
+        "cpuMilliseconds": 875.0,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 16,
+      "observer": "observe",
+      "wallMs": 41.654799999378156,
+      "counters": {
+        "cpuMilliseconds": 875.0,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 16,
+      "observer": "observe-fast",
+      "wallMs": 10.812099997565383,
+      "counters": {
+        "cpuMilliseconds": 921.875,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 17,
+      "observer": "observe",
+      "wallMs": 40.57219999958761,
+      "counters": {
+        "cpuMilliseconds": 937.5,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 17,
+      "observer": "observe-fast",
+      "wallMs": 11.25750000210246,
+      "counters": {
+        "cpuMilliseconds": 968.75,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 18,
+      "observer": "observe",
+      "wallMs": 40.02930000206106,
+      "counters": {
+        "cpuMilliseconds": 984.375,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 18,
+      "observer": "observe-fast",
+      "wallMs": 9.890199999063043,
+      "counters": {
+        "cpuMilliseconds": 1015.625,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 19,
+      "observer": "observe",
+      "wallMs": 39.26859999774024,
+      "counters": {
+        "cpuMilliseconds": 1031.25,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    },
+    {
+      "repetition": 19,
+      "observer": "observe-fast",
+      "wallMs": 8.47549999889452,
+      "counters": {
+        "cpuMilliseconds": 1078.125,
+        "privateBytes": 10305536,
+        "workingSet": 18780160,
+        "handles": 121,
+        "threads": 4
+      }
+    }
+  ],
+  "medians": {
+    "observe": 40.37659999994503,
+    "observe-fast": 9.487199999057339
+  }
+}

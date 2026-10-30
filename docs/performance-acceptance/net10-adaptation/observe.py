@@ -74,6 +74,7 @@ def main():
                 rows.append(dict(**marker,sample=i,utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),monotonicSeconds=time.perf_counter(),**counters))
                 overhead.append(time.perf_counter()-before)
             atomic(state/f'observe-{phase}-done.json',dict(rows=61))
+            atomic(out/f'samples-{phase}.json',dict(protocol='external-os-v2',rows=[r for r in rows if r['phase']==phase]))
         result=dict(protocol='external-os-v2',rows=rows,observerSampleSeconds=overhead,
                     counterApis=['GetProcessTimes','GetProcessMemoryInfo','GetProcessHandleCount','Thread32First/Next'])
         atomic(state/'idle-baseline.json',result); atomic(out/'idle-baseline.json',result)
