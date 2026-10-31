@@ -1,0 +1,117 @@
+[
+  {
+    "name": "Core_SetSortsStableCopiesContainerSharesEntries",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_GetCopiesEachTimeClearLeavesCallerAndPriorGet",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_SetSameGetSnapshotRetainsEntries",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_NullSetThrowsBeforeClear",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_NullEntrySetThrowsBeforeClear",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_ClearEventAfterClearSetEventBeforeReplace",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_ThrowingStopSubscriberLeavesClearedOldList",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_AddRetainsOldDeduplicatesGrowingListWithoutSort",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_AddNullThrowsAndNullEntryCanPartiallyAppend",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_AddEmptyKeepsOldAndEmitsNoStop",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Legacy_SetGetAliasPreservesOrderAndEntryEdits",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Legacy_ClearClearsCallerAndSetClearsOld",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Legacy_SetSameContainerClearsIt",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Legacy_NullSetClearsOldAndCreatesEmpty",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Legacy_AddReplacesOldKeepsIncomingDuplicatesWithoutSort",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Legacy_AddEmptyOrSameContainerReplacesWithEmpty",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Legacy_AddNullOrNullEntryThrowsBeforeReplacement",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Legacy_NullEntrySetAcceptedAndEmptyOldAddAcceptsNull",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_EmptyOldAddAcceptsFirstNullThenFailsNext",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_SchedulerSetOwnsContainerClearsOldAndNullNormalizes",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Both_AddUsesCurrentIdsIncludingNullAndEmpty",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Core_SchedulerSetSameContainerClearsCaller",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "Assembly_NoDiagnosticHooks",
+    "passed": true,
+    "error": ""
+  }
+]

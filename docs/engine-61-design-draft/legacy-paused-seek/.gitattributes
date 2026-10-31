@@ -1,0 +1,5 @@
+# Preserve source/PDB and raw evidence byte hashes, including CRLF.
+* -text whitespace=cr-at-eol
+# Unified diff context prefixes and captured error output are intentional.
+candidate.patch -whitespace
+evidence/candidate2/STOP.txt -whitespace
