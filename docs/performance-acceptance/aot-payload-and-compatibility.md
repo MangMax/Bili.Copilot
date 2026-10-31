@@ -189,3 +189,9 @@ TRX 独立 XML 读取总计487、executed487、Passed487、failed0/notExecuted0�
 standards 两项（最严重：默认恢复失败）；spec 三项（最严重：正式二进制不兼容及 Vulkan 分发缺口）。结束时只读再次核对本地父 `feat/performance-45` 仍为0ab128c8且已在本分支祖先中；仅提交本节及 evidence-aot-review，无合父、推送或发布。
 
 审查交付验证：`validation.json` 的断言通过（194/13/284、364/8、487、source hashes、父 tip、kernel 初始状态及生产 src 不变）。报告与复算脚本 whitespace 检查通过；全证据 `diff --check` 仅报 `patch-whitespace-check.txt:2` 中原 git 输出引用的上游空格+tab，按原始证据保留，不把全证据检查写成零警告。
+
+### 父级修正恢复脚本（2026-10-31）
+
+保留默认恢复失败的原 red。`rebuild-mpv.ps1` 现在允许上下文换行/空白差异，并在任何 build 前验证两份完整 postimage 的 UTF-8/LF SHA256；不修改冻结 patch，不改变包版本或生成源内容。哈希与上述 recovery.json 一致，内容偏离则抛错停止。
+
+父级在新的 ignored `artifacts/mpv-recovery-parent-fix/source` 从冻结 bundle 执行脚本的 clone/checkout/apply/hash 前缀，恢复及两个哈希均通过；完整脚本 PowerShell 语法检查通过。git apply 的两条既有空白 warning 原样保留。这是恢复入口验证，未重新 pack、运行487或启动应用，不宣称新的包字节复现或 AOT实机通过。受验发布入口仍仅完整 dotnet publish + PublishAppxPackage=true，legacy入口未覆盖。
