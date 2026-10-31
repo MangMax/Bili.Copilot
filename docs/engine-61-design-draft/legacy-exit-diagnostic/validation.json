@@ -1,0 +1,200 @@
+{
+  "verdict": "Original failure remains unexplained; no production or host lifecycle fix",
+  "original": {
+    "exit": "2026-10-31T12:52:54.4592014Z",
+    "exitCode": -1073741189,
+    "retained": true,
+    "pid": 34652,
+    "forced": false,
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\full\\layout\\BiliCopilot.UI.exe"
+  },
+  "rounds": [
+    {
+      "name": "round1",
+      "exit": {
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-34a103f0\\artifacts\\legacy-exit34a1\\full\\layout\\BiliCopilot.UI.exe",
+        "retained": true,
+        "forced": false,
+        "exit": "2026-10-31T13:03:14.1378027Z",
+        "pid": 42056,
+        "exitCode": 0
+      },
+      "wer": {
+        "secondsAfterExit": 31.0215353,
+        "query": "2026-10-31T13:03:45.159338Z",
+        "matches": [],
+        "applicationLogReadable": true
+      },
+      "markers": [
+        {
+          "at": "2026-10-31T13:03:11.6614067+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "close-enter",
+            "pendingInitialization": false,
+            "IsConnecting": false
+          }
+        },
+        {
+          "at": "2026-10-31T13:03:11.7416598+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "closed",
+            "disposed": true,
+            "remaining": 0
+          }
+        },
+        {
+          "at": "2026-10-31T13:03:13.9062045+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-enter"
+          }
+        },
+        {
+          "at": "2026-10-31T13:03:13.9068083+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-close-complete"
+          }
+        },
+        {
+          "at": "2026-10-31T13:03:13.9073603+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-observer-stopped"
+          }
+        },
+        {
+          "at": "2026-10-31T13:03:13.9082347+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-tray-released"
+          }
+        },
+        {
+          "at": "2026-10-31T13:03:13.9391201+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-control-closed"
+          }
+        },
+        {
+          "at": "2026-10-31T13:03:13.9399202+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-returned"
+          }
+        }
+      ],
+      "exceptions": []
+    },
+    {
+      "name": "round2",
+      "exit": {
+        "exitCode": 0,
+        "pid": 38176,
+        "exit": "2026-10-31T13:04:42.234022Z",
+        "forced": false,
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-34a103f0\\artifacts\\legacy-exit34a1\\full\\layout2\\BiliCopilot.UI.exe",
+        "retained": true
+      },
+      "wer": {
+        "applicationLogReadable": true,
+        "matches": [],
+        "secondsAfterExit": 31.0093124,
+        "query": "2026-10-31T13:05:13.2433344Z"
+      },
+      "markers": [
+        {
+          "at": "2026-10-31T13:04:39.764876+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "close-enter",
+            "pendingInitialization": false,
+            "IsConnecting": false
+          }
+        },
+        {
+          "at": "2026-10-31T13:04:39.8513761+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "closed",
+            "disposed": true,
+            "remaining": 0
+          }
+        },
+        {
+          "at": "2026-10-31T13:04:42.0177691+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-enter"
+          }
+        },
+        {
+          "at": "2026-10-31T13:04:42.0184549+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-close-complete"
+          }
+        },
+        {
+          "at": "2026-10-31T13:04:42.0189474+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-observer-stopped"
+          }
+        },
+        {
+          "at": "2026-10-31T13:04:42.0197394+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-tray-released"
+          }
+        },
+        {
+          "at": "2026-10-31T13:04:42.0470471+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-control-closed"
+          }
+        },
+        {
+          "at": "2026-10-31T13:04:42.0481833+00:00",
+          "thread": 2,
+          "data": {
+            "kind": "exit-returned"
+          }
+        }
+      ],
+      "exceptions": []
+    }
+  ],
+  "hashes": {
+    "Danmaku.Legacy.dll": "7d6e49171fe084e9787cf40d31166638ee3fa7e2e362bfafa4d64b2e13fd45c1",
+    "Danmaku.Share.dll": "cda6dd6b9b3d87df0a7067ca3eb63af1ab984582fcec5404b9c9fe3dc257d714",
+    "Danmaku.Core.dll": "f1c475dd1b15f9cdfd7acd8a68a2b9c4f2d410edcfb672922c4781d620d40fff",
+    "BiliCopilot.UI.dll": "8607f3bb1ae401a41fb7bb046a9833f2a2e3592f4810c7a272b64c8f52aee080"
+  },
+  "source": {
+    "productionBase": "d36f948bda8ed842a120821b9da1d7bc44b1b393",
+    "equalCsXamlToOriginalConsumer": 901,
+    "different": [
+      "src/Desktop/BiliCopilot.UI/App.xaml.cs"
+    ],
+    "feed": {
+      "Danmaku.Legacy.0.0.1-loggerreview4e91.1.nupkg": "3d6e799b8cf63a509aeac07755521342a9c70678edd50a08fe4b51d08fc41c5d",
+      "Danmaku.Legacy.0.0.1-preview6.loggerreview4e91.1.nupkg": "81769b2008eb3356db3a683b4137d5f85f66bc38f6c56680f8ccfcc00301bd6d",
+      "Danmaku.Share.0.0.1-loggerreview4e91.1.nupkg": "6da5b4b7c26fb55118e8269757d846a1b80d1e7d148cdb299d53d6e617925ab4",
+      "Danmaku.Share.0.0.1-preview6.loggerreview4e91.1.nupkg": "30095e635b09da4d6674579c354a2fb040d055cc2ac58b59c812b1d9da8e71f7"
+    },
+    "media": "63152a7f99ea9f4a0750457fe6f123a457bb1dd9bb862c96499099bdc27434bd",
+    "originalMedia": "63152a7f99ea9f4a0750457fe6f123a457bb1dd9bb862c96499099bdc27434bd"
+  },
+  "kernelInitialPreserved": true,
+  "cleanup": {
+    "at": "2026-10-31T13:05:40.4618137Z",
+    "processes": 0,
+    "packages": 0
+  }
+}
