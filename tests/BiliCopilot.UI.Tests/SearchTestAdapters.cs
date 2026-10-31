@@ -5,12 +5,3 @@ namespace Richasy.WinUIKernel.Share.ViewModels
 {
     public abstract class ViewModelBase : CommunityToolkit.Mvvm.ComponentModel.ObservableObject { }
 }
-
-namespace BiliCopilot.UI.ViewModels.Core
-{
-    public sealed class NavigationViewModel
-    {
-        public void Search(string keyword) { }
-        public void SearchInRegion(string keyword) { }
-    }
-}

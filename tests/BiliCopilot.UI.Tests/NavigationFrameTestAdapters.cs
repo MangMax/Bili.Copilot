@@ -44,7 +44,7 @@ namespace BiliCopilot.UI.Controls
 }
 namespace BiliCopilot.UI.Pages
 {
-    public class NavigationTestPage : UIElement, IParameterPage, IInitializePage, ViewModels.View.ICancelPageViewModel
+    public class NavigationTestPage : Microsoft.UI.Xaml.Controls.Page, IParameterPage, IInitializePage, ViewModels.View.ICancelPageViewModel
     {
         public object? Parameter { get; private set; }
         public int InitializeCount { get; private set; }
@@ -76,8 +76,8 @@ namespace BiliCopilot.UI.Pages.Overlay
     public sealed class FansPage : NavigationTestPage { }
     public sealed class FavoritesPage : NavigationTestPage { }
     public sealed class FollowsPage : NavigationTestPage { }
-    public sealed class HistoryPage : NavigationTestPage { }
-    public sealed class SearchPage : NavigationTestPage { }
-    public sealed class UserSpacePage : NavigationTestPage { }
+    public sealed class HistoryPage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
+    public sealed class SearchPage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
+    public sealed class UserSpacePage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
     public sealed class ViewLaterPage : NavigationTestPage { }
 }
