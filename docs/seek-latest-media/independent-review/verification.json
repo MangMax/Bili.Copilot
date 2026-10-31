@@ -1,0 +1,32 @@
+{
+  "candidate": "a2c36eef095c22ae3beedcc0dae2b8c00135145a",
+  "parent": "f3f5fc22068ac0a9f6702dccb29cb009e471a879",
+  "packages": [
+    {
+      "name": "Core",
+      "packageSha": "00a76b9cd5890485bf8f1fcf1a510bf0e36eebee6039d63f19a169c0ae5be84a",
+      "dllSha": "b15225ecec93b08943ecdbf889c74bebe8873e7851b43cc3c1feb98fc84f97fd",
+      "actualPackageVerified": true
+    },
+    {
+      "name": "Legacy",
+      "packageSha": "4c5c57f0df78e76870834af9a9b17d8b169d2a6c89aed49d66b94c587eb3b867",
+      "dllSha": "2cc03ebaf8557cbf0abb96344276af717ba7a756541e0223a29a353313adfabf",
+      "actualPackageVerified": true
+    },
+    {
+      "name": "Share",
+      "packageSha": "1fe14bfaa90ef8da9373ee4b5be6d06f7bcb2e3297d75e6f90e4f03e5fb3cfb4",
+      "dllSha": "0541962accff2ca6823213b5e52449a744f0378dbf61492c82a04a45abfe8329",
+      "actualPackageVerified": true
+    }
+  ],
+  "freshTestCopyFilesEqual": 1125,
+  "kernelUnchanged": true,
+  "kernelHead": "f02c33f639addd5d421700c43fa66382beafe323",
+  "gitlink": "160000 0ae5e4e000a41a07f6696746706df11c06e8835b 0\texternals/bili-kernel",
+  "imageHashes": {
+    "core-latest20.png": "73e8d38040b3713a7ab47a7b2525a463edda4f269f40fbdf9123272131808fb0",
+    "legacy-latest20.png": "120e87529b9e580a016482bef778b708cbdc61b8d2d721c0eaeda7389f98950a"
+  }
+}
