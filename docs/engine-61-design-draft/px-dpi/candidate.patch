@@ -1,0 +1,17 @@
+diff --git a/src/Danmaku.Core/CoreNativeSurface.cs b/src/Danmaku.Core/CoreNativeSurface.cs
+index ef27a5a..bdff464 100644
+--- a/src/Danmaku.Core/CoreNativeSurface.cs
++++ b/src/Danmaku.Core/CoreNativeSurface.cs
+@@ -68,9 +68,10 @@ internal sealed class CoreNativeSurface : ICoreOwnedSurface
+         using var buffer = swap!.GetBuffer<IDXGISurface>(0);
+         target = context!.CreateBitmapFromDxgiSurface(buffer, new BitmapProperties1(
+             new Vortice.DCommon.PixelFormat(Format.B8G8R8A8_UNorm, Vortice.DCommon.AlphaMode.Premultiplied),
+-            96 * size.Scale, 96 * size.Scale, BitmapOptions.Target | BitmapOptions.CannotDraw));
++            96, 96, BitmapOptions.Target | BitmapOptions.CannotDraw));
+         context.Target = target;
+-        context.SetDpi(96 * size.Scale, 96 * size.Scale);
++        // Renderer dimensions, font sizes and positions are already physical pixels.
++        context.SetDpi(96, 96);
+         using var swap2 = swap.QueryInterface<IDXGISwapChain2>();
+         swap2.MatrixTransform = Matrix3x2.CreateScale(1 / size.Scale);
+     }
