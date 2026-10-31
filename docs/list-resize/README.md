@@ -1,5 +1,7 @@
 # Shared list resize work
 
+Follow-up to fixed review `f81fa979`: [short User P1 investigation and retained attempts](p1-results.md). The original report below remains historical evidence; the follow-up records the smaller shared cache, JPEG/WebP/AVIF native batch, and separate unresolved two-pane diagnosis.
+
 Baseline: `90e215f0`. Shared fixes implemented; native functional acceptance passes for the representative matrix. Performance is **not all-pass**: the user/avatar family still crosses the original 200ms serious-stall line, and the separate two-pane layout diagnostic remains unresolved. See [results.md](results.md), [comparison.html](comparison.html), and [review.md](review.md).
 
 ## Page → template → shared path coverage

@@ -1,0 +1,17 @@
+# P1 follow-up self-review
+
+Scope: `f81fa979` plus the short User follow-up in this worktree. This is the implementer's self-review and one handoff for subsequent review, not an independent approval.
+
+The production delta after the fixed review is the implicit AppRepeater cache setter, 2 → 0.5, plus explanatory comments. No package references, decoder, source transformation, image stream lifetime, static image cache, collection, layout ownership, notification binding, Danmaku package or seek code is changed. The lifecycle and OneWay fixes already reviewed in `f81fa979` are retained.
+
+The same-source ablation separates lifecycle-only/cache20 from lifecycle/cache2. Native lightweight event correlation places most of the diagnostic maximum heartbeat gap before decode submission, alongside realization/Loaded/surface work. This supports bounding the realization burst; it does not establish a precise exclusive CPU attribution or claim that codec work never matters. Red cache1 WebP batch results rejected the intermediate value. No 200ms threshold was raised, no User case excluded, and no global cache introduced.
+
+Functional review checks the shared policy's remount behavior, explicit style precedence limitation, recycling, append/continuous loading, current command binding, exact undo identity/anchor and image source replacement. Native acceptance uses production templates and package binaries with local adapters. Public pinned diagnostic source is explicitly separate from acceptance. The coverage table in `p1-results.md` distinguishes same-source paths from exercised native representatives.
+
+Evidence limitations remain material: background user processes were present; individual samples are not statistical confidence intervals; 100ms scroll checkpoints cannot guarantee every compositor frame has no placeholder. AVIF loaded through the existing path on this machine, which does not establish codec availability on every Windows installation. The 0.5 value deliberately retains fewer offscreen elements and may trade prefetch headroom for shorter resize bursts. Short User still has a higher maximum than the fully retained cache20 baseline.
+
+The bounded two-pane fixture still fails with E_FAIL before scroll assertions. Neither template minimum width nor shared-layout interaction nor fixture error is ruled out. The report supplies a precise one-variable follow-up; this is not signed green.
+
+The source-switch quoting failure is retained. `half-main`'s captured P1Formats source was modified during its build, so that file snapshot is not claimed as proof of the compiled avatar default. Its User screenshot proves JPEG; `half-user-png` uses a subsequent clean Rebuild and the verified original PNG for paired acceptance. Other templates were unchanged. Build/test exit codes, TRX totals, cleanup, final parent integration and archive hashes are recorded in the final results ledger after execution.
+
+No additional correctness defect was identified in the small production delta by this source review. Final native verification passed; targeted/full tests passed 113/113 and 572/572; the production Release Rebuild passed after supplying the missing local runtime assets (the failed first build remains preserved). The final source diff still contains only the cache value/comments plus review/evidence tooling and documentation. This is Release JIT/native fixture validation, not a new AOT-published-package claim.
