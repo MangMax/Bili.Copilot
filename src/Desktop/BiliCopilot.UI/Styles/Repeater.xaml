@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
+    xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater">
+    <!-- Keep a viewport on each side, rather than the package's ten on each side.
+         ItemsSource, recycling, layout, and incremental loading remain owned by AppRepeater. -->
+    <Style TargetType="repeater:AppRepeater">
+        <Setter Property="controls:RepeaterCachePolicy.VerticalCacheLength" Value="2" />
+    </Style>
+</ResourceDictionary>
