@@ -53,4 +53,15 @@
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Toolkits\Pure\*.cs" Link="Toolkits\Pure\%(Filename)%(Extension)" />
   </ItemGroup>
 
+  <!-- Real navigation/cache logic; adapters provide only the Windows presentation surface. -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/MainFrame.xaml.cs" Link="Navigation/MainFrame.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/OverlayFrame.xaml.cs" Link="Navigation/OverlayFrame.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/IParameterPage.cs" Link="Navigation/IParameterPage.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/IInitializePage.cs" Link="Navigation/IInitializePage.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/ICancelPageViewModel.cs" Link="Navigation/ICancelPageViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/NavigationPageFactory.cs" Link="Navigation/NavigationPageFactory.cs" />
+  </ItemGroup>
 </Project>
