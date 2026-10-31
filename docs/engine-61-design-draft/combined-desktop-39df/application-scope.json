@@ -1,0 +1,19 @@
+{
+  "parent": "2b8d1cb2c508ddadb3276a664a3706a63ed0fad3",
+  "speedMatchesParent": true,
+  "overlayDifference": "diff --git a/src/Desktop/BiliCopilot.UI/Controls/Core/OverlayTransportControls.xaml.cs b/src/Desktop/BiliCopilot.UI/Controls/Core/OverlayTransportControls.xaml.cs\nindex e2e1e5ef..fd6a02a9 100644\n--- a/src/Desktop/BiliCopilot.UI/Controls/Core/OverlayTransportControls.xaml.cs\n+++ b/src/Desktop/BiliCopilot.UI/Controls/Core/OverlayTransportControls.xaml.cs\n@@ -288,21 +288,14 @@ public sealed partial class OverlayTransportControls : PlayerControlBase\n     {\n         var lastProgress = _progressChangeList.LastOrDefault();\n         _progressChangeList.Clear();\n-        if (Math.Abs(lastProgress - ViewModel.Player.Position) >= 1.5)\n+        if (lastProgress != ViewModel.Player.Position)\n         {\n             if (ViewModel.IsNextTipShown)\n             {\n                 ViewModel.HideNextTipCommand.Execute(default);\n             }\n \n-            if (ViewModel.Player.PlaybackState is MpvPlayerState.End)\n-            {\n-                await ViewModel.Player.ReplayAsync(lastProgress);\n-            }\n-            else\n-            {\n-                await ViewModel.Client!.SetCurrentPositionAsync(lastProgress);\n-            }\n+            await ViewModel.ChangePositionAsync(lastProgress);\n         }\n \n         _progressChangeList.Clear();\n",
+  "productionCandidateFiles": [
+    "src/Desktop/BiliCopilot.UI/Controls/Core/ChapterSegmentBar.Interaction.cs",
+    "src/Desktop/BiliCopilot.UI/Controls/Core/ChapterSegmentBar.cs",
+    "src/Desktop/BiliCopilot.UI/Controls/Core/OverlayTransportControls.xaml.cs",
+    "src/Desktop/BiliCopilot.UI/Controls/Danmaku/VideoDanmakuPanel.xaml.cs",
+    "src/Desktop/BiliCopilot.UI/ViewModels/Core/DanmakuRenderViewModel/DanmakuRenderViewModel.Properties.cs",
+    "src/Desktop/BiliCopilot.UI/ViewModels/Core/DanmakuRenderViewModel/DanmakuRenderViewModel.cs",
+    "src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Commands.cs",
+    "src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Methods.cs",
+    "src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Playback.cs",
+    "src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.SponsorBlock.cs",
+    "src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.cs"
+  ],
+  "admission": "BLOCKED_BY_CONTINUOUS_LATEST"
+}

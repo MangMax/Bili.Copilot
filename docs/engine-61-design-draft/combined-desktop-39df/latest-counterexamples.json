@@ -1,0 +1,160 @@
+[
+  {
+    "run": "runtime2",
+    "result": {
+      "name": "LegacyTargetFourModes",
+      "pass_": false,
+      "detail": {
+        "state": {
+          "kind": "state",
+          "position": 19,
+          "state": "Paused",
+          "speed": 1,
+          "connecting": false,
+          "error": null,
+          "danmakuPosition": 19,
+          "danmakuPaused": true,
+          "xload": true,
+          "closed": false
+        },
+        "visual": {
+          "kind": "visual",
+          "panel": true,
+          "renderer": true,
+          "engine": "Legacy",
+          "master": 37576864,
+          "paused": true,
+          "stopped": false,
+          "time": 19000,
+          "width": 1646,
+          "height": 1087,
+          "scale": 1.5,
+          "speed": 1,
+          "extra": 1,
+          "font": 1,
+          "rows": [
+            {
+              "text": "ROLL18",
+              "x": 1467.6614,
+              "y": 0,
+              "width": 125.94922,
+              "height": 45.89258,
+              "age": 1000,
+              "first": 9899.9564,
+              "drawable": true
+            },
+            {
+              "text": "REV18",
+              "x": 66.88768,
+              "y": 0,
+              "width": 107.2417,
+              "height": 45.89258,
+              "age": 1000,
+              "first": 9899.9564,
+              "drawable": true
+            },
+            {
+              "text": "PRIOR19",
+              "x": 750.5991,
+              "y": 0,
+              "width": 144.80176,
+              "height": 45.89258,
+              "age": 0,
+              "first": 10899.9564,
+              "drawable": true
+            },
+            {
+              "text": "BOTTOM19",
+              "x": 730.23193,
+              "y": 0,
+              "width": 185.53613,
+              "height": 45.89258,
+              "age": 0,
+              "first": 10899.9564,
+              "drawable": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "run": "runtime3",
+    "result": {
+      "name": "CoreContinuousLatestTarget",
+      "pass_": false,
+      "detail": {
+        "state": {
+          "kind": "state",
+          "position": 19,
+          "state": "Paused",
+          "speed": 1,
+          "connecting": false,
+          "error": null,
+          "danmakuPosition": 19,
+          "danmakuPaused": true,
+          "xload": true,
+          "closed": false
+        },
+        "visual": {
+          "kind": "visual",
+          "panel": true,
+          "renderer": true,
+          "engine": "Core",
+          "master": 39745190,
+          "paused": true,
+          "stopped": false,
+          "time": 19000,
+          "width": 1646,
+          "height": 1087,
+          "scale": 1.5,
+          "speed": 1,
+          "extra": 1,
+          "font": 1,
+          "rows": [
+            {
+              "text": "ROLL18",
+              "x": 1467.6614,
+              "y": 0,
+              "width": 125.94922,
+              "height": 45.89258,
+              "age": 1000,
+              "first": -1000,
+              "drawable": true
+            },
+            {
+              "text": "REV18",
+              "x": 66.88768,
+              "y": 0,
+              "width": 107.2417,
+              "height": 45.89258,
+              "age": 1000,
+              "first": -1000,
+              "drawable": true
+            },
+            {
+              "text": "PRIOR19",
+              "x": 750.5991,
+              "y": 0,
+              "width": 144.80176,
+              "height": 45.89258,
+              "age": 0,
+              "first": 0,
+              "drawable": true
+            },
+            {
+              "text": "BOTTOM19",
+              "x": 730.23193,
+              "y": 0,
+              "width": 185.53613,
+              "height": 45.89258,
+              "age": 0,
+              "first": 0,
+              "drawable": true
+            }
+          ]
+        }
+      }
+    }
+  }
+]

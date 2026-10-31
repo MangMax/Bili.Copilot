@@ -1,0 +1,18 @@
+{
+  "command": [
+    "dotnet",
+    "build",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\src\\Desktop\\BiliCopilot.UI\\BiliCopilot.UI.csproj",
+    "-c",
+    "Release",
+    "-p:Platform=x64",
+    "-p:PublishAot=false",
+    "-p:AppxPackageSigningEnabled=false",
+    "-p:GenerateAppxPackageOnBuild=false",
+    "-p:NuGetAudit=false",
+    "-p:SolutionDir=C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\src/",
+    "--configfile",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\NuGet.Config"
+  ],
+  "exit": 0
+}

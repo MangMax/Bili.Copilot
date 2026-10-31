@@ -1,0 +1,31 @@
+{
+  "loaded": {
+    "kind": "loaded-modules",
+    "pid": 49348,
+    "modules": [
+      {
+        "name": "Danmaku.Legacy",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\layout39df-3\\Danmaku.Legacy.dll",
+        "mvid": "8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8",
+        "sha": "2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF",
+        "pdbSha": "6BEEF4C6EE57FD957A23B8EF733E6EC1D1CCEAD947DE3992CFF897490C86D228"
+      },
+      {
+        "name": "Danmaku.Core",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\layout39df-3\\Danmaku.Core.dll",
+        "mvid": "521c856b-dc73-434d-9bef-668378a72737",
+        "sha": "B15225ECEC93B08943ECDBF889C74BEBE8873E7851B43CC3C1FEB98FC84F97FD",
+        "pdbSha": "77CDEF7ABA486D04D7A9EC2CDEE9A4C41ECF42BC734D8457E3B101F2E249F28C"
+      },
+      {
+        "name": "Danmaku.Share",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\layout39df-3\\Danmaku.Share.dll",
+        "mvid": "eecebb17-32cc-4e5a-9bcc-ce6ea7c1d826",
+        "sha": "0541962ACCFF2CA6823213B5E52449A744F0378DBF61492C82A04A45ABFE8329",
+        "pdbSha": "EB96487B7CAA5FDE6863BF91190C7053D206401FF3F6A46D94E55D3F8C3E43BD"
+      }
+    ]
+  },
+  "pairing": "DLL CodeView/PDB/document checksums from unchanged combined-acceptance/metadata.json and offline-evidence.zip",
+  "symbols": "Matching PDB files placed beside loaded DLLs; this is symbol pairing, not a claim that the runtime loads PDBs."
+}
