@@ -4,9 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater">
-    <!-- Keep a viewport on each side, rather than the package's ten on each side.
+    <!-- Limit offscreen realization during resize and scrolling.
          ItemsSource, recycling, layout, and incremental loading remain owned by AppRepeater. -->
     <Style TargetType="repeater:AppRepeater">
-        <Setter Property="controls:RepeaterCachePolicy.VerticalCacheLength" Value="2" />
+        <!-- Bound the card creation burst when a width change adds a grid column. -->
+        <Setter Property="controls:RepeaterCachePolicy.VerticalCacheLength" Value="0.5" />
     </Style>
 </ResourceDictionary>
