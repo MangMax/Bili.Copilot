@@ -26,7 +26,7 @@
                         Layout="{StaticResource VideoLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:VideoItemViewModel">
-                                <components:VideoCardControl Style="{StaticResource PartitionVideoCardStyle}" ViewModel="{x:Bind}" />
+                                <components:VideoCardControl Style="{StaticResource PartitionVideoCardStyle}" ViewModel="{Binding}" />
                             </DataTemplate>
                         </repeater:AppRepeater.ItemTemplate>
                     </repeater:AppRepeater>

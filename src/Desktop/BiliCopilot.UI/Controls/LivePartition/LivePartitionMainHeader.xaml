@@ -47,7 +47,7 @@
                                 ItemsSource="{x:Bind ViewModel.FollowRooms, Mode=OneWay}">
                                 <repeater:AppRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="items:LiveItemViewModel">
-                                        <components:LiveCardControl Style="{StaticResource FollowLiveCardStyle}" ViewModel="{x:Bind}" />
+                                        <components:LiveCardControl Style="{StaticResource FollowLiveCardStyle}" ViewModel="{Binding}" />
                                     </DataTemplate>
                                 </repeater:AppRepeater.ItemTemplate>
                                 <repeater:AppRepeater.Layout>
