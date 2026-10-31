@@ -1,0 +1,236 @@
+--- a/src/Danmaku.Legacy/DanmakuFrostMaster.cs
++++ b/src/Danmaku.Legacy/DanmakuFrostMaster.cs
+@@ -23,6 +23,8 @@
+         public const uint DefaultDanmakuLayerCount = DanmakuDefaultLayerDef.DefaultLayerCount;
+ 
+         private readonly DanmakuRender _render;
++        private readonly object _playbackGate = new object();
++        private bool _pauseRequested;
+         private readonly Queue<uint> _updateTimeQueue = new Queue<uint>();
+         private readonly AutoResetEvent _updateEvent = new AutoResetEvent(false);
+         private List<DanmakuItem> _danmakuList = new List<DanmakuItem>();
+@@ -168,14 +170,14 @@
+ 
+         public void UpdateTime(uint currentMs)
+         {
+-            if (_render is null)
++            if (_render is null || _isClosing)
+             {
+                 return;
+             }
+ 
+             lock (_updateTimeQueue)
+             {
+-                if (_updateTimeQueue.LastOrDefault() == currentMs)
++                if (_isClosing || (_updateTimeQueue.Count > 0 && _updateTimeQueue.Last() == currentMs))
+                 {
+                     // Avoid duplicate updates
+                     return;
+@@ -188,24 +190,33 @@
+ 
+         public void Pause()
+         {
+-            if (!_isClosing && _render is not null)
+-            {
+-                _render.Pause();
++            lock (_playbackGate)
++            {
++                if (_isClosing) return;
++                _pauseRequested = true;
++                _render?.Pause();
+             }
+         }
+ 
+         public void Resume()
+         {
+-            _render?.Start();
++            lock (_playbackGate)
++            {
++                if (_isClosing) return;
++                _pauseRequested = false;
++                _render?.Start();
++            }
+         }
+ 
+         public void Stop()
+         {
+-            Pause();
+-            _render?.Stop();
+-            lock (_updateTimeQueue)
+-            {
+-                _updateTimeQueue.Clear();
++            lock (_playbackGate)
++            {
++                if (_isClosing) return;
++                _pauseRequested = true;
++                _render?.Pause();
++                _render?.Stop();
++                lock (_updateTimeQueue) _updateTimeQueue.Clear();
+             }
+         }
+ 
+@@ -221,30 +232,37 @@
+ 
+         public void Seek(uint targetMs)
+         {
+-            if (_render is null)
+-            {
+-                return;
+-            }
+-
+-            _isSeeking = true;
+-            Stop();
++            Seek(targetMs, true);
++        }
++
++        private void Seek(uint targetMs, bool clearQueuedUpdates)
++        {
++            // Keep the worker's list -> playback lock order. Pause/Close never
++            // wait for the list, and delayed work reads intent at commit time.
+             lock (_danmakuList)
+             {
+-                _lastIndex = 0;
+-                if (_danmakuList.Count > 0)
++                lock (_playbackGate)
+                 {
+-                    while (_danmakuList[_lastIndex].StartMs < targetMs)
+-                    {
+-                        _lastIndex++;
+-                        if (_lastIndex >= _danmakuList.Count)
+-                        {
+-                            break;
+-                        }
+-                    }
++                    if (_isClosing || _render is null) return;
++                    _isSeeking = true;
++                    try
++                    {
++                        _render.Pause();
++                        _render.Stop();
++                        // Stop can synchronously call the supplied logger.
++                        if (_isClosing) return;
++                        if (clearQueuedUpdates)
++                        {
++                            lock (_updateTimeQueue) _updateTimeQueue.Clear();
++                        }
++                        _lastIndex = 0;
++                        while (_lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs < targetMs)
++                            _lastIndex++;
++                        _lastTimeMs = targetMs;
++                        _render.Start(_pauseRequested);
++                    }
++                    finally { _isSeeking = false; }
+                 }
+-                _lastTimeMs = targetMs;
+-                Resume();
+-                _isSeeking = false;
+             }
+         }
+ 
+@@ -256,12 +274,13 @@
+ 
+         public void Close()
+         {
+-            if (!_isClosing)
+-            {
++            lock (_playbackGate)
++            {
++                if (_isClosing) return;
+                 _isClosing = true;
+-                _updateEvent?.Set();
++                lock (_updateTimeQueue) _updateTimeQueue.Clear();
++                _updateEvent.Set();
+                 _render?.Close();
+-
+                 Logger.Log("DanmakuFrostMaster is closed");
+             }
+         }
+@@ -341,6 +360,7 @@
+                         if (_updateTimeQueue.Count > 0)
+                         {
+                             currentTimeMs = _updateTimeQueue.Dequeue();
++                            if (_updateTimeQueue.Count > 0) _updateEvent.Set();
+                         }
+                     }
+                     if (currentTimeMs == 0)
+@@ -354,11 +374,15 @@
+                         if (currentTimeMs < _lastTimeMs || currentTimeMs - _lastTimeMs > 5000)
+                         {
+                             Logger.Log("Reseek after a long time suspension");
+-                            Seek(currentTimeMs);
++                            Seek(currentTimeMs, false);
+                         }
+                         else
+                         {
+-                            _lastTimeMs = currentTimeMs;
++                            lock (_playbackGate)
++                            {
++                                if (_isClosing) return;
++                                _lastTimeMs = currentTimeMs;
++                            }
+                         }
+ 
+                         while (currentTimeMs > 0 && _lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs <= currentTimeMs)
+@@ -400,7 +424,11 @@
+                                         _ => DanmakuDefaultLayerDef.RollingLayerId,
+                                     };
+ 
+-                                    _render.RenderDanmakuItem(layerId, _danmakuList[_lastIndex]);
++                                    lock (_playbackGate)
++                                    {
++                                        if (_isClosing) return;
++                                        _render.RenderDanmakuItem(layerId, _danmakuList[_lastIndex]);
++                                    }
+                                 }
+                             }
+ 
+--- a/src/Danmaku.Legacy/DanmakuRender.cs
++++ b/src/Danmaku.Legacy/DanmakuRender.cs
+@@ -543,13 +543,15 @@
+             Debug.WriteLine("DanmakuRender is cleared");
+         }
+ 
+-        public void Start()
++        public void Start() => Start(false);
++
++        internal void Start(bool paused)
+         {
+             Debug.WriteLine("DanmakuRender is started");
+ 
+             if (_canvas != null)
+             {
+-                _isPaused = false;
++                _isPaused = paused;
+             }
+ 
+             _isStopped = false;
+@@ -633,7 +635,7 @@
+ 
+         private void OnCanvasUpdate(ICanvasAnimatedControl sender, CanvasAnimatedUpdateEventArgs args)
+         {
+-            if (_canvas is null || CanvasWidth <= 0 || CanvasHeight <= 0 || _isPaused)
++            if (_canvas is null || CanvasWidth <= 0 || CanvasHeight <= 0)
+             {
+                 return;
+             }
+@@ -669,12 +671,19 @@
+                         }
+ 
+                         DanmakuRenderItem renderItem = renderList[i];
++                        bool paused = _isPaused;
++                        if (paused && renderItem.IsFirstRenderTimeSet)
++                        {
++                            // The canvas keeps ticking so a paused seek can lay out
++                            // its first frame. Exclude those ticks from item age.
++                            renderItem.FirstRenderTime += args.Timing.ElapsedTime;
++                        }
+                         if (!renderItem.IsFirstRenderTimeSet)
+                         {
+                             renderItem.FirstRenderTime = args.Timing.TotalTime;
+                             renderItem.IsFirstRenderTimeSet = true;
+                         }
+-                        float elapsedMs = (float)args.Timing.ElapsedTime.TotalMilliseconds;
++                        float elapsedMs = paused ? 0 : (float)args.Timing.ElapsedTime.TotalMilliseconds;
+                         float durationMs = (float)(args.Timing.TotalTime - renderItem.FirstRenderTime).TotalMilliseconds;
+                         bool removeItem = false;
+ 

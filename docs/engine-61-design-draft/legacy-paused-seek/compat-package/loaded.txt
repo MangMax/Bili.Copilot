@@ -1,0 +1,6 @@
+PDB document checks=25
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-1085f94e\artifacts\legacy-paused-seek\compat-package\Danmaku.Core.dll SHA256=9B8F31C7A7EB4AC285474F8C552B4EECF0A31AFA598609E1220389D287E4F86A MVID=06f2fcc8-b300-4678-b1e7-ae3e76298e44
+PDB document checks=7
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-1085f94e\artifacts\legacy-paused-seek\compat-package\Danmaku.Legacy.dll SHA256=27A3EC6DD222A4ACB242E82799F0B83FCF5FAB2FA40A9A5704575B7B8C5FAB1C MVID=a7e0e5ee-24b5-409b-a17c-1c8813e755e9
+PDB document checks=9
+C:\Users\hp\.t3\worktrees\Bili.Copilot\t3-1085f94e\artifacts\legacy-paused-seek\compat-package\Danmaku.Share.dll SHA256=D57B76C71DB06B11466B02FE101DB7FB3A22236E2074403ED0148CB4DACD8518 MVID=2eb6623b-e0c9-486c-8291-b5b1bb2a03e4

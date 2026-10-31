@@ -1,0 +1,211 @@
+Danmaku.Core :: Richasy.Danmaku.DanmakuConfiguration : System.Object attributes=Public, Sealed, BeforeFieldInit interfaces=[]
+  Method Richasy.Danmaku.DanmakuConfiguration Clone() parameters[] attributes=Public, HideBySig
+  Method Richasy.Danmaku.DanmakuConfiguration CreateDefault() parameters[] attributes=Public, Static, HideBySig
+  Property System.Nullable`1[System.Boolean] AutoControlDensity parameters[]
+  Property System.Nullable`1[System.Boolean] EnableParallelUpdate parameters[]
+  Method System.Nullable`1[System.Boolean] get_AutoControlDensity() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.Nullable`1[System.Boolean] get_EnableParallelUpdate() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.Nullable`1[System.Boolean] get_IsTextBold() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.Nullable`1[System.Boolean] get_NoOverlapSubtitle() parameters[] attributes=Public, HideBySig, SpecialName
+  Property System.Nullable`1[System.Boolean] IsTextBold parameters[]
+  Property System.Nullable`1[System.Boolean] NoOverlapSubtitle parameters[]
+  Property System.Nullable`1[System.Double] FontSizeScale parameters[]
+  Method System.Nullable`1[System.Double] get_FontSizeScale() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.Nullable`1[System.Double] get_OutlineSize() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.Nullable`1[System.Double] get_RollingSpeedBase() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.Nullable`1[System.Double] get_TextOpacity() parameters[] attributes=Public, HideBySig, SpecialName
+  Property System.Nullable`1[System.Double] OutlineSize parameters[]
+  Property System.Nullable`1[System.Double] RollingSpeedBase parameters[]
+  Property System.Nullable`1[System.Double] TextOpacity parameters[]
+  Method System.Nullable`1[System.Int32] get_RollingDensity() parameters[] attributes=Public, HideBySig, SpecialName
+  Property System.Nullable`1[System.Int32] RollingDensity parameters[]
+  Method System.Nullable`1[System.Single] get_RollingAreaRatio() parameters[] attributes=Public, HideBySig, SpecialName
+  Property System.Nullable`1[System.Single] RollingAreaRatio parameters[]
+  Property System.Nullable`1[Windows.UI.Color] BorderColor parameters[]
+  Method System.Nullable`1[Windows.UI.Color] get_BorderColor() parameters[] attributes=Public, HideBySig, SpecialName
+  Field System.String DefaultFontFamilyName parameters[] attributes=Public, Static, Literal, HasDefault constant=Microsoft YaHei
+  Property System.String FontFamilyName parameters[]
+  Method System.String get_FontFamilyName() parameters[] attributes=Public, HideBySig, SpecialName
+  Constructor Void .ctor() parameters[] attributes=Public, HideBySig, SpecialName, RTSpecialName
+  Method Void set_AutoControlDensity(System.Nullable`1[System.Boolean]) parameters[System.Nullable`1[System.Boolean] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_BorderColor(System.Nullable`1[Windows.UI.Color]) parameters[System.Nullable`1[Windows.UI.Color] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_EnableParallelUpdate(System.Nullable`1[System.Boolean]) parameters[System.Nullable`1[System.Boolean] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_FontFamilyName(System.String) parameters[System.String value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_FontSizeScale(System.Nullable`1[System.Double]) parameters[System.Nullable`1[System.Double] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_IsTextBold(System.Nullable`1[System.Boolean]) parameters[System.Nullable`1[System.Boolean] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_NoOverlapSubtitle(System.Nullable`1[System.Boolean]) parameters[System.Nullable`1[System.Boolean] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_OutlineSize(System.Nullable`1[System.Double]) parameters[System.Nullable`1[System.Double] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_RollingAreaRatio(System.Nullable`1[System.Single]) parameters[System.Nullable`1[System.Single] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_RollingDensity(System.Nullable`1[System.Int32]) parameters[System.Nullable`1[System.Int32] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_RollingSpeedBase(System.Nullable`1[System.Double]) parameters[System.Nullable`1[System.Double] value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_TextOpacity(System.Nullable`1[System.Double]) parameters[System.Nullable`1[System.Double] value None] attributes=Public, HideBySig, SpecialName
+Danmaku.Core :: Richasy.Danmaku.DanmakuRenderer : System.Object attributes=Public, Sealed, BeforeFieldInit interfaces=[System.IDisposable]
+  Property Boolean DebugMode parameters[]
+  Method Boolean get_DebugMode() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem] GetDanmakuList() parameters[] attributes=Public, HideBySig
+  Field UInt32 DefaultDanmakuLayerCount parameters[] attributes=Public, Static, Literal, HasDefault constant=6
+  Constructor Void .ctor(Microsoft.UI.Xaml.Controls.Grid, Microsoft.Extensions.Logging.ILogger`1[Richasy.Danmaku.DanmakuRenderer], Richasy.Danmaku.DanmakuConfiguration) parameters[Microsoft.UI.Xaml.Controls.Grid rootGrid None,Microsoft.Extensions.Logging.ILogger`1[Richasy.Danmaku.DanmakuRenderer] logger Optional, HasDefault=null,Richasy.Danmaku.DanmakuConfiguration initialConfig Optional, HasDefault=null] attributes=Public, HideBySig, SpecialName, RTSpecialName
+  Method Void AddDanmakuList(System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem]) parameters[System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem] danmakuList None] attributes=Public, HideBySig
+  Method Void AddRealtimeDanmaku(Richasy.Danmaku.Models.DanmakuItem, Boolean, System.Nullable`1[System.UInt32]) parameters[Richasy.Danmaku.Models.DanmakuItem item None,System.Boolean insertToList None,System.Nullable`1[System.UInt32] layerId Optional, HasDefault=null] attributes=Public, HideBySig
+  Method Void Clear() parameters[] attributes=Public, HideBySig
+  Method Void Dispose() parameters[] attributes=Public, Final, Virtual, HideBySig, VtableLayoutMask
+  Method Void Pause() parameters[] attributes=Public, HideBySig
+  Method Void Restart() parameters[] attributes=Public, HideBySig
+  Method Void Resume() parameters[] attributes=Public, HideBySig
+  Method Void Seek(UInt32) parameters[System.UInt32 targetMs None] attributes=Public, HideBySig
+  Method Void set_DebugMode(Boolean) parameters[System.Boolean value None] attributes=Public, HideBySig, SpecialName
+  Method Void SetDanmakuEnabledType(System.Nullable`1[System.Boolean], System.Nullable`1[System.Boolean], System.Nullable`1[System.Boolean]) parameters[System.Nullable`1[System.Boolean] isRollingEnabled None,System.Nullable`1[System.Boolean] isTopEnabled None,System.Nullable`1[System.Boolean] isBottomEnabled None] attributes=Public, HideBySig
+  Method Void SetDanmakuList(System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem]) parameters[System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem] danmakuList None] attributes=Public, HideBySig
+  Method Void SetLayerRenderState(UInt32, Boolean) parameters[System.UInt32 layerId None,System.Boolean render None] attributes=Public, HideBySig
+  Method Void Stop() parameters[] attributes=Public, HideBySig
+  Method Void UpdateConfiguration(Richasy.Danmaku.DanmakuConfiguration) parameters[Richasy.Danmaku.DanmakuConfiguration config None] attributes=Public, HideBySig
+  Method Void UpdateTime(UInt32) parameters[System.UInt32 currentMs None] attributes=Public, HideBySig
+Danmaku.Core :: Richasy.Danmaku.DebugInfo : System.ValueType attributes=Public, SequentialLayout, Sealed, BeforeFieldInit interfaces=[]
+  Property Double FrameRate parameters[]
+  Method Double get_FrameRate() parameters[] attributes=Public, HideBySig, SpecialName
+  Method Double get_LogicalHeight() parameters[] attributes=Public, HideBySig, SpecialName
+  Method Double get_LogicalWidth() parameters[] attributes=Public, HideBySig, SpecialName
+  Method Double get_ScaleX() parameters[] attributes=Public, HideBySig, SpecialName
+  Method Double get_ScaleY() parameters[] attributes=Public, HideBySig, SpecialName
+  Property Double LogicalHeight parameters[]
+  Property Double LogicalWidth parameters[]
+  Property Double ScaleX parameters[]
+  Property Double ScaleY parameters[]
+  Property Int32 BufferHeight parameters[]
+  Property Int32 BufferWidth parameters[]
+  Property Int32 DanmakuCount parameters[]
+  Method Int32 get_BufferHeight() parameters[] attributes=Public, HideBySig, SpecialName
+  Method Int32 get_BufferWidth() parameters[] attributes=Public, HideBySig, SpecialName
+  Method Int32 get_DanmakuCount() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.TimeSpan get_RunningTime() parameters[] attributes=Public, HideBySig, SpecialName
+  Property System.TimeSpan RunningTime parameters[]
+  Method Void set_BufferHeight(Int32) parameters[System.Int32 value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_BufferWidth(Int32) parameters[System.Int32 value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_DanmakuCount(Int32) parameters[System.Int32 value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_FrameRate(Double) parameters[System.Double value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_LogicalHeight(Double) parameters[System.Double value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_LogicalWidth(Double) parameters[System.Double value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_RunningTime(System.TimeSpan) parameters[System.TimeSpan value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_ScaleX(Double) parameters[System.Double value None] attributes=Public, HideBySig, SpecialName
+  Method Void set_ScaleY(Double) parameters[System.Double value None] attributes=Public, HideBySig, SpecialName
+Danmaku.Core :: Richasy.Danmaku.DebugRenderer : System.Object attributes=Public, Sealed, BeforeFieldInit interfaces=[System.IDisposable]
+  Constructor Void .ctor(Vortice.Direct2D1.ID2D1DeviceContext, Vortice.DirectWrite.IDWriteFactory) parameters[Vortice.Direct2D1.ID2D1DeviceContext d2dContext None,Vortice.DirectWrite.IDWriteFactory dWriteFactory None] attributes=Public, HideBySig, SpecialName, RTSpecialName
+  Method Void Dispose() parameters[] attributes=Public, Final, Virtual, HideBySig, VtableLayoutMask
+  Method Void RenderDebugInfo(Richasy.Danmaku.DebugInfo, Double) parameters[Richasy.Danmaku.DebugInfo debugInfo None,System.Double scale None] attributes=Public, HideBySig
+Danmaku.Core :: Richasy.Danmaku.ISwapChainPanelNative :  attributes=Public, ClassSemanticsMask, Abstract, Import, BeforeFieldInit interfaces=[]
+  Method SharpGen.Runtime.Result SetSwapChain(IntPtr) parameters[System.IntPtr swapChain In] attributes=Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+  Method UInt64 Release() parameters[] attributes=Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Danmaku.Legacy :: Richasy.Danmaku.Legacy.DanmakuFrostMaster : System.Object attributes=Public, BeforeFieldInit interfaces=[]
+  Property Boolean DebugMode parameters[]
+  Method Boolean get_DebugMode() parameters[] attributes=Public, HideBySig, SpecialName
+  Method System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem] GetDanmakuList() parameters[] attributes=Public, HideBySig
+  Field UInt32 DefaultDanmakuLayerCount parameters[] attributes=Public, Static, Literal, HasDefault constant=6
+  Constructor Void .ctor(Microsoft.UI.Xaml.Controls.Grid, Int32, Boolean, Microsoft.Extensions.Logging.ILogger`1[Richasy.Danmaku.Legacy.DanmakuFrostMaster]) parameters[Microsoft.UI.Xaml.Controls.Grid rootGrid None,System.Int32 refreshRate Optional, HasDefault=60,System.Boolean useSoftwareRender Optional, HasDefault=False,Microsoft.Extensions.Logging.ILogger`1[Richasy.Danmaku.Legacy.DanmakuFrostMaster] logger Optional, HasDefault=null] attributes=Public, HideBySig, SpecialName, RTSpecialName
+  Method Void AddDanmakuList(System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem]) parameters[System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem] danmakuList None] attributes=Public, HideBySig
+  Method Void AddRealtimeDanmaku(Richasy.Danmaku.Models.DanmakuItem, Boolean, UInt32) parameters[Richasy.Danmaku.Models.DanmakuItem item None,System.Boolean insertToList None,System.UInt32 layerId Optional, HasDefault=0] attributes=Public, HideBySig
+  Method Void Clear() parameters[] attributes=Public, HideBySig
+  Method Void Close() parameters[] attributes=Public, HideBySig
+  Method Void ForceSoftwareRenderer(Boolean) parameters[System.Boolean value None] attributes=Public, HideBySig
+  Method Void Pause() parameters[] attributes=Public, HideBySig
+  Method Void Restart() parameters[] attributes=Public, HideBySig
+  Method Void Resume() parameters[] attributes=Public, HideBySig
+  Method Void Seek(UInt32) parameters[System.UInt32 targetMs None] attributes=Public, HideBySig
+  Method Void set_DebugMode(Boolean) parameters[System.Boolean value None] attributes=Public, HideBySig, SpecialName
+  Method Void SetAutoControlDensity(Boolean) parameters[System.Boolean value None] attributes=Public, HideBySig
+  Method Void SetBorderColor(Windows.UI.Color) parameters[Windows.UI.Color borderColor None] attributes=Public, HideBySig
+  Method Void SetDanmakuEnabledType(System.Nullable`1[System.Boolean], System.Nullable`1[System.Boolean], System.Nullable`1[System.Boolean]) parameters[System.Nullable`1[System.Boolean] isRollingEnabled None,System.Nullable`1[System.Boolean] isTopEnabled None,System.Nullable`1[System.Boolean] isBottomEnabled None] attributes=Public, HideBySig
+  Method Void SetDanmakuFontSizeOffset(Double) parameters[System.Double value None] attributes=Public, HideBySig
+  Method Void SetDanmakuList(System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem]) parameters[System.Collections.Generic.List`1[Richasy.Danmaku.Models.DanmakuItem] danmakuList None] attributes=Public, HideBySig
+  Method Void SetFontFamilyName(System.String) parameters[System.String value None] attributes=Public, HideBySig
+  Method Void SetIsTextBold(Boolean) parameters[System.Boolean value None] attributes=Public, HideBySig
+  Method Void SetLayerRenderState(UInt32, Boolean) parameters[System.UInt32 layerId None,System.Boolean render None] attributes=Public, HideBySig
+  Method Void SetNoOverlapSubtitle(Boolean) parameters[System.Boolean value None] attributes=Public, HideBySig
+  Method Void SetOpacity(Double) parameters[System.Double value None] attributes=Public, HideBySig
+  Method Void SetOutlineSize(Double) parameters[System.Double value None] attributes=Public, HideBySig
+  Method Void SetRefreshRate(Int32) parameters[System.Int32 refreshRate None] attributes=Public, HideBySig
+  Method Void SetRollingAreaRatio(Int32) parameters[System.Int32 value None] attributes=Public, HideBySig
+  Method Void SetRollingDensity(Int32) parameters[System.Int32 value None] attributes=Public, HideBySig
+  Method Void SetRollingSpeed(Double) parameters[System.Double value None] attributes=Public, HideBySig
+  Method Void Stop() parameters[] attributes=Public, HideBySig
+  Method Void UpdateTime(UInt32) parameters[System.UInt32 currentMs None] attributes=Public, HideBySig
+Danmaku.Share :: Richasy.Danmaku.Enums.DanmakuAlignmentMode : System.Enum attributes=Public, Sealed interfaces=[System.IComparable,System.IConvertible,System.IFormattable,System.ISpanFormattable]
+  Field Int32 value__ parameters[] attributes=Public, SpecialName, RTSpecialName
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode Default parameters[] attributes=Public, Static, Literal, HasDefault constant=0
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode LowerCenter parameters[] attributes=Public, Static, Literal, HasDefault constant=2
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode LowerLeft parameters[] attributes=Public, Static, Literal, HasDefault constant=1
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode LowerRight parameters[] attributes=Public, Static, Literal, HasDefault constant=3
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode MiddleCenter parameters[] attributes=Public, Static, Literal, HasDefault constant=5
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode MiddleLeft parameters[] attributes=Public, Static, Literal, HasDefault constant=4
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode MiddleRight parameters[] attributes=Public, Static, Literal, HasDefault constant=6
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode UpperCenter parameters[] attributes=Public, Static, Literal, HasDefault constant=8
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode UpperLeft parameters[] attributes=Public, Static, Literal, HasDefault constant=7
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode UpperRight parameters[] attributes=Public, Static, Literal, HasDefault constant=9
+Danmaku.Share :: Richasy.Danmaku.Enums.DanmakuFontSize : System.Enum attributes=Public, Sealed interfaces=[System.IComparable,System.IConvertible,System.IFormattable,System.ISpanFormattable]
+  Field Int32 value__ parameters[] attributes=Public, SpecialName, RTSpecialName
+  Field Richasy.Danmaku.Enums.DanmakuFontSize Larger parameters[] attributes=Public, Static, Literal, HasDefault constant=4
+  Field Richasy.Danmaku.Enums.DanmakuFontSize Largest parameters[] attributes=Public, Static, Literal, HasDefault constant=5
+  Field Richasy.Danmaku.Enums.DanmakuFontSize Normal parameters[] attributes=Public, Static, Literal, HasDefault constant=3
+  Field Richasy.Danmaku.Enums.DanmakuFontSize Smaller parameters[] attributes=Public, Static, Literal, HasDefault constant=2
+  Field Richasy.Danmaku.Enums.DanmakuFontSize Smallest parameters[] attributes=Public, Static, Literal, HasDefault constant=1
+Danmaku.Share :: Richasy.Danmaku.Enums.DanmakuMode : System.Enum attributes=Public, Sealed interfaces=[System.IComparable,System.IConvertible,System.IFormattable,System.ISpanFormattable]
+  Field Int32 value__ parameters[] attributes=Public, SpecialName, RTSpecialName
+  Field Richasy.Danmaku.Enums.DanmakuMode Advanced parameters[] attributes=Public, Static, Literal, HasDefault constant=7
+  Field Richasy.Danmaku.Enums.DanmakuMode Bottom parameters[] attributes=Public, Static, Literal, HasDefault constant=4
+  Field Richasy.Danmaku.Enums.DanmakuMode Code parameters[] attributes=Public, Static, Literal, HasDefault constant=8
+  Field Richasy.Danmaku.Enums.DanmakuMode ReverseRolling parameters[] attributes=Public, Static, Literal, HasDefault constant=6
+  Field Richasy.Danmaku.Enums.DanmakuMode Rolling parameters[] attributes=Public, Static, Literal, HasDefault constant=1
+  Field Richasy.Danmaku.Enums.DanmakuMode Subtitle parameters[] attributes=Public, Static, Literal, HasDefault constant=9
+  Field Richasy.Danmaku.Enums.DanmakuMode Top parameters[] attributes=Public, Static, Literal, HasDefault constant=5
+  Field Richasy.Danmaku.Enums.DanmakuMode Unknown parameters[] attributes=Public, Static, Literal, HasDefault constant=0
+Danmaku.Share :: Richasy.Danmaku.Enums.DanmakuPool : System.Enum attributes=Public, Sealed interfaces=[System.IComparable,System.IConvertible,System.IFormattable,System.ISpanFormattable]
+  Field Int32 value__ parameters[] attributes=Public, SpecialName, RTSpecialName
+  Field Richasy.Danmaku.Enums.DanmakuPool Normal parameters[] attributes=Public, Static, Literal, HasDefault constant=0
+  Field Richasy.Danmaku.Enums.DanmakuPool Special parameters[] attributes=Public, Static, Literal, HasDefault constant=2
+  Field Richasy.Danmaku.Enums.DanmakuPool Subtitle parameters[] attributes=Public, Static, Literal, HasDefault constant=1
+Danmaku.Share :: Richasy.Danmaku.Models.DanmakuDefaultLayerDef : System.Object attributes=Public, Abstract, Sealed, BeforeFieldInit interfaces=[]
+  Field UInt32 AdvancedLayerId parameters[] attributes=Public, Static, Literal, HasDefault constant=4
+  Field UInt32 BottomLayerId parameters[] attributes=Public, Static, Literal, HasDefault constant=3
+  Field UInt32 DefaultLayerCount parameters[] attributes=Public, Static, Literal, HasDefault constant=6
+  Field UInt32 DefaultLayerId parameters[] attributes=Public, Static, Literal, HasDefault constant=0
+  Field UInt32 ReverseRollingLayerId parameters[] attributes=Public, Static, Literal, HasDefault constant=1
+  Field UInt32 RollingLayerId parameters[] attributes=Public, Static, Literal, HasDefault constant=0
+  Field UInt32 SubtitleLayerId parameters[] attributes=Public, Static, Literal, HasDefault constant=5
+  Field UInt32 TopLayerId parameters[] attributes=Public, Static, Literal, HasDefault constant=2
+Danmaku.Share :: Richasy.Danmaku.Models.DanmakuItem : System.Object attributes=Public, BeforeFieldInit interfaces=[]
+  Field Boolean AllowDensityControl parameters[] attributes=Public
+  Field Boolean HasBorder parameters[] attributes=Public
+  Field Boolean HasOutline parameters[] attributes=Public
+  Field Boolean IsRealtime parameters[] attributes=Public
+  Field Boolean KeepDefinedFontSize parameters[] attributes=Public
+  Field Byte EndAlpha parameters[] attributes=Public
+  Field Byte StartAlpha parameters[] attributes=Public
+  Field Int32 MarginBottom parameters[] attributes=Public
+  Field Int32 MarginLeft parameters[] attributes=Public
+  Field Int32 MarginRight parameters[] attributes=Public
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode AlignmentMode parameters[] attributes=Public
+  Field Richasy.Danmaku.Enums.DanmakuAlignmentMode AnchorMode parameters[] attributes=Public
+  Field Richasy.Danmaku.Enums.DanmakuMode Mode parameters[] attributes=Public
+  Method Richasy.Danmaku.Models.DanmakuItem Clone() parameters[] attributes=Public, HideBySig
+  Field Single BaseFontSize parameters[] attributes=Public
+  Field Single DefaultBaseFontSize parameters[] attributes=Public, Static
+  Field Single EndX parameters[] attributes=Public
+  Field Single EndY parameters[] attributes=Public
+  Field Single OutlineSize parameters[] attributes=Public
+  Field Single RotateY parameters[] attributes=Public
+  Field Single RotateZ parameters[] attributes=Public
+  Field Single StartX parameters[] attributes=Public
+  Field Single StartY parameters[] attributes=Public
+  Field System.Nullable`1[System.Boolean] IsBold parameters[] attributes=Public
+  Field System.String FontFamilyName parameters[] attributes=Public
+  Field System.String Id parameters[] attributes=Public
+  Field System.String Text parameters[] attributes=Public
+  Field UInt32 StartMs parameters[] attributes=Public
+  Field UInt64 AlphaDelayMs parameters[] attributes=Public
+  Field UInt64 AlphaDurationMs parameters[] attributes=Public
+  Field UInt64 DurationMs parameters[] attributes=Public
+  Field UInt64 TranslationDelayMs parameters[] attributes=Public
+  Field UInt64 TranslationDurationMs parameters[] attributes=Public
+  Constructor Void .ctor() parameters[] attributes=Public, HideBySig, SpecialName, RTSpecialName
+  Method Void CopyFrom(Richasy.Danmaku.Models.DanmakuItem) parameters[Richasy.Danmaku.Models.DanmakuItem source None] attributes=Public, HideBySig
+  Field Windows.UI.Color OutlineColor parameters[] attributes=Public
+  Field Windows.UI.Color TextColor parameters[] attributes=Public

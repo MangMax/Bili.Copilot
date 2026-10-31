@@ -1,0 +1,10 @@
+{
+  "src/Danmaku.Legacy/DanmakuFrostMaster.cs": {
+    "before": "7999852e404635fbc6293ada70faede7b13dfcd587fd61a02ed24e47407fc3de",
+    "after": "1ad74008e7b8cce526f311d5823a6391903e9e35446726bdf380e24313ff585f"
+  },
+  "src/Danmaku.Legacy/DanmakuRender.cs": {
+    "before": "57411d94c40404e6a332326b0b258a9f173c667a310f3ad7441881bb120d0713",
+    "after": "2ee553f1c8abe2fc4741e9fe3d944ef310eed09b6ab3153cc43e8f6ddd83643a"
+  }
+}

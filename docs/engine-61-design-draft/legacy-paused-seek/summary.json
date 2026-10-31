@@ -1,0 +1,694 @@
+{
+  "official-red": {
+    "runnerExitObserved": 1,
+    "passed": 3,
+    "failed": 5,
+    "skipped": 0,
+    "completed": true,
+    "cases": [
+      {
+        "utc": "2026-10-31T12:08:03.4297464Z",
+        "name": "PausedBackward_RemainsPaused",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:08:33.9567672Z",
+        "name": "PausedShortForward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:08:34.9590535Z",
+        "name": "PausedRepeated_RemainsPaused",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:08:46.239058Z",
+        "name": "ResumeAfterPausedSeek_Runs",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:08:46.7628997Z",
+        "name": "DequeuedSeekThenPause",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:08:47.2744773Z",
+        "name": "DequeuedSeekThenResume",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:08:47.8222352Z",
+        "name": "DequeuedSeekThenClose",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false,
+            "workerExited": true
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:08:47.8241263Z",
+        "name": "CloseThenResume_RemainsClosed",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      }
+    ]
+  },
+  "candidate1": {
+    "runnerExitObserved": 1,
+    "passed": 8,
+    "failed": 1,
+    "skipped": 0,
+    "completed": true,
+    "cases": [
+      {
+        "utc": "2026-10-31T12:11:00.0764877Z",
+        "name": "PausedBackward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:11:00.5909539Z",
+        "name": "PausedBackward_NonemptyStableFrame",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "before": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":false,\"x\":0,\"y\":0}]",
+            "after": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":false,\"x\":0,\"y\":0}]"
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:11:09.3807602Z",
+        "name": "PausedShortForward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:11:10.3880075Z",
+        "name": "PausedRepeated_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:11:30.9613686Z",
+        "name": "ResumeAfterPausedSeek_Runs",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:11:31.4608768Z",
+        "name": "DequeuedSeekThenPause",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:11:31.9708771Z",
+        "name": "DequeuedSeekThenResume",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:11:32.4986588Z",
+        "name": "DequeuedSeekThenClose",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": true,
+            "workerExited": true
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:11:32.499756Z",
+        "name": "CloseThenResume_RemainsClosed",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Paused": true,
+            "Stopped": true
+          }
+        }
+      }
+    ]
+  },
+  "candidate2": {
+    "runnerExitObserved": 1,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "completed": false,
+    "cases": [
+      {
+        "utc": "2026-10-31T12:12:35.2013624Z",
+        "name": "PausedBackward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:12:38.7241699Z",
+        "name": "PausedBackward_NonemptyStableFrame",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "before": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]",
+            "after": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]"
+          }
+        }
+      }
+    ]
+  },
+  "candidate2-complete": {
+    "runnerExitObserved": 0,
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "completed": true,
+    "cases": [
+      {
+        "utc": "2026-10-31T12:20:07.4495074Z",
+        "name": "PausedBackward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:10.9784743Z",
+        "name": "PausedBackward_NonemptyStableFrame",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "before": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]",
+            "after": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]"
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:12.6459641Z",
+        "name": "PausedShortForward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:13.654281Z",
+        "name": "PausedRepeated_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:17.1691802Z",
+        "name": "PausedRepeated_NonemptyStableFrame",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "before": "[{\"text\":\"PAUSED SEEK 21\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]",
+            "after": "[{\"text\":\"PAUSED SEEK 21\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]"
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:18.6221435Z",
+        "name": "ResumeAfterPausedSeek_Runs",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:18.6239025Z",
+        "name": "ResumeAfterPausedSeek_PreservesRemainingLifetime",
+        "data": {
+          "passed": true,
+          "evidence": "[{\"text\":\"PAUSED SEEK 21\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]"
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:21.8394823Z",
+        "name": "ResumeAfterPausedSeek_ExpiresNormally",
+        "data": {
+          "passed": true,
+          "evidence": "[]"
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:22.3737959Z",
+        "name": "DequeuedSeekThenPause",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:22.8947147Z",
+        "name": "DequeuedSeekThenResume",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:23.4327546Z",
+        "name": "DequeuedSeekThenClose",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": true,
+            "workerExited": true
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:20:23.4341368Z",
+        "name": "CloseThenResume_RemainsClosed",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Paused": true,
+            "Stopped": true
+          }
+        }
+      }
+    ]
+  },
+  "source-red": {
+    "runnerExitObserved": 1,
+    "passed": 4,
+    "failed": 8,
+    "skipped": 0,
+    "completed": true,
+    "cases": [
+      {
+        "utc": "2026-10-31T12:22:10.4786338Z",
+        "name": "PausedBackward_RemainsPaused",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:13.9986674Z",
+        "name": "PausedBackward_NonemptyStableFrame",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "before": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]",
+            "after": "[]"
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:15.4711469Z",
+        "name": "PausedShortForward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:16.4795004Z",
+        "name": "PausedRepeated_RemainsPaused",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:19.9849673Z",
+        "name": "PausedRepeated_NonemptyStableFrame",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "before": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]",
+            "after": "[]"
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:21.2581332Z",
+        "name": "ResumeAfterPausedSeek_Runs",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:21.2594517Z",
+        "name": "ResumeAfterPausedSeek_PreservesRemainingLifetime",
+        "data": {
+          "passed": false,
+          "evidence": "[]"
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:24.4618007Z",
+        "name": "ResumeAfterPausedSeek_ExpiresNormally",
+        "data": {
+          "passed": true,
+          "evidence": "[]"
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:24.9609995Z",
+        "name": "DequeuedSeekThenPause",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:25.470991Z",
+        "name": "DequeuedSeekThenResume",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:26.0011954Z",
+        "name": "DequeuedSeekThenClose",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false,
+            "workerExited": true
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:22:26.0025944Z",
+        "name": "CloseThenResume_RemainsClosed",
+        "data": {
+          "passed": false,
+          "evidence": {
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      }
+    ]
+  },
+  "final": {
+    "runnerExitObserved": 0,
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "completed": true,
+    "cases": [
+      {
+        "utc": "2026-10-31T12:23:25.9963665Z",
+        "name": "PausedBackward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:29.5213698Z",
+        "name": "PausedBackward_NonemptyStableFrame",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "before": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]",
+            "after": "[{\"text\":\"PAUSED SEEK 20\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]"
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:30.9063657Z",
+        "name": "PausedShortForward_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:31.9198605Z",
+        "name": "PausedRepeated_RemainsPaused",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:35.4339556Z",
+        "name": "PausedRepeated_NonemptyStableFrame",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "before": "[{\"text\":\"PAUSED SEEK 21\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]",
+            "after": "[{\"text\":\"PAUSED SEEK 21\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]"
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:36.7346759Z",
+        "name": "ResumeAfterPausedSeek_Runs",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": false,
+            "Stopped": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:36.736375Z",
+        "name": "ResumeAfterPausedSeek_PreservesRemainingLifetime",
+        "data": {
+          "passed": true,
+          "evidence": "[{\"text\":\"PAUSED SEEK 21\",\"drawable\":true,\"x\":1202.5078,\"y\":0}]"
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:39.9488224Z",
+        "name": "ResumeAfterPausedSeek_ExpiresNormally",
+        "data": {
+          "passed": true,
+          "evidence": "[]"
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:40.4605843Z",
+        "name": "DequeuedSeekThenPause",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": true,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:40.9583778Z",
+        "name": "DequeuedSeekThenResume",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 20000,
+            "Paused": false,
+            "Stopped": false,
+            "workerExited": false
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:41.4820469Z",
+        "name": "DequeuedSeekThenClose",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Time": 21000,
+            "Paused": true,
+            "Stopped": true,
+            "workerExited": true
+          }
+        }
+      },
+      {
+        "utc": "2026-10-31T12:23:41.4834532Z",
+        "name": "CloseThenResume_RemainsClosed",
+        "data": {
+          "passed": true,
+          "evidence": {
+            "Paused": true,
+            "Stopped": true
+          }
+        }
+      }
+    ]
+  }
+}

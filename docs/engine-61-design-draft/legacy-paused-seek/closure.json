@@ -1,0 +1,30 @@
+{
+  "source-red": {
+    "version": "0.0.1-legacyseek1085f94e.red",
+    "packageSha256": "c84a45eb895785a7725feb7e9fca418873aada5bcce93276c1a0b260d6bb9dc7",
+    "entry": "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll",
+    "dllSha256": "35a39a540638a9cd25efadc7e24c752fa32eb672b23adfce9f1e3a87831e3c55",
+    "runtime": {
+      "Location": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1085f94e\\artifacts\\legacy-paused-seek\\layout\\Danmaku.Legacy.dll",
+      "sha256": "35A39A540638A9CD25EFADC7E24C752FA32EB672B23ADFCE9F1E3A87831E3C55",
+      "mvid": "b0baf16e-805f-452d-8665-d7f0511ade7d"
+    },
+    "cache": "C:\\Users\\hp\\.nuget\\packages\\danmaku.legacy\\0.0.1-legacyseek1085f94e.red\\lib\\net8.0-windows10.0.22621\\Danmaku.Legacy.dll",
+    "layoutHash": "35A39A540638A9CD25EFADC7E24C752FA32EB672B23ADFCE9F1E3A87831E3C55",
+    "packagePath": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1085f94e\\artifacts\\legacy-paused-seek\\feed\\Danmaku.Legacy.0.0.1-legacyseek1085f94e.red.nupkg"
+  },
+  "final": {
+    "version": "0.0.1-legacyseek1085f94e.2",
+    "packageSha256": "dfb1f82e323ee8ee0300f60a233d3038d81b603e42a1851382d3172ba665a802",
+    "entry": "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll",
+    "dllSha256": "27a3ec6dd222a4acb242e82799f0b83fcf5fab2fa40a9a5704575b7b8c5fab1c",
+    "runtime": {
+      "Location": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1085f94e\\artifacts\\legacy-paused-seek\\layout\\Danmaku.Legacy.dll",
+      "sha256": "27A3EC6DD222A4ACB242E82799F0B83FCF5FAB2FA40A9A5704575B7B8C5FAB1C",
+      "mvid": "a7e0e5ee-24b5-409b-a17c-1c8813e755e9"
+    },
+    "cache": "C:\\Users\\hp\\.nuget\\packages\\danmaku.legacy\\0.0.1-legacyseek1085f94e.2\\lib\\net8.0-windows10.0.22621\\Danmaku.Legacy.dll",
+    "layoutHash": "27A3EC6DD222A4ACB242E82799F0B83FCF5FAB2FA40A9A5704575B7B8C5FAB1C",
+    "packagePath": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1085f94e\\artifacts\\legacy-paused-seek\\feed\\Danmaku.Legacy.0.0.1-legacyseek1085f94e.2.nupkg"
+  }
+}
