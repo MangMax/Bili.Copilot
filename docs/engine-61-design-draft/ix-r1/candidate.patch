@@ -1,0 +1,19 @@
+diff --git a/src/Danmaku.Core/CoreExecutionBridge.cs b/src/Danmaku.Core/CoreExecutionBridge.cs
+index 64da9e4..6dd62ec 100644
+--- a/src/Danmaku.Core/CoreExecutionBridge.cs
++++ b/src/Danmaku.Core/CoreExecutionBridge.cs
+@@ -195,7 +195,13 @@ internal sealed class CoreExecutionBridge : IDisposable
+             var stamp = owner.Capture();
+             if (stamp.Epoch == 0 || stamp.Scene != state.Scene) return CoreResourceOutcome.Superseded;
+             DanmakuConfiguration config; long revision;
+-            lock (configurationGate) { config = configuration.Clone(); revision = configurationRevision; }
++            lock (configurationGate)
++            {
++                // Bind the request and its snapshot in the same critical section.
++                if (requestedConfiguration.HasValue && requestedConfiguration.Value != configurationRevision)
++                    return CoreResourceOutcome.Superseded;
++                config = configuration.Clone(); revision = configurationRevision;
++            }
+             CoreResourceOutcome? Current()
+             {
+                 var current = scheduler.ReadCurrent();
