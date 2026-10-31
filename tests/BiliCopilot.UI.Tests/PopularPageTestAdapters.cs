@@ -10,7 +10,7 @@ using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 
 
-namespace FluentIcons.Common { public enum Symbol { Balloon, Fire, RibbonStar } }
+namespace FluentIcons.Common { public enum Symbol { Balloon, Fire, RibbonStar, Rocket, DesignIdeas, VideoClip, VideoChat, Dust, FilmstripPlay, DocumentBulletList, Chat, Settings } }
 namespace BiliCopilot.UI.ViewModels.View
 {
     public abstract class LayoutPageViewModelBase : ObservableObject
@@ -52,22 +52,26 @@ namespace BiliCopilot.UI.Toolkits
     public static class PageTestServices
     {
         public static Microsoft.UI.Dispatching.DispatcherQueue Dispatcher { get; set; } = new();
-        public static T Get<T>(this object owner) => (T)(object)Dispatcher;
+        public static T Get<T>(this object owner) => NavigationTestServices.Current.Value is { } services && services.TryGetValue(typeof(T), out var service) ? (T)service : (T)(object)Dispatcher;
     }
     public static class SettingsToolkit
     {
         public static string LastSection { get; set; } = "Recommend";
         public static bool IncrementalRecommendRefresh { get; set; }
         public static bool ShowSearchRecommend { get; set; } = true;
-        public static T ReadLocalSetting<T>(SettingNames name, T fallback) => name == SettingNames.IncrementalRecommendRefresh ? (T)(object)IncrementalRecommendRefresh : name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : (T)(object)LastSection;
-        public static void WriteLocalSetting<T>(SettingNames name, T value) => LastSection = value!.ToString()!;
+        public static T ReadLocalSetting<T>(SettingNames name, T fallback) => NavigationTestServices.Settings.Value is { } settings ? (settings.TryGetValue(name, out var value) ? (T)value! : fallback) : name == SettingNames.IncrementalRecommendRefresh ? (T)(object)IncrementalRecommendRefresh : name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : (T)(object)LastSection;
+        public static void WriteLocalSetting<T>(SettingNames name, T value)
+        {
+            if (NavigationTestServices.Settings.Value is { } settings) settings[name] = value;
+            else LastSection = value!.ToString()!;
+        }
     }
     public static class ResourceToolkit
     {
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
@@ -99,6 +103,7 @@ namespace BiliCopilot.UI.ViewModels.Core
 {
     public sealed class AppViewModel
     {
+        public List<BiliCopilot.UI.Forms.MainWindow> Windows { get; } = new();
         public RelayCommand<MediaSnapshot> OpenPlayerCommand { get; } = new(_ => { });
     }
 }
