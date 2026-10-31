@@ -233,7 +233,7 @@ public partial class App : Application
     private void OnShowHideWindowCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
         => TrayLifecycle?.Restore();
 
-    private sealed class TrayIconSession : ITrayIconSession
+    private sealed partial class TrayIconSession : ITrayIconSession
     {
         private readonly TaskbarIcon _icon;
         private readonly Action _unsubscribe;
