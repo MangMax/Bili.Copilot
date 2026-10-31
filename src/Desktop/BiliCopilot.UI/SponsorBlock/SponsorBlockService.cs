@@ -11,7 +11,7 @@ namespace BiliCopilot.UI.SponsorBlock;
 /// 网络、超时或解析异常均静默降级为空片段列表，不影响播放.
 /// </para>
 /// </summary>
-public sealed class SponsorBlockService : IDisposable
+public sealed partial class SponsorBlockService : IDisposable
 {
     /// <summary>
     /// 默认接口地址.
