@@ -58,3 +58,13 @@ python docs/performance-acceptance/evidence-navigation-aot/validate.py
 kernel 初始 HEAD `f02c33f6` 且索引为未展开删除状态，先保存完整 status/index patch/hash；从父 kernel 仓库只读获取指定对象，仅本工作区 checkout `0ae5e4e000a41a07f6696746706df11c06e8835b`，最终 clean，gitlink 未改。结束前执行 `git merge feat/performance-45`，父 tip 仍为 `8994fed85c6f55c5c93dab30e2069a99d70ad608`，结果 Already up to date；无父 checkout 写入。
 
 **真实首次导航 UI、重复导航、叠层返回仍待独立 AOT 身份实机验收。** 正式 Mpv 不兼容、严格364编译错误、其余6条IL及分发/实机门禁仍 HOLD，本片产物不部署。
+
+## 父级补正：注册页面构造异常契约
+
+独立审查发现静态构造改变了原 Activator 的异常包装。保留审查 red；本次仅将 factory 中注册页面的直接构造放在 try/catch 内，抛 TargetInvocationException 并保留原 InnerException。未注册类型的 ArgumentException 仍在 catch 外；SetParameter/Initialize/缓存操作均在 factory 外，不被此包装捕获。
+
+新增 `ConstructorFailurePreservesWrapperAndBothFramesCurrentContent`：以测试页面构造故障验证 Main/Overlay 包装及原异常身份、现有内容/可见性/栈不变，清除故障后可继续正常导航。测试适配器 AsyncLocal 故障仅作用于当前测试上下文，无生产测试钩子。
+
+命令：RC3 dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj -c Release --no-restore --filter FullyQualifiedName~NavigationFrameTests --logger "trx;LogFileName=green.trx" --results-directory artifacts/navigation-wrapper-fix。
+
+红阶段定向 1 failed；绿阶段导航 23 passed / 0 failed / 0 skipped，TRX 已解析。最初测试代码将 object 当 UIElement 的编译错误已修正，它不是行为 red。新增代码已静态核对 WinUI 线程/缓存/生命周期无改变，未运行专用 WinUIAnalyzer。此次没有重跑全套、完整应用构建或 ILC，因此原 8→6 证据仍只对应原候选源码；最终集成需补验证。真实 AOT 首次导航仍未验。

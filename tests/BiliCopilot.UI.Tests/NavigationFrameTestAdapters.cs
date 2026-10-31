@@ -53,7 +53,14 @@ namespace BiliCopilot.UI.Pages
         public void Initialize() => InitializeCount++;
         public void CancelLoading() => CancelCount++;
     }
-    public sealed class PopularPage : NavigationTestPage { }
+    public sealed class PopularPage : NavigationTestPage
+    {
+        public static AsyncLocal<Exception?> ConstructorFailure { get; } = new();
+        public PopularPage()
+        {
+            if (ConstructorFailure.Value is { } failure) { throw failure; }
+        }
+    }
     public sealed class MomentPage : NavigationTestPage { }
     public sealed class VideoPartitionPage : NavigationTestPage { }
     public sealed class LivePartitionPage : NavigationTestPage { }

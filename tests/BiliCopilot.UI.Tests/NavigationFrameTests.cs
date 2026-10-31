@@ -57,6 +57,36 @@ public sealed class NavigationFrameTests
     }
 
     [Fact]
+    public void ConstructorFailurePreservesWrapperAndBothFramesCurrentContent()
+    {
+        var main = new MainFrame();
+        var overlay = new OverlayFrame();
+        main.NavigateTo(typeof(MomentPage));
+        overlay.NavigateTo(typeof(SearchPage));
+        var mainPage = main.GetCurrentContent();
+        var overlayPage = overlay.GetCurrentContent();
+        var original = new InvalidOperationException("constructor sentinel");
+        PopularPage.ConstructorFailure.Value = original;
+        try
+        {
+            var mainError = Assert.Throws<System.Reflection.TargetInvocationException>(() => main.NavigateTo(typeof(PopularPage)));
+            var overlayError = Assert.Throws<System.Reflection.TargetInvocationException>(() => overlay.NavigateTo(typeof(PopularPage)));
+            Assert.Same(original, mainError.InnerException);
+            Assert.Same(original, overlayError.InnerException);
+            Assert.Same(mainPage, main.GetCurrentContent());
+            Assert.Same(overlayPage, overlay.GetCurrentContent());
+            Assert.Single(overlay.GetBackStack());
+            Assert.Equal(Visibility.Visible, ((NavigationTestPage)mainPage).Visibility);
+            Assert.Equal(Visibility.Visible, ((NavigationTestPage)overlayPage!).Visibility);
+        }
+        finally { PopularPage.ConstructorFailure.Value = null; }
+        main.NavigateTo(typeof(PopularPage));
+        overlay.NavigateTo(typeof(PopularPage));
+        Assert.IsType<PopularPage>(main.GetCurrentContent());
+        Assert.IsType<PopularPage>(overlay.GetCurrentContent());
+        Assert.Equal(2, overlay.GetBackStack().Count());
+    }
+    [Fact]
     public void MainRevisitReusesPageUpdatesParameterInitializesAndCancelsHiddenPage()
     {
         var frame = new MainFrame();
