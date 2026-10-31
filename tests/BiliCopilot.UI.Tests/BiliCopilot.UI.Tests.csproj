@@ -8,6 +8,8 @@
     <IsPackable>false</IsPackable>
     <LangVersion>preview</LangVersion>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <!-- Match the production app's observable-property generator configuration. -->
+    <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,6 +57,7 @@
 
   <!-- Real navigation/cache logic; adapters provide only the Windows presentation surface. -->
   <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/NavigationViewModel.cs" Link="Navigation/NavigationViewModel.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/MainFrame.xaml.cs" Link="Navigation/MainFrame.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/OverlayFrame.xaml.cs" Link="Navigation/OverlayFrame.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/IParameterPage.cs" Link="Navigation/IParameterPage.cs" />
