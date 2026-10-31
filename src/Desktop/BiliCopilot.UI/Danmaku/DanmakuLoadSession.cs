@@ -11,7 +11,7 @@ internal sealed record DanmakuLoadState(bool IsLoading, IList<DanmakuInformation
 /// Owns one player's danmaku load, including requests and queued UI publications.
 /// Replacing or closing a session invalidates publications before canceling transport work.
 /// </summary>
-internal sealed class DanmakuLoadSession(IDanmakuService service, Action<Action> dispatch, Action<DanmakuLoadState> publish) : IDisposable
+internal sealed partial class DanmakuLoadSession(IDanmakuService service, Action<Action> dispatch, Action<DanmakuLoadState> publish) : IDisposable
 {
     private readonly object _gate = new();
     private Session? _current;
