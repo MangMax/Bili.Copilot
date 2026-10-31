@@ -12,6 +12,106 @@ namespace BiliCopilot.UI.Tests;
 public sealed class SearchSuggestionTests
 {
     [Fact]
+    public void DefaultsAndEqualAssignmentsPreserveEmptyIdleState()
+    {
+        var service = new SearchService();
+        var model = new SearchBoxViewModel(service, new SearchLogger());
+        Assert.Equal(string.Empty, model.Keyword);
+        Assert.False(model.IsHotSearchLoading);
+        var suggestions = model.Suggestion;
+        var hotSearches = model.HotSearchItems;
+        var notifications = new List<string?>();
+        model.PropertyChanged += (_, e) => notifications.Add(e.PropertyName);
+        model.PropertyChanging += (_, e) => notifications.Add(e.PropertyName);
+
+        model.Keyword = string.Empty;
+        model.IsHotSearchLoading = false;
+
+        Assert.Empty(notifications);
+        Assert.Same(suggestions, model.Suggestion);
+        Assert.Same(hotSearches, model.HotSearchItems);
+        Assert.Empty(suggestions);
+        Assert.Empty(hotSearches);
+        Assert.Empty(service.Requests);
+        Assert.Empty(service.Recommendations);
+    }
+
+    [Fact]
+    public async Task KeywordNotifiesAfterCancellationAndClearButEqualTextKeepsRequestAlive()
+    {
+        var service = new SearchService();
+        var model = new SearchBoxViewModel(service, new SearchLogger()) { Keyword = "old" };
+        var loading = model.ReloadSuggestionsCommand.ExecuteAsync(null);
+        var request = Assert.Single(service.Requests);
+        model.Suggestion.Add(new(new SearchSuggestItem("Visible", "old")));
+        var events = new List<string>();
+        model.PropertyChanging += (_, _) => events.Add("changing");
+        model.Suggestion.CollectionChanged += (_, _) =>
+        {
+            Assert.Equal("new", model.Keyword);
+            Assert.True(request.Token.IsCancellationRequested);
+            events.Add("clear");
+        };
+        model.PropertyChanged += (_, e) =>
+        {
+            Assert.Equal(nameof(model.Keyword), e.PropertyName);
+            Assert.Equal("new", model.Keyword);
+            Assert.True(request.Token.IsCancellationRequested);
+            Assert.Empty(model.Suggestion);
+            events.Add("changed");
+        };
+
+        model.Keyword = new string("old".ToCharArray());
+        Assert.False(request.Token.IsCancellationRequested);
+        Assert.Single(model.Suggestion);
+        Assert.Empty(events);
+        model.Keyword = "new";
+        Assert.Equal(new[] { "clear", "changed" }, events);
+        request.Completion.SetResult([new("Late", "old")]);
+        await loading;
+        Assert.Empty(model.Suggestion);
+        Assert.Equal(new[] { "clear", "changed" }, events);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task HotSearchLoadingNotifiesAroundCompletionAndResetsAfterFailure(bool fail)
+    {
+        var service = new SearchService();
+        var logger = new SearchLogger();
+        var model = new SearchBoxViewModel(service, logger);
+        var states = new List<(bool Loading, int Count)>();
+        var changing = 0;
+        model.PropertyChanging += (_, _) => changing++;
+        model.PropertyChanged += (_, e) =>
+        {
+            Assert.Equal(nameof(model.IsHotSearchLoading), e.PropertyName);
+            states.Add((model.IsHotSearchLoading, model.HotSearchItems.Count));
+        };
+        var loading = model.LoadHotSearchCommand.ExecuteAsync(null);
+        Assert.Equal(new[] { (true, 0) }, states);
+        model.IsHotSearchLoading = true;
+        Assert.Single(states);
+        var failure = new HttpRequestException("Hot search unavailable");
+        if (fail) service.HotSearchCompletion.SetException(failure);
+        else service.HotSearchCompletion.SetResult([new("1", 0, "hot", "Hot")]);
+        await loading;
+
+        Assert.Equal(new[] { (true, 0), (false, fail ? 0 : 1) }, states);
+        Assert.Equal(0, changing);
+        if (fail) Assert.Same(failure, Assert.Single(logger.Errors));
+        else
+        {
+            Assert.Equal("hot", Assert.Single(model.HotSearchItems).Keyword);
+            await model.LoadHotSearchCommand.ExecuteAsync(null);
+            Assert.Equal(2, states.Count);
+            Assert.Equal(1, service.HotSearchCalls);
+            Assert.Empty(logger.Errors);
+        }
+    }
+
+    [Fact]
     public async Task BurstRequestsOnlyFinalKeywordAfter250MillisecondsOfQuiet()
     {
         var clock = new ManualClock();
@@ -273,6 +373,8 @@ public sealed class SearchSuggestionTests
         public bool CompleteImmediately { get; init; }
         public List<Request> Requests { get; } = [];
         public List<RecommendationRequest> Recommendations { get; } = [];
+        public TaskCompletionSource<IReadOnlyList<HotSearchItem>> HotSearchCompletion { get; } = new();
+        public int HotSearchCalls { get; private set; }
         public Task<IReadOnlyList<SearchSuggestItem>> GetSearchSuggestsAsync(string keyword, CancellationToken cancellationToken = default)
         {
             var request = new Request(keyword, cancellationToken);
@@ -287,7 +389,12 @@ public sealed class SearchSuggestionTests
             Recommendations.Add(request);
             return request.Completion.Task;
         }
-        public Task<IReadOnlyList<HotSearchItem>> GetTotalHotSearchAsync(int count = 30, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task<IReadOnlyList<HotSearchItem>> GetTotalHotSearchAsync(int count = 30, CancellationToken cancellationToken = default)
+        {
+            Assert.Equal(30, count);
+            HotSearchCalls++;
+            return HotSearchCompletion.Task;
+        }
         public Task<(IReadOnlyList<VideoInformation> Videos, int? NextPage)> GetComprehensiveSearchResultAsync(string keyword, int? page = default, ComprehensiveSearchSortType sort = ComprehensiveSearchSortType.Default, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<SearchResultItem> Result, string? Offset)> GetPartitionSearchResultAsync(string keyword, SearchPartition partition, string? offset = default, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<VideoInformation>? Videos, int TotalCount, bool HasMore)> SearchUserVideosAsync(string userId, string keyword, int pageNumber = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
