@@ -1,0 +1,626 @@
+{
+  "app-results.py": {
+    "bytes": 4591,
+    "sha256": "ac8efa1f222f846dc0a03db3ac8cf2b676c2bdb0b464bd7d67decba7321d88c0"
+  },
+  "check-pixels.ps1": {
+    "bytes": 2367,
+    "sha256": "046ae000c7123c5fca4a9c78bae3ed5d85bb57c0dbdbc1b1012c1777aef5e147"
+  },
+  "clean/build.log": {
+    "bytes": 758,
+    "sha256": "43aeef82e9024e7abe2041d311afa9607360b33a34703f7e33fc693ecadb83b8"
+  },
+  "clean/feed/Danmaku.Legacy.0.0.1-preview6.remount6273.clean.nupkg": {
+    "bytes": 102318,
+    "sha256": "794ed4837ad8384cf049a95858c97fb7e4124c4708ab7234f6bc2abd8aa303de"
+  },
+  "clean/feed/Danmaku.Share.0.0.1-preview6.remount6273.clean.nupkg": {
+    "bytes": 91259,
+    "sha256": "c4b9f4d0d121f775deb3c45bb5e1b7b02b9df50abf7c245dd2fd158e9eaffe25"
+  },
+  "clean/pack-Legacy.log": {
+    "bytes": 1345,
+    "sha256": "de1fb0d378284f83902efec356a94adc0ccbade41eafb9fd34267b9dcb95df7e"
+  },
+  "clean/pack-Share.log": {
+    "bytes": 1094,
+    "sha256": "835cbe88eab3044c263942fcae423849e2a75d2abeab4a8311c485327dd1d03c"
+  },
+  "clean/source/.gitattributes": {
+    "bytes": 2518,
+    "sha256": "45a7cbb7d9942ba7ffce0b20bc8dbe2d1196533bc6e4bd245871d77fb1eedfdc"
+  },
+  "clean/source/.gitignore": {
+    "bytes": 6274,
+    "sha256": "f93c7791f6f3f8ac32d4f4ff51957233a7c709457e1564c58caf5f6faaf3ee5c"
+  },
+  "clean/source/DanmakuKernel.sln": {
+    "bytes": 2089,
+    "sha256": "712b509d6e1c6a2b6538589fb16a305586fc27437e5ce8fef9b42a3ac96c7be3"
+  },
+  "clean/source/LICENSE.txt": {
+    "bytes": 1069,
+    "sha256": "002c2696d92b5c8cf956c11072baa58eaf9f6ade995c031ea635c6a1ee342ad1"
+  },
+  "clean/source/src/.editorconfig": {
+    "bytes": 18879,
+    "sha256": "d6834a5a5893eed5688a45842f7dfa406d53e6a9eac37a1c41083aeee70f200e"
+  },
+  "clean/source/src/Danmaku.Core/BaseTypeDef.cs": {
+    "bytes": 542,
+    "sha256": "2849d650d5082489cd34817de69a8d8c736235f19a91a571f5d49d0284e32420"
+  },
+  "clean/source/src/Danmaku.Core/Danmaku.Core.csproj": {
+    "bytes": 1493,
+    "sha256": "61043b0452b0afd7ddbfa79609c29064f4373952e37a019c30c2591e64cc3642"
+  },
+  "clean/source/src/Danmaku.Core/Danmaku.Core.sln": {
+    "bytes": 1094,
+    "sha256": "907f5fac594e074914e099cd0f7c2e459915688c72ab9d4a246139efaa9aadd6"
+  },
+  "clean/source/src/Danmaku.Core/DanmakuConfiguration.cs": {
+    "bytes": 3562,
+    "sha256": "036a48e28f6ee5ce1304a3e9334c5b08840b394358691f0b9ddcc23e15d20c1f"
+  },
+  "clean/source/src/Danmaku.Core/DanmakuConfigurationState.cs": {
+    "bytes": 5694,
+    "sha256": "a7f47346364e96f6d331e626e7786d59a8e19a0bfa10088d737b15d4bc08dbbd"
+  },
+  "clean/source/src/Danmaku.Core/DanmakuDirectXRender.cs": {
+    "bytes": 31744,
+    "sha256": "56677e49fec73a56e137993f7779d74ca6ccd326248c329b668ac21d0768ba84"
+  },
+  "clean/source/src/Danmaku.Core/DanmakuDirectXRender.Fields.cs": {
+    "bytes": 5644,
+    "sha256": "d13dc52e0063a712b1db392726c14381d78fdac859f9c2f1271da4a7fd1d33a8"
+  },
+  "clean/source/src/Danmaku.Core/DanmakuDirectXRender.Methods.cs": {
+    "bytes": 17979,
+    "sha256": "a6fd3ea5839e9c1fab67be8d8cd962ea9fe7d1bfbe012e555d1834d15b24070d"
+  },
+  "clean/source/src/Danmaku.Core/DanmakuRenderer.cs": {
+    "bytes": 7035,
+    "sha256": "24cbb1831518848f3ba3030ddb4767e943dd148fb742a771f95deb28d75f598a"
+  },
+  "clean/source/src/Danmaku.Core/DanmakuScheduler.cs": {
+    "bytes": 9135,
+    "sha256": "84122e342b01466a5870240b7eab10c75f289c31fc8ea2d3d45d2a2980d1f7bd"
+  },
+  "clean/source/src/Danmaku.Core/DanmakuYSlotManager.cs": {
+    "bytes": 2549,
+    "sha256": "9d997ea5553810c9b06b9b2333696e93b44d28d7133ba7e556f848d581e7be9f"
+  },
+  "clean/source/src/Danmaku.Core/DebugInfo.cs": {
+    "bytes": 1085,
+    "sha256": "da25256e36691a8db4c6fd4ba1ad9d3147225314aa720307f8a6fe384c6845f4"
+  },
+  "clean/source/src/Danmaku.Core/DebugRenderer.cs": {
+    "bytes": 5487,
+    "sha256": "460607efc4afbf5476d166ebe1c1fcb53276d65bded71bf98f58139349b21a9f"
+  },
+  "clean/source/src/Danmaku.Core/DirectXResourceManager.cs": {
+    "bytes": 17821,
+    "sha256": "e48f850c281bd87e6358b929817f9a8906ecfb408fa3c4e7b1eccf390ba7e194"
+  },
+  "clean/source/src/Danmaku.Core/GameLoopThread.cs": {
+    "bytes": 9514,
+    "sha256": "67284de055fde4e253bc1045b8ffbf3aa4969ab7f8d42b6ee7bde7e1888da074"
+  },
+  "clean/source/src/Danmaku.Core/ISwapChainPanelNative.cs": {
+    "bytes": 412,
+    "sha256": "c83ee5cc02eaeb5fd9dbf8fbe3f513d740c374f4c6ec7fb2a457a5c18410a8b0"
+  },
+  "clean/source/src/Danmaku.Core/Logger.cs": {
+    "bytes": 1123,
+    "sha256": "aaa7027288d34c55418fe676d4b2d8ee866d8e1866a124e225496eed40659c63"
+  },
+  "clean/source/src/Danmaku.Core/Models/DanmakuDirectXRenderItem.cs": {
+    "bytes": 3776,
+    "sha256": "97ea703ef5ca7dd875b13b002f5eed50599e00a2004e11f7358b6b74d56c0593"
+  },
+  "clean/source/src/Danmaku.Core/Models/RenderLayer.cs": {
+    "bytes": 3524,
+    "sha256": "0e4da6404537467135b931d73e86342fd8996129575c85414973d233ef79fa59"
+  },
+  "clean/source/src/Danmaku.Core/ObjectPoolManager.cs": {
+    "bytes": 10015,
+    "sha256": "2545b752a1b5427a5970f3e259210155af8c0125756dcf18f676de4d5dde89c2"
+  },
+  "clean/source/src/Danmaku.Core/TextureCacheKey.cs": {
+    "bytes": 3314,
+    "sha256": "f7051f91686758040d44e18198a1e1e0accb6c411574ab1cfa90afc91a546402"
+  },
+  "clean/source/src/Danmaku.Legacy/Danmaku.Legacy.csproj": {
+    "bytes": 1022,
+    "sha256": "1e3984c44a6cd1d8d802f7181a0811ee1e6e67db8716fce07b2745e3900ff696"
+  },
+  "clean/source/src/Danmaku.Legacy/DanmakuFrostMaster.cs": {
+    "bytes": 15866,
+    "sha256": "91f780f483d9a162b5374dba747c5f26793ba561c7b78a0ba29ec99ed0106254"
+  },
+  "clean/source/src/Danmaku.Legacy/DanmakuRender.cs": {
+    "bytes": 51131,
+    "sha256": "2a2165b472c7d3d62b16598aeb727653424deda50323455bae6917788e077057"
+  },
+  "clean/source/src/Danmaku.Legacy/DanmakuYSlotManager.cs": {
+    "bytes": 2556,
+    "sha256": "ee27fd1889548d3e4318b92e77f773dd5c56385ba0200b6ed2a6ccc896a824ed"
+  },
+  "clean/source/src/Danmaku.Legacy/Logger.cs": {
+    "bytes": 1055,
+    "sha256": "815c75ed4e4a2afb296fa1edd19a7de76aa9ab7d810407264fbcfc94398a2af3"
+  },
+  "clean/source/src/Danmaku.Share/Danmaku.Share.csproj": {
+    "bytes": 731,
+    "sha256": "a795392b4d2763121b1563b0dafa1554a1eb965940608de4acdc182a3030eeba"
+  },
+  "clean/source/src/Danmaku.Share/Enums/DanmakuAlignmentMode.cs": {
+    "bytes": 983,
+    "sha256": "8555fcf2b338337ba562247761ec3adb2d4a2b666a50942083b3f296a1324c7a"
+  },
+  "clean/source/src/Danmaku.Share/Enums/DanmakuFontSize.cs": {
+    "bytes": 526,
+    "sha256": "624f9bf30979d4db8b9122178dd94b9971512aab35319a526ffc5384d580abe7"
+  },
+  "clean/source/src/Danmaku.Share/Enums/DanmakuMode.cs": {
+    "bytes": 785,
+    "sha256": "15eefd879194c0f3c354becc59d51613fddc28d71967aaafd896b858a16434de"
+  },
+  "clean/source/src/Danmaku.Share/Enums/DanmakuPool.cs": {
+    "bytes": 399,
+    "sha256": "936ed02c162c6856cff423d3017f8185c0f67da69cf34e917eea4791b0c31ff8"
+  },
+  "clean/source/src/Danmaku.Share/Models/DanmakuDefaultLayerDef.cs": {
+    "bytes": 1080,
+    "sha256": "1e2fa3cc843b34828f462740fbb56ebae616cf5f856fcda9799ea94dd129269f"
+  },
+  "clean/source/src/Danmaku.Share/Models/DanmakuItem.cs": {
+    "bytes": 7046,
+    "sha256": "46f11809f84c2c0f71fd4e4fc5e5e90498f6699aeaa9eb4f2757386d452bce9f"
+  },
+  "clean/source/src/Directory.Build.props": {
+    "bytes": 1156,
+    "sha256": "b781e3b6a8348122329a096d4416bf89f214d95481b9a81df2d75db0ba59cbcc"
+  },
+  "clean/source/src/Directory.Packages.props": {
+    "bytes": 7680,
+    "sha256": "575ac1edaac67798b27af36442fdecb89e089aad13a2495dd91e26c1fc3e832c"
+  },
+  "clean/source/src/icon.png": {
+    "bytes": 84721,
+    "sha256": "7a88cfe51dcbef346c07f90ea2d27b68b55e26bef7a8a65747ff609412a13b9f"
+  },
+  "clean/source/src/nuget-build.ps1": {
+    "bytes": 2791,
+    "sha256": "eedcb1d5a334ea4429d049f95a2d6c2560924a7181d7dbc20a803f2e52130e0b"
+  },
+  "clean/source/src/nuget-package.props": {
+    "bytes": 1854,
+    "sha256": "a700f6370dffaa376c9babf4cc19f9c529e32e0f64f52d5fe065984e25f536c3"
+  },
+  "clean/source/src/nuget-upload.ps1": {
+    "bytes": 827,
+    "sha256": "33eeedf751c150ba61c6484d2e5c1f4b9822596b071935b01455ec54a659ae46"
+  },
+  "clean/source/src/NUGET.md": {
+    "bytes": 65,
+    "sha256": "bdbde3f8796d87634f619e772b25cab14390dd30ad88bb08793bf819446cdbbf"
+  },
+  "full/events.jsonl": {
+    "bytes": 109447,
+    "sha256": "1add8858c0819e5a3b1cd2e671ca0dcc1e393cbd871fb062e460be2d1817cd79"
+  },
+  "full/runtime/cleanup.json": {
+    "bytes": 62,
+    "sha256": "fc2f83db0505a9067b189b9e52c538d197caf4c500090b1fd0d353383683e1db"
+  },
+  "full/runtime/commands-screen-close.json": {
+    "bytes": 2157,
+    "sha256": "9d6a8a35e4f66c847d7703a2ce1e5052b94e5a5d6c03728d37bda68ac4238402"
+  },
+  "full/runtime/commands-screen-matrix.json": {
+    "bytes": 75159,
+    "sha256": "2edb9ffa50f7d6c3198efdc6fb410c29541ce80d269580987c8193f22eda22b8"
+  },
+  "full/runtime/identity.json": {
+    "bytes": 241,
+    "sha256": "0c543a280f80d80f82498354db8fa37121fd347659acbb8f5d0e00ad4deba66d"
+  },
+  "full/runtime/launch.json": {
+    "bytes": 78,
+    "sha256": "ba226bf4d06451a72ead8c6d4346ae196eb76e8b8bc72ec39417b0e908173b5f"
+  },
+  "full/runtime/results.json": {
+    "bytes": 3405,
+    "sha256": "978cdbe4d60794863df0b3395d8a1aa93986e42326282f1898cb7bac07857340"
+  },
+  "full/runtime/retainedexit.json": {
+    "bytes": 254,
+    "sha256": "ccd9e677868cbfd52924e7fe42bb896694e56c45fc89407e8c11b4204d9e27b5"
+  },
+  "full/runtime/screen-baseline20.json": {
+    "bytes": 2740,
+    "sha256": "d9ad54058250a1003c906502ce5f9a3e503fd932c6c5d7ffcb4533f916f3b153"
+  },
+  "full/runtime/screen-baseline20.png": {
+    "bytes": 724678,
+    "sha256": "facf111aba703a8a9ed3d457875b33138f4fa1f57b19da011338f9f5996732ac"
+  },
+  "full/runtime/screen-button-backward1.json": {
+    "bytes": 3470,
+    "sha256": "2842ad35cdbd6055f51415229efe8e57193cc6038d91083492f8d6ba08c4dc07"
+  },
+  "full/runtime/screen-button-backward1.png": {
+    "bytes": 738661,
+    "sha256": "9eb4f04266756924a47993d04b6656a3adac379797273d2974457c7849c9a835"
+  },
+  "full/runtime/screen-button-forward1.json": {
+    "bytes": 2740,
+    "sha256": "2dc9389d8f4d7a11cb3c97c7f14399c95fbbd67fa8201d522b962b5518f27403"
+  },
+  "full/runtime/screen-button-forward1.png": {
+    "bytes": 543476,
+    "sha256": "320ba0202f685daaebc380489090c11435badc3791eb304eb5ee82bf122a80dd"
+  },
+  "full/runtime/screen-remount1-stable.json": {
+    "bytes": 2739,
+    "sha256": "f79e285aa87c6f8d3ed8b1bedf4a90339f4c81460ebdb8ca5b90ef37aa017872"
+  },
+  "full/runtime/screen-remount1-stable.png": {
+    "bytes": 724678,
+    "sha256": "facf111aba703a8a9ed3d457875b33138f4fa1f57b19da011338f9f5996732ac"
+  },
+  "full/runtime/screen-remount1-static1.json": {
+    "bytes": 2739,
+    "sha256": "df415e6cf9a8dc3754d777b888a3fddad4b0aba2b0d63893d9f530c47145f3df"
+  },
+  "full/runtime/screen-remount1-static1.png": {
+    "bytes": 724678,
+    "sha256": "facf111aba703a8a9ed3d457875b33138f4fa1f57b19da011338f9f5996732ac"
+  },
+  "full/runtime/screen-remount1-static2.json": {
+    "bytes": 2740,
+    "sha256": "f08608c76a414eb591489f43f93e80a5cdaeb12e2d244f21071c88c00014311a"
+  },
+  "full/runtime/screen-remount1-static2.png": {
+    "bytes": 724678,
+    "sha256": "facf111aba703a8a9ed3d457875b33138f4fa1f57b19da011338f9f5996732ac"
+  },
+  "full/runtime/screen-remount1.json": {
+    "bytes": 2740,
+    "sha256": "b93fa93d7ac4d91099858c187168d489d3601828f23c838fdaa6ded37810fe67"
+  },
+  "full/runtime/screen-remount1.png": {
+    "bytes": 724678,
+    "sha256": "facf111aba703a8a9ed3d457875b33138f4fa1f57b19da011338f9f5996732ac"
+  },
+  "full/runtime/screen-remount2-stable.json": {
+    "bytes": 2739,
+    "sha256": "5c0e0f9365e200b593232d014fa6ab478f58ba920d08afc056611399ee9df9f4"
+  },
+  "full/runtime/screen-remount2-stable.png": {
+    "bytes": 724677,
+    "sha256": "93499422676a1508cddd96299fb2e4ada6beb321779103d66fe6e73c71fb37a7"
+  },
+  "full/runtime/screen-remount2-static1.json": {
+    "bytes": 2739,
+    "sha256": "1fa0af6c139b09400de37b900566d8a4a352cf0d14ab9da4b7d02534a3ec3e3d"
+  },
+  "full/runtime/screen-remount2-static1.png": {
+    "bytes": 724677,
+    "sha256": "93499422676a1508cddd96299fb2e4ada6beb321779103d66fe6e73c71fb37a7"
+  },
+  "full/runtime/screen-remount2-static2.json": {
+    "bytes": 2740,
+    "sha256": "088de4828534f1c4d92c3470ca84cd5e76e9f91319d6e26e6f229f70b4ee77e7"
+  },
+  "full/runtime/screen-remount2-static2.png": {
+    "bytes": 724677,
+    "sha256": "93499422676a1508cddd96299fb2e4ada6beb321779103d66fe6e73c71fb37a7"
+  },
+  "full/runtime/screen-remount2.json": {
+    "bytes": 2740,
+    "sha256": "58d45d7066789c2f05bace8ac337f7e1081a4a7eee58bfc90ff278867c0fd11d"
+  },
+  "full/runtime/screen-remount2.png": {
+    "bytes": 724677,
+    "sha256": "93499422676a1508cddd96299fb2e4ada6beb321779103d66fe6e73c71fb37a7"
+  },
+  "full/runtime/screen-remount3-stable.json": {
+    "bytes": 2739,
+    "sha256": "c63b970d43330ce1f00b22362bb62c5929c74ec84defabf143431ac49cfed6d8"
+  },
+  "full/runtime/screen-remount3-stable.png": {
+    "bytes": 724677,
+    "sha256": "93499422676a1508cddd96299fb2e4ada6beb321779103d66fe6e73c71fb37a7"
+  },
+  "full/runtime/screen-remount3-static1.json": {
+    "bytes": 2739,
+    "sha256": "dad1d244dd1eba09af56769ae5f13916f453d43a74e3d30e6c36d6915ad80eee"
+  },
+  "full/runtime/screen-remount3-static1.png": {
+    "bytes": 724677,
+    "sha256": "93499422676a1508cddd96299fb2e4ada6beb321779103d66fe6e73c71fb37a7"
+  },
+  "full/runtime/screen-remount3-static2.json": {
+    "bytes": 2740,
+    "sha256": "4d9a10ec19e05ce115c1cd779098206ab6ce8dc2834ff6c171279d68c927d64d"
+  },
+  "full/runtime/screen-remount3-static2.png": {
+    "bytes": 724677,
+    "sha256": "93499422676a1508cddd96299fb2e4ada6beb321779103d66fe6e73c71fb37a7"
+  },
+  "full/runtime/screen-remount3.json": {
+    "bytes": 2739,
+    "sha256": "16ccc5952956a5af4a3897595e15fc5523e518fa1f367f1fc2af0f938ed7be52"
+  },
+  "full/runtime/screen-remount3.png": {
+    "bytes": 724677,
+    "sha256": "93499422676a1508cddd96299fb2e4ada6beb321779103d66fe6e73c71fb37a7"
+  },
+  "full/runtime/screen-unloaded1.json": {
+    "bytes": 2145,
+    "sha256": "1ed7e7781c7a90d8276787bcfd8ed3a22ca6ea2976cb01991fc0dcb81deb6894"
+  },
+  "full/runtime/screen-unloaded1.png": {
+    "bytes": 720012,
+    "sha256": "944a3fd8c58e05c6a755ba209f11eecbb3365810a9a93112b21daaf3c733ed56"
+  },
+  "full/runtime/screen-unloaded2.json": {
+    "bytes": 2146,
+    "sha256": "f64ac08f145f5b10cbe1857818648577573e84b3b3a8588825e23d48eeb2a7b6"
+  },
+  "full/runtime/screen-unloaded2.png": {
+    "bytes": 720012,
+    "sha256": "944a3fd8c58e05c6a755ba209f11eecbb3365810a9a93112b21daaf3c733ed56"
+  },
+  "full/runtime/screen-unloaded3.json": {
+    "bytes": 2145,
+    "sha256": "6dcf9b1e121ade4a0056836c31889b42b0e0444fc79fcc2a2807553a97ece5e8"
+  },
+  "full/runtime/screen-unloaded3.png": {
+    "bytes": 720012,
+    "sha256": "944a3fd8c58e05c6a755ba209f11eecbb3365810a9a93112b21daaf3c733ed56"
+  },
+  "full/runtime/startup-commands-screen-matrix.json": {
+    "bytes": 252,
+    "sha256": "47a5efa666470f8670e4126c44ade260eb6a461a9666df4347352cd74592acdf"
+  },
+  "full/runtime/startup-windows-matrix.json": {
+    "bytes": 2,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  "full/runtime/wer.json": {
+    "bytes": 137,
+    "sha256": "09f3ad4b9902ebb8f0637888dc06b7f065023b246c424e1439562331e4cc5e5f"
+  },
+  "full/runtime/windows-close.json": {
+    "bytes": 938,
+    "sha256": "20e876955e204eb5f9ec13c042c89d44a9cf024dd7bccf51d20b03840cb3a74b"
+  },
+  "full/runtime/windows-matrix.json": {
+    "bytes": 608,
+    "sha256": "efb9526c7811773ebbc966a4aa0a9cbb00ea5012d5164da5b2a1c85818d26549"
+  },
+  "full/runtime/yield.json": {
+    "bytes": 89,
+    "sha256": "6b7b502b1f54c9c8c0ad2cb6f818dc2e784749beda875ddaa9eb7a59d58b9c69"
+  },
+  "full/src/Desktop/BiliCopilot.UI/App.xaml.cs": {
+    "bytes": 9458,
+    "sha256": "e9b49a12118498e65e2ac49a4f58c9385c1ced65505c8662bbf3b1ffd9662400"
+  },
+  "full/src/Desktop/BiliCopilot.UI/GlobalDependencies.cs": {
+    "bytes": 8350,
+    "sha256": "33c7b5b8ea9e6b448a7cdfbefb32fd144e8de208f48451d3869b5640b6b17f2b"
+  },
+  "full/src/Desktop/BiliCopilot.UI/OfflineAcceptance.cs": {
+    "bytes": 17907,
+    "sha256": "9e78b364df9a23462da2cbd9c0dc01cbd0a9deda223106426693d2c04b0b94fc"
+  },
+  "full/src/Desktop/BiliCopilot.UI/Package.appxmanifest": {
+    "bytes": 3463,
+    "sha256": "88212a49940ce19a10d1477337113dec1f3da34a57da67d3982c8f129a078ad1"
+  },
+  "full/src/Directory.Packages.props": {
+    "bytes": 12052,
+    "sha256": "8c506416f023888679bc5f0f311572ca5c9725f8a00df708e27f3bc075bee039"
+  },
+  "full-build.log": {
+    "bytes": 11457,
+    "sha256": "2934b9a0445980363ac30499e25012f8c8f0bc92d3c2c74b0a2d99e5f60d73d0"
+  },
+  "glyph-contact.png": {
+    "bytes": 29455,
+    "sha256": "33dc982c3aa4b19a93518639c4678c8f2e007565049ddf213448925d626c41b2"
+  },
+  "kernel-head": {
+    "bytes": 41,
+    "sha256": "1da9c3d64c40b63a4a9d099e4210762da01be5f45ee7c2e97903d6d28967fd47"
+  },
+  "kernel-staged.patch": {
+    "bytes": 2031170,
+    "sha256": "43b95080f50d1b2f83c4de18c4cda7a919396e28d13f974af3185e63c1a1417d"
+  },
+  "kernel-status": {
+    "bytes": 27936,
+    "sha256": "dc06816c9d509ddd7b133539d38a03e181009a2d9d91eaed47d661e0eda8c8f1"
+  },
+  "kernel-worktree.patch": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "launch-retain.ps1": {
+    "bytes": 2547,
+    "sha256": "73c23dcd30382fdef4f6872fba57d36e194b8c0057b0b64d55c10b247cc45d01"
+  },
+  "pixels/pixels.json": {
+    "bytes": 5363,
+    "sha256": "bc5c276d49bfc4151dc16937bc39d1bb8408e0b221c72d877dced49d563a1e0d"
+  },
+  "pixels/screen-baseline20-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-button-backward1-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-button-forward1-glyph.png": {
+    "bytes": 2467,
+    "sha256": "872d55225ea2d555c4ec689843fe56595b430ec9162b26b6fa9e613d76b0ca3b"
+  },
+  "pixels/screen-remount1-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount1-stable-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount1-static1-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount1-static2-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount2-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount2-stable-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount2-static1-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount2-static2-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount3-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount3-stable-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount3-static1-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-remount3-static2-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "pixels/screen-unloaded1-glyph.png": {
+    "bytes": 221,
+    "sha256": "af916a03f52dcef58f98e45af58ce8435beca6b241a94de2feb7d0a043065797"
+  },
+  "pixels/screen-unloaded2-glyph.png": {
+    "bytes": 221,
+    "sha256": "af916a03f52dcef58f98e45af58ce8435beca6b241a94de2feb7d0a043065797"
+  },
+  "pixels/screen-unloaded3-glyph.png": {
+    "bytes": 221,
+    "sha256": "af916a03f52dcef58f98e45af58ce8435beca6b241a94de2feb7d0a043065797"
+  },
+  "png_pixels.py": {
+    "bytes": 1805,
+    "sha256": "f0c6b0b0b2d63a911914ad52df06c701ebe2e656dd1ca27e5d430f40e3a55af0"
+  },
+  "prepare-app.py": {
+    "bytes": 3017,
+    "sha256": "1a1bea1a7ccf50cb187e27cb50ae305f945ad631f2e093600d5c4bd985cacacb"
+  },
+  "prepare-clean.py": {
+    "bytes": 2859,
+    "sha256": "9421247883553e2af6982fec556c562c10f5764cdb2e3fa7681862fc1226c2f2"
+  },
+  "prior-pixels-v2/pixels.json": {
+    "bytes": 3593,
+    "sha256": "201e8f17066959d472cc2ff9a0a886afdeb2a646dcaf90df9dbde032e37e3dbc"
+  },
+  "prior-pixels-v2/screen-baseline20-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/screen-button-backward1-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/screen-button-forward1-glyph.png": {
+    "bytes": 2467,
+    "sha256": "872d55225ea2d555c4ec689843fe56595b430ec9162b26b6fa9e613d76b0ca3b"
+  },
+  "prior-pixels-v2/screen-remount1-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/screen-remount1-stable-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/screen-remount2-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/screen-remount2-stable-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/screen-remount3-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/screen-remount3-stable-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/static-0-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/static-1-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "prior-pixels-v2/static-2-glyph.png": {
+    "bytes": 2710,
+    "sha256": "a8ef200d80a5e5c33c06d5fc2aa2b7bfcbbfb33075b17ebdb628c0b31b630a9b"
+  },
+  "Probe.cs": {
+    "bytes": 4802,
+    "sha256": "8eb41f83da0793292222d0ecf50ee47c29d2067b15e6be77320ded3dfe670d91"
+  },
+  "seal.py": {
+    "bytes": 2482,
+    "sha256": "8301b95eb4bebc8768d7e8f9d54f43cfca6c63f54d42cbc3b7790fa09f54adea"
+  },
+  "source-closure.json": {
+    "bytes": 259604,
+    "sha256": "788ee18509c117bab7b68e2df5f9f65e3a6b4d28619b973877bc46315c931536"
+  },
+  "ui-app-screen.py": {
+    "bytes": 3405,
+    "sha256": "2e5a2f4591b1c0e4b453bb076c90d568e6995eb93ea7614a42d63ed0c75c6eaa"
+  },
+  "validate.py": {
+    "bytes": 2673,
+    "sha256": "b4da2af72d2bb3361d0a63107cca86491fc6dc1494d64f7396733a7a43a0f138"
+  },
+  "validation.json": {
+    "bytes": 859,
+    "sha256": "251d28915b78cf7d476b19f9a695ae2bfdfb8b33a53d7489a998fdf29aada291"
+  },
+  "verdict-regression.json": {
+    "bytes": 454,
+    "sha256": "5f0deaf55c3507e32555107e5d512722347ce7662b4777d69d01877c6ac6747c"
+  }
+}
