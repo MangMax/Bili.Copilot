@@ -1,0 +1,490 @@
+{
+  "clean/boundary-build.log": {
+    "sha256": "f9cd598a899bd60bf0bee416ca19595a82bbf094e6f7f9cb4c774e57dc48da99",
+    "bytes": 2134
+  },
+  "clean/close.log": {
+    "sha256": "fb8e53b4ac38cc8355dc9d8dd0c3bdeb2a80eae1d734b092e111c5c091450f82",
+    "bytes": 358
+  },
+  "clean/closereentry.log": {
+    "sha256": "76e50eb615671597d5c67514efbe7c977c87fe762d09b9c8d29b6cda11c13aa4",
+    "bytes": 396
+  },
+  "clean/compat-build.log": {
+    "sha256": "8ac1d9017cdb5ceadb39637379e6bf0dbff5bc27db84aa56c7777cfd82dc887d",
+    "bytes": 2552
+  },
+  "clean/compat-results/loaded.txt": {
+    "sha256": "4a28b0322205881e0e7a8784c719de939ffd1f657c66468994e3850a7f32ea50",
+    "bytes": 862
+  },
+  "clean/compat-results/public-api.txt": {
+    "sha256": "14ca047c5761d4e5ea0f5c191821ad9dfc141751f20e30499e5b93849b0fad83",
+    "bytes": 23800
+  },
+  "clean/compat-results/results.json": {
+    "sha256": "815048fc724c9084922d4234ecbde10178ba629d290d1c527cef36740da204ca",
+    "bytes": 2513
+  },
+  "clean/compat-run.log": {
+    "sha256": "4c70bfe0f6add4fcabfdcd09797ec6d0ac2bea6ffd930d07130ed8e45abadc72",
+    "bytes": 1188
+  },
+  "clean/feed/Danmaku.Legacy.0.0.1-preview6.ready06c7.1.nupkg": {
+    "sha256": "f673252c61b6620a4d1ac794cd29fa17d82714916f536c2cda3a8477d920d7f4",
+    "bytes": 102274
+  },
+  "clean/feed/Danmaku.Legacy.0.0.1-preview6.ready06c7.1.snupkg": {
+    "sha256": "0c6b8520a8e72ac0ba602e55a86ab3120afaba3a1df10154c0167ff074e831c1",
+    "bytes": 27837
+  },
+  "clean/feed/Danmaku.Share.0.0.1-preview6.ready06c7.1.nupkg": {
+    "sha256": "0715bad3cef108d5698cc936e24254b6ddb4fea8e7c7f0c7ab2fa27368cdc61f",
+    "bytes": 91267
+  },
+  "clean/feed/Danmaku.Share.0.0.1-preview6.ready06c7.1.snupkg": {
+    "sha256": "351d76940a3d5a1333a00f24e239e7be2aa2f57b0d53a0bc2ce1d6eccd55dbe8",
+    "bytes": 14324
+  },
+  "clean/pack-Legacy.log": {
+    "sha256": "37beed8f944a040cbafc277874f666928bd565823365a32d06e0da1913cac2f9",
+    "bytes": 1333
+  },
+  "clean/pack-Share.log": {
+    "sha256": "5f6580a3693ed0fc4584b0e83487ed94e5d93cad44bc79fab736836f65f8443b",
+    "bytes": 1082
+  },
+  "clean/provenance.json": {
+    "sha256": "88874eb332579b61337e6dc7aaa82635c6d451a4982a63cf8c3e63bba6446e96",
+    "bytes": 5616
+  },
+  "clean/queue.log": {
+    "sha256": "a0c142ea1b3d608600adb8bf2d3c002d136bc02f0ad353d6b6032c25cd3de01d",
+    "bytes": 350
+  },
+  "clean/reentry.log": {
+    "sha256": "29bc89ddfac17dfa2deccadf9b442694144ef47bcf7c8809f69f4654236871ee",
+    "bytes": 413
+  },
+  "clean/stop.log": {
+    "sha256": "aebe1f425c8e1d20100708f8010e5e8e1236f2270bb29550ca309d42f493ab86",
+    "bytes": 332
+  },
+  "clean/throwclose.log": {
+    "sha256": "df21a6c7f7c76945451af15bdbc00352ebc347d43a65e1104f63eed36aafb2f7",
+    "bytes": 358
+  },
+  "clean/throwstop.log": {
+    "sha256": "d969ec5bcf7e7e8dcd7c2920cf4c6423f90b42eea976de989e0a5bf1b0284947",
+    "bytes": 358
+  },
+  "full/src/Desktop/BiliCopilot.UI/OfflineAcceptance.cs": {
+    "sha256": "d0666c639a82534f16904875de46cce332aad1276e81339e6251f81ef6a2fdf9",
+    "bytes": 17907
+  },
+  "full-build.log": {
+    "sha256": "b4180770feaaa11eaf933860b2c11c1d31741ccafd15df57461e19329fbcf77e",
+    "bytes": 11040
+  },
+  "green/build.log": {
+    "sha256": "74fc12e75cf18a347d078c528c4c7f13500691145f68ff9773b9abcfb32f5c70",
+    "bytes": 758
+  },
+  "green/evidence/native/cleanup.json": {
+    "sha256": "981976b5284044ff0f835ca71ca1596f5c7df04af6b7376ea0108be55e10ddce",
+    "bytes": 62
+  },
+  "green/evidence/native/commands.json": {
+    "sha256": "91b83c0216485732735ff373c289dfb19ff1b625f4db24540e56404ff2a54fe9",
+    "bytes": 4461
+  },
+  "green/evidence/native/events.jsonl": {
+    "sha256": "9fc8484f8d240f18cfc5594cd9770359f4119b5b1eaf3d7b5f1f52f7fa405d9a",
+    "bytes": 2196
+  },
+  "green/evidence/native/handle-retained.json": {
+    "sha256": "2746a6936ad846101b247770ea1b321e47d40653f6c1ce3ac875894588458311",
+    "bytes": 84
+  },
+  "green/evidence/native/identity.json": {
+    "sha256": "aac964c1771293fd3675f3b859096fdbf8de04a3100777f2a37eb8d6726ba071",
+    "bytes": 211
+  },
+  "green/evidence/native/launch.json": {
+    "sha256": "1c6c8c2d6d9fe5ca1ac99e87aa80644ba4a93f333b5672fd6e37c6a1d2c21c4d",
+    "bytes": 87
+  },
+  "green/evidence/native/layout-hashes.json": {
+    "sha256": "51c1ea5a9a708fa88d6922813b4ee7ba1456f7fe633c0e2bd0b961e2b80f87dd",
+    "bytes": 66921
+  },
+  "green/evidence/native/package.json": {
+    "sha256": "87a76c7be4315e27e661470b6bfe163a23ce18d0dec60658c9e4e27f77a2f48e",
+    "bytes": 247
+  },
+  "green/evidence/native/Program.cs": {
+    "sha256": "a7a65c9b6cf93a0ab877a5fed588ef0895a804351481f1c3f6c807c47d27b888",
+    "bytes": 7746
+  },
+  "green/evidence/native/READY.png": {
+    "sha256": "e7cc62dbf09fcf9fecc8b4c5497dcf077f1f4cbbcbd5f3409093997a181ea12c",
+    "bytes": 44349
+  },
+  "green/evidence/native/results.json": {
+    "sha256": "f109bd083556f1eb917c9c64d0e72770245ef816401f5bd576228aefd3f9c197",
+    "bytes": 358
+  },
+  "green/evidence/native/retainedexit.json": {
+    "sha256": "aa1f7382d8f3d9f917b8ed930e8e506d91461c0824c183426f60d55ef432f1fd",
+    "bytes": 321
+  },
+  "green/evidence/native/run.ps1": {
+    "sha256": "dd94fa9bd076d88aaa757dbc1300f04305b28989f5336cd0443d51fa5174f306",
+    "bytes": 6691
+  },
+  "green/evidence/native/wer.json": {
+    "sha256": "379d17bc4b008ec022f5ac2494b806f5339314ce9be2ac8f2a311d960dd8f1ee",
+    "bytes": 137
+  },
+  "green/evidence/native/yield.txt": {
+    "sha256": "566edffb4479b78974fd8d65e9351791ff59f95b8c917e6d8567712f15340da4",
+    "bytes": 24
+  },
+  "green/feed/Danmaku.Legacy.0.0.1-preview6.ready06c7.green.nupkg": {
+    "sha256": "b16beee2c4397281c915d2fcc1115aaad37d5b14da3c062c231e0ba56b8116da",
+    "bytes": 102428
+  },
+  "green/feed/Danmaku.Legacy.0.0.1-preview6.ready06c7.green.snupkg": {
+    "sha256": "557758349e1788d1c1a7613b1e5d2ec30319b8085743dabdef1e409ecbdc8506",
+    "bytes": 27981
+  },
+  "green/feed/Danmaku.Share.0.0.1-preview6.ready06c7.green.nupkg": {
+    "sha256": "5bcd72a9957dfbd261109c652fd6eeea46d54b3352bfe3c0864b5fd1e73d0be7",
+    "bytes": 91272
+  },
+  "green/feed/Danmaku.Share.0.0.1-preview6.ready06c7.green.snupkg": {
+    "sha256": "7dcb5c2a21f93013c25b5b0ffee1247d0fc35549b3e68337377ebf848ab94adc",
+    "bytes": 14329
+  },
+  "green/pack-Legacy.log": {
+    "sha256": "9a78addafd5fdf0ffbb1df856676eb4f0568936537ce90ac9ebe6fef0fb1de6c",
+    "bytes": 1341
+  },
+  "green/pack-Share.log": {
+    "sha256": "5c33445cba509021f0a97d0eb113dbe39ac4e0289eb74367f3b467b2e32d0c43",
+    "bytes": 1090
+  },
+  "green/source/src/Danmaku.Legacy/DanmakuFrostMaster.cs": {
+    "sha256": "e83ee59eddad746283adb6e2b7fe0f30ee53d4a1893477bb7701341f94b00bdf",
+    "bytes": 15921
+  },
+  "green/source/src/Danmaku.Legacy/DanmakuRender.cs": {
+    "sha256": "77567fa1c53289d19184ec3c75ea09fd68c7d4be5760ac5d274858f33533dc34",
+    "bytes": 51058
+  },
+  "green/source/src/Danmaku.Legacy/DanmakuYSlotManager.cs": {
+    "sha256": "ee27fd1889548d3e4318b92e77f773dd5c56385ba0200b6ed2a6ccc896a824ed",
+    "bytes": 2556
+  },
+  "green/source/src/Danmaku.Legacy/Logger.cs": {
+    "sha256": "815c75ed4e4a2afb296fa1edd19a7de76aa9ab7d810407264fbcfc94398a2af3",
+    "bytes": 1055
+  },
+  "kernel-head.txt": {
+    "sha256": "1da9c3d64c40b63a4a9d099e4210762da01be5f45ee7c2e97903d6d28967fd47",
+    "bytes": 41
+  },
+  "kernel-index.patch": {
+    "sha256": "43b95080f50d1b2f83c4de18c4cda7a919396e28d13f974af3185e63c1a1417d",
+    "bytes": 2031170
+  },
+  "kernel-status.txt": {
+    "sha256": "dc06816c9d509ddd7b133539d38a03e181009a2d9d91eaed47d661e0eda8c8f1",
+    "bytes": 27936
+  },
+  "kernel-worktree.patch": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "matrix/build.log": {
+    "sha256": "793891962d91e0cc363a51f9c162f974dae72fc18a96dfcc520d1ad2ab47d60f",
+    "bytes": 761
+  },
+  "matrix/evidence/native/cleanup.json": {
+    "sha256": "981976b5284044ff0f835ca71ca1596f5c7df04af6b7376ea0108be55e10ddce",
+    "bytes": 62
+  },
+  "matrix/evidence/native/commands.json": {
+    "sha256": "1d04671afe39f9e6dfaeb0ec7af98050b01b03de013c015f9e7697127f90898b",
+    "bytes": 4136
+  },
+  "matrix/evidence/native/events.jsonl": {
+    "sha256": "24729a57ea7bc0d965b37bf6b154bb9c9a126a267043d36557f2401987e687cb",
+    "bytes": 2372
+  },
+  "matrix/evidence/native/handle-retained.json": {
+    "sha256": "7c8d36a1233ff0db913f99b70504ec2fa8320208f70c10bb668cb959a9cc3d1b",
+    "bytes": 85
+  },
+  "matrix/evidence/native/identity.json": {
+    "sha256": "edfbe49650a4117f0c18f839d5e43152b87a3043724372b2c0af178437800fa1",
+    "bytes": 213
+  },
+  "matrix/evidence/native/launch.json": {
+    "sha256": "d3635820cfd191066519308f29e87376afec6375b17cf6ad83ab80133c302177",
+    "bytes": 89
+  },
+  "matrix/evidence/native/layout-hashes.json": {
+    "sha256": "fe99945e4d379c991ea5374465e2a02fb600bde4793294fe1a2054d1de8a704f",
+    "bytes": 67174
+  },
+  "matrix/evidence/native/package.json": {
+    "sha256": "6ffd1821583c35b1b8dffce16b940fbe851906dc37f5a73c9b875804b0016e3c",
+    "bytes": 250
+  },
+  "matrix/evidence/native/Program.cs": {
+    "sha256": "1fd1f2a74aec8c43bd137362ad9792fe6810163203a98b48123776bad7bbfdfd",
+    "bytes": 8474
+  },
+  "matrix/evidence/native/READY.png": {
+    "sha256": "c9f434e0a29a6cd055aca14c00da0f442957a511e72bc074352f48adafe7ca12",
+    "bytes": 39211
+  },
+  "matrix/evidence/native/results.json": {
+    "sha256": "39497d5e36e4572d6cb2ed3bf8e5fc102dce75bd11d4555f183ee1e30fa2548d",
+    "bytes": 597
+  },
+  "matrix/evidence/native/retainedexit.json": {
+    "sha256": "a8ce9b79e206e36d3bf700c191be0810b7bb1c212f0142ccb75f7a070fb96818",
+    "bytes": 323
+  },
+  "matrix/evidence/native/run.ps1": {
+    "sha256": "acf87dddfe4cde50d8398981ade969cd2c5c85da29b78f0a487268e0ca90ad5f",
+    "bytes": 6692
+  },
+  "matrix/evidence/native/STOP.txt": {
+    "sha256": "0d69a1dc0dda656201dc50cc05e27a8ee1f5cd4cac4a678dc7bba225f4b38fb3",
+    "bytes": 251
+  },
+  "matrix/evidence/native/wer.json": {
+    "sha256": "66f277c7ddf90f09c9d3662d6028fb1016b969a86b6adac35c72a2b8e00d1f82",
+    "bytes": 137
+  },
+  "matrix/evidence/native/yield.txt": {
+    "sha256": "566edffb4479b78974fd8d65e9351791ff59f95b8c917e6d8567712f15340da4",
+    "bytes": 24
+  },
+  "matrix/evidence/native2/cleanup.json": {
+    "sha256": "981976b5284044ff0f835ca71ca1596f5c7df04af6b7376ea0108be55e10ddce",
+    "bytes": 62
+  },
+  "matrix/evidence/native2/commands.json": {
+    "sha256": "0a2e02f1cb2c3067adb21560fa0517432975f19e0605baf8a84789786587d5f2",
+    "bytes": 4139
+  },
+  "matrix/evidence/native2/events.jsonl": {
+    "sha256": "2d6525658d793db578bda4ab29a7b84a0f92237b6e4088968bfa1ef537e352e6",
+    "bytes": 5835
+  },
+  "matrix/evidence/native2/handle-retained.json": {
+    "sha256": "d14b6ac0430d564e61a4b5968d141ed8111fa0d4c12c9e1b89028c010061a870",
+    "bytes": 85
+  },
+  "matrix/evidence/native2/identity.json": {
+    "sha256": "c5ef41db281cae06b3b53c5b4967d1723efbd462af5a422aaf1dfda6bf14464f",
+    "bytes": 213
+  },
+  "matrix/evidence/native2/launch.json": {
+    "sha256": "65946fb3d5569ea1a2f09282217a1e13ea2322b9018efb3e7694becf46251aaa",
+    "bytes": 89
+  },
+  "matrix/evidence/native2/layout-hashes.json": {
+    "sha256": "57ce36ace07a3b78327d2d66b55476ec4bb44499288373dc0aff7b26462f0b48",
+    "bytes": 67174
+  },
+  "matrix/evidence/native2/package.json": {
+    "sha256": "6ffd1821583c35b1b8dffce16b940fbe851906dc37f5a73c9b875804b0016e3c",
+    "bytes": 250
+  },
+  "matrix/evidence/native2/Program.cs": {
+    "sha256": "d79e9cb53785951a026acf4887b2d7b16ba8410142e5f8403e074fc5597d29b4",
+    "bytes": 8473
+  },
+  "matrix/evidence/native2/READY.png": {
+    "sha256": "e105cf0145c96bb9af2cffc63e10cf9299768530426b80f323d30ae598adc48a",
+    "bytes": 44933
+  },
+  "matrix/evidence/native2/results.json": {
+    "sha256": "513ea8b928d00e9ff98fac299c7b63bedf965d99f6452e724d8daf4955e03d83",
+    "bytes": 1322
+  },
+  "matrix/evidence/native2/retainedexit.json": {
+    "sha256": "88a7602c81266ebcd38697bafb5036ccd3bbf0d38291d6e6b5cf91f83f868626",
+    "bytes": 333
+  },
+  "matrix/evidence/native2/run.ps1": {
+    "sha256": "acf87dddfe4cde50d8398981ade969cd2c5c85da29b78f0a487268e0ca90ad5f",
+    "bytes": 6692
+  },
+  "matrix/evidence/native2/STOP.txt": {
+    "sha256": "0d69a1dc0dda656201dc50cc05e27a8ee1f5cd4cac4a678dc7bba225f4b38fb3",
+    "bytes": 251
+  },
+  "matrix/evidence/native2/wer.json": {
+    "sha256": "328eac3b1805e5a983a80ec846575007c5e844be720f54e65f811d59d8a7c161",
+    "bytes": 1758
+  },
+  "matrix/evidence/native2/yield.txt": {
+    "sha256": "566edffb4479b78974fd8d65e9351791ff59f95b8c917e6d8567712f15340da4",
+    "bytes": 24
+  },
+  "matrix/feed/Danmaku.Legacy.0.0.1-preview6.ready06c7.matrix.nupkg": {
+    "sha256": "21ed440708af6742c72c6be29e6dc4d56fe0ef46557a5f509ecc749e48fcddc3",
+    "bytes": 102436
+  },
+  "matrix/feed/Danmaku.Legacy.0.0.1-preview6.ready06c7.matrix.snupkg": {
+    "sha256": "6a700259adb1c36ad0728017b05a813a092ff8617f2647b31aaa2fd2baec6c2e",
+    "bytes": 27983
+  },
+  "matrix/feed/Danmaku.Share.0.0.1-preview6.ready06c7.matrix.nupkg": {
+    "sha256": "245a0b73dfcaf444047f1d153aa30517862ddc372fa98fb87d97d542bdd08520",
+    "bytes": 91267
+  },
+  "matrix/feed/Danmaku.Share.0.0.1-preview6.ready06c7.matrix.snupkg": {
+    "sha256": "436805e08688099c1e6b8c00b6284f2d6bbd9cbc34367b43e1a3a894823b6fbc",
+    "bytes": 14334
+  },
+  "matrix/pack-Legacy.log": {
+    "sha256": "62e1267c2f38f271ceec4fe4ae13c27800eb175bfeb07d77fc38cf9632787724",
+    "bytes": 1349
+  },
+  "matrix/pack-Share.log": {
+    "sha256": "4c62eb5a910334d394329e93eb19790d08c279fc5ffa43d6ac6075593a507d37",
+    "bytes": 1097
+  },
+  "matrix/rebuild.log": {
+    "sha256": "7d30783f113aaf41390b7b385910536ba6a523b2597636003e060d7d75ed65ab",
+    "bytes": 589
+  },
+  "matrix/source/src/Danmaku.Legacy/DanmakuFrostMaster.cs": {
+    "sha256": "e83ee59eddad746283adb6e2b7fe0f30ee53d4a1893477bb7701341f94b00bdf",
+    "bytes": 15921
+  },
+  "matrix/source/src/Danmaku.Legacy/DanmakuRender.cs": {
+    "sha256": "77567fa1c53289d19184ec3c75ea09fd68c7d4be5760ac5d274858f33533dc34",
+    "bytes": 51058
+  },
+  "matrix/source/src/Danmaku.Legacy/DanmakuYSlotManager.cs": {
+    "sha256": "ee27fd1889548d3e4318b92e77f773dd5c56385ba0200b6ed2a6ccc896a824ed",
+    "bytes": 2556
+  },
+  "matrix/source/src/Danmaku.Legacy/Logger.cs": {
+    "sha256": "815c75ed4e4a2afb296fa1edd19a7de76aa9ab7d810407264fbcfc94398a2af3",
+    "bytes": 1055
+  },
+  "red/build.log": {
+    "sha256": "3a39897eb04412ef352abe022441afd707ae3a4acfd1b20396d802cd3d77fda1",
+    "bytes": 752
+  },
+  "red/evidence/native/cleanup.json": {
+    "sha256": "981976b5284044ff0f835ca71ca1596f5c7df04af6b7376ea0108be55e10ddce",
+    "bytes": 62
+  },
+  "red/evidence/native/commands.json": {
+    "sha256": "1e4271945a6777acaaab3aa8765dc53792ff9c24ee067bdc837094574877b477",
+    "bytes": 4459
+  },
+  "red/evidence/native/events.jsonl": {
+    "sha256": "fe2de86ccfddbbbd567ee2c9dd01c1717bab36fd4b1faab595ba3da2fcf671b7",
+    "bytes": 1988
+  },
+  "red/evidence/native/handle-retained.json": {
+    "sha256": "d8cf65c8182e3b0ed4dc36c08eac7b3b5fcd3aa635714a6ef187b0d27205ae10",
+    "bytes": 85
+  },
+  "red/evidence/native/identity.json": {
+    "sha256": "c4d84e75eef16ea79be710e17b45424a11ae919054f818b67c24bde528c8290f",
+    "bytes": 210
+  },
+  "red/evidence/native/launch.json": {
+    "sha256": "3c1aea4238613b2d90d538e7671da07e67004b2c97a5e0c57b95fdfb799a210b",
+    "bytes": 86
+  },
+  "red/evidence/native/layout-hashes.json": {
+    "sha256": "6d25843df2d70d5ee8a85a2acc30024b35a4638280f4484e7b2fdcdb5dc62f21",
+    "bytes": 66415
+  },
+  "red/evidence/native/package.json": {
+    "sha256": "0d38414ef28fd9a7339b299e251a01a725b20a445039c8badf4c497375680ac0",
+    "bytes": 241
+  },
+  "red/evidence/native/Program.cs": {
+    "sha256": "a7a65c9b6cf93a0ab877a5fed588ef0895a804351481f1c3f6c807c47d27b888",
+    "bytes": 7746
+  },
+  "red/evidence/native/READY.png": {
+    "sha256": "9907f04602081c8b0f1c6c34c24dd17b9c1c4a7ac5f6eeef589e102493cd2591",
+    "bytes": 35500
+  },
+  "red/evidence/native/results.json": {
+    "sha256": "93b4c2253e3640678a588e6f46c7bd2877152d98c5b9bb20bc30238723d1460e",
+    "bytes": 295
+  },
+  "red/evidence/native/retainedexit.json": {
+    "sha256": "38626229c335949e52e4999383cac8c0411c87ec994419e294c7a1f99ea0e04f",
+    "bytes": 320
+  },
+  "red/evidence/native/run.ps1": {
+    "sha256": "323fc2f6959348871c22575229fe15a5ae45b4097ed050c546d477351eebac32",
+    "bytes": 6689
+  },
+  "red/evidence/native/wer.json": {
+    "sha256": "37f38317ad2cbf8f76960a5fb0df62bc70e50c265cf10c35933d28f648223531",
+    "bytes": 137
+  },
+  "red/evidence/native/yield.txt": {
+    "sha256": "566edffb4479b78974fd8d65e9351791ff59f95b8c917e6d8567712f15340da4",
+    "bytes": 24
+  },
+  "red/feed/Danmaku.Legacy.0.0.1-preview6.ready06c7.red.nupkg": {
+    "sha256": "2f2edf3f2dd1b4e9f95ee8964d11a0d9e84da5830861f3960f98648e8dd2ca8d",
+    "bytes": 102110
+  },
+  "red/feed/Danmaku.Legacy.0.0.1-preview6.ready06c7.red.snupkg": {
+    "sha256": "ad60dd0d0ad44a77931f57106a4507b8cd09e782a71a476a7171fe38cf71f1d5",
+    "bytes": 27648
+  },
+  "red/feed/Danmaku.Share.0.0.1-preview6.ready06c7.red.nupkg": {
+    "sha256": "aebbdd6b1a2c53d69805919b8621ef2109e3207e4c5c51268964c547fff97815",
+    "bytes": 91262
+  },
+  "red/feed/Danmaku.Share.0.0.1-preview6.ready06c7.red.snupkg": {
+    "sha256": "cfa509ee6843e256b6c17978ea13d709738f755e16a15f51cdd7dd97a55546cc",
+    "bytes": 14325
+  },
+  "red/pack-Legacy.log": {
+    "sha256": "bf87fcad8a8fe109ac95fb2cd288c22754c2492628459bb53cd0b2c484a7b316",
+    "bytes": 1325
+  },
+  "red/pack-Share.log": {
+    "sha256": "1844a055f865937f8c1054f52124be2d837704e0fbe31d885f0d5f11fc58fe84",
+    "bytes": 1076
+  },
+  "red/source/src/Danmaku.Legacy/DanmakuFrostMaster.cs": {
+    "sha256": "a8c72d3ced490b8ec31860d29a49d8c38ee7fb8908942a6bb4fe17da02a3523a",
+    "bytes": 15245
+  },
+  "red/source/src/Danmaku.Legacy/DanmakuRender.cs": {
+    "sha256": "393db25526d1839891681052621bcf9dd9239b7af974a9851ffe34dca5a13a2f",
+    "bytes": 50783
+  },
+  "red/source/src/Danmaku.Legacy/DanmakuYSlotManager.cs": {
+    "sha256": "ee27fd1889548d3e4318b92e77f773dd5c56385ba0200b6ed2a6ccc896a824ed",
+    "bytes": 2556
+  },
+  "red/source/src/Danmaku.Legacy/Logger.cs": {
+    "sha256": "815c75ed4e4a2afb296fa1edd19a7de76aa9ab7d810407264fbcfc94398a2af3",
+    "bytes": 1055
+  }
+}

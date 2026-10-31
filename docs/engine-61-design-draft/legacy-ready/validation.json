@@ -1,0 +1,31 @@
+{
+  "application": "44ce6cc5afd5bd503c454aaebfbee4df2e0b5ede",
+  "parent": "e8143389f8765e25456003213d3eb2f4b3dde061",
+  "source": {
+    "DanmakuFrostMaster.cs": "91f780f483d9a162b5374dba747c5f26793ba561c7b78a0ba29ec99ed0106254",
+    "DanmakuRender.cs": "0c0e07bacbe896053340027bad31545c0b53f5ccdde3d63d2ab124649728d0f4"
+  },
+  "packages": {
+    "Legacy": {
+      "version": "0.0.1-preview6.ready06c7.1",
+      "nupkgSha256": "f673252c61b6620a4d1ac794cd29fa17d82714916f536c2cda3a8477d920d7f4",
+      "dllSha256": "b31b16e9ab139c58c0fc4ecc2350ef441f0d6208b60a0f03546d3a5fc203fe27",
+      "fullBuildMatches": true
+    },
+    "Share": {
+      "version": "0.0.1-preview6.ready06c7.1",
+      "nupkgSha256": "0715bad3cef108d5698cc936e24254b6ddb4fea8e7c7f0c7ab2fa27368cdc61f",
+      "dllSha256": "198590a3a357b7afa833d6ac331ff9844bf6cc9999d6d7c1807fae95328404fa",
+      "fullBuildMatches": true
+    }
+  },
+  "unchangedProductionCsXaml": 901,
+  "fixtureInjectionDifferences": [
+    "src/Desktop/BiliCopilot.UI/App.xaml.cs",
+    "src/Desktop/BiliCopilot.UI/GlobalDependencies.cs"
+  ],
+  "compatPassed": 23,
+  "fullApplicationBuild": "exit0; 0 errors; 1 protobuf warning; Release/x64/JIT",
+  "fullApplicationRuntime": "NOT RUN: native matrix AV triggered requested stop boundary",
+  "acceptance": "INCOMPLETE: before-ready Close and full application three remounts NOT PASSED"
+}
