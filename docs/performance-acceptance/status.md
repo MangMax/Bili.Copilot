@@ -1,5 +1,7 @@
 # 性能规格 #45 验收状态
 
+最新 **Popular 两模型 partial 已集成，全面 AOT 仍 HOLD**（2026-10-31）：固定 `2db290a15a128404466f7f40fc4187cce4064cf5` 独立审查无阻断，以 `--no-ff` 合入 `ff339ca73279fa01776951410073205b3ef6660b`。生产仅两个声明增加 partial；原始严格诊断复算357→355，仅移除目标2条，303属性+46命令+6CsWinRT逐项保留。46份历史产物hash、原30/30/535 TRX、最终DLL/PDB及各2589源文档核验通过；本轮隔离真实模型probe通过，父级fresh **535/0/0**。应用构建为历史复核，未重跑strict/ILC；真实AOT绑定仍待验，#49 CoreOX独占桌面。kernel0ae5e4e clean，正式依赖/gitlink/NoWarn不变，无UI/部署/登录/安装/UAC/push/PR/issue。见[独立集成报告](integration-aot-popular-models.md)。以下旧计数按历史SHA解读。
+
 最新 **NotifyMessageItemViewModel.ActiveCommand provider 范围已集成，全面 AOT 仍 HOLD**（2026-10-31）：固定 `6f64b929501d0534cf179d22d981ccaf36150c2b` 独立审查无阻断，以 `--no-ff` 合入 **`2b54efdbfd28b797f2035e9d523be1b3b6835bab`**。唯一生产修改为八数据成员 provider 声明；生成 provider/命令及真实 x:Bind 路径保真，未发现该命令 runtime Binding/反射消费者。父级 fresh **535 passed / 0 failed / 0 skipped**，原524名称完整保留，新增11直接测试真实VM/Toolkit命令。Debug/Release x64均0 warnings/0 errors，候选及父DLL/PDB身份、各2587应用文档及112落盘测试输入核验通过。历史 strict 原始日志独立复算仅删除目标1条MVVMTK0046，剩 **303+46+8** 逐项不变；本轮没有重跑strict/完整ILC。真实AOT绑定、正式依赖/性能HOLD及#49独立CoreQX审查保持；无警告策略/正式Mpv/kernel引用变化，无UI/部署/登录/安装/UAC/push/PR/issue，kernel0ae5e4e clean。见[集成报告](integration-aot-notify-active-command.md)。下列计数按历史SHA解读。
 
 
