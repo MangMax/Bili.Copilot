@@ -8,7 +8,7 @@
 
 - App.InitializeTrayLifecycle 唯一构造 lifecycle，保存于托管 internal 属性；MainWindow、PlayerViewModel 和设置入口通过 App 访问它。工厂 CreateTrayIcon 创建 session，以 ITrayIconSession 返回给 lifecycle 的 `_tray`。两者没有 DI/WinRT 服务注册，也没有写入 XAML DataContext、Tag、Content、ItemsSource 或作为 WinRT 方法返回值的路径。
 - TrayResources.xaml 中传入 WinUI 的是 XamlUICommand、TaskbarIcon 和 MenuFlyout；ExecuteRequested 的目标是 **App** 的处理器，App 再调用 lifecycle.Restore 或 window.RequestExitAsync。AppInstance.Activated、通知回调和 DispatcherQueue 同样通过 App/闭包触发调用，没有将 lifecycle/session 本体注册为 WinRT 接口对象。
-- session 在真实 H.NotifyIcon 2.3.2 的 `MessageWindow.TaskbarCreated` 注册 `OnTaskbarCreated`，其 delegate target 因而由消息窗口托管持有。依赖 PE 元数据验证该事件为 System.EventHandler 且 add/remove 有 managed IL。session 再用普通 EventHandler 的 sender=this 发出 HealthChanged；唯一生产消费者是 lifecycle.OnTrayHealthChanged。这是托管事件持有关系，不是 session 本体被当作 IClosable 传入 WinRT 的证据。
+- session 在真实 H.NotifyIcon 2.4.1 的 `MessageWindow.TaskbarCreated` 注册 `OnTaskbarCreated`，其 delegate target 因而由消息窗口托管持有。依赖 PE 元数据验证该事件为 System.EventHandler 且 add/remove 有 managed IL。session 再用普通 EventHandler 的 sender=this 发出 HealthChanged；唯一生产消费者是 lifecycle.OnTrayHealthChanged。这是托管事件持有关系，不是 session 本体被当作 IClosable 传入 WinRT 的证据。集成复核根据 packages.json/解析依赖纠正原报告的 2.3.2；生产源码历史注释未改。
 - `ITrayIconSession : IDisposable`、`TrayLifecycle : IDisposable` 均命中 CsWinRT 的 IDisposable → Windows.Foundation.IClosable 映射。持有 TaskbarIcon 或捕获 WinUI 命令不足以推定实例本身跨 ABI；partial 是为严格编译生成兼容接口表。本次未观察或复现真实托盘运行故障。
 
 ## 生命周期保持与静态审查
