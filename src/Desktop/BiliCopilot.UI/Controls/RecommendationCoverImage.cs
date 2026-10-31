@@ -19,6 +19,9 @@ public sealed partial class RecommendationCoverImage : UserControl
     // This helper never enters the visual tree or starts a Win2D image load.
     private static readonly BasicCoverImage Cache = new();
     private static readonly SemaphoreSlim Downloads = new(8);
+    // Cached/off-screen realized covers share this budget too. A resize must not
+    // enqueue a native decode and a UI surface upload for every cached card at once.
+    private static readonly SemaphoreSlim Decodes = new(2);
     private static readonly Dictionary<string, Task<byte[]>> Pending = new();
     private readonly Image _image = new() { Stretch = Stretch.UniformToFill };
     private readonly Shimmer _loading = new();
@@ -30,6 +33,8 @@ public sealed partial class RecommendationCoverImage : UserControl
     private CancellationTokenSource? _recoveryDelay;
     private long? _cornerRadiusToken;
     private (Uri? Source, int Width, int Height) _requested;
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? _resizeTimer;
+    private (int Width, int Height) _pendingSize;
 
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
         nameof(Source), typeof(Uri), typeof(RecommendationCoverImage), new PropertyMetadata(null, OnSourceChanged));
@@ -51,7 +56,11 @@ public sealed partial class RecommendationCoverImage : UserControl
     }
 
     private static void OnSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-        => ((RecommendationCoverImage)sender).Reload();
+    {
+        var cover = (RecommendationCoverImage)sender;
+        cover._resizeTimer?.Stop();
+        cover.Reload();
+    }
 
     private void OnLoaded(object sender, RoutedEventArgs args)
     {
@@ -79,6 +88,8 @@ public sealed partial class RecommendationCoverImage : UserControl
 
     private void OnUnloaded(object sender, RoutedEventArgs args)
     {
+        _resizeTimer?.Stop();
+        _pendingSize = default;
         if (_cornerRadiusToken is not null)
         {
             UnregisterPropertyChangedCallback(CornerRadiusProperty, _cornerRadiusToken.Value);
@@ -107,9 +118,48 @@ public sealed partial class RecommendationCoverImage : UserControl
         _loading.IsActive = false;
     }
 
-    private void OnRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => Reload();
+    private void OnRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => ScheduleResize();
 
-    private void OnSizeChanged(object sender, SizeChangedEventArgs args) => Reload();
+    private void OnSizeChanged(object sender, SizeChangedEventArgs args) => ScheduleResize();
+
+    private void ScheduleResize()
+    {
+        if (!IsLoaded || ActualWidth <= 0 || ActualHeight <= 0 || XamlRoot is null)
+        {
+            return;
+        }
+
+        var size = ((int)Math.Ceiling(ActualWidth * XamlRoot.RasterizationScale),
+            (int)Math.Ceiling(ActualHeight * XamlRoot.RasterizationScale));
+        if (size == (_requested.Width, _requested.Height))
+        {
+            _resizeTimer?.Stop();
+            return;
+        }
+
+        // XamlRoot.Changed also fires without a change in physical image size.
+        // Do not postpone the pending decode for those notifications.
+        if (_resizeTimer?.IsRunning == true && _pendingSize == size)
+        {
+            return;
+        }
+
+        _pendingSize = size;
+        if (_resizeTimer is null)
+        {
+            _resizeTimer = DispatcherQueue.CreateTimer();
+            _resizeTimer.IsRepeating = false;
+            _resizeTimer.Interval = TimeSpan.FromMilliseconds(200);
+            _resizeTimer.Tick += (_, _) => Reload();
+        }
+
+        // Keep the current surface while layout stretches it. Starting WIC on
+        // every pixel of a resize creates work that cannot safely be cancelled.
+        // Decode at the final physical size after the resize settles, including
+        // DPI-only changes, without delaying layout or source changes.
+        _resizeTimer.Stop();
+        _resizeTimer.Start();
+    }
 
     private void OnSurfaceContentsLost(object? sender, object args)
     {
@@ -203,46 +253,55 @@ public sealed partial class RecommendationCoverImage : UserControl
 
             using var stream = await OpenAsync(key.Source, token);
             using var random = stream.AsRandomAccessStream();
-            // Canceling the WinRT wrapper can complete before WIC stops using the
-            // adapted stream (native AV on rapid unload/remount). Keep the stream
-            // alive until native decoding completes, then reject stale results.
-            var decoder = await BitmapDecoder.CreateAsync(random).AsTask();
-            token.ThrowIfCancellationRequested();
-            // Never enlarge the source; UniformToFill needs enough pixels on BOTH axes.
-            var (outputWidth, outputHeight) = CoverDecodeSize.Calculate(
-                decoder.OrientedPixelWidth, decoder.OrientedPixelHeight, key.Item2, key.Item3, 1);
-            var width = decoder.PixelWidth == decoder.OrientedPixelWidth ? outputWidth : outputHeight;
-            var height = decoder.PixelHeight == decoder.OrientedPixelHeight ? outputHeight : outputWidth;
-            ImageSource result;
-            var pixels = await decoder.GetPixelDataAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied,
-                new BitmapTransform { ScaledWidth = width, ScaledHeight = height, InterpolationMode = BitmapInterpolationMode.Fant },
-                ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb).AsTask();
-            token.ThrowIfCancellationRequested();
-            var device = CanvasDevice.GetSharedDevice();
-            if (!ReferenceEquals(_device, device))
+            await Decodes.WaitAsync(token);
+            try
             {
-                if (_device is not null)
+                token.ThrowIfCancellationRequested();
+                // Canceling the WinRT wrapper can complete before WIC stops using the
+                // adapted stream (native AV on rapid unload/remount). Keep the stream
+                // alive until native decoding completes, then reject stale results.
+                var decoder = await BitmapDecoder.CreateAsync(random).AsTask();
+                token.ThrowIfCancellationRequested();
+                // Never enlarge the source; UniformToFill needs enough pixels on BOTH axes.
+                var (outputWidth, outputHeight) = CoverDecodeSize.Calculate(
+                    decoder.OrientedPixelWidth, decoder.OrientedPixelHeight, key.Item2, key.Item3, 1);
+                var width = decoder.PixelWidth == decoder.OrientedPixelWidth ? outputWidth : outputHeight;
+                var height = decoder.PixelHeight == decoder.OrientedPixelHeight ? outputHeight : outputWidth;
+                ImageSource result;
+                var pixels = await decoder.GetPixelDataAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied,
+                    new BitmapTransform { ScaledWidth = width, ScaledHeight = height, InterpolationMode = BitmapInterpolationMode.Fant },
+                    ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb).AsTask();
+                token.ThrowIfCancellationRequested();
+                var device = CanvasDevice.GetSharedDevice();
+                if (!ReferenceEquals(_device, device))
                 {
-                    _device.DeviceLost -= OnDeviceLost;
+                    if (_device is not null)
+                    {
+                        _device.DeviceLost -= OnDeviceLost;
+                    }
+
+                    _device = device;
+                    device.DeviceLost += OnDeviceLost;
                 }
 
-                _device = device;
-                device.DeviceLost += OnDeviceLost;
-            }
+                using var bitmap = CanvasBitmap.CreateFromBytes(device, pixels.DetachPixelData(),
+                    (int)outputWidth, (int)outputHeight, Windows.Graphics.DirectX.DirectXPixelFormat.B8G8R8A8UIntNormalized);
+                var surface = new CanvasImageSource(device, outputWidth, outputHeight, 96);
+                using (var session = surface.CreateDrawingSession(Colors.Transparent))
+                {
+                    session.DrawImage(bitmap);
+                }
 
-            using var bitmap = CanvasBitmap.CreateFromBytes(device, pixels.DetachPixelData(),
-                (int)outputWidth, (int)outputHeight, Windows.Graphics.DirectX.DirectXPixelFormat.B8G8R8A8UIntNormalized);
-            var surface = new CanvasImageSource(device, outputWidth, outputHeight, 96);
-            using (var session = surface.CreateDrawingSession(Colors.Transparent))
-            {
-                session.DrawImage(bitmap);
+                result = surface;
+                token.ThrowIfCancellationRequested();
+                if (ReferenceEquals(_request, request) && IsLoaded)
+                {
+                    _image.Source = result;
+                }
             }
-
-            result = surface;
-            token.ThrowIfCancellationRequested();
-            if (ReferenceEquals(_request, request) && IsLoaded)
+            finally
             {
-                _image.Source = result;
+                Decodes.Release();
             }
         }
         catch (OperationCanceledException)
