@@ -1533,6 +1533,40 @@
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <!-- WinUI needs ResolveReferences before PrepareResources/MarkupCompilePass1.
+         The .NET 11 optimized publish path skips that ordering in the full Build. -->
+    <UseOptimizedPublish>false</UseOptimizedPublish>
+    <!-- MSIX tooling only enables this automatically for GenerateAppxPackageOnBuild.
+         Use its publish output group (including native compilation and managed-payload
+         removal) when packaging via dotnet publish as well. Keep ordinary F5 builds fast. -->
+    <IncludePublishItemsOutputGroup Condition="'$(PublishAppxPackage)' == 'true'">true</IncludePublishItemsOutputGroup>
+    <GenerateRuntimeConfigurationFiles Condition="'$(PublishAppxPackage)' == 'true'">false</GenerateRuntimeConfigurationFiles>
+    <GenerateDependencyFile Condition="'$(PublishAppxPackage)' == 'true'">false</GenerateDependencyFile>
+  </PropertyGroup>
+
+  <!-- .NET 11 no longer populates the MSIX toolchain's _AssembliesToSkipPublish.
+       Use the SDK's complete native publish closure instead of merging JIT build
+       outputs from this project and its references. Keep MSIX content/PRI outputs. -->
+  <Target Name="PrepareAotPublishPayload" BeforeTargets="GetPackagingOutputs"
+          DependsOnTargets="ComputeFilesToPublish"
+          Condition="'$(PublishAot)' == 'true' and '$(PublishAppxPackage)' == 'true'" />
+  <Target Name="UseAotPublishPayload" AfterTargets="GetPackagingOutputs"
+          Condition="'$(PublishAot)' == 'true' and '$(PublishAppxPackage)' == 'true'">
+    <Error Condition="'@(ResolvedFileToPublish)' == ''" Text="Native publish did not expose its output closure; refusing to package build outputs." />
+    <ItemGroup>
+      <_AotResourcePayload Include="@(PackagingOutputs)"
+          Condition="'%(PackagingOutputs.OutputGroup)' != 'BuiltProjectOutputGroup' and '%(PackagingOutputs.OutputGroup)' != 'CopyLocalFilesOutputGroup' and '%(PackagingOutputs.OutputGroup)' != 'DebugSymbolsProjectOutputGroup' and '%(PackagingOutputs.OutputGroup)' != 'SatelliteDllsProjectOutputGroup' and '%(PackagingOutputs.OutputGroup)' != 'PublishItemsOutputGroupOutput'" />
+      <PackagingOutputs Remove="@(PackagingOutputs)" />
+      <PackagingOutputs Include="@(_AotResourcePayload)" />
+      <PackagingOutputs Include="@(ResolvedFileToPublish->'%(FullPath)')">
+        <TargetPath>%(ResolvedFileToPublish.RelativePath)</TargetPath>
+        <OutputGroup>PublishItemsOutputGroupOutput</OutputGroup>
+        <ProjectName>$(ProjectName)</ProjectName>
+      </PackagingOutputs>
+    </ItemGroup>
+  </Target>
+
   <!--
     打包前校验运行时依赖.
     libmpv / ffmpeg 体积大、不进仓库：CI 由 setup-env 下载，本地按 README 放置；
