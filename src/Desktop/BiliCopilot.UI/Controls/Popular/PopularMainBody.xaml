@@ -16,13 +16,13 @@
 
     <UserControl.Resources>
         <DataTemplate x:Key="RecommendStyle" x:DataType="items:VideoItemViewModel">
-            <components:VideoCardControl Style="{StaticResource RecommendVideoCardStyle}" ViewModel="{x:Bind}" />
+            <components:VideoCardControl Style="{StaticResource RecommendVideoCardStyle}" ViewModel="{Binding}" />
         </DataTemplate>
         <DataTemplate x:Key="HotStyle" x:DataType="items:VideoItemViewModel">
-            <components:VideoCardControl Style="{StaticResource HotVideoCardStyle}" ViewModel="{x:Bind}" />
+            <components:VideoCardControl Style="{StaticResource HotVideoCardStyle}" ViewModel="{Binding}" />
         </DataTemplate>
         <DataTemplate x:Key="RankStyle" x:DataType="items:VideoItemViewModel">
-            <components:VideoCardControl Style="{StaticResource RankVideoCardStyle}" ViewModel="{x:Bind}" />
+            <components:VideoCardControl Style="{StaticResource RankVideoCardStyle}" ViewModel="{Binding}" />
         </DataTemplate>
         <ext:VideoCardTemplateSelector
             x:Key="CardSelector"
@@ -44,7 +44,7 @@
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:VideoItemViewModel">
                                 <ContentControl
-                                    Content="{x:Bind}"
+                                    Content="{Binding}"
                                     ContentTemplateSelector="{StaticResource CardSelector}"
                                     Style="{StaticResource AppContentControlStyle}" />
                             </DataTemplate>
