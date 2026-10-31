@@ -109,6 +109,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             // the UI thread and never synchronously block its dispatcher.
 #pragma warning disable VSTHRD003
             await TryCleanupAsync(() => _initializationTask);
+            await WaitForSpeedChangesAsync();
 #pragma warning restore VSTHRD003
             await DisposeResourcesAsync();
             _disposeCompletion.SetResult();
@@ -265,6 +266,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         RequestHideNextTip?.Invoke(this, EventArgs.Empty);
         if (Client != null)
         {
+            // Finish old-media speed writes before loading another media on this client.
+            await WaitForSpeedChangesAsync();
             try
             {
                 await Client.PauseAsync();

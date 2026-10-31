@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -18,6 +18,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         DependencyProperty.Register(nameof(IsSkipButtonsVisible), typeof(bool), typeof(OverlayTransportControls), new PropertyMetadata(true));
 
     private readonly List<double> _speedChangeList = [];
+    private Func<bool>? _speedPlaybackValidity;
     private readonly List<double> _progressChangeList = [];
     private readonly DispatcherTimer _speedChangeTimer;
     private readonly DispatcherTimer _progressChangeTimer;
@@ -57,6 +58,9 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     protected override void OnViewModelChanged(PlayerViewModel? oldValue, PlayerViewModel? newValue)
     {
+        _speedChangeTimer.Stop();
+        _speedChangeList.Clear();
+        _speedPlaybackValidity = null;
         if (oldValue != null)
         {
             oldValue.ProgressChanged -= OnViewModelProgressChanged;
@@ -70,6 +74,8 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     protected override void OnControlUnloaded()
     {
+        _speedChangeList.Clear();
+        _speedPlaybackValidity = null;
         _speedChangeTimer?.Stop();
         _progressChangeTimer?.Stop();
 
@@ -179,6 +185,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         }
 
         _speedChangeList.Add(newValue);
+        _speedPlaybackValidity = ViewModel.CapturePlaybackValidity();
         _speedChangeTimer.Stop();
         _speedChangeTimer.Start();
     }
@@ -225,16 +232,18 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private async void OnSpeedChangeTick(object? sender, object e)
     {
+        _speedChangeTimer.Stop();
+        var isCurrent = _speedPlaybackValidity;
+        _speedPlaybackValidity = null;
         var lastSpeed = _speedChangeList.LastOrDefault();
         _speedChangeList.Clear();
-        if (Math.Abs(lastSpeed - ViewModel.Player.PlaybackRate) > 0.1)
+        if (isCurrent?.Invoke() == true && Math.Abs(lastSpeed - ViewModel.Player.PlaybackRate) > 0.1)
         {
-            await ViewModel.Client!.SetSpeedAsync(lastSpeed);
-            CheckSpeedButtonState();
+            if (await ViewModel.ChangeSpeedAsync(lastSpeed))
+            {
+                CheckSpeedButtonState();
+            }
         }
-
-        _speedChangeList.Clear();
-        _speedChangeTimer.Stop();
     }
 
     private async void OnProgressChangeTick(object? sender, object e)
@@ -321,10 +330,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     {
         var speed = Convert.ToDouble((sender as FrameworkElement)?.Tag);
         _speedChangeList.Clear();
+        _speedPlaybackValidity = null;
         _speedChangeTimer.Stop();
         if (Math.Abs(speed - ViewModel.Player.PlaybackRate) > 0.1)
         {
-            await ViewModel.Client!.SetSpeedAsync(speed);
+            await ViewModel.ChangeSpeedAsync(speed);
         }
         else
         {

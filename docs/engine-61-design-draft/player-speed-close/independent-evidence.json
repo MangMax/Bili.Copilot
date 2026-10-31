@@ -1,0 +1,183 @@
+{
+  "archive_files_verified": 96,
+  "trx": {
+    "red/results.trx": {
+      "total": "1",
+      "executed": "1",
+      "passed": "0",
+      "failed": "1",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "final2/results.trx": {
+      "total": "8",
+      "executed": "8",
+      "passed": "8",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "suite/suite.trx": {
+      "total": "563",
+      "executed": "563",
+      "passed": "563",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    }
+  },
+  "runtime": {
+    "runtime": {
+      "exit": {
+        "pid": 33628,
+        "forced": false,
+        "exit": "2026-10-31T11:24:16.6373603Z",
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dc85fdad\\artifacts\\speed-close\\full\\layout\\BiliCopilot.UI.exe",
+        "exitCode": 0,
+        "retained": true
+      },
+      "wer": {
+        "applicationLogReadable": true,
+        "secondsAfterExit": 31.0118803,
+        "query": "2026-10-31T11:24:47.6492406Z",
+        "matches": []
+      },
+      "close": [
+        {
+          "at": "2026-10-31T11:22:11.2684996+00:00",
+          "pending": 20,
+          "preceding_state": {
+            "kind": "state",
+            "position": 31.967,
+            "state": "End",
+            "speed": 1,
+            "connecting": false,
+            "error": null,
+            "danmakuPosition": 32,
+            "danmakuPaused": true,
+            "xload": true,
+            "closed": false
+          }
+        },
+        {
+          "at": "2026-10-31T11:22:11.361718+00:00",
+          "pending": 0,
+          "preceding_state": {
+            "kind": "state",
+            "position": 31.967,
+            "state": "End",
+            "speed": 1,
+            "connecting": false,
+            "error": null,
+            "danmakuPosition": 32,
+            "danmakuPaused": true,
+            "xload": true,
+            "closed": false
+          }
+        }
+      ],
+      "speed_states": []
+    },
+    "runtime2": {
+      "exit": {
+        "pid": 44244,
+        "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-dc85fdad\\artifacts\\speed-close\\full\\layout2\\BiliCopilot.UI.exe",
+        "forced": false,
+        "exitCode": 0,
+        "exit": "2026-10-31T11:27:35.7872526Z",
+        "retained": true
+      },
+      "wer": {
+        "matches": [],
+        "applicationLogReadable": true,
+        "secondsAfterExit": 31.014975,
+        "query": "2026-10-31T11:28:06.8022276Z"
+      },
+      "close": [
+        {
+          "at": "2026-10-31T11:27:07.103743+00:00",
+          "pending": 20,
+          "preceding_state": {
+            "kind": "state",
+            "position": 31.967,
+            "state": "End",
+            "speed": 1.75,
+            "connecting": false,
+            "error": null,
+            "danmakuPosition": 32,
+            "danmakuPaused": true,
+            "xload": true,
+            "closed": false
+          }
+        }
+      ],
+      "speed_states": [
+        {
+          "at": "2026-10-31T11:26:14.8578566+00:00",
+          "speed": 1.25,
+          "state": "Playing"
+        },
+        {
+          "at": "2026-10-31T11:26:21.376054+00:00",
+          "speed": 1.25,
+          "state": "End"
+        },
+        {
+          "at": "2026-10-31T11:26:51.434266+00:00",
+          "speed": 1.5,
+          "state": "End"
+        },
+        {
+          "at": "2026-10-31T11:27:01.5796359+00:00",
+          "speed": 1.75,
+          "state": "End"
+        },
+        {
+          "at": "2026-10-31T11:27:15.1368689+00:00",
+          "speed": 1.75,
+          "state": "Seeking"
+        },
+        {
+          "at": "2026-10-31T11:27:15.3928385+00:00",
+          "speed": 1.75,
+          "state": "Playing"
+        }
+      ]
+    }
+  },
+  "checkout_eol_differences": [
+    "src\\Desktop\\BiliCopilot.UI\\ViewModels\\Core\\PlayerViewModel\\PlayerViewModel.Speed.cs"
+  ],
+  "source_hashes_matching_candidate": 48,
+  "pdb_metadata_dll_hash": "BE984F953D654574A491A263EDDE5E1EC2EC612278DF5767FDD3D895F0421312"
+}
