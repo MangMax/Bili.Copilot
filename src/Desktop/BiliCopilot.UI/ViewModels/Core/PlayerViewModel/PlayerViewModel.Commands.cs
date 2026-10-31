@@ -85,7 +85,7 @@ public sealed partial class PlayerViewModel
         {
             IsSpeedChanging = true;
             LastSpeedChangingTime = DateTimeOffset.Now;
-            await Client!.SetSpeedAsync(newSpeed);
+            await ChangeSpeedAsync(newSpeed);
         }
     }
 
@@ -102,7 +102,7 @@ public sealed partial class PlayerViewModel
         {
             IsSpeedChanging = true;
             LastSpeedChangingTime = DateTimeOffset.Now;
-            await Client!.SetSpeedAsync(newSpeed);
+            await ChangeSpeedAsync(newSpeed);
         }
     }
 
@@ -282,7 +282,10 @@ public sealed partial class PlayerViewModel
 
         _lastSpeed = Player.PlaybackRate;
         IsHoldingSpeedChanging = true;
-        await Client!.SetSpeedAsync(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.TempPlaybackRate, 3d));
+        if (!await ChangeSpeedAsync(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.TempPlaybackRate, 3d)))
+        {
+            return;
+        }
         LastSpeedChangingTime = DateTimeOffset.Now;
         IsSpeedChanging = true;
         _tripleTimer!.Start();
@@ -300,7 +303,7 @@ public sealed partial class PlayerViewModel
         _tripleTimer!.Stop();
         if (Math.Abs(_lastSpeed - Player.PlaybackRate) > 0.01)
         {
-            await Client!.SetSpeedAsync(_lastSpeed);
+            await ChangeSpeedAsync(_lastSpeed);
         }
     }
 

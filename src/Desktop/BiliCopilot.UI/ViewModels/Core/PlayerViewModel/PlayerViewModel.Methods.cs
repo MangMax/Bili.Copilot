@@ -519,7 +519,10 @@ public sealed partial class PlayerViewModel
                     IsHoldingSpeedChanging = false;
                     if (Math.Abs(_lastSpeed - Player.PlaybackRate) > 0.01)
                     {
-                        await Client!.SetSpeedAsync(_lastSpeed);
+                        if (!await ChangeSpeedAsync(_lastSpeed))
+                        {
+                            return;
+                        }
                     }
 
                     if (_isTlsFailed)
@@ -787,7 +790,10 @@ public sealed partial class PlayerViewModel
             if (_isRightKeyTripleSpeed)
             {
                 _isRightKeyTripleSpeed = false;
-                await Client!.SetSpeedAsync(_lastSpeed);
+                if (!await ChangeSpeedAsync(_lastSpeed))
+                {
+                    return;
+                }
                 LastSpeedChangingTime = DateTimeOffset.Now;
                 IsSpeedChanging = true;
             }
