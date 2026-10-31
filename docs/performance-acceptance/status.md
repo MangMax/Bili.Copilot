@@ -1,5 +1,7 @@
 # 性能规格 #45 验收状态
 
+最新 **RC3 AOT 发布编排已集成，正式 AOT 仍 HOLD**（2026-10-31）：固定 review tip `bba3eb59f3133fcb97e9f11f94de65077b133261`（含 b91d634、ffbbb1d 与恢复小修）以 `--no-ff` 合入 **`f9cd2a8e0f53820a3f7dc295a202632e793fa369`**，无冲突，未合引擎 B1。**工具链已成功工作，本地 Mpv 候选 native MSIX 已产生**；旧“工具链 BLOCKED/没有 native EXE/MSIX”仅为历史状态。fresh merger 复算原包284条目、194个publish文件hash、13个native x64 PE及原487 Passed TRX；小修从冻结bundle恢复的两份完整UTF-8/LF postimage与原候选相等，分别偏离均拒绝，未重新pack。合后XML/PowerShell语法、代码diff及Debug/JIT/AOT/legacy配置求值通过；仅认可RC3完整dotnet publish + PublishAppxPackage=true的34行编排，legacy未覆盖。正式Mpv依赖未切、本地候选未发布；**严格364+8、kernel unsafe生成前提、Vulkan分发、ARM64/实机、#49 FAIL与perf HOLD保留**。未重跑487/ILC/UI；父kernel0ae5e4e始终clean，未采用child异常索引，无部署/登录/UAC/push/PR/issue。见[集成报告](integration-aot-payload.md)。下列旧记录按各自SHA解读。
+
 最新 **最终同源 runtime ABBA 基线独立复核完成，性能 HOLD**（2026-10-31）：docs-only `cb0268870bfffac71398bbc183bab39c5e94c08a` 无阻断，以 `--no-ff` 合入 `77e7c886b3226da3dab0f50a02679e4d875edba8`。四轮 732 原始样本逐状态 CPU/内存/handles/threads 独立复算一致；400 portable、1798 freeze、1444 deploy DLL、602 loaded modules 闭包通过。138 vs 134 包及 28 资产/依赖边差异已审计；每臂 n=2，无显著性、总体收益/回退或纯 JIT 主张。4 retained exit0，exact PID/WER 最后查询开始和结束均 >=30s；b2 字体图缺浮层，不能全视觉通过。**RC3 仍主候选，net10 仅对照；#49 FAIL、AOT 工具链 BLOCKED、#56 长期预算缺口与历史 net9 crash 未归因保留。** PR27/43、依赖 69 声明/66 ID、退出/托盘修复及新增认证/受控证据的当前权威索引见[集成报告与交付摘要](integration-runtime-final-baseline.md)。下列旧“未验”按历史 SHA 解读，不覆盖新增有限证据；兼容完成与性能 HOLD 分开。生产不变，未重跑487/build/UI/性能轮、未触碰登录layout-v3，无push/PR/issue；kernel0ae5e4e clean/local-only bundle。
 
 最新 **完整应用托盘前台定向回归有限通过**（2026-10-31）：docs-only `f66cc2a735180d17d4d7d050b21c12bc2d8f17dd` 独立复核无阻断，以 `--no-ff` 合入 `6f6b4a8af6642514422a9b2c6471c5189dc36a53`。1887 冻结文件、670 activation/新旧 layout、Identity-only 差异、1275 源码/134 包及 162/148 实际加载模块 hash 复算通过；只读确认注册现为 **2.2610.0.3/layout-v3**，旧 v2 保留。四条实际恢复均在输入工具前取得主窗前台并读回真实文本；历史播放器路径多次准备中断全部保留，**不称原全过程无间断重播**，另外 Mouse/Menu/Physical 三条完整 case 一次通过。两轮 exact PID/path/creation、retained exit0、WER 及末次查询启动/结束满 30s，PASS_BOUNDED；原 observation/helper 失败保留。8 图逐张复核，tracked 文本与解压快照敏感扫描未发现媒体查询 URL/签名/凭据，历史一次工具误输出事实不抹除。**仅解除上述已测托盘前台路径未验；完整应用 PARTIAL、perf HOLD、#49 pause FAIL、AOT BLOCKED、历史 net9 crash 未归因、#56 预算/任意大重排限制不变。** 本次生产不变，未重跑 487/build/UI，未启动/部署/改注册/登录数据或操作 PID9608/Dev；kernel0ae5e4e clean/local-only，无 push/PR/issue。见[独立集成复核](integration-full-app-tray-foreground-fix.md)。以下“尚未验”“旧注册”及下一建议均保留为历史时点记录。
@@ -48,9 +50,9 @@ kernel 更新为 **`98d0b9d0f0c81bd3904b1425ef3b90f637af37d7`**，同时保留 2
 | #57 预取可行性调查 | 实际包接口、离线两引擎实验、负例及后续草案 | 暂停空白根因、可移交截图、真实 HTTP/播放器时钟和连续跨段；不能启用生产无缝预取 |
 | #58 解析复制调查 | 112 成功批次、42 异常批次、22 契约与15取消回归历史记录核验 | 后续 S 票应补目标 runtime/真实脱敏重放及配置兼容；当前只支持局部 offset 候选，不支持 JSON 合并解析或整机收益 |
 
-Release/Native AOT：**BLOCKED（工具链）**。最终 publish 退出 1，缺少 `vcvarsall.bat` 和桌面 `lib/x64`，报 Platform linker not found；现存 UI DLL 仅为带 CLR header 的托管中间物，没有 Native AOT EXE/MSIX，未部署或启动，不能签运行通过。前两次调用错误及后续增量残留不等于最终工具链阻塞，详见 [发布证据](release-aot.md) 与 [集成审查](integration-release-aot.md)。
+Release/Native AOT 当前：**正式采用 HOLD，工具链阻塞已解除**。RC3完整publish已用本地Mpv候选产出native EXE/MSIX，原包身份及闭包复核见[最新集成](integration-aot-payload.md)；正式依赖兼容、严格364+8、Vulkan分发及实机仍未通过。历史工具链阶段的publish退出1、缺少 `vcvarsall.bat`/桌面 `lib/x64`、Platform linker not found及仅有托管中间物，仍原样保存在[发布证据](release-aot.md)与[旧集成审查](integration-release-aot.md)，不再作为当前工具链结论。
 
-共同缺口：工具链阻塞解除后的完整 AOT/trim 警告审查、Release/Native AOT 发布产物运行、真实端到端性能对照，以及各票明确要求但尚未取得的 UI 证据。专用 WinUIAnalyzer 未运行，不能用现有编译器检查代称。现有集成与每票文档保留确切命令和测试保真度限制。
+共同缺口：正式依赖兼容与严格 AOT/trim 诊断整改、候选完整未抑制审计、Vulkan分发前提、Release/Native AOT 发布产物运行、真实端到端性能对照，以及各票明确要求但尚未取得的 UI 证据。专用 WinUIAnalyzer 未运行，不能用现有编译器检查代称。现有集成与每票文档保留确切命令和测试保真度限制。
 
 ## 整分支审核（固定 4344ae7…bcce5f3）
 
