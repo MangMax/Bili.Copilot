@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 
-namespace BiliCopilot.UI.Pages { public class PopularPage { } }
+
 namespace FluentIcons.Common { public enum Symbol { Balloon, Fire, RibbonStar } }
 namespace BiliCopilot.UI.ViewModels.View
 {
