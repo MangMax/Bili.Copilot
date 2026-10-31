@@ -1,0 +1,74 @@
+diff --git a/src/Danmaku.Core/CoreExecutionBridge.cs b/src/Danmaku.Core/CoreExecutionBridge.cs
+index 03313ff..8527000 100644
+--- a/src/Danmaku.Core/CoreExecutionBridge.cs
++++ b/src/Danmaku.Core/CoreExecutionBridge.cs
+@@ -56,15 +56,17 @@ internal sealed class CoreExecutionBridge : IDisposable
+     internal Task<CoreResourceOutcome> FrameAsync() => RenderAsync(null, null);
+     internal Task<CoreResourceOutcome> PauseAsync()
+     {
+-        try { scheduler.Pause(); }
++        long requestedIntent;
++        try { requestedIntent = scheduler.PauseTracked(); }
+         catch { PublishCurrent(); throw; }
+-        return FrameAsync(); // Applied is after current work, zero-step draw and Present.
++        return RenderAsync(null, null, requestedIntent); // Applied is after current work, zero-step draw and Present.
+     }
+     internal Task<CoreResourceOutcome> ResumeAsync()
+     {
+-        try { scheduler.Resume(); }
++        long requestedIntent;
++        try { requestedIntent = scheduler.ResumeTracked(); }
+         catch { PublishCurrent(); throw; }
+-        return FrameAsync();
++        return RenderAsync(null, null, requestedIntent);
+     }
+     internal Task<CoreResourceOutcome> StopAsync()
+     {
+@@ -131,7 +133,7 @@ internal sealed class CoreExecutionBridge : IDisposable
+         SchedulerOutcome.Applied => CoreResourceOutcome.Applied,
+         _ => CoreResourceOutcome.Superseded,
+     };
+-    private async Task<CoreResourceOutcome> RenderAsync(SchedulerSelection? selection, Realtime? realtime)
++    private async Task<CoreResourceOutcome> RenderAsync(SchedulerSelection? selection, Realtime? realtime, long? requestedIntent = null)
+     {
+         bool started = false;
+         while (true)
+@@ -140,6 +142,8 @@ internal sealed class CoreExecutionBridge : IDisposable
+             var origin = realtime?.State ?? state;
+             if (state.Closed) return CoreResourceOutcome.Closed;
+             if (state.Error != null) return CoreResourceOutcome.Faulted;
++            // A control receipt cannot borrow a newer control's successful frame.
++            if (requestedIntent.HasValue && state.Intent != requestedIntent.Value) return CoreResourceOutcome.Superseded;
+             if (origin.Instance != state.Instance || origin.Generation != state.Generation || origin.Scene != state.Scene)
+                 return CoreResourceOutcome.Superseded;
+             if (selection != null && scheduler.ValidateSelection(selection) is { } invalid) return Convert(invalid);
+diff --git a/src/Danmaku.Core/DanmakuScheduler.cs b/src/Danmaku.Core/DanmakuScheduler.cs
+index 7672fa8..6c5d579 100644
+--- a/src/Danmaku.Core/DanmakuScheduler.cs
++++ b/src/Danmaku.Core/DanmakuScheduler.cs
+@@ -98,12 +98,12 @@ internal sealed partial class DanmakuScheduler : IDisposable
+     public void Seek(uint targetMs) => Enqueue(targetMs, true);
+     public void Restart() { Resume(); Seek(0); }
+ 
+-    private void Intent(bool playing, Action callback)
++    private long Intent(bool playing, Action callback)
+     {
+         long revision;
+         lock (_admission)
+         {
+-            if (_isClosing || _fault != null) return;
++            if (_isClosing || _fault != null) return _intentRevision;
+             revision = ++_intentRevision;
+             _playing = playing;
+             if (playing) _stopped = false;
+@@ -116,7 +116,10 @@ internal sealed partial class DanmakuScheduler : IDisposable
+             lock (_admission) if (!_isClosing && revision == _intentRevision) Fault(ex);
+             throw;
+         }
++        return revision;
+     }
++    internal long PauseTracked() => Intent(false, PauseRequested);
++    internal long ResumeTracked() => Intent(true, ResumeRequested);
+     public void Pause() => Intent(false, PauseRequested);
+     public void Resume() => Intent(true, ResumeRequested);
+ 
