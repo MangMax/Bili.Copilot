@@ -23,14 +23,16 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private readonly DispatcherTimer _speedChangeTimer;
     private readonly DispatcherTimer _progressChangeTimer;
     private bool _isFirstChangeVolume = true;
+    private bool _isOverlayActive;
 
     public OverlayTransportControls()
     {
         InitializeComponent();
         _speedChangeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.5) };
         _progressChangeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.5) };
-        _speedChangeTimer.Tick += OnSpeedChangeTick;
-        _progressChangeTimer.Tick += OnProgressChangeTick;
+        // The base removes its lifecycle handlers after the first unload.
+        Loaded += OnOverlayLoaded;
+        Unloaded += OnOverlayUnloaded;
     }
 
     public object LeftElement
@@ -53,8 +55,29 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     protected override void OnControlLoaded()
     {
+        if (_isOverlayActive)
+        {
+            return;
+        }
+
+        _isOverlayActive = true;
+        _speedChangeTimer.Tick += OnSpeedChangeTick;
+        _progressChangeTimer.Tick += OnProgressChangeTick;
+        if (ViewModel is not null)
+        {
+            ViewModel.ProgressChanged += OnViewModelProgressChanged;
+            if (SubtitleRepeater is not null)
+            {
+                SubtitleRepeater.ItemsSource = ViewModel.Subtitles;
+            }
+        }
+
         BalanceLeftRightWidth();
     }
+
+    private void OnOverlayLoaded(object sender, RoutedEventArgs e) => OnControlLoaded();
+
+    private void OnOverlayUnloaded(object sender, RoutedEventArgs e) => OnControlUnloaded();
 
     protected override void OnViewModelChanged(PlayerViewModel? oldValue, PlayerViewModel? newValue)
     {
@@ -66,7 +89,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             oldValue.ProgressChanged -= OnViewModelProgressChanged;
         }
 
-        if (newValue != null)
+        if (_isOverlayActive && newValue != null)
         {
             newValue.ProgressChanged += OnViewModelProgressChanged;
         }
@@ -74,7 +97,14 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     protected override void OnControlUnloaded()
     {
+        if (!_isOverlayActive)
+        {
+            return;
+        }
+
+        _isOverlayActive = false;
         _speedChangeList.Clear();
+        _progressChangeList.Clear();
         _speedPlaybackValidity = null;
         _speedChangeTimer?.Stop();
         _progressChangeTimer?.Stop();
@@ -89,7 +119,10 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             _progressChangeTimer.Tick -= OnProgressChangeTick;
         }
 
-        ViewModel.ProgressChanged -= OnViewModelProgressChanged;
+        if (ViewModel is not null)
+        {
+            ViewModel.ProgressChanged -= OnViewModelProgressChanged;
+        }
         SubtitleRepeater?.ItemsSource = null;
     }
 
@@ -172,6 +205,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void OnSpeedValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
+        if (!_isOverlayActive)
+        {
+            return;
+        }
+
         var newValue = e.NewValue;
         CheckSpeedButtonState();
         if (ViewModel?.Client is null || ViewModel.Player?.IsPlaybackInitialized != true)
@@ -237,7 +275,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         _speedPlaybackValidity = null;
         var lastSpeed = _speedChangeList.LastOrDefault();
         _speedChangeList.Clear();
-        if (isCurrent?.Invoke() == true && Math.Abs(lastSpeed - ViewModel.Player.PlaybackRate) > 0.1)
+        if (_isOverlayActive && isCurrent?.Invoke() == true && Math.Abs(lastSpeed - ViewModel.Player.PlaybackRate) > 0.1)
         {
             if (await ViewModel.ChangeSpeedAsync(lastSpeed))
             {
