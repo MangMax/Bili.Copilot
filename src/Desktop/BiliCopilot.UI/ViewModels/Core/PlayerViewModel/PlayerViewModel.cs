@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Forms;
@@ -110,6 +110,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 #pragma warning disable VSTHRD003
             await TryCleanupAsync(() => _initializationTask);
             await WaitForSpeedChangesAsync();
+            await WaitForPositionChangesAsync();
 #pragma warning restore VSTHRD003
             await DisposeResourcesAsync();
             _disposeCompletion.SetResult();
@@ -135,6 +136,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         if (Player is not null)
         {
             Player.PropertyChanged -= OnPlayerPropertyChanged;
+            Player.PropertyChanged -= OnDanmakuPlayerPropertyChanged;
             // MpvPlayer.DisposeAsync saves history and then disposes its client.
             // Do not destroy that client before the history save has completed.
             await TryCleanupAsync(() => Player.DisposeAsync().AsTask());
@@ -268,6 +270,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         {
             // Finish old-media speed writes before loading another media on this client.
             await WaitForSpeedChangesAsync();
+            await WaitForPositionChangesAsync();
             try
             {
                 await Client.PauseAsync();
@@ -369,6 +372,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         {
             Player = new Richasy.MpvKernel.Player.MpvPlayer(Client!, _sourceResolver, _historyResolver, logger: logger);
             Player.PropertyChanged += OnPlayerPropertyChanged;
+            Player.PropertyChanged += OnDanmakuPlayerPropertyChanged;
         }
         else
         {
