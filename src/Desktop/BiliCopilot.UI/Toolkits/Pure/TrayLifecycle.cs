@@ -5,7 +5,7 @@ namespace BiliCopilot.UI.Toolkits;
 /// <summary>
 /// 在 UI 线程协调托盘常驻；窗口、托盘和设置存储由系统边界提供。
 /// </summary>
-internal sealed class TrayLifecycle : IDisposable
+internal sealed partial class TrayLifecycle : IDisposable
 {
     private readonly Action<bool> _writeSetting;
     private readonly Func<ITrayIconSession> _createTray;
