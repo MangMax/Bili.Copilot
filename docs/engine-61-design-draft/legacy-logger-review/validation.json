@@ -1,0 +1,67 @@
+{
+  "parent": "a97d4024d5edc55d6fcf0aad0cb4d04b42ff43fe",
+  "originFiles": 45,
+  "changed": [
+    "src/Danmaku.Legacy/DanmakuFrostMaster.cs",
+    "src/Danmaku.Legacy/DanmakuRender.cs"
+  ],
+  "version": "0.0.1-preview6.loggerreview4e91.1",
+  "packages": {
+    "Legacy": {
+      "package": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\feed\\Danmaku.Legacy.0.0.1-preview6.loggerreview4e91.1.nupkg",
+      "packageSha256": "81769b2008eb3356db3a683b4137d5f85f66bc38f6c56680f8ccfcc00301bd6d",
+      "entry": "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll",
+      "dllSha256": "7d6e49171fe084e9787cf40d31166638ee3fa7e2e362bfafa4d64b2e13fd45c1",
+      "paths": [
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\full\\layout\\Danmaku.Legacy.dll",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\full\\src\\_build\\x64\\Release\\BiliCopilot.UI\\bin\\Danmaku.Legacy.dll",
+        "C:\\Users\\hp\\.nuget\\packages\\danmaku.legacy\\0.0.1-preview6.loggerreview4e91.1\\lib\\net8.0-windows10.0.22621\\Danmaku.Legacy.dll"
+      ]
+    },
+    "Share": {
+      "package": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\feed\\Danmaku.Share.0.0.1-preview6.loggerreview4e91.1.nupkg",
+      "packageSha256": "30095e635b09da4d6674579c354a2fb040d055cc2ac58b59c812b1d9da8e71f7",
+      "entry": "lib/net8.0-windows10.0.22621/Danmaku.Share.dll",
+      "dllSha256": "cda6dd6b9b3d87df0a7067ca3eb63af1ab984582fcec5404b9c9fe3dc257d714",
+      "paths": [
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\full\\layout\\Danmaku.Share.dll",
+        "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\full\\src\\_build\\x64\\Release\\BiliCopilot.UI\\bin\\Danmaku.Share.dll",
+        "C:\\Users\\hp\\.nuget\\packages\\danmaku.share\\0.0.1-preview6.loggerreview4e91.1\\lib\\net8.0-windows10.0.22621\\Danmaku.Share.dll"
+      ]
+    }
+  },
+  "compat": {
+    "passed": 23,
+    "failed": 0,
+    "skipped": 0,
+    "apiByteEqual": true
+  },
+  "productionSourceFilesEqual": 900,
+  "criticalPdbDocumentsVerified": 23,
+  "fullBuild": "full-build-2.log: 0 warnings, 0 errors",
+  "exit": {
+    "exit": "2026-10-31T12:52:54.4592014Z",
+    "exitCode": -1073741189,
+    "retained": true,
+    "pid": 34652,
+    "forced": false,
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\full\\layout\\BiliCopilot.UI.exe"
+  },
+  "wer": {
+    "secondsAfterExit": 31.0246307,
+    "matches": [
+      {
+        "xml": "<Event xmlns='http://schemas.microsoft.com/win/2004/08/events/event'><System><Provider Name='Application Error' Guid='{a0e9b465-b939-57d7-b27d-95d8e925ff57}'/><EventID>1000</EventID><Version>0</Version><Level>2</Level><Task>100</Task><Opcode>0</Opcode><Keywords>0x8000000000000000</Keywords><TimeCreated SystemTime='2026-10-31T12:52:48.1170427Z'/><EventRecordID>6881</EventRecordID><Correlation/><Execution ProcessID='34836' ThreadID='42352'/><Channel>Application</Channel><Computer>DESKTOP-V1D4VEN</Computer><Security UserID='S-1-5-21-3686462000-1683789591-1532705558-1000'/></System><EventData><Data Name='AppName'>BiliCopilot.UI.exe</Data><Data Name='AppVersion'>1.0.0.0</Data><Data Name='AppTimeStamp'>6adb0000</Data><Data Name='ModuleName'>CoreMessagingXP.dll</Data><Data Name='ModuleVersion'>12.6.4.0</Data><Data Name='ModuleTimeStamp'>6ad8ea81</Data><Data Name='ExceptionCode'>c000027b</Data><Data Name='FaultingOffset'>00000000000adf5e</Data><Data Name='ProcessId'>0x875c</Data><Data Name='ProcessCreationTime'>0x1dd693644f91374</Data><Data Name='AppPath'>C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-4e91b084\\artifacts\\legacy-logger-review4e91\\full\\layout\\BiliCopilot.UI.exe</Data><Data Name='ModulePath'>C:\\Program Files\\WindowsApps\\Microsoft.WindowsAppRuntime.2_2.6.4.0_x64__8wekyb3d8bbwe\\CoreMessagingXP.dll</Data><Data Name='IntegratorReportId'>eef6267b-dd52-419a-9654-d1622b9aa03a</Data><Data Name='PackageFullName'>Bili.LoggerReview4e91_2.2610.0.0_x64__z90r5zjzw296g</Data><Data Name='PackageRelativeAppId'>App</Data></EventData></Event>",
+        "id": 1000
+      }
+    ],
+    "applicationLogReadable": true,
+    "query": "2026-10-31T12:53:25.4838321Z"
+  },
+  "cleanup": {
+    "packages": 0,
+    "processPresent": false
+  },
+  "nativeVerdict": "FAIL: abnormal exit; short seek blocked by production threshold; paused redraw visibility not consistently proved; remount empty",
+  "kernelUnchanged": true
+}
