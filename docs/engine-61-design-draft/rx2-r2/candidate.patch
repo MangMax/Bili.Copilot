@@ -1,0 +1,107 @@
+diff --git a/src/Danmaku.Core/CoreExecutionBridge.cs b/src/Danmaku.Core/CoreExecutionBridge.cs
+index 8527000..a192670 100644
+--- a/src/Danmaku.Core/CoreExecutionBridge.cs
++++ b/src/Danmaku.Core/CoreExecutionBridge.cs
+@@ -70,21 +70,24 @@ internal sealed class CoreExecutionBridge : IDisposable
+     }
+     internal Task<CoreResourceOutcome> StopAsync()
+     {
+-        try { scheduler.Stop(); }
++        (long Scene, long Intent) request;
++        try { request = scheduler.StopTracked(); }
+         catch { PublishCurrent(); throw; }
+-        return FrameAsync();
++        return RenderAsync(null, null, request.Intent, request.Scene);
+     }
+     internal Task<CoreResourceOutcome> SetListAsync(List<DanmakuItem> items)
+     {
+-        try { scheduler.SetDanmakuList(items); }
++        long request;
++        try { request = scheduler.SetTracked(items); }
+         catch { PublishCurrent(); throw; }
+-        return FrameAsync();
++        return RenderAsync(null, null, null, request);
+     }
+     internal Task<CoreResourceOutcome> ClearAsync()
+     {
+-        try { scheduler.Clear(); }
++        long request;
++        try { request = scheduler.ClearTracked(); }
+         catch { PublishCurrent(); throw; }
+-        return FrameAsync();
++        return RenderAsync(null, null, null, request);
+     }
+     internal Task<CoreResourceOutcome> SeekAsync(uint target) => SelectAsync(target, true);
+     internal Task<CoreResourceOutcome> UpdateTimeAsync(uint target) => SelectAsync(target, false);
+@@ -133,7 +136,7 @@ internal sealed class CoreExecutionBridge : IDisposable
+         SchedulerOutcome.Applied => CoreResourceOutcome.Applied,
+         _ => CoreResourceOutcome.Superseded,
+     };
+-    private async Task<CoreResourceOutcome> RenderAsync(SchedulerSelection? selection, Realtime? realtime, long? requestedIntent = null)
++    private async Task<CoreResourceOutcome> RenderAsync(SchedulerSelection? selection, Realtime? realtime, long? requestedIntent = null, long? requestedScene = null)
+     {
+         bool started = false;
+         while (true)
+@@ -144,6 +147,7 @@ internal sealed class CoreExecutionBridge : IDisposable
+             if (state.Error != null) return CoreResourceOutcome.Faulted;
+             // A control receipt cannot borrow a newer control's successful frame.
+             if (requestedIntent.HasValue && state.Intent != requestedIntent.Value) return CoreResourceOutcome.Superseded;
++            if (requestedScene.HasValue && state.Scene != requestedScene.Value) return CoreResourceOutcome.Superseded;
+             if (origin.Instance != state.Instance || origin.Generation != state.Generation || origin.Scene != state.Scene)
+                 return CoreResourceOutcome.Superseded;
+             if (selection != null && scheduler.ValidateSelection(selection) is { } invalid) return Convert(invalid);
+diff --git a/src/Danmaku.Core/DanmakuScheduler.cs b/src/Danmaku.Core/DanmakuScheduler.cs
+index 6c5d579..2cff946 100644
+--- a/src/Danmaku.Core/DanmakuScheduler.cs
++++ b/src/Danmaku.Core/DanmakuScheduler.cs
+@@ -123,18 +123,24 @@ internal sealed partial class DanmakuScheduler : IDisposable
+     public void Pause() => Intent(false, PauseRequested);
+     public void Resume() => Intent(true, ResumeRequested);
+ 
+-    public void Stop()
++    public void Stop() => StopTracked();
++    internal (long Scene, long Intent) StopTracked()
+     {
+         long scene;
+         lock (_admission)
+         {
+-            if (_isClosing || _fault != null) return;
++            if (_isClosing || _fault != null) return (_scene, _intentRevision);
+             scene = ++_scene;
+             _generation++;
+             _stopped = true;
+             Drain(SchedulerOutcome.Superseded);
+         }
+-        try { Pause(); StopRequested?.Invoke(); }
++        try
++        {
++            long intent = PauseTracked();
++            StopRequested?.Invoke();
++            return (scene, intent);
++        }
+         catch (Exception ex)
+         {
+             lock (_admission) if (!_isClosing && _scene == scene) Fault(ex);
+@@ -165,10 +171,12 @@ internal sealed partial class DanmakuScheduler : IDisposable
+     }
+     public void Clear() => Replace(null, false);
+     public void SetDanmakuList(List<DanmakuItem> danmakuList) => Replace(danmakuList, true);
+-    private void Replace(List<DanmakuItem> list, bool replace)
++    internal long ClearTracked() => Replace(null, false);
++    internal long SetTracked(List<DanmakuItem> list) => Replace(list, true);
++    private long Replace(List<DanmakuItem> list, bool replace)
+     {
+         long scene = BeginCollection();
+-        if (scene < 0) return;
++        if (scene < 0) return scene;
+         Exception? error = null;
+         try
+         {
+@@ -184,6 +192,7 @@ internal sealed partial class DanmakuScheduler : IDisposable
+         }
+         catch (Exception ex) { error = ex; throw; }
+         finally { EndCollection(scene, error); }
++        return scene;
+     }
+     public List<DanmakuItem> GetDanmakuList()
+     {

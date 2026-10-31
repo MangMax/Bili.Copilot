@@ -1,0 +1,82 @@
+{
+  "baseCommit": "abfe2641813905eeb5e0374cb4f983f4ce2ff6af",
+  "candidateCommit": "e31469137b0bfcd58ca5edeecc2dccec590b111e",
+  "sourceRoot": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\rx2-r2-parent-fix\\source",
+  "artifacts": {
+    "candidate.bundle": {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\rx2-r2-parent-fix\\candidate.bundle",
+      "sha256": "8c07bc68c6883b282de48af608f52e974d14deedd9175f0101ffa372f8381f8d"
+    },
+    "candidate-source.zip": {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\rx2-r2-parent-fix\\candidate-source.zip",
+      "sha256": "45793765dfe1f92e712d1f812bd6b07e19e984723734cca1cd87cfa217fd5b44"
+    },
+    "candidate.patch": {
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\rx2-r2-parent-fix\\candidate.patch",
+      "sha256": "aeb3ccea645510d7dcf840db7d3d4b5356477cb72924a22ee7696cebe9800770"
+    }
+  },
+  "files": {
+    ".gitattributes": "462475ee5301e77d2a54a64757d95c3f21fc3a79e92e6ec94bdfcc8b36e48964",
+    ".gitignore": "d2451dff1f91aef94d60a1b6672269aa4a2ac08f8134bd8a059ada0238555eae",
+    "DanmakuKernel.sln": "40bb4830339d9ca9f8190bd27d57fab42f7e45f241fabb9538b1ade5a233919f",
+    "LICENSE.txt": "19200a6a9407e592065a5a504c0eefe58adf102c9ac5aa2151bd6f257faa7a9c",
+    "src/.editorconfig": "04a12adcfc8fa6dfb86d3016af607d0c9b7971ad8b3b060fcef49f19f1f1f152",
+    "src/Danmaku.Core/BaseTypeDef.cs": "55b4e9f02693a4dd4b927e218e8ea9458bf60cdf560353c2d0ebbb4a74ffabda",
+    "src/Danmaku.Core/CoreExecutionBridge.cs": "bad445cd7bfe75d128f635cd123b46c3083a50ca2a1bdcac0fa5fa26566b999c",
+    "src/Danmaku.Core/CoreNativeSurface.cs": "ba132825149e5c54873086d8e5838fff6c4ca2aa6eb40455965d9726e6d5b55c",
+    "src/Danmaku.Core/CorePanelBinding.cs": "adb77761126b134c59d2f5640e16a289a048356d75c7595dde482dde15405e34",
+    "src/Danmaku.Core/CorePlaybackClock.cs": "f0d27fb2cd8e2c34f0d1510b867e40f0dc205a33e8e3099bf5a42359f5779ed6",
+    "src/Danmaku.Core/CoreRenderSurface.cs": "478f1052d7168abfee250ab8734c610cd4ed4c0bc41cf3d4ad3cb9e0f129906a",
+    "src/Danmaku.Core/CoreResourceOwner.cs": "deb9a38147ddda8992267024f65571db82c69e736efdedf74358eeb3226518ef",
+    "src/Danmaku.Core/Danmaku.Core.csproj": "8f2711bcc4541b45b2609450b27c371c9e2d0c8d78e75ba72b2494a59c3ee752",
+    "src/Danmaku.Core/Danmaku.Core.sln": "bec364f5bbd17a6495c9a4917383cc7132c8a5cb991eac0d687ba0f43ce9e87a",
+    "src/Danmaku.Core/DanmakuConfiguration.cs": "c309c9803189b2a7e7fa200855807af7f0dab8a83a2360ee57f52bb7f389a946",
+    "src/Danmaku.Core/DanmakuConfigurationState.cs": "9082ea5ed88ff6c8c2cb03e534bfe59135265ad1ff98bb6ad171040b5ee66500",
+    "src/Danmaku.Core/DanmakuDirectXRender.Fields.cs": "1e0a0abb109a09a7f32bc978a0da1cbe85277e94d9591c693daddc43e64f554d",
+    "src/Danmaku.Core/DanmakuDirectXRender.Methods.cs": "3803b1112e0a98b1fe634c1c503a93d44cd36c2cdf124ff5e1daf1b1a83af877",
+    "src/Danmaku.Core/DanmakuDirectXRender.Owner.cs": "81f7b3e57264343356c8f92d6f77189012455d59d52f0dd10df953c9674bde3d",
+    "src/Danmaku.Core/DanmakuDirectXRender.cs": "34d4d3e1b3ce9e070a4518eb5050c9787e6270af6334f0f8df8fe2461a5fbe58",
+    "src/Danmaku.Core/DanmakuRenderer.cs": "eca61ac7cbb2b5570e9cb3a21289e1f03870c5f4bf90cae2615d20d22da095fe",
+    "src/Danmaku.Core/DanmakuScheduler.cs": "c180a82c6f599f1e94441415a4e21ea260896250b8255d6fd987456b937882e5",
+    "src/Danmaku.Core/DanmakuYSlotManager.cs": "3a709dc5cdced81e2dacd5f053327ddebbb4c00bbd929e5a483b8babe67c1ead",
+    "src/Danmaku.Core/DebugInfo.cs": "f316054c524d250499d3e9257debd329e342d7a929d105cb342705feb13dc935",
+    "src/Danmaku.Core/DebugRenderer.cs": "53477916bf42d4207b96e5d518d1bfe304614a1dc925ba7eabf84983accdcb79",
+    "src/Danmaku.Core/DirectXResourceManager.cs": "bcc31e60a99726b3902732f4e0b197476bb23ff8405d76fb6ea9895762570342",
+    "src/Danmaku.Core/GameLoopThread.cs": "efec700bd771c11e4191dad36850d96bc0dfbbf97c5454d972414cc8c88046d5",
+    "src/Danmaku.Core/ISwapChainPanelNative.cs": "c5956eb29f38212cdc07beb67ea4dc795bca4984ef737b84dcf6b9d1df18b666",
+    "src/Danmaku.Core/Logger.cs": "1477f1b54043b3751e09cb9243f6f756a5914540d2d7ae843340368cd8f4d738",
+    "src/Danmaku.Core/Models/DanmakuDirectXRenderItem.cs": "a48886bd41078070e5b83fb234784ac09d6df2d7c4d585b30a52b5344c560f5a",
+    "src/Danmaku.Core/Models/RenderLayer.cs": "03579617414c33be99f38b7fb064a04d2b66bf8c516c93ca0a83a0800b0e7ab6",
+    "src/Danmaku.Core/ObjectPoolManager.cs": "99400a7ffc0f45021c3226fc741bb6b91b0d95b60e4cfe0046ececa0c79d54b6",
+    "src/Danmaku.Core/SchedulerWork.cs": "818052ea3638112827155b1aa5da5811f27959e8234c62b2fb39d3d1e330e615",
+    "src/Danmaku.Core/TextureCacheKey.cs": "4329d3b6563a222afdf4edd7cd31c715c7b20547bbf1e202739e680943c6a887",
+    "src/Danmaku.Legacy/Danmaku.Legacy.csproj": "39168232a8781f038a4a67ccb251ecdd47dbf368bbef09b11b6be76a703ca149",
+    "src/Danmaku.Legacy/DanmakuFrostMaster.cs": "0129f7fafe2eac5896ecd21523f4af3477ea5fd87fa563f730221cc4542403c9",
+    "src/Danmaku.Legacy/DanmakuRender.cs": "83c0366e60e7a1b07626e5d178c91b0a8d9c575c94bb2d64990ef6e06a77bff9",
+    "src/Danmaku.Legacy/DanmakuYSlotManager.cs": "e2d79b90c7e5157d9da93c24de82543edd89d43c783f32d721dca49014e58e0a",
+    "src/Danmaku.Legacy/Logger.cs": "58acf9be90e2ac34aa293b62e6162b535ac1cef7e69cd821243da7cb18eeb41c",
+    "src/Danmaku.Share/Danmaku.Share.csproj": "55cb0fded638406a56ebde5791505a5d00391748b99be640758b4546a49bd98c",
+    "src/Danmaku.Share/Enums/DanmakuAlignmentMode.cs": "fec653912114a4080547577bbed2da56220f49fca1882ce5976781fd5a40ffd6",
+    "src/Danmaku.Share/Enums/DanmakuFontSize.cs": "0e4618d35f45dace1bf39e5a6bebafff73c2a20008167e98b4cc8e80c4bbca35",
+    "src/Danmaku.Share/Enums/DanmakuMode.cs": "530a724b05c8efd2bc43fa3fc95eaaf926968630c3568a982b4bfe83b615e3d9",
+    "src/Danmaku.Share/Enums/DanmakuPool.cs": "ebd3f92b3c7445db1bd6f9be2d72fe9260c27549dfe1ac64662531cd672a0820",
+    "src/Danmaku.Share/Models/DanmakuDefaultLayerDef.cs": "cd15ed247988073fca2c220f5270f26d84c023377d3287ea6fbf0bb2da587762",
+    "src/Danmaku.Share/Models/DanmakuItem.cs": "cade9c87d534ac411732924c7223e91be3b70f6a7c9f1d791a73d653cdda32e2",
+    "src/Directory.Build.props": "71681fdb967b1e41ace187794a6b907cdebe957c69f4be0386cdf59d2aa18ffa",
+    "src/Directory.Packages.props": "dd9a5ce751e59228dc70540d7699b2a3c3e6caf5858f13047fb1b1422d6f356e",
+    "src/NUGET.md": "39c0d132d36330a4109d4e9049613e42897688bb5a3bab5c6fa3686624de3fa4",
+    "src/icon.png": "7a88cfe51dcbef346c07f90ea2d27b68b55e26bef7a8a65747ff609412a13b9f",
+    "src/nuget-build.ps1": "3353fcf4536596eca03293edfb5bff4e21929cc141a5ce5aa946840b2f9bd98e",
+    "src/nuget-package.props": "62f5029f6e276af4addff2046b6783c14c9250e74a8aa6b9d52d87863cf4ddda",
+    "src/nuget-upload.ps1": "80718ae9e37cbc64853db5af11aa6a77d3cba649262384686c0bf6c3fd082d61"
+  },
+  "evidence": {
+    "red/build.txt": "098ee2b730bef2a3ab6d3a102aa0f74411c3e251abfee8ab4d4ea91a14a1c272",
+    "red/run.txt": "8b5243d13ecb46c734299f696fefa33ce31153a68db0751b620d27cb4625e46e",
+    "red/results.json": "dec12a102d52b6cb18ce228c7b006f8f784ec590d5dd534cb53569a410b782c7",
+    "green/build.txt": "23cb7b4eec27739a3d41211f9f5345fd6ab1fab735a7668b83e29964de29d77c",
+    "green/run.txt": "1dffcb3572e56726e12955b0a0c1d27c4f5dd4927968061addb9bc77225aaa7a",
+    "green/results.json": "c22e6b7ca1eea55c1db06c410fa73383ce8a0543d06d040142435355c1c50d4e"
+  }
+}
