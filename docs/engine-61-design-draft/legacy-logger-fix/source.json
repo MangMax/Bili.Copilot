@@ -1,0 +1,9 @@
+{
+  "origin": "4d0f8691f08f1e143294402477e72306a1b38b6f",
+  "files": {
+    "DanmakuFrostMaster.cs": "a8c72d3ced490b8ec31860d29a49d8c38ee7fb8908942a6bb4fe17da02a3523a",
+    "DanmakuRender.cs": "24ca06ebc0703860cb24a1d7faad4e0a8ba85090bdbbcf5c3552688bede59b2c"
+  },
+  "dll": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-1d19cc80\\artifacts\\legacy-logger-fix\\extract\\danmaku-kernel-4d0f8691f08f1e143294402477e72306a1b38b6f\\src\\Danmaku.Legacy\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Legacy.dll",
+  "dllSha256": "253e2e64fce75cf46f6b7e76e2b857165c883703de4f7743ebd83af604db056e"
+}
