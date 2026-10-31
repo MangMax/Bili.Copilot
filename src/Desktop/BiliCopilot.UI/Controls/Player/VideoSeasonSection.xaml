@@ -37,7 +37,7 @@
                 <repeater:AppRepeater.ItemTemplate>
                     <DataTemplate x:DataType="items:VideoItemViewModel">
                         <ItemContainer Style="{StaticResource AppItemContainerStyle}">
-                            <components:VideoCardControl Style="{StaticResource PlayerSeasonVideoCardStyle}" ViewModel="{x:Bind}" />
+                            <components:VideoCardControl Style="{StaticResource PlayerSeasonVideoCardStyle}" ViewModel="{Binding}" />
                         </ItemContainer>
                     </DataTemplate>
                 </repeater:AppRepeater.ItemTemplate>

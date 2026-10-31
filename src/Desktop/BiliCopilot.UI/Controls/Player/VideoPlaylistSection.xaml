@@ -16,7 +16,7 @@
             <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
                 <repeater:AppRepeater.ItemTemplate>
                     <DataTemplate x:DataType="items:VideoItemViewModel">
-                        <components:VideoCardControl Style="{StaticResource PlayerPlaylistVideoCardStyle}" ViewModel="{x:Bind}" />
+                        <components:VideoCardControl Style="{StaticResource PlayerPlaylistVideoCardStyle}" ViewModel="{Binding}" />
                     </DataTemplate>
                 </repeater:AppRepeater.ItemTemplate>
                 <repeater:AppRepeater.Layout>
