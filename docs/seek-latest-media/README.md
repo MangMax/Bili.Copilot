@@ -1,5 +1,7 @@
 # latest 媒体目标：有界应用修复及固定组合补验
 
+> **更正（整体集成时依据独立复审）：** 下文“首次激活缺少内嵌时间／等待0.8秒才恢复”的叙述为历史误判，不再作为结论。runtime1 Legacy、runtime3 first-activation/stable 与导出图实际同 SHA256 `120e87529b9e580a016482bef778b708cbdc61b8d2d721c0eaeda7389f98950a`，原像素均为20秒。参见 [独立复审](independent-review/README.md)。下文旧叙述及原证据保留供审计，runtime2不额外授予资格；本次未为纠错重跑UI。
+
 起点为父 `f3f5fc22068ac0a9f6702dccb29cb009e471a879`（含 `3cb008ea` 的真实失败）。本片按差异纳入 `44ce6cc5afd5bd503c454aaebfbee4df2e0b5ede` 的 11 个应用文件和配套测试，再修复媒体命令乱序；没有整目录覆盖父。父 `PlayerViewModel.Speed.cs`、Overlay 卸载/重挂及所有新文档保留，正式 `src/Directory.Packages.props`、gitlink 未改。
 
 **本轮有界结果：受控红成立，37 个针对性测试通过；固定组合两引擎各 10 次并发 latest 状态检查通过，原像素确认最终媒体 20 秒，关闭边界通过。可交父安排一次独立 review；本实现子任务没有启动子代理，也不把自审称为独立 review。** 这不是正式 preview6 准入或历史 AV/device-reset/AOT/性能全绿。
