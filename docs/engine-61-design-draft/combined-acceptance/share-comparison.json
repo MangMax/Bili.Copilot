@@ -1,0 +1,29 @@
+{
+  "core": {
+    "Danmaku.Share.csproj": "55cb0fded638406a56ebde5791505a5d00391748b99be640758b4546a49bd98c",
+    "Enums/DanmakuAlignmentMode.cs": "fec653912114a4080547577bbed2da56220f49fca1882ce5976781fd5a40ffd6",
+    "Enums/DanmakuFontSize.cs": "0e4618d35f45dace1bf39e5a6bebafff73c2a20008167e98b4cc8e80c4bbca35",
+    "Enums/DanmakuMode.cs": "530a724b05c8efd2bc43fa3fc95eaaf926968630c3568a982b4bfe83b615e3d9",
+    "Enums/DanmakuPool.cs": "ebd3f92b3c7445db1bd6f9be2d72fe9260c27549dfe1ac64662531cd672a0820",
+    "Models/DanmakuDefaultLayerDef.cs": "cd15ed247988073fca2c220f5270f26d84c023377d3287ea6fbf0bb2da587762",
+    "Models/DanmakuItem.cs": "cade9c87d534ac411732924c7223e91be3b70f6a7c9f1d791a73d653cdda32e2"
+  },
+  "legacy": {
+    "Danmaku.Share.csproj": "a795392b4d2763121b1563b0dafa1554a1eb965940608de4acdc182a3030eeba",
+    "Enums/DanmakuAlignmentMode.cs": "8555fcf2b338337ba562247761ec3adb2d4a2b666a50942083b3f296a1324c7a",
+    "Enums/DanmakuFontSize.cs": "624f9bf30979d4db8b9122178dd94b9971512aab35319a526ffc5384d580abe7",
+    "Enums/DanmakuMode.cs": "15eefd879194c0f3c354becc59d51613fddc28d71967aaafd896b858a16434de",
+    "Enums/DanmakuPool.cs": "936ed02c162c6856cff423d3017f8185c0f67da69cf34e917eea4791b0c31ff8",
+    "Models/DanmakuDefaultLayerDef.cs": "1e2fa3cc843b34828f462740fbb56ebae616cf5f856fcda9799ea94dd129269f",
+    "Models/DanmakuItem.cs": "46f11809f84c2c0f71fd4e4fc5e5e90498f6699aeaa9eb4f2757386d452bce9f"
+  },
+  "differences": [
+    "Danmaku.Share.csproj",
+    "Enums/DanmakuAlignmentMode.cs",
+    "Enums/DanmakuFontSize.cs",
+    "Enums/DanmakuMode.cs",
+    "Enums/DanmakuPool.cs",
+    "Models/DanmakuDefaultLayerDef.cs",
+    "Models/DanmakuItem.cs"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "offlinePreparation": "PASS",
+  "runtimeAdmission": "PENDING_NOT_EXECUTED",
+  "desktop": "Never acquired, no launch, registration or UI input; hold per user steering",
+  "build": {
+    "exit": 0,
+    "warnings": 1,
+    "errors": 0
+  },
+  "singleEngineMatrices": "Not rerun",
+  "performance": "Not evaluated; Legacy O(N^2) worst case remains",
+  "history": "All prior FAIL/UNKNOWN preserved",
+  "remaining": [
+    "actual DLL loading and owned identity",
+    "paused Core-Legacy-Core; hidden/playing switches",
+    "four-mode positions/ages/remaining lifetimes",
+    "short forward/backward/same/latest seek",
+    "three reload/xLoad cycles",
+    "close during controlled loading and after seek; reopen",
+    "original-pixel crops plus blank/different-text negatives",
+    "retained exit and >=31s exact PID/path WER; cleanup/yield"
+  ]
+}
