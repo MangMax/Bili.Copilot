@@ -1,0 +1,147 @@
+{
+  "passed": 35,
+  "failed": 0,
+  "skipped": 0,
+  "cases": [
+    {
+      "name": "NativeIndependentPixels_red",
+      "passed": true
+    },
+    {
+      "name": "OriginalPreTargetPixelsBlank",
+      "passed": true
+    },
+    {
+      "name": "NativeIndependentPixels_clean",
+      "passed": true
+    },
+    {
+      "name": "NativeFourModesVisible_clean",
+      "passed": true
+    },
+    {
+      "name": "NativeStableAndNegatives_clean",
+      "passed": true
+    },
+    {
+      "name": "NativeIndependentPixels_final",
+      "passed": true
+    },
+    {
+      "name": "NativeFourModesVisible_final",
+      "passed": true
+    },
+    {
+      "name": "NativeStableAndNegatives_final",
+      "passed": true
+    },
+    {
+      "name": "AppIndependentPixelDecoder",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountStateRound1",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountVisibleRound1",
+      "passed": true
+    },
+    {
+      "name": "AppUnloadBlankRound1",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountStateRound2",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountVisibleRound2",
+      "passed": true
+    },
+    {
+      "name": "AppUnloadBlankRound2",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountStateRound3",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountVisibleRound3",
+      "passed": true
+    },
+    {
+      "name": "AppUnloadBlankRound3",
+      "passed": true
+    },
+    {
+      "name": "AppDistinctMasters",
+      "passed": true
+    },
+    {
+      "name": "AppActualButton_forward1",
+      "passed": true
+    },
+    {
+      "name": "AppActualButton_backward1",
+      "passed": true
+    },
+    {
+      "name": "AppFutureGlyphOnlyAtBirth",
+      "passed": true
+    },
+    {
+      "name": "AppCloseDisposes",
+      "passed": true
+    },
+    {
+      "name": "AppNoHarnessErrors",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_red",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_final",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_extendedfinal",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_lifetimes",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_earlyclose",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_regression",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_app",
+      "passed": true
+    },
+    {
+      "name": "PackageClosure_Legacy",
+      "passed": true
+    },
+    {
+      "name": "LoadedApp_Legacy",
+      "passed": true
+    },
+    {
+      "name": "PackageClosure_Share",
+      "passed": true
+    },
+    {
+      "name": "LoadedApp_Share",
+      "passed": true
+    }
+  ]
+}

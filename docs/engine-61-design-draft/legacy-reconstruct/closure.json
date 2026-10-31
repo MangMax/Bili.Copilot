@@ -1,0 +1,24 @@
+{
+  "Legacy": {
+    "package": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-final\\feed\\Danmaku.Legacy.0.0.1-reconstruct0b4f.final.nupkg",
+    "packageSha256": "4c5c57f0df78e76870834af9a9b17d8b169d2a6c89aed49d66b94c587eb3b867",
+    "dllSha256": "2cc03ebaf8557cbf0abb96344276af717ba7a756541e0223a29a353313adfabf",
+    "files": {
+      "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-final\\layout\\Danmaku.Legacy.dll": "2cc03ebaf8557cbf0abb96344276af717ba7a756541e0223a29a353313adfabf",
+      "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-app\\full\\layout2\\Danmaku.Legacy.dll": "2cc03ebaf8557cbf0abb96344276af717ba7a756541e0223a29a353313adfabf",
+      "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-app\\full\\src\\_build\\x64\\Release\\BiliCopilot.UI\\bin\\Danmaku.Legacy.dll": "2cc03ebaf8557cbf0abb96344276af717ba7a756541e0223a29a353313adfabf",
+      "C:\\Users\\hp\\.nuget\\packages\\danmaku.legacy\\0.0.1-reconstruct0b4f.final\\lib\\net8.0-windows10.0.22621\\Danmaku.Legacy.dll": "2cc03ebaf8557cbf0abb96344276af717ba7a756541e0223a29a353313adfabf"
+    }
+  },
+  "Share": {
+    "package": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-final\\feed\\Danmaku.Share.0.0.1-reconstruct0b4f.final.nupkg",
+    "packageSha256": "1fe14bfaa90ef8da9373ee4b5be6d06f7bcb2e3297d75e6f90e4f03e5fb3cfb4",
+    "dllSha256": "0541962accff2ca6823213b5e52449a744f0378dbf61492c82a04a45abfe8329",
+    "files": {
+      "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-final\\layout\\Danmaku.Share.dll": "0541962accff2ca6823213b5e52449a744f0378dbf61492c82a04a45abfe8329",
+      "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-app\\full\\layout2\\Danmaku.Share.dll": "0541962accff2ca6823213b5e52449a744f0378dbf61492c82a04a45abfe8329",
+      "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-app\\full\\src\\_build\\x64\\Release\\BiliCopilot.UI\\bin\\Danmaku.Share.dll": "0541962accff2ca6823213b5e52449a744f0378dbf61492c82a04a45abfe8329",
+      "C:\\Users\\hp\\.nuget\\packages\\danmaku.share\\0.0.1-reconstruct0b4f.final\\lib\\net8.0-windows10.0.22621\\Danmaku.Share.dll": "0541962accff2ca6823213b5e52449a744f0378dbf61492c82a04a45abfe8329"
+    }
+  }
+}
