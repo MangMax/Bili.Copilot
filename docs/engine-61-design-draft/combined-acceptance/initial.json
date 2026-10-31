@@ -1,0 +1,10 @@
+{
+  "head": "de41a77eb46ca5d6e01cbbe78d9aa0cac11429bf",
+  "gitlink": "160000 commit 0ae5e4e000a41a07f6696746706df11c06e8835b\texternals/bili-kernel\n",
+  "kernel": {
+    "head": "1da9c3d64c40b63a4a9d099e4210762da01be5f45ee7c2e97903d6d28967fd47",
+    "staged.patch": "43b95080f50d1b2f83c4de18c4cda7a919396e28d13f974af3185e63c1a1417d",
+    "status": "dc06816c9d509ddd7b133539d38a03e181009a2d9d91eaed47d661e0eda8c8f1",
+    "worktree.patch": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

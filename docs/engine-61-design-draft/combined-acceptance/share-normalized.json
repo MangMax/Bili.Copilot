@@ -1,0 +1,14 @@
+{
+  "equal": true,
+  "rawDifferences": [
+    "Danmaku.Share.csproj",
+    "Enums/DanmakuAlignmentMode.cs",
+    "Enums/DanmakuFontSize.cs",
+    "Enums/DanmakuMode.cs",
+    "Enums/DanmakuPool.cs",
+    "Models/DanmakuDefaultLayerDef.cs",
+    "Models/DanmakuItem.cs"
+  ],
+  "reason": "BOM/newline only; normalized exact text equality, no API or behavior difference",
+  "selected": "0.0.1-reconstruct0b4f.final"
+}
