@@ -68,4 +68,11 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/NavigationPageFactory.cs" Link="Navigation/NavigationPageFactory.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Items/NotifyMessageItemViewModel/*.cs" Link="NotifyMessage/%(Filename)%(Extension)" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Playback.cs" Link="Playback/PlayerViewModel.Playback.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/DanmakuRenderViewModel/*.cs" Link="Playback/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/FontCatalog.cs" Link="Playback/FontCatalog.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/DanmakuRendererType.cs" Link="Playback/DanmakuRendererType.cs" />
+  </ItemGroup>
+  <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Speed.cs" Link="Playback/PlayerViewModel.Speed.cs" /></ItemGroup>
 </Project>

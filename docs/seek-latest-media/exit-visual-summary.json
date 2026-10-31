@@ -1,0 +1,75 @@
+{
+  "runtime1": {
+    "exit": {
+      "retained": true,
+      "exitCode": 0,
+      "pid": 11648,
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a1de93ed\\artifacts\\latest-seek\\full\\layout1\\BiliCopilot.UI.exe",
+      "exit": "/Date(1793463645021)/",
+      "forced": false
+    },
+    "wer": {
+      "query": "/Date(1793463676038)/",
+      "secondsAfterExit": 31.0165331,
+      "matches": [],
+      "applicationLogReadable": true
+    },
+    "cleanup": {
+      "forced": false,
+      "remaining": 0,
+      "identity": "Bili.LatestA1de"
+    }
+  },
+  "runtime2": {
+    "exit": {
+      "retained": true,
+      "exitCode": 0,
+      "pid": 49472,
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a1de93ed\\artifacts\\latest-seek\\full\\layout2\\BiliCopilot.UI.exe",
+      "exit": "/Date(1793463716315)/",
+      "forced": false
+    },
+    "wer": {
+      "query": "/Date(1793463747329)/",
+      "secondsAfterExit": 31.014397199999998,
+      "matches": [],
+      "applicationLogReadable": true
+    },
+    "cleanup": {
+      "forced": false,
+      "remaining": 0,
+      "identity": "Bili.LatestA1de"
+    }
+  },
+  "runtime3": {
+    "exit": {
+      "retained": true,
+      "exitCode": 0,
+      "pid": 13468,
+      "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a1de93ed\\artifacts\\latest-seek\\full\\layout3\\BiliCopilot.UI.exe",
+      "exit": "/Date(1793463792737)/",
+      "forced": false
+    },
+    "wer": {
+      "query": "/Date(1793463823753)/",
+      "secondsAfterExit": 31.016496,
+      "matches": [],
+      "applicationLogReadable": true
+    },
+    "cleanup": {
+      "forced": false,
+      "remaining": 0,
+      "identity": "Bili.LatestA1de"
+    }
+  },
+  "visual": {
+    "core": "runtime1/core-latest20.png",
+    "legacy": "runtime3/legacy-latest20-stable.png",
+    "legacyDiscarded": [
+      "runtime1/legacy-latest20.png",
+      "runtime2/legacy-latest20-confirm.png",
+      "runtime3/legacy-first-activation.png"
+    ],
+    "reason": "First activation captures lacked the embedded video time; only second unchanged-target capture proves 00:00:20.000."
+  }
+}

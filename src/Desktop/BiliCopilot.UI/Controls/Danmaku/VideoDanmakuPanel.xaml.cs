@@ -105,6 +105,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         {
             oldValue.RequestClearDanmaku -= OnRequestClearDanmaku;
             oldValue.ProgressChanged -= OnProgressChanged;
+            oldValue.SeekRequested -= OnSeekRequested;
             oldValue.PauseDanmaku -= OnPauseDanmaku;
             oldValue.ResumeDanmaku -= OnResumeDanmaku;
             oldValue.RequestResetStyle -= OnRequestResetStyle;
@@ -122,6 +123,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
         newValue.RequestClearDanmaku += OnRequestClearDanmaku;
         newValue.ProgressChanged += OnProgressChanged;
+        newValue.SeekRequested += OnSeekRequested;
         newValue.PauseDanmaku += OnPauseDanmaku;
         newValue.ResumeDanmaku += OnResumeDanmaku;
         newValue.RequestResetStyle += OnRequestResetStyle;
@@ -184,8 +186,36 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         UpdateDanmakuTime(e);
     }
 
+    private void OnSeekRequested(object? sender, int position)
+    {
+        if (position < 0)
+        {
+            return;
+        }
+
+        _lastProgress = position;
+        // Apply playback intent before reconstruction, including a newly mounted renderer.
+        if (ViewModel.IsPaused || !ViewModel.IsShowDanmaku)
+        {
+            _danmakuRenderer?.Pause();
+            _danmakuMaster?.Pause();
+        }
+
+        var milliseconds = Convert.ToUInt32(position * 1000d);
+        _danmakuRenderer?.Seek(milliseconds);
+        // Legacy resets its cursor only; UpdateTime supplies the target's items.
+        // It cannot reconstruct the full active set originating before this target.
+        _danmakuMaster?.Seek(milliseconds);
+        _danmakuMaster?.UpdateTime(milliseconds);
+    }
+
     private void OnResumeDanmaku(object? sender, EventArgs e)
     {
+        if (!ViewModel.IsShowDanmaku)
+        {
+            return;
+        }
+
         _danmakuRenderer?.Resume();
         _danmakuMaster?.Resume();
     }
@@ -277,9 +307,8 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
                 _danmakuRenderer?.Clear();
             }
 
-            _lastProgress = ViewModel.Position;
-            UpdateDanmakuTime(_lastProgress);
             ResetDanmakuStyle();
+            OnSeekRequested(ViewModel, ViewModel.Position);
 
             if (!ViewModel.IsPaused && ViewModel.IsShowDanmaku)
             {
