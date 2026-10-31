@@ -1,0 +1,16 @@
+{
+  "sha256": "08a76fe0f88aa983abf5de250b0c98043d70a7762ab17d8d948aabcbfa73270e",
+  "files": {
+    "full-tests.log": "cece331bdb2032945353ae72f960a457174c01ac888b0b4262d3595dd2b1b763",
+    "review-red.log": "7fe8977700a1d83d817f8f7b368471216a21a7b62b01d48fa409fb16ce2ee269",
+    "review-tests.log": "fb1ff88b7cc06c9194e210d404ee01d59f01022887d4f84de5e3e467c45daf47",
+    "red-command.json": "75fc09aac30243f70d40c423f4e4dd65891a89dd7c8347425c46c1e7c348752b",
+    "green-command.json": "4e4e0a1b27bbb5417e8d9b0fe46e629a400fe909c29e21e8da1ed60e4a284d79",
+    "tests/full.trx": "7d2c8bce6b37c63da4a9c8dca2848e4b73f36402ab4232970934dc8210eb3bb9",
+    "tests/review-red.trx": "86f2f6b33e638e941257c01455433d5856af78116eb3d6481c34df455ed735a5",
+    "tests/review.trx": "8681dd2b7661619b55b47eab2996353799c4758faa59217ac3b86c6ce169c3fb",
+    "kernel-before.json": "f02ddc2da038dda0a24e10246a198ba960870ae08a4a2a62b1ed4a9e20869ce7",
+    "core-time-crop.png": "8d3fb7f5236951ee88b52881cb4d1c5fa1a745eb30c71816dc67494cd853120e",
+    "legacy-time-crop.png": "8d3fb7f5236951ee88b52881cb4d1c5fa1a745eb30c71816dc67494cd853120e"
+  }
+}

@@ -42,8 +42,23 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
     /// </summary>
     public void UpdatePosition(int position)
     {
+        if (IsPaused && position != _position)
+        {
+            Seek(position);
+            return;
+        }
+
         _position = position;
         ProgressChanged?.Invoke(this, position);
+    }
+
+    /// <summary>
+    /// Reconstructs the target after a seek, independently of ordinary playback progress.
+    /// </summary>
+    public void Seek(int position)
+    {
+        _position = position;
+        SeekRequested?.Invoke(this, position);
     }
 
     /// <summary>

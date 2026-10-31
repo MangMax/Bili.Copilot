@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
@@ -489,13 +489,17 @@ public sealed partial class PlayerViewModel
 
     private async void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (_isDanmakuClosed || !ReferenceEquals(sender, Player))
+        {
+            return;
+        }
+
         if (e.PropertyName == nameof(Player.Position))
         {
             IsPreviewProgressChanging = false;
             PositionText = TimeSpan.FromSeconds(Player.Position).ToString(@"hh\:mm\:ss");
             ProgressChanged?.Invoke(this, Player.Position);
             CheckSponsorBlock(Player.Position);
-            Danmaku.UpdatePosition(Convert.ToInt32(Player.Position));
             // 按“当前时间落在哪个章节区间”判定正在播放的章节.
             // 旧实现用 |Position - 章节起点| < 2，只在经过起点前后两秒内为真，
             // 因此播放推进到章节中段时高亮会消失.
@@ -605,7 +609,6 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.PlaybackRate) && Player.IsPlaybackInitialized)
         {
-            Danmaku.ExtraSpeed = Player.PlaybackRate;
             if (SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerSpeedShare, true))
             {
                 SettingsToolkit.WriteLocalSetting(SettingNames.PlayerSpeed, Player.PlaybackRate);
@@ -624,7 +627,7 @@ public sealed partial class PlayerViewModel
             ChangeSubtitleFontSizeCommand.Execute(Math.Max(1, subtitleFontSize));
             if (_continuePosition > 0)
             {
-                await Client!.SetCurrentPositionAsync(_continuePosition!.Value);
+                await ChangePositionAsync(_continuePosition!.Value);
                 _continuePosition = null;
             }
 
@@ -652,18 +655,6 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.PlaybackState))
         {
-            if (IsDanmakuControlVisible && Danmaku.IsShowDanmaku)
-            {
-                if (Player.PlaybackState == MpvPlayerState.Playing)
-                {
-                    Danmaku.Resume();
-                }
-                else
-                {
-                    Danmaku.Pause();
-                }
-            }
-
             if (Player.PlaybackState is MpvPlayerState.Buffering or MpvPlayerState.Seeking && !string.IsNullOrEmpty(ErrorMessage))
             {
                 ErrorMessage = default;
@@ -690,6 +681,7 @@ public sealed partial class PlayerViewModel
         _danmakuPlaybackVersion++;
         _isDanmakuInitialized = true;
         _danmakuLoadSession?.Cancel();
+        await WaitForPositionChangesAsync();
         await Client!.PauseAsync();
         await Client!.StopAsync();
         await InitializeAsync(e);

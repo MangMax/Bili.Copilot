@@ -1,0 +1,15 @@
+{
+  "command": [
+    "dotnet",
+    "test",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a1de93ed\\artifacts\\latest-seek\\full\\tests\\BiliCopilot.UI.Tests\\BiliCopilot.UI.Tests.csproj",
+    "--no-restore",
+    "--filter",
+    "FullyQualifiedName~PlayerSeekTests|FullyQualifiedName~DanmakuRedrawSessionTests",
+    "--logger",
+    "trx;LogFileName=verified-final.trx",
+    "--results-directory",
+    "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-a1de93ed\\artifacts\\latest-seek\\tests"
+  ],
+  "exit": 0
+}

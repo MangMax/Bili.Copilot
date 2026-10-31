@@ -288,21 +288,14 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     {
         var lastProgress = _progressChangeList.LastOrDefault();
         _progressChangeList.Clear();
-        if (Math.Abs(lastProgress - ViewModel.Player.Position) >= 1.5)
+        if (lastProgress != ViewModel.Player.Position)
         {
             if (ViewModel.IsNextTipShown)
             {
                 ViewModel.HideNextTipCommand.Execute(default);
             }
 
-            if (ViewModel.Player.PlaybackState is MpvPlayerState.End)
-            {
-                await ViewModel.Player.ReplayAsync(lastProgress);
-            }
-            else
-            {
-                await ViewModel.Client!.SetCurrentPositionAsync(lastProgress);
-            }
+            await ViewModel.ChangePositionAsync(lastProgress);
         }
 
         _progressChangeList.Clear();

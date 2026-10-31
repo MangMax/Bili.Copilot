@@ -480,19 +480,19 @@ public sealed partial class ChapterSegmentBar
 
     private async Task SeekAsync(double target)
     {
-        if (ViewModel is null || Duration <= 0)
+        if (ViewModel is null || Duration <= 0 || !double.IsFinite(target))
         {
             return;
         }
 
         var clamped = Math.Clamp(target, 0, Duration);
 
-        // 与播放器内部判定保持一致：目标离当前位置太近时它根本不会跳转，
-        // 此时若仍记录乐观位置，进度条就会停在原处骗人.
-        if (Math.Abs(Position - clamped) < MinSeekDelta)
+        // Pointer jitter is handled by DragThreshold and SeekThrottleMs above.
+        // Coalesce only an identical pending/current target; a one-second click is valid.
+        var previousTarget = _pendingSeekPosition.HasValue && Environment.TickCount64 < _pendingSeekDeadline
+            ? _pendingSeekPosition.Value : Position;
+        if (Math.Abs(previousTarget - clamped) < SeekTargetTolerance)
         {
-            _pendingSeekPosition = null;
-            UpdateFill();
             return;
         }
 

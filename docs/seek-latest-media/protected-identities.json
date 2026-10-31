@@ -1,0 +1,47 @@
+{
+  "unchanged": true,
+  "before": [
+    {
+      "Name": "Microsoft.ApplicationCompatibilityEnhancements",
+      "Version": "1.2511.9.0",
+      "InstallLocation": "C:\\Program Files\\WindowsApps\\Microsoft.ApplicationCompatibilityEnhancements_1.2511.9.0_x64__8wekyb3d8bbwe"
+    },
+    {
+      "Name": "Mang.BiliCopilot",
+      "Version": "2.2610.3.0",
+      "InstallLocation": "C:\\Program Files\\WindowsApps\\Mang.BiliCopilot_2.2610.3.0_x64__z90r5zjzw296g"
+    },
+    {
+      "Name": "Mang.BiliCopilot.PerfAcceptance.Caa6a7be",
+      "Version": "2.2610.0.3",
+      "InstallLocation": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-233185ea\\artifacts\\full-app-tray-foreground-fix\\layout-v3"
+    },
+    {
+      "Name": "Mang.BiliCopilot.AotDev",
+      "Version": "2.2610.31.1",
+      "InstallLocation": "C:\\Program Files\\WindowsApps\\Mang.BiliCopilot.AotDev_2.2610.31.1_x64__z90r5zjzw296g"
+    }
+  ],
+  "after": [
+    {
+      "Name": "Microsoft.ApplicationCompatibilityEnhancements",
+      "Version": "1.2511.9.0",
+      "InstallLocation": "C:\\Program Files\\WindowsApps\\Microsoft.ApplicationCompatibilityEnhancements_1.2511.9.0_x64__8wekyb3d8bbwe"
+    },
+    {
+      "Name": "Mang.BiliCopilot",
+      "Version": "2.2610.3.0",
+      "InstallLocation": "C:\\Program Files\\WindowsApps\\Mang.BiliCopilot_2.2610.3.0_x64__z90r5zjzw296g"
+    },
+    {
+      "Name": "Mang.BiliCopilot.PerfAcceptance.Caa6a7be",
+      "Version": "2.2610.0.3",
+      "InstallLocation": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-233185ea\\artifacts\\full-app-tray-foreground-fix\\layout-v3"
+    },
+    {
+      "Name": "Mang.BiliCopilot.AotDev",
+      "Version": "2.2610.31.1",
+      "InstallLocation": "C:\\Program Files\\WindowsApps\\Mang.BiliCopilot.AotDev_2.2610.31.1_x64__z90r5zjzw296g"
+    }
+  ]
+}

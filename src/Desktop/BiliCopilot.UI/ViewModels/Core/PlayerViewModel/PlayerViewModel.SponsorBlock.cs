@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.SponsorBlock;
@@ -121,7 +121,7 @@ public sealed partial class PlayerViewModel
 
         try
         {
-            await Client.SetCurrentPositionAsync(target);
+            await ChangePositionAsync(target);
             return true;
         }
         catch (Exception ex)

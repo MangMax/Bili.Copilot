@@ -90,6 +90,11 @@ public sealed partial class DanmakuRenderViewModel
     public event EventHandler<int> ProgressChanged;
 
     /// <summary>
+    /// Requests reconstruction at a playback target rather than incremental progress.
+    /// </summary>
+    public event EventHandler<int> SeekRequested;
+
+    /// <summary>
     /// 暂停弹幕.
     /// </summary>
     public event EventHandler PauseDanmaku;

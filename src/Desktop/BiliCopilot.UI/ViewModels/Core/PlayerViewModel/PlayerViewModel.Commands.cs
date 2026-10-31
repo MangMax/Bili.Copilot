@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.Danmaku;
 using BiliCopilot.UI.Models.Constants;
@@ -159,20 +159,6 @@ public sealed partial class PlayerViewModel
         IsProgressChanging = true;
         LastProgressChangingTime = DateTimeOffset.Now;
         return ChangePositionAsync(Math.Min(Player.Position + forwardSeconds, Player.Duration - 1));
-    }
-
-    /// <summary>
-    /// 改变当前播放位置.
-    /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
-    public async Task ChangePositionAsync(double position)
-    {
-        if (Player is null || position < 0 || position > Player.Duration || Math.Abs(Player.Position - position) < 2)
-        {
-            return;
-        }
-
-        await Client!.SetCurrentPositionAsync(position);
     }
 
     /// <summary>
