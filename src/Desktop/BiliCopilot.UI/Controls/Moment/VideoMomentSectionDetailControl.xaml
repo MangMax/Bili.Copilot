@@ -24,7 +24,7 @@
                         Layout="{StaticResource MomentLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:MomentItemViewModel">
-                                <components:MomentCardControl Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
+                                <components:MomentCardControl Style="{StaticResource VideoMomentCardStyle}" ViewModel="{Binding}" />
                             </DataTemplate>
                         </repeater:AppRepeater.ItemTemplate>
                     </repeater:AppRepeater>

@@ -24,7 +24,7 @@
                         Layout="{StaticResource ArticleLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:ArticleItemViewModel">
-                                <components:ArticleCardControl Style="{StaticResource PartitionArticleCardStyle}" ViewModel="{x:Bind}" />
+                                <components:ArticleCardControl Style="{StaticResource PartitionArticleCardStyle}" ViewModel="{Binding}" />
                             </DataTemplate>
                         </repeater:AppRepeater.ItemTemplate>
                     </repeater:AppRepeater>

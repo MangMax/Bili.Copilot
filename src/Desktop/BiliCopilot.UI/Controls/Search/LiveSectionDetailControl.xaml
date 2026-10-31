@@ -24,7 +24,7 @@
                         Layout="{StaticResource LiveLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:LiveItemViewModel">
-                                <components:LiveCardControl Style="{StaticResource SearchLiveCardStyle}" ViewModel="{x:Bind}" />
+                                <components:LiveCardControl Style="{StaticResource SearchLiveCardStyle}" ViewModel="{Binding}" />
                             </DataTemplate>
                         </repeater:AppRepeater.ItemTemplate>
                     </repeater:AppRepeater>
