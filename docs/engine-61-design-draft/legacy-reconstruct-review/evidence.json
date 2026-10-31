@@ -1,0 +1,283 @@
+{
+  "candidate": "e30c8240533d52e30e0216dc34c2c11209d6b90f",
+  "logs": {
+    "compat-run.log": "PASS Core_SetSortsStableCopiesContainerSharesEntries\nPASS Core_GetCopiesEachTimeClearLeavesCallerAndPriorGet\nPASS Core_SetSameGetSnapshotRetainsEntries\nPASS Core_NullSetThrowsBeforeClear\nPASS Core_NullEntrySetThrowsBeforeClear\nPASS Core_ClearEventAfterClearSetEventBeforeReplace\nPASS Core_ThrowingStopSubscriberLeavesClearedOldList\nPASS Core_AddRetainsOldDeduplicatesGrowingListWithoutSort\nPASS Core_AddNullThrowsAndNullEntryCanPartiallyAppend\nPASS Core_AddEmptyKeepsOldAndEmitsNoStop\nPASS Legacy_SetGetAliasPreservesOrderAndEntryEdits\nPASS Legacy_ClearClearsCallerAndSetClearsOld\nPASS Legacy_SetSameContainerClearsIt\nPASS Legacy_NullSetClearsOldAndCreatesEmpty\nPASS Legacy_AddReplacesOldKeepsIncomingDuplicatesWithoutSort\nPASS Legacy_AddEmptyOrSameContainerReplacesWithEmpty\nPASS Legacy_AddNullOrNullEntryThrowsBeforeReplacement\nPASS Legacy_NullEntrySetAcceptedAndEmptyOldAddAcceptsNull\nPASS Core_EmptyOldAddAcceptsFirstNullThenFailsNext\nPASS Core_SchedulerSetOwnsContainerClearsOldAndNullNormalizes\nPASS Both_AddUsesCurrentIdsIncludingNullAndEmpty\nPASS Core_SchedulerSetSameContainerClearsCaller\nPASS Assembly_NoDiagnosticHooks\nPassed: 23, Failed: 0, Skipped: 0\n",
+    "compat-results/loaded.txt": "PDB document checks=25\nC:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\compat\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Core.dll SHA256=A851092B750D7E4C76CD31543797847A29C262AB7BD06CD57585CA6C8E7E45E2 MVID=29124db2-0fd4-4fd6-bf74-9d0413610476\nPDB document checks=7\nC:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\compat\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8\nPDB document checks=9\nC:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\compat\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Share.dll SHA256=0541962ACCFF2CA6823213B5E52449A744F0378DBF61492C82A04A45ABFE8329 MVID=eecebb17-32cc-4e5a-9bcc-ce6ea7c1d826\n",
+    "independent-build.log": "  正在确定要还原的项目…\n  所有项目均是最新的，无法还原。\nC:\\Program Files\\dotnet\\sdk\\11.0.100-rc.3.26522.148\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.RuntimeIdentifierInference.targets(385,5): message NETSDK1057: 你正在使用 .NET 的预览版。请参阅 https://aka.ms/dotnet-support-policy [C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\independent\\Independent.csproj]\nC:\\Program Files\\dotnet\\sdk\\11.0.100-rc.3.26522.148\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.RuntimeIdentifierInference.targets(385,5): message NETSDK1057: 你正在使用 .NET 的预览版。请参阅 https://aka.ms/dotnet-support-policy [C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\source\\src\\Danmaku.Share\\Danmaku.Share.csproj]\nC:\\Program Files\\dotnet\\sdk\\11.0.100-rc.3.26522.148\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.RuntimeIdentifierInference.targets(385,5): message NETSDK1057: 你正在使用 .NET 的预览版。请参阅 https://aka.ms/dotnet-support-policy [C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\source\\src\\Danmaku.Legacy\\Danmaku.Legacy.csproj]\n  Danmaku.Share -> C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\source\\src\\Danmaku.Share\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Share.dll\n  Danmaku.Legacy -> C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\source\\src\\Danmaku.Legacy\\bin\\x64\\Release\\net8.0-windows10.0.22621.0\\Danmaku.Legacy.dll\n  Danmaku.Core -> C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\source\\src\\Danmaku.Core\\bin\\x64\\Release\\net9.0-windows10.0.22621.0\\Danmaku.Core.dll\n  Independent -> C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\independent\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Independent.dll\n\n已成功生成。\n    0 个警告\n    0 个错误\n\n已用时间 00:00:01.19\n",
+    "independent-run.log": "Loaded C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\independent\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8\nPASS TopExactBoundaryThenOneMillisecondReleasesSlot\nPASS RollingStrictExitAndReverseInclusiveExit\nPASS EntranceReleaseDoesNotReleaseNewOwnerAtOldExpiry\nPASS ZeroSpeedLongAgeAndNegativeSpeed\nPassed: 4, Failed: 0, Skipped: 0\n",
+    "independent-initial-fixture-failure.log": "Loaded C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\independent\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8\nUnhandled exception. System.Runtime.InteropServices.COMException (0x80040154): 没有注册类 (0x80040154 (REGDB_E_CLASSNOTREG))\n   at System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(Int32 errorCode)\n   at WinRT.ActivationFactory.ManifestFreeGet(String typeName, Guid iid, Int32 hr) in C:\\__w\\1\\s\\src\\WinRT.Runtime\\ActivationFactory.cs:line 345\n   at WinRT.ActivationFactory.Get(String typeName, Guid iid) in C:\\__w\\1\\s\\src\\WinRT.Runtime\\ActivationFactory.cs:line 292\n   at Microsoft.UI.Colors.get__objRef_global__Microsoft_UI_IColorsStatics()\n   at Microsoft.UI.Colors.get_White()\n   at Richasy.Danmaku.Models.DanmakuItem..ctor() in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-0b4f0501\\artifacts\\reconstruct-final\\source\\src\\Danmaku.Share\\Models\\DanmakuItem.cs:line 85\n   at Independent.Item(IList list, Object slots, DanmakuMode mode, Single x, UInt64 duration) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\independent\\Program.cs:line 31\n   at Independent.<>c.<Main>b__8_1() in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\independent\\Program.cs:line 46\n   at Independent.<Main>g__Case|8_0(String name, Action test, <>c__DisplayClass8_0&) in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\independent\\Program.cs:line 44\n   at Independent.Main() in C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\independent\\Program.cs:line 45\n",
+    "reentry.log": "Assembly=C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\boundary\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF\nStopLoggerCallsSeek: completed=True; callbackEntered=True; stopThread=Stopped; workerThread=Background, WaitSleepJoin; candidate=True\n",
+    "closereentry.log": "Assembly=C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\boundary\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF\nCloseLoggerCallsSeek: completed=True; callbackEntered=True; stopThread=Stopped; workerThread=Stopped; candidate=True\n",
+    "throwstop.log": "Assembly=C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\boundary\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF\nthrowstop: PASS exact exception propagated; stopped=true queue=0 closing=False\n",
+    "throwclose.log": "Assembly=C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\boundary\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF\nthrowclose: PASS exact exception propagated; stopped=true queue=0 closing=True\n",
+    "queue.log": "Assembly=C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\boundary\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF\nQueuedTailAndLatestIntent: PASS time=21000 queue=0 pauseRequested=true\n",
+    "close.log": "Assembly=C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\boundary\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF\nCloseRejectsLateCommit: PASS time=21000 stopped=true queue=0 workerExited=true\n",
+    "stop.log": "Assembly=C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-181e6ea9\\artifacts\\reconstruct-final\\boundary\\bin\\x64\\Release\\net11.0-windows10.0.22621.0\\Danmaku.Legacy.dll; MVID=8d1cd8ca-75b9-42fb-b36a-dd25a267a4b8; SHA256=2CC03EBAF8557CBF0ABB96344276AF717BA7A756541E0223A29A353313ADFABF\nDequeuedThenStop: stoppedAfterSeek=False; time=20000\n"
+  },
+  "compatResults": [
+    {
+      "name": "Core_SetSortsStableCopiesContainerSharesEntries",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_GetCopiesEachTimeClearLeavesCallerAndPriorGet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_SetSameGetSnapshotRetainsEntries",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_NullSetThrowsBeforeClear",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_NullEntrySetThrowsBeforeClear",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_ClearEventAfterClearSetEventBeforeReplace",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_ThrowingStopSubscriberLeavesClearedOldList",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_AddRetainsOldDeduplicatesGrowingListWithoutSort",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_AddNullThrowsAndNullEntryCanPartiallyAppend",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_AddEmptyKeepsOldAndEmitsNoStop",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Legacy_SetGetAliasPreservesOrderAndEntryEdits",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Legacy_ClearClearsCallerAndSetClearsOld",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Legacy_SetSameContainerClearsIt",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Legacy_NullSetClearsOldAndCreatesEmpty",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Legacy_AddReplacesOldKeepsIncomingDuplicatesWithoutSort",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Legacy_AddEmptyOrSameContainerReplacesWithEmpty",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Legacy_AddNullOrNullEntryThrowsBeforeReplacement",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Legacy_NullEntrySetAcceptedAndEmptyOldAddAcceptsNull",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_EmptyOldAddAcceptsFirstNullThenFailsNext",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_SchedulerSetOwnsContainerClearsOldAndNullNormalizes",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Both_AddUsesCurrentIdsIncludingNullAndEmpty",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Core_SchedulerSetSameContainerClearsCaller",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Assembly_NoDiagnosticHooks",
+      "passed": true,
+      "error": ""
+    }
+  ],
+  "recomputedHistorical35": [
+    {
+      "name": "NativeIndependentPixels_red",
+      "passed": true
+    },
+    {
+      "name": "OriginalPreTargetPixelsBlank",
+      "passed": true
+    },
+    {
+      "name": "NativeIndependentPixels_clean",
+      "passed": true
+    },
+    {
+      "name": "NativeFourModesVisible_clean",
+      "passed": true
+    },
+    {
+      "name": "NativeStableAndNegatives_clean",
+      "passed": true
+    },
+    {
+      "name": "NativeIndependentPixels_final",
+      "passed": true
+    },
+    {
+      "name": "NativeFourModesVisible_final",
+      "passed": true
+    },
+    {
+      "name": "NativeStableAndNegatives_final",
+      "passed": true
+    },
+    {
+      "name": "AppIndependentPixelDecoder",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountStateRound1",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountVisibleRound1",
+      "passed": true
+    },
+    {
+      "name": "AppUnloadBlankRound1",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountStateRound2",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountVisibleRound2",
+      "passed": true
+    },
+    {
+      "name": "AppUnloadBlankRound2",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountStateRound3",
+      "passed": true
+    },
+    {
+      "name": "AppPausedRemountVisibleRound3",
+      "passed": true
+    },
+    {
+      "name": "AppUnloadBlankRound3",
+      "passed": true
+    },
+    {
+      "name": "AppDistinctMasters",
+      "passed": true
+    },
+    {
+      "name": "AppActualButton_forward1",
+      "passed": true
+    },
+    {
+      "name": "AppActualButton_backward1",
+      "passed": true
+    },
+    {
+      "name": "AppFutureGlyphOnlyAtBirth",
+      "passed": true
+    },
+    {
+      "name": "AppCloseDisposes",
+      "passed": true
+    },
+    {
+      "name": "AppNoHarnessErrors",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_red",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_final",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_extendedfinal",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_lifetimes",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_earlyclose",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_regression",
+      "passed": true
+    },
+    {
+      "name": "ExitAndWER_app",
+      "passed": true
+    },
+    {
+      "name": "PackageClosure_Legacy",
+      "passed": true
+    },
+    {
+      "name": "LoadedApp_Legacy",
+      "passed": true
+    },
+    {
+      "name": "PackageClosure_Share",
+      "passed": true
+    },
+    {
+      "name": "LoadedApp_Share",
+      "passed": true
+    }
+  ],
+  "kernelFingerprint": {
+    "head": "1da9c3d64c40b63a4a9d099e4210762da01be5f45ee7c2e97903d6d28967fd47",
+    "status": "dc06816c9d509ddd7b133539d38a03e181009a2d9d91eaed47d661e0eda8c8f1",
+    "staged": "43b95080f50d1b2f83c4de18c4cda7a919396e28d13f974af3185e63c1a1417d",
+    "worktree": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "kernelStatusLines": 474
+}

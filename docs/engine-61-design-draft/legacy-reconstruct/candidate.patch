@@ -1,0 +1,229 @@
+diff --git a/src/Danmaku.Legacy/DanmakuFrostMaster.cs b/src/Danmaku.Legacy/DanmakuFrostMaster.cs
+index 70d15ee..f036e43 100644
+--- a/src/Danmaku.Legacy/DanmakuFrostMaster.cs
++++ b/src/Danmaku.Legacy/DanmakuFrostMaster.cs
+@@ -29,6 +29,7 @@ namespace Richasy.Danmaku.Legacy
+         private readonly AutoResetEvent _updateEvent = new AutoResetEvent(false);
+         private List<DanmakuItem> _danmakuList = new List<DanmakuItem>();
+         private volatile bool _isSeeking;
++        private bool _pendingSeek;
+         private volatile bool _isClosing;
+         private volatile int _lastIndex;
+         private volatile uint _lastTimeMs;
+@@ -264,9 +265,45 @@ namespace Richasy.Danmaku.Legacy
+                         {
+                             lock (_updateTimeQueue) _updateTimeQueue.Clear();
+                         }
++                        if (!_render.ResourcesReady)
++                        {
++                            lock (_updateTimeQueue)
++                            {
++                                _updateTimeQueue.Clear();
++                                _updateTimeQueue.Enqueue(targetMs);
++                            }
++                            _pendingSeek = true;
++                            _updateEvent.Set();
++                            return;
++                        }
+                         _lastIndex = 0;
+-                        while (_lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs < targetMs)
+-                            _lastIndex++;
++                        uint replayTime = 0;
++                        while (_lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs <= targetMs)
++                        {
++                            var item = _danmakuList[_lastIndex++];
++                            _render.AdvanceReconstruction(item.StartMs - replayTime);
++                            replayTime = item.StartMs;
++                            bool enabled = item.Mode switch
++                            {
++                                DanmakuMode.Top => _isTopEnabled,
++                                DanmakuMode.Bottom => _isBottomEnabled,
++                                DanmakuMode.Rolling or DanmakuMode.ReverseRolling => _isRollingEnabled,
++                                _ => false // No Legacy Draw branch for other modes.
++                            };
++                            if (enabled)
++                            {
++                                uint layer = item.Mode switch
++                                {
++                                    DanmakuMode.Top => DanmakuDefaultLayerDef.TopLayerId,
++                                    DanmakuMode.Bottom => DanmakuDefaultLayerDef.BottomLayerId,
++                                    DanmakuMode.ReverseRolling => DanmakuDefaultLayerDef.ReverseRollingLayerId,
++                                    _ => DanmakuDefaultLayerDef.RollingLayerId
++                                };
++                                _render.RenderDanmakuItem(layer, item, true, (uint)_lastIndex);
++                            }
++                        }
++                        _render.AdvanceReconstruction(targetMs - replayTime);
++                        _pendingSeek = false;
+                         _lastTimeMs = targetMs;
+                         _render.Start(_pauseRequested);
+                     }
+@@ -376,18 +413,20 @@ namespace Richasy.Danmaku.Legacy
+                         if (_isClosing) return;
+                         if (!_render.ResourcesReady) continue;
+                         uint currentTimeMs = 0;
++                        bool hasUpdate = false;
+                         lock (_updateTimeQueue)
+                         {
+                             if (_updateTimeQueue.Count > 0)
+                             {
+                                 currentTimeMs = _updateTimeQueue.Dequeue();
++                                hasUpdate = true;
+                                 if (_updateTimeQueue.Count > 0) _updateEvent.Set();
+                             }
+                         }
+-                        if (currentTimeMs == 0) continue;
++                        if (!hasUpdate) continue;
+ 
+                         // Check if app/thread has been suspended for a while or danmaku engine has been restarted
+-                        if (currentTimeMs < _lastTimeMs || currentTimeMs - _lastTimeMs > 5000)
++                        if (_pendingSeek || currentTimeMs < _lastTimeMs || currentTimeMs - _lastTimeMs > 5000)
+                         {
+                             Logger.Log("Reseek after a long time suspension");
+                             Seek(currentTimeMs, false);
+diff --git a/src/Danmaku.Legacy/DanmakuRender.cs b/src/Danmaku.Legacy/DanmakuRender.cs
+index 2c443c6..47fafc2 100644
+--- a/src/Danmaku.Legacy/DanmakuRender.cs
++++ b/src/Danmaku.Legacy/DanmakuRender.cs
+@@ -187,8 +187,11 @@ namespace Richasy.Danmaku.Legacy
+         /// <exception cref="System.ArgumentOutOfRangeException">layerId >= max layer count</exception>
+         /// <exception cref="System.ArgumentNullException">device is null</exception>
+         public void RenderDanmakuItem(uint layerId, DanmakuItem danmakuItem)
++            => RenderDanmakuItem(layerId, danmakuItem, false);
++
++        internal void RenderDanmakuItem(uint layerId, DanmakuItem danmakuItem, bool reconstructing, uint replayOrdinal = 0)
+         {
+-            if (_device == null || _isStopped)
++            if (_device == null || (_isStopped && !reconstructing))
+             {
+                 return;
+             }
+@@ -316,26 +319,26 @@ namespace Richasy.Danmaku.Legacy
+                             {
+                                 case DanmakuMode.Rolling:
+                                     {
+-                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y);
++                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
+                                         renderItem.StartX = CanvasWidth;
+                                         renderItem.StartY = y;
+                                         break;
+                                     }
+                                 case DanmakuMode.Bottom:
+                                     {
+-                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y);
++                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
+                                         renderItem.StartY = y;
+                                         break;
+                                     }
+                                 case DanmakuMode.Top:
+                                     {
+-                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y);
++                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
+                                         renderItem.StartY = y;
+                                         break;
+                                     }
+                                 case DanmakuMode.ReverseRolling:
+                                     {
+-                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y);
++                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
+                                         renderItem.StartX = -renderItem.Width;
+                                         renderItem.StartY = y;
+                                         break;
+@@ -501,6 +504,48 @@ namespace Richasy.Danmaku.Legacy
+             }
+         }
+ 
++        // Stop keeps canvas updates inactive during birth-order replay. This uses
++        // current measured widths/speed, without retaining playback history.
++        internal void AdvanceReconstruction(uint elapsedMs)
++        {
++            foreach (var layer in _renderLayerList)
++            {
++                lock (layer.RenderList)
++                {
++                    for (int i = layer.RenderList.Count - 1; i >= 0; i--)
++                    {
++                        var item = layer.RenderList[i];
++                        item.ReconstructedAgeMs += elapsedMs;
++                        bool expired = false, release = false;
++                        switch (item.Mode)
++                        {
++                            case DanmakuMode.Rolling:
++                                item.X -= elapsedMs * AdjustRollingSpeedByWidth(_rollingSpeed, item.Width);
++                                release = item.X < CanvasWidth - item.Width - 48;
++                                expired = item.X < -item.Width;
++                                break;
++                            case DanmakuMode.ReverseRolling:
++                                item.X += elapsedMs * AdjustRollingSpeedByWidth(_rollingSpeed, item.Width);
++                                release = item.X > 48;
++                                expired = item.X >= CanvasWidth;
++                                break;
++                            case DanmakuMode.Top:
++                            case DanmakuMode.Bottom:
++                                item.X = (CanvasWidth - item.Width) / 2;
++                                expired = item.ReconstructedAgeMs > (item.DefinedDurationMs > 0 ? item.DefinedDurationMs : DefaultBottomAndTopDurationMs);
++                                break;
++                        }
++                        if (item.NeedToReleaseYSlot && (release || expired))
++                        {
++                            layer.YSlotManager.ReleaseYSlot(item.Id, (uint)item.StartY);
++                            item.NeedToReleaseYSlot = false;
++                        }
++                        if (expired) { item.Dispose(); layer.RenderList.RemoveAt(i); }
++                    }
++                }
++            }
++        }
++
+         public void SetLayerRenderState(uint layerId, bool render)
+         {
+             if (_renderLayerList is null)
+@@ -697,7 +742,7 @@ namespace Richasy.Danmaku.Legacy
+                         }
+                         if (!renderItem.IsFirstRenderTimeSet)
+                         {
+-                            renderItem.FirstRenderTime = args.Timing.TotalTime;
++                            renderItem.FirstRenderTime = args.Timing.TotalTime - TimeSpan.FromMilliseconds(renderItem.ReconstructedAgeMs);
+                             renderItem.IsFirstRenderTimeSet = true;
+                         }
+                         float elapsedMs = paused ? 0 : (float)args.Timing.ElapsedTime.TotalMilliseconds;
+@@ -932,6 +977,7 @@ namespace Richasy.Danmaku.Legacy
+ 
+             public volatile bool IsFirstRenderTimeSet;
+             public TimeSpan FirstRenderTime;
++            public double ReconstructedAgeMs;
+             public CanvasRenderTarget RenderTarget;
+             public Transform3DEffect TransformEffect;
+ 
+diff --git a/src/Danmaku.Legacy/DanmakuYSlotManager.cs b/src/Danmaku.Legacy/DanmakuYSlotManager.cs
+index 295f93c..4dd277b 100644
+--- a/src/Danmaku.Legacy/DanmakuYSlotManager.cs
++++ b/src/Danmaku.Legacy/DanmakuYSlotManager.cs
+@@ -1,4 +1,4 @@
+-﻿// Copyright (c) Bili Copilot. All rights reserved.
++// Copyright (c) Bili Copilot. All rights reserved.
+ 
+ namespace Richasy.Danmaku.Legacy;
+ 
+@@ -25,7 +25,9 @@ internal sealed class DanmakuYSlotManager
+     /// Get an available Y position for Danmaku.
+     /// </summary>
+     /// <returns>Is any slot occupied.</returns>
+-    public bool GetY(uint danmakuId, uint height, out uint y)
++    public bool GetY(uint danmakuId, uint height, out uint y) => GetY(danmakuId, height, out y, null);
++
++    internal bool GetY(uint danmakuId, uint height, out uint y, uint? replayOrdinal)
+     {
+         if (height > _ySlotArray.Length)
+         {
+@@ -61,7 +63,9 @@ internal sealed class DanmakuYSlotManager
+             }
+ 
+             // Can't find available slot, then return a random Y.
+-            y = (uint)_random.Next(0, _ySlotArray.Length - (int)height);
++            y = replayOrdinal.HasValue
++                ? replayOrdinal.Value % (uint)Math.Max(1, _ySlotArray.Length - (int)height)
++                : (uint)_random.Next(0, _ySlotArray.Length - (int)height);
+             return false;
+         }
+     }

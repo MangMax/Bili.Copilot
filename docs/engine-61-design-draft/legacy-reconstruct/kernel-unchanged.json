@@ -1,0 +1,10 @@
+{
+  "unchanged": true,
+  "gitlink": "0ae5e4e000a41a07f6696746706df11c06e8835b",
+  "backup": {
+    "head.txt": "a227c3c768a9acf59a42436d16fc611fe85e9109f7d170e0af0c818e8637cc1f",
+    "index.patch": "43b95080f50d1b2f83c4de18c4cda7a919396e28d13f974af3185e63c1a1417d",
+    "status.txt": "151d81dcc8a81cf495b3c946d283186da5576d1ed5f7ff75a0594ac3171bd936",
+    "worktree.patch": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

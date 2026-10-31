@@ -1,0 +1,46 @@
+{
+  "utc": "2026-10-31T15:04:52.064274+00:00",
+  "parent": "29e266884b9459b4d5a0f62a4d76482950cefdb1",
+  "candidate": "d7984643f4792133e7664c55e01df6e95e9cbc21",
+  "independentReview": "pending parent handoff",
+  "auditFiles": 459,
+  "artifacts": {
+    "candidate.bundle": "405bf9cc1bb6b6d6c7977d37b841d2c30b9be813bd46301ccdf4ac1cb7178686",
+    "candidate-source.zip": "4fe503aa243e76b17c57dd38c6623c676ac49cc64db7da6f04c1b9abb2b0b08d",
+    "candidate.patch": "7221564bca2b86c8f6216b1ffd8036e24edc17acd1e4d19296fc6149dfffa73a",
+    "evidence.zip": "6cdcc0409a7c856756f189b715d391f9d263853dcfcf56f95130ac03f0238222",
+    "evidence-manifest.json": "c555279cfbaa05149a40f277429892bf5af94e8cb24c6bc3fa8db668a9fcfbed"
+  },
+  "finalResults": {
+    "native": [
+      18,
+      0,
+      0
+    ],
+    "expanded": [
+      21,
+      0,
+      0
+    ],
+    "regression": [
+      12,
+      0,
+      0
+    ],
+    "earlyClose": [
+      5,
+      0,
+      0
+    ],
+    "compat": [
+      23,
+      0,
+      0
+    ],
+    "validation": [
+      35,
+      0,
+      0
+    ]
+  }
+}
