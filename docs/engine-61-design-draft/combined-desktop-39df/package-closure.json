@@ -1,0 +1,326 @@
+{
+  "packages": [
+    {
+      "name": "Core",
+      "package": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\feed\\Danmaku.Core.0.0.1-pxdpi.9dc8c6c9.clean.nupkg",
+      "packageSha": "00a76b9cd5890485bf8f1fcf1a510bf0e36eebee6039d63f19a169c0ae5be84a",
+      "dllSha": "b15225ecec93b08943ecdbf889c74bebe8873e7851b43cc3c1feb98fc84f97fd",
+      "pdbSha": "77cdef7aba486d04d7a9ec2cdee9a4c41ecf42bc734d8457e3b101f2e249f28c"
+    },
+    {
+      "name": "Legacy",
+      "package": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\feed\\Danmaku.Legacy.0.0.1-reconstruct0b4f.final.nupkg",
+      "packageSha": "4c5c57f0df78e76870834af9a9b17d8b169d2a6c89aed49d66b94c587eb3b867",
+      "dllSha": "2cc03ebaf8557cbf0abb96344276af717ba7a756541e0223a29a353313adfabf",
+      "pdbSha": "6beef4c6ee57fd957a23b8ef733e6ec1d1ccead947de3992cff897490c86d228"
+    },
+    {
+      "name": "Share",
+      "package": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\feed\\Danmaku.Share.0.0.1-reconstruct0b4f.final.nupkg",
+      "packageSha": "1fe14bfaa90ef8da9373ee4b5be6d06f7bcb2e3297d75e6f90e4f03e5fb3cfb4",
+      "dllSha": "0541962accff2ca6823213b5e52449a744f0378dbf61492c82a04a45abfe8329",
+      "pdbSha": "eb96487b7caa5fde6863bf91190c7053d206401ff3f6a46d94e55d3f8c3e43bd"
+    }
+  ],
+  "resolved": {
+    "Danmaku.Core/0.0.1-pxdpi.9dc8c6c9.clean": {
+      "sha512": "OcIkil0H6lcT9/0NEJCDLL2QSuVfIIf4x86+HMCZv1+TvXeZjpqv2/fEuLxOAaw1/ub4Ucl0vPGt7VDy6Rv5uA==",
+      "type": "package",
+      "path": "danmaku.core/0.0.1-pxdpi.9dc8c6c9.clean",
+      "files": [
+        ".nupkg.metadata",
+        "NUGET.md",
+        "danmaku.core.0.0.1-pxdpi.9dc8c6c9.clean.nupkg.sha512",
+        "danmaku.core.nuspec",
+        "icon.png",
+        "lib/net9.0-windows10.0.22621/Danmaku.Core.dll",
+        "lib/net9.0-windows10.0.22621/Danmaku.Core.pri",
+        "lib/net9.0-windows10.0.22621/Danmaku.Core.xml"
+      ]
+    },
+    "Danmaku.Legacy/0.0.1-reconstruct0b4f.final": {
+      "sha512": "N9m4J2PijjFqVxons1iY7wnavDX9NMzg3I8UM+QE3drxj0n7kz6SMC3XE4b5Qutw+WAhbInXuULP5EMADy9YWw==",
+      "type": "package",
+      "path": "danmaku.legacy/0.0.1-reconstruct0b4f.final",
+      "files": [
+        ".nupkg.metadata",
+        "NUGET.md",
+        "danmaku.legacy.0.0.1-reconstruct0b4f.final.nupkg.sha512",
+        "danmaku.legacy.nuspec",
+        "icon.png",
+        "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll",
+        "lib/net8.0-windows10.0.22621/Danmaku.Legacy.pri",
+        "lib/net8.0-windows10.0.22621/Danmaku.Legacy.xml"
+      ]
+    },
+    "Danmaku.Share/0.0.1-reconstruct0b4f.final": {
+      "sha512": "voDYh96q8DMjtUnRQfGglSWmotdeaVxaIW3RX8c15vcTI+8O/Uc94gfIpPhfne6QP8s0hTw8wGgvsMpXJRGnPw==",
+      "type": "package",
+      "path": "danmaku.share/0.0.1-reconstruct0b4f.final",
+      "files": [
+        ".nupkg.metadata",
+        "NUGET.md",
+        "danmaku.share.0.0.1-reconstruct0b4f.final.nupkg.sha512",
+        "danmaku.share.nuspec",
+        "icon.png",
+        "lib/net8.0-windows10.0.22621/Danmaku.Share.dll",
+        "lib/net8.0-windows10.0.22621/Danmaku.Share.pri",
+        "lib/net8.0-windows10.0.22621/Danmaku.Share.xml"
+      ]
+    }
+  },
+  "targets": {
+    "net11.0-windows10.0.22621.0": {
+      "Danmaku.Core/0.0.1-pxdpi.9dc8c6c9.clean": {
+        "type": "package",
+        "dependencies": {
+          "CommunityToolkit.WinUI.Helpers": "8.2.250402",
+          "Danmaku.Share": "0.0.1-pxdpi.9dc8c6c9.clean",
+          "Microsoft.Extensions.ObjectPool": "9.0.9",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003",
+          "Vortice.DXGI": "3.7.6-beta",
+          "Vortice.Direct2D1": "3.7.6-beta",
+          "Vortice.Direct3D11": "3.7.6-beta",
+          "Vortice.Win32.Graphics.DirectWrite": "2.2.7",
+          "Vortice.WinUI": "3.7.6-beta"
+        },
+        "compile": {
+          "lib/net9.0-windows10.0.22621/Danmaku.Core.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.22621/Danmaku.Core.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      },
+      "Danmaku.Legacy/0.0.1-reconstruct0b4f.final": {
+        "type": "package",
+        "dependencies": {
+          "Danmaku.Share": "0.0.1-reconstruct0b4f.final",
+          "Microsoft.Graphics.Win2D": "1.3.2",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      },
+      "Danmaku.Share/0.0.1-reconstruct0b4f.final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Share.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Share.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      }
+    },
+    "net11.0-windows10.0.22621.0/win-arm64": {
+      "Danmaku.Core/0.0.1-pxdpi.9dc8c6c9.clean": {
+        "type": "package",
+        "dependencies": {
+          "CommunityToolkit.WinUI.Helpers": "8.2.250402",
+          "Danmaku.Share": "0.0.1-pxdpi.9dc8c6c9.clean",
+          "Microsoft.Extensions.ObjectPool": "9.0.9",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003",
+          "Vortice.DXGI": "3.7.6-beta",
+          "Vortice.Direct2D1": "3.7.6-beta",
+          "Vortice.Direct3D11": "3.7.6-beta",
+          "Vortice.Win32.Graphics.DirectWrite": "2.2.7",
+          "Vortice.WinUI": "3.7.6-beta"
+        },
+        "compile": {
+          "lib/net9.0-windows10.0.22621/Danmaku.Core.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.22621/Danmaku.Core.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      },
+      "Danmaku.Legacy/0.0.1-reconstruct0b4f.final": {
+        "type": "package",
+        "dependencies": {
+          "Danmaku.Share": "0.0.1-reconstruct0b4f.final",
+          "Microsoft.Graphics.Win2D": "1.3.2",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      },
+      "Danmaku.Share/0.0.1-reconstruct0b4f.final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Share.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Share.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      }
+    },
+    "net11.0-windows10.0.22621.0/win-x64": {
+      "Danmaku.Core/0.0.1-pxdpi.9dc8c6c9.clean": {
+        "type": "package",
+        "dependencies": {
+          "CommunityToolkit.WinUI.Helpers": "8.2.250402",
+          "Danmaku.Share": "0.0.1-pxdpi.9dc8c6c9.clean",
+          "Microsoft.Extensions.ObjectPool": "9.0.9",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003",
+          "Vortice.DXGI": "3.7.6-beta",
+          "Vortice.Direct2D1": "3.7.6-beta",
+          "Vortice.Direct3D11": "3.7.6-beta",
+          "Vortice.Win32.Graphics.DirectWrite": "2.2.7",
+          "Vortice.WinUI": "3.7.6-beta"
+        },
+        "compile": {
+          "lib/net9.0-windows10.0.22621/Danmaku.Core.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.22621/Danmaku.Core.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      },
+      "Danmaku.Legacy/0.0.1-reconstruct0b4f.final": {
+        "type": "package",
+        "dependencies": {
+          "Danmaku.Share": "0.0.1-reconstruct0b4f.final",
+          "Microsoft.Graphics.Win2D": "1.3.2",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      },
+      "Danmaku.Share/0.0.1-reconstruct0b4f.final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Share.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Share.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      }
+    },
+    "net11.0-windows10.0.22621.0/win-x86": {
+      "Danmaku.Core/0.0.1-pxdpi.9dc8c6c9.clean": {
+        "type": "package",
+        "dependencies": {
+          "CommunityToolkit.WinUI.Helpers": "8.2.250402",
+          "Danmaku.Share": "0.0.1-pxdpi.9dc8c6c9.clean",
+          "Microsoft.Extensions.ObjectPool": "9.0.9",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003",
+          "Vortice.DXGI": "3.7.6-beta",
+          "Vortice.Direct2D1": "3.7.6-beta",
+          "Vortice.Direct3D11": "3.7.6-beta",
+          "Vortice.Win32.Graphics.DirectWrite": "2.2.7",
+          "Vortice.WinUI": "3.7.6-beta"
+        },
+        "compile": {
+          "lib/net9.0-windows10.0.22621/Danmaku.Core.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.22621/Danmaku.Core.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      },
+      "Danmaku.Legacy/0.0.1-reconstruct0b4f.final": {
+        "type": "package",
+        "dependencies": {
+          "Danmaku.Share": "0.0.1-reconstruct0b4f.final",
+          "Microsoft.Graphics.Win2D": "1.3.2",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Legacy.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      },
+      "Danmaku.Share/0.0.1-reconstruct0b4f.final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Windows.SDK.BuildTools": "10.0.26100.6584",
+          "Microsoft.WindowsAppSDK": "1.8.250916003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Share.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.22621/Danmaku.Share.dll": {
+            "related": ".pri;.xml"
+          }
+        }
+      }
+    }
+  }
+}

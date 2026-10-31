@@ -1,0 +1,360 @@
+[
+  {
+    "engine": "Core",
+    "sourceRun": "runtime3",
+    "fromObservation": {
+      "at": "2026-10-31T16:00:09.0607297+00:00",
+      "data": {
+        "kind": "visual",
+        "panel": true,
+        "renderer": true,
+        "engine": "Core",
+        "master": 39745190,
+        "paused": false,
+        "stopped": false,
+        "time": 21000,
+        "width": 1646,
+        "height": 1087,
+        "scale": 1.5,
+        "speed": 1,
+        "extra": 1,
+        "font": 1,
+        "rows": [
+          {
+            "text": "ROLL18",
+            "x": 1163.3177,
+            "y": 0,
+            "width": 125.94922,
+            "height": 45.89258,
+            "age": 2706.5537,
+            "first": -2000,
+            "drawable": true
+          },
+          {
+            "text": "REV18",
+            "x": 364.04883,
+            "y": 0,
+            "width": 107.2417,
+            "height": 45.89258,
+            "age": 2706.5537,
+            "first": -2000,
+            "drawable": true
+          },
+          {
+            "text": "PRIOR19",
+            "x": 750.5991,
+            "y": 0,
+            "width": 144.80176,
+            "height": 45.89258,
+            "age": 1706.5537,
+            "first": -1000,
+            "drawable": true
+          },
+          {
+            "text": "FUTURE21",
+            "x": 738.353,
+            "y": 45,
+            "width": 169.29395,
+            "height": 45.89258,
+            "age": 208.8685,
+            "first": 497.6852,
+            "drawable": true
+          },
+          {
+            "text": "BOTTOM19",
+            "x": 730.23193,
+            "y": 0,
+            "width": 185.53613,
+            "height": 45.89258,
+            "age": 1706.5537,
+            "first": -1000,
+            "drawable": true
+          }
+        ]
+      }
+    },
+    "toObservation": {
+      "at": "2026-10-31T16:00:09.8116649+00:00",
+      "data": {
+        "kind": "visual",
+        "panel": true,
+        "renderer": true,
+        "engine": "Core",
+        "master": 39745190,
+        "paused": false,
+        "stopped": false,
+        "time": 22000,
+        "width": 1646,
+        "height": 1087,
+        "scale": 1.5,
+        "speed": 1,
+        "extra": 1,
+        "font": 1,
+        "rows": [
+          {
+            "text": "ROLL18",
+            "x": 1029.616,
+            "y": 0,
+            "width": 125.94922,
+            "height": 45.89258,
+            "age": 3456.2599,
+            "first": -2000,
+            "drawable": true
+          },
+          {
+            "text": "REV18",
+            "x": 494.5947,
+            "y": 0,
+            "width": 107.2417,
+            "height": 45.89258,
+            "age": 3456.2599,
+            "first": -2000,
+            "drawable": true
+          },
+          {
+            "text": "PRIOR19",
+            "x": 750.5991,
+            "y": 0,
+            "width": 144.80176,
+            "height": 45.89258,
+            "age": 2456.2599,
+            "first": -1000,
+            "drawable": true
+          },
+          {
+            "text": "FUTURE21",
+            "x": 738.353,
+            "y": 45,
+            "width": 169.29395,
+            "height": 45.89258,
+            "age": 958.5747,
+            "first": 497.6852,
+            "drawable": true
+          },
+          {
+            "text": "BOTTOM19",
+            "x": 730.23193,
+            "y": 0,
+            "width": 185.53613,
+            "height": 45.89258,
+            "age": 2456.2599,
+            "first": -1000,
+            "drawable": true
+          }
+        ]
+      }
+    },
+    "elapsed": 0.7509350776672363,
+    "motion": [
+      {
+        "text": "ROLL18",
+        "expected": -133.92069129322172,
+        "actual": -133.70170000000007,
+        "tolerance": 15.375393087500003,
+        "pass_": true
+      },
+      {
+        "text": "REV18",
+        "expected": 130.75986137178543,
+        "actual": 130.54586999999998,
+        "tolerance": 15.059703687500003,
+        "pass_": true
+      },
+      {
+        "text": "PRIOR19",
+        "expected": 0.0,
+        "actual": 0.0,
+        "tolerance": 2,
+        "pass_": true
+      },
+      {
+        "text": "BOTTOM19",
+        "expected": 0.0,
+        "actual": 0.0,
+        "tolerance": 2,
+        "pass_": true
+      }
+    ],
+    "verticalSlots": true,
+    "pass_": true
+  },
+  {
+    "engine": "Legacy",
+    "sourceRun": "runtime3/continuation",
+    "fromObservation": {
+      "at": "2026-10-31T16:01:27.4041306+00:00",
+      "data": {
+        "kind": "visual",
+        "panel": true,
+        "renderer": true,
+        "engine": "Legacy",
+        "master": 26659397,
+        "paused": false,
+        "stopped": false,
+        "time": 21000,
+        "width": 1646,
+        "height": 1087,
+        "scale": 1.5,
+        "speed": 1,
+        "extra": 1,
+        "font": 1,
+        "rows": [
+          {
+            "text": "ROLL18",
+            "x": 1185.2926,
+            "y": 0,
+            "width": 125.94922,
+            "height": 45.89258,
+            "age": 2000,
+            "first": 3683.3106,
+            "drawable": true
+          },
+          {
+            "text": "REV18",
+            "x": 342.5917,
+            "y": 0,
+            "width": 107.2417,
+            "height": 45.89258,
+            "age": 2000,
+            "first": 3683.3106,
+            "drawable": true
+          },
+          {
+            "text": "PRIOR19",
+            "x": 750.5991,
+            "y": 0,
+            "width": 144.80176,
+            "height": 45.89258,
+            "age": 1000,
+            "first": 4683.3106,
+            "drawable": true
+          },
+          {
+            "text": "FUTURE21",
+            "x": 738.353,
+            "y": 45,
+            "width": 169.29395,
+            "height": 45.89258,
+            "age": 0,
+            "first": 6199.9752,
+            "drawable": true
+          },
+          {
+            "text": "BOTTOM19",
+            "x": 730.23193,
+            "y": 0,
+            "width": 185.53613,
+            "height": 45.89258,
+            "age": 1000,
+            "first": 4683.3106,
+            "drawable": true
+          }
+        ]
+      }
+    },
+    "toObservation": {
+      "at": "2026-10-31T16:01:28.1560579+00:00",
+      "data": {
+        "kind": "visual",
+        "panel": true,
+        "renderer": true,
+        "engine": "Legacy",
+        "master": 26659397,
+        "paused": false,
+        "stopped": false,
+        "time": 21000,
+        "width": 1646,
+        "height": 1087,
+        "scale": 1.5,
+        "speed": 1,
+        "extra": 1,
+        "font": 1,
+        "rows": [
+          {
+            "text": "ROLL18",
+            "x": 1051.5396,
+            "y": 0,
+            "width": 125.94922,
+            "height": 45.89258,
+            "age": 2000,
+            "first": 3683.3106,
+            "drawable": true
+          },
+          {
+            "text": "REV18",
+            "x": 473.18756,
+            "y": 0,
+            "width": 107.2417,
+            "height": 45.89258,
+            "age": 2000,
+            "first": 3683.3106,
+            "drawable": true
+          },
+          {
+            "text": "PRIOR19",
+            "x": 750.5991,
+            "y": 0,
+            "width": 144.80176,
+            "height": 45.89258,
+            "age": 1000,
+            "first": 4683.3106,
+            "drawable": true
+          },
+          {
+            "text": "FUTURE21",
+            "x": 738.353,
+            "y": 45,
+            "width": 169.29395,
+            "height": 45.89258,
+            "age": 0,
+            "first": 6199.9752,
+            "drawable": true
+          },
+          {
+            "text": "BOTTOM19",
+            "x": 730.23193,
+            "y": 0,
+            "width": 185.53613,
+            "height": 45.89258,
+            "age": 1000,
+            "first": 4683.3106,
+            "drawable": true
+          }
+        ]
+      }
+    },
+    "elapsed": 0.7519268989562988,
+    "motion": [
+      {
+        "text": "ROLL18",
+        "expected": -134.0975712880719,
+        "actual": -133.75299999999993,
+        "tolerance": 15.375393087500003,
+        "pass_": true
+      },
+      {
+        "text": "REV18",
+        "expected": 130.93256660040024,
+        "actual": 130.59586000000002,
+        "tolerance": 15.059703687500003,
+        "pass_": true
+      },
+      {
+        "text": "PRIOR19",
+        "expected": 0.0,
+        "actual": 0.0,
+        "tolerance": 2,
+        "pass_": true
+      },
+      {
+        "text": "BOTTOM19",
+        "expected": 0.0,
+        "actual": 0.0,
+        "tolerance": 2,
+        "pass_": true
+      }
+    ],
+    "verticalSlots": true,
+    "pass_": true
+  }
+]

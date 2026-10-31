@@ -1,0 +1,28 @@
+{
+  "runtime1": {
+    "passed": 52,
+    "failed": []
+  },
+  "runtime2": {
+    "passed": 24,
+    "failed": [
+      "LegacyTargetFourModes"
+    ]
+  },
+  "runtime2/supplement": {
+    "passed": 20,
+    "failed": [
+      "LegacyFourModesPausedPositionAgeStable"
+    ]
+  },
+  "runtime3": {
+    "passed": 57,
+    "failed": [
+      "CoreContinuousLatestTarget"
+    ]
+  },
+  "runtime3/continuation": {
+    "passed": 41,
+    "failed": []
+  }
+}

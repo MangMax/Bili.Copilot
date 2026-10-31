@@ -1,0 +1,41 @@
+[
+  {
+    "run": "runtime1",
+    "pid": 49612,
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\layout39df-1\\BiliCopilot.UI.exe",
+    "exitCode": 0,
+    "werSeconds": 31.0127091,
+    "matches": [],
+    "cleanup": {
+      "remaining": 0,
+      "forced": false,
+      "identity": "Bili.Combined39df"
+    }
+  },
+  {
+    "run": "runtime2",
+    "pid": 8636,
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\layout39df-2\\BiliCopilot.UI.exe",
+    "exitCode": 0,
+    "werSeconds": 31.0132953,
+    "matches": [],
+    "cleanup": {
+      "forced": false,
+      "identity": "Bili.Combined39df",
+      "remaining": 0
+    }
+  },
+  {
+    "run": "runtime3",
+    "pid": 49348,
+    "path": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\layout39df-3\\BiliCopilot.UI.exe",
+    "exitCode": 0,
+    "werSeconds": 31.0180581,
+    "matches": [],
+    "cleanup": {
+      "forced": false,
+      "remaining": 0,
+      "identity": "Bili.Combined39df"
+    }
+  }
+]

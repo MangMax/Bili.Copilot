@@ -1,0 +1,10 @@
+{
+  "runtimeAdmission": "FAIL_CONTINUOUS_LATEST",
+  "productionChanges": false,
+  "formalDependenciesChanged": false,
+  "gitlinkChanged": false,
+  "failedRequirement": "Concurrent 21 -> 19 -> 20 can settle at 19 in BOTH engines",
+  "retainedExitRuns": 3,
+  "visualEvidence": "runtime1 original unscaled crops, blank/different-text negatives; runtime3 occluded crops REJECTED",
+  "history": "Prior AV/c000027b/UNKNOWN/device-reset/AOT/performance remain; Legacy worst-case O(N^2) not signed off"
+}

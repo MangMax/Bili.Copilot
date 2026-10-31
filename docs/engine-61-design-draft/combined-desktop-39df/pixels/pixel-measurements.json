@@ -1,0 +1,452 @@
+[
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-positive.png",
+    "engine": "core",
+    "sha256": "96FBB1F446F0ACF3463B6F1777A862A8DD242631167DF0EA1001AC82FEF8EBB4",
+    "frame": "positive",
+    "brightNeutralPixels": 1226,
+    "region": "reverse",
+    "box": [
+      220,
+      5,
+      220,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-positive.png",
+    "engine": "core",
+    "sha256": "AF72411BD999C703780FBC8CDC3C2D2B140556AE3338DD521C37A6FCA4BEBD59",
+    "frame": "positive",
+    "brightNeutralPixels": 1713,
+    "region": "top",
+    "box": [
+      720,
+      5,
+      240,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-positive.png",
+    "engine": "core",
+    "sha256": "BDD317C594C6BE16122916D755C84BA41B99579A89D4D42863EA787597860515",
+    "frame": "positive",
+    "brightNeutralPixels": 1341,
+    "region": "rolling",
+    "box": [
+      1260,
+      5,
+      200,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-positive.png",
+    "engine": "core",
+    "sha256": "CE9E2C03C2990CE2A22AF05CF45C7BF43BE91A538E15A396F0E6CBF9BE647755",
+    "frame": "positive",
+    "brightNeutralPixels": 2193,
+    "region": "bottom",
+    "box": [
+      710,
+      1050,
+      250,
+      38
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-positive.png",
+    "engine": "core",
+    "sha256": "462BAB139FDCAE0B2F7F208F50376FB0406FD7996AFFE2CC4A8B6535DBA557C7",
+    "frame": "positive",
+    "brightNeutralPixels": 0,
+    "region": "future",
+    "box": [
+      720,
+      50,
+      240,
+      50
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-blank.png",
+    "engine": "core",
+    "sha256": "B2C3C55E8A11BE19F49AAD3577648B3C342D0D89E148D5FF5C07AD8F47D9FE09",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "reverse",
+    "box": [
+      220,
+      5,
+      220,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-blank.png",
+    "engine": "core",
+    "sha256": "1E2A056F5422FC084CD921A9D8386A9FA897DF99AF2399F17C7852FA865DF290",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "top",
+    "box": [
+      720,
+      5,
+      240,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-blank.png",
+    "engine": "core",
+    "sha256": "8C1D984BD77CEF8177EA1486ACF117A58DD8232A390D4F2B4F932F6B033EAD59",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "rolling",
+    "box": [
+      1260,
+      5,
+      200,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-blank.png",
+    "engine": "core",
+    "sha256": "6523AAD661201F140FB5225F703632348AD5AFA607D96756E191653B4457D99F",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "bottom",
+    "box": [
+      710,
+      1050,
+      250,
+      38
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-blank.png",
+    "engine": "core",
+    "sha256": "462BAB139FDCAE0B2F7F208F50376FB0406FD7996AFFE2CC4A8B6535DBA557C7",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "future",
+    "box": [
+      720,
+      50,
+      240,
+      50
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-other.png",
+    "engine": "core",
+    "sha256": "A3A5048EC5B858FA0320A3007094AD683F06A3501B432C858A6372B6CE9976D3",
+    "frame": "other",
+    "brightNeutralPixels": 144,
+    "region": "reverse",
+    "box": [
+      220,
+      5,
+      220,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-other.png",
+    "engine": "core",
+    "sha256": "1161AFC96C13E9C087747E5539CCE93DDFC063175093353C4E0A6BA75FA7AC22",
+    "frame": "other",
+    "brightNeutralPixels": 1899,
+    "region": "top",
+    "box": [
+      720,
+      5,
+      240,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-other.png",
+    "engine": "core",
+    "sha256": "8C1D984BD77CEF8177EA1486ACF117A58DD8232A390D4F2B4F932F6B033EAD59",
+    "frame": "other",
+    "brightNeutralPixels": 0,
+    "region": "rolling",
+    "box": [
+      1260,
+      5,
+      200,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-other.png",
+    "engine": "core",
+    "sha256": "CE9E2C03C2990CE2A22AF05CF45C7BF43BE91A538E15A396F0E6CBF9BE647755",
+    "frame": "other",
+    "brightNeutralPixels": 2193,
+    "region": "bottom",
+    "box": [
+      710,
+      1050,
+      250,
+      38
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\core-other.png",
+    "engine": "core",
+    "sha256": "7D5CA1C8C4256E079E1DA7D4B48957D7EE607F950CCD376F7A599890A3AF0BB3",
+    "frame": "other",
+    "brightNeutralPixels": 1469,
+    "region": "future",
+    "box": [
+      720,
+      50,
+      240,
+      50
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-positive.png",
+    "engine": "legacy",
+    "sha256": "DBE78B8CD80BD0041863666050B3F6EF6E0AC0A772D6062D1B669E048F2B5ADB",
+    "frame": "positive",
+    "brightNeutralPixels": 1178,
+    "region": "reverse",
+    "box": [
+      220,
+      5,
+      220,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-positive.png",
+    "engine": "legacy",
+    "sha256": "AA80556829548ACBB5A6191AEB7A8687465B4FBDD8B2FAE368CDD8BBF1CBF170",
+    "frame": "positive",
+    "brightNeutralPixels": 1707,
+    "region": "top",
+    "box": [
+      720,
+      5,
+      240,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-positive.png",
+    "engine": "legacy",
+    "sha256": "EA332DD9B4F9494969C174DDEE1221A37E8821CA2C214FAA9DE864DF52FC6452",
+    "frame": "positive",
+    "brightNeutralPixels": 1385,
+    "region": "rolling",
+    "box": [
+      1260,
+      5,
+      200,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-positive.png",
+    "engine": "legacy",
+    "sha256": "CB06734BD8EE6FAE328AFF7D5947DF5785F4026F29C423023C46272B2ACD8729",
+    "frame": "positive",
+    "brightNeutralPixels": 2114,
+    "region": "bottom",
+    "box": [
+      710,
+      1050,
+      250,
+      38
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-positive.png",
+    "engine": "legacy",
+    "sha256": "462BAB139FDCAE0B2F7F208F50376FB0406FD7996AFFE2CC4A8B6535DBA557C7",
+    "frame": "positive",
+    "brightNeutralPixels": 0,
+    "region": "future",
+    "box": [
+      720,
+      50,
+      240,
+      50
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-blank.png",
+    "engine": "legacy",
+    "sha256": "B2C3C55E8A11BE19F49AAD3577648B3C342D0D89E148D5FF5C07AD8F47D9FE09",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "reverse",
+    "box": [
+      220,
+      5,
+      220,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-blank.png",
+    "engine": "legacy",
+    "sha256": "1E2A056F5422FC084CD921A9D8386A9FA897DF99AF2399F17C7852FA865DF290",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "top",
+    "box": [
+      720,
+      5,
+      240,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-blank.png",
+    "engine": "legacy",
+    "sha256": "8C1D984BD77CEF8177EA1486ACF117A58DD8232A390D4F2B4F932F6B033EAD59",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "rolling",
+    "box": [
+      1260,
+      5,
+      200,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-blank.png",
+    "engine": "legacy",
+    "sha256": "6523AAD661201F140FB5225F703632348AD5AFA607D96756E191653B4457D99F",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "bottom",
+    "box": [
+      710,
+      1050,
+      250,
+      38
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-blank.png",
+    "engine": "legacy",
+    "sha256": "462BAB139FDCAE0B2F7F208F50376FB0406FD7996AFFE2CC4A8B6535DBA557C7",
+    "frame": "blank",
+    "brightNeutralPixels": 0,
+    "region": "future",
+    "box": [
+      720,
+      50,
+      240,
+      50
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-other.png",
+    "engine": "legacy",
+    "sha256": "682C4296333906D75CF6EA4B8DDDD3B570332CDE34CEB3938DBCFE70C24F8C27",
+    "frame": "other",
+    "brightNeutralPixels": 24,
+    "region": "reverse",
+    "box": [
+      220,
+      5,
+      220,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-other.png",
+    "engine": "legacy",
+    "sha256": "579E81EA562F4DE299470753F82DD5E891B9A3927C6BF124D0B988D2E3848DB6",
+    "frame": "other",
+    "brightNeutralPixels": 1799,
+    "region": "top",
+    "box": [
+      720,
+      5,
+      240,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-other.png",
+    "engine": "legacy",
+    "sha256": "8C1D984BD77CEF8177EA1486ACF117A58DD8232A390D4F2B4F932F6B033EAD59",
+    "frame": "other",
+    "brightNeutralPixels": 0,
+    "region": "rolling",
+    "box": [
+      1260,
+      5,
+      200,
+      60
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-other.png",
+    "engine": "legacy",
+    "sha256": "CB06734BD8EE6FAE328AFF7D5947DF5785F4026F29C423023C46272B2ACD8729",
+    "frame": "other",
+    "brightNeutralPixels": 2114,
+    "region": "bottom",
+    "box": [
+      710,
+      1050,
+      250,
+      38
+    ],
+    "unscaled": true
+  },
+  {
+    "source": "C:\\Users\\hp\\.t3\\worktrees\\Bili.Copilot\\t3-39df52c6\\artifacts\\combined-60cd\\full\\runtime1\\legacy-other.png",
+    "engine": "legacy",
+    "sha256": "852E6728A83F8712C4F19F6DE80198C0ECCF6F5C126047D02FD31E5E49ADD0F7",
+    "frame": "other",
+    "brightNeutralPixels": 1400,
+    "region": "future",
+    "box": [
+      720,
+      50,
+      240,
+      50
+    ],
+    "unscaled": true
+  }
+]
