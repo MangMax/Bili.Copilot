@@ -20,6 +20,8 @@ git clone --recurse-submodules https://github.com/MangMax/Bili.Copilot.git
 
 [bili-kernel](https://github.com/MangMax/bili-kernel) 以 git submodule 形式位于 `externals/bili-kernel`，通过 `ProjectReference` 直接引用，不需要本地 NuGet 源。
 
+弹幕三包使用仓库随附的 [冻结本地 feed](packages/danmaku/README.md)，由根目录 `nuget.config` 的相对路径解析，无需代理机缓存或外部发布。该说明包含固定版本、SHA256、源码/符号归档及隔离恢复和 JIT 构建命令。请安装 `global.json` 指定的 .NET SDK。
+
 构建前需准备播放与混流依赖：
 
 | 文件 | 目录 | 说明 |
