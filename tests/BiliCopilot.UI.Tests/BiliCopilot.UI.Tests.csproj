@@ -66,5 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/NavigationPageFactory.cs" Link="Navigation/NavigationPageFactory.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Items/NotifyMessageItemViewModel/*.cs" Link="NotifyMessage/%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

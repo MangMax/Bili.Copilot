@@ -13,7 +13,12 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// <summary>
 /// 通知消息项视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
+// ActiveCommand is consumed only by NotifyMessageCardControl's compiled x:Bind.
+// Keep runtime discovery for the existing data properties, including inherited Data.
+[GeneratedBindableCustomProperty(
+    [nameof(PublishRelativeTime), nameof(FirstUserAvatar), nameof(FirstUserName),
+     nameof(IsMultipleUsers), nameof(Subtitle), nameof(Message), nameof(SourceContent), nameof(Data)],
+    [])]
 public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMessage>
 {
     /// <summary>
