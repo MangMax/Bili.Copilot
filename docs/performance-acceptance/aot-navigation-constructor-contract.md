@@ -61,6 +61,8 @@ kernel 初始 HEAD `f02c33f6` 且索引为未展开删除状态，先保存完�
 
 ## 父级补正：注册页面构造异常契约
 
+后续 fresh merger 已在固定 `9bc96484` 合入后完成独立复核、新源码510项全套、Debug/Release及局部/完整ILC复验；完整ILC仍6条既有分析错误，正式AOT仍HOLD。详见[集成报告](integration-aot-navigation-constructor.md)。以下补正阶段“没有重跑”保留为当时事实；上文旧8→6日志不倒签新源码。
+
 独立审查发现静态构造改变了原 Activator 的异常包装。保留审查 red；本次仅将 factory 中注册页面的直接构造放在 try/catch 内，抛 TargetInvocationException 并保留原 InnerException。未注册类型的 ArgumentException 仍在 catch 外；SetParameter/Initialize/缓存操作均在 factory 外，不被此包装捕获。
 
 新增 `ConstructorFailurePreservesWrapperAndBothFramesCurrentContent`：以测试页面构造故障验证 Main/Overlay 包装及原异常身份、现有内容/可见性/栈不变，清除故障后可继续正常导航。测试适配器 AsyncLocal 故障仅作用于当前测试上下文，无生产测试钩子。

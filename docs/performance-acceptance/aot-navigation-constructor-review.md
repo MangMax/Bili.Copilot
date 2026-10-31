@@ -1,4 +1,8 @@
-# Navigation constructor contract — independent review, HOLD
+# Navigation constructor contract — independent review history
+
+Latest review: the constructor-wrapper blocker below was corrected in fixed tip `9bc9648499a043a4dc81293c09d24cedd250751e`. Fresh merger independently inspected the catch boundary and reran the source-built suite: Passed: 510, Failed: 0, Skipped: 0, including 23 navigation cases. Both frame failures preserve the exact original InnerException reference, current page identity and visibility; the overlay stack remains unchanged and navigation recovers after clearing the injected fault. AsyncLocal is confined to the test adapter and cleared in finally; unrelated test execution contexts do not share the injected value. It is not a production hook or proof of arbitrary child-task isolation.
+
+The catch encloses only registered direct construction (and Type comparisons); unsupported-Type ArgumentException, SetParameter, Initialize and frame mutations remain outside it. No further blocking regression found in this slice. Fixed tip merged with `--no-ff` as `f721b9bc075df03772a1eb1900e0700301053289`. See [fresh integration evidence and remaining gates](integration-aot-navigation-constructor.md). The original review and its rejected candidate evidence below are retained verbatim as historical findings, not the current merge decision. Full AOT adoption and actual WinUI first navigation remain unaccepted.
 
 2026-10-31. Reviewed candidate `d58342cbe0d4a391b90aa159d9192c80afbc6f3a` against parent `8994fed85c6f55c5c93dab30e2069a99d70ad608` on `feat/performance-45`. Candidate source checkout: `C:/Users/hp/.t3/worktrees/Bili.Copilot/t3-f02c3f07`. Input acceptance report: `docs/performance-acceptance/aot-navigation-constructor-contract.md` at candidate SHA. No child agents. Writes confined to ignored parent `artifacts/navigation-review`.
 
