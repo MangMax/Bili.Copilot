@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Collections.ObjectModel;
 using BiliCopilot.UI.Controls;
@@ -8,6 +8,7 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.ViewModels.View;
+using Microsoft.UI.Dispatching;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Richasy.BiliKernel.Bili.Media;
@@ -26,11 +27,13 @@ namespace BiliCopilot.UI.Tests;
 /// </remarks>
 public sealed class RecommendationRefreshScrollTests : IDisposable
 {
+    private static DispatcherQueue Dispatcher => (DispatcherQueue)NavigationTestServices.Current.Value![typeof(DispatcherQueue)];
     public RecommendationRefreshScrollTests()
     {
         NavigationTestServices.Settings.Value = new();
         NavigationTestServices.Current.Value = new()
         {
+            [typeof(DispatcherQueue)] = new DispatcherQueue(),
             [typeof(ILogger<VideoPartitionDetailViewModel>)] = NullLogger<VideoPartitionDetailViewModel>.Instance,
         };
     }
@@ -280,7 +283,7 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
             offset == 0 ? (Enumerable.Range(0, count).Select(i => Video($"item-{i}")).ToArray(), 41) : ([], 41));
         var page = new PopularPageViewModel(service, NullLogger<PopularPageViewModel>.Instance);
         await page.InitializeCommand.ExecuteAsync(null);
-        PageTestServices.Dispatcher.Drain();
+        Dispatcher.Drain();
         Assert.Equal(count, page.Videos.Count);
         return page;
     }
@@ -291,7 +294,7 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
             offset == 0 ? (Enumerable.Range(0, count).Select(i => Video($"item-{i}")).ToArray(), 41) : ([], 41));
         var detail = new VideoPartitionDetailViewModel(new PartitionViewModel(Parent()), service);
         await detail.InitializeCommand.ExecuteAsync(null);
-        PageTestServices.Dispatcher.Drain();
+        Dispatcher.Drain();
         Assert.Equal(count, detail.Videos.Count);
         return detail;
     }

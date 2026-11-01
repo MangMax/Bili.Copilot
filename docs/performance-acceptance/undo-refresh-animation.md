@@ -112,3 +112,5 @@ The parent reproduced four lifecycle/clock-release failures by linking the real 
 Fresh boundary suite: **4 failed before / 4 passed after** (`HiddenAncestorStopsAnExistingShowOrHide` two cases, `FallbackShowStopsTheCapturedHideClock`, `PredicateReentryCannotOverwriteTheNewShow`). Fresh host UI suite: **591 passed / 0 failed**. Adapters assert state and Stop ownership, not actual WinUI timing or pixels. Raw receipts remain ignored under artifacts/undo-animation-boundary.
 
 The independent review supersedes the earlier remount claim: final DWM zero was not sampled. Historical AOT evidence is only the limited mixed-resource standalone host; no new AOT/native run or user package update was performed by the parent. Final production build is checked with the pending scroll integration.
+
+Combined parent production Release x64 JIT build (including viewport cancellation guards): exit 0, 0 warnings, 0 errors. Fresh visual/AOT qualification remains pending.

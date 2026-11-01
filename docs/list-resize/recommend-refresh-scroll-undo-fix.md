@@ -66,3 +66,17 @@ change=UndoRefresh found=True realized=9 offset=0 target=600 currentTop=-10140 i
 - 受控外部服务、单桌面/单窗口；不覆盖真实网络、登录态、多屏 DPI、动画打断全部组合。
 - 未扩大矩阵：只覆盖用户点名的 600→0→600、连续/后续刷新、初始顶部、queued reset 与真实按钮。
 - 未 push/PR/issue，未清理其它工作区，未操作用户既有身份或登录数据。
+
+## Parent corrective integration
+
+The parent integrated only the viewport mode/anchor changes while retaining f44c22aa undo snapshot versions, post-notification generation checks, per-mutation diff ownership, and short-page notification semantics. The two cancellation counterexamples reproduced with the exact parent kernel 62b376e: 2 failed / 1 passed.
+
+Restore now requires an active Capture/Changed pair, consumed once; Cancel clears that pair. The queued callback rechecks generation and IsLoaded after UpdateLayout and after item-transform reads. Cancelled work cannot acquire the new generation via a late Changed.
+
+Fresh full UI suite: **605 passed / 0 failed / 0 skipped**. The first combined run was 603/2: two setup failures expected 31 items but obtained zero before any scroll. The 11 scroll tests passed alone; their setup used the process-global PageTestServices.Dispatcher shared with other test classes. This fixture now registers its own dispatcher in the existing AsyncLocal service dictionary and drains that instance. No product loading logic was changed to accommodate the tests. The failed and corrected receipts remain ignored in artifacts/scroll-boundary-integration.
+
+The parent found producer raw records at t3-485a5725/artifacts/refresh-undo/real1, real2 and real3; each contains 8 kind=unhandled records. Thus those files are not universally missing, contrary to the review checkout's local availability. The parent has not independently reconstructed the entire historical source/module/pixel closure. The records lack stack information; exceptions remain unassigned and the strict native gate remains BLOCKED. The new combined tree has not run native/AOT. Do not reuse the producer's 20/20 claims as verification of this combination.
+
+No user-instance, package or dependency change. Test receipts/screenshots remain ignored, not tracked under docs.
+
+Parent combined production Release x64 JIT build: exit 0, 0 warnings, 0 errors. This is compilation only; native/AOT runtime gate remains pending.
