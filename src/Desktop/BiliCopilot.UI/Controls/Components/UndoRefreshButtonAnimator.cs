@@ -48,6 +48,15 @@ internal static class UndoRefreshButtonAnimator
         bool animate,
         Func<bool>? isStillHidden = null)
     {
+        // A hidden subtree may never deliver Completed: settle it before considering an existing transition.
+        if (!animate || (!shouldShow && (button.Visibility != Visibility.Visible || !IsEffectivelyVisible(button))))
+        {
+            Stop(button, opacity: 1);
+            button.Visibility = shouldShow ? Visibility.Visible : Visibility.Collapsed;
+            ResetScale(button);
+            return;
+        }
+
         var running = Running.TryGetValue(button, out var current) ? current : null;
 
         if (shouldShow)
@@ -84,14 +93,6 @@ internal static class UndoRefreshButtonAnimator
             // 淡入还没结束：让它停到 1 之后再淡出，避免中间值跳变。
             running.HideAfterShow = true;
             running.IsStillHidden = isStillHidden;
-            return;
-        }
-
-        if (!animate || button.Visibility != Visibility.Visible || !IsEffectivelyVisible(button))
-        {
-            button.Visibility = Visibility.Collapsed;
-            button.Opacity = 1;
-            ResetScale(button);
             return;
         }
 
@@ -168,16 +169,26 @@ internal static class UndoRefreshButtonAnimator
         var transition = new RunningTransition(storyboard, hiding: true);
         storyboard.Completed += (_, _) =>
         {
-            if (!Take(button, transition))
+            if (!Running.TryGetValue(button, out var current) || !ReferenceEquals(current, transition))
             {
                 return;
             }
 
-            if (isStillHidden?.Invoke() is false)
+            // The predicate can synchronously replace/cancel this transition.
+            var stillHidden = isStillHidden?.Invoke() is not false;
+            if (!Take(button, transition))
             {
-                // 淡出期间可能又刷新成功，撤销入口重新需要显示，此时不能再隐藏。
-                Stop(button, opacity: 1);
-                Show(button, animate: true);
+                storyboard.Stop();
+                return;
+            }
+
+            if (!stillHidden)
+            {
+                // Take removed the registration, so release the captured clock explicitly.
+                button.Opacity = 1;
+                storyboard.Stop();
+                ResetScale(button);
+                Show(button, animate: IsEffectivelyVisible(button));
                 return;
             }
 
