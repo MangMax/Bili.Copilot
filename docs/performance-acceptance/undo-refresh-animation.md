@@ -104,3 +104,11 @@ AOT 仅为自建非 MSIX UndoRefreshHarness：csproj 链接 AnimatorSource，并
 harness 源码存在 --activate 的 Window.Activate 路径；“无合成输入”与“曾激活窗口”可以同时成立。可确定红回亮录制在 18:29:57.553—18:30:00.567 +08:00，final green takeover 在 18:47:56.669—18:48:05.133 进程区间，AOT 区间如上；缺少其它实验的对齐原始时段，无法判断是否重叠，不擅自认定污染。当前 fa1a5e1f 独享桌面，本 review 未占用；进一步真实源码/隐藏祖先复验须由父任务安排下一槽。
 
 结论：Standards 0 项硬性违规；Spec 有 P1 guard 阻断及 P2 HoldEnd 释放缺口。建议先修 guard、补定向生命周期验证，修正 remount/591/AOT 的证据表述后再决定采用；允许采用单 animator 与正常 HoldEnd 设计思路，不批准完整验收结论。
+
+## Parent follow-up (not native visual qualification)
+
+The parent reproduced four lifecycle/clock-release failures by linking the real animator source against minimal XAML animation adapters. Moved the nonanimated/hidden-ancestor terminal path before existing-transition handling, stopping the previous clock. Hide completion now evaluates the external predicate while transition identity is still registered, rechecks that identity after reentry, and explicitly stops its captured HoldEnd before a fallback show.
+
+Fresh boundary suite: **4 failed before / 4 passed after** (`HiddenAncestorStopsAnExistingShowOrHide` two cases, `FallbackShowStopsTheCapturedHideClock`, `PredicateReentryCannotOverwriteTheNewShow`). Fresh host UI suite: **591 passed / 0 failed**. Adapters assert state and Stop ownership, not actual WinUI timing or pixels. Raw receipts remain ignored under artifacts/undo-animation-boundary.
+
+The independent review supersedes the earlier remount claim: final DWM zero was not sampled. Historical AOT evidence is only the limited mixed-resource standalone host; no new AOT/native run or user package update was performed by the parent. Final production build is checked with the pending scroll integration.
