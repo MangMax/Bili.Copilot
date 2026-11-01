@@ -72,9 +72,11 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         }
 
         SelectedSortType = sortType;
+        SupersedePendingLoad();
 
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
         {
+            SupersedePendingLoad();
             _childPartitionArticleCache.Clear();
             Articles.Clear();
             _childPartitionOffsetCache.Clear();
@@ -97,8 +99,13 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
         }
 
+        SupersedePendingLoad();
+
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
         {
+            // 刷新必须以当前列表为准：清空集合的同时作废清空前发起的加载，
+            // 否则旧分页结果会在清空后追加回来，刷新看起来“没有生效”。
+            SupersedePendingLoad();
             Articles.Clear();
             await LoadArticlesAsync();
         });
@@ -126,9 +133,11 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         }
 
         CurrentPartition = partition;
+        SupersedePendingLoad();
 
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
         {
+            SupersedePendingLoad();
             Articles.Clear();
             if (IsRecommend && _recommendCache?.Count > 0)
             {
@@ -165,32 +174,58 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         }
 
         IsArticleLoading = true;
+        var generation = _listGeneration;
         if (_isRecommendPartition)
         {
-            await LoadRecommendPartitionArticlesAsync();
+            await LoadRecommendPartitionArticlesAsync(generation);
         }
         else if (_isHotPartition)
         {
-            await LoadHotPartitionArticlesAsync();
+            await LoadHotPartitionArticlesAsync(generation);
         }
         else if (IsRecommend)
         {
-            await LoadRecommendArticlesAsync();
+            await LoadRecommendArticlesAsync(generation);
         }
         else
         {
-            await LoadChildPartitionArticlesAsync();
+            await LoadChildPartitionArticlesAsync(generation);
+        }
+
+        // 加载期间列表已被刷新、切换分区或切换排序作废时，这一批结果不能
+        // 再驱动当前列表的加载态或追加事件。
+        if (generation != _listGeneration)
+        {
+            return;
         }
 
         IsArticleLoading = false;
         ArticleListUpdated?.Invoke(this, EventArgs.Empty);
     }
 
-    private async Task LoadRecommendArticlesAsync()
+    /// <summary>
+    /// 作废进行中的加载，并把加载态交还给随后发起的新请求.
+    /// </summary>
+    /// <remarks>
+    /// 切换排序、切换子分区和刷新都会替换当前列表。旧请求返回后只能被丢弃，
+    /// 不能继续追加条目、写回分页偏移或关闭新请求的加载态。
+    /// </remarks>
+    private void SupersedePendingLoad()
+    {
+        _listGeneration++;
+        IsArticleLoading = false;
+    }
+
+    private async Task LoadRecommendArticlesAsync(int generation)
     {
         try
         {
             var (articles, offset) = await _service.GetPartitionArticlesAsync(CurrentPartition.Data, ArticleSortType.Default, _recommendOffset);
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
             _recommendOffset = offset;
             TryAddArticles(articles);
         }
@@ -200,18 +235,24 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         }
     }
 
-    private async Task LoadChildPartitionArticlesAsync()
+    private async Task LoadChildPartitionArticlesAsync(int generation)
     {
         try
         {
+            var partitionId = CurrentPartition.Data.Id;
             var pn = 0;
-            if (_childPartitionOffsetCache.TryGetValue(CurrentPartition.Data.Id, out var offsetCache))
+            if (_childPartitionOffsetCache.TryGetValue(partitionId, out var offsetCache))
             {
                 pn = offsetCache;
             }
 
             var (articles, nextPn) = await _service.GetPartitionArticlesAsync(CurrentPartition.Data, SelectedSortType, pn);
-            _childPartitionOffsetCache[CurrentPartition.Data.Id] = nextPn;
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
+            _childPartitionOffsetCache[partitionId] = nextPn;
             TryAddArticles(articles);
         }
         catch (Exception ex)
@@ -220,7 +261,7 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         }
     }
 
-    private async Task LoadHotPartitionArticlesAsync()
+    private async Task LoadHotPartitionArticlesAsync(int generation)
     {
         try
         {
@@ -233,6 +274,11 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
                 articles.AddRange(d);
             }
 
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
             articles = articles.OrderByDescending(p => p.PublishDateTime).Distinct().ToList();
             TryAddArticles(articles);
         }
@@ -241,14 +287,22 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             _logger.LogError(ex, "尝试加载热门专栏分区时出错.");
         }
 
-        _preventLoadMore = true;
+        if (generation == _listGeneration)
+        {
+            _preventLoadMore = true;
+        }
     }
 
-    private async Task LoadRecommendPartitionArticlesAsync()
+    private async Task LoadRecommendPartitionArticlesAsync(int generation)
     {
         try
         {
             var (articles, _, offset) = await _service.GetRecommendArticlesAsync(_recommendOffset);
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
             _recommendOffset = offset;
             TryAddArticles(articles);
         }
