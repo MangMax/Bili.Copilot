@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -74,6 +74,25 @@ public sealed class ArticleRefreshGenerationTests : IDisposable
         Assert.Equal(
             new[] { "fresh-page", "next-page" },
             detail.Articles.Select(p => p.Data.Identifier.Id));
+    }
+
+    [Fact]
+    public async Task RefreshQueuedCallbackMustRestartAtZeroAfterInterleavedLoad()
+    {
+        var service = new Discovery();
+        var detail = new ArticlePartitionDetailViewModel(new PartitionViewModel(new Partition("_", "Recommend")), service);
+        detail.InitializeCommand.Execute(null);
+        _dispatcher.Drain();
+        Complete(service.Request(0), Article("initial"), 5);
+        detail.RefreshCommand.Execute(null);
+        var interleaved = detail.LoadArticlesCommand.ExecuteAsync(null);
+        service.Request(1).SetResult(([Article("interleaved")], null, 42));
+        await interleaved;
+        _dispatcher.Drain();
+        Assert.Equal(3, service.RequestedPages.Count);
+        // The interleaved load may use the previous cursor; the refresh must restart at zero.
+        Assert.Equal(0, service.RequestedPages[2]);
+        Complete(service.Request(2), Article("fresh"), 7);
     }
 
     private void Complete(
