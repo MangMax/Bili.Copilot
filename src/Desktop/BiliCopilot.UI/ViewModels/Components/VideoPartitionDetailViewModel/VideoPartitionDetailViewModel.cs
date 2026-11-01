@@ -100,7 +100,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         IsVideoLoading = false;
 
         // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
-        RecommendationListChanging?.Invoke(true);
+        RecommendationListChanging?.Invoke(RecommendationListChange.UndoRefresh);
         RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
 
         for (var i = 0; i < snapshot.Items.Count; i++)
@@ -255,7 +255,9 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
                 isIncremental);
 
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
-            RecommendationListChanging?.Invoke(false);
+            // 增量刷新把新内容插在顶部，完成后回到顶部才能看到它们；非增量刷新保持原有视口语义。
+            RecommendationListChanging?.Invoke(
+                isIncremental ? RecommendationListChange.ResetToTop : RecommendationListChange.PreserveVisibleCard);
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
             RecommendationListChanged?.Invoke(this, EventArgs.Empty);
 

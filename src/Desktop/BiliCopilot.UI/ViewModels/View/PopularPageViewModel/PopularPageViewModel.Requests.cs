@@ -63,7 +63,9 @@ public sealed partial class PopularPageViewModel
                 isIncremental);
 
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
-            RecommendationListChanging?.Invoke(false);
+            // 增量刷新把新内容插在顶部，完成后回到顶部才能看到它们；非增量刷新保持原有视口语义。
+            RecommendationListChanging?.Invoke(
+                isIncremental ? RecommendationListChange.ResetToTop : RecommendationListChange.PreserveVisibleCard);
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
             RecommendationListChanged?.Invoke(this, EventArgs.Empty);
 
