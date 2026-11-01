@@ -75,3 +75,13 @@ git -C externals/bili-kernel checkout t3/article-content-retry-cancellation
 - 未做 Native AOT 编译或运行验收；上表的“生产 Debug x64”只是普通构建，不等于 AOT，也不是实际运行。
 - 无网络真实文章采集、凭据或 URL/正文输出；原始日志、TRX 与临时构建仅在 ignored `artifacts/`。
 - 维持有界 3 次 / 200ms 重取，不做浏览器兜底、无上限重试或静默空成功。
+
+## Parent HTTP boundary correction and integration
+
+Independent review reproduced two failures and one default-behavior pass. The parent reran those same cases before changing code: 2 failed / 1 passed. Restored the public `GetStringAsync(HttpRequestMessage, CancellationToken)` entry; it forwards to a nonoptional three-argument overload, avoiding optional-overload ambiguity. A using scope now releases the response/content on both successful reads and EnsureSuccessStatusCode failures. Added two successful-disposal cases, one per ensureSuccess setting.
+
+Final kernel: `496728dd54f7d1c80c764c2dd8a4f9b68e12876b`. `kernel-content-final.bundle` includes b56f0d8, cb659e9 and the HTTP correction; prerequisite is `62b376e` from the existing article-final bundle. Ref `refs/heads/integration/article-content-final`; SHA256 `A7C1805168BC819F042305D6B72D144D85AAEE1FC4CF63AE6CB4E4C00366AA22`. Bundle verification passed; no remote publication.
+
+Fresh exact-kernel suite: **32 passed / 0 failed** (original 27 + five HTTP boundary cases). Fresh combined application UI suite: **611 passed / 0 failed**. Earlier independent animator boundary suite remains separate (4 passed); do not sum these as one suite. Raw TRX/logs remain ignored in artifacts/article-http-integration.
+
+The parent adopts this kernel gitlink and the reviewed application cancellation/page changes. No new production GUI build, Native AOT or WebView run was performed in this integration: avoid heavy background compilation during the active Win2D frame experiment. These validations remain pending. Installed AotDev 2.2611.1.4 is unchanged and does not contain this candidate.
