@@ -33,9 +33,13 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         AI = ai;
     }
 
-    [RelayCommand]
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task InitializeAsync(ArticleIdentifier article)
     {
+        // 阅读器视图模型是单例，快速连续打开不同文章时会有多次加载并行。
+        // 每次加载记下代次，只有最后一次的结果可以写入页面，避免旧请求
+        // 在新文章已经打开后仍把标题、头像或正文改回去。
+        var generation = ++_contentGeneration;
         Title = article.Title;
         Content = default;
         IsLoading = true;
@@ -45,7 +49,13 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         CommentModule.Initialize(article.Id, Richasy.BiliKernel.Models.CommentTargetType.Article, Richasy.BiliKernel.Models.CommentSortType.Hot);
         try
         {
-            Content = await _discoveryService.GetArticleContentAsync(article);
+            var content = await _discoveryService.GetArticleContentAsync(article);
+            if (generation != _contentGeneration)
+            {
+                return;
+            }
+
+            Content = content;
             AI.InjectArticleAsync(Content);
             InitializeUser();
             InitializeStats();
@@ -53,10 +63,16 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加载文章内容时失败");
+            if (generation == _contentGeneration)
+            {
+                _logger.LogError(ex, "加载文章内容时失败");
+            }
         }
 
-        IsLoading = false;
+        if (generation == _contentGeneration)
+        {
+            IsLoading = false;
+        }
     }
 
     [RelayCommand]

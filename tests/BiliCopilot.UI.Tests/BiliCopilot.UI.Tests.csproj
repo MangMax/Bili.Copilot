@@ -78,4 +78,11 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/DanmakuRendererType.cs" Link="Playback/DanmakuRendererType.cs" />
   </ItemGroup>
   <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Speed.cs" Link="Playback/PlayerViewModel.Speed.cs" /></ItemGroup>
+
+  <!-- Article list refresh and reader identity; adapters only supply the card item, comments/AI and OS surface. -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/ArticlePartitionDetailViewModel/*.cs" Link="Article/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/ArticleReaderPageViewModel/*.cs" Link="Article/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/ArticleCardStyle.cs" Link="Article/ArticleCardStyle.cs" />
+  </ItemGroup>
 </Project>
