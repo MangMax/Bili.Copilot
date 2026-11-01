@@ -14,11 +14,13 @@ internal sealed class RecommendationScrollAnchor(FrameworkElement root, Incremen
     private double _offset;
     private bool _hasOffset;
     private int _version;
+    private bool _capturePending;
     private RecommendationListChange _change;
 
     public void Capture(RecommendationListChange change)
     {
         ++_version;
+        _capturePending = true;
         _change = change;
         // Undo restores the pre-refresh viewport, not the current one. Keep the
         // offset recorded when the refresh started; after the reset the old card
@@ -41,6 +43,8 @@ internal sealed class RecommendationScrollAnchor(FrameworkElement root, Incremen
 
     public void Restore(object? sender, EventArgs args)
     {
+        if (!_capturePending) return;
+        _capturePending = false;
         var version = _version;
         var change = _change;
         var item = _item;
@@ -52,6 +56,7 @@ internal sealed class RecommendationScrollAnchor(FrameworkElement root, Incremen
         {
             if (version != _version || !root.IsLoaded) return;
             root.UpdateLayout();
+            if (version != _version || !root.IsLoaded) return;
             if (change != RecommendationListChange.PreserveVisibleCard)
             {
                 // Both reset and undo have an absolute target. Undo restores the offset
@@ -68,6 +73,7 @@ internal sealed class RecommendationScrollAnchor(FrameworkElement root, Incremen
             var card = Cards(root).FirstOrDefault(c => ReferenceEquals(c.ViewModel, item));
             if (card is null) return;
             var current = card.TransformToVisual(scroll).TransformPoint(new(0, 0)).Y;
+            if (version != _version || !root.IsLoaded) return;
             scroll.ScrollTo(scroll.HorizontalOffset, Math.Max(0, scroll.VerticalOffset + current - top),
                 new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
         });
@@ -76,6 +82,7 @@ internal sealed class RecommendationScrollAnchor(FrameworkElement root, Incremen
     public void Cancel()
     {
         ++_version;
+        _capturePending = false;
         _item = null;
         _hasOffset = false;
     }
