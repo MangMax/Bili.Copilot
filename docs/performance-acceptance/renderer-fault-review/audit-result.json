@@ -1,0 +1,147 @@
+{
+  "manifestEntriesVerified": 88,
+  "tests": {
+    "independentPanelReplay": {
+      "total": "12",
+      "executed": "12",
+      "passed": "12",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "archivedFresh577": {
+      "total": "577",
+      "executed": "577",
+      "passed": "577",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "archivedFinalPanel": {
+      "total": "12",
+      "executed": "12",
+      "passed": "12",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    }
+  },
+  "finalPanelSha256": "96547fb549b4bccbc7aa998dbe1ed9f57dadfa3fedcfefc7c9c04293d8923e7c",
+  "ilcDependencyReceipts": [
+    {
+      "dll": "Danmaku.Core.dll",
+      "dllSha256": "90671b115567f9ccb5c5a758fec4b479df24f073f5e6dcceb4e138c80d36ac4d",
+      "packageSha256": "a8869b0a71dd15a77cc0e78bda8f868bbdb8fe1492b8cbb552464b8ccdaf0983"
+    },
+    {
+      "dll": "Danmaku.Legacy.dll",
+      "dllSha256": "27d9ff048134adbe1d5b977596c7700ca511e0c47aea20b098352ff9a56532fa",
+      "packageSha256": "1225530d7522a54b7d264140f67393287bf8be44e2bfa862a8572cd2816e4c7d"
+    },
+    {
+      "dll": "Danmaku.Share.dll",
+      "dllSha256": "7586640e484b4582b2369679be08339c3656dc25cb645d96e6c8bd80121a2027",
+      "packageSha256": "d8c1614df393ad7cc3bc56eedae96dce61589ec8b74a7419c48a41221d306b12"
+    },
+    {
+      "dll": "Richasy.MpvKernel.WinUI.dll",
+      "dllSha256": "ce960e27ffb431669d768e7e83af21ed1f409ce0a31930f53fce568d93c7ea61",
+      "packageSha256": "916e00a1d49dddde35ffbb4e1ee321c64c0fc6422f6e0ac98a17250e67dc62ed"
+    }
+  ],
+  "final": {
+    "homePassed": 27,
+    "seekPassed": 31,
+    "seekFailed": 1,
+    "globalExceptions": 6,
+    "afterRetirementGlobalExceptions": 0,
+    "terminalLogCount": 1,
+    "exeSha256": "bd24de45f412142b79f66ff8d96fa1bf847a5516309ec51d6d3ca5cebef3c70b",
+    "exitCode": 0,
+    "werSeconds": 31.3456048,
+    "cleanup": {
+      "registrationAbsent": true,
+      "pid": 31476,
+      "utc": "2026-11-01T05:41:36.9654024Z",
+      "identity": "Mang.BiliCopilot.HomeRegression.T5df5.final",
+      "processAbsent": true
+    }
+  },
+  "verified": {
+    "homePassed": 27,
+    "seekPassed": 32,
+    "seekFailed": 0,
+    "globalExceptions": 6,
+    "afterRetirementGlobalExceptions": 0,
+    "terminalLogCount": 1,
+    "exeSha256": "5b7441bae0c8d0b0de11a0b7fbc37fa056213d6cf371b005e5dcea841128cc2f",
+    "exitCode": 0,
+    "werSeconds": 31.3795986,
+    "cleanup": {
+      "identity": "Mang.BiliCopilot.HomeRegression.T5df5.verified",
+      "processAbsent": true,
+      "registrationAbsent": true,
+      "utc": "2026-11-01T05:53:03.9271108Z",
+      "pid": 48252
+    }
+  },
+  "protectionArchivedVerdict": {
+    "packagesUnchangedDuringOwnedRuns": false,
+    "protectedProcessesBefore": [
+      {
+        "ProcessId": 47980,
+        "ExecutablePath": "C:\\Program Files\\WindowsApps\\Mang.BiliCopilot.AotDev_2.2611.1.2_x64__z90r5zjzw296g\\BiliCopilot.UI.exe",
+        "CreationDate": "2026-11-01T13:31:51.888194+08:00"
+      }
+    ],
+    "protectedProcessesAfter": [
+      {
+        "ProcessId": 47980,
+        "ExecutablePath": "C:\\Program Files\\WindowsApps\\Mang.BiliCopilot.AotDev_2.2611.1.2_x64__z90r5zjzw296g\\BiliCopilot.UI.exe",
+        "CreationDate": "2026-11-01T13:31:51.888194+08:00"
+      }
+    ],
+    "protectedProcess47980Preserved": true,
+    "missingProtectedRegistrations": [
+      "Mang.BiliCopilot.PerfAcceptance.Caa6a7be"
+    ],
+    "changedProtectedRegistrations": [],
+    "unchangedProtectedRegistrations": [
+      "Mang.BiliCopilot",
+      "Mang.BiliCopilot.AotDev"
+    ],
+    "attribution": "Unknown registration disappearance; this task removes only exact owned T5df5.final and T5df5.verified identities and matching layouts. No restoration or user-package action taken."
+  },
+  "readmeUtf8": false,
+  "readmeFirstLineGb18030": "# 弹幕终态隔离复验（父 ad4d17d3）"
+}
