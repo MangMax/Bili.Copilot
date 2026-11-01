@@ -1,0 +1,102 @@
+diff --git a/tests/BiliCopilot.UI.Tests/ArticleReaderLatestWinsTests.cs b/tests/BiliCopilot.UI.Tests/ArticleReaderLatestWinsTests.cs
+--- a/tests/BiliCopilot.UI.Tests/ArticleReaderLatestWinsTests.cs
++++ b/tests/BiliCopilot.UI.Tests/ArticleReaderLatestWinsTests.cs
+@@ -66,6 +66,84 @@ public sealed class ArticleReaderLatestWinsTests
+         Assert.Equal("1002", Assert.Single(ai.Injected).Identifier.Id);
+     }
+
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public async Task StaleFailureOrCancellationCannotFinishCurrentLoad(bool canceled)
++    {
++        var service = new Discovery();
++        var ai = new AIViewModel();
++        var vm = new ArticleReaderPageViewModel(
++            service,
++            new Operation(),
++            NullLogger<ArticleReaderPageViewModel>.Instance,
++            new CommentMainViewModel(),
++            ai);
++        var initialized = 0;
++        vm.ArticleInitialized += (_, _) => initialized++;
++
++        var first = new ArticleIdentifier("1001", "Article A", null, null);
++        var second = new ArticleIdentifier("1002", "Article B", null, null);
++
++        vm.InitializeCommand.Execute(first);
++        var firstTask = vm.InitializeCommand.ExecutionTask!;
++        Assert.Equal("Article A", vm.Title);
++
++        // The singleton reader command must start the second open while the
++        // first request is still in flight.
++        vm.InitializeCommand.Execute(second);
++        var secondTask = vm.InitializeCommand.ExecutionTask!;
++        Assert.Equal("Article B", vm.Title);
++        Assert.Equal(second, vm.Article);
++
++        // A late first response must not replace the second article.
++        service.Fail("1001", canceled);
++        await firstTask;
++        Assert.Null(vm.Content);
++        Assert.Equal("Article B", vm.Title);
++        Assert.Equal(second, vm.Article);
++        Assert.True(vm.IsLoading);
++        Assert.Equal(0, initialized);
++        Assert.Empty(ai.Injected);
++
++        service.Complete("1002", Detail(second));
++        await secondTask;
++
++        Assert.Equal("1002", vm.Content!.Identifier.Id);
++        Assert.Equal("Author 1002", vm.Author);
++        Assert.False(vm.IsLoading);
++        Assert.Equal(1, initialized);
++        Assert.Equal("1002", Assert.Single(ai.Injected).Identifier.Id);
++    }
++
++    [Fact]
++    public async Task LateSuccessCannotOverwriteAlreadyLoadedCurrentArticle()
++    {
++        var service = new Discovery();
++        var ai = new AIViewModel();
++        var vm = new ArticleReaderPageViewModel(service, new Operation(), NullLogger<ArticleReaderPageViewModel>.Instance, new CommentMainViewModel(), ai);
++        var initialized = 0;
++        vm.ArticleInitialized += (_, _) => initialized++;
++        var a = new ArticleIdentifier("A", "A", null, null);
++        var b = new ArticleIdentifier("B", "B", null, null);
++        var old = vm.InitializeCommand.ExecuteAsync(a);
++        var current = vm.InitializeCommand.ExecuteAsync(b);
++        service.Complete("B", Detail(b));
++        await current;
++        var content = vm.Content;
++        var author = vm.Author;
++        var avatar = vm.Avatar;
++        var likes = vm.LikeCount;
++        service.Complete("A", Detail(a));
++        await old;
++        Assert.Same(content, vm.Content);
++        Assert.Equal(author, vm.Author);
++        Assert.Equal(avatar, vm.Avatar);
++        Assert.Equal(likes, vm.LikeCount);
++        Assert.False(vm.IsLoading);
++        Assert.Equal(1, initialized);
++        Assert.Single(ai.Injected);
++    }
+     private static ArticleDetail Detail(ArticleIdentifier identifier)
+     {
+         var id = identifier.Id!;
+@@ -93,6 +171,7 @@ public sealed class ArticleReaderLatestWinsTests
+     {
+         private readonly Dictionary<string, TaskCompletionSource<ArticleDetail?>> _requests = new();
+
++        public void Fail(string id, bool canceled) { if (canceled) _requests[id].SetCanceled(); else _requests[id].SetException(new InvalidOperationException("stale")); }
+         public void Complete(string id, ArticleDetail detail) => _requests[id].SetResult(detail);
+
+         public Task<ArticleDetail?> GetArticleContentAsync(ArticleIdentifier identifier, CancellationToken cancellationToken = default)
+@@ -113,3 +192,5 @@ public sealed class ArticleReaderLatestWinsTests
+         public Task<(IReadOnlyList<ArticleInformation> RecommendArticles, int NextPageNumber)> GetPartitionArticlesAsync(Partition partition, ArticleSortType sortType, int pageNumber = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+     }
+ }
++
++
