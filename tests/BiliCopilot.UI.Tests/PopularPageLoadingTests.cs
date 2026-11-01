@@ -480,6 +480,46 @@ public sealed class PopularPageLoadingTests
         Assert.False(page.CanUndoRefresh);
     }
 
+
+    [Fact]
+    public async Task DisableThenReenableMustNotResurrectInFlightSnapshot()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        var pending = new TaskCompletionSource<(IReadOnlyList<VideoInformation>, long)>();
+        service.Recommend = _ => pending.Task;
+        var refresh = page.RefreshVideoCommand.ExecuteAsync(null);
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+        page.OnIncrementalRecommendRefreshChanged(false);
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        page.OnIncrementalRecommendRefreshChanged(true);
+        pending.SetResult(([Video("fresh")], 7));
+        await refresh;
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+        Assert.False(page.CanUndoRefresh);
+    }
+
+    [Fact]
+    public async Task SectionSwitchInsideListChangedMustNotPublishOldUndo()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        page.RecommendationListChanged += (_, _) => page.SelectSectionCommand.Execute(page.Sections[1]);
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+        Assert.Equal("Hot", Assert.Single(page.Videos).Data.BvId);
+        Assert.False(page.CanUndoRefresh);
+    }
+
     private sealed class DiscoveryService : IVideoDiscoveryService
     {
         public List<string> Requests { get; } = new();
