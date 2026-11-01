@@ -1,0 +1,132 @@
+diff --git a/src/Danmaku.Core/CoreExecutionBridge.cs b/src/Danmaku.Core/CoreExecutionBridge.cs
+index 08a4d9c..a029992 100644
+--- a/src/Danmaku.Core/CoreExecutionBridge.cs
++++ b/src/Danmaku.Core/CoreExecutionBridge.cs
+@@ -7,7 +7,7 @@ internal interface ICoreExecutionSurface
+     void Configure(DanmakuConfiguration config);
+     void SetPlayback(bool playing);
+     void SetTime(TimeSpan step, TimeSpan total);
+-    void BeginRebuild();
++    void BeginRebuild(uint target, TimeSpan total);
+     void AdvanceRebuild(TimeSpan step, TimeSpan total);
+     void EndRebuild();
+ }
+@@ -241,20 +241,15 @@ internal sealed class CoreExecutionBridge : IDisposable
+                         preparedTarget = target;
+                         targetConfiguration = revision;
+                         targetEpoch = stamp.Epoch;
+-                        render.BeginRebuild();
++                        render.BeginRebuild(target.Work.Target, tick.Total);
+                         try
+                         {
+-                            uint previous = 0;
+                             foreach (var item in target.Items)
+                             {
+                                 if (scheduler.ValidateSelection(target).HasValue) break;
+-                                var at = tick.Total + TimeSpan.FromMilliseconds((long)item.StartMs - target.Work.Target);
+-                                render.AdvanceRebuild(TimeSpan.FromMilliseconds(item.StartMs - previous), at);
+                                 render.Add(Layer(item.Mode), item);
+-                                render.AdvanceRebuild(TimeSpan.Zero, at);
+-                                previous = item.StartMs;
+                             }
+-                            render.AdvanceRebuild(TimeSpan.FromMilliseconds(target.Work.Target - previous), tick.Total);
++                            render.AdvanceRebuild(TimeSpan.Zero, tick.Total);
+                         }
+                         finally { render.EndRebuild(); }
+                     }
+diff --git a/src/Danmaku.Core/CoreRenderSurface.cs b/src/Danmaku.Core/CoreRenderSurface.cs
+index 850e8f3..c7ab542 100644
+--- a/src/Danmaku.Core/CoreRenderSurface.cs
++++ b/src/Danmaku.Core/CoreRenderSurface.cs
+@@ -34,7 +34,7 @@ internal sealed class CoreRenderSurface : ICoreOwnedSurface, ICoreSceneSurface,
+     internal void SetLayer(uint layer, bool value) { Verify(); renderer!.SetLayerRenderState(layer, value); }
+     internal void Clear() { Verify(); renderer!.Clear(); }
+     public void SetTime(TimeSpan step, TimeSpan now) { Verify(); elapsed = step; total = now; }
+-    public void BeginRebuild() { Verify(); renderer!.BeginRebuildOwned(); }
++    public void BeginRebuild(uint target, TimeSpan total) { Verify(); renderer!.BeginRebuildOwned(target, total); }
+     public void AdvanceRebuild(TimeSpan step, TimeSpan now) { Verify(); renderer!.AdvanceRebuildOwned(step, now); }
+     public void EndRebuild() { Verify(); renderer!.EndRebuildOwned(); }
+     public void ChangeScene(long scene) { Verify(); renderer!.Clear(); elapsed = total = TimeSpan.Zero; }
+diff --git a/src/Danmaku.Core/DanmakuDirectXRender.Owner.cs b/src/Danmaku.Core/DanmakuDirectXRender.Owner.cs
+index ceab086..87ecae1 100644
+--- a/src/Danmaku.Core/DanmakuDirectXRender.Owner.cs
++++ b/src/Danmaku.Core/DanmakuDirectXRender.Owner.cs
+@@ -7,12 +7,17 @@ internal sealed partial class DanmakuDirectXRender
+     private bool _rebuilding;
+     private uint _rebuildOrdinal;
+ 
+-    internal void BeginRebuildOwned()
++    private uint _rebuildTargetMs;
++    private TimeSpan _rebuildTotal;
++
++    internal void BeginRebuildOwned(uint target, TimeSpan total)
+     {
+         VerifyRenderOwner();
+         Clear();
+         _rebuilding = true;
+         _rebuildOrdinal = 0;
++        _rebuildTargetMs = target;
++        _rebuildTotal = total;
+     }
+     internal void AdvanceRebuildOwned(TimeSpan step, TimeSpan total)
+     {
+diff --git a/src/Danmaku.Core/DanmakuDirectXRender.cs b/src/Danmaku.Core/DanmakuDirectXRender.cs
+index a513495..bbf9ce1 100644
+--- a/src/Danmaku.Core/DanmakuDirectXRender.cs
++++ b/src/Danmaku.Core/DanmakuDirectXRender.cs
+@@ -110,6 +110,10 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
+         DanmakuYSlotManager ySlotManager = _renderLayerList[layerId].YSlotManager;
+         uint? ordinal = _rebuilding ? _rebuildOrdinal++ : null;
+ 
++        uint ageMs = _rebuilding ? _rebuildTargetMs - danmakuItem.StartMs : 0;
++        if (_rebuilding && (danmakuItem.Mode == DanmakuMode.Top || danmakuItem.Mode == DanmakuMode.Bottom)
++            && ageMs > (danmakuItem.DurationMs > 0 ? danmakuItem.DurationMs : DefaultBottomAndTopDurationMs)) return;
++
+         // 🚀 对象池优化：从对象池租用 RenderItem
+         DanmakuDirectXRenderItem? renderItem = null;
+         IDWriteTextLayout? textLayout = null;
+@@ -169,6 +173,12 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
+                 return;
+             }
+ 
++            // Preserve the actual native width and the renderer's asymmetric
++            // expiry boundaries; never assume a maximum text width or lifetime.
++            float distance = ageMs * AdjustRollingSpeedByWidth(_configState.RollingSpeed, renderItem.Width);
++            if (_rebuilding && ((danmakuItem.Mode == DanmakuMode.Rolling && distance > CanvasWidth + renderItem.Width * 1.2)
++                || (danmakuItem.Mode == DanmakuMode.ReverseRolling && distance >= CanvasWidth + renderItem.Width))) return;
++
+             renderItem.TextLayout = textLayout;
+             renderItem.TextFormat = textFormat!;
+             textLayout = null;  // 所有权转移到 renderItem
+@@ -199,13 +209,29 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
+                     break;
+             }
+ 
+-            renderItem.X = renderItem.StartX;
+-
+             if (_configState.AutoControlDensity && renderItem.Item.AllowDensityControl && !renderItem.NeedToReleaseYSlot)
+             {
+                 return;
+             }
+ 
++            renderItem.X = renderItem.StartX;
++            if (_rebuilding)
++            {
++                renderItem.FirstRenderTime = _rebuildTotal - TimeSpan.FromMilliseconds(ageMs);
++                renderItem.IsFirstRenderTimeSet = true;
++                if (danmakuItem.Mode == DanmakuMode.Rolling) renderItem.X -= distance;
++                if (danmakuItem.Mode == DanmakuMode.ReverseRolling) renderItem.X += distance;
++                bool release = danmakuItem.Mode == DanmakuMode.Rolling ? renderItem.X < CanvasWidth - renderItem.Width - 48
++                    : danmakuItem.Mode == DanmakuMode.ReverseRolling && renderItem.X > 48;
++                if (release && renderItem.NeedToReleaseYSlot)
++                {
++                    ySlotManager.ReleaseYSlot(renderItem.Id, (uint)renderItem.StartY);
++                    renderItem.NeedToReleaseYSlot = false;
++                }
++            }
++
++
++
+             lock (_renderLayerList[layerId].RenderList)
+             {
+                 // Prepared layout/geometry belong to this invocation; the old

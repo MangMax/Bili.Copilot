@@ -1,0 +1,8 @@
+[
+  "src\\Danmaku.Share\\Enums\\DanmakuAlignmentMode.cs",
+  "src\\Danmaku.Share\\Enums\\DanmakuFontSize.cs",
+  "src\\Danmaku.Share\\Enums\\DanmakuMode.cs",
+  "src\\Danmaku.Share\\Enums\\DanmakuPool.cs",
+  "src\\Danmaku.Share\\Models\\DanmakuDefaultLayerDef.cs",
+  "src\\Danmaku.Share\\Models\\DanmakuItem.cs"
+]
