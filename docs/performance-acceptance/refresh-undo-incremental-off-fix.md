@@ -147,3 +147,15 @@ dotnet test $project --no-build --filter "($filter)&FullyQualifiedName!~DisableT
 | 500ms 调度、卸载延迟、视口补页 | `ThreeRemountsRejectOldDelaysAndAcceptCurrentDelay`、`ShortPagesFillViewportThenScrollAndResizeContinueUntilLastPage` 通过；仅 headless 适配层行为 |
 
 两轴结论：Standards 0 项新增硬性问题；Spec 2 项，其中 P1 为本次失效契约遗漏，P2 为既有同步重入缺口。真实 UI 验收仍未执行。
+
+## Parent corrective integration
+
+The parent reproduced all three independent counterexamples (3 failed). Added a separate undo-snapshot version: invalidation advances it, and a request may publish its captured snapshot only while this version still matches. This deliberately does not discard the refreshed content when the setting changes.
+
+Refresh and Undo now recheck list ownership across Changing/Changed notifications. Diff application accepts an optional ownership predicate and stops subsequent collection mutations after notification reentry invalidates the caller. The original callers remain unchanged. Added Changing and collection-notification variants to the section-switch regression.
+
+Fresh Release UI suite: **590 passed, 0 failed, 0 skipped**, including the two DisableThenReenable counterexamples and all three SectionSwitchInsideListChanged boundaries. Raw TRX/logs remain in ignored `artifacts/refresh-mode-integration/`; no temporary evidence is added to Git.
+
+Production Release JIT build verification is recorded below after completion. No desktop/AOT execution by the parent; the candidate's AOT publish remains historical and does not cover these follow-up guards. The installed user package is unchanged. Return-to-top/precise undo viewport and full animation remain separate active tasks.
+
+Parent production Release x64 JIT build: exit 0, one existing protobuf unused-import warning, zero errors. No UI/AOT run or package update.
