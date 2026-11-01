@@ -123,3 +123,12 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -p:Platform=x64 -c
 ```
 
 红态复放：把两个视图模型目录临时还原为 `HEAD` 版本后重跑同一筛选；不要同时改动测试文件。
+
+## 交付状态
+
+* 实现提交 `138af2b9`，随后合入最新本地父 `feat/performance-45`（`af46c3ea`，已含
+  `4ca81f88` 头像修复及其独立审查），合并后全量测试 **579 passed / 0 failed**、
+  生产工程 Debug x64 **0 warning / 0 error** 均重新验证。
+* 未 push、未开 PR/issue；kernel 仍为 `0ae5e4e`，gitlink 未变；未启动或操作任何用户实例。
+* 本区是独立实现证据，不是独立审查结论；父级对头像整对象/内部绑定与本次两个视图模型修复
+  仍应分别复核。
