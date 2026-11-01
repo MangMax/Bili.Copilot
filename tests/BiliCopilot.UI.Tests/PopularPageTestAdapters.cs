@@ -47,12 +47,22 @@ namespace Microsoft.UI.Dispatching
         public override void Post(SendOrPostCallback callback, object? state) => _pending.Enqueue(() => callback(state));
     }
 }
+namespace BiliCopilot.UI
+{
+    /// <summary>
+    /// Mirrors the production <c>BiliCopilot.UI.Get&lt;T&gt;</c> extension so linked
+    /// view models resolve services through the adapter dictionary.
+    /// </summary>
+    public static class TestServiceLocator
+    {
+        public static T Get<T>(this object owner) => Toolkits.NavigationTestServices.Current.Value is { } services && services.TryGetValue(typeof(T), out var service) ? (T)service : (T)(object)Toolkits.PageTestServices.Dispatcher;
+    }
+}
 namespace BiliCopilot.UI.Toolkits
 {
     public static class PageTestServices
     {
         public static Microsoft.UI.Dispatching.DispatcherQueue Dispatcher { get; set; } = new();
-        public static T Get<T>(this object owner) => NavigationTestServices.Current.Value is { } services && services.TryGetValue(typeof(T), out var service) ? (T)service : (T)(object)Dispatcher;
     }
     public static class SettingsToolkit
     {
@@ -71,7 +81,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, LikeMessageMultipleDescription, LikeMessageSingleDescription } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
