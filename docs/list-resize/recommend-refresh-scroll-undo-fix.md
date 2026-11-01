@@ -51,7 +51,10 @@ change=UndoRefresh found=True realized=9 offset=0 target=600 currentTop=-10140 i
 
 ## AOT
 
-- 未改动 AOT/绑定/反射面；本轮真实运行是 JIT fixture。按父的离线 AOT 发布命令对修正后生产树执行 publish 的结果记入 `artifacts/refresh-undo/aot-publish/` 与本轮交接；未安装、未替换用户 AotDev。
+- 未改动 AOT/绑定/反射面；本轮真实运行是 JIT fixture。
+- 对修正后生产树执行离线 `dotnet publish`（Release/win-x64、`PublishAppxPackage=true`）：ILC 实际执行 `Generating native code` 并完成 native publish。`artifacts/refresh-undo/aot-publish/BiliCopilot.UI.exe` 为 x64 PE32+，CLR directory rva/size 均为 0，SHA256 `A3AF993630EA0829B896805F8434424E0FCA43C5653F5C19F174FA09D84D3346`，111,524,864 bytes；publish 输出不含 coreclr/hostfxr/hostpolicy/clrjit 或受管 `BiliCopilot.UI.dll`。
+- ILC 仍报告既有依赖面的 `MpvKernel`/`FluentIcons` `SymbolIcon.UseSegoeMetrics` will-always-throw 警告；本轮未新增或掩盖这些警告，也不归因于本补丁。
+- 随后的 MSIX 打包被项目目标拒绝并 exit 1：本工作区缺少未跟踪的 `Assets/libmpv/x64/libmpv-2.dll`（既有构建前置条件）。因此本轮没有可安装/可运行的 AOT 包，未安装、未替换用户 AotDev，也没有把 JIT 结果当作 AOT 运行。原始日志 `artifacts/refresh-undo/aot-publish.log`。
 
 ## 组合注意
 
