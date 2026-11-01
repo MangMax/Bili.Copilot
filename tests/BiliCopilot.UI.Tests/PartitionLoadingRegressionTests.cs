@@ -70,13 +70,68 @@ public sealed class PartitionLoadingRegressionTests : IDisposable
 
         Assert.Equal(new long[] { 0, 1, 0 }, service.Offsets);
         Assert.Equal(incremental ? new[] { "fresh", "original" } : new[] { "fresh" }, detail.Videos.Select(v => v.Data.Identifier.Id));
-        Assert.True(detail.CanUndoRefresh);
+        Assert.Equal(incremental, detail.CanUndoRefresh);
         detail.UndoRefreshCommand.Execute(null);
-        Assert.Same(original, Assert.Single(detail.Videos));
+        Assert.Equal(incremental ? "original" : "fresh", Assert.Single(detail.Videos).Data.Identifier.Id);
 
         SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, !incremental);
         await detail.RefreshCommand.ExecuteAsync(null);
-        Assert.Equal(incremental ? new[] { "fresh" } : new[] { "fresh", "original" }, detail.Videos.Select(v => v.Data.Identifier.Id));
+        Assert.Equal(new[] { "fresh" }, detail.Videos.Select(v => v.Data.Identifier.Id));
+    }
+
+    [Fact]
+    public async Task NonIncrementalRefreshReplacesListWithoutUndoAndNotifiesShrink()
+    {
+        var service = new Discovery();
+        var detail = new VideoPartitionDetailViewModel(new PartitionViewModel(Parent()), service);
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, true);
+        service.Fetch = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+            ([Video("a"), Video("b"), Video("c")], 3));
+        await detail.InitializeCommand.ExecuteAsync(null);
+        Assert.Equal(3, detail.Videos.Count);
+
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, false);
+        var updates = 0;
+        detail.VideoListUpdated += (_, _) => updates++;
+        service.Fetch = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("fresh")], 7));
+        await detail.RefreshCommand.ExecuteAsync(null);
+
+        Assert.Equal("fresh", Assert.Single(detail.Videos).Data.Identifier.Id);
+        Assert.False(detail.CanUndoRefresh);
+        Assert.Equal(1, updates);
+        detail.UndoRefreshCommand.Execute(null);
+        Assert.Equal("fresh", Assert.Single(detail.Videos).Data.Identifier.Id);
+
+        // 列表通知会驱动主体检查视口；真实加载命令必须从刷新后的游标继续。
+        service.Fetch = offset => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+            ([Video("more1"), Video("more2")], 8));
+        await detail.LoadVideosCommand.ExecuteAsync(null);
+        Assert.Equal(7, service.Offsets[^1]);
+        Assert.Equal(new[] { "fresh", "more1", "more2" }, detail.Videos.Select(v => v.Data.Identifier.Id));
+        Assert.Equal(2, updates);
+    }
+
+    [Fact]
+    public async Task DisablingIncrementalRefreshDropsCachedUndoSnapshots()
+    {
+        var service = new Discovery();
+        var page = new VideoPartitionPageViewModel(service, NullLogger<VideoPartitionPageViewModel>.Instance);
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, true);
+        await page.InitializeCommand.ExecuteAsync(null);
+        var detail = page.SelectedPartition!;
+        var original = Assert.Single(detail.Videos);
+        service.Fetch = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("fresh")], 7));
+        await detail.RefreshCommand.ExecuteAsync(null);
+        Assert.True(detail.CanUndoRefresh);
+        var refreshed = detail.Videos.ToArray();
+
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, false);
+        page.OnIncrementalRecommendRefreshChanged(false);
+
+        Assert.False(detail.CanUndoRefresh);
+        detail.UndoRefreshCommand.Execute(null);
+        Assert.Equal(refreshed, detail.Videos);
+        Assert.NotSame(original, detail.Videos[0]);
     }
 
     [Fact]
@@ -108,6 +163,7 @@ public sealed class PartitionLoadingRegressionTests : IDisposable
     public async Task SamePartitionEchoPreservesUndoSnapshot()
     {
         var service = new Discovery();
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, true);
         var page = new VideoPartitionPageViewModel(service, NullLogger<VideoPartitionPageViewModel>.Instance);
         await page.InitializeCommand.ExecuteAsync(null);
         var detail = page.SelectedPartition!;

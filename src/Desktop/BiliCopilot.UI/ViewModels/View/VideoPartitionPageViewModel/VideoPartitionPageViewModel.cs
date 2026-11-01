@@ -56,6 +56,29 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
         PartitionInitialized?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// 增量刷新设置变化时收敛已缓存分区的撤销状态.
+    /// </summary>
+    /// <param name="isIncremental">新的设置值.</param>
+    /// <remarks>
+    /// 分区详情视图模型按主分区缓存复用，关闭增量刷新后每个缓存实例都可能还留着旧撤销快照，
+    /// 因此逐个失效；仍在路上的刷新会在落地时重新读取设置。
+    /// </remarks>
+    internal void OnIncrementalRecommendRefreshChanged(bool isIncremental)
+    {
+        if (isIncremental)
+        {
+            return;
+        }
+
+        foreach (var detail in _partitionCache.Values)
+        {
+            detail.OnIncrementalRecommendRefreshChanged(false);
+        }
+
+        SelectedPartition?.OnIncrementalRecommendRefreshChanged(false);
+    }
+
     [RelayCommand]
     private void SelectPartition(PartitionViewModel partition)
     {
