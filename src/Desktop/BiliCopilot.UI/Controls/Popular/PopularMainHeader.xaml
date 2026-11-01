@@ -48,13 +48,19 @@
                 撤销入口的显示与淡出由 code-behind 驱动（UndoRefreshButtonAnimator）：
                 容器上不能套重排过渡，否则撤销折叠时刷新按钮的相对偏移变化，会被一并动画。
                 刷新按钮本身右对齐、撤销折叠时并不位移，因此这里不需要任何补位过渡。
+                出现和消失共用同一个动画控制器（淡入 + 轻微放大），XAML 上不再挂隐式动画，
+                否则组合层动画会和淡出同时写 Opacity。
             -->
             <Button
                 x:Name="UndoRefreshButton"
                 AutomationProperties.AutomationId="UndoRefreshButton"
                 AutomationProperties.Name="{extensions:Locale Name=UndoRefresh}"
                 Command="{x:Bind ViewModel.UndoRefreshCommand, Mode=OneWay}"
+                RenderTransformOrigin="0.5,0.5"
                 Visibility="Collapsed">
+                <Button.RenderTransform>
+                    <CompositeTransform />
+                </Button.RenderTransform>
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <ic:SymbolIcon
                         VerticalAlignment="Center"
@@ -63,17 +69,6 @@
                         Symbol="ArrowUndo" />
                     <TextBlock VerticalAlignment="Center" Text="{extensions:Locale Name=UndoRefresh}" />
                 </StackPanel>
-                <!--  出现时淡入并轻微放大；消失由 code-behind 的淡出接管。  -->
-                <animations:Implicit.ShowAnimations>
-                    <animations:OpacityAnimation
-                        From="0"
-                        To="1"
-                        Duration="0:0:0.18" />
-                    <animations:ScaleAnimation
-                        From="0.96"
-                        To="1"
-                        Duration="0:0:0.22" />
-                </animations:Implicit.ShowAnimations>
             </Button>
             <Button
                 AutomationProperties.AutomationId="RefreshRecommendButton"
