@@ -59,7 +59,9 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
     [RelayCommand]
     private void SelectPartition(PartitionViewModel partition)
     {
-        if (partition is null || partition.Data.Equals(SelectedPartition?.Data))
+        // ItemsView echoes the restored selection while the first request is pending.
+        // Compare the underlying partitions, not a Partition with its view-model wrapper.
+        if (partition is null || partition.Data.Equals(SelectedPartition?.Data.Data))
         {
             return;
         }
