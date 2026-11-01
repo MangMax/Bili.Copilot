@@ -1,0 +1,79 @@
+{
+  "version": "0.0.1-seekd1fc.20261101.2",
+  "regressions": {
+    "total": "44",
+    "executed": "44",
+    "passed": "44",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "probes": 13,
+  "nativeAssertions": 15,
+  "nativeMetrics": [
+    {
+      "kind": "visible-perf",
+      "engine": "Win2D",
+      "count": 300,
+      "callMs": 3.2413999999999987,
+      "readyMs": 107.18150000000003,
+      "gap": 59.88629999999998,
+      "mediaAcknowledgedToProgressMs": 6.721
+    },
+    {
+      "kind": "hide-during-rebuild",
+      "engine": "Win2D",
+      "count": 300,
+      "callMs": 0.8227000000000544
+    },
+    {
+      "kind": "visible-perf",
+      "engine": "Win2D",
+      "count": 12000,
+      "callMs": 3.2981999999997242,
+      "readyMs": 2354.9961999999996,
+      "gap": 40.674299999999675,
+      "mediaAcknowledgedToProgressMs": 5.415
+    },
+    {
+      "kind": "hide-during-rebuild",
+      "engine": "Win2D",
+      "count": 12000,
+      "callMs": 0.5183999999999287
+    },
+    {
+      "kind": "long-visible",
+      "engine": "Win2D",
+      "count": 12000,
+      "admissionMs": 1.0908,
+      "readyMs": 862.6344
+    },
+    {
+      "kind": "close-during-rebuild",
+      "engine": "Win2D",
+      "pending": true,
+      "elapsedMs": 151.8661
+    }
+  ],
+  "modules": {
+    "Danmaku.Core": "90671b115567f9ccb5c5a758fec4b479df24f073f5e6dcceb4e138c80d36ac4d",
+    "Danmaku.Legacy": "27d9ff048134adbe1d5b977596c7700ca511e0c47aea20b098352ff9a56532fa",
+    "Danmaku.Share": "7586640e484b4582b2369679be08339c3656dc25cb645d96e6c8bd80121a2027"
+  },
+  "wer": {
+    "query": "2026-11-01T04:21:53.8049876Z",
+    "matches": [],
+    "applicationLogReadable": true,
+    "secondsAfterExit": 31.0239445
+  }
+}

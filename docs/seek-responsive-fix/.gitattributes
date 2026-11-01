@@ -1,0 +1,7 @@
+* -text whitespace=cr-at-eol
+*.patch whitespace=cr-at-eol,-blank-at-eol
+*.bundle binary
+*.nupkg binary
+*.snupkg binary
+*.zip binary
+OfflineAcceptance.cs whitespace=cr-at-eol,-blank-at-eof

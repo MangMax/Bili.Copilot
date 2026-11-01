@@ -1,0 +1,26 @@
+[
+  {
+    "path": "candidate-feed/Danmaku.Core.0.0.1-seekd1fc.20261101.2.nupkg",
+    "sha256": "a8869b0a71dd15a77cc0e78bda8f868bbdb8fe1492b8cbb552464b8ccdaf0983"
+  },
+  {
+    "path": "candidate-feed/Danmaku.Core.0.0.1-seekd1fc.20261101.2.snupkg",
+    "sha256": "c24f30e795c3713d351101cfe98214c7bf77384f8a0bc5cbee942e366e942382"
+  },
+  {
+    "path": "candidate-feed/Danmaku.Legacy.0.0.1-seekd1fc.20261101.2.nupkg",
+    "sha256": "1225530d7522a54b7d264140f67393287bf8be44e2bfa862a8572cd2816e4c7d"
+  },
+  {
+    "path": "candidate-feed/Danmaku.Legacy.0.0.1-seekd1fc.20261101.2.snupkg",
+    "sha256": "b913e770ea22be32c80d5135209c7eb05e25aa3b3c3b47708dafb6725756ae4d"
+  },
+  {
+    "path": "candidate-feed/Danmaku.Share.0.0.1-seekd1fc.20261101.2.nupkg",
+    "sha256": "d8c1614df393ad7cc3bc56eedae96dce61589ec8b74a7419c48a41221d306b12"
+  },
+  {
+    "path": "candidate-feed/Danmaku.Share.0.0.1-seekd1fc.20261101.2.snupkg",
+    "sha256": "e57139d319d86d2a78240237017686c02b3ef13f66b7e6699e51f909ac7c6207"
+  }
+]

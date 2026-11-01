@@ -1,0 +1,572 @@
+{
+  "candidate": "0.0.1-seek870b.20261101.5",
+  "runs": {
+    "baseline-exact": {
+      "assertions": 46,
+      "failed": [
+        "VisibleMediaSeekResponsive",
+        "VisibleHeartbeatResponsive",
+        "VisibleMediaSeekResponsive",
+        "VisibleHeartbeatResponsive",
+        "LongTimelineResponsive"
+      ],
+      "metrics": [
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 467.7431,
+          "readyMs": 469.6032,
+          "gap": 472.73389999999995,
+          "mediaAcknowledgedToProgressMs": 469.22700000000003
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 0.4653000000000702
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 6628.2474,
+          "readyMs": 6630.382,
+          "gap": 6658.152700000001,
+          "mediaAcknowledgedToProgressMs": 6652.625
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 1.2919000000001688
+        },
+        {
+          "kind": "long-visible",
+          "engine": "Win2D",
+          "count": 12000,
+          "admissionMs": 16438.9321,
+          "readyMs": 16490.6001
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "Win2D",
+          "pending": false,
+          "elapsedMs": 147.0871
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 2.546199999999999,
+          "readyMs": 45.635400000000004,
+          "gap": 30.605900000000005
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 0.3302999999999656
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 1.6375000000000455,
+          "readyMs": 455.7807,
+          "gap": 32.03410000000008
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 0.22010000000000218
+        },
+        {
+          "kind": "long-visible",
+          "engine": "DirectX",
+          "count": 12000,
+          "admissionMs": 1.0066,
+          "readyMs": 436.5655
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "DirectX",
+          "pending": true,
+          "elapsedMs": 233.8955
+        }
+      ]
+    },
+    "candidate3": {
+      "assertions": 42,
+      "failed": [
+        "HiddenDenseListNotSubmitted",
+        "DelayedHiddenListNotSubmitted"
+      ],
+      "metrics": [
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 1.4570000000000078,
+          "readyMs": 37.760300000000015,
+          "gap": 30.525599999999997,
+          "mediaAcknowledgedToProgressMs": 3.245
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 0.865099999999984
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 1.4474999999997635,
+          "readyMs": 1398.0369,
+          "gap": 58.38299999999981,
+          "mediaAcknowledgedToProgressMs": 2.665
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 1.1772000000000844
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 1.3644000000000034,
+          "readyMs": 13.528400000000005,
+          "gap": 30.325699999999983,
+          "mediaAcknowledgedToProgressMs": 2.617
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 0.18779999999998154
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 1.6720000000000255,
+          "readyMs": 655.2629999999999,
+          "gap": 31.34120000000007,
+          "mediaAcknowledgedToProgressMs": 3.146
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 0.2763999999997395
+        }
+      ]
+    },
+    "coverage": {
+      "assertions": 0,
+      "failed": [],
+      "metrics": []
+    },
+    "coverage2": {
+      "assertions": 50,
+      "failed": [],
+      "metrics": [
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 2.5281999999999982,
+          "readyMs": 55.1173,
+          "gap": 38.6644,
+          "mediaAcknowledgedToProgressMs": 4.39
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 0.34170000000005984
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 6.599700000000212,
+          "readyMs": 1519.0628000000002,
+          "gap": 71.57430000000022,
+          "mediaAcknowledgedToProgressMs": 9.106
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 1.5016000000005079
+        },
+        {
+          "kind": "long-visible",
+          "engine": "Win2D",
+          "count": 12000,
+          "admissionMs": 0.8048,
+          "readyMs": 698.1654
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "Win2D",
+          "pending": true,
+          "elapsedMs": 122.1299
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 7.379400000000004,
+          "readyMs": 33.5424,
+          "gap": 30.408800000000014,
+          "mediaAcknowledgedToProgressMs": 8.465
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 0.19839999999999236
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 1.4243999999999915,
+          "readyMs": 1043.8664,
+          "gap": 31.798999999999978,
+          "mediaAcknowledgedToProgressMs": 2.195
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 0.3524000000002161
+        },
+        {
+          "kind": "long-visible",
+          "engine": "DirectX",
+          "count": 12000,
+          "admissionMs": 0.5993,
+          "readyMs": 69.4443
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "DirectX",
+          "pending": true,
+          "elapsedMs": 93.863
+        }
+      ]
+    },
+    "final": {
+      "assertions": 46,
+      "failed": [],
+      "metrics": [
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 1.737099999999998,
+          "readyMs": 40.43599999999999,
+          "gap": 41.265400000000014,
+          "mediaAcknowledgedToProgressMs": 4.665
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 0.4510999999999967
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 1.3421000000000731,
+          "readyMs": 1360.3343000000002,
+          "gap": 45.92399999999998,
+          "mediaAcknowledgedToProgressMs": 2.935
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 1.9632999999994354
+        },
+        {
+          "kind": "long-visible",
+          "engine": "Win2D",
+          "count": 12000,
+          "admissionMs": 0.6905,
+          "readyMs": 596.8603
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "Win2D",
+          "pending": true,
+          "elapsedMs": 104.4538
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 2.1459000000000117,
+          "readyMs": 30.2436,
+          "gap": 26.457499999999996
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 0.17240000000003874
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 1.6014000000000124,
+          "readyMs": 870.4521,
+          "gap": 37.20040000000017
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 0.18679999999994834
+        },
+        {
+          "kind": "long-visible",
+          "engine": "DirectX",
+          "count": 12000,
+          "admissionMs": 0.6892,
+          "readyMs": 66.7053
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "DirectX",
+          "pending": true,
+          "elapsedMs": 101.8065
+        }
+      ]
+    },
+    "green": {
+      "assertions": 0,
+      "failed": [],
+      "metrics": []
+    },
+    "red": {
+      "assertions": 0,
+      "failed": [],
+      "metrics": []
+    },
+    "supplement": {
+      "assertions": 10,
+      "failed": [
+        "HiddenLongTimelineRecordsLatest"
+      ],
+      "metrics": []
+    },
+    "visible-baseline": {
+      "assertions": 46,
+      "failed": [],
+      "metrics": [
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 3.3318999999999903,
+          "readyMs": 125.0059,
+          "gap": 80.1009,
+          "mediaAcknowledgedToProgressMs": 9.178
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 0.6301999999999452
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 2.2925999999997657,
+          "readyMs": 2029.7023,
+          "gap": 53.02149999999983,
+          "mediaAcknowledgedToProgressMs": 5.178999999999999
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 0.2903999999998632
+        },
+        {
+          "kind": "long-visible",
+          "engine": "Win2D",
+          "count": 12000,
+          "admissionMs": 0.994,
+          "readyMs": 933.1894
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "Win2D",
+          "pending": true,
+          "elapsedMs": 152.9898
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 2.7524999999999977,
+          "readyMs": 62.17309999999999,
+          "gap": 32.043899999999994
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 0.2296999999999798
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 2.532899999999927,
+          "readyMs": 576.2272,
+          "gap": 33.29939999999988
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 0.2031000000001768
+        },
+        {
+          "kind": "long-visible",
+          "engine": "DirectX",
+          "count": 12000,
+          "admissionMs": 0.7286,
+          "readyMs": 79.5522
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "DirectX",
+          "pending": true,
+          "elapsedMs": 106.5009
+        }
+      ]
+    },
+    "visible-red": {
+      "assertions": 46,
+      "failed": [],
+      "metrics": [
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 1.9887999999999977,
+          "readyMs": 72.34100000000001,
+          "gap": 31.6378,
+          "mediaAcknowledgedToProgressMs": 4.88
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 300,
+          "callMs": 0.3403000000000702
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 2.206500000000233,
+          "readyMs": 2022.9151000000006,
+          "gap": 132.9368000000004,
+          "mediaAcknowledgedToProgressMs": 4.454
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "Win2D",
+          "count": 12000,
+          "callMs": 0.32119999999940774
+        },
+        {
+          "kind": "long-visible",
+          "engine": "Win2D",
+          "count": 12000,
+          "admissionMs": 0.7003,
+          "readyMs": 901.1811
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "Win2D",
+          "pending": true,
+          "elapsedMs": 139.3759
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 3.4421999999999997,
+          "readyMs": 61.96049999999998,
+          "gap": 30.4366
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 300,
+          "callMs": 0.23099999999999454
+        },
+        {
+          "kind": "visible-perf",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 2.6848999999999705,
+          "readyMs": 607.739,
+          "gap": 31.620799999999917
+        },
+        {
+          "kind": "hide-during-rebuild",
+          "engine": "DirectX",
+          "count": 12000,
+          "callMs": 0.239100000000235
+        },
+        {
+          "kind": "long-visible",
+          "engine": "DirectX",
+          "count": 12000,
+          "admissionMs": 0.8438,
+          "readyMs": 66.3796
+        },
+        {
+          "kind": "close-during-rebuild",
+          "engine": "DirectX",
+          "pending": true,
+          "elapsedMs": 110.8904
+        }
+      ]
+    }
+  },
+  "regressions": {
+    "total": "44",
+    "executed": "44",
+    "passed": "44",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  }
+}

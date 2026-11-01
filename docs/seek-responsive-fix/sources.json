@@ -1,0 +1,10 @@
+{
+  "legacy": {
+    "base": "d7984643f4792133e7664c55e01df6e95e9cbc21",
+    "head": "15434adfee3c80032ca12ab4840bc36f54858f65"
+  },
+  "core": {
+    "base": "698d546e5c9edf5c96b6871357dc532542457c45",
+    "head": "e094d330a69dbedeba9b0260b6bb499391d643c4"
+  }
+}
