@@ -72,7 +72,8 @@ public sealed partial class ArticleReader : LayoutUserControlBase
     /// </summary>
     public void ClearContent()
     {
-        MainView?.CoreWebView2.NavigateToString(string.Empty);
+        // 快速返回时 WebView 可能还没完成初始化，CoreWebView2 仍为空。
+        MainView?.CoreWebView2?.NavigateToString(string.Empty);
         MainView?.Close();
     }
 
