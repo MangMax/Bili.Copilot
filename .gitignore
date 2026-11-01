@@ -369,3 +369,21 @@ tools/Prompt.txt
 src/Desktop/BiliCopilot.UI/Assets/WheelScrollService.exe
 src/Desktop/BiliCopilot.UI/Assets/WheelScrollService.dll
 src/Desktop/BiliCopilot.UI/Assets/WheelScrollService.runtimeconfig.json
+
+# Local performance/acceptance run output (reports and recovery packages stay tracked).
+docs/**/evidence*/
+docs/**/*-evidence/
+docs/**/*evidence*.zip
+docs/**/*.trx
+docs/**/*.jsonl
+docs/**/*.gz
+docs/**/*.log
+docs/**/*.bin
+docs/**/*.etl
+docs/**/*.nettrace
+docs/**/*.dmp
+docs/performance-acceptance/**/*.png
+docs/engine-61-design-draft/**/*.png
+docs/list-resize/**/*.png
+docs/seek-*/**/*.png
+docs/resize-*/**/*.png
