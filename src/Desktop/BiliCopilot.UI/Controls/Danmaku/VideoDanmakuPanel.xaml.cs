@@ -135,6 +135,15 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(ViewModel.IsShowDanmaku) && !ViewModel.IsShowDanmaku)
+        {
+            // Visibility is bound directly in XAML. Retire queued and active
+            // rebuilds; showing again reconstructs only the latest target.
+            _redrawSession.Invalidate();
+            _danmakuMaster?.Stop();
+            _danmakuRenderer?.Stop();
+        }
+
         if (e.PropertyName == nameof(ViewModel.Renderer))
         {
             // Renderer replacement and redraw share one dispatcher batch.
@@ -144,6 +153,11 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void OnRequestAddSingleDanmaku(object? sender, string e)
     {
+        if (!ViewModel.IsShowDanmaku)
+        {
+            return;
+        }
+
         var location = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuLocation, DanmakuLocation.Scroll);
         var color = AppToolkit.HexToColor(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuColor, Microsoft.UI.Colors.White.ToString()));
         var isStandardSize = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.IsDanmakuStandardSize, true);
@@ -194,8 +208,15 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         }
 
         _lastProgress = position;
+        // Keep the latest target in the view model while hidden. Showing the
+        // panel redraws from that target; hidden seeks must not rebuild history.
+        if (!ViewModel.IsShowDanmaku)
+        {
+            return;
+        }
+
         // Apply playback intent before reconstruction, including a newly mounted renderer.
-        if (ViewModel.IsPaused || !ViewModel.IsShowDanmaku)
+        if (ViewModel.IsPaused)
         {
             _danmakuRenderer?.Pause();
             _danmakuMaster?.Pause();
@@ -203,8 +224,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
         var milliseconds = Convert.ToUInt32(position * 1000d);
         _danmakuRenderer?.Seek(milliseconds);
-        // Legacy resets its cursor only; UpdateTime supplies the target's items.
-        // It cannot reconstruct the full active set originating before this target.
+        // UpdateTime continues Legacy's cursor after the explicit seek request.
         _danmakuMaster?.Seek(milliseconds);
         _danmakuMaster?.UpdateTime(milliseconds);
     }
@@ -231,15 +251,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void ResetDanmakuStyle()
     {
-        if (ViewModel is null)
+        if (ViewModel is null || !ViewModel.IsShowDanmaku)
         {
             return;
-        }
-
-        if (!ViewModel.IsShowDanmaku)
-        {
-            _danmakuRenderer?.Pause();
-            _danmakuMaster?.Pause();
         }
 
         if (_danmakuMaster != null)
@@ -274,6 +288,11 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void ResetSpeed()
     {
+        if (ViewModel is null || !ViewModel.IsShowDanmaku)
+        {
+            return;
+        }
+
         var finalSpeed = ViewModel.DanmakuSpeed * 5 * ViewModel.ExtraSpeed;
         _danmakuMaster?.SetRollingSpeed(finalSpeed);
         _danmakuRenderer?.UpdateConfiguration(new DanmakuConfiguration { RollingSpeedBase = (float)finalSpeed });
@@ -281,14 +300,14 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void Redraw()
     {
-        if (!_isActive || !IsLoaded || ViewModel is null)
+        if (!_isActive || !IsLoaded || ViewModel is null || !ViewModel.IsShowDanmaku)
         {
             return;
         }
 
         _redrawSession.Request(() =>
         {
-            if (!_isActive || !IsLoaded || ViewModel is null)
+            if (!_isActive || !IsLoaded || ViewModel is null || !ViewModel.IsShowDanmaku)
             {
                 return;
             }
@@ -325,7 +344,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void UpdateDanmakuTime(double pos)
     {
-        if (pos < 0 || double.IsNaN(pos))
+        if (pos < 0 || double.IsNaN(pos) || !ViewModel.IsShowDanmaku)
         {
             return;
         }
