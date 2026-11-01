@@ -24,8 +24,27 @@ with zipfile.ZipFile(blob) as archive:
         data = (feed / filename).read_bytes()
         assert sha(data) == ledger['files']['feed/' + filename], filename
         assert data == archive.read('feed/' + filename), filename
-        assert central.find(f'.//PackageVersion[@Include="{name}"]').attrib['Version'] == version
+        # Historical package bytes stay frozen; active pins are checked below.
         print(filename, sha(data))
+candidate = root / 'docs/seek-responsive-fix'
+version = '0.0.1-seekd1fc.20261101.2'
+for row in json.loads((candidate / 'packages.json').read_text(encoding='utf-8')):
+    original = (candidate / row['path']).read_bytes()
+    assert sha(original) == row['sha256']
+    if not row['path'].endswith('.nupkg'):
+        continue
+    filename = Path(row['path']).name
+    data = (feed / filename).read_bytes()
+    assert data == original, filename
+    with zipfile.ZipFile(feed / filename) as archive:
+        spec = ET.fromstring(archive.read(next(n for n in archive.namelist() if n.endswith('.nuspec'))))
+        name = spec.find('.//{*}id').text
+        assert spec.find('.//{*}version').text == version
+        assert central.find(f'.//PackageVersion[@Include="{name}"]').attrib['Version'] == version
+        for dep in spec.findall('.//{*}dependency'):
+            if dep.attrib['id'] == 'Danmaku.Share':
+                assert dep.attrib['version'] == version
+    print(filename, sha(data))
 config = ET.parse(root / 'nuget.config')
 assert config.find('.//packageSources/add[@key="danmaku-frozen"]').attrib['value'] == 'packages/danmaku'
 mapped = config.findall('.//packageSourceMapping/packageSource[@key="danmaku-frozen"]/package')

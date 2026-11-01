@@ -1,9 +1,22 @@
 # Frozen local Danmaku feed
 
-These three unpublished candidate packages are committed as their original bytes.
+The active three unpublished candidate packages are committed as their original bytes.
 The repository `nuget.config` uses this relative directory and maps the three exact
 package IDs here; all other package sources retain their existing eligibility.
 Do not rebuild or replace a package under the same version, or publish these packages.
+
+Active version: **0.0.1-seekd1fc.20261101.2** for Core, Legacy and Share.
+Original bytes and SHA256 are locked in [packages.json](../../docs/seek-responsive-fix/packages.json).
+Core source: `e094d330a69dbedeba9b0260b6bb499391d643c4`;
+Legacy/Share: `15434adfee3c80032ca12ab4840bc36f54858f65`.
+[Reviewed source recovery](../../docs/seek-responsive-fix/README.md) includes full Git bundles,
+patches, source snapshot and paired PDBs; copy the committed candidate-feed nupkg bytes
+into a missing feed path only after checking packages.json. Never overwrite an existing version.
+The fixed [independent review](../../docs/seek-responsive-review-d6d54b61/review.md)
+retains terminal failure propagation and possible repeated logging limitations.
+Dense Legacy ready remains slow; Core has no demonstrated gain in its short dense sample.
+
+Historical packages below remain byte-identical evidence, not active central pins.
 
 | Package | Version | nupkg SHA256 |
 | --- | --- | --- |
