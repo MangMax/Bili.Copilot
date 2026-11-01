@@ -41,7 +41,7 @@ public sealed partial class PopularMainHeader : PopularPageControlBase
         if (_subscribedViewModel is null) return;
         _subscribedViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         _subscribedViewModel = null;
-        UndoRefreshButtonAnimator.Apply(UndoRefreshButton, UndoRefreshButton.Visibility == Visibility.Visible, false);
+        UndoRefreshButtonAnimator.Cancel(UndoRefreshButton);
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

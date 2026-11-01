@@ -461,6 +461,47 @@ public sealed class PopularPageLoadingTests
     }
 
     [Fact]
+    public async Task UndoClickChangesVisibilityOnceAndRepeatedClicksCannotUndoAgain()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        var original = Assert.Single(page.Videos);
+        service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("fresh")], 7));
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        Assert.True(page.CanUndoRefresh);
+        var changes = new List<bool>();
+        page.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(PopularPageViewModel.CanUndoRefresh))
+            {
+                changes.Add(page.CanUndoRefresh);
+            }
+        };
+
+        // 快速重复点击：一次点击只换一次可见状态，后续点击在快照失效后必须是空操作。
+        page.UndoRefreshCommand.Execute(null);
+        page.UndoRefreshCommand.Execute(null);
+        page.UndoRefreshCommand.Execute(null);
+
+        Assert.Equal([false], changes);
+        Assert.Same(original, Assert.Single(page.Videos));
+        Assert.False(page.CanUndoRefresh);
+        long cursor = -1;
+        service.Recommend = offset =>
+        {
+            cursor = offset;
+            return Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([], offset));
+        };
+        await page.LoadVideosCommand.ExecuteAsync(null);
+        Assert.Equal(1, cursor);
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+    }
+
+    [Fact]
     public async Task PendingRefreshDoesNotBlockAnotherSectionOrPublishLateFailure()
     {
         var service = new DiscoveryService();
