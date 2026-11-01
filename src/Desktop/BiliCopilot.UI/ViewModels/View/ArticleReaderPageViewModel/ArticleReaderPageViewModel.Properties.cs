@@ -18,6 +18,15 @@ public sealed partial class ArticleReaderPageViewModel
     private readonly IArticleOperationService _operationService;
     private readonly ILogger<ArticleReaderPageViewModel> _logger;
 
+    /// <summary>
+    /// 文章内容加载的代次，每次初始化递增.
+    /// </summary>
+    /// <remarks>
+    /// 阅读器视图模型是单例，快速切换文章时可能有多次加载并行。旧代次的
+    /// 响应不得写入标题、作者、头像、正文或加载态。
+    /// </remarks>
+    private int _contentGeneration;
+
     [ObservableProperty]
     private bool _isLoading;
 
