@@ -504,7 +504,12 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         => SettingsToolkit.WriteLocalSetting(SettingNames.ShowSearchRecommend, value);
 
     partial void OnIncrementalRecommendRefreshChanged(bool value)
-        => SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, value);
+    {
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, value);
+        // 页面控件常驻、只切换可见性，收不到重新加载事件；关闭增量刷新时主动收敛撤销入口。
+        this.Get<PopularPageViewModel>().OnIncrementalRecommendRefreshChanged(value);
+        this.Get<VideoPartitionPageViewModel>().OnIncrementalRecommendRefreshChanged(value);
+    }
 
     partial void OnIsPopularNavVisibleChanged(bool value)
         => WriteNavVisibleSetting(typeof(PopularPage), value);

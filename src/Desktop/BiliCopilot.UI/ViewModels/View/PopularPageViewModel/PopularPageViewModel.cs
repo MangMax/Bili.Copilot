@@ -245,6 +245,28 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     }
 
     /// <summary>
+    /// 增量刷新设置变化时收敛撤销状态.
+    /// </summary>
+    /// <param name="isIncremental">新的设置值.</param>
+    /// <remarks>
+    /// 关闭增量刷新后，之前增量刷新留下的快照不再属于当前刷新模式，
+    /// 撤销入口必须立刻收起；仍在路上的刷新会在落地时重新读取设置，不会再把入口点亮。
+    /// </remarks>
+    internal void OnIncrementalRecommendRefreshChanged(bool isIncremental)
+    {
+        if (!isIncremental)
+        {
+            InvalidateUndoSnapshot();
+        }
+    }
+
+    private void InvalidateUndoSnapshot()
+    {
+        _recommendRefreshSnapshot = null;
+        CanUndoRefresh = false;
+    }
+
+    /// <summary>
     /// 清除撤销快照.
     /// </summary>
     /// <remarks>
@@ -253,8 +275,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     /// </remarks>
     private void ClearRefreshSnapshot()
     {
-        _recommendRefreshSnapshot = null;
-        CanUndoRefresh = false;
+        InvalidateUndoSnapshot();
         _refreshGeneration++;
         IsRecommendRefreshing = false;
     }
