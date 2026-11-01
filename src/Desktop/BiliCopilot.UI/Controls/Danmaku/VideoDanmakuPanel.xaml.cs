@@ -25,6 +25,61 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     private DanmakuRenderer? _danmakuRenderer;
     private DanmakuRenderViewModel? _subscribedViewModel;
     private bool _isActive;
+    private bool _rendererFailed;
+    private bool _rendererCleanupFailed;
+
+    // All renderer calls and retirement run on the panel's UI dispatcher.
+    // Only the published Legacy terminal protocol is handled here; validation
+    // and unrelated application exceptions retain their normal diagnostics.
+    private void WithRenderer(Action operation)
+    {
+        if (!DispatcherQueue.HasThreadAccess)
+        {
+            var viewModel = _subscribedViewModel;
+            var master = _danmakuMaster;
+            var renderer = _danmakuRenderer;
+            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+            {
+                if (_isActive && ReferenceEquals(viewModel, _subscribedViewModel)
+                    && ReferenceEquals(master, _danmakuMaster) && ReferenceEquals(renderer, _danmakuRenderer))
+                {
+                    WithRenderer(operation);
+                }
+            });
+            return;
+        }
+
+        if (_rendererFailed)
+        {
+            return;
+        }
+
+        if (_danmakuMaster?.WorkerFailure is { } failure)
+        {
+            RetireFailedRenderer(failure);
+            return;
+        }
+
+        try
+        {
+            operation();
+        }
+        catch (Exception error) when (_danmakuMaster?.WorkerFailure is { } cause
+            && (ReferenceEquals(error, cause)
+                || (error is InvalidOperationException && ReferenceEquals(error.InnerException, cause))))
+        {
+            RetireFailedRenderer(_danmakuMaster.WorkerFailure);
+        }
+    }
+
+    private void RetireFailedRenderer(Exception failure)
+    {
+        _rendererFailed = true;
+        _redrawSession.Invalidate();
+        this.Get<ILogger<VideoDanmakuPanel>>().LogError(failure,
+            "Danmaku renderer failed and was retired. Reopen playback to restore danmaku.");
+        ReleaseRenderer();
+    }
 
     public VideoDanmakuPanel()
     {
@@ -54,6 +109,10 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             || (type == DanmakuRendererType.Win2D && _danmakuRenderer is not null))
         {
             ReleaseRenderer();
+            if (_rendererFailed)
+            {
+                return;
+            }
         }
 
         if (type == DanmakuRendererType.DirectX && _danmakuRenderer == null)
@@ -81,11 +140,41 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void ReleaseRenderer()
     {
-        _danmakuMaster?.Close();
-        _danmakuRenderer?.Dispose();
+        if (!_rendererFailed && _danmakuMaster?.WorkerFailure is { } failure)
+        {
+            RetireFailedRenderer(failure);
+            return;
+        }
+
+        // Detach before cleanup: callbacks and a later unload must never reuse
+        // or close the same failed instance again.
+        var master = _danmakuMaster;
+        var renderer = _danmakuRenderer;
         _danmakuMaster = null;
         _danmakuRenderer = null;
-        RootGrid.Children.Clear();
+        try
+        {
+            master?.Close();
+            renderer?.Dispose();
+        }
+        catch (Exception error) when (_rendererFailed || master?.WorkerFailure is not null)
+        {
+            if (!_rendererFailed)
+            {
+                _rendererFailed = true;
+                _redrawSession.Invalidate();
+                this.Get<ILogger<VideoDanmakuPanel>>().LogError(master!.WorkerFailure,
+                    "Danmaku renderer failed during retirement. Reopen playback to restore danmaku.");
+            }
+
+            // A failed retirement is not permission to reuse this panel's resources.
+            _rendererCleanupFailed = true;
+            this.Get<ILogger<VideoDanmakuPanel>>().LogError(error, "Failed to retire the faulted danmaku renderer.");
+        }
+        finally
+        {
+            RootGrid.Children.Clear();
+        }
     }
 
     /// <inheritdoc/>
@@ -93,8 +182,18 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     {
         _redrawSession.Invalidate();
         SubscribeViewModel(_isActive ? newValue : null);
-        _danmakuMaster?.Clear();
-        _danmakuRenderer?.Clear();
+        WithRenderer(() =>
+        {
+            _danmakuMaster?.Clear();
+            _danmakuRenderer?.Clear();
+        });
+        // A different playback model is an explicit recovery boundary. Loaded,
+        // visibility, style, list refresh and renderer settings are not retries.
+        if (!ReferenceEquals(oldValue, newValue) && !_rendererCleanupFailed)
+        {
+            _rendererFailed = false;
+        }
+
         Redraw();
     }
 
@@ -134,6 +233,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        => WithRenderer(() => OnViewModelPropertyChangedCore(sender, e));
+
+    private void OnViewModelPropertyChangedCore(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ViewModel.IsShowDanmaku) && !ViewModel.IsShowDanmaku)
         {
@@ -152,6 +254,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     }
 
     private void OnRequestAddSingleDanmaku(object? sender, string e)
+        => WithRenderer(() => OnRequestAddSingleDanmakuCore(sender, e));
+
+    private void OnRequestAddSingleDanmakuCore(object? sender, string e)
     {
         if (!ViewModel.IsShowDanmaku)
         {
@@ -177,6 +282,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     }
 
     private void OnRequestClearDanmaku(object? sender, EventArgs e)
+        => WithRenderer(() => OnRequestClearDanmakuCore(sender, e));
+
+    private void OnRequestClearDanmakuCore(object? sender, EventArgs e)
     {
         _redrawSession.Invalidate();
         if (ViewModel.IsShowDanmaku)
@@ -201,6 +309,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     }
 
     private void OnSeekRequested(object? sender, int position)
+        => WithRenderer(() => OnSeekRequestedCore(sender, position));
+
+    private void OnSeekRequestedCore(object? sender, int position)
     {
         if (position < 0)
         {
@@ -230,6 +341,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     }
 
     private void OnResumeDanmaku(object? sender, EventArgs e)
+        => WithRenderer(() => OnResumeDanmakuCore(sender, e));
+
+    private void OnResumeDanmakuCore(object? sender, EventArgs e)
     {
         if (!ViewModel.IsShowDanmaku)
         {
@@ -241,6 +355,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     }
 
     private void OnPauseDanmaku(object? sender, EventArgs e)
+        => WithRenderer(() => OnPauseDanmakuCore(sender, e));
+
+    private void OnPauseDanmakuCore(object? sender, EventArgs e)
     {
         _danmakuRenderer?.Pause();
         _danmakuMaster?.Pause();
@@ -250,6 +367,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         => Redraw();
 
     private void ResetDanmakuStyle()
+        => WithRenderer(() => ResetDanmakuStyleCore());
+
+    private void ResetDanmakuStyleCore()
     {
         if (ViewModel is null || !ViewModel.IsShowDanmaku)
         {
@@ -287,6 +407,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     }
 
     private void ResetSpeed()
+        => WithRenderer(() => ResetSpeedCore());
+
+    private void ResetSpeedCore()
     {
         if (ViewModel is null || !ViewModel.IsShowDanmaku)
         {
@@ -305,7 +428,12 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             return;
         }
 
-        _redrawSession.Request(() =>
+        if (_rendererFailed)
+        {
+            return;
+        }
+
+        _redrawSession.Request(() => WithRenderer(() =>
         {
             if (!_isActive || !IsLoaded || ViewModel is null || !ViewModel.IsShowDanmaku)
             {
@@ -313,6 +441,11 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             }
 
             ReloadRenderer();
+            if (_rendererFailed)
+            {
+                return;
+            }
+
             var danmakus = ViewModel.GetCachedDanmakus();
             if (danmakus.Count > 0)
             {
@@ -339,10 +472,13 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
                 _danmakuRenderer?.Pause();
                 _danmakuMaster?.Pause();
             }
-        });
+        }));
     }
 
     private void UpdateDanmakuTime(double pos)
+        => WithRenderer(() => UpdateDanmakuTimeCore(pos));
+
+    private void UpdateDanmakuTimeCore(double pos)
     {
         if (pos < 0 || double.IsNaN(pos) || !ViewModel.IsShowDanmaku)
         {
