@@ -1,0 +1,703 @@
+From 41891eeb28652b357c7ba0a34733347d36733722 Mon Sep 17 00:00:00 2001
+From: MangMax <hi@mang.zone>
+Date: Sun, 1 Nov 2026 16:41:02 +0800
+Subject: [PATCH] fix: guard article detail mapping against null response
+ fields
+
+The article detail mapping assumed every nested field deserialized from the
+article page state and the metadata API was present. Real responses can omit
+optional or partial data, which produced NullReferenceException in
+ArticleAdapter.ToArticleDetail and BuildHtmlContent and made the reader fail
+after a successful network round-trip.
+
+- treat readInfo and author as required, failing with an identifiable
+  KernelException instead of a NullReferenceException;
+- treat metadata stats, like/favorite/attention as optional (nullable counts);
+- skip null text nodes, null word nodes, picture/line paragraphs without
+  payload and unknown paragraph types while preserving supported paragraph,
+  image and line markup exactly;
+- reject an empty or unsupported body with a KernelException instead of
+  returning an empty article as success.
+
+Adds a kernel-local xUnit project with desensitized structured fixtures that
+exercise the real adapter and source-generated deserialization. Red on
+0ae5e4e: 9 failed / 3 passed; green: 12 passed.
+
+Co-Authored-By: Claude Code <noreply@anthropic.com>
+---
+ .../Core/Adapters/ArticleAdapter.cs           |  85 ++++++--
+ .../Services.Article/Services.Article.csproj  |   4 +
+ .../ArticleAdapterTests.cs                    | 187 ++++++++++++++++++
+ .../Fixtures/invalid-empty-body.json          |   8 +
+ .../Fixtures/invalid-missing-author.json      |   7 +
+ .../Fixtures/invalid-missing-readinfo.json    |   4 +
+ .../invalid-opus-without-paragraphs.json      |  11 ++
+ .../Fixtures/invalid-unsupported-only.json    |  15 ++
+ .../Fixtures/legacy-content.json              |  21 ++
+ .../Fixtures/opus-content.json                |  46 +++++
+ .../Fixtures/partial-empty-text.json          |  17 ++
+ .../Fixtures/partial-payloadless-media.json   |  17 ++
+ .../Fixtures/unsupported-mixed.json           |  15 ++
+ .../Fixtures/view-no-stats.json               |   7 +
+ .../Fixtures/view-stats.json                  |  15 ++
+ .../Services.Article.Tests.csproj             |  31 +++
+ 16 files changed, 472 insertions(+), 18 deletions(-)
+ create mode 100644 src/Tests/Services.Article.Tests/ArticleAdapterTests.cs
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/invalid-empty-body.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/invalid-missing-author.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/invalid-missing-readinfo.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/invalid-opus-without-paragraphs.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/invalid-unsupported-only.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/legacy-content.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/opus-content.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/partial-empty-text.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/partial-payloadless-media.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/unsupported-mixed.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/view-no-stats.json
+ create mode 100644 src/Tests/Services.Article.Tests/Fixtures/view-stats.json
+ create mode 100644 src/Tests/Services.Article.Tests/Services.Article.Tests.csproj
+
+diff --git a/src/Services/Services.Article/Core/Adapters/ArticleAdapter.cs b/src/Services/Services.Article/Core/Adapters/ArticleAdapter.cs
+index df59bc6..1d31492 100644
+--- a/src/Services/Services.Article/Core/Adapters/ArticleAdapter.cs
++++ b/src/Services/Services.Article/Core/Adapters/ArticleAdapter.cs
+@@ -7,6 +7,7 @@ using Richasy.BiliKernel.Models.Article;
+ using Richasy.BiliKernel.Models.Base;
+ using Richasy.BiliKernel.Models.User;
+ using Richasy.BiliKernel.Services.Article.Core.Models;
++using RichasyKernel;
+ using System.Net;
+ 
+ namespace Richasy.BiliKernel.Services.Article.Core;
+@@ -37,36 +38,68 @@ internal static class ArticleAdapter
+ 
+     public static ArticleDetail ToArticleDetail(this ArticleContentResponse response, ArticleIdentifier identifier, ArticleViewResponse view)
+     {
+-        var author = response.readInfo.author;
+-        var stats = view.stats;
++        var readInfo = response?.readInfo ?? throw new KernelException("文章内容数据为空，无法解析该文章.");
++        var author = readInfo.author ?? throw new KernelException("文章作者信息缺失，无法解析该文章.");
++        // 统计信息属于可选数据，缺失时保留为空而不是中断整篇文章.
++        var stats = view?.stats;
+         var user = UserAdapterBase.CreateUserProfile(author.mid, author.name, author.face, 96d);
+         var detailProfile = new UserDetailProfile(user, default, author.level, author.vip?.type > 0);
+-        var publishTime = DateTimeOffset.FromUnixTimeSeconds(response.readInfo.publish_time).ToLocalTime();
+-        var communityInfo = new ArticleCommunityInformation(identifier.Id, stats.view, stats.favorite, stats.like, stats.reply, stats.share, stats.coin);
+-        var tags = response.readInfo.tags?.Select(p => new BiliTag(p.tid.ToString(), p.name)).ToList();
+-        var isLiked = view.like > 0;
+-        var isFav = view.favorite;
+-        var relation = view.attention ? UserRelationStatus.Following : UserRelationStatus.Unfollow;
++        var publishTime = DateTimeOffset.FromUnixTimeSeconds(readInfo.publish_time).ToLocalTime();
++        var communityInfo = new ArticleCommunityInformation(identifier.Id, stats?.view, stats?.favorite, stats?.like, stats?.reply, stats?.share, stats?.coin);
++        var tags = readInfo.tags?.Select(p => new BiliTag(p.tid.ToString(), p.name)).ToList();
++        var isLiked = view?.like > 0;
++        var isFav = view?.favorite ?? false;
++        var relation = view?.attention == true ? UserRelationStatus.Following : UserRelationStatus.Unfollow;
+         var userCard = new UserCard(detailProfile, new UserCommunityInformation(author.mid.ToString(), fansCount: author.fans, relation: relation));
+-        var content = response.readInfo.opus is null ? response.readInfo.content : BuildHtmlContent(response.readInfo.opus);
+-        return new ArticleDetail(identifier, userCard, communityInfo, FormatHtmlContent(content), publishTime, tags, isLiked, isFav);
++        var rawContent = readInfo.opus is null ? readInfo.content : BuildHtmlContent(readInfo.opus);
++        var content = FormatHtmlContent(rawContent);
++        if (string.IsNullOrWhiteSpace(content))
++        {
++            // 正文为空或只有不受支持的节点时不能当作成功返回，否则阅读器会显示空白文章.
++            throw new KernelException("文章正文为空或格式不受支持，无法显示该文章.");
++        }
++
++        return new ArticleDetail(identifier, userCard, communityInfo, content, publishTime, tags, isLiked, isFav);
+     }
+ 
+-    private static string FormatHtmlContent(string content)
+-        => content.Replace("data-src", "src").Replace("\"//", "\"http://").Replace("<p></p>", string.Empty).Replace("<p><br></p>", string.Empty).Replace("<p><br/></p>", string.Empty);
++    private static string FormatHtmlContent(string? content)
++        => (content ?? string.Empty).Replace("data-src", "src").Replace("\"//", "\"http://").Replace("<p></p>", string.Empty).Replace("<p><br></p>", string.Empty).Replace("<p><br/></p>", string.Empty);
+ 
+     private static string BuildHtmlContent(Opus opus)
+     {
++        var paragraphs = opus.content?.paragraphs;
++        if (paragraphs is null)
++        {
++            return string.Empty;
++        }
++
+         var htmlContent = string.Empty;
+-        foreach (var item in opus.content.paragraphs)
++        foreach (var item in paragraphs)
+         {
++            if (item is null)
++            {
++                continue;
++            }
++
+             if (item.para_type == 1)
+             {
+                 // 文本节点.
+-                var nodes = item.text.nodes;
++                var nodes = item.text?.nodes;
++                if (nodes is null)
++                {
++                    // 空文本段落没有可展示内容，跳过.
++                    continue;
++                }
++
+                 var text = string.Empty;
+                 foreach (var node in nodes)
+                 {
++                    if (node?.word is null)
++                    {
++                        // 没有文本内容的节点（例如被裁剪的 opus 数据）跳过，避免中断整篇文章.
++                        continue;
++                    }
++
+                     if (node.node_type == 1)
+                     {
+                         if (node.word.words == "\\n")
+@@ -80,7 +113,7 @@ internal static class ArticleAdapter
+                             : WebUtility.HtmlEncode(node.word.words);
+                         text += $"<p style=\"font-size:'{fontsize}'\">{innerText}</p>";
+                     }
+-                    else if (node.word is not null)
++                    else
+                     {
+                         text += $"<p>{WebUtility.HtmlEncode(node.word.words)}</p>";
+                     }
+@@ -91,8 +124,19 @@ internal static class ArticleAdapter
+             else if (item.para_type == 2)
+             {
+                 // 图片节点.
+-                foreach (var img in item.pic.pics)
++                var pics = item.pic?.pics;
++                if (pics is null)
++                {
++                    continue;
++                }
++
++                foreach (var img in pics)
+                 {
++                    if (img is null || string.IsNullOrEmpty(img.url))
++                    {
++                        continue;
++                    }
++
+                     var imgTag = $"""
+                         <p class="image-package">
+                            <figure class="img-box" contenteditable="false">
+@@ -107,9 +151,14 @@ internal static class ArticleAdapter
+             else if (item.para_type == 3)
+             {
+                 // 分割线.
+-                var line = item.line;
++                var line = item.line?.pic;
++                if (line is null || string.IsNullOrEmpty(line.url))
++                {
++                    continue;
++                }
++
+                 var imgTag = $"""
+-                    <img src="{line.pic.url}" style="max-width: 100%; width: auto; display: block; margin: 0 auto;" height="{line.pic.height}" />
++                    <img src="{line.url}" style="max-width: 100%; width: auto; display: block; margin: 0 auto;" height="{line.height}" />
+                     """;
+                 htmlContent += imgTag;
+             }
+diff --git a/src/Services/Services.Article/Services.Article.csproj b/src/Services/Services.Article/Services.Article.csproj
+index a9e82cd..5ec37cd 100644
+--- a/src/Services/Services.Article/Services.Article.csproj
++++ b/src/Services/Services.Article/Services.Article.csproj
+@@ -22,5 +22,9 @@
+     <ProjectReference Include="..\..\BiliKernel.Abstractions\BiliKernel.Abstractions.csproj" />
+     <ProjectReference Include="..\..\BiliKernel.Core\BiliKernel.Core.csproj" />
+   </ItemGroup>
++
++  <ItemGroup>
++    <InternalsVisibleTo Include="Services.Article.Tests" />
++  </ItemGroup>
+   
+ </Project>
+diff --git a/src/Tests/Services.Article.Tests/ArticleAdapterTests.cs b/src/Tests/Services.Article.Tests/ArticleAdapterTests.cs
+new file mode 100644
+index 0000000..def9aee
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/ArticleAdapterTests.cs
+@@ -0,0 +1,187 @@
++// Copyright (c) Richasy. All rights reserved.
++// Licensed under the MIT License.
++
++using Richasy.BiliKernel;
++using Richasy.BiliKernel.Models.Article;
++using Richasy.BiliKernel.Models.User;
++using Richasy.BiliKernel.Services.Article.Core;
++using Richasy.BiliKernel.Services.Article.Core.Models;
++using RichasyKernel;
++using System.Text.Json;
++using Xunit;
++
++namespace Services.Article.Tests;
++
++/// <summary>
++/// Exercises the real article adapter with desensitized structured fixtures.
++/// The fixtures use only synthetic identifiers, text and example.invalid hosts.
++/// </summary>
++public sealed class ArticleAdapterTests
++{
++    private static readonly ArticleIdentifier DefaultIdentifier = new("1001", "Synthetic article", null, null);
++
++    [Fact]
++    public void LegacyHtmlContentKeepsParagraphsLinksAndImages()
++    {
++        var response = LoadContent("legacy-content.json");
++        var view = LoadView("view-stats.json");
++
++        var detail = response.ToArticleDetail(DefaultIdentifier, view);
++
++        Assert.Equal(
++            "<p>first paragraph</p><p><a href=\"http://example.invalid/link\">link text</a></p><figure><img src=\"http://example.invalid/image.png\"/></figure>",
++            detail.HtmlContent);
++        Assert.Equal("Author42", detail.Author.Profile!.User.Name);
++        Assert.Equal(3, detail.Author.Profile.Level);
++        Assert.True(detail.Author.Profile.IsVip);
++        Assert.Equal("42", detail.Author.Community!.Id);
++        Assert.Equal(7, detail.Author.Community.FansCount);
++        Assert.Equal(UserRelationStatus.Following, detail.Author.Community.Relation);
++        Assert.Equal(10, detail.CommunityInformation.ViewCount);
++        Assert.Equal(2, detail.CommunityInformation.FavoriteCount);
++        Assert.Equal(3, detail.CommunityInformation.LikeCount);
++        Assert.Equal(4, detail.CommunityInformation.CommentCount);
++        Assert.Equal(5, detail.CommunityInformation.ShareCount);
++        Assert.Equal(6, detail.CommunityInformation.CoinCount);
++        Assert.True(detail.IsLiked);
++        Assert.True(detail.IsFavorited);
++        Assert.Equal(1700000000, detail.PublishTime.ToUnixTimeSeconds());
++        var tag = Assert.Single(detail.Tags);
++        Assert.Equal("9", tag.Id);
++        Assert.Equal("synthetic-tag", tag.Name);
++    }
++
++    [Fact]
++    public void OpusContentKeepsTextParagraphImageAndLineSemantics()
++    {
++        var response = LoadContent("opus-content.json");
++        var view = LoadView("view-stats.json");
++
++        var detail = response.ToArticleDetail(new ArticleIdentifier("1002", "Synthetic article", null, null), view);
++
++        var html = detail.HtmlContent;
++        Assert.Contains("<p style=\"font-size:'17'\"><strong>bold</strong></p>", html);
++        Assert.Contains("<p style=\"font-size:'20'\">plain</p>", html);
++        Assert.Contains("<p class=\"image-package\">", html);
++        Assert.Contains("<figure class=\"img-box\" contenteditable=\"false\">", html);
++        Assert.Contains("<img src=\"https://example.invalid/img.png\" width=\"640\" height=\"480\" data-size=\"2\"/>", html);
++        Assert.Contains(
++            "<img src=\"https://example.invalid/line.png\" style=\"max-width: 100%; width: auto; display: block; margin: 0 auto;\" height=\"20\" />",
++            html);
++        Assert.DoesNotContain("\\n", html);
++        Assert.True(html.IndexOf("bold", StringComparison.Ordinal) < html.IndexOf("img.png", StringComparison.Ordinal));
++        Assert.True(html.IndexOf("img.png", StringComparison.Ordinal) < html.IndexOf("line.png", StringComparison.Ordinal));
++        Assert.Null(detail.Tags);
++    }
++
++    [Fact]
++    public void MissingOptionalStatsDoNotFailAndStayEmpty()
++    {
++        var response = LoadContent("legacy-content.json");
++        var view = LoadView("view-no-stats.json");
++
++        var detail = response.ToArticleDetail(DefaultIdentifier, view);
++
++        Assert.Null(detail.CommunityInformation.ViewCount);
++        Assert.Null(detail.CommunityInformation.FavoriteCount);
++        Assert.Null(detail.CommunityInformation.LikeCount);
++        Assert.Null(detail.CommunityInformation.CommentCount);
++        Assert.Null(detail.CommunityInformation.ShareCount);
++        Assert.Null(detail.CommunityInformation.CoinCount);
++        Assert.False(detail.IsLiked);
++        Assert.False(detail.IsFavorited);
++        Assert.Equal(UserRelationStatus.Unfollow, detail.Author.Community!.Relation);
++        Assert.Equal("<p>first paragraph</p><p><a href=\"http://example.invalid/link\">link text</a></p><figure><img src=\"http://example.invalid/image.png\"/></figure>", detail.HtmlContent);
++    }
++
++    [Fact]
++    public void MissingMetadataObjectStillRendersBody()
++    {
++        var response = LoadContent("legacy-content.json");
++
++        var detail = response.ToArticleDetail(DefaultIdentifier, null!);
++
++        Assert.Null(detail.CommunityInformation.ViewCount);
++        Assert.False(detail.IsLiked);
++        Assert.False(detail.IsFavorited);
++        Assert.Equal(UserRelationStatus.Unfollow, detail.Author.Community!.Relation);
++        Assert.NotEmpty(detail.HtmlContent);
++    }
++
++    [Fact]
++    public void EmptyTextNodesAreSkippedWithoutFailing()
++    {
++        var response = LoadContent("partial-empty-text.json");
++
++        var detail = response.ToArticleDetail(DefaultIdentifier, LoadView("view-stats.json"));
++
++        Assert.Equal("<p><p style=\"font-size:'17'\">kept</p></p>", detail.HtmlContent);
++    }
++
++    [Fact]
++    public void PayloadlessMediaIsSkippedWithoutFailing()
++    {
++        var response = LoadContent("partial-payloadless-media.json");
++
++        var detail = response.ToArticleDetail(DefaultIdentifier, LoadView("view-stats.json"));
++
++        Assert.Equal("<p><p style=\"font-size:'17'\">visible</p></p>", detail.HtmlContent);
++    }
++
++    [Fact]
++    public void UnsupportedParagraphTypeIsIgnoredWhenSupportedContentExists()
++    {
++        var response = LoadContent("unsupported-mixed.json");
++
++        var detail = response.ToArticleDetail(DefaultIdentifier, LoadView("view-stats.json"));
++
++        Assert.Equal("<p><p style=\"font-size:'17'\">kept</p></p>", detail.HtmlContent);
++    }
++
++    [Fact]
++    public void MissingReadInfoFailsWithIdentifiableError()
++    {
++        var response = LoadContent("invalid-missing-readinfo.json");
++
++        var error = Assert.Throws<KernelException>(() => response.ToArticleDetail(DefaultIdentifier, LoadView("view-stats.json")));
++
++        Assert.Contains("文章内容数据为空", error.Message, StringComparison.Ordinal);
++    }
++
++    [Fact]
++    public void MissingAuthorFailsWithIdentifiableError()
++    {
++        var response = LoadContent("invalid-missing-author.json");
++
++        var error = Assert.Throws<KernelException>(() => response.ToArticleDetail(DefaultIdentifier, LoadView("view-stats.json")));
++
++        Assert.Contains("文章作者信息缺失", error.Message, StringComparison.Ordinal);
++    }
++
++    [Theory]
++    [InlineData("invalid-empty-body.json")]
++    [InlineData("invalid-opus-without-paragraphs.json")]
++    [InlineData("invalid-unsupported-only.json")]
++    public void EmptyOrUnsupportedBodyFailsInsteadOfReturningEmptySuccess(string fixture)
++    {
++        var response = LoadContent(fixture);
++
++        var error = Assert.Throws<KernelException>(() => response.ToArticleDetail(DefaultIdentifier, LoadView("view-stats.json")));
++
++        Assert.Contains("文章正文为空或格式不受支持", error.Message, StringComparison.Ordinal);
++    }
++
++    private static ArticleContentResponse LoadContent(string name)
++    {
++        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", name));
++        return JsonSerializer.Deserialize(json, SourceGenerationContext.Default.ArticleContentResponse)
++            ?? throw new InvalidOperationException($"Fixture '{name}' could not be deserialized.");
++    }
++
++    private static ArticleViewResponse LoadView(string name)
++    {
++        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", name));
++        return JsonSerializer.Deserialize(json, SourceGenerationContext.Default.ArticleViewResponse)
++            ?? throw new InvalidOperationException($"Fixture '{name}' could not be deserialized.");
++    }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/invalid-empty-body.json b/src/Tests/Services.Article.Tests/Fixtures/invalid-empty-body.json
+new file mode 100644
+index 0000000..f7ecd6d
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/invalid-empty-body.json
+@@ -0,0 +1,8 @@
++{
++  "readInfo": {
++    "id": 1004,
++    "author": { "mid": 1, "name": "SyntheticAuthor" },
++    "content": null,
++    "opus": null
++  }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/invalid-missing-author.json b/src/Tests/Services.Article.Tests/Fixtures/invalid-missing-author.json
+new file mode 100644
+index 0000000..c6834d9
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/invalid-missing-author.json
+@@ -0,0 +1,7 @@
++{
++  "readInfo": {
++    "id": 1003,
++    "author": null,
++    "content": "<p>synthetic body</p>"
++  }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/invalid-missing-readinfo.json b/src/Tests/Services.Article.Tests/Fixtures/invalid-missing-readinfo.json
+new file mode 100644
+index 0000000..9b2700e
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/invalid-missing-readinfo.json
+@@ -0,0 +1,4 @@
++{
++  "readInfo": null,
++  "dynamicId": "synthetic"
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/invalid-opus-without-paragraphs.json b/src/Tests/Services.Article.Tests/Fixtures/invalid-opus-without-paragraphs.json
+new file mode 100644
+index 0000000..ae688f3
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/invalid-opus-without-paragraphs.json
+@@ -0,0 +1,11 @@
++{
++  "readInfo": {
++    "id": 1005,
++    "author": { "mid": 1, "name": "SyntheticAuthor" },
++    "content": null,
++    "opus": {
++      "opus_id": 6,
++      "content": null
++    }
++  }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/invalid-unsupported-only.json b/src/Tests/Services.Article.Tests/Fixtures/invalid-unsupported-only.json
+new file mode 100644
+index 0000000..c5efc1b
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/invalid-unsupported-only.json
+@@ -0,0 +1,15 @@
++{
++  "readInfo": {
++    "id": 1006,
++    "author": { "mid": 1, "name": "SyntheticAuthor" },
++    "content": null,
++    "opus": {
++      "opus_id": 7,
++      "content": {
++        "paragraphs": [
++          { "para_type": 99 }
++        ]
++      }
++    }
++  }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/legacy-content.json b/src/Tests/Services.Article.Tests/Fixtures/legacy-content.json
+new file mode 100644
+index 0000000..a87faab
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/legacy-content.json
+@@ -0,0 +1,21 @@
++{
++  "readInfo": {
++    "id": 1001,
++    "title": "Synthetic article",
++    "publish_time": 1700000000,
++    "author": {
++      "mid": 42,
++      "name": "Author42",
++      "face": "https://example.invalid/face.png",
++      "fans": 7,
++      "level": 3,
++      "vip": { "type": 1 }
++    },
++    "tags": [
++      { "tid": 9, "name": "synthetic-tag" }
++    ],
++    "content": "<p>first paragraph</p><p></p><p><br></p><p><a href=\"//example.invalid/link\">link text</a></p><figure><img data-src=\"//example.invalid/image.png\"/></figure>",
++    "opus": null
++  },
++  "dynamicId": "synthetic"
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/opus-content.json b/src/Tests/Services.Article.Tests/Fixtures/opus-content.json
+new file mode 100644
+index 0000000..11d1288
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/opus-content.json
+@@ -0,0 +1,46 @@
++{
++  "readInfo": {
++    "id": 1002,
++    "publish_time": 1700000001,
++    "author": {
++      "mid": 43,
++      "name": "Author43",
++      "face": "https://example.invalid/face2.png",
++      "fans": 1,
++      "level": 2
++    },
++    "content": null,
++    "opus": {
++      "opus_id": 5,
++      "content": {
++        "paragraphs": [
++          {
++            "para_type": 1,
++            "text": {
++              "nodes": [
++                { "node_type": 1, "word": { "words": "bold", "font_size": 0, "style": { "bold": true } } },
++                { "node_type": 1, "word": { "words": "plain", "font_size": 20 } },
++                { "node_type": 1, "word": { "words": "\\n", "font_size": 0 } }
++              ]
++            }
++          },
++          {
++            "para_type": 2,
++            "pic": {
++              "style": 1,
++              "pics": [
++                { "url": "https://example.invalid/img.png", "width": 640, "height": 480, "size": 2 }
++              ]
++            }
++          },
++          {
++            "para_type": 3,
++            "line": {
++              "pic": { "url": "https://example.invalid/line.png", "height": 20 }
++            }
++          }
++        ]
++      }
++    }
++  }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/partial-empty-text.json b/src/Tests/Services.Article.Tests/Fixtures/partial-empty-text.json
+new file mode 100644
+index 0000000..7cfd4da
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/partial-empty-text.json
+@@ -0,0 +1,17 @@
++{
++  "readInfo": {
++    "id": 1007,
++    "author": { "mid": 1, "name": "SyntheticAuthor" },
++    "opus": {
++      "opus_id": 8,
++      "content": {
++        "paragraphs": [
++          { "para_type": 1, "text": null },
++          { "para_type": 1, "text": { "nodes": [] } },
++          { "para_type": 1, "text": { "nodes": [ { "node_type": 1, "word": null } ] } },
++          { "para_type": 1, "text": { "nodes": [ { "node_type": 1, "word": { "words": "kept", "font_size": 0 } } ] } }
++        ]
++      }
++    }
++  }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/partial-payloadless-media.json b/src/Tests/Services.Article.Tests/Fixtures/partial-payloadless-media.json
+new file mode 100644
+index 0000000..8b39d75
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/partial-payloadless-media.json
+@@ -0,0 +1,17 @@
++{
++  "readInfo": {
++    "id": 1008,
++    "author": { "mid": 1, "name": "SyntheticAuthor" },
++    "opus": {
++      "opus_id": 9,
++      "content": {
++        "paragraphs": [
++          { "para_type": 2, "pic": null },
++          { "para_type": 2, "pic": { "pics": [ { "url": null } ] } },
++          { "para_type": 3, "line": null },
++          { "para_type": 1, "text": { "nodes": [ { "node_type": 1, "word": { "words": "visible", "font_size": 0 } } ] } }
++        ]
++      }
++    }
++  }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/unsupported-mixed.json b/src/Tests/Services.Article.Tests/Fixtures/unsupported-mixed.json
+new file mode 100644
+index 0000000..f2cef8f
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/unsupported-mixed.json
+@@ -0,0 +1,15 @@
++{
++  "readInfo": {
++    "id": 1009,
++    "author": { "mid": 1, "name": "SyntheticAuthor" },
++    "opus": {
++      "opus_id": 10,
++      "content": {
++        "paragraphs": [
++          { "para_type": 99 },
++          { "para_type": 1, "text": { "nodes": [ { "node_type": 1, "word": { "words": "kept", "font_size": 0 } } ] } }
++        ]
++      }
++    }
++  }
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/view-no-stats.json b/src/Tests/Services.Article.Tests/Fixtures/view-no-stats.json
+new file mode 100644
+index 0000000..9a093a3
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/view-no-stats.json
+@@ -0,0 +1,7 @@
++{
++  "like": 0,
++  "attention": false,
++  "favorite": false,
++  "title": "Synthetic article",
++  "mid": 42
++}
+diff --git a/src/Tests/Services.Article.Tests/Fixtures/view-stats.json b/src/Tests/Services.Article.Tests/Fixtures/view-stats.json
+new file mode 100644
+index 0000000..bc92eb8
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Fixtures/view-stats.json
+@@ -0,0 +1,15 @@
++{
++  "like": 1,
++  "attention": true,
++  "favorite": true,
++  "stats": {
++    "view": 10,
++    "favorite": 2,
++    "like": 3,
++    "reply": 4,
++    "share": 5,
++    "coin": 6
++  },
++  "title": "Synthetic article",
++  "mid": 42
++}
+diff --git a/src/Tests/Services.Article.Tests/Services.Article.Tests.csproj b/src/Tests/Services.Article.Tests/Services.Article.Tests.csproj
+new file mode 100644
+index 0000000..12c2c55
+--- /dev/null
++++ b/src/Tests/Services.Article.Tests/Services.Article.Tests.csproj
+@@ -0,0 +1,31 @@
++<Project Sdk="Microsoft.NET.Sdk">
++
++  <PropertyGroup>
++    <TargetFramework>net8.0</TargetFramework>
++    <IsPackable>false</IsPackable>
++    <IsTestProject>true</IsTestProject>
++    <AssemblyName>Services.Article.Tests</AssemblyName>
++    <RootNamespace>Services.Article.Tests</RootNamespace>
++    <!-- Keep the harness independent from the library's strict analyzer profile. -->
++    <EnableNETAnalyzers>false</EnableNETAnalyzers>
++    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
++    <GenerateDocumentationFile>false</GenerateDocumentationFile>
++    <NoWarn>$(NoWarn);EnableGenerateDocumentationFile</NoWarn>
++    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
++  </PropertyGroup>
++
++  <ItemGroup>
++    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
++    <PackageReference Include="xunit" Version="2.9.3" />
++    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1" />
++  </ItemGroup>
++
++  <ItemGroup>
++    <ProjectReference Include="..\..\Services\Services.Article\Services.Article.csproj" />
++  </ItemGroup>
++
++  <ItemGroup>
++    <None Include="Fixtures\*.json" CopyToOutputDirectory="PreserveNewest" />
++  </ItemGroup>
++
++</Project>
+-- 
+2.56.0.windows.3
+
