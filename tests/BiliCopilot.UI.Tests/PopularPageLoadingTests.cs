@@ -338,18 +338,125 @@ public sealed class PopularPageLoadingTests
         var original = Assert.Single(page.Videos);
         service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("fresh")], 7));
         await page.RefreshVideoCommand.ExecuteAsync(null);
+        Assert.Equal(incremental, page.CanUndoRefresh);
         var beforeEmpty = page.Videos.ToArray();
         var calls = 0;
         service.Recommend = _ => { calls++; return Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([], 99)); };
         await page.RefreshVideoCommand.ExecuteAsync(null);
         Assert.Equal(1, calls);
         Assert.Equal(beforeEmpty, page.Videos);
+        Assert.Equal(incremental, page.CanUndoRefresh);
         page.UndoRefreshCommand.Execute(null);
-        Assert.Same(original, Assert.Single(page.Videos));
+        if (incremental)
+        {
+            Assert.Same(original, Assert.Single(page.Videos));
+        }
+        else
+        {
+            // 非增量刷新不产生本次撤销快照，空结果也不会凭空恢复一个。
+            Assert.Equal("fresh", Assert.Single(page.Videos).Data.BvId);
+        }
+
         long cursor = -1;
         service.Recommend = offset => { cursor = offset; return Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([], offset)); };
         await page.LoadVideosCommand.ExecuteAsync(null);
-        Assert.Equal(1, cursor);
+        Assert.Equal(incremental ? 1 : 7, cursor);
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+    }
+
+    [Fact]
+    public async Task NonIncrementalRefreshReplacesListWithoutUndoAndNotifiesShrink()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+        service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+            ([Video("a"), Video("b"), Video("c")], 3));
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal(3, page.Videos.Count);
+
+        var updates = 0;
+        page.VideoListUpdated += (_, _) => updates++;
+        service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("fresh")], 7));
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal("fresh", Assert.Single(page.Videos).Data.BvId);
+
+        // 非增量刷新是替换，不提供撤销入口；列表变短同样要通知主体去补满视口。
+        Assert.False(page.CanUndoRefresh);
+        Assert.Equal(1, updates);
+        page.UndoRefreshCommand.Execute(null);
+        Assert.Equal("fresh", Assert.Single(page.Videos).Data.BvId);
+
+        // 主体收到列表通知后会检查视口；这里用真实加载命令验证后续页从刷新后的游标继续。
+        long cursor = -1;
+        service.Recommend = offset =>
+        {
+            cursor = offset;
+            return Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+                ([Video("more1"), Video("more2")], 8));
+        };
+        await page.LoadVideosCommand.ExecuteAsync(null);
+        Assert.Equal(7, cursor);
+        Assert.Equal(new[] { "fresh", "more1", "more2" }, page.Videos.Select(v => v.Data.BvId));
+        Assert.Equal(2, updates);
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+    }
+
+    [Fact]
+    public async Task DisablingIncrementalRefreshDropsExistingUndoSnapshot()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        var original = Assert.Single(page.Videos);
+        service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("fresh")], 7));
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        Assert.True(page.CanUndoRefresh);
+        var refreshed = page.Videos.ToArray();
+
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+        page.OnIncrementalRecommendRefreshChanged(false);
+
+        Assert.False(page.CanUndoRefresh);
+        page.UndoRefreshCommand.Execute(null);
+        Assert.Equal(refreshed, page.Videos);
+        Assert.NotSame(original, page.Videos[0]);
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+    }
+
+    [Fact]
+    public async Task DisablingIncrementalRefreshDuringRequestPreventsLateUndo()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        var pending = new TaskCompletionSource<(IReadOnlyList<VideoInformation>, long)>();
+        service.Recommend = _ => pending.Task;
+        var refresh = page.RefreshVideoCommand.ExecuteAsync(null);
+        Assert.True(page.IsRecommendRefreshing);
+
+        // 生产设置页先写入设置，再通知页面收敛状态。
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+        page.OnIncrementalRecommendRefreshChanged(false);
+        pending.SetResult(([Video("fresh")], 7));
+        await refresh;
+        PageTestServices.Dispatcher.Drain();
+
+        // 请求按发起时的增量模式合并，但关闭设置后不得再出现撤销入口。
+        Assert.Equal(new[] { "fresh", "Recommend" }, page.Videos.Select(v => v.Data.BvId));
+        Assert.False(page.CanUndoRefresh);
+        Assert.False(page.IsRecommendRefreshing);
         SettingsToolkit.IncrementalRecommendRefresh = false;
     }
 
@@ -404,5 +511,5 @@ public sealed class PopularPageLoadingTests
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset, int NextPageNumber)> GetChildPartitionVideoListAsync(Partition childPartition, long offset = 0, int pageNumber = 0, PartitionVideoSortType sortType = PartitionVideoSortType.Default, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 
-    private static VideoInformation Video(string id) => new(default, null!, bvId: id);
+    private static VideoInformation Video(string id) => new(new(id, id, null!), null!, bvId: id);
 }
