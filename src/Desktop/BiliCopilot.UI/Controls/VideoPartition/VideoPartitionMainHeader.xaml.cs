@@ -47,7 +47,7 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
         _subscribedViewModel.Initialized -= OnViewModelInitialized;
         _subscribedViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         _subscribedViewModel = null;
-        UndoRefreshButtonAnimator.Apply(UndoRefreshButton, UndoRefreshButton.Visibility == Visibility.Visible, false);
+        UndoRefreshButtonAnimator.Cancel(UndoRefreshButton);
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

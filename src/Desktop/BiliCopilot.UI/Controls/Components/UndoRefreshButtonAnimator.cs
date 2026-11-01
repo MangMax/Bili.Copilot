@@ -10,24 +10,33 @@ namespace BiliCopilot.UI.Controls.Components;
 /// 「撤销刷新」按钮的出现与消失.
 /// </summary>
 /// <remarks>
-/// 只让撤销按钮自己动：按钮组右对齐，撤销折叠时刷新按钮在屏幕上的位置并不变化
-/// （实测有/无撤销时刷新按钮都在同一 x），所以既不需要补位动画，也不能给容器套重排过渡——
-/// 一旦套上，撤销折叠时刷新按钮相对父级的偏移变化会被 <c>RepositionThemeTransition</c> 捕捉到，
-/// 刷新按钮就会跟着动。出现一侧的缩放由 XAML 里的 <c>Implicit.ShowAnimations</c> 承担；
-/// 消失一侧必须在淡出结束之后再折叠，因为 <c>Collapsed</c> 会跳过隐式隐藏动画。
+/// 按钮的出现和消失只由这里驱动，XAML 上不再挂 <c>Implicit.ShowAnimations</c>：
+/// 组合层的隐式动画和这里的 <see cref="Storyboard"/> 会同时写 <c>Opacity</c>，
+/// 淡出释放动画时按钮又被拉回基础值，列表更新占住 UI 线程时就表现为闪烁。
+/// 淡出使用 <c>FillBehavior.HoldEnd</c> 把呈现值停在 0，完成回调再折叠；
+/// 即使回调被列表更新推迟，动画结束后的每一帧也都还是 0，不会整块亮回 1。
+/// 释放动画前先把基础值写成目标值，因此 Stop/卸载不会先渲染一帧旧值；
+/// 折叠本身不需要任何延时。
+/// 重复的「不应显示」通知不会重启淡出；淡入途中收到隐藏通知时等淡入结束再淡出，
+/// 避免从中间不透明度直接跳到 1。
 /// </remarks>
 internal static class UndoRefreshButtonAnimator
 {
     private const string OpacityPath = "Opacity";
-    private static readonly TimeSpan FadeOutDuration = TimeSpan.FromMilliseconds(160);
+    private const string ScaleXPath = "ScaleX";
+    private const string ScaleYPath = "ScaleY";
+
+    private static readonly TimeSpan ShowFadeDuration = TimeSpan.FromMilliseconds(180);
+    private static readonly TimeSpan ShowScaleDuration = TimeSpan.FromMilliseconds(220);
+    private static readonly TimeSpan HideFadeDuration = TimeSpan.FromMilliseconds(160);
 
     /// <summary>
-    /// 每个按钮当前正在播放的淡出，用于中途被打断时及时释放.
+    /// 每个按钮当前正在播放的过渡，用于中途被打断时及时释放.
     /// </summary>
-    private static readonly ConditionalWeakTable<FrameworkElement, Storyboard> RunningFades = new();
+    private static readonly ConditionalWeakTable<FrameworkElement, RunningTransition> Running = new();
 
     /// <summary>
-    /// 按当前状态摆放撤销按钮，可选择是否播放消失动画.
+    /// 按当前状态摆放撤销按钮，可选择是否播放动画.
     /// </summary>
     /// <param name="button">撤销按钮.</param>
     /// <param name="shouldShow">是否应当显示.</param>
@@ -39,61 +48,182 @@ internal static class UndoRefreshButtonAnimator
         bool animate,
         Func<bool>? isStillHidden = null)
     {
+        var running = Running.TryGetValue(button, out var current) ? current : null;
+
         if (shouldShow)
         {
-            // 淡出途中又需要显示时先停掉它，否则会先淡到 0 再跳回 1。
-            StopRunningFade(button);
-            button.Opacity = 1;
-            button.Visibility = Visibility.Visible;
+            if (running is not null)
+            {
+                if (!running.Hiding)
+                {
+                    // 淡入已经由当前过渡负责，重复通知不再重启。
+                    running.HideAfterShow = false;
+                    return;
+                }
+
+                // 淡出途中又需要显示：先停在完全可见，再按需淡入。
+                Stop(button, opacity: 1);
+            }
+            else if (button.Visibility == Visibility.Visible && button.Opacity >= 1)
+            {
+                return;
+            }
+
+            Show(button, animate);
+            return;
+        }
+
+        if (running is not null)
+        {
+            if (running.Hiding)
+            {
+                // 同一段淡出只发起一次。
+                return;
+            }
+
+            // 淡入还没结束：让它停到 1 之后再淡出，避免中间值跳变。
+            running.HideAfterShow = true;
+            running.IsStillHidden = isStillHidden;
             return;
         }
 
         if (!animate || button.Visibility != Visibility.Visible || !IsEffectivelyVisible(button))
         {
-            StopRunningFade(button);
-            Hide(button);
+            button.Visibility = Visibility.Collapsed;
+            button.Opacity = 1;
+            ResetScale(button);
             return;
         }
 
-        StopRunningFade(button);
+        PlayHide(button, isStillHidden);
+    }
 
-        var animation = new DoubleAnimation
+    /// <summary>
+    /// 放弃进行中的过渡，供头部卸载时调用.
+    /// </summary>
+    /// <remarks>
+    /// 只停止动画并把基础值摆到过渡的终态，不按「当前可见」重新显示按钮；
+    /// 重新挂载时由 <see cref="Apply"/> 按视图模型状态重新摆放。
+    /// </remarks>
+    /// <param name="button">撤销按钮.</param>
+    public static void Cancel(FrameworkElement button)
+    {
+        var opacity = Running.TryGetValue(button, out var transition) && transition.Hiding ? 0 : 1;
+        Stop(button, opacity);
+        ResetScale(button);
+    }
+
+    private static void Show(FrameworkElement button, bool animate)
+    {
+        if (!animate)
         {
-            From = 1,
-            To = 0,
-            Duration = FadeOutDuration,
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+            button.Visibility = Visibility.Visible;
+            button.Opacity = 1;
+            ResetScale(button);
+            return;
+        }
 
-            // 结束后释放动画，否则 HoldEnd 会把 Opacity 长期钉在 0，
-            // 下一次显示时基础值再设回 1 也不生效，按钮会一直不可见。
-            FillBehavior = FillBehavior.Stop,
-        };
-        Storyboard.SetTarget(animation, button);
-        Storyboard.SetTargetProperty(animation, OpacityPath);
+        // 显示前先把基础值设为 0，避免从折叠切到可见的那一帧先亮到 1。
+        button.Opacity = 0;
+        ResetScale(button);
+        button.Visibility = Visibility.Visible;
 
         var storyboard = new Storyboard();
-        storyboard.Children.Add(animation);
+        AddDoubleAnimation(storyboard, button, OpacityPath, 0, 1, ShowFadeDuration);
+        if (button.RenderTransform is CompositeTransform transform)
+        {
+            AddDoubleAnimation(storyboard, transform, ScaleXPath, 0.96, 1, ShowScaleDuration);
+            AddDoubleAnimation(storyboard, transform, ScaleYPath, 0.96, 1, ShowScaleDuration);
+        }
+
+        var transition = new RunningTransition(storyboard);
         storyboard.Completed += (_, _) =>
         {
-            RunningFades.Remove(button);
-
-            // 淡出期间可能又刷新成功，撤销入口重新需要显示，此时不能再隐藏。
-            if (isStillHidden?.Invoke() is not false)
+            // 被打断的旧时间线可能仍在这一帧派发完成回调，只处理仍是当前那一段的过渡。
+            if (!Take(button, transition))
             {
-                Hide(button);
+                return;
+            }
+
+            // 先把基础值写成终态，再释放 HoldEnd，避免下一次显示被旧动画钉住。
+            button.Opacity = 1;
+            ResetScale(button);
+            storyboard.Stop();
+
+            if (transition.HideAfterShow)
+            {
+                PlayHide(button, transition.IsStillHidden);
             }
         };
 
-        RunningFades.AddOrUpdate(button, storyboard);
+        Running.AddOrUpdate(button, transition);
         storyboard.Begin();
     }
 
-    private static void StopRunningFade(FrameworkElement button)
+    private static void PlayHide(FrameworkElement button, Func<bool>? isStillHidden)
     {
-        if (RunningFades.TryGetValue(button, out var storyboard))
+        var storyboard = new Storyboard();
+        AddDoubleAnimation(storyboard, button, OpacityPath, 1, 0, HideFadeDuration);
+
+        var transition = new RunningTransition(storyboard, hiding: true);
+        storyboard.Completed += (_, _) =>
         {
+            if (!Take(button, transition))
+            {
+                return;
+            }
+
+            if (isStillHidden?.Invoke() is false)
+            {
+                // 淡出期间可能又刷新成功，撤销入口重新需要显示，此时不能再隐藏。
+                Stop(button, opacity: 1);
+                Show(button, animate: true);
+                return;
+            }
+
+            // HoldEnd 已经把呈现值停在 0；这里折叠并释放，折叠后写回基础值。
+            button.Visibility = Visibility.Collapsed;
+            button.Opacity = 1;
+            ResetScale(button);
             storyboard.Stop();
-            RunningFades.Remove(button);
+        };
+
+        Running.AddOrUpdate(button, transition);
+        storyboard.Begin();
+    }
+
+    private static void AddDoubleAnimation(
+        Storyboard storyboard,
+        DependencyObject target,
+        string propertyPath,
+        double from,
+        double to,
+        TimeSpan duration)
+    {
+        var animation = new DoubleAnimation
+        {
+            From = from,
+            To = to,
+            Duration = duration,
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+            FillBehavior = FillBehavior.HoldEnd,
+            EnableDependentAnimation = true,
+        };
+        Storyboard.SetTarget(animation, target);
+        Storyboard.SetTargetProperty(animation, propertyPath);
+        storyboard.Children.Add(animation);
+    }
+
+    /// <summary>
+    /// 停止当前过渡，先写基础值再释放动画，避免释放时先渲染一帧旧值.
+    /// </summary>
+    private static void Stop(FrameworkElement button, double opacity)
+    {
+        button.Opacity = opacity;
+        if (Running.TryGetValue(button, out var transition))
+        {
+            Running.Remove(button);
+            transition.Storyboard.Stop();
         }
     }
 
@@ -123,9 +253,34 @@ internal static class UndoRefreshButtonAnimator
         return true;
     }
 
-    private static void Hide(FrameworkElement button)
+    private static bool Take(FrameworkElement button, RunningTransition transition)
     {
-        button.Visibility = Visibility.Collapsed;
-        button.Opacity = 1;
+        if (!Running.TryGetValue(button, out var current) || !ReferenceEquals(current, transition))
+        {
+            return false;
+        }
+
+        Running.Remove(button);
+        return true;
+    }
+
+    private static void ResetScale(FrameworkElement button)
+    {
+        if (button.RenderTransform is CompositeTransform transform)
+        {
+            transform.ScaleX = 1;
+            transform.ScaleY = 1;
+        }
+    }
+
+    private sealed class RunningTransition(Storyboard storyboard, bool hiding = false)
+    {
+        public Storyboard Storyboard { get; } = storyboard;
+
+        public bool Hiding { get; } = hiding;
+
+        public bool HideAfterShow { get; set; }
+
+        public Func<bool>? IsStillHidden { get; set; }
     }
 }
