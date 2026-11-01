@@ -58,6 +58,9 @@ namespace BiliCopilot.UI.Controls
         public double ExtentHeight { get; set; }
         public double ViewportHeight { get; set; } = 600;
         public double VerticalOffset { get; set; }
+        public double HorizontalOffset { get; set; }
+        public double ActualHeight => ViewportHeight;
+        public ScrollTestDispatcher DispatcherQueue { get; } = new();
         public event Action<ScrollView, object>? ViewChanged;
         public event Action<object, SizeChangedEventArgs>? SizeChanged;
         public int ViewChangedSubscriptions => ViewChanged?.GetInvocationList().Length ?? 0;
@@ -65,6 +68,7 @@ namespace BiliCopilot.UI.Controls
         public void ChangeView() => ViewChanged?.Invoke(this, EventArgs.Empty);
         public void Resize(double width = 1000) => SizeChanged?.Invoke(this, new(width));
         public void ScrollTo(double x, double y) => VerticalOffset = y;
+        public void ScrollTo(double x, double y, ScrollingScrollOptions options) => VerticalOffset = y;
     }
     public sealed class ScrollTestDispatcher
     {
@@ -90,6 +94,7 @@ namespace BiliCopilot.UI.Controls
     public sealed partial class IncrementVerticalScrollControl
     {
         public ScrollView View { get; } = new();
+        public object FindName(string name) => View;
         private void InitializeComponent() { }
     }
 }

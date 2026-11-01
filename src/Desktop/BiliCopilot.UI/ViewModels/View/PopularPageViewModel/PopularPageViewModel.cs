@@ -230,7 +230,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         IsVideoLoading = false;
 
         // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
-        RecommendationListChanging?.Invoke(true);
+        RecommendationListChanging?.Invoke(RecommendationListChange.UndoRefresh);
         RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
 
         for (var i = 0; i < snapshot.Items.Count; i++)
