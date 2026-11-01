@@ -177,6 +177,26 @@ public sealed class PartitionLoadingRegressionTests : IDisposable
         Assert.Equal(new long[] { 0, 0 }, service.Offsets);
     }
 
+
+    [Fact]
+    public async Task DisableThenReenableMustNotResurrectPartitionInFlightSnapshot()
+    {
+        var service = new Discovery();
+        var detail = new VideoPartitionDetailViewModel(new PartitionViewModel(Parent()), service);
+        await detail.InitializeCommand.ExecuteAsync(null);
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, true);
+        var pending = new TaskCompletionSource<(IReadOnlyList<VideoInformation>, long)>();
+        service.Fetch = _ => pending.Task;
+        var refresh = detail.RefreshCommand.ExecuteAsync(null);
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, false);
+        detail.OnIncrementalRecommendRefreshChanged(false);
+        SettingsToolkit.WriteLocalSetting(SettingNames.IncrementalRecommendRefresh, true);
+        detail.OnIncrementalRecommendRefreshChanged(true);
+        pending.SetResult(([Video("fresh")], 7));
+        await refresh;
+        Assert.False(detail.CanUndoRefresh);
+    }
+
     private static Partition Parent() => new("13", "Anime", children: [new("24", "Child")]);
     private static VideoInformation Video(string id) => new(new(id, id, null!), null!, bvId: id);
 
