@@ -1,0 +1,400 @@
+From 357fade2dcdd62f727df23caabc98407111f31af Mon Sep 17 00:00:00 2001
+From: MangMax <MangMax@users.noreply.github.com>
+Date: Mon, 2 Nov 2026 01:44:43 +0800
+Subject: [PATCH] perf: reuse one device text layout for danmaku measure and
+ draw
+
+Measure with a CanvasTextLayout created directly from the render device
+instead of a 0x0 CanvasRenderTarget and temporary drawing session. Reuse
+that layout for the final target by setting RequestedSize to the measured
+size, replacing the second layout previously created on the drawing
+session. Measured widths/heights, expiry checks, positions and drawing
+code are unchanged.
+
+Co-Authored-By: Claude Code <noreply@anthropic.com>
+---
+ src/Danmaku.Legacy/DanmakuRender.cs | 339 ++++++++++++++--------------
+ 1 file changed, 166 insertions(+), 173 deletions(-)
+
+diff --git a/src/Danmaku.Legacy/DanmakuRender.cs b/src/Danmaku.Legacy/DanmakuRender.cs
+index 822165c..0dd04f6 100644
+--- a/src/Danmaku.Legacy/DanmakuRender.cs
++++ b/src/Danmaku.Legacy/DanmakuRender.cs
+@@ -281,32 +281,26 @@ namespace Richasy.Danmaku.Legacy
+                         return;
+                     }
+ 
+-                    // Measure text size
+-                    using (CanvasRenderTarget tempRenderTarget = new CanvasRenderTarget(_device, 0, 0, _dpi))
++                    // Measure with a device-backed layout. CanvasTextLayout only captures
++                    // the resource creator's device, so this has the same metrics as the
++                    // previous 0x0 target/session measurement without allocating a target.
++                    using CanvasTextLayout textLayout = new CanvasTextLayout(_device, danmakuText, textFormat, CanvasWidth - 24f, 0);
++                    // Leave padding space for border
++                    renderItem.Width = (float)textLayout.LayoutBounds.Width + 8f;
++                    renderItem.Height = (float)textLayout.LayoutBounds.Height;
++                    textLayout.Options = CanvasDrawTextOptions.EnableColorFont;
++                    if (renderItem.HasOutline)
+                     {
+-                        using (CanvasDrawingSession drawingSession = tempRenderTarget.CreateDrawingSession())
+-                        {
+-                            using (CanvasTextLayout textLayout = new CanvasTextLayout(drawingSession, danmakuText, textFormat, CanvasWidth - 24f, 0))
+-                            {
+-                                // Leave padding space for border
+-                                renderItem.Width = (float)textLayout.LayoutBounds.Width + 8f;
+-                                renderItem.Height = (float)textLayout.LayoutBounds.Height;
+-                                textLayout.Options = CanvasDrawTextOptions.EnableColorFont;
+-                                if (renderItem.HasOutline)
+-                                {
+-                                    renderItem.Height += renderItem.OutlineSize;
+-                                }
++                        renderItem.Height += renderItem.OutlineSize;
++                    }
+ 
+-                                if (renderItem.Width <= 0 || renderItem.Height <= 0)
+-                                {
+-                                    return;
+-                                }
+-                                if (_maxDanmakuSize > 0 && (renderItem.Width >= _maxDanmakuSize || renderItem.Height >= _maxDanmakuSize))
+-                                {
+-                                    return;
+-                                }
+-                            }
+-                        }
++                    if (renderItem.Width <= 0 || renderItem.Height <= 0)
++                    {
++                        return;
++                    }
++                    if (_maxDanmakuSize > 0 && (renderItem.Width >= _maxDanmakuSize || renderItem.Height >= _maxDanmakuSize))
++                    {
++                        return;
+                     }
+ 
+                     // Exact measured-width lifetime: do not allocate textures for
+@@ -319,175 +313,174 @@ namespace Richasy.Danmaku.Legacy
+                     renderItem.RenderTarget = new CanvasRenderTarget(_device, renderItem.Width, renderItem.Height, _dpi);
+                     using (CanvasDrawingSession drawingSession = renderItem.RenderTarget.CreateDrawingSession())
+                     {
+-                        using (CanvasTextLayout textLayout = new CanvasTextLayout(drawingSession, danmakuText, textFormat, renderItem.Width, renderItem.Height))
++                        // The previous drawing layout used the measured size; reuse the
++                        // measurement layout with that same requested size.
++                        textLayout.RequestedSize = new Size(renderItem.Width, renderItem.Height);
++                        // Calculate initial position
++                        switch (renderItem.Mode)
+                         {
+-                            textLayout.Options = CanvasDrawTextOptions.EnableColorFont;
+-                            // Calculate initial position
+-                            switch (renderItem.Mode)
+-                            {
+-                                case DanmakuMode.Rolling:
+-                                    {
+-                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
+-                                        renderItem.StartX = CanvasWidth;
+-                                        renderItem.StartY = y;
+-                                        break;
+-                                    }
+-                                case DanmakuMode.Bottom:
+-                                    {
+-                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
+-                                        renderItem.StartY = y;
+-                                        break;
+-                                    }
+-                                case DanmakuMode.Top:
+-                                    {
+-                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
+-                                        renderItem.StartY = y;
+-                                        break;
+-                                    }
+-                                case DanmakuMode.ReverseRolling:
+-                                    {
+-                                        renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
+-                                        renderItem.StartX = -renderItem.Width;
+-                                        renderItem.StartY = y;
+-                                        break;
+-                                    }
+-                                case DanmakuMode.Advanced:
++                            case DanmakuMode.Rolling:
++                                {
++                                    renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
++                                    renderItem.StartX = CanvasWidth;
++                                    renderItem.StartY = y;
++                                    break;
++                                }
++                            case DanmakuMode.Bottom:
++                                {
++                                    renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
++                                    renderItem.StartY = y;
++                                    break;
++                                }
++                            case DanmakuMode.Top:
++                                {
++                                    renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
++                                    renderItem.StartY = y;
++                                    break;
++                                }
++                            case DanmakuMode.ReverseRolling:
++                                {
++                                    renderItem.NeedToReleaseYSlot = ySlotManager.GetY(renderItem.Id, (uint)renderItem.Height, out uint y, reconstructing ? replayOrdinal : null);
++                                    renderItem.StartX = -renderItem.Width;
++                                    renderItem.StartY = y;
++                                    break;
++                                }
++                            case DanmakuMode.Advanced:
++                                {
++                                    if (renderItem.AlignmentMode == DanmakuAlignmentMode.Default)
+                                     {
+-                                        if (renderItem.AlignmentMode == DanmakuAlignmentMode.Default)
++                                        renderItem.StartX = renderItem.DefinedStartX > 1.0f ? renderItem.DefinedStartX : renderItem.DefinedStartX * CanvasWidth;
++                                        renderItem.StartY = renderItem.DefinedStartY > 1.0f ? renderItem.DefinedStartY : renderItem.DefinedStartY * CanvasHeight;
++                                        renderItem.EndX = renderItem.DefinedEndX > 1.0f ? renderItem.DefinedEndX : renderItem.DefinedEndX * CanvasWidth;
++                                        if (renderItem.EndX > renderItem.StartX && renderItem.EndX < CanvasWidth && renderItem.EndX + renderItem.Width > CanvasWidth)
+                                         {
+-                                            renderItem.StartX = renderItem.DefinedStartX > 1.0f ? renderItem.DefinedStartX : renderItem.DefinedStartX * CanvasWidth;
+-                                            renderItem.StartY = renderItem.DefinedStartY > 1.0f ? renderItem.DefinedStartY : renderItem.DefinedStartY * CanvasHeight;
+-                                            renderItem.EndX = renderItem.DefinedEndX > 1.0f ? renderItem.DefinedEndX : renderItem.DefinedEndX * CanvasWidth;
+-                                            if (renderItem.EndX > renderItem.StartX && renderItem.EndX < CanvasWidth && renderItem.EndX + renderItem.Width > CanvasWidth)
+-                                            {
+-                                                renderItem.EndX = renderItem.EndX + renderItem.Width * 0.2f <= CanvasWidth ? CanvasWidth - renderItem.Width : CanvasWidth;
+-                                            }
+-                                            renderItem.EndY = renderItem.DefinedEndY > 1.0f ? renderItem.DefinedEndY : renderItem.DefinedEndY * CanvasHeight;
+-                                            if (renderItem.EndY > renderItem.StartY && renderItem.EndY < CanvasHeight && renderItem.EndY + renderItem.Height > CanvasHeight)
+-                                            {
+-                                                renderItem.EndY = renderItem.EndY + renderItem.Height * 0.2f <= CanvasHeight ? CanvasHeight - renderItem.Height : CanvasHeight;
+-                                            }
+-
+-                                            if (renderItem.AnchorMode != DanmakuAlignmentMode.UpperLeft)
+-                                            {
+-                                                switch (renderItem.AnchorMode)
+-                                                {
+-                                                    case DanmakuAlignmentMode.LowerCenter:
+-                                                    case DanmakuAlignmentMode.MiddleCenter:
+-                                                    case DanmakuAlignmentMode.UpperCenter:
+-                                                        {
+-                                                            renderItem.StartX -= renderItem.Width / 2;
+-                                                            renderItem.EndX -= renderItem.Width / 2;
+-                                                            break;
+-                                                        }
+-                                                    case DanmakuAlignmentMode.LowerRight:
+-                                                    case DanmakuAlignmentMode.MiddleRight:
+-                                                    case DanmakuAlignmentMode.UpperRight:
+-                                                        {
+-                                                            renderItem.StartX -= renderItem.Width;
+-                                                            renderItem.EndX -= renderItem.Width;
+-                                                            break;
+-                                                        }
+-                                                }
+-
+-                                                switch (renderItem.AnchorMode)
+-                                                {
+-                                                    case DanmakuAlignmentMode.LowerLeft:
+-                                                    case DanmakuAlignmentMode.LowerCenter:
+-                                                    case DanmakuAlignmentMode.LowerRight:
+-                                                        {
+-                                                            renderItem.StartY -= renderItem.Height;
+-                                                            renderItem.EndY -= renderItem.Height;
+-                                                            break;
+-                                                        }
+-                                                    case DanmakuAlignmentMode.MiddleLeft:
+-                                                    case DanmakuAlignmentMode.MiddleCenter:
+-                                                    case DanmakuAlignmentMode.MiddleRight:
+-                                                        {
+-                                                            renderItem.StartY -= renderItem.Height / 2;
+-                                                            renderItem.EndY -= renderItem.Height / 2;
+-                                                            break;
+-                                                        }
+-                                                }
+-                                            }
++                                            renderItem.EndX = renderItem.EndX + renderItem.Width * 0.2f <= CanvasWidth ? CanvasWidth - renderItem.Width : CanvasWidth;
+                                         }
+-                                        else
++                                        renderItem.EndY = renderItem.DefinedEndY > 1.0f ? renderItem.DefinedEndY : renderItem.DefinedEndY * CanvasHeight;
++                                        if (renderItem.EndY > renderItem.StartY && renderItem.EndY < CanvasHeight && renderItem.EndY + renderItem.Height > CanvasHeight)
+                                         {
+-                                            if (renderItem.AlignmentMode == DanmakuAlignmentMode.LowerLeft
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleLeft
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperLeft)
+-                                            {
+-                                                renderItem.StartX = renderItem.MarginLeft;
+-                                            }
+-                                            else if (renderItem.AlignmentMode == DanmakuAlignmentMode.LowerCenter
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleCenter
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperCenter)
+-                                            {
+-                                                renderItem.StartX = (CanvasWidth - renderItem.Width) / 2;
+-                                            }
+-                                            else if (renderItem.AlignmentMode == DanmakuAlignmentMode.LowerRight
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleRight
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperRight)
+-                                            {
+-                                                renderItem.StartX = CanvasWidth - renderItem.Width - renderItem.MarginRight;
+-                                            }
++                                            renderItem.EndY = renderItem.EndY + renderItem.Height * 0.2f <= CanvasHeight ? CanvasHeight - renderItem.Height : CanvasHeight;
++                                        }
+ 
+-                                            if (renderItem.AlignmentMode == DanmakuAlignmentMode.LowerLeft
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.LowerCenter
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.LowerRight)
+-                                            {
+-                                                renderItem.StartY = CanvasHeight - renderItem.Height - renderItem.MarginBottom;
+-                                            }
+-                                            else if (renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleLeft
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleCenter
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleRight)
++                                        if (renderItem.AnchorMode != DanmakuAlignmentMode.UpperLeft)
++                                        {
++                                            switch (renderItem.AnchorMode)
+                                             {
+-                                                renderItem.StartY = (CanvasHeight - renderItem.Width) / 2;
++                                                case DanmakuAlignmentMode.LowerCenter:
++                                                case DanmakuAlignmentMode.MiddleCenter:
++                                                case DanmakuAlignmentMode.UpperCenter:
++                                                    {
++                                                        renderItem.StartX -= renderItem.Width / 2;
++                                                        renderItem.EndX -= renderItem.Width / 2;
++                                                        break;
++                                                    }
++                                                case DanmakuAlignmentMode.LowerRight:
++                                                case DanmakuAlignmentMode.MiddleRight:
++                                                case DanmakuAlignmentMode.UpperRight:
++                                                    {
++                                                        renderItem.StartX -= renderItem.Width;
++                                                        renderItem.EndX -= renderItem.Width;
++                                                        break;
++                                                    }
+                                             }
+-                                            else if (renderItem.AlignmentMode == DanmakuAlignmentMode.UpperLeft
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperCenter
+-                                                || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperRight)
++
++                                            switch (renderItem.AnchorMode)
+                                             {
+-                                                renderItem.StartY = 0;
++                                                case DanmakuAlignmentMode.LowerLeft:
++                                                case DanmakuAlignmentMode.LowerCenter:
++                                                case DanmakuAlignmentMode.LowerRight:
++                                                    {
++                                                        renderItem.StartY -= renderItem.Height;
++                                                        renderItem.EndY -= renderItem.Height;
++                                                        break;
++                                                    }
++                                                case DanmakuAlignmentMode.MiddleLeft:
++                                                case DanmakuAlignmentMode.MiddleCenter:
++                                                case DanmakuAlignmentMode.MiddleRight:
++                                                    {
++                                                        renderItem.StartY -= renderItem.Height / 2;
++                                                        renderItem.EndY -= renderItem.Height / 2;
++                                                        break;
++                                                    }
+                                             }
++                                        }
++                                    }
++                                    else
++                                    {
++                                        if (renderItem.AlignmentMode == DanmakuAlignmentMode.LowerLeft
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleLeft
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperLeft)
++                                        {
++                                            renderItem.StartX = renderItem.MarginLeft;
++                                        }
++                                        else if (renderItem.AlignmentMode == DanmakuAlignmentMode.LowerCenter
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleCenter
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperCenter)
++                                        {
++                                            renderItem.StartX = (CanvasWidth - renderItem.Width) / 2;
++                                        }
++                                        else if (renderItem.AlignmentMode == DanmakuAlignmentMode.LowerRight
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleRight
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperRight)
++                                        {
++                                            renderItem.StartX = CanvasWidth - renderItem.Width - renderItem.MarginRight;
++                                        }
+ 
+-                                            renderItem.EndX = renderItem.StartX;
+-                                            renderItem.EndY = renderItem.StartY;
++                                        if (renderItem.AlignmentMode == DanmakuAlignmentMode.LowerLeft
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.LowerCenter
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.LowerRight)
++                                        {
++                                            renderItem.StartY = CanvasHeight - renderItem.Height - renderItem.MarginBottom;
++                                        }
++                                        else if (renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleLeft
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleCenter
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.MiddleRight)
++                                        {
++                                            renderItem.StartY = (CanvasHeight - renderItem.Width) / 2;
++                                        }
++                                        else if (renderItem.AlignmentMode == DanmakuAlignmentMode.UpperLeft
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperCenter
++                                            || renderItem.AlignmentMode == DanmakuAlignmentMode.UpperRight)
++                                        {
++                                            renderItem.StartY = 0;
+                                         }
+-                                        renderItem.TranslationSpeedX = renderItem.DefinedTranslationDurationMs > 0 ? (renderItem.EndX - renderItem.StartX) / renderItem.DefinedTranslationDurationMs : 0;
+-                                        renderItem.TranslationSpeedY = renderItem.DefinedTranslationDurationMs > 0 ? (renderItem.EndY - renderItem.StartY) / renderItem.DefinedTranslationDurationMs : 0;
+ 
+-                                        break;
++                                        renderItem.EndX = renderItem.StartX;
++                                        renderItem.EndY = renderItem.StartY;
+                                     }
+-                            }
+-                            renderItem.X = renderItem.StartX;
++                                    renderItem.TranslationSpeedX = renderItem.DefinedTranslationDurationMs > 0 ? (renderItem.EndX - renderItem.StartX) / renderItem.DefinedTranslationDurationMs : 0;
++                                    renderItem.TranslationSpeedY = renderItem.DefinedTranslationDurationMs > 0 ? (renderItem.EndY - renderItem.StartY) / renderItem.DefinedTranslationDurationMs : 0;
+ 
+-                            if (_autoControlDensity && renderItem.AllowDensityControl && !renderItem.NeedToReleaseYSlot)
+-                            {
+-                                // Skip rendering due to _autoControlDensity
+-                                renderItem.Dispose();
+-                                return;
+-                            }
++                                    break;
++                                }
++                        }
++                        renderItem.X = renderItem.StartX;
+ 
+-                            using (CanvasGeometry geometry = CanvasGeometry.CreateText(textLayout))
+-                            {
+-                                drawingSession.Clear(Colors.Transparent);
++                        if (_autoControlDensity && renderItem.AllowDensityControl && !renderItem.NeedToReleaseYSlot)
++                        {
++                            // Skip rendering due to _autoControlDensity
++                            renderItem.Dispose();
++                            return;
++                        }
+ 
+-                                if (renderItem.HasBorder || DebugMode)
+-                                {
+-                                    drawingSession.DrawRectangle(0, 0, renderItem.Width, renderItem.Height, _borderColor, 4f);
+-                                }
+-                                if (renderItem.HasOutline)
+-                                {
+-                                    Color outlineColor = renderItem.TextColor.R + renderItem.TextColor.G + renderItem.TextColor.B < 0x20 ? Colors.White : renderItem.OutlineColor;
+-                                    outlineColor.A = renderItem.TextColor.A;
++                        using (CanvasGeometry geometry = CanvasGeometry.CreateText(textLayout))
++                        {
++                            drawingSession.Clear(Colors.Transparent);
+ 
+-                                    drawingSession.DrawGeometry(geometry, 0, 0, outlineColor, (float)_outlineSize);
+-                                }
++                            if (renderItem.HasBorder || DebugMode)
++                            {
++                                drawingSession.DrawRectangle(0, 0, renderItem.Width, renderItem.Height, _borderColor, 4f);
++                            }
++                            if (renderItem.HasOutline)
++                            {
++                                Color outlineColor = renderItem.TextColor.R + renderItem.TextColor.G + renderItem.TextColor.B < 0x20 ? Colors.White : renderItem.OutlineColor;
++                                outlineColor.A = renderItem.TextColor.A;
+ 
+-                                drawingSession.FillGeometry(geometry, 0, 0, Colors.Transparent);
+-                                drawingSession.DrawTextLayout(textLayout, 0, 0, renderItem.TextColor);
++                                drawingSession.DrawGeometry(geometry, 0, 0, outlineColor, (float)_outlineSize);
+                             }
++
++                            drawingSession.FillGeometry(geometry, 0, 0, Colors.Transparent);
++                            drawingSession.DrawTextLayout(textLayout, 0, 0, renderItem.TextColor);
+                         }
+                     }
+                 }
+-- 
+2.56.0.windows.3
+

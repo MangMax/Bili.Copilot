@@ -1,0 +1,3 @@
+*.bundle -text
+*.patch -text
+README.md text eol=lf
