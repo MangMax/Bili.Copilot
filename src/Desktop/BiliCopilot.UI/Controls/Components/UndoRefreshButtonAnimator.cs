@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Runtime.CompilerServices;
 
@@ -47,7 +48,7 @@ internal static class UndoRefreshButtonAnimator
             return;
         }
 
-        if (!animate || button.Visibility != Visibility.Visible)
+        if (!animate || button.Visibility != Visibility.Visible || !IsEffectivelyVisible(button))
         {
             StopRunningFade(button);
             Hide(button);
@@ -94,6 +95,32 @@ internal static class UndoRefreshButtonAnimator
             storyboard.Stop();
             RunningFades.Remove(button);
         }
+    }
+
+    /// <summary>
+    /// 判断按钮当前是否真的会被渲染.
+    /// </summary>
+    /// <remarks>
+    /// 设置页与流行页/分区页共用同一个窗口，切换页面只是把页面容器设为 Collapsed。
+    /// 在隐藏的子树里启动淡出，动画不保证推进到 <c>Completed</c>，撤销按钮就会卡在 Visible；
+    /// 因此不可见时直接折叠，等页面重新显示时状态已经一致。
+    /// </remarks>
+    private static bool IsEffectivelyVisible(DependencyObject element)
+    {
+        if (element is not FrameworkElement root || !root.IsLoaded)
+        {
+            return false;
+        }
+
+        for (var current = element; current is not null; current = VisualTreeHelper.GetParent(current))
+        {
+            if (current is UIElement ui && ui.Visibility == Visibility.Collapsed)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static void Hide(FrameworkElement button)
