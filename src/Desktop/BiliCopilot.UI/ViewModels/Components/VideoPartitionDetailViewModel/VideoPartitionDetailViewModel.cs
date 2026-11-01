@@ -207,11 +207,14 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     private async Task RefreshRecommendVideosAsync()
     {
         // 推荐刷新在头部按钮旁表达进度，不再触发整页 LoadingWidget，因此单独占用一个重入标记。
-        if (IsVideoLoading || IsRecommendRefreshing)
+        if (IsRecommendRefreshing)
         {
             return;
         }
 
+        // A manual refresh supersedes pending pagination. The generation advanced below
+        // prevents that old page from appending after the refresh or clearing its state.
+        IsVideoLoading = false;
         var isIncremental = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
             && Videos.Count > 0;
 
