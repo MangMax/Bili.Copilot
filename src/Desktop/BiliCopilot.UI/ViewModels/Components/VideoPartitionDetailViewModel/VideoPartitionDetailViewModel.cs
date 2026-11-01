@@ -123,8 +123,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     /// </remarks>
     internal void ClearRefreshSnapshot()
     {
-        _recommendRefreshSnapshot = null;
-        CanUndoRefresh = false;
+        InvalidateUndoSnapshot();
         _refreshGeneration++;
         IsRecommendRefreshing = false;
         IsVideoLoading = false;
@@ -225,11 +224,12 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
         var generation = _refreshGeneration;
 
-        // 无论增量还是重载，都先记下刷新前的列表与偏移，成功后才有东西可撤销。
-        // 列表为空时快照也是空的，撤销即回到「刷新前为空」的样子。
-        var snapshot = RecommendRefreshSnapshot.Capture<VideoItemViewModel>(Videos, _recommendOffset);
+        // 只有增量刷新才需要「刷新前列表」用于撤销；非增量是替换刷新，不提供本次撤销。
+        var snapshot = isIncremental
+            ? RecommendRefreshSnapshot.Capture<VideoItemViewModel>(Videos, _recommendOffset)
+            : null;
 
-        // 新一次刷新会替换旧快照，撤销入口先收起，成功后重新出现。
+        // 新一次刷新会替换旧快照，撤销入口先收起，成功后按当前模式重新决定是否出现。
         CanUndoRefresh = false;
 
         IsRecommendRefreshing = true;
@@ -243,11 +243,10 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
             if (videos is null || videos.Count == 0)
             {
-                CanUndoRefresh = _recommendRefreshSnapshot is not null;
+                KeepPreviousUndoOrInvalidate(isIncremental);
                 return;
             }
 
-            var previousCount = Videos.Count;
             var application = RecommendRefreshApplier.Apply(
                 Videos,
                 videos.Select(p => new VideoItemViewModel(p, VideoCardStyle.Partition)),
@@ -259,24 +258,69 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
             RecommendationListChanged?.Invoke(this, EventArgs.Empty);
 
-            _recommendRefreshSnapshot = snapshot;
-            CanUndoRefresh = true;
+            // 请求期间用户可能关掉增量刷新；落地时以当前设置为准，避免入口在关闭后又亮起。
+            if (isIncremental && SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false))
+            {
+                _recommendRefreshSnapshot = snapshot;
+                CanUndoRefresh = true;
+            }
+            else
+            {
+                InvalidateUndoSnapshot();
+            }
+
             _recommendOffset = offset;
 
             // 刷新后的列表才是当前推荐列表，旧的缓存不能再被切回推荐子分区时复用。
             _recommendVideoCache?.Clear();
-            if (Videos.Count > previousCount) VideoListUpdated?.Invoke(this, EventArgs.Empty);
+
+            // 替换刷新会让列表变短（例如一页约 6 条），此时也必须通知主体检查视口并继续补页。
+            VideoListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
             // A stale refresh must not publish into the current section.
-            if (generation == _refreshGeneration) CanUndoRefresh = _recommendRefreshSnapshot is not null;
+            if (generation == _refreshGeneration) KeepPreviousUndoOrInvalidate(isIncremental);
             _logger.LogError(ex, "尝试刷新分区推荐视频时出错.");
         }
         finally
         {
             if (generation == _refreshGeneration) IsRecommendRefreshing = false;
         }
+    }
+
+    /// <summary>
+    /// 增量刷新设置变化时收敛撤销状态.
+    /// </summary>
+    /// <param name="isIncremental">新的设置值.</param>
+    internal void OnIncrementalRecommendRefreshChanged(bool isIncremental)
+    {
+        if (!isIncremental)
+        {
+            InvalidateUndoSnapshot();
+        }
+    }
+
+    /// <summary>
+    /// 刷新没有拿到新内容时，保留上一次增量刷新留下的撤销，或清掉不属于当前模式的旧快照.
+    /// </summary>
+    /// <param name="isIncremental">本次刷新是否为增量刷新.</param>
+    private void KeepPreviousUndoOrInvalidate(bool isIncremental)
+    {
+        if (isIncremental && _recommendRefreshSnapshot is not null)
+        {
+            CanUndoRefresh = true;
+        }
+        else
+        {
+            InvalidateUndoSnapshot();
+        }
+    }
+
+    private void InvalidateUndoSnapshot()
+    {
+        _recommendRefreshSnapshot = null;
+        CanUndoRefresh = false;
     }
 
     private async Task LoadRecommendVideosAsync(int generation)
