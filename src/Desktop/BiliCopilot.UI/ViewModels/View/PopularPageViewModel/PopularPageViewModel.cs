@@ -227,20 +227,28 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
         var snapshot = _recommendRefreshSnapshot;
         ++_sectionVersion;
+        var generation = ++_refreshGeneration;
         IsVideoLoading = false;
 
         // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        if (generation != _refreshGeneration) return;
         RecommendationListChanging?.Invoke(true);
-        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
+        if (generation != _refreshGeneration) return;
+        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id, () => generation == _refreshGeneration);
+        if (generation != _refreshGeneration) return;
 
         for (var i = 0; i < snapshot.Items.Count; i++)
         {
+            if (generation != _refreshGeneration) return;
             if (!ReferenceEquals(Videos[i], snapshot.Items[i])) Videos[i] = snapshot.Items[i];
         }
 
+        if (generation != _refreshGeneration) return;
         RecommendationListChanged?.Invoke(this, EventArgs.Empty);
+        if (generation != _refreshGeneration) return;
         _recommendOffset = snapshot.Offset;
         ClearRefreshSnapshot();
+        if (_refreshGeneration != generation + 1) return;
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
     }
 
@@ -262,6 +270,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
     private void InvalidateUndoSnapshot()
     {
+        _undoSnapshotVersion++;
         _recommendRefreshSnapshot = null;
         CanUndoRefresh = false;
     }

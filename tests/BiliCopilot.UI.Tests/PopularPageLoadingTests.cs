@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
@@ -503,8 +503,11 @@ public sealed class PopularPageLoadingTests
         Assert.False(page.CanUndoRefresh);
     }
 
-    [Fact]
-    public async Task SectionSwitchInsideListChangedMustNotPublishOldUndo()
+    [Theory]
+    [InlineData("Changing")]
+    [InlineData("Collection")]
+    [InlineData("Changed")]
+    public async Task SectionSwitchInsideListChangedMustNotPublishOldUndo(string boundary)
     {
         var service = new DiscoveryService();
         service.Partitions.SetResult([]);
@@ -512,7 +515,16 @@ public sealed class PopularPageLoadingTests
         SettingsToolkit.IncrementalRecommendRefresh = true;
         await page.InitializeCommand.ExecuteAsync(null);
         PageTestServices.Dispatcher.Drain();
-        page.RecommendationListChanged += (_, _) => page.SelectSectionCommand.Execute(page.Sections[1]);
+        void SwitchSection() => page.SelectSectionCommand.Execute(page.Sections[1]);
+        if (boundary == "Changing") page.RecommendationListChanging += _ => SwitchSection();
+        else if (boundary == "Changed") page.RecommendationListChanged += (_, _) => SwitchSection();
+        else
+        {
+            System.Collections.Specialized.NotifyCollectionChangedEventHandler? handler = null;
+            handler = (_, _) => { page.Videos.CollectionChanged -= handler; SwitchSection(); };
+            page.Videos.CollectionChanged += handler;
+            service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("fresh")], 7));
+        }
         await page.RefreshVideoCommand.ExecuteAsync(null);
         PageTestServices.Dispatcher.Drain();
         SettingsToolkit.IncrementalRecommendRefresh = false;

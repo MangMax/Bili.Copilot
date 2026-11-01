@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -96,21 +96,28 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         }
 
         var snapshot = _recommendRefreshSnapshot;
-        ++_refreshGeneration;
+        var generation = ++_refreshGeneration;
         IsVideoLoading = false;
 
         // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        if (generation != _refreshGeneration) return;
         RecommendationListChanging?.Invoke(true);
-        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id);
+        if (generation != _refreshGeneration) return;
+        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id, () => generation == _refreshGeneration);
+        if (generation != _refreshGeneration) return;
 
         for (var i = 0; i < snapshot.Items.Count; i++)
         {
+            if (generation != _refreshGeneration) return;
             if (!ReferenceEquals(Videos[i], snapshot.Items[i])) Videos[i] = snapshot.Items[i];
         }
 
+        if (generation != _refreshGeneration) return;
         RecommendationListChanged?.Invoke(this, EventArgs.Empty);
+        if (generation != _refreshGeneration) return;
         _recommendOffset = snapshot.Offset;
         ClearRefreshSnapshot();
+        if (_refreshGeneration != generation + 1) return;
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
     }
 
@@ -223,6 +230,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         // 记录发起刷新时的代次：请求期间用户可能切到别的子分区（甚至切走又切回），
         // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
         var generation = _refreshGeneration;
+        var undoVersion = _undoSnapshotVersion;
 
         // 只有增量刷新才需要「刷新前列表」用于撤销；非增量是替换刷新，不提供本次撤销。
         var snapshot = isIncremental
@@ -255,11 +263,14 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
             RecommendationListChanging?.Invoke(false);
-            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
+            if (generation != _refreshGeneration) return;
+            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id, () => generation == _refreshGeneration);
+            if (generation != _refreshGeneration) return;
             RecommendationListChanged?.Invoke(this, EventArgs.Empty);
+            if (generation != _refreshGeneration) return;
 
             // 请求期间用户可能关掉增量刷新；落地时以当前设置为准，避免入口在关闭后又亮起。
-            if (isIncremental && SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false))
+            if (isIncremental && undoVersion == _undoSnapshotVersion && SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false))
             {
                 _recommendRefreshSnapshot = snapshot;
                 CanUndoRefresh = true;
@@ -269,6 +280,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
                 InvalidateUndoSnapshot();
             }
 
+            if (generation != _refreshGeneration) return;
             _recommendOffset = offset;
 
             // 刷新后的列表才是当前推荐列表，旧的缓存不能再被切回推荐子分区时复用。
@@ -319,6 +331,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
     private void InvalidateUndoSnapshot()
     {
+        _undoSnapshotVersion++;
         _recommendRefreshSnapshot = null;
         CanUndoRefresh = false;
     }

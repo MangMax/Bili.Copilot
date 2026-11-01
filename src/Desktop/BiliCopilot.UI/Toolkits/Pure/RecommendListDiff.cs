@@ -170,18 +170,21 @@ public static class RecommendListDiff
     /// 必须先按倒序删除、再按升序插入：删除不会让尚未处理的索引漂移，
     /// 插入时前面的目标位置已经就位，逐个 <c>Insert</c> 即可落在正确位置。
     /// </remarks>
-    public static void Apply<T>(IList<T> items, RecommendListDiffResult<T> diff)
+    /// <param name="isCurrent">Stop remaining mutations when a notification invalidates the caller.</param>
+    public static void Apply<T>(IList<T> items, RecommendListDiffResult<T> diff, Func<bool>? isCurrent = null)
     {
         ArgumentNullException.ThrowIfNull(items);
         ArgumentNullException.ThrowIfNull(diff);
 
         foreach (var index in diff.RemovedIndices)
         {
+            if (isCurrent?.Invoke() == false) return;
             items.RemoveAt(index);
         }
 
         foreach (var insertion in diff.Insertions)
         {
+            if (isCurrent?.Invoke() == false) return;
             items.Insert(insertion.Index, insertion.Item);
         }
     }
@@ -193,10 +196,11 @@ public static class RecommendListDiff
     /// <param name="items">要更新的列表，通常是页面持有的 <see cref="System.Collections.ObjectModel.ObservableCollection{T}"/>.</param>
     /// <param name="target">刷新后应展示的目标列表，允许为空或为 null.</param>
     /// <param name="keySelector">取得条目唯一键的函数.</param>
-    public static void Apply<T>(IList<T> items, IEnumerable<T>? target, Func<T, string> keySelector)
+    /// <param name="isCurrent">Stop remaining mutations when a notification invalidates the caller.</param>
+    public static void Apply<T>(IList<T> items, IEnumerable<T>? target, Func<T, string> keySelector, Func<bool>? isCurrent = null)
     {
         ArgumentNullException.ThrowIfNull(items);
         var diff = Compute(items, target, keySelector);
-        Apply(items, diff);
+        Apply(items, diff, isCurrent);
     }
 }

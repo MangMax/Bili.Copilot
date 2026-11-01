@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -31,6 +31,7 @@ public sealed partial class PopularPageViewModel
         // 记录发起刷新时的代次：请求期间用户可能切到别的分区（甚至切走又切回），
         // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
         var generation = _refreshGeneration;
+        var undoVersion = _undoSnapshotVersion;
 
         // 只有增量刷新才需要「刷新前列表」用于撤销；非增量是替换刷新，不提供本次撤销。
         var snapshot = isIncremental
@@ -64,11 +65,14 @@ public sealed partial class PopularPageViewModel
 
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
             RecommendationListChanging?.Invoke(false);
-            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id);
+            if (generation != _refreshGeneration) return;
+            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id, () => generation == _refreshGeneration);
+            if (generation != _refreshGeneration) return;
             RecommendationListChanged?.Invoke(this, EventArgs.Empty);
+            if (generation != _refreshGeneration) return;
 
             // 请求期间用户可能关掉增量刷新；落地时以当前设置为准，避免入口在关闭后又亮起。
-            if (isIncremental && SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false))
+            if (isIncremental && undoVersion == _undoSnapshotVersion && SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false))
             {
                 _recommendRefreshSnapshot = snapshot;
                 CanUndoRefresh = true;
@@ -78,6 +82,7 @@ public sealed partial class PopularPageViewModel
                 InvalidateUndoSnapshot();
             }
 
+            if (generation != _refreshGeneration) return;
             _recommendOffset = nextOffset;
             _videoCache.Remove(SelectedSection);
 

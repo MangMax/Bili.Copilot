@@ -31,6 +31,7 @@ public sealed partial class VideoPartitionDetailViewModel
     /// 这批结果已经不属于当前列表，必须丢弃。
     /// </remarks>
     private int _refreshGeneration;
+    private int _undoSnapshotVersion;
 
     /// <summary>
     /// 推荐子分区刷新前的快照，非 null 表示可以撤销这次刷新.
