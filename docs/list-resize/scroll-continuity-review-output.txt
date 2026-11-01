@@ -1,0 +1,11 @@
+Manifest payloads verified: 9392
+real-article05 checks 18 expected failures ['AllObservedVisibleIdentitiesIncludingNull_50', 'AllObservedVisibleIdentitiesIncludingNull_500']
+real-article05 role-specific cover/avatar rows: 4895 bad: 4862
+real-article2 checks 18 expected failures ['AllObservedVisibleIdentitiesIncludingNull_50', 'AllObservedVisibleIdentitiesIncludingNull_500']
+real-article2 role-specific cover/avatar rows: 4333 bad: 4287
+fixed-article05 checks 18 expected failures []
+fixed-article05 role-specific cover/avatar rows: 3179 bad: 0
+fixed-article2 checks 18 expected failures []
+fixed-article2 role-specific cover/avatar rows: 2799 bad: 0
+All pixel classifications and duration summaries matched; samples: 9323
+Scope: offline archive replay only; no native rerun, published AOT test, or lost Temp recovery.
