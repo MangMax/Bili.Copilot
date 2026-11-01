@@ -87,18 +87,6 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     [RelayCommand]
     private void Refresh()
     {
-        if (IsRecommend)
-        {
-            _recommendOffset = 0;
-            _recommendCache?.Clear();
-            _preventLoadMore = false;
-        }
-        else
-        {
-            _childPartitionArticleCache.Remove(CurrentPartition.Data.Id);
-            _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
-        }
-
         SupersedePendingLoad();
 
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
@@ -106,6 +94,18 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             // 刷新必须以当前列表为准：清空集合的同时作废清空前发起的加载，
             // 否则旧分页结果会在清空后追加回来，刷新看起来“没有生效”。
             SupersedePendingLoad();
+            if (IsRecommend)
+            {
+                _recommendOffset = 0;
+                _recommendCache?.Clear();
+                _preventLoadMore = false;
+            }
+            else
+            {
+                _childPartitionArticleCache.Remove(CurrentPartition.Data.Id);
+                _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
+            }
+
             Articles.Clear();
             await LoadArticlesAsync();
         });
