@@ -232,7 +232,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
         // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
         if (generation != _refreshGeneration) return;
-        RecommendationListChanging?.Invoke(true);
+        RecommendationListChanging?.Invoke(RecommendationListChange.UndoRefresh);
         if (generation != _refreshGeneration) return;
         RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id, () => generation == _refreshGeneration);
         if (generation != _refreshGeneration) return;

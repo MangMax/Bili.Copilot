@@ -64,7 +64,7 @@ public sealed partial class PopularPageViewModel
                 isIncremental);
 
             // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
-            RecommendationListChanging?.Invoke(false);
+            RecommendationListChanging?.Invoke(isIncremental ? RecommendationListChange.ResetToTop : RecommendationListChange.PreserveVisibleCard);
             if (generation != _refreshGeneration) return;
             RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id, () => generation == _refreshGeneration);
             if (generation != _refreshGeneration) return;
