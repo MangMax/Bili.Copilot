@@ -27,6 +27,10 @@ public sealed partial class ArticleReaderPageViewModel
     /// </remarks>
     private int _contentGeneration;
 
+    private readonly object _loadLock = new();
+
+    private CancellationTokenSource? _contentCancellation;
+
     [ObservableProperty]
     private bool _isLoading;
 
@@ -75,6 +79,20 @@ public sealed partial class ArticleReaderPageViewModel
     /// 文章标识.
     /// </summary>
     public ArticleIdentifier? Article { get; private set; }
+
+    /// <summary>
+    /// 当前内容加载的代次；页面卸载时用它只取消本页面发起的加载.
+    /// </summary>
+    public int CurrentLoadGeneration
+    {
+        get
+        {
+            lock (_loadLock)
+            {
+                return _contentGeneration;
+            }
+        }
+    }
 
     /// <summary>
     /// 文章内容.

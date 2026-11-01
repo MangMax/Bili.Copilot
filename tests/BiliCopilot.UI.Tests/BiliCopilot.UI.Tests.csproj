@@ -34,6 +34,7 @@
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Components\SearchBoxViewModel\*.cs" Link="Search\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Items\SearchSuggestItemViewModel.cs" Link="Search\SearchSuggestItemViewModel.cs" />
     <ProjectReference Include="..\..\externals\bili-kernel\src\BiliKernel.Abstractions\BiliKernel.Abstractions.csproj" />
+    <ProjectReference Include="..\..\externals\bili-kernel\src\Services\Services.Article\Services.Article.csproj" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\View\PopularPageViewModel\*.cs" Link="Popular\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\View\VideoPartitionPageViewModel\*.cs" Link="Partition\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Components\VideoPartitionDetailViewModel\*.cs" Link="Partition\%(Filename)%(Extension)" />
