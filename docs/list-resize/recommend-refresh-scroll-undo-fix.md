@@ -5,7 +5,7 @@
 ## 基线
 
 - 本区 `t3/485a5725` 受测字节基于父 `3add3023fe71284ef8c513f070b09db1c5daa205`，kernel `62b376ec9dba705b4280f5d4ac61dd4589551034`（初始为空/474 条 staged 删除，按固定 bundle 仅恢复本区）。
-- 父在集成非增量修复后前进到 `22c2254`，并明确要求本轮不立即重基、不得覆盖已受测字节。因此本报告证据只对应上述基线；父组合时需保留其 `_undoSnapshotVersion`、`Changing/Apply/Changed` 边界和 `RecommendListDiff.Apply(Func<bool> isCurrent)`，本区未把这些新 VM 改动当作已 native 验收。
+- 父在集成非增量修复后继续前进到 `f44c22aa`（新增 UndoEpoch 防关闭再开复活、刷新/Undo 的 `Changing→Diff→Changed` 及后续状态写入代次检查、`RecommendListDiff.Apply(Func<bool> isCurrent)` 逐项防重入），并明确要求本轮不立即重基、不得覆盖已受测字节。因此本报告证据只对应上述基线，不把这些新 VM 改动当作已 native 验收；父最终 merge 时需保留这些语义与测试，且新组合不能复用本报告的 native 结论。
 - 快照语义未改：增量/非增量何时保留撤销仍由调用方负责，本区只把布尔事件负载换成三态枚举。
 
 ## AotDev 只读核验
@@ -42,7 +42,7 @@ change=UndoRefresh found=True realized=9 offset=0 target=600 currentTop=-10140 i
 
 ### 真实 WinUI（owned 身份，本轮独享桌面槽）
 
-- fixture 由生产 UI 源码复制构建（仅 `App.xaml.cs` 启动入口替换为受控服务，`Fixture.cs`/`ControlledRefresh.cs` 在 ignored artifacts），真实 `ScrollView`、`AppRepeater` 绑定、真实刷新/撤销按钮。
+- fixture 由生产 UI 源码复制构建（仅 `App.xaml.cs` 启动入口替换为受控服务，`Fixture.cs`/`ControlledRefresh.cs` 在 ignored artifacts），真实 `ScrollView`、`AppRepeater` 绑定、真实刷新/撤销按钮。real1 使用未插桩的生产源码；real2/real3 只在 ignored fixture 的 anchor 副本加入只读回调追踪，行为代码不变。
 - `PopularExactSequenceReferencesCursorUndo`、`PopularLaterRefreshUndo`、`PopularConsecutiveRefreshUndo`、`PopularInitialRefreshAtTop`、`PopularUndoBeforeQueuedReset` 及分区同名用例全部 PASS。
 - 真实按钮 `VisibleRefreshUndoThenAutomaticAppend`：UIA 点击生产 `RefreshRecommendButton`/`UndoRefreshButton`，600 → 刷新 0 → 撤销 600，原引用/顺序/游标恢复，PASS。
 - 三轮运行 real1/real2/real3 均 **20/20 PASS**；截图、`controlled.jsonl`、锚点诊断在 ignored `artifacts/refresh-undo/real*/`。
@@ -52,6 +52,11 @@ change=UndoRefresh found=True realized=9 offset=0 target=600 currentTop=-10140 i
 ## AOT
 
 - 未改动 AOT/绑定/反射面；本轮真实运行是 JIT fixture。按父的离线 AOT 发布命令对修正后生产树执行 publish 的结果记入 `artifacts/refresh-undo/aot-publish/` 与本轮交接；未安装、未替换用户 AotDev。
+
+## 组合注意
+
+- 本区 anchor 依赖 `RecommendationListChanging` 与 `RecommendationListChanged` 成对出现。若新父在 `Changing` 后因 `isCurrent` 中止 `RecommendListDiff.Apply` 却仍发 `Changed`，anchor 会按已捕获的偏移执行一次 ScrollTo；组合时应保持两者的同一代次边界，或取消时不发 `Changed`。这不改变快照语义。
+- `RecommendationListChange` 是共享方法改动：父的非增量任务继续决定何时保留快照/撤销，本区只负责把模式映射到视口行为。
 
 ## 限制
 
