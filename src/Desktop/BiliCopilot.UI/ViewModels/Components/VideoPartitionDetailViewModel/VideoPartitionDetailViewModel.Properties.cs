@@ -85,7 +85,7 @@ public sealed partial class VideoPartitionDetailViewModel
     /// </summary>
     public event EventHandler VideoListUpdated;
 
-    public event Action<bool>? RecommendationListChanging;
+    public event Action<RecommendationListChange>? RecommendationListChanging;
     public event EventHandler? RecommendationListChanged;
 
     /// <summary>
