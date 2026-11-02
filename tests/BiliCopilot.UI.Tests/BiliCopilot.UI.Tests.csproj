@@ -60,6 +60,15 @@
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Toolkits\Pure\*.cs" Link="Toolkits\Pure\%(Filename)%(Extension)" />
   </ItemGroup>
 
+  <!--
+    清晰度选择策略是纯逻辑：只依赖格式与偏好，不依赖 WinUI / 账号 VM，
+    因此直接链接源文件验证选择规则，无需引用 WinUI 可执行项目。
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Resolvers\QualitySelectionStrategy.cs" Link="Resolvers\QualitySelectionStrategy.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\PreferQualityType.cs" Link="Resolvers\PreferQualityType.cs" />
+  </ItemGroup>
+
   <!-- Real navigation/cache logic; adapters provide only the Windows presentation surface. -->
   <ItemGroup>
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/NavigationViewModel.cs" Link="Navigation/NavigationViewModel.cs" />
@@ -80,6 +89,15 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/DanmakuRendererType.cs" Link="Playback/DanmakuRendererType.cs" />
   </ItemGroup>
   <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Speed.cs" Link="Playback/PlayerViewModel.Speed.cs" /></ItemGroup>
+  <!-- 关闭后/迟到回调的会话复查：入队回调、换集与迟到写入的闸门与 WinUI 无关，直接链接验证。 -->
+  <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.LateCallbacks.cs" Link="Playback/PlayerViewModel.LateCallbacks.cs" /></ItemGroup>
+  <!-- 释放/回滚的失效入口与同步会话检查；只用适配器提供的关闭标记与弹幕会话字段。 -->
+  <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Session.cs" Link="Playback/PlayerViewModel.Session.cs" /></ItemGroup>
+
+  <!-- 播放会话的生命周期（创建/登记/初始化回滚/释放）与 WinUI 无关，用假会话直接测试。 -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Player/*.cs" Link="Player/%(Filename)%(Extension)" />
+  </ItemGroup>
 
   <!-- Article list refresh and reader identity; adapters only supply the card item, comments/AI and OS surface. -->
   <ItemGroup>

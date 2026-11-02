@@ -5,7 +5,6 @@ using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
-using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
@@ -40,44 +39,21 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
 
     internal PlayerFormatInformation? GetCurrentFormat()
     {
-        var preferFormatSetting = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PreferQuality, PreferQualityType.Auto);
-        var availableFormats = _playbackInfo.Formats.ToList().ConvertAll(p => new SourceItemViewModel(p, default));
-        if (_snapshot.Video.Publisher?.User?.Id != this.Get<AccountViewModel>().MyProfile.User.Id)
+        // 作者例外：UP 主本人可以看到未解锁清晰度，其他人只看已解锁的。
+        var isVideoAuthor = _snapshot.Video.Publisher?.User?.Id == this.Get<AccountViewModel>().MyProfile.User.Id;
+        var selection = QualitySelectionAdapter.SelectFormat(
+            _playbackInfo?.Formats,
+            isVideoAuthor ? QualityEntitlement.VideoAuthor : QualityEntitlement.Standard,
+            _snapshot.PreferQuality,
+            SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PreferQuality, PreferQualityType.Auto),
+            SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedVideoQuality, 0));
+        if (!selection.HasSelection)
         {
-            availableFormats = [.. availableFormats.Where(p => p.IsEnabled)];
+            // 规格要求把“不可用原因”留给排查：这里只记录，不改变选择行为。
+            logger.LogWarning("未能选择清晰度（{Title}）：{Reason}", _snapshot.Video.Identifier.Title, selection.Reason);
         }
 
-        SourceItemViewModel? selectedFormat = default;
-        if (_snapshot.PreferQuality > 0)
-        {
-            selectedFormat = availableFormats.Find(p => p.Data.Quality == _snapshot.PreferQuality);
-        }
-
-        if (selectedFormat == null)
-        {
-            if (preferFormatSetting == PreferQualityType.Auto)
-            {
-                var lastSelectedFormat = SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedVideoQuality, 0);
-                selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
-            }
-            else if (preferFormatSetting == PreferQualityType.UHD)
-            {
-                selectedFormat = availableFormats.Find(p => p.Data.Quality == 120);
-            }
-            else if (preferFormatSetting == PreferQualityType.HD)
-            {
-                var hdFormats = availableFormats.Where(p => p.Data.Quality == 116 || p.Data.Quality == 80).ToList();
-                selectedFormat = hdFormats.OrderByDescending(p => p.Data.Quality).FirstOrDefault();
-            }
-        }
-
-        if (selectedFormat is null)
-        {
-            var maxQuality = availableFormats.Max(p => p.Data.Quality);
-            selectedFormat = availableFormats.Find(p => p.Data.Quality == maxQuality);
-        }
-
-        return selectedFormat.Data;
+        return selection.Format;
     }
 
     public override IMpvMediaSourceResolver Clone() => throw new NotImplementedException();

@@ -1,9 +1,10 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Player;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -35,6 +36,17 @@ public sealed partial class AppViewModel : ViewModelBase
     {
         _logger = logger;
         _tokenResolver = tokenResolver;
+        // 播放会话的创建、登记与注销都收口在工厂里；视图模型只负责自己的原生资源。
+        _playerSessions = new PlaybackSessionFactory<PlayerViewModel>(
+            session =>
+            {
+                var player = this.Get<PlayerViewModel>();
+                player.AttachSession(session);
+                return player;
+            },
+            player => player.ReleaseSessionAsync(),
+            player => Players.Add(player),
+            player => Players.Remove(player));
     }
 
     public bool IsMainWindowVisible()
@@ -138,9 +150,15 @@ public sealed partial class AppViewModel : ViewModelBase
             return;
         }
 
-        var playerVM = this.Get<PlayerViewModel>();
-        this.Get<AppViewModel>().Players.Add(playerVM);
-        await playerVM.InitializeAsync(snapshot);
+        var session = _playerSessions.Open();
+        if (IsClosed)
+        {
+            // 开启会话后应用才进入退出流程：释放刚登记的会话，避免留下未初始化的播放器。
+            await session.ReleaseAsync();
+            return;
+        }
+
+        await session.Session.InitializeAsync(snapshot);
     }
 
     [RelayCommand]

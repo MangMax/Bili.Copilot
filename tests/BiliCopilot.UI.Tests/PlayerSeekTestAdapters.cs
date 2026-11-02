@@ -8,6 +8,13 @@ public sealed partial class PlayerViewModel
 
     private bool _isDanmakuClosed;
     private int _danmakuPlaybackVersion;
+    private BiliCopilot.UI.Danmaku.DanmakuLoadSession? _danmakuLoadSession;
+
+    internal BiliCopilot.UI.Danmaku.DanmakuLoadSession? DanmakuLoadSession
+    {
+        get => _danmakuLoadSession;
+        set => _danmakuLoadSession = value;
+    }
 
     public DanmakuRenderViewModel Danmaku { get; } = new();
 
