@@ -673,7 +673,7 @@ public sealed partial class PlayerViewModel
 
     private async void OnConnectorNewMediaRequest(object? sender, MediaSnapshot e)
     {
-        if (_snapshot == e || _closeTask is not null || _disposeCompletion is not null || this.Get<AppViewModel>().IsClosed)
+        if (_snapshot == e || Session.IsClosing || Session.IsReleased || this.Get<AppViewModel>().IsClosed)
         {
             return;
         }

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Player;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -14,6 +15,7 @@ public sealed partial class AppViewModel : ViewModelBase
 {
     private readonly ILogger<AppViewModel> _logger;
     private readonly IBiliTokenResolver _tokenResolver;
+    private readonly PlaybackSessionFactory<PlayerViewModel> _playerSessions;
 
     [ObservableProperty]
     private Window _activatedWindow;

@@ -4,6 +4,7 @@ using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Player;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -22,58 +23,55 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<PlayerViewModel> logger) : ViewModelBase, IAsyncDisposable
 {
-    private Task? _closeTask;
-    private TaskCompletionSource? _disposeCompletion;
-    private Task _initializationTask = Task.CompletedTask;
+    private PlaybackSession<PlayerViewModel>? _session;
     private InputPointerSource? _pointerSource;
     private InputKeyboardSource? _keyboardSource;
 
     /// <summary>
+    /// Gets 由播放会话工厂创建并登记的生命周期归属；关闭、初始化与释放都经过它。
+    /// </summary>
+    private PlaybackSession<PlayerViewModel> Session
+        => _session ?? throw new InvalidOperationException("播放会话尚未创建");
+
+    /// <summary>
+    /// 绑定由工厂创建的播放会话；一个视图模型只属于一个会话。
+    /// </summary>
+    /// <param name="session">播放会话。</param>
+    internal void AttachSession(PlaybackSession<PlayerViewModel> session)
+        => _session = session ?? throw new ArgumentNullException(nameof(session));
+
+    /// <summary>
     /// 原生关闭、返回和应用退出共享同一个任务，完成后才从播放器集合移除。
     /// </summary>
-    public Task CloseAsync()
-    {
-        if (_closeTask is not null)
-        {
-            return _closeTask;
-        }
+    public Task CloseAsync() => Session.CloseAsync(PrepareCloseAsync);
 
-        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        _closeTask = completion.Task;
+    private async Task PrepareCloseAsync()
+    {
         // Reject and cancel old danmaku work before native destruction or async cleanup.
         _isDanmakuClosed = true;
         _danmakuLoadSession?.Dispose();
-        _ = CompleteCloseAsync();
-        return _closeTask;
+        await CompleteCloseAsync();
+    }
 
-        async Task CompleteCloseAsync()
-        {
-            try
+    private async Task CompleteCloseAsync()
+    {
+        var appVM = this.Get<AppViewModel>();
+        await ((App)Application.Current).TrayLifecycle!.ClosePlayerAsync(
+            SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true),
+            UseIntegrationOperation,
+            appVM.Players.Count,
+            appVM.IsMainWindowVisible(),
+            ShowMainWindow,
+            async () =>
             {
-                var appVM = this.Get<AppViewModel>();
-                await ((App)Application.Current).TrayLifecycle!.ClosePlayerAsync(
-                    SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true),
-                    UseIntegrationOperation,
-                    appVM.Players.Count,
-                    appVM.IsMainWindowVisible(),
-                    ShowMainWindow,
-                    async () =>
-                    {
-                        if (Window?.IsClosed == false)
-                        {
-                            Window.Close();
-                        }
+                if (Window?.IsClosed == false)
+                {
+                    Window.Close();
+                }
 
-                        await DisposeAsync();
-                    },
-                    () => appVM.Windows.OfType<MainWindow>().FirstOrDefault()?.Close());
-                completion.SetResult();
-            }
-            catch (Exception ex)
-            {
-                completion.SetException(ex);
-            }
-        }
+                await DisposeAsync();
+            },
+            () => appVM.Windows.OfType<MainWindow>().FirstOrDefault()?.Close());
     }
 
     private async Task TryCleanupAsync(Func<Task> cleanup)
@@ -89,37 +87,26 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     }
 
     /// <inheritdoc/>
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         _isDanmakuClosed = true;
         _danmakuLoadSession?.Dispose();
-        if (_disposeCompletion is not null)
-        {
-            // Reentrant disposal joins the same UI-thread operation without blocking the dispatcher.
-#pragma warning disable VSTHRD003
-            await _disposeCompletion.Task;
-#pragma warning restore VSTHRD003
-            return;
-        }
+        // 释放闸门在会话里：重复调用加入同一个任务，原生资源只释放一次。
+        return new ValueTask(Session.ReleaseAsync());
+    }
 
-        _disposeCompletion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        try
-        {
-            // Initialization may still be creating a native client. Both operations originate on
-            // the UI thread and never synchronously block its dispatcher.
+    /// <summary>
+    /// 释放会话已创建的原生资源；只由会话的释放闸门调用一次。
+    /// </summary>
+    /// <returns><see cref="Task"/>.</returns>
+    internal async Task ReleaseSessionAsync()
+    {
+        // 释放前等已接纳的调速与跳转落定，避免它们打到已销毁的客户端。
 #pragma warning disable VSTHRD003
-            await TryCleanupAsync(() => _initializationTask);
-            await WaitForSpeedChangesAsync();
-            await WaitForPositionChangesAsync();
+        await WaitForSpeedChangesAsync();
+        await WaitForPositionChangesAsync();
 #pragma warning restore VSTHRD003
-            await DisposeResourcesAsync();
-            _disposeCompletion.SetResult();
-        }
-        catch (Exception ex)
-        {
-            _disposeCompletion.SetException(ex);
-            throw;
-        }
+        await DisposeResourcesAsync();
     }
 
     private async Task DisposeResourcesAsync()
@@ -153,8 +140,6 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             Window.GetWindow().Destroying -= OnWindowDestroying;
             await TryCleanupAsync(() => Window.DisposeAsync().AsTask());
         }
-
-        this.Get<AppViewModel>().Players.Remove(this);
     }
 
     private async Task ReleasePlaybackEventsAsync()
@@ -223,17 +208,26 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     [RelayCommand]
     internal Task InitializeAsync(MediaSnapshot snapshot)
     {
-        if (_closeTask is not null || _disposeCompletion is not null || this.Get<AppViewModel>().IsClosed)
+        if (this.Get<AppViewModel>().IsClosed)
         {
             return Task.CompletedTask;
         }
 
-        var previousInitialization = _initializationTask;
-        var initialization = InitializeCoreAsync(snapshot);
-        _initializationTask = previousInitialization.IsCompleted
-            ? initialization
-            : Task.WhenAll(previousInitialization, initialization);
-        return _initializationTask;
+        return ObserveInitializationAsync(Session.InitializeAsync(() => InitializeCoreAsync(snapshot)));
+
+        async Task ObserveInitializationAsync(Task initialization)
+        {
+            try
+            {
+                await initialization;
+            }
+            catch (Exception ex)
+            {
+                // 初始化失败会回滚会话；这里保留原有的失败记录。
+                logger.LogError(ex, "初始化播放器失败");
+                throw;
+            }
+        }
     }
 
     private async Task InitializeCoreAsync(MediaSnapshot snapshot)
@@ -282,7 +276,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
 
         await InitializeInternalAsync();
-        if (_closeTask is not null || _disposeCompletion is not null)
+        if (Session.IsClosing || Session.IsReleased)
         {
             return;
         }
