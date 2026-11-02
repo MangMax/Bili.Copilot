@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Forms;
@@ -158,7 +158,7 @@ public sealed partial class AppViewModel : ViewModelBase
             return;
         }
 
-        await session.InitializeAsync(snapshot);
+        await session.Session.InitializeAsync(snapshot);
     }
 
     [RelayCommand]
