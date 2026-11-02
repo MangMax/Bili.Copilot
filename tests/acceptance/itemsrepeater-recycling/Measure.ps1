@@ -45,16 +45,18 @@ param(
     [ValidateRange(400, 2400)]
     [int]$WindowHeight = 900,
 
-    [ValidateRange(1, 6)]
+    # Pixels, not tile counts: the previous 1..6 range rejected the documented 80.
+    [ValidateRange(-10000, 10000)]
     [int]$WindowX = 80,
 
-    [ValidateRange(1, 6)]
+    [ValidateRange(-10000, 10000)]
     [int]$WindowY = 80,
 
     [ValidateRange(0, 400)]
     [int]$WheelNotches = 120,
 
-    [ValidateRange(2, 8)]
+    # The default is 1 pass; the old 2..8 range rejected the documented default.
+    [ValidateRange(1, 8)]
     [int]$ScrollCyclesPerPageSwitch = 1,
 
     # NavigationView rail items are selected by index, not by localized name.
@@ -77,7 +79,10 @@ param(
     [switch]$SkipScreenshots,
     [switch]$NoResize,
     [switch]$KeepRunning,
-    [switch]$DryRun
+    [switch]$DryRun,
+
+    # Validate this file's parameter metadata without resolving the package or launching anything.
+    [switch]$SelfTest
 )
 
 Set-StrictMode -Version Latest
@@ -97,12 +102,94 @@ $script:ArtifactRoot    = if ([string]::IsNullOrWhiteSpace($ArtifactRoot)) {
 $script:RunId           = (Get-Date).ToString('yyyyMMdd-HHmmss')
 $script:RunDir          = Join-Path $script:ArtifactRoot $script:RunId
 $script:Log             = [System.Collections.Generic.List[object]]::new()
-$script:OwnedProcesses  = [System.Collections.Generic.List[int]]::new()
 $script:Notes           = [System.Collections.Generic.List[string]]::new()
 $script:OriginalWindowRect = $null
+$script:UiaErrors       = [System.Collections.Generic.List[object]]::new()
 
 if ($PackageName -ne $script:Identity) {
     throw "Refusing to run: package '$PackageName' is not '$($script:Identity)'."
+}
+
+function Get-ParameterRange {
+    param($ParameterAst)
+
+    $attribute = @($ParameterAst.Attributes | Where-Object { $_.TypeName.Name -eq 'ValidateRange' })
+    if ($attribute.Count -eq 0) {
+        return $null
+    }
+
+    $values = @($attribute[0].PositionalArguments | ForEach-Object { [double]$_.Value })
+    if ($values.Count -ne 2) {
+        throw "ValidateRange on -$($ParameterAst.Name.VariablePath.UserPath) does not have two bounds."
+    }
+
+    return [pscustomobject]@{ Min = $values[0]; Max = $values[1] }
+}
+
+function Invoke-SelfTest {
+    <#
+    .SYNOPSIS
+        Binding smoke check: every default and every documented value fits its ValidateRange.
+    .DESCRIPTION
+        The 80-pixel window default used to sit in a 1..6 ValidateRange, and the
+        scroll-pass default 1 sat in a 2..8 range, so the documented commands did
+        not bind at all. Binding happens before any statement runs, so this check
+        reads the parameter metadata from the file instead of launching the app.
+    #>
+    $failures = [System.Collections.Generic.List[string]]::new()
+    $tokens = $null
+    $parseErrors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($PSCommandPath, [ref]$tokens, [ref]$parseErrors)
+    if ($parseErrors.Count -gt 0) {
+        throw "Cannot parse $PSCommandPath : $($parseErrors[0].Message)"
+    }
+
+    # Values from README section 3 and the .DESCRIPTION examples that must bind.
+    $documented = @{
+        WindowX                   = @(80)
+        WindowY                   = @(80)
+        WindowWidth               = @(1440)
+        WindowHeight              = @(900)
+        ScrollCyclesPerPageSwitch = @(1, 2, 8)
+        WheelNotches              = @(120)
+        NavItemCount              = @(2)
+        Cycles                    = @(4, 6, 8)
+        WarmupCycles              = @(1, 2)
+        PlayerWindowCycles        = @(0, 1, 3)
+    }
+
+    foreach ($parameter in $ast.ParamBlock.Parameters) {
+        $name = $parameter.Name.VariablePath.UserPath
+        $range = Get-ParameterRange -ParameterAst $parameter
+        if ($null -eq $range) { continue }
+
+        if ($null -ne $parameter.DefaultValue) {
+            $default = [double]$parameter.DefaultValue.Value
+            if ($default -lt $range.Min -or $default -gt $range.Max) {
+                $failures.Add("-$name default $default is outside ValidateRange($($range.Min),$($range.Max)).")
+            }
+        }
+
+        foreach ($value in @($documented[$name])) {
+            if ($null -eq $value) { continue }
+            if ([double]$value -lt $range.Min -or [double]$value -gt $range.Max) {
+                $failures.Add("-$name documented value $value is outside ValidateRange($($range.Min),$($range.Max)).")
+            }
+        }
+    }
+
+    if ($failures.Count -gt 0) {
+        foreach ($failure in $failures) { Write-Output "FAIL $failure" }
+        Write-Output "SELFTEST FAILED ($($failures.Count))"
+        exit 1
+    }
+
+    Write-Output 'SELFTEST PASSED'
+    exit 0
+}
+
+if ($SelfTest) {
+    Invoke-SelfTest
 }
 
 # ---------------------------------------------------------------- native interop
@@ -226,6 +313,48 @@ function Get-BytesToMb {
     return [math]::Round($Bytes / 1MB, 2)
 }
 
+function New-UiaFailure {
+    param([string]$Action, [string]$Message)
+
+    $failure = [pscustomobject]@{
+        ok         = $false
+        uiaFailure = $true
+        action     = $Action
+        error      = $Message
+        at         = (Get-Date).ToString('o')
+    }
+    $script:UiaErrors.Add($failure)
+    Add-Log -Step 'uia-helper-failed' -Data @{ action = $Action; error = $Message }
+    return $failure
+}
+
+function Test-UiaSuccess {
+    param($Result)
+
+    if ($null -eq $Result) { return $false }
+    if ($null -ne $Result.PSObject.Properties['uiaFailure'] -and [bool]$Result.uiaFailure) { return $false }
+    if ($null -ne $Result.PSObject.Properties['ok'] -and -not [bool]$Result.ok) { return $false }
+    return $true
+}
+
+function Get-ScrollPercentDelta {
+    <#
+    .SYNOPSIS
+        Vertical scroll percent displaced between two UI Automation observations.
+    .DESCRIPTION
+        Returns $null when either observation failed or does not carry the
+        scroll pattern snapshot; never fabricates a zero delta.
+    #>
+    param($From, $To)
+
+    if (-not (Test-UiaSuccess $From) -or -not (Test-UiaSuccess $To)) { return $null }
+    $fromProperty = $From.PSObject.Properties['before']
+    $toProperty = $To.PSObject.Properties['before']
+    if ($null -eq $fromProperty -or $null -eq $toProperty) { return $null }
+
+    return [double]$toProperty.Value.verticalPercent - [double]$fromProperty.Value.verticalPercent
+}
+
 function Get-AmbientSnapshot {
     $bili = @(Get-Process -Name 'BiliCopilot.UI' -ErrorAction SilentlyContinue)
     $systemCpu = $null
@@ -315,7 +444,9 @@ function Invoke-UiaHelper {
     )
 
     $powershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-    if (-not (Test-Path $powershell)) { return $null }
+    if (-not (Test-Path $powershell)) {
+        return (New-UiaFailure -Action $Action -Message "Windows PowerShell not found: $powershell")
+    }
 
     $helper = Join-Path $PSScriptRoot 'Drive-Uia.ps1'
     $argumentList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $helper, '-WindowHandle', $WindowHandle, '-Action', $Action)
@@ -341,28 +472,36 @@ function Invoke-UiaHelper {
     try {
         $child = [System.Diagnostics.Process]::Start($startInfo)
         $readTask = $child.StandardOutput.ReadToEndAsync()
+        $errorTask = $child.StandardError.ReadToEndAsync()
         if (-not $child.WaitForExit(20000)) {
-            Add-Log -Step 'uia-helper-timeout' -Data @{ action = $Action }
             try { $child.Kill($true) } catch { }
-            return $null
+            return (New-UiaFailure -Action $Action -Message 'UIA helper timed out after 20 s.')
         }
 
         $raw = $readTask.GetAwaiter().GetResult()
-        if ([string]::IsNullOrWhiteSpace($raw)) { return $null }
+        $standardError = $errorTask.GetAwaiter().GetResult()
+        if ([string]::IsNullOrWhiteSpace($raw)) {
+            $detail = if ([string]::IsNullOrWhiteSpace($standardError)) { 'no stdout and no stderr' } else { $standardError.Trim() }
+            return (New-UiaFailure -Action $Action -Message "UIA helper produced no JSON ($detail; exit $($child.ExitCode)).")
+        }
 
-        $parsed = $raw | ConvertFrom-Json
+        try {
+            $parsed = $raw | ConvertFrom-Json
+        }
+        catch {
+            return (New-UiaFailure -Action $Action -Message "UIA helper produced invalid JSON: $($_.Exception.Message)")
+        }
+
         # Drive-Uia.ps1 reports failures as {"ok":false,...}; never let that
         # masquerade as a successful result.
         if ($null -ne $parsed.PSObject.Properties['ok'] -and -not [bool]$parsed.ok) {
-            Add-Log -Step 'uia-helper-error' -Data @{ action = $Action; error = [string]$parsed.error }
-            return $null
+            return (New-UiaFailure -Action $Action -Message "UIA helper reported: $([string]$parsed.error)")
         }
 
         return $parsed
     }
     catch {
-        Add-Log -Step 'uia-helper-failed' -Data @{ action = $Action; error = $_.Exception.Message }
-        return $null
+        return (New-UiaFailure -Action $Action -Message $_.Exception.Message)
     }
     finally {
         if ($null -ne $child) { $child.Dispose() }
@@ -375,10 +514,11 @@ function Invoke-WheelScroll {
         Sends real wheel input over the list.
 
     .DESCRIPTION
-        Runs inside Drive-Uia.ps1 (a separate, killable process) on purpose:
-        SetForegroundWindow and synchronous window messages block when the app's
-        UI thread is pegged, and an in-process P/Invoke cannot time out. Here the
-        worst case is a 20 s helper timeout and a logged miss.
+        In-process on purpose: a child powershell cannot legally take the
+        foreground, and wheel input only reaches the list when the app owns it.
+        Drive-Uia.ps1 no longer exposes a wheel action for that reason
+        (ValidateSet rejects it); a foreground miss is logged and reported
+        instead of scrolling blindly.
     #>
     param(
         [long]$WindowHandle,
@@ -450,6 +590,44 @@ function Save-WindowScreenshot {
     }
     catch {
         Add-Log -Step 'screenshot-failed' -Data @{ path = $Path; error = $_.Exception.Message }
+        return $false
+    }
+}
+
+function Restore-OriginalWindowGeometry {
+    <#
+    .SYNOPSIS
+        Puts the user's window back where it was before the harness resized it.
+    .DESCRIPTION
+        Called twice: on the normal path before the app is closed, and again in
+        finally so an exception cannot skip it. Idempotent and a no-op when
+        -NoResize was used or the window/process is already gone.
+    #>
+    param([IntPtr]$Window, [System.Diagnostics.Process]$Process)
+
+    if ($null -eq $script:OriginalWindowRect -or $NoResize -or
+        $null -eq $Process -or $Process.HasExited -or $Window -eq [IntPtr]::Zero) {
+        return $false
+    }
+
+    try {
+        [void][RepeaterAcceptanceNative]::SetWindowPos(
+            $Window, [IntPtr]::Zero,
+            $script:OriginalWindowRect.left, $script:OriginalWindowRect.top,
+            $script:OriginalWindowRect.right - $script:OriginalWindowRect.left,
+            $script:OriginalWindowRect.bottom - $script:OriginalWindowRect.top,
+            ([RepeaterAcceptanceNative]::SWP_NOZORDER -bor [RepeaterAcceptanceNative]::SWP_NOACTIVATE))
+        Add-Log -Step 'window-restored' -Data @{
+            left   = $script:OriginalWindowRect.left
+            top    = $script:OriginalWindowRect.top
+            width  = $script:OriginalWindowRect.right - $script:OriginalWindowRect.left
+            height = $script:OriginalWindowRect.bottom - $script:OriginalWindowRect.top
+        }
+        Start-Sleep -Milliseconds 200
+        return $true
+    }
+    catch {
+        Add-Log -Step 'window-restore-failed' -Data @{ error = $_.Exception.Message }
         return $false
     }
 }
@@ -530,7 +708,10 @@ function Invoke-PlayerWindowCycle {
     $attempts = @()
     $point = $null
 
-    $null = Invoke-UiaHelper -WindowHandle $Window.ToInt64() -Action 'activate'
+    $activation = Invoke-UiaHelper -WindowHandle $Window.ToInt64() -Action 'activate'
+    if (-not (Test-UiaSuccess $activation)) {
+        Add-Log -Step 'player-activation-failed' -Data @{ error = [string]$activation.error }
+    }
     Start-Sleep -Milliseconds 250
 
     $attemptIndex = 0
@@ -568,7 +749,10 @@ function Invoke-PlayerWindowCycle {
 
     if ($opened -eq [IntPtr]::Zero) {
         Add-Log -Step 'player-window-missing' -Data @{ attempts = ($attempts | ForEach-Object { "$($_[0]),$($_[1])" }) -join ' ' }
-        $null = Invoke-UiaHelper -WindowHandle $Window.ToInt64() -Action 'select' -Index $RestoreNavIndex
+        $restore = Invoke-UiaHelper -WindowHandle $Window.ToInt64() -Action 'select' -Index $RestoreNavIndex
+        if (-not (Test-UiaSuccess $restore)) {
+            Add-Log -Step 'player-nav-restore-failed' -Data @{ index = $RestoreNavIndex; error = [string]$restore.error }
+        }
         $null = Wait-AppSettled -Process $Process -MinimumWaitMs 800 -QuietWindowMs 800 -TimeoutMs 15000
         return [pscustomobject]@{ opened = $false; closed = $false; attempts = $attempts; restoredNav = $RestoreNavIndex }
     }
@@ -597,16 +781,17 @@ function Resolve-DevPackage {
     if ($null -eq $package) {
         throw "Package '$($script:Identity)' is not installed. Install the Dev build first (see README)."
     }
-    if ($package.Name -ne $script:Identity) {
-        throw "Resolved package '$($package.Name)' is not '$($script:Identity)'."
-    }
 
-    # Exact identity comparison only: 'Mang.BiliCopilot.Dev' legitimately starts
-    # with 'Mang.BiliCopilot', so a prefix match here would reject the Dev package.
+    # Compare the *resolved* package, not the constant parameter: a Get-AppxPackage
+    # result pointing at a production identity must abort before any launch.
+    $resolvedName = [string]$package.Name
     foreach ($forbidden in $script:ForbiddenIdentities) {
-        if ($package.Name -ieq $forbidden) {
-            throw "Resolved package matches forbidden identity '$forbidden'."
+        if ($resolvedName -ieq $forbidden) {
+            throw "Resolved package '$resolvedName' matches forbidden identity '$forbidden'."
         }
+    }
+    if ($resolvedName -ne $script:Identity) {
+        throw "Resolved package '$resolvedName' is not '$($script:Identity)'."
     }
 
     $exe = Join-Path $package.InstallLocation $script:ExeName
@@ -749,6 +934,7 @@ catch {
 }
 
 $process = $null
+$window = [IntPtr]::Zero
 $samples = [System.Collections.Generic.List[object]]::new()
 $cyclesRecord = [System.Collections.Generic.List[object]]::new()
 $screenshots = [System.Collections.Generic.List[string]]::new()
@@ -757,7 +943,6 @@ $verdict = $null
 try {
     Add-Log -Step 'launch' -Data @{ executable = $package.executable }
     $process = Start-Process -FilePath $package.executable -PassThru
-    $script:OwnedProcesses.Add($process.Id)
 
     $deadline = [DateTime]::UtcNow.AddSeconds(120)
     $window = [IntPtr]::Zero
@@ -794,7 +979,7 @@ try {
     Add-Log -Step 'dpi' -Data @{ dpi = $dpi; scale = [math]::Round($dpi / 96.0, 3) }
 
     $uiaSnapshot = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'snapshot'
-    if ($null -ne $uiaSnapshot) {
+    if (Test-UiaSuccess $uiaSnapshot) {
         Add-Log -Step 'uia-snapshot' -Data @{ windowName = $uiaSnapshot.windowName; navItems = @($uiaSnapshot.navItems).Count }
     }
     else {
@@ -836,35 +1021,29 @@ try {
         }
         $scrollAfter = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scrollinfo'
 
-        $scrollDelta = $null
-        if ($null -ne $scrollBefore -and $null -ne $scrollPeak -and
-            $null -ne $scrollBefore.PSObject.Properties['before'] -and $null -ne $scrollPeak.PSObject.Properties['before']) {
-            $scrollDelta = [double]$scrollPeak.before.verticalPercent - [double]$scrollBefore.before.verticalPercent
-        }
+        $scrollDelta = Get-ScrollPercentDelta -From $scrollBefore -To $scrollPeak
 
         # Wheel input is only useful if it actually displaced the list; otherwise
         # fall back to UI Automation scrolling so recycle churn still happens.
         $scrollMode = 'wheel'
         if (($null -eq $scrollDelta) -or ([math]::Abs([double]$scrollDelta) -lt 0.5)) {
             $scrollMode = 'uia-fallback'
-            $null = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scroll' -ScrollCount 8 -ScrollDirection 'down'
+            $down = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scroll' -ScrollCount 8 -ScrollDirection 'down'
             Start-Sleep -Milliseconds 500
             $scrollPeak = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scrollinfo'
-            $null = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scroll' -ScrollCount 8 -ScrollDirection 'up'
+            $up = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scroll' -ScrollCount 8 -ScrollDirection 'up'
             Start-Sleep -Milliseconds 500
             $scrollAfter = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scrollinfo'
-            if ($null -ne $scrollBefore -and $null -ne $scrollPeak -and
-                $null -ne $scrollBefore.PSObject.Properties['before'] -and $null -ne $scrollPeak.PSObject.Properties['before']) {
-                $scrollDelta = [double]$scrollPeak.before.verticalPercent - [double]$scrollBefore.before.verticalPercent
+            $scrollDelta = Get-ScrollPercentDelta -From $scrollBefore -To $scrollPeak
+            Add-Log -Step 'scroll-fallback-uia' -Data @{
+                cycle        = $label
+                peakDelta    = $scrollDelta
+                downOk       = (Test-UiaSuccess $down)
+                upOk         = (Test-UiaSuccess $up)
             }
-            Add-Log -Step 'scroll-fallback-uia' -Data @{ cycle = $label; peakDelta = $scrollDelta }
         }
 
-        $scrollReturnDelta = $null
-        if ($null -ne $scrollBefore -and $null -ne $scrollAfter -and
-            $null -ne $scrollBefore.PSObject.Properties['before'] -and $null -ne $scrollAfter.PSObject.Properties['before']) {
-            $scrollReturnDelta = [double]$scrollAfter.before.verticalPercent - [double]$scrollBefore.before.verticalPercent
-        }
+        $scrollReturnDelta = Get-ScrollPercentDelta -From $scrollBefore -To $scrollAfter
         $null = Wait-AppSettled -Process $process -MinimumWaitMs 600 -QuietWindowMs 600 -TimeoutMs 15000 -CpuDeltaSeconds 0.2
 
         if (-not $SkipScreenshots) {
@@ -908,10 +1087,14 @@ try {
             $window = [RepeaterAcceptanceNative]::FindMainWindow([uint32]$process.Id)
             if ($window -ne [IntPtr]::Zero) {
                 [void][RepeaterAcceptanceNative]::ShowWindow($window, 9)
-                $null = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'activate'
+                $reactivation = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'activate'
                 Start-Sleep -Milliseconds 400
                 $reacquired = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'snapshot'
-                Add-Log -Step 'window-reacquired' -Data @{ handle = $window.ToInt64(); navItems = $(if ($null -ne $reacquired) { @($reacquired.navItems).Count } else { -1 }) }
+                Add-Log -Step 'window-reacquired' -Data @{
+                    handle      = $window.ToInt64()
+                    navItems    = $(if (Test-UiaSuccess $reacquired) { @($reacquired.navItems).Count } else { -1 })
+                    reactivated = (Test-UiaSuccess $reactivation)
+                }
             }
         }
 
@@ -951,16 +1134,9 @@ try {
     $postCycles = Get-AppMetrics -Process $process
     Add-Log -Step 'cycles-complete' -Data @{ privateCommitMb = $postCycles.privateCommitMb }
 
-    if ($null -ne $script:OriginalWindowRect -and -not $NoResize -and -not $process.HasExited) {
-        [void][RepeaterAcceptanceNative]::SetWindowPos(
-            $window, [IntPtr]::Zero,
-            $script:OriginalWindowRect.left, $script:OriginalWindowRect.top,
-            $script:OriginalWindowRect.right - $script:OriginalWindowRect.left,
-            $script:OriginalWindowRect.bottom - $script:OriginalWindowRect.top,
-            ([RepeaterAcceptanceNative]::SWP_NOZORDER -bor [RepeaterAcceptanceNative]::SWP_NOACTIVATE))
-        Start-Sleep -Milliseconds 400
-    }
-
+    # Restore before closing; the same call runs again in finally if an
+    # exception skips this path. Restoring an exited process is impossible.
+    $null = Restore-OriginalWindowGeometry -Window $window -Process $process
     if (-not $KeepRunning) {
         Close-OwnedApp -Process $process -TimeoutMs 25000
     }
@@ -985,6 +1161,12 @@ try {
     $privateSeries = [double[]]@($measured | ForEach-Object { [double]$_.privateCommitMb })
     $handleSeries = [double[]]@($measured | ForEach-Object { [double]$_.handleCount })
 
+    $navAttempts = @($measured | ForEach-Object { @($_.navResults) } | Where-Object { $null -ne $_ })
+    $navSucceeded = @($navAttempts | Where-Object { Test-UiaSuccess $_ }).Count
+    if ($script:UiaErrors.Count -gt 0) {
+        $script:Notes.Add("$($script:UiaErrors.Count) UI Automation helper call(s) failed; see summary.uia for the action and message. Scrolling/navigation coverage is reduced for those cycles.")
+    }
+
     $verdict = Get-RecyclingVerdict -PrivateCommitMb $privateSeries -HandleCount $handleSeries
 
     $summary = [pscustomobject]@{
@@ -999,9 +1181,16 @@ try {
         series           = [pscustomobject]@{
             privateCommitMb = $privateSeries
             handleCount     = $handleSeries
-            workingSetPrivateMb = [double[]]@($measured | ForEach-Object { if ($null -eq $_.workingSetPrivateMb) { 0.0 } else { [double]$_.workingSetPrivateMb } })
+            # Keep a missing counter as $null; the report renders it 'n/a' instead of 0 MB.
+            workingSetPrivateMb = @($measured | ForEach-Object { $_.workingSetPrivateMb })
         }
         exit             = $exitRecord
+        uia              = [pscustomobject]@{
+            errorCount    = $script:UiaErrors.Count
+            errors        = @($script:UiaErrors)
+            navSucceeded  = $navSucceeded
+            navAttempted  = $navAttempts.Count
+        }
         notes            = @($script:Notes)
         artifacts        = [pscustomobject]@{
             runDirectory = $script:RunDir
@@ -1014,13 +1203,14 @@ try {
         summary   = $summary
         cycles    = @($cyclesRecord)
         samples   = @($samples)
+        uiaErrors = @($script:UiaErrors)
         log       = @($script:Log)
     }
 
     $raw | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $script:RunDir 'raw.json') -Encoding utf8
     $summary | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $script:RunDir 'summary.json') -Encoding utf8
 
-    $markdown = New-SummaryMarkdown -Summary $summary
+    $markdown = Write-SummaryMarkdown -Summary $summary
     Set-Content -LiteralPath (Join-Path $script:RunDir 'summary.md') -Value $markdown -Encoding utf8
 
     Write-Host ''
@@ -1030,6 +1220,10 @@ try {
     $summary | ConvertTo-Json -Depth 6
 }
 finally {
+    # Restore the user's geometry on every path, including exceptions and
+    # -KeepRunning: the README and .DESCRIPTION promise it unconditionally.
+    $null = Restore-OriginalWindowGeometry -Window $window -Process $process
+
     if ($null -ne $process -and -not $KeepRunning) {
         Close-OwnedApp -Process $process
     }

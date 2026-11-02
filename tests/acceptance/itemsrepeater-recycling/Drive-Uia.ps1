@@ -19,15 +19,16 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][long]$WindowHandle,
-    [Parameter(Mandatory)][ValidateSet('snapshot', 'select', 'scroll', 'scrollinfo')][string]$Action,
+    # 'activate' is called by Measure.ps1; every value here must be bindable.
+    # Wheel input is NOT here: a child process cannot legally take the
+    # foreground (SetForegroundWindow rules), so Measure.ps1 sends wheel input
+    # in-process instead. Advertising a 'wheel' action that cannot work was a
+    # trap, so it was removed rather than added to this set.
+    [Parameter(Mandatory)][ValidateSet('snapshot', 'select', 'scroll', 'scrollinfo', 'activate')][string]$Action,
     [int]$Index = -1,
     [int]$ScrollCount = 1,
     [ValidateSet('down', 'up')][string]$ScrollDirection = 'down',
-    [double]$ScrollPercent = -1,
-    [int]$WheelNotches = 1,
-    [ValidateSet('down', 'up')][string]$WheelDirection = 'down',
-    [double]$WheelXPercent = 0.55,
-    [double]$WheelYPercent = 0.55
+    [double]$ScrollPercent = -1
 )
 
 $ErrorActionPreference = 'Stop'
@@ -39,16 +40,11 @@ using System;
 using System.Runtime.InteropServices;
 public static class UiaDriveNative {
     [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
-    [DllImport("user32.dll")] public static extern bool GetCursorPos(out POINT point);
     [DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, int data, UIntPtr extra);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
     public const uint LeftDown = 0x0002;
     public const uint LeftUp = 0x0004;
-    public const uint Wheel = 0x0800;
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct POINT { public int X; public int Y; }
 }
 '@
 
@@ -73,6 +69,19 @@ function Get-Rect {
         return @{ x = [int]$r.X; y = [int]$r.Y; width = [int]$r.Width; height = [int]$r.Height }
     }
     catch { return $null }
+}
+
+# Navigation items live in a narrow left rail; page list rows are wide. One
+# definition used by both snapshot and select, so the two cannot drift.
+function Test-NavItemCandidate {
+    param($Rect, $WindowRect)
+
+    if ($null -eq $Rect -or $null -eq $WindowRect) { return $false }
+    $maxWidth = 0.4
+    $maxX = 0.35
+    if ($Rect.width -gt [int]($WindowRect.width * $maxWidth)) { return $false }
+    if ($Rect.x -gt ($WindowRect.x + [int]($WindowRect.width * $maxX))) { return $false }
+    return $true
 }
 
 function Invoke-CenterClick {
@@ -104,11 +113,7 @@ try {
             $element = $found.Item($i)
             $rect = Get-Rect -Element $element
             if ($null -eq $rect) { continue }
-            # Navigation items live in a narrow left rail; page list rows are wide.
-            if ($null -ne $windowRect) {
-                if ($rect.width -gt [int]($windowRect.width * 0.4)) { continue }
-                if ($rect.x -gt ($windowRect.x + [int]($windowRect.width * 0.35))) { continue }
-            }
+            if (-not (Test-NavItemCandidate -Rect $rect -WindowRect $windowRect)) { continue }
             $items += @{
                 index        = $items.Count
                 name         = [string]$element.Current.Name
@@ -136,10 +141,7 @@ try {
             $element = $found.Item($i)
             $rect = Get-Rect -Element $element
             if ($null -eq $rect) { continue }
-            if ($null -ne $windowRect) {
-                if ($rect.width -gt [int]($windowRect.width * 0.4)) { continue }
-                if ($rect.x -gt ($windowRect.x + [int]($windowRect.width * 0.35))) { continue }
-            }
+            if (-not (Test-NavItemCandidate -Rect $rect -WindowRect $windowRect)) { continue }
             $candidates += , @{ element = $element; rect = $rect; name = [string]$element.Current.Name }
         }
 
@@ -178,37 +180,6 @@ try {
         Start-Sleep -Milliseconds 250
         $isForeground = ([UiaDriveNative]::GetForegroundWindow() -eq [IntPtr]$WindowHandle)
         Write-Result @{ foreground = $isForeground }
-    }
-
-    if ($Action -eq 'wheel') {
-        $wheelRect = Get-Rect -Element $window
-        if ($null -eq $wheelRect) { Write-Failure 'window has no screen bounds.' }
-
-        [void][UiaDriveNative]::SetForegroundWindow([IntPtr]$WindowHandle)
-        Start-Sleep -Milliseconds 250
-        $isForeground = ([UiaDriveNative]::GetForegroundWindow() -eq [IntPtr]$WindowHandle)
-        if (-not $isForeground) {
-            Write-Result @{ foreground = $false; notches = 0 }
-        }
-
-        $x = $wheelRect.x + [int]($wheelRect.width * $WheelXPercent)
-        $y = $wheelRect.y + [int]($wheelRect.height * $WheelYPercent)
-        $origin = New-Object UiaDriveNative+POINT
-        [void][UiaDriveNative]::GetCursorPos([ref]$origin)
-        try {
-            [void][UiaDriveNative]::SetCursorPos($x, $y)
-            Start-Sleep -Milliseconds 80
-            $delta = if ($WheelDirection -eq 'down') { -120 } else { 120 }
-            for ($i = 0; $i -lt $WheelNotches; $i++) {
-                [UiaDriveNative]::mouse_event([UiaDriveNative]::Wheel, 0, 0, $delta, [UIntPtr]::Zero)
-                Start-Sleep -Milliseconds 22
-            }
-        }
-        finally {
-            [void][UiaDriveNative]::SetCursorPos($origin.X, $origin.Y)
-        }
-
-        Write-Result @{ foreground = $true; notches = $WheelNotches; point = @($x, $y) }
     }
 
     # scroll / scrollinfo: pick the widest vertically scrollable element in the window.
