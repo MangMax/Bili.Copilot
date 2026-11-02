@@ -61,6 +61,14 @@
   </ItemGroup>
 
   <!--
+    XAML 可选开关验收探针的期望判定是纯逻辑（决定探针退出码），与 WinUI 无关，
+    直接链接源文件验证，无需引用探针可执行项目。
+  -->
+  <ItemGroup>
+    <Compile Include="..\acceptance\xaml-optional-changes\Probe\ProbeModel.cs" Link="Acceptance\ProbeModel.cs" />
+  </ItemGroup>
+
+  <!--
     清晰度选择策略是纯逻辑：只依赖格式与偏好，不依赖 WinUI / 账号 VM，
     因此直接链接源文件验证选择规则，无需引用 WinUI 可执行项目。
   -->
