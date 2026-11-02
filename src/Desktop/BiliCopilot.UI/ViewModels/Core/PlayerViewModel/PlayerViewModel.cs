@@ -10,6 +10,7 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
@@ -21,6 +22,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// <summary>
 /// 播放器视图模型.
 /// </summary>
+[SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", Justification = "原生资源由 ReleaseSessionAsync 通过播放会话的释放闸门只释放一次。")]
 public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<PlayerViewModel> logger) : ViewModelBase, IAsyncDisposable
 {
     private PlaybackSession<PlayerViewModel>? _session;
@@ -219,7 +221,9 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         {
             try
             {
+#pragma warning disable VSTHRD003 // 初始化任务由本会话创建，等待它不会阻塞 UI 线程。
                 await initialization;
+#pragma warning restore VSTHRD003
             }
             catch (Exception ex)
             {
