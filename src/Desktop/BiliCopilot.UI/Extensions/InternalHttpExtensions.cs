@@ -4,7 +4,7 @@ using System.Net;
 
 namespace BiliCopilot.UI.Extensions;
 
-internal static class InternalHttpExtensions
+internal static partial class InternalHttpExtensions
 {
     /// <summary>
     /// 视频用户代理.
@@ -50,7 +50,7 @@ internal static class InternalHttpExtensions
         return client;
     }
 
-    private sealed class CustomHttpClientHandler : HttpClientHandler
+    private sealed partial class CustomHttpClientHandler : HttpClientHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {

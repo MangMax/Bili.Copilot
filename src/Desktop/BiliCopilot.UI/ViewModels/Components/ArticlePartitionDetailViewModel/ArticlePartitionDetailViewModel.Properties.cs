@@ -25,6 +25,15 @@ public sealed partial class ArticlePartitionDetailViewModel
     private int _recommendOffset;
     private bool _preventLoadMore;
 
+    /// <summary>
+    /// 当前文章列表的代次，刷新、切换子分区或切换排序时递增.
+    /// </summary>
+    /// <remarks>
+    /// 请求发起时记下代次，返回后若代次已变，说明列表已被替换，这批结果
+    /// 不能追加、不能写回分页偏移，也不能关闭新请求的加载态。
+    /// </remarks>
+    private int _listGeneration;
+
     [ObservableProperty]
     private List<ArticleSortType> _sortTypes;
 

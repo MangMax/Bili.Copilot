@@ -43,11 +43,17 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         Sections.Add(new PopularSectionItemViewModel(FluentIcons.Common.Symbol.Balloon, ResourceToolkit.GetLocalizedString(StringNames.Recommend), PopularSectionType.Recommend));
         Sections.Add(new PopularSectionItemViewModel(FluentIcons.Common.Symbol.Fire, ResourceToolkit.GetLocalizedString(StringNames.Hot), PopularSectionType.Hot));
         Sections.Add(new PopularSectionItemViewModel(FluentIcons.Common.Symbol.RibbonStar, ResourceToolkit.GetLocalizedString(StringNames.Rank), PopularSectionType.Rank));
-        await LoadPartitionsAsync();
-        await Task.Delay(200);
         var lastSelectedSectionId = SettingsToolkit.ReadLocalSetting(SettingNames.PopularPageLastSelectedSectionId, PopularSectionType.Recommend.ToString());
+        var partitionsTask = LoadPartitionsAsync();
         if (int.TryParse(lastSelectedSectionId, out var partitionId))
         {
+            await partitionsTask;
+            // A user selection made while the directory was loading wins over restoration.
+            if (SelectedSection is not null)
+            {
+                return;
+            }
+
             var section = Sections.OfType<PopularRankPartitionViewModel>().FirstOrDefault(p => p.Data.Id == partitionId.ToString());
             if (section != null)
             {
@@ -60,7 +66,8 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
         else if (Enum.TryParse<PopularSectionType>(lastSelectedSectionId, out var sectionType))
         {
-            var section = Sections.OfType<PopularSectionItemViewModel>().First(p => p.Type == sectionType);
+            var section = Sections.OfType<PopularSectionItemViewModel>().FirstOrDefault(p => p.Type == sectionType);
+            section ??= (PopularSectionItemViewModel)Sections.First();
             SelectSectionCommand.Execute(section);
         }
         else
@@ -69,6 +76,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
 
         SectionInitialized?.Invoke(this, EventArgs.Empty);
+        await partitionsTask;
     }
 
     [RelayCommand]
@@ -79,12 +87,16 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        if (Videos.Count > 0)
+        ClearRefreshSnapshot();
+
+        if (Videos.Count > 0 && _displayedSection == SelectedSection)
         {
             _videoCache[SelectedSection] = Videos.ToList();
         }
 
         SelectedSection = vm;
+        var version = ++_sectionVersion;
+        IsVideoLoading = false;
         var sectionId = vm switch
         {
             PopularSectionItemViewModel section => section.Type.ToString(),
@@ -95,7 +107,13 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
         {
+            if (version != _sectionVersion)
+            {
+                return;
+            }
+
             Videos.Clear();
+            _displayedSection = vm;
             if (_videoCache.TryGetValue(vm, out var cacheVideos))
             {
                 foreach (var video in cacheVideos)
@@ -115,59 +133,160 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsVideoLoading)
+        if (IsVideoLoading || IsRecommendRefreshing || SelectedSection is null || _displayedSection != SelectedSection)
         {
             return;
         }
 
-        if (SelectedSection is PopularSectionItemViewModel section2 && section2.Type == PopularSectionType.Rank && Videos.Count > 0)
+        if (Videos.Count > 0
+            && (SelectedSection is PopularRankPartitionViewModel
+                || SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Rank }))
         {
             return;
         }
 
         IsVideoLoading = true;
+        var version = _sectionVersion;
+        var previousCount = Videos.Count;
         if (SelectedSection is PopularSectionItemViewModel section)
         {
             if (section.Type == PopularSectionType.Recommend)
             {
-                await LoadRecommendVideosAsync();
+                await LoadRecommendVideosAsync(version);
             }
             else if (section.Type == PopularSectionType.Hot)
             {
-                await LoadHotVideosAsync();
+                await LoadHotVideosAsync(version);
             }
             else if (section.Type == PopularSectionType.Rank && Videos.Count == 0)
             {
-                await LoadTotalRankVideosAsync();
+                await LoadTotalRankVideosAsync(version);
             }
         }
         else if (SelectedSection is PopularRankPartitionViewModel partition && Videos.Count == 0)
         {
-            await LoadPartitionRankVideosAsync(partition.Data);
+            await LoadPartitionRankVideosAsync(partition.Data, version);
         }
 
-        VideoListUpdated?.Invoke(this, EventArgs.Empty);
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
+        if (version != _sectionVersion)
+        {
+            return;
+        }
+
+        if (Videos.Count > previousCount)
+        {
+            VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
+        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (version == _sectionVersion)
+            {
+                IsVideoLoading = false;
+            }
+        });
     }
 
-    [RelayCommand]
+    private bool CanRefreshVideo() => !IsRecommendRefreshing;
+
+    [RelayCommand(AllowConcurrentExecutions = true, CanExecute = nameof(CanRefreshVideo))]
     private async Task RefreshVideoAsync()
     {
+        if (SelectedSection is null)
+        {
+            return;
+        }
+
+        ++_sectionVersion;
+        IsVideoLoading = false;
+        _displayedSection = SelectedSection;
+        if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend })
+        {
+            await RefreshRecommendVideosAsync();
+            return;
+        }
+
+        ClearRefreshSnapshot();
         Videos.Clear();
         _videoCache.Remove(SelectedSection);
-        if (SelectedSection is PopularSectionItemViewModel section)
+        if (SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Hot })
         {
-            if (section.Type == PopularSectionType.Recommend)
-            {
-                _recommendOffset = 0;
-            }
-            else if (section.Type == PopularSectionType.Hot)
-            {
-                _hotOffset = 0;
-            }
+            _hotOffset = 0;
         }
 
         await LoadVideosAsync();
+    }
+
+    [RelayCommand]
+    private void UndoRefresh()
+    {
+        if (_recommendRefreshSnapshot is null)
+        {
+            return;
+        }
+
+        var snapshot = _recommendRefreshSnapshot;
+        ++_sectionVersion;
+        var generation = ++_refreshGeneration;
+        IsVideoLoading = false;
+
+        // 撤销同样走最小差异：仍在原位且未变化的条目保持原引用，避免整列表重建。
+        if (generation != _refreshGeneration) return;
+        RecommendationListChanging?.Invoke(RecommendationListChange.UndoRefresh);
+        if (generation != _refreshGeneration) return;
+        RecommendListDiff.Apply(Videos, snapshot.Items, p => p.Data.Identifier.Id, () => generation == _refreshGeneration);
+        if (generation != _refreshGeneration) return;
+
+        for (var i = 0; i < snapshot.Items.Count; i++)
+        {
+            if (generation != _refreshGeneration) return;
+            if (!ReferenceEquals(Videos[i], snapshot.Items[i])) Videos[i] = snapshot.Items[i];
+        }
+
+        if (generation != _refreshGeneration) return;
+        RecommendationListChanged?.Invoke(this, EventArgs.Empty);
+        if (generation != _refreshGeneration) return;
+        _recommendOffset = snapshot.Offset;
+        ClearRefreshSnapshot();
+        if (_refreshGeneration != generation + 1) return;
+        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 增量刷新设置变化时收敛撤销状态.
+    /// </summary>
+    /// <param name="isIncremental">新的设置值.</param>
+    /// <remarks>
+    /// 关闭增量刷新后，之前增量刷新留下的快照不再属于当前刷新模式，
+    /// 撤销入口必须立刻收起；仍在路上的刷新会在落地时重新读取设置，不会再把入口点亮。
+    /// </remarks>
+    internal void OnIncrementalRecommendRefreshChanged(bool isIncremental)
+    {
+        if (!isIncremental)
+        {
+            InvalidateUndoSnapshot();
+        }
+    }
+
+    private void InvalidateUndoSnapshot()
+    {
+        _undoSnapshotVersion++;
+        _recommendRefreshSnapshot = null;
+        CanUndoRefresh = false;
+    }
+
+    /// <summary>
+    /// 清除撤销快照.
+    /// </summary>
+    /// <remarks>
+    /// 切换分区、走普通刷新或撤销时 <see cref="Videos"/> 会被替换或重载，
+    /// 旧快照指向的列表已不在页面上，必须一并失效；同时递增代次，让仍在路上的推荐刷新结果作废。
+    /// </remarks>
+    private void ClearRefreshSnapshot()
+    {
+        InvalidateUndoSnapshot();
+        _refreshGeneration++;
+        IsRecommendRefreshing = false;
     }
 
     [RelayCommand]

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.Danmaku;
 using BiliCopilot.UI.Models.Constants;
@@ -24,7 +24,7 @@ public sealed partial class PlayerViewModel
     private void Back()
     {
         UseIntegrationOperation = false;
-        Window?.Close();
+        Close();
     }
 
     [RelayCommand]
@@ -85,7 +85,7 @@ public sealed partial class PlayerViewModel
         {
             IsSpeedChanging = true;
             LastSpeedChangingTime = DateTimeOffset.Now;
-            await Client!.SetSpeedAsync(newSpeed);
+            await ChangeSpeedAsync(newSpeed);
         }
     }
 
@@ -102,7 +102,7 @@ public sealed partial class PlayerViewModel
         {
             IsSpeedChanging = true;
             LastSpeedChangingTime = DateTimeOffset.Now;
-            await Client!.SetSpeedAsync(newSpeed);
+            await ChangeSpeedAsync(newSpeed);
         }
     }
 
@@ -169,20 +169,6 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private Task SeekToTimestampAsync(double seconds)
         => ChangePositionAsync(seconds);
-
-    /// <summary>
-    /// 改变当前播放位置.
-    /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
-    public async Task ChangePositionAsync(double position)
-    {
-        if (Player is null || double.IsNaN(position) || position < 0 || position > Player.Duration || Math.Abs(Player.Position - position) < 2)
-        {
-            return;
-        }
-
-        await Client!.SetCurrentPositionAsync(position);
-    }
 
     /// <summary>
     /// 改变音量.
@@ -291,7 +277,10 @@ public sealed partial class PlayerViewModel
 
         _lastSpeed = Player.PlaybackRate;
         IsHoldingSpeedChanging = true;
-        await Client!.SetSpeedAsync(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.TempPlaybackRate, 3d));
+        if (!await ChangeSpeedAsync(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.TempPlaybackRate, 3d)))
+        {
+            return;
+        }
         LastSpeedChangingTime = DateTimeOffset.Now;
         IsSpeedChanging = true;
         _tripleTimer!.Start();
@@ -309,7 +298,7 @@ public sealed partial class PlayerViewModel
         _tripleTimer!.Stop();
         if (Math.Abs(_lastSpeed - Player.PlaybackRate) > 0.01)
         {
-            await Client!.SetSpeedAsync(_lastSpeed);
+            await ChangeSpeedAsync(_lastSpeed);
         }
     }
 
@@ -350,7 +339,12 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        var fonts = await this.Get<IFontToolkit>().GetFontsAsync();
+        var fonts = await FontCatalog.GetFontsAsync(this.Get<IFontToolkit>());
+        if (Fonts.Count > 0)
+        {
+            return;
+        }
+
         foreach (var item in fonts)
         {
             Fonts.Add(item);
@@ -359,10 +353,10 @@ public sealed partial class PlayerViewModel
         var localFont = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.SubtitleFontFamily, "Segoe UI");
         if (!Fonts.Select(p => p.LocalName).Contains(localFont))
         {
-            localFont = "Segoe UI";
+            Fonts.Add(new SystemFont { LocalName = localFont, EngName = localFont });
         }
 
-        ChangeSubtitleFontFamilyCommand.Execute(localFont);
+        await ChangeSubtitleFontFamilyCommand.ExecuteAsync(localFont);
     }
 
     [RelayCommand]

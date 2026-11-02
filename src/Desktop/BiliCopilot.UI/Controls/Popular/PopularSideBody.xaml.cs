@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Items;
+using Microsoft.UI.Dispatching;
 
 namespace BiliCopilot.UI.Controls.Popular;
 
@@ -9,22 +10,46 @@ namespace BiliCopilot.UI.Controls.Popular;
 /// </summary>
 public sealed partial class PopularSideBody : PopularPageControlBase
 {
+    private bool _selectionPending;
+    private bool _selectionQueued;
+    private bool _isActive;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularSideBody"/> class.
     /// </summary>
-    public PopularSideBody() => InitializeComponent();
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    public PopularSideBody()
     {
+        InitializeComponent();
+        // The NuGet base unregisters its lifecycle handlers on the first unload.
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_isActive)
+        {
+            return;
+        }
+
+        _isActive = true;
+        SectionView.ItemsSource = ViewModel.Sections;
+        SectionView.LayoutUpdated += OnSectionLayoutUpdated;
         ViewModel.SectionInitialized += OnSectionInitialized;
         SectionView.SelectionChanged += OnSectionSelectionChanged;
         CheckSectionSelection();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        if (!_isActive)
+        {
+            return;
+        }
+
+        _isActive = false;
+        _selectionPending = false;
+        SectionView.LayoutUpdated -= OnSectionLayoutUpdated;
         SectionView.ItemsSource = default;
         ViewModel.SectionInitialized -= OnSectionInitialized;
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
@@ -41,9 +66,36 @@ public sealed partial class PopularSideBody : PopularPageControlBase
 
     private void CheckSectionSelection()
     {
-        if (ViewModel.SelectedSection is not null)
+        _selectionPending = true;
+        QueueSectionSelection();
+    }
+
+    private void OnSectionLayoutUpdated(object? sender, object e)
+        => QueueSectionSelection();
+
+    private void QueueSectionSelection()
+    {
+        if (!_isActive || !_selectionPending || _selectionQueued
+            || ViewModel.SelectedSection is null || !SectionView.IsLoaded || SectionView.ActualWidth <= 0)
         {
-            SectionView.Select(ViewModel.Sections.IndexOf(ViewModel.SelectedSection));
+            return;
         }
+
+        // Never mutate ItemsView selection inside its layout/collection notification.
+        _selectionQueued = DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            _selectionQueued = false;
+            if (!_isActive || !SectionView.IsLoaded)
+            {
+                return;
+            }
+
+            var index = ViewModel.Sections.IndexOf(ViewModel.SelectedSection);
+            if (index >= 0)
+            {
+                _selectionPending = false;
+                SectionView.Select(index);
+            }
+        });
     }
 }

@@ -3,11 +3,10 @@
 using BiliCopilot.UI.Extensions;
 using Microsoft.Graphics.Canvas;
 using Microsoft.UI;
-using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls;
 
-public sealed partial class BasicCoverImage : ImageExBase
+public sealed partial class BasicCoverImage : ReloadableCoverImage
 {
     private readonly static BasicScaleEffect _scaleEffect = new();
 
@@ -27,12 +26,7 @@ public sealed partial class BasicCoverImage : ImageExBase
         if (Math.Abs(DecodeHeight - actualHeight) > 1)
         {
             DecodeHeight = Math.Round(actualHeight);
-            CanvasImageSource = new Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource(
-                resourceCreator: CanvasDevice.GetSharedDevice(),
-                width: (float)DecodeWidth,
-                height: (float)DecodeHeight,
-                dpi: 96,
-                CanvasAlphaMode.Premultiplied);
+            RecreateSurface();
         }
 
         var destRect = new Rect(0, 0, DecodeWidth, DecodeHeight);

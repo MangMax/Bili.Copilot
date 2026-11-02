@@ -56,13 +56,42 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
         PartitionInitialized?.Invoke(this, EventArgs.Empty);
     }
 
-    [RelayCommand]
-    private void SelectPartition(PartitionViewModel partition)
+    /// <summary>
+    /// 增量刷新设置变化时收敛已缓存分区的撤销状态.
+    /// </summary>
+    /// <param name="isIncremental">新的设置值.</param>
+    /// <remarks>
+    /// 分区详情视图模型按主分区缓存复用，关闭增量刷新后每个缓存实例都可能还留着旧撤销快照，
+    /// 因此逐个失效；仍在路上的刷新会在落地时重新读取设置。
+    /// </remarks>
+    internal void OnIncrementalRecommendRefreshChanged(bool isIncremental)
     {
-        if (partition is null || partition.Data.Equals(SelectedPartition?.Data))
+        if (isIncremental)
         {
             return;
         }
+
+        foreach (var detail in _partitionCache.Values)
+        {
+            detail.OnIncrementalRecommendRefreshChanged(false);
+        }
+
+        SelectedPartition?.OnIncrementalRecommendRefreshChanged(false);
+    }
+
+    [RelayCommand]
+    private void SelectPartition(PartitionViewModel partition)
+    {
+        // ItemsView echoes the restored selection while the first request is pending.
+        // Compare the underlying partitions, not a Partition with its view-model wrapper.
+        if (partition is null || partition.Data.Equals(SelectedPartition?.Data.Data))
+        {
+            return;
+        }
+
+        // 切换主分区页签时清除离开页签的推荐刷新快照：分区视图模型会被缓存复用，
+        // 若不清理，切回来时旧的撤销入口还会显示，也可能把列表撤销成离开前的样子。
+        SelectedPartition?.ClearRefreshSnapshot();
 
         if (_partitionCache.TryGetValue(partition.Data, out var detail))
         {

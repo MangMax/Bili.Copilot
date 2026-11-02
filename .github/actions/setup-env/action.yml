@@ -55,10 +55,10 @@ runs:
         Get-Content $manifestPath | Select-String "Version="
         Get-Content $manifestPath | Select-String "Publisher="
 
-    - name: Install .NET 9
+    - name: Setup .NET from global.json
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        global-json-file: global.json
 
     - name: Download and Setup Dependencies
       shell: pwsh
@@ -68,8 +68,26 @@ runs:
         $platform = "${{ inputs.platform }}"
         $mpvArch = if ($platform -eq "x64") { "x86_64" } else { "aarch64" }
 
+        # Pinned native inputs. Update this block as a reviewed change; never
+        # resolve "latest" at build time.
+        $nativeRelease = "20261102"
+        $mpvAssets = @{
+            "x86_64"  = @{ Name = "mpv-dev-x86_64-20261102-git-2137d21b2e.7z";  Sha256 = "5ca801552661c18fa0b1edfd41dba6e5d9aa9d6d3d6c42dbe3fb91a45eb79f16" }
+            "aarch64" = @{ Name = "mpv-dev-aarch64-20261102-git-2137d21b2e.7z"; Sha256 = "d762d653884e991486bc2f1132b614ddff4551922b8d13765383c121db4583fd" }
+        }
+        $ffmpegAssets = @{
+            "x86_64"  = @{ Name = "ffmpeg-x86_64-git-e19fadf1d.7z";  Sha256 = "86884738568631b3ac029a5fd9aa6504526f86529255bac3aa917a08f569798c" }
+            "aarch64" = @{ Name = "ffmpeg-aarch64-git-e19fadf1d.7z"; Sha256 = "c1c55d5fb1b3370838381ea057ddef2dd8a0d3260421a40800a51f62aa769089" }
+        }
+
+        $mpvAsset = $mpvAssets[$mpvArch]
+        $ffmpegAsset = $ffmpegAssets[$mpvArch]
+        if (-not $mpvAsset -or -not $ffmpegAsset) {
+            Write-Error "Unsupported platform: $platform"
+            exit 1
+        }
+
         # --- libmpv setup ---
-        $mpvPattern = "mpv-dev-$mpvArch-*-git-*.7z"
         $mpvTargetDir = "src/Desktop/BiliCopilot.UI/Assets/libmpv/$platform"
 
         Write-Host "Mapping platform $platform to mpv arch $mpvArch"
@@ -77,56 +95,57 @@ runs:
         # Create target directory
         New-Item -ItemType Directory -Force -Path $mpvTargetDir
 
-        # Download latest release asset
-        Write-Host "Downloading libmpv from shinchiro/mpv-winbuild-cmake..."
-        gh release download --repo shinchiro/mpv-winbuild-cmake --pattern $mpvPattern --clobber
+        Write-Host "Downloading libmpv $($mpvAsset.Name) from release $nativeRelease..."
+        gh release download $nativeRelease --repo shinchiro/mpv-winbuild-cmake --pattern $mpvAsset.Name --clobber
 
-        # Find the downloaded file
-        $mpvArchive = Get-ChildItem -Filter $mpvPattern | Select-Object -First 1
+        if (-not (Test-Path $mpvAsset.Name)) {
+            Write-Error "Failed to download $($mpvAsset.Name)"
+            exit 1
+        }
 
-        if ($mpvArchive) {
-            Write-Host "Found archive: $($mpvArchive.Name)"
-            # Extract libmpv-2.dll
-            7z e "$($mpvArchive.FullName)" -o"$mpvTargetDir" libmpv-2.dll -r -y
-            
-            if (Test-Path "$mpvTargetDir\libmpv-2.dll") {
-                Write-Host "Successfully extracted libmpv-2.dll to $mpvTargetDir"
-            } else {
-                Write-Error "Failed to extract libmpv-2.dll"
-                exit 1
-            }
+        $mpvHash = (Get-FileHash -Algorithm SHA256 $mpvAsset.Name).Hash.ToLowerInvariant()
+        if ($mpvHash -ne $mpvAsset.Sha256) {
+            Write-Error "SHA-256 mismatch for $($mpvAsset.Name): expected $($mpvAsset.Sha256), got $mpvHash"
+            exit 1
+        }
+
+        # Extract libmpv-2.dll
+        7z e "$($mpvAsset.Name)" -o"$mpvTargetDir" libmpv-2.dll -r -y
+
+        if (Test-Path "$mpvTargetDir\libmpv-2.dll") {
+            Write-Host "Successfully extracted libmpv-2.dll to $mpvTargetDir"
         } else {
-            Write-Error "No archive found matching pattern $mpvPattern"
+            Write-Error "Failed to extract libmpv-2.dll"
             exit 1
         }
 
         # --- ffmpeg setup ---
-        $ffmpegPattern = "ffmpeg-$mpvArch-git-*.7z"
         $ffmpegTargetDir = "src/Desktop/BiliCopilot.UI/Assets/ffmpeg/$platform"
 
         # Create target directory
         New-Item -ItemType Directory -Force -Path $ffmpegTargetDir
 
-        # Download latest release asset
-        Write-Host "Downloading ffmpeg from shinchiro/mpv-winbuild-cmake..."
-        gh release download --repo shinchiro/mpv-winbuild-cmake --pattern $ffmpegPattern --clobber
+        Write-Host "Downloading ffmpeg $($ffmpegAsset.Name) from release $nativeRelease..."
+        gh release download $nativeRelease --repo shinchiro/mpv-winbuild-cmake --pattern $ffmpegAsset.Name --clobber
 
-        # Find the downloaded file
-        $ffmpegArchive = Get-ChildItem -Filter $ffmpegPattern | Select-Object -First 1
+        if (-not (Test-Path $ffmpegAsset.Name)) {
+            Write-Error "Failed to download $($ffmpegAsset.Name)"
+            exit 1
+        }
 
-        if ($ffmpegArchive) {
-            Write-Host "Found archive: $($ffmpegArchive.Name)"
-            # Extract ffmpeg.exe
-            7z e "$($ffmpegArchive.FullName)" -o"$ffmpegTargetDir" ffmpeg.exe -r -y
-            
-            if (Test-Path "$ffmpegTargetDir\ffmpeg.exe") {
-                Write-Host "Successfully extracted ffmpeg.exe to $ffmpegTargetDir"
-            } else {
-                Write-Error "Failed to extract ffmpeg.exe"
-                exit 1
-            }
+        $ffmpegHash = (Get-FileHash -Algorithm SHA256 $ffmpegAsset.Name).Hash.ToLowerInvariant()
+        if ($ffmpegHash -ne $ffmpegAsset.Sha256) {
+            Write-Error "SHA-256 mismatch for $($ffmpegAsset.Name): expected $($ffmpegAsset.Sha256), got $ffmpegHash"
+            exit 1
+        }
+
+        # Extract ffmpeg.exe
+        7z e "$($ffmpegAsset.Name)" -o"$ffmpegTargetDir" ffmpeg.exe -r -y
+
+        if (Test-Path "$ffmpegTargetDir\ffmpeg.exe") {
+            Write-Host "Successfully extracted ffmpeg.exe to $ffmpegTargetDir"
         } else {
-            Write-Error "No archive found matching pattern $ffmpegPattern"
+            Write-Error "Failed to extract ffmpeg.exe"
             exit 1
         }
 

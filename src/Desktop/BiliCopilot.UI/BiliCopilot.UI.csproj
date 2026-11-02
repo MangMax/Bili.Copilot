@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" TreatAsLocalProperty="PackageCertificateKeyFile;PackageCertificateThumbprint">
+<Project Sdk="Microsoft.NET.Sdk" TreatAsLocalProperty="PackageCertificateKeyFile;PackageCertificateThumbprint">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
+    <TargetFramework>net11.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <RootNamespace>BiliCopilot.UI</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -9,6 +9,8 @@
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
+    <!-- Consume the projections shipped by WinUI/Win2D; retain CsWinRT source generators and analyzers. -->
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
@@ -267,6 +269,7 @@
     <None Remove="Controls\Settings\CacheSettingControl.xaml" />
     <None Remove="Controls\Settings\CloseBehaviorSettingControl.xaml" />
     <None Remove="Controls\Settings\DownloadSettingControl.xaml" />
+    <None Remove="Controls\Settings\IncrementalRecommendRefreshSettingControl.xaml" />
     <None Remove="Controls\Settings\LayoutSettingSection.xaml" />
     <None Remove="Controls\Settings\LoggerSettingControl.xaml" />
     <None Remove="Controls\Settings\MpvExtraSettingControl.xaml" />
@@ -337,6 +340,12 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="CommunityToolkit.WinUI.Animations" />
+    <PackageReference Include="CommunityToolkit.WinUI.Extensions" />
+    <PackageReference Include="CommunityToolkit.WinUI.Media" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" />
+    <PackageReference Include="WinUIEx" />
     <PackageReference Include="ColorCode.WinUI" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" />
@@ -1373,6 +1382,9 @@
     <Page Update="Controls\Settings\SearchRecommendSettingSection.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Settings\IncrementalRecommendRefreshSettingControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Controls\Player\VideoAISection.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1520,6 +1532,40 @@
     <PublishAot>True</PublishAot>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <!-- WinUI needs ResolveReferences before PrepareResources/MarkupCompilePass1.
+         The .NET 11 optimized publish path skips that ordering in the full Build. -->
+    <UseOptimizedPublish>false</UseOptimizedPublish>
+    <!-- MSIX tooling only enables this automatically for GenerateAppxPackageOnBuild.
+         Use its publish output group (including native compilation and managed-payload
+         removal) when packaging via dotnet publish as well. Keep ordinary F5 builds fast. -->
+    <IncludePublishItemsOutputGroup Condition="'$(PublishAppxPackage)' == 'true'">true</IncludePublishItemsOutputGroup>
+    <GenerateRuntimeConfigurationFiles Condition="'$(PublishAppxPackage)' == 'true'">false</GenerateRuntimeConfigurationFiles>
+    <GenerateDependencyFile Condition="'$(PublishAppxPackage)' == 'true'">false</GenerateDependencyFile>
+  </PropertyGroup>
+
+  <!-- .NET 11 no longer populates the MSIX toolchain's _AssembliesToSkipPublish.
+       Use the SDK's complete native publish closure instead of merging JIT build
+       outputs from this project and its references. Keep MSIX content/PRI outputs. -->
+  <Target Name="PrepareAotPublishPayload" BeforeTargets="GetPackagingOutputs"
+          DependsOnTargets="ComputeFilesToPublish"
+          Condition="'$(PublishAot)' == 'true' and '$(PublishAppxPackage)' == 'true'" />
+  <Target Name="UseAotPublishPayload" AfterTargets="GetPackagingOutputs"
+          Condition="'$(PublishAot)' == 'true' and '$(PublishAppxPackage)' == 'true'">
+    <Error Condition="'@(ResolvedFileToPublish)' == ''" Text="Native publish did not expose its output closure; refusing to package build outputs." />
+    <ItemGroup>
+      <_AotResourcePayload Include="@(PackagingOutputs)"
+          Condition="'%(PackagingOutputs.OutputGroup)' != 'BuiltProjectOutputGroup' and '%(PackagingOutputs.OutputGroup)' != 'CopyLocalFilesOutputGroup' and '%(PackagingOutputs.OutputGroup)' != 'DebugSymbolsProjectOutputGroup' and '%(PackagingOutputs.OutputGroup)' != 'SatelliteDllsProjectOutputGroup' and '%(PackagingOutputs.OutputGroup)' != 'PublishItemsOutputGroupOutput'" />
+      <PackagingOutputs Remove="@(PackagingOutputs)" />
+      <PackagingOutputs Include="@(_AotResourcePayload)" />
+      <PackagingOutputs Include="@(ResolvedFileToPublish->'%(FullPath)')">
+        <TargetPath>%(ResolvedFileToPublish.RelativePath)</TargetPath>
+        <OutputGroup>PublishItemsOutputGroupOutput</OutputGroup>
+        <ProjectName>$(ProjectName)</ProjectName>
+      </PackagingOutputs>
+    </ItemGroup>
+  </Target>
 
   <!--
     打包前校验运行时依赖.

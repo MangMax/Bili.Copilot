@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
@@ -484,38 +484,22 @@ public sealed partial class PlayerViewModel
         });
     }
 
-    private async void OnWindowDestroying(AppWindow sender, object args)
-    {
-        // 窗口销毁路径先于 DisposeAsync 落盘，确保立即关闭时音量也能保存.
-        FlushPendingVolume();
-        var appVM = this.Get<AppViewModel>();
-        var hideMainWindowOnPlay = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true);
-        if (hideMainWindowOnPlay && !UseIntegrationOperation)
-        {
-            ShowMainWindow();
-        }
-        else if (appVM.Players.Count <= 1 && !appVM.IsMainWindowVisible() && !appVM.IsClosed && !(hideMainWindowOnPlay && UseIntegrationOperation))
-        {
-            ShowMainWindow();
-        }
-
-        await DisposeAsync();
-        if (UseIntegrationOperation)
-        {
-            var mainWnd = this.Get<Core.AppViewModel>().Windows.Find(p => p is MainWindow);
-            mainWnd?.Close();
-        }
-    }
+    private void OnWindowDestroying(AppWindow sender, object args)
+        => Close();
 
     private async void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (_isDanmakuClosed || !ReferenceEquals(sender, Player))
+        {
+            return;
+        }
+
         if (e.PropertyName == nameof(Player.Position))
         {
             IsPreviewProgressChanging = false;
             PositionText = TimeSpan.FromSeconds(Player.Position).ToString(@"hh\:mm\:ss");
             ProgressChanged?.Invoke(this, Player.Position);
             CheckSponsorBlock(Player.Position);
-            Danmaku.UpdatePosition(Convert.ToInt32(Player.Position));
             // 按“当前时间落在哪个章节区间”判定正在播放的章节.
             // 旧实现用 |Position - 章节起点| < 2，只在经过起点前后两秒内为真，
             // 因此播放推进到章节中段时高亮会消失.
@@ -539,7 +523,10 @@ public sealed partial class PlayerViewModel
                     IsHoldingSpeedChanging = false;
                     if (Math.Abs(_lastSpeed - Player.PlaybackRate) > 0.01)
                     {
-                        await Client!.SetSpeedAsync(_lastSpeed);
+                        if (!await ChangeSpeedAsync(_lastSpeed))
+                        {
+                            return;
+                        }
                     }
 
                     if (_isTlsFailed)
@@ -622,7 +609,6 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.PlaybackRate) && Player.IsPlaybackInitialized)
         {
-            Danmaku.ExtraSpeed = Player.PlaybackRate;
             if (SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerSpeedShare, true))
             {
                 SettingsToolkit.WriteLocalSetting(SettingNames.PlayerSpeed, Player.PlaybackRate);
@@ -630,17 +616,18 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.IsPlaybackInitialized) && Player.IsPlaybackInitialized && !(Window?.IsClosed ?? true))
         {
+            var danmakuPlaybackVersion = _danmakuPlaybackVersion;
             ErrorMessage = default;
             _prevPosition = 0;
             CheckBlackBackgroundVisible();
             CheckBottomProgressBarVisible();
             ResetSubtitlePositionCommand.Execute(default);
-            ReloadFontsCommand.Execute(default);
+            await ChangeSubtitleFontFamilyCommand.ExecuteAsync(SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontFamily, "Segoe UI"));
             var subtitleFontSize = SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontSize, 32d);
             ChangeSubtitleFontSizeCommand.Execute(Math.Max(1, subtitleFontSize));
             if (_continuePosition > 0)
             {
-                await Client!.SetCurrentPositionAsync(_continuePosition!.Value);
+                await ChangePositionAsync(_continuePosition!.Value);
                 _continuePosition = null;
             }
 
@@ -656,7 +643,7 @@ public sealed partial class PlayerViewModel
 
             await VerifyChaptersAsync();
 
-            if (!_isDanmakuInitialized)
+            if (!_isDanmakuInitialized && danmakuPlaybackVersion == _danmakuPlaybackVersion && !_isDanmakuClosed && !Window.IsClosed)
             {
                 InitializeDanmakuCommand.Execute(default);
                 _isDanmakuInitialized = true;
@@ -668,18 +655,6 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.PlaybackState))
         {
-            if (IsDanmakuControlVisible && Danmaku.IsShowDanmaku)
-            {
-                if (Player.PlaybackState == MpvPlayerState.Playing)
-                {
-                    Danmaku.Resume();
-                }
-                else
-                {
-                    Danmaku.Pause();
-                }
-            }
-
             if (Player.PlaybackState is MpvPlayerState.Buffering or MpvPlayerState.Seeking && !string.IsNullOrEmpty(ErrorMessage))
             {
                 ErrorMessage = default;
@@ -698,11 +673,15 @@ public sealed partial class PlayerViewModel
 
     private async void OnConnectorNewMediaRequest(object? sender, MediaSnapshot e)
     {
-        if (_snapshot == e)
+        if (_snapshot == e || _closeTask is not null || _disposeCompletion is not null || this.Get<AppViewModel>().IsClosed)
         {
             return;
         }
 
+        _danmakuPlaybackVersion++;
+        _isDanmakuInitialized = true;
+        _danmakuLoadSession?.Cancel();
+        await WaitForPositionChangesAsync();
         await Client!.PauseAsync();
         await Client!.StopAsync();
         await InitializeAsync(e);
@@ -803,7 +782,10 @@ public sealed partial class PlayerViewModel
             if (_isRightKeyTripleSpeed)
             {
                 _isRightKeyTripleSpeed = false;
-                await Client!.SetSpeedAsync(_lastSpeed);
+                if (!await ChangeSpeedAsync(_lastSpeed))
+                {
+                    return;
+                }
                 LastSpeedChangingTime = DateTimeOffset.Now;
                 IsSpeedChanging = true;
             }

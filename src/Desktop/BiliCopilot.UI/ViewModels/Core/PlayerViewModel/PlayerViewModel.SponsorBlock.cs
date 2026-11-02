@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.SponsorBlock;
@@ -121,7 +121,7 @@ public sealed partial class PlayerViewModel
 
         try
         {
-            await Client.SetCurrentPositionAsync(target);
+            await ChangePositionAsync(target);
             return true;
         }
         catch (Exception ex)
@@ -277,7 +277,10 @@ public sealed partial class PlayerViewModel
 
             _sponsorBlockSegments = segments;
             NotifySponsorBlockSegmentsChanged();
-            logger.LogDebug("空降助手已加载 {Count} 个片段", segments.Count);
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("空降助手已加载 {Count} 个片段", segments.Count);
+            }
         }
         catch (Exception ex)
         {

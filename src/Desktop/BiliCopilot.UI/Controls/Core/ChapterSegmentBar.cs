@@ -230,8 +230,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     /// </summary>
     /// <remarks>
     /// 必须有失效时间：播放器可能落在离目标较远的位置（关键帧对齐），
-    /// 甚至完全不动作（<see cref="PlayerViewModel.ChangePositionAsync"/> 在目标与当前位置
-    /// 相差不足 2 秒时直接返回）。若只靠“位置追平目标”来清除，该值会永久残留，
+    /// 甚至完全不动作（请求失效或媒体拒绝跳转）。若只靠“位置追平目标”来清除，该值会永久残留，
     /// 进度条就会停在跳转点不再跟随播放（表现为圆点不动、填充不再增长）.
     /// </remarks>
     private double? _pendingSeekPosition;
@@ -242,10 +241,9 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     private long _pendingSeekDeadline;
 
     /// <summary>
-    /// 目标位置与当前播放位置的差值小于该值时不再下发跳转，与
-    /// <see cref="PlayerViewModel.ChangePositionAsync"/> 的内部判定保持一致.
+    /// 相同目标的浮点容差（秒）；指针抖动由像素阈值和拖动节流处理.
     /// </summary>
-    private const double MinSeekDelta = 2d;
+    private const double SeekTargetTolerance = 0.001d;
 
     /// <summary>
     /// 乐观显示位置的最长存活时间（毫秒）.

@@ -8,7 +8,7 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// <summary>
 /// 空降助手单个类别的行为与标记颜色设置项.
 /// </summary>
-public sealed class SponsorBlockCategorySettingViewModel : ObservableObject
+public sealed partial class SponsorBlockCategorySettingViewModel : ObservableObject
 {
     private static readonly SponsorBlockBehavior[] Behaviors = Enum.GetValues<SponsorBlockBehavior>();
 
