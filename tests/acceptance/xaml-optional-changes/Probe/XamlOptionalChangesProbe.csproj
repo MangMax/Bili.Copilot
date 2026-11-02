@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    验收探针：在 Application.Start 之前按命令行启用 XAML 可选开关，
+    记录开关状态、图标视觉树、XamlReader 按钮模板时机与固定控件画廊截图。
+    这是测试工具，不是产品代码；由 tests/acceptance/xaml-optional-changes/Measure.ps1 驱动。
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net11.0-windows10.0.22621.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>x64</Platforms>
+    <Platform>x64</Platform>
+    <WindowsPackageType>None</WindowsPackageType>
+    <UseWinUI>true</UseWinUI>
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.4" />
+  </ItemGroup>
+</Project>
