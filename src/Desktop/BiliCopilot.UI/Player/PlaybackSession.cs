@@ -142,6 +142,7 @@ internal sealed class PlaybackSession<TSession>
 
     private Task EnsureReleaseAsync(bool awaitInitialization)
     {
+#pragma warning disable VSTHRD003 // 释放闸门由本会话持有，加入它不会阻塞 UI 线程。
         if (_releaseCompletion is not null)
         {
             return _releaseCompletion.Task;
@@ -150,6 +151,7 @@ internal sealed class PlaybackSession<TSession>
         _releaseCompletion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         _ = RunReleaseAsync(awaitInitialization);
         return _releaseCompletion.Task;
+#pragma warning restore VSTHRD003
     }
 
     private async Task RunReleaseAsync(bool awaitInitialization)
@@ -161,7 +163,9 @@ internal sealed class PlaybackSession<TSession>
                 // 有序退出：初始化还在创建原生资源时不能先销毁它们。
                 try
                 {
+#pragma warning disable VSTHRD003 // 有序退出：初始化由本会话持有，不会阻塞调度器。
                     await _initializationTask;
+#pragma warning restore VSTHRD003
                 }
                 catch
                 {
