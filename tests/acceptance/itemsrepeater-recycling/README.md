@@ -103,7 +103,7 @@ Scenario matrix used by `Measure.ps1`:
 
 | scenario | what it exercises | switch |
 | --- | --- | --- |
-| long list (wheel down/up) | recycle churn, realize/recycle | always on (`-WheelNotches`) |
+| long list (wheel down/up, UI Automation fallback) | recycle churn, realize/recycle | always on (`-WheelNotches`) |
 | page switch A -> B -> A | visibility switch of cached pages (no teardown) | always on (`-NavItemCount`) |
 | player window open/close | real XAML tree teardown | opt-in `-PlayerWindowCycles N` |
 | app close | final teardown | always on |
@@ -198,7 +198,7 @@ artifacts/itemsrepeater-recycling/<runId>/     (gitignored: .gitignore line "art
 * **Page switching cannot show this leak** because `MainFrame` caches page instances; it is
   measured as a control, not as evidence of the defect.
 * **Player-window cycles are best effort.** The card click uses configurable window-relative points
-  (`-PlayerCardXPercent`/`-PlayerCardYPercent`, default 0.5/0.6). If no second window appears the
+  (`-PlayerCardXPercent`/`-PlayerCardYPercent`, default 0.5/0.6) plus five fallback points; if no second window appears the
   cycle is marked failed in `raw.json` and the run continues; check `playerWindow.opened` before
   trusting a teardown-based verdict.
 * **DPI is recorded, not changed.** The script never alters the user's scaling; it records

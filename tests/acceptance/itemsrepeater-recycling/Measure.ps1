@@ -127,6 +127,7 @@ public static class RepeaterAcceptanceNative
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
     [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr hWnd, IntPtr after, int x, int y, int cx, int cy, uint flags);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
+    [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int command);
     [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
     [DllImport("user32.dll")] public static extern bool GetCursorPos(out POINT point);
@@ -260,7 +261,9 @@ function Get-AppMetrics {
 
     $workingSetPrivateMb = $null
     if ($null -ne $perf) {
-        $workingSetPrivateMb = [math]::Round([double]$perf.WorkingSetPrivate / 1KB, 2)
+        # Win32_PerfRawData reports WorkingSetPrivate in bytes (the perf counter
+        # is "Working Set - Private" already scaled by the provider).
+        $workingSetPrivateMb = [math]::Round([double]$perf.WorkingSetPrivate / 1MB, 2)
     }
 
     return [pscustomobject]@{
@@ -306,45 +309,102 @@ function Invoke-UiaHelper {
         [int]$Index = -1,
         [int]$ScrollCount = 1,
         [string]$ScrollDirection = 'down',
-        [double]$ScrollPercent = -1
+        [double]$ScrollPercent = -1,
+        [int]$Notches = 1,
+        [string]$WheelDirection = 'down'
     )
 
     $powershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
     if (-not (Test-Path $powershell)) { return $null }
 
     $helper = Join-Path $PSScriptRoot 'Drive-Uia.ps1'
-    $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $helper, '-WindowHandle', $WindowHandle, '-Action', $Action)
-    if ($Index -ge 0) { $arguments += @('-Index', $Index) }
+    $argumentList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $helper, '-WindowHandle', $WindowHandle, '-Action', $Action)
+    if ($Index -ge 0) { $argumentList += @('-Index', $Index) }
     if ($Action -eq 'scroll') {
-        $arguments += @('-ScrollCount', $ScrollCount, '-ScrollDirection', $ScrollDirection)
-        if ($ScrollPercent -ge 0) { $arguments += @('-ScrollPercent', $ScrollPercent) }
+        $argumentList += @('-ScrollCount', $ScrollCount, '-ScrollDirection', $ScrollDirection)
+        if ($ScrollPercent -ge 0) { $argumentList += @('-ScrollPercent', $ScrollPercent) }
+    }
+    if ($Action -eq 'wheel') {
+        $argumentList += @('-WheelNotches', $Notches, '-WheelDirection', $WheelDirection)
     }
 
-    $raw = & $powershell @arguments 2>$null
-    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace(($raw -join ''))) { return $null }
+    # Hard timeout: a wedged UIA provider must never hang the whole run.
+    $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
+    $startInfo.FileName = $powershell
+    foreach ($argument in $argumentList) { $startInfo.ArgumentList.Add([string]$argument) }
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+
+    $child = $null
     try {
-        return (($raw -join '') | ConvertFrom-Json)
+        $child = [System.Diagnostics.Process]::Start($startInfo)
+        $readTask = $child.StandardOutput.ReadToEndAsync()
+        if (-not $child.WaitForExit(20000)) {
+            Add-Log -Step 'uia-helper-timeout' -Data @{ action = $Action }
+            try { $child.Kill($true) } catch { }
+            return $null
+        }
+
+        $raw = $readTask.GetAwaiter().GetResult()
+        if ([string]::IsNullOrWhiteSpace($raw)) { return $null }
+
+        $parsed = $raw | ConvertFrom-Json
+        # Drive-Uia.ps1 reports failures as {"ok":false,...}; never let that
+        # masquerade as a successful result.
+        if ($null -ne $parsed.PSObject.Properties['ok'] -and -not [bool]$parsed.ok) {
+            Add-Log -Step 'uia-helper-error' -Data @{ action = $Action; error = [string]$parsed.error }
+            return $null
+        }
+
+        return $parsed
     }
     catch {
+        Add-Log -Step 'uia-helper-failed' -Data @{ action = $Action; error = $_.Exception.Message }
         return $null
+    }
+    finally {
+        if ($null -ne $child) { $child.Dispose() }
     }
 }
 
 function Invoke-WheelScroll {
+    <#
+    .SYNOPSIS
+        Sends real wheel input over the list.
+
+    .DESCRIPTION
+        Runs inside Drive-Uia.ps1 (a separate, killable process) on purpose:
+        SetForegroundWindow and synchronous window messages block when the app's
+        UI thread is pegged, and an in-process P/Invoke cannot time out. Here the
+        worst case is a 20 s helper timeout and a logged miss.
+    #>
     param(
-        [IntPtr]$WindowHandle,
+        [long]$WindowHandle,
         [int]$Notches,
         [ValidateSet('down', 'up')][string]$Direction,
         [int]$CenterX,
         [int]$CenterY
     )
 
-    if ($Notches -le 0) { return }
+    if ($Notches -le 0) { return $false }
+
+    # In-process on purpose: a child powershell cannot legally take the
+    # foreground (SetForegroundWindow rules), and wheel input only reaches the
+    # list when the app owns it. Blocking risk is limited to SetForegroundWindow,
+    # and a foreground miss is detected and reported instead of scrolling blindly.
+    $handle = [IntPtr]$WindowHandle
+    [void][RepeaterAcceptanceNative]::SetForegroundWindow($handle)
+    Start-Sleep -Milliseconds 200
+    if ([RepeaterAcceptanceNative]::GetForegroundWindow() -ne $handle) {
+        Add-Log -Step 'wheel-foreground-miss' -Data @{ window = $WindowHandle }
+        return $false
+    }
+
     $origin = New-Object RepeaterAcceptanceNative+POINT
     [void][RepeaterAcceptanceNative]::GetCursorPos([ref]$origin)
     try {
-        [void][RepeaterAcceptanceNative]::SetForegroundWindow($WindowHandle)
-        Start-Sleep -Milliseconds 120
         [void][RepeaterAcceptanceNative]::SetCursorPos($CenterX, $CenterY)
         Start-Sleep -Milliseconds 60
         $delta = if ($Direction -eq 'down') { -120 } else { 120 }
@@ -356,6 +416,8 @@ function Invoke-WheelScroll {
     finally {
         [void][RepeaterAcceptanceNative]::SetCursorPos($origin.X, $origin.Y)
     }
+
+    return $true
 }
 
 function Save-WindowScreenshot {
@@ -369,16 +431,12 @@ function Save-WindowScreenshot {
         $height = $rect.Bottom - $rect.Top
         if ($width -le 0 -or $height -le 0) { return $false }
 
+        # A screen BitBlt, not PrintWindow: PrintWindow sends WM_PRINT to the app's
+        # UI thread and blocks the harness forever if that thread is pegged.
         $bitmap = New-Object System.Drawing.Bitmap($width, $height)
         $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
         try {
-            $hdc = $graphics.GetHdc()
-            try {
-                [void][RepeaterAcceptanceNative]::PrintWindow($WindowHandle, $hdc, 2)
-            }
-            finally {
-                $graphics.ReleaseHdc($hdc)
-            }
+            $graphics.CopyFromScreen($rect.Left, $rect.Top, 0, 0, (New-Object System.Drawing.Size($width, $height)), [System.Drawing.CopyPixelOperation]::SourceCopy)
         }
         finally {
             $graphics.Dispose()
@@ -450,41 +508,73 @@ function Invoke-PlayerWindowCycle {
         [int]$Left,
         [int]$Top,
         [int]$Right,
-        [int]$Bottom
+        [int]$Bottom,
+        [int]$RestoreNavIndex = 0
     )
 
     $before = @([RepeaterAcceptanceNative]::FindAppWindows([uint32]$Process.Id))
-    $x = $Left + [int](($Right - $Left) * $PlayerCardXPercent)
-    $y = $Top + [int](($Bottom - $Top) * $PlayerCardYPercent)
 
-    [void][RepeaterAcceptanceNative]::SetForegroundWindow($Window)
-    Start-Sleep -Milliseconds 150
-    [void][RepeaterAcceptanceNative]::SetCursorPos($x, $y)
-    Start-Sleep -Milliseconds 100
-    for ($click = 0; $click -lt 2; $click++) {
-        [RepeaterAcceptanceNative]::mouse_event([RepeaterAcceptanceNative]::MOUSEEVENTF_LEFTDOWN, 0, 0, 0, [UIntPtr]::Zero)
-        Start-Sleep -Milliseconds 40
-        [RepeaterAcceptanceNative]::mouse_event([RepeaterAcceptanceNative]::MOUSEEVENTF_LEFTUP, 0, 0, 0, [UIntPtr]::Zero)
-        Start-Sleep -Milliseconds 90
-    }
+    # Several candidate points on a card grid; the first that opens a second
+    # top-level window wins. A wrong point may navigate the main frame instead,
+    # so nav is restored when the whole attempt fails.
+    $candidates = @(
+        ,@($PlayerCardXPercent, $PlayerCardYPercent)
+        ,@(0.35, 0.55)
+        ,@(0.65, 0.55)
+        ,@(0.5, 0.75)
+        ,@(0.35, 0.72)
+        ,@(0.65, 0.72)
+    )
 
     $opened = [IntPtr]::Zero
-    $deadline = [DateTime]::UtcNow.AddSeconds(25)
-    while ([DateTime]::UtcNow -lt $deadline) {
-        $now = @([RepeaterAcceptanceNative]::FindAppWindows([uint32]$Process.Id))
-        $new = @($now | Where-Object { $before -notcontains $_ })
-        if ($new.Count -gt 0) { $opened = $new[0]; break }
+    $attempts = @()
+    $point = $null
+
+    $null = Invoke-UiaHelper -WindowHandle $Window.ToInt64() -Action 'activate'
+    Start-Sleep -Milliseconds 250
+
+    $attemptIndex = 0
+    foreach ($candidate in $candidates) {
+        $attemptIndex++
         if ($Process.HasExited) { break }
-        Start-Sleep -Milliseconds 200
+
+        $x = $Left + [int](($Right - $Left) * [double]$candidate[0])
+        $y = $Top + [int](($Bottom - $Top) * [double]$candidate[1])
+        $attempts += ,@([int]$x, [int]$y)
+
+        Add-Log -Step 'player-attempt' -Data @{ index = $attemptIndex; point = "$x,$y" }
+        [void][RepeaterAcceptanceNative]::SetCursorPos($x, $y)
+        Start-Sleep -Milliseconds 150
+        for ($click = 0; $click -lt 2; $click++) {
+            [RepeaterAcceptanceNative]::mouse_event([RepeaterAcceptanceNative]::MOUSEEVENTF_LEFTDOWN, 0, 0, 0, [UIntPtr]::Zero)
+            Start-Sleep -Milliseconds 40
+            [RepeaterAcceptanceNative]::mouse_event([RepeaterAcceptanceNative]::MOUSEEVENTF_LEFTUP, 0, 0, 0, [UIntPtr]::Zero)
+            Start-Sleep -Milliseconds 90
+        }
+
+        # First attempt waits longer: mpv/media init can be slow on a cold cache.
+        $waitSeconds = if ($attemptIndex -eq 1) { 15 } else { 8 }
+        $deadline = [DateTime]::UtcNow.AddSeconds($waitSeconds)
+        while ([DateTime]::UtcNow -lt $deadline) {
+            $now = @([RepeaterAcceptanceNative]::FindAppWindows([uint32]$Process.Id))
+            $new = @($now | Where-Object { $before -notcontains $_ })
+            if ($new.Count -gt 0) { $opened = $new[0]; break }
+            if ($Process.HasExited) { break }
+            Start-Sleep -Milliseconds 200
+        }
+
+        if ($opened -ne [IntPtr]::Zero) { $point = @($x, $y); break }
     }
 
     if ($opened -eq [IntPtr]::Zero) {
-        Add-Log -Step 'player-window-missing' -Data @{ point = @($x, $y) }
-        return [pscustomobject]@{ opened = $false; closed = $false; point = @($x, $y) }
+        Add-Log -Step 'player-window-missing' -Data @{ attempts = ($attempts | ForEach-Object { "$($_[0]),$($_[1])" }) -join ' ' }
+        $null = Invoke-UiaHelper -WindowHandle $Window.ToInt64() -Action 'select' -Index $RestoreNavIndex
+        $null = Wait-AppSettled -Process $Process -MinimumWaitMs 800 -QuietWindowMs 800 -TimeoutMs 15000
+        return [pscustomobject]@{ opened = $false; closed = $false; attempts = $attempts; restoredNav = $RestoreNavIndex }
     }
 
-    Add-Log -Step 'player-window-opened' -Data @{ handle = $opened.ToInt64() }
-    $null = Wait-AppSettled -Process $Process -MinimumWaitMs 3000 -QuietWindowMs 1500 -TimeoutMs 30000 -CpuDeltaSeconds 0.4
+    Add-Log -Step 'player-window-opened' -Data @{ handle = $opened.ToInt64(); point = ($point -join ',') }
+    $null = Wait-AppSettled -Process $Process -MinimumWaitMs 3500 -QuietWindowMs 1500 -TimeoutMs 30000 -CpuDeltaSeconds 0.4
     [void][RepeaterAcceptanceNative]::PostMessageW($opened, [RepeaterAcceptanceNative]::WM_CLOSE, [IntPtr]::Zero, [IntPtr]::Zero)
 
     $closed = $false
@@ -496,8 +586,8 @@ function Invoke-PlayerWindowCycle {
     }
 
     Add-Log -Step 'player-window-closed' -Data @{ handle = $opened.ToInt64(); closed = $closed }
-    $null = Wait-AppSettled -Process $Process -MinimumWaitMs 1200 -QuietWindowMs 1000 -TimeoutMs 20000 -CpuDeltaSeconds 0.25
-    return [pscustomobject]@{ opened = $true; closed = $closed; point = @($x, $y); handle = $opened.ToInt64() }
+    $null = Wait-AppSettled -Process $Process -MinimumWaitMs 1500 -QuietWindowMs 1000 -TimeoutMs 20000 -CpuDeltaSeconds 0.25
+    return [pscustomobject]@{ opened = $true; closed = $closed; point = $point; handle = $opened.ToInt64(); attempts = $attempts }
 }
 
 # ------------------------------------------------------------------ preflight
@@ -729,15 +819,52 @@ try {
 
         if (-not $isWarmup) { $samples.Add((Get-AppMetrics -Process $process | Add-Member -NotePropertyName phase -NotePropertyValue "$label-start" -PassThru)) }
 
-        # 1. long-list scroll down/up, which is what drives ItemsRepeater recycling.
+        Add-Log -Step 'phase' -Data @{ cycle = $label; phase = 'scroll-start' }
+
+        # 1. long-list scroll down then back up; that is what drives ItemsRepeater
+        #    recycling. The peak displacement is measured BEFORE returning to the
+        #    top, otherwise the down/up pair cancels out to a zero net delta.
         $scrollBefore = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scrollinfo'
+        $scrollPeak = $null
+        $wheelAccepted = $false
         for ($pass = 0; $pass -lt $ScrollCyclesPerPageSwitch; $pass++) {
-            Invoke-WheelScroll -WindowHandle $window -Notches $WheelNotches -Direction 'down' -CenterX $centerX -CenterY $centerY
-            Start-Sleep -Milliseconds 400
-            Invoke-WheelScroll -WindowHandle $window -Notches $WheelNotches -Direction 'up' -CenterX $centerX -CenterY $centerY
-            Start-Sleep -Milliseconds 400
+            $wheelAccepted = Invoke-WheelScroll -WindowHandle $window.ToInt64() -Notches $WheelNotches -Direction 'down' -CenterX $centerX -CenterY $centerY
+            Start-Sleep -Milliseconds 450
+            if ($pass -eq 0) { $scrollPeak = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scrollinfo' }
+            $null = Invoke-WheelScroll -WindowHandle $window.ToInt64() -Notches $WheelNotches -Direction 'up' -CenterX $centerX -CenterY $centerY
+            Start-Sleep -Milliseconds 450
         }
         $scrollAfter = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scrollinfo'
+
+        $scrollDelta = $null
+        if ($null -ne $scrollBefore -and $null -ne $scrollPeak -and
+            $null -ne $scrollBefore.PSObject.Properties['before'] -and $null -ne $scrollPeak.PSObject.Properties['before']) {
+            $scrollDelta = [double]$scrollPeak.before.verticalPercent - [double]$scrollBefore.before.verticalPercent
+        }
+
+        # Wheel input is only useful if it actually displaced the list; otherwise
+        # fall back to UI Automation scrolling so recycle churn still happens.
+        $scrollMode = 'wheel'
+        if (($null -eq $scrollDelta) -or ([math]::Abs([double]$scrollDelta) -lt 0.5)) {
+            $scrollMode = 'uia-fallback'
+            $null = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scroll' -ScrollCount 8 -ScrollDirection 'down'
+            Start-Sleep -Milliseconds 500
+            $scrollPeak = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scrollinfo'
+            $null = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scroll' -ScrollCount 8 -ScrollDirection 'up'
+            Start-Sleep -Milliseconds 500
+            $scrollAfter = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'scrollinfo'
+            if ($null -ne $scrollBefore -and $null -ne $scrollPeak -and
+                $null -ne $scrollBefore.PSObject.Properties['before'] -and $null -ne $scrollPeak.PSObject.Properties['before']) {
+                $scrollDelta = [double]$scrollPeak.before.verticalPercent - [double]$scrollBefore.before.verticalPercent
+            }
+            Add-Log -Step 'scroll-fallback-uia' -Data @{ cycle = $label; peakDelta = $scrollDelta }
+        }
+
+        $scrollReturnDelta = $null
+        if ($null -ne $scrollBefore -and $null -ne $scrollAfter -and
+            $null -ne $scrollBefore.PSObject.Properties['before'] -and $null -ne $scrollAfter.PSObject.Properties['before']) {
+            $scrollReturnDelta = [double]$scrollAfter.before.verticalPercent - [double]$scrollBefore.before.verticalPercent
+        }
         $null = Wait-AppSettled -Process $process -MinimumWaitMs 600 -QuietWindowMs 600 -TimeoutMs 15000 -CpuDeltaSeconds 0.2
 
         if (-not $SkipScreenshots) {
@@ -745,10 +872,7 @@ try {
             if (Save-WindowScreenshot -WindowHandle $window -Path $path) { $screenshots.Add($path) }
         }
 
-        $scrollDelta = $null
-        if ($null -ne $scrollBefore -and $null -ne $scrollAfter) {
-            $scrollDelta = [double]$scrollAfter.before.verticalPercent - [double]$scrollBefore.before.verticalPercent
-        }
+        Add-Log -Step 'phase' -Data @{ cycle = $label; phase = 'scroll-done'; delta = $scrollDelta; mode = $scrollMode }
 
         # 2. page switch and back (MainFrame keeps page instances; this exercises
         #    unload/reload of the repeater's realize pipeline, not teardown).
@@ -765,12 +889,30 @@ try {
             if (Save-WindowScreenshot -WindowHandle $window -Path $path) { $screenshots.Add($path) }
         }
 
+        Add-Log -Step 'phase' -Data @{ cycle = $label; phase = 'nav-done' }
+
         # 3. optional real teardown: open and close the detached player window.
         $playerResult = $null
         if (-not $isWarmup -and $PlayerWindowCycles -gt 0 -and $measuredCycle -le $PlayerWindowCycles) {
             $currentRect = New-Object RepeaterAcceptanceNative+RECT
             [void][RepeaterAcceptanceNative]::GetWindowRect($window, [ref]$currentRect)
             $playerResult = Invoke-PlayerWindowCycle -Process $process -Window $window -Left $currentRect.Left -Top $currentRect.Top -Right $currentRect.Right -Bottom $currentRect.Bottom
+        }
+
+        Add-Log -Step 'phase' -Data @{ cycle = $label; phase = 'player-done'; opened = $(if ($null -ne $playerResult) { $playerResult.opened } else { $null }) }
+
+        # The player window can leave the main window behind and the UIA tree
+        # stale; re-resolve the handle and restore it before the next cycle.
+        if ($null -ne $playerResult -and $playerResult.opened) {
+            Start-Sleep -Milliseconds 800
+            $window = [RepeaterAcceptanceNative]::FindMainWindow([uint32]$process.Id)
+            if ($window -ne [IntPtr]::Zero) {
+                [void][RepeaterAcceptanceNative]::ShowWindow($window, 9)
+                $null = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'activate'
+                Start-Sleep -Milliseconds 400
+                $reacquired = Invoke-UiaHelper -WindowHandle $window.ToInt64() -Action 'snapshot'
+                Add-Log -Step 'window-reacquired' -Data @{ handle = $window.ToInt64(); navItems = $(if ($null -ne $reacquired) { @($reacquired.navItems).Count } else { -1 }) }
+            }
         }
 
         $sample = Get-AppMetrics -Process $process
@@ -785,6 +927,9 @@ try {
             threadCount      = $sample.threadCount
             cpuSeconds       = $sample.cpuSeconds
             scrollPercentDelta = $scrollDelta
+            scrollReturnDelta = $scrollReturnDelta
+            wheelAccepted    = $wheelAccepted
+            scrollMode       = $scrollMode
             navResults       = $navResults
             playerWindow     = $playerResult
             timestamp        = $sample.timestamp
@@ -799,6 +944,7 @@ try {
             privateCommitMb = $sample.privateCommitMb
             handles = $sample.handleCount
             scrollPercentDelta = $scrollDelta
+            scrollMode = $scrollMode
         }
     }
 

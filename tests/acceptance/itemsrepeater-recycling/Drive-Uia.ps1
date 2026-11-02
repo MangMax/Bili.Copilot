@@ -23,7 +23,11 @@ param(
     [int]$Index = -1,
     [int]$ScrollCount = 1,
     [ValidateSet('down', 'up')][string]$ScrollDirection = 'down',
-    [double]$ScrollPercent = -1
+    [double]$ScrollPercent = -1,
+    [int]$WheelNotches = 1,
+    [ValidateSet('down', 'up')][string]$WheelDirection = 'down',
+    [double]$WheelXPercent = 0.55,
+    [double]$WheelYPercent = 0.55
 )
 
 $ErrorActionPreference = 'Stop'
@@ -35,9 +39,16 @@ using System;
 using System.Runtime.InteropServices;
 public static class UiaDriveNative {
     [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+    [DllImport("user32.dll")] public static extern bool GetCursorPos(out POINT point);
     [DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, int data, UIntPtr extra);
+    [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
+    [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
     public const uint LeftDown = 0x0002;
     public const uint LeftUp = 0x0004;
+    public const uint Wheel = 0x0800;
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT { public int X; public int Y; }
 }
 '@
 
@@ -160,6 +171,44 @@ try {
             selectedNow = $(try { $target.element.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Current.IsSelected } catch { $null })
             candidateCount = $candidates.Count
         }
+    }
+
+    if ($Action -eq 'activate') {
+        [void][UiaDriveNative]::SetForegroundWindow([IntPtr]$WindowHandle)
+        Start-Sleep -Milliseconds 250
+        $isForeground = ([UiaDriveNative]::GetForegroundWindow() -eq [IntPtr]$WindowHandle)
+        Write-Result @{ foreground = $isForeground }
+    }
+
+    if ($Action -eq 'wheel') {
+        $wheelRect = Get-Rect -Element $window
+        if ($null -eq $wheelRect) { Write-Failure 'window has no screen bounds.' }
+
+        [void][UiaDriveNative]::SetForegroundWindow([IntPtr]$WindowHandle)
+        Start-Sleep -Milliseconds 250
+        $isForeground = ([UiaDriveNative]::GetForegroundWindow() -eq [IntPtr]$WindowHandle)
+        if (-not $isForeground) {
+            Write-Result @{ foreground = $false; notches = 0 }
+        }
+
+        $x = $wheelRect.x + [int]($wheelRect.width * $WheelXPercent)
+        $y = $wheelRect.y + [int]($wheelRect.height * $WheelYPercent)
+        $origin = New-Object UiaDriveNative+POINT
+        [void][UiaDriveNative]::GetCursorPos([ref]$origin)
+        try {
+            [void][UiaDriveNative]::SetCursorPos($x, $y)
+            Start-Sleep -Milliseconds 80
+            $delta = if ($WheelDirection -eq 'down') { -120 } else { 120 }
+            for ($i = 0; $i -lt $WheelNotches; $i++) {
+                [UiaDriveNative]::mouse_event([UiaDriveNative]::Wheel, 0, 0, $delta, [UIntPtr]::Zero)
+                Start-Sleep -Milliseconds 22
+            }
+        }
+        finally {
+            [void][UiaDriveNative]::SetCursorPos($origin.X, $origin.Y)
+        }
+
+        Write-Result @{ foreground = $true; notches = $WheelNotches; point = @($x, $y) }
     }
 
     # scroll / scrollinfo: pick the widest vertically scrollable element in the window.
