@@ -329,21 +329,33 @@ public sealed partial class PlayerViewModel
 
     private void OnSmtcButtonPressed(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
     {
-        queue.TryEnqueue(() =>
+        var action = args.Button switch
         {
-            if (args.Button is SystemMediaTransportControlsButton.Play or SystemMediaTransportControlsButton.Pause)
-            {
-                PlayPauseCommand.Execute(default);
-            }
-            else if (args.Button == SystemMediaTransportControlsButton.Next && IsNextButtonEnabled)
-            {
-                PlayNextCommand.Execute(default);
-            }
-            else if (args.Button == SystemMediaTransportControlsButton.Previous && IsPrevButtonEnabled)
-            {
-                PlayPreviousCommand.Execute(default);
-            }
-        });
+            SystemMediaTransportControlsButton.Play or SystemMediaTransportControlsButton.Pause => SmtcPlayerAction.PlayPause,
+            SystemMediaTransportControlsButton.Next => SmtcPlayerAction.Next,
+            SystemMediaTransportControlsButton.Previous => SmtcPlayerAction.Previous,
+            _ => SmtcPlayerAction.None,
+        };
+
+        // 入队到执行之间可能已经关闭、换集或替换播放器；入队前捕获会话，执行时复查。
+        var isCurrent = CapturePlaybackValidity();
+        queue.TryEnqueue(() => RunSmtcAction(action, isCurrent));
+    }
+
+    partial void ExecuteSmtcPlayerAction(SmtcPlayerAction action)
+    {
+        if (action is SmtcPlayerAction.PlayPause)
+        {
+            PlayPauseCommand.Execute(default);
+        }
+        else if (action == SmtcPlayerAction.Next && IsNextButtonEnabled)
+        {
+            PlayNextCommand.Execute(default);
+        }
+        else if (action == SmtcPlayerAction.Previous && IsPrevButtonEnabled)
+        {
+            PlayPreviousCommand.Execute(default);
+        }
     }
 
     private void OnClientCacheStateChanged(object? sender, MpvCacheStateEventArgs e)
@@ -361,7 +373,9 @@ public sealed partial class PlayerViewModel
 
             return;
         }
-        else if (Player.Duration < 1 && !_isBroken)
+        // 关闭或换集之后到达的错误只属于旧会话：既不重播，也不写旧会话的界面状态。
+        var isCurrent = CapturePlaybackValidity();
+        if (isCurrent() && Player.Duration < 1 && !_isBroken)
         {
             _isBroken = true;
             await Player.ReplayAsync();
@@ -370,6 +384,11 @@ public sealed partial class PlayerViewModel
 
         queue.TryEnqueue(() =>
         {
+            if (!isCurrent())
+            {
+                return;
+            }
+
             var errorContent = e switch
             {
                 MpvError.Nomem => ResourceToolkit.GetLocalizedString(StringNames.MpvErrorNoMemory),
@@ -616,38 +635,53 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.IsPlaybackInitialized) && Player.IsPlaybackInitialized && !(Window?.IsClosed ?? true))
         {
-            var danmakuPlaybackVersion = _danmakuPlaybackVersion;
+            // 初始化事件可能被关闭或换集追上：每步 await 之后复查，失效即停止。
+            var isCurrent = CapturePlaybackValidity();
             ErrorMessage = default;
             _prevPosition = 0;
             CheckBlackBackgroundVisible();
             CheckBottomProgressBarVisible();
             ResetSubtitlePositionCommand.Execute(default);
-            await ChangeSubtitleFontFamilyCommand.ExecuteAsync(SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontFamily, "Segoe UI"));
-            var subtitleFontSize = SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontSize, 32d);
-            ChangeSubtitleFontSizeCommand.Execute(Math.Max(1, subtitleFontSize));
-            if (_continuePosition > 0)
+            await RunPlaybackInitializationAsync(isCurrent, new PlaybackInitializationSteps
             {
-                await ChangePositionAsync(_continuePosition!.Value);
-                _continuePosition = null;
-            }
-
-            // 强制关闭可能开启的统计信息覆盖层.
-            await Client!.SendKeyPressAsync("ESC");
-            IsStatsOverlayShown = false;
-
-            // Make sure playing.
-            if (Player.PlaybackState != MpvPlayerState.Playing)
-            {
-                await Client!.ResumeAsync();
-            }
-
-            await VerifyChaptersAsync();
-
-            if (!_isDanmakuInitialized && danmakuPlaybackVersion == _danmakuPlaybackVersion && !_isDanmakuClosed && !Window.IsClosed)
-            {
-                InitializeDanmakuCommand.Execute(default);
-                _isDanmakuInitialized = true;
-            }
+                ApplySubtitlesAsync = async () =>
+                {
+                    await ChangeSubtitleFontFamilyCommand.ExecuteAsync(SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontFamily, "Segoe UI"));
+                    var subtitleFontSize = SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontSize, 32d);
+                    ChangeSubtitleFontSizeCommand.Execute(Math.Max(1, subtitleFontSize));
+                },
+                SeekToContinuePositionAsync = async () =>
+                {
+                    if (_continuePosition > 0)
+                    {
+                        await ChangePositionAsync(_continuePosition!.Value);
+                        _continuePosition = null;
+                    }
+                },
+                CloseStatsOverlayAsync = async () =>
+                {
+                    // 强制关闭可能开启的统计信息覆盖层.
+                    await Client!.SendKeyPressAsync("ESC");
+                    IsStatsOverlayShown = false;
+                },
+                ResumeIfNeededAsync = async () =>
+                {
+                    // Make sure playing.
+                    if (Player.PlaybackState != MpvPlayerState.Playing)
+                    {
+                        await Client!.ResumeAsync();
+                    }
+                },
+                VerifyChaptersAsync = VerifyChaptersAsync,
+                InitializeDanmaku = () =>
+                {
+                    if (!_isDanmakuInitialized && !_isDanmakuClosed && !Window!.IsClosed)
+                    {
+                        InitializeDanmakuCommand.Execute(default);
+                        _isDanmakuInitialized = true;
+                    }
+                },
+            });
         }
         else if (e.PropertyName == nameof(Player.CacheSpeed))
         {
@@ -681,10 +715,11 @@ public sealed partial class PlayerViewModel
         _danmakuPlaybackVersion++;
         _isDanmakuInitialized = true;
         _danmakuLoadSession?.Cancel();
-        await WaitForPositionChangesAsync();
-        await Client!.PauseAsync();
-        await Client!.StopAsync();
-        await InitializeAsync(e);
+        // 暂停/停止/初始化之间可能被关闭或再次换集打断，由 SwitchMediaAsync 逐步复查会话。
+        await SwitchMediaAsync(
+            () => Client!.PauseAsync(),
+            () => Client!.StopAsync(),
+            () => InitializeAsync(e));
     }
 
     private void OnConnectorPlaylistInitialized(object? sender, PlaylistInitializedEventArgs e)
@@ -747,6 +782,13 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        // 关闭/换集之后到达的按键只属于旧会话。
+        var isCurrent = CapturePlaybackValidity();
+        if (!isCurrent())
+        {
+            return;
+        }
+
         if (args.VirtualKey == Windows.System.VirtualKey.Escape)
         {
             BackToDefaultModeCommand.Execute(default);
@@ -767,6 +809,11 @@ public sealed partial class PlayerViewModel
                 Windows.System.VirtualKey.Number4 or
                 Windows.System.VirtualKey.Number5)
             {
+                if (!isCurrent())
+                {
+                    return;
+                }
+
                 await Client!.SendKeyPressAsync(args.VirtualKey.ToString().Replace("Number", string.Empty, StringComparison.Ordinal).ToLowerInvariant());
                 return;
             }
@@ -782,7 +829,7 @@ public sealed partial class PlayerViewModel
             if (_isRightKeyTripleSpeed)
             {
                 _isRightKeyTripleSpeed = false;
-                if (!await ChangeSpeedAsync(_lastSpeed))
+                if (!isCurrent() || !await ChangeSpeedAsync(_lastSpeed))
                 {
                     return;
                 }

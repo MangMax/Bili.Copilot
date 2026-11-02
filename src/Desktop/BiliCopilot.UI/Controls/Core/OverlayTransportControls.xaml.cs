@@ -165,6 +165,12 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private async void OnPlayPauseButtonClick(object sender, RoutedEventArgs e)
     {
+        // 关闭/换集之后到达的点击只属于旧会话。
+        if (!ViewModel.CapturePlaybackValidity()())
+        {
+            return;
+        }
+
         if (ViewModel.Player.PlaybackState is MpvPlayerState.Playing)
         {
             await ViewModel.Client!.PauseAsync();
@@ -182,7 +188,8 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private async void OnVolumeValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
         var newValue = e.NewValue;
-        if (ViewModel?.Client is null || ViewModel.Player?.IsPlaybackInitialized != true)
+        var isCurrent = ViewModel.CapturePlaybackValidity();
+        if (!isCurrent() || ViewModel.Player?.IsPlaybackInitialized != true)
         {
             return;
         }
@@ -190,6 +197,12 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         if (_isFirstChangeVolume && (ViewModel.Player.Volume > 100 && newValue == 100))
         {
             await Task.Delay(400);
+            // 延迟期间可能已经关闭或换集，写回旧会话没有意义。
+            if (!isCurrent())
+            {
+                return;
+            }
+
             ViewModel.Player.RaisePropertyChanged(nameof(ViewModel.Player.Volume));
             _isFirstChangeVolume = false;
             return;
@@ -277,7 +290,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         _speedChangeList.Clear();
         if (_isOverlayActive && isCurrent?.Invoke() == true && Math.Abs(lastSpeed - ViewModel.Player.PlaybackRate) > 0.1)
         {
-            if (await ViewModel.ChangeSpeedAsync(lastSpeed))
+            if (await ViewModel.ChangeSpeedAsync(lastSpeed) && isCurrent?.Invoke() == true)
             {
                 CheckSpeedButtonState();
             }
@@ -286,8 +299,15 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private async void OnProgressChangeTick(object? sender, object e)
     {
+        var isCurrent = ViewModel.CapturePlaybackValidity();
         var lastProgress = _progressChangeList.LastOrDefault();
         _progressChangeList.Clear();
+        if (!isCurrent())
+        {
+            _progressChangeTimer.Stop();
+            return;
+        }
+
         if (lastProgress != ViewModel.Player.Position)
         {
             if (ViewModel.IsNextTipShown)
@@ -323,7 +343,13 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             return;
         }
 
+        var isCurrent = ViewModel.CapturePlaybackValidity();
         await Task.Delay(300);
+        if (!isCurrent())
+        {
+            return;
+        }
+
         var speed = ViewModel.Player?.PlaybackRate ?? 0;
         HalfSpeedButton.IsChecked = false;
         DefaultSpeedButton.IsChecked = false;
@@ -359,6 +385,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private async void OnQuickSpeedButtonClick(object sender, RoutedEventArgs e)
     {
+        if (!ViewModel.CapturePlaybackValidity()())
+        {
+            return;
+        }
+
         var speed = Convert.ToDouble((sender as FrameworkElement)?.Tag);
         _speedChangeList.Clear();
         _speedPlaybackValidity = null;
