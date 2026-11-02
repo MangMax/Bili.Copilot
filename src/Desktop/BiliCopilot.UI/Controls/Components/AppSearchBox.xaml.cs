@@ -18,6 +18,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
     private readonly DispatcherQueueTimer _suggestionSuppressionTimer;
     private bool _isSubmittingQuery;
+    private long _suggestionInteractionVersion;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBox"/> class.
@@ -29,10 +30,17 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         _suggestionSuppressionTimer.Interval = TimeSpan.FromMilliseconds(SuggestionSuppressionMilliseconds);
         _suggestionSuppressionTimer.IsRepeating = false;
         _suggestionSuppressionTimer.Tick += OnSuggestionSuppressionTimerTick;
+        // The base class removes its lifecycle handlers after the first unload.
+        // This control can be reattached, so retain our own cleanup subscription.
+        Unloaded += OnSearchBoxUnloaded;
     }
 
-    protected override void OnControlUnloaded()
+    private void OnSearchBoxUnloaded(object sender, RoutedEventArgs e)
     {
+        _suggestionInteractionVersion++;
+        ViewModel.TryCancelSuggestCommand.Execute(default);
+        ViewModel.Suggestion.Clear();
+        CloseSuggestionList();
         _suggestionSuppressionTimer.Stop();
         _isSubmittingQuery = false;
         HotSearchView.ItemsSource = null;
@@ -40,13 +48,16 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
     private void OnKeywordChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
+        if (!IsLoaded)
+        {
+            return;
+        }
+
+        _suggestionInteractionVersion++;
         // 清空文本时只关闭建议，不展开空态/推荐下拉；聚焦空框时仍由获焦逻辑加载推荐.
         if (string.IsNullOrEmpty(Box.Text))
         {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-            {
-                ViewModel.TryCancelSuggestCommand.Execute(default);
-            }
+            ViewModel.TryCancelSuggestCommand.Execute(default);
 
             ViewModel.Suggestion.Clear();
             CloseSuggestionList();
@@ -66,13 +77,13 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
                 return;
             }
 
-            ViewModel.ReloadSuggestionsCommand.Execute(default);
+            ViewModel.DebounceSuggestionsCommand.Execute(default);
         }
     }
 
     private async void OnBoxGettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
     {
-        if (_isSubmittingQuery || Box.IsSuggestionListOpen)
+        if (!IsLoaded || _isSubmittingQuery || Box.IsSuggestionListOpen)
         {
             if (_isSubmittingQuery)
             {
@@ -83,6 +94,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
 
         // 保留用户已输入的文字，只按当前文字刷新建议，并在有建议时展开列表。
+        var interactionVersion = ++_suggestionInteractionVersion;
         try
         {
             await ViewModel.ReloadSuggestionsCommand.ExecuteAsync(default);
@@ -91,6 +103,11 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         {
             // 网络异常不应从 async void 事件冒泡到 UI 线程；视图模型已记录日志.
             CloseSuggestionList();
+            return;
+        }
+
+        if (!IsLoaded || interactionVersion != _suggestionInteractionVersion)
+        {
             return;
         }
 
@@ -140,6 +157,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
     private void OnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
+        _suggestionInteractionVersion++;
         _isSubmittingQuery = true;
         CloseSuggestionList();
         CloseSuggestionListDeferred();

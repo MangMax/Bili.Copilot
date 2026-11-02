@@ -33,30 +33,136 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         AI = ai;
     }
 
-    [RelayCommand]
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task InitializeAsync(ArticleIdentifier article)
     {
+        // 阅读器视图模型是单例，快速连续打开不同文章时会有多次加载并行。
+        // 每次加载记下代次并取消上一次请求，只有最后一次的结果可以写入页面，
+        // 避免旧请求在新文章已经打开后仍继续读取或把状态改回去。
+        var (generation, cancellation) = BeginLoad();
         Title = article.Title;
         Content = default;
         IsLoading = true;
         Article = article;
         IsCommentsOpened = false;
         IsAIOverlayOpened = false;
+
+        // 新文章开始加载时先清空上一篇的作者、头像与统计，
+        // 否则新文章加载失败时会继续显示上一篇的身份信息。
+        Author = default;
+        Avatar = default;
+        IsVip = false;
+        IsFollowed = false;
+        IsLiked = default;
+        IsFavorited = default;
+        LikeCount = 0;
+        CommentCount = 0;
+        FavoriteCount = 0;
         CommentModule.Initialize(article.Id, Richasy.BiliKernel.Models.CommentTargetType.Article, Richasy.BiliKernel.Models.CommentSortType.Hot);
         try
         {
-            Content = await _discoveryService.GetArticleContentAsync(article);
+            var content = await _discoveryService.GetArticleContentAsync(article, cancellation.Token);
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
+            Content = content;
             AI.InjectArticleAsync(Content);
             InitializeUser();
             InitializeStats();
             ArticleInitialized?.Invoke(this, EventArgs.Empty);
         }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+            // 新文章或离开阅读器已取消本次读取，不写入也不记录为失败。
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加载文章内容时失败");
+            if (IsCurrentLoad(generation))
+            {
+                _logger.LogError(ex, "加载文章内容时失败");
+            }
+        }
+        finally
+        {
+            cancellation.Dispose();
+            if (IsCurrentLoad(generation))
+            {
+                IsLoading = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 取消指定代次的内容加载；页面卸载时用它只取消该页面发起的加载.
+    /// </summary>
+    /// <param name="generation">页面记录下的加载代次.</param>
+    public void CancelLoad(int generation)
+    {
+        CancellationTokenSource? cancellation = null;
+        var cancelledGeneration = 0;
+        lock (_loadLock)
+        {
+            if (_contentGeneration == generation)
+            {
+                cancellation = _contentCancellation;
+                _contentCancellation = null;
+
+                // 递增代次，使已经在途的旧成功/异常也无法落地.
+                cancelledGeneration = ++_contentGeneration;
+            }
         }
 
-        IsLoading = false;
+        CancelAndDispose(cancellation);
+        if (cancelledGeneration != 0 && IsCurrentLoad(cancelledGeneration))
+        {
+            IsLoading = false;
+        }
+    }
+
+    private (int Generation, CancellationTokenSource Cancellation) BeginLoad()
+    {
+        var cancellation = new CancellationTokenSource();
+        CancellationTokenSource? previous;
+        int generation;
+        lock (_loadLock)
+        {
+            generation = ++_contentGeneration;
+            previous = _contentCancellation;
+            _contentCancellation = cancellation;
+        }
+
+        // 先替换当前代次，再在锁外取消旧请求，避免取消回调重入时持锁。
+        CancelAndDispose(previous);
+        return (generation, cancellation);
+    }
+
+    private bool IsCurrentLoad(int generation)
+    {
+        lock (_loadLock)
+        {
+            return generation == _contentGeneration;
+        }
+    }
+
+    private static void CancelAndDispose(CancellationTokenSource? cancellation)
+    {
+        if (cancellation is null)
+        {
+            return;
+        }
+
+        try
+        {
+            cancellation.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            // 旧加载已自行释放，取消是幂等的.
+        }
+
+        cancellation.Dispose();
     }
 
     [RelayCommand]

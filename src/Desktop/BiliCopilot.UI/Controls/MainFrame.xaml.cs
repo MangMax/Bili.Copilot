@@ -56,45 +56,37 @@ public sealed partial class MainFrame : LayoutUserControlBase
         if (targetElement == null)
         {
             // 未找到，创建新实例
-            var instance = Activator.CreateInstance(pageType);
-            if (instance is UIElement element)
+            var element = NavigationPageFactory.Create(pageType);
+            targetElement = element;
+            // 如果实现了 IMainFramePage，则调用 SetParameter
+            if (element is IParameterPage mainFramePage)
             {
-                targetElement = element;
-                // 如果实现了 IMainFramePage，则调用 SetParameter
-                if (element is IParameterPage mainFramePage)
-                {
-                    mainFramePage.SetParameter(parameter);
-                }
+                mainFramePage.SetParameter(parameter);
+            }
 
-                var showOpacityAnimation = new OpacityAnimation
-                {
-                    Duration = TimeSpan.FromMilliseconds(200),
-                    From = 0,
-                    To = 1,
-                };
-                var hideOpacityAnimation = new OpacityAnimation
-                {
-                    Duration = TimeSpan.FromMilliseconds(100),
-                    From = 1,
-                    To = 0,
-                };
-                var showSet = new ImplicitAnimationSet
-                {
-                    showOpacityAnimation
-                };
-                var hideSet = new ImplicitAnimationSet
-                {
-                    hideOpacityAnimation
-                };
-                Implicit.SetShowAnimations(element, showSet);
-                Implicit.SetHideAnimations(element, hideSet);
-                RootGrid.Children.Add(element);
-            }
-            else
+            var showOpacityAnimation = new OpacityAnimation
             {
-                // 类型不是 UIElement，直接返回
-                return;
-            }
+                Duration = TimeSpan.FromMilliseconds(200),
+                From = 0,
+                To = 1,
+            };
+            var hideOpacityAnimation = new OpacityAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(100),
+                From = 1,
+                To = 0,
+            };
+            var showSet = new ImplicitAnimationSet
+            {
+                showOpacityAnimation
+            };
+            var hideSet = new ImplicitAnimationSet
+            {
+                hideOpacityAnimation
+            };
+            Implicit.SetShowAnimations(element, showSet);
+            Implicit.SetHideAnimations(element, hideSet);
+            RootGrid.Children.Add(element);
         }
 
         // 设置可见性

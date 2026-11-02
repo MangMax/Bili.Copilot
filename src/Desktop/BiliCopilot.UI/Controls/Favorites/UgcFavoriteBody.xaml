@@ -24,7 +24,7 @@
                         Layout="{StaticResource VideoLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:VideoItemViewModel">
-                                <components:VideoCardControl Style="{StaticResource UgcSeasonFavoriteVideoCardStyle}" ViewModel="{x:Bind}" />
+                                <components:VideoCardControl Style="{StaticResource UgcSeasonFavoriteVideoCardStyle}" ViewModel="{Binding}" />
                             </DataTemplate>
                         </repeater:AppRepeater.ItemTemplate>
                     </repeater:AppRepeater>

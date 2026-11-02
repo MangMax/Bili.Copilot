@@ -12,7 +12,6 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
     public DanmakuRenderViewModel()
     {
         Renderer = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuRenderer, DanmakuRendererType.Win2D);
-        ReloadFontsCommand.Execute(default);
     }
 
     public void Initialize(IList<DanmakuInformation> danmakus)
@@ -24,6 +23,11 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
 
     public IList<DanmakuInformation> GetCachedDanmakus()
         => _cachedDanmakus is null ? [] : _cachedDanmakus;
+
+    /// <summary>
+    /// Gets the latest playback position for a newly loaded or replaced renderer.
+    /// </summary>
+    public int Position => _position;
 
     /// <summary>
     /// 重置数据.
@@ -38,8 +42,23 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
     /// </summary>
     public void UpdatePosition(int position)
     {
+        if (IsPaused && position != _position)
+        {
+            Seek(position);
+            return;
+        }
+
         _position = position;
         ProgressChanged?.Invoke(this, position);
+    }
+
+    /// <summary>
+    /// Reconstructs the target after a seek, independently of ordinary playback progress.
+    /// </summary>
+    public void Seek(int position)
+    {
+        _position = position;
+        SeekRequested?.Invoke(this, position);
     }
 
     /// <summary>
@@ -119,7 +138,12 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
             return;
         }
 
-        var fonts = await this.Get<IFontToolkit>().GetFontsAsync();
+        var fonts = await FontCatalog.GetFontsAsync(this.Get<IFontToolkit>());
+        if (Fonts.Count > 0)
+        {
+            return;
+        }
+
         foreach (var item in fonts)
         {
             Fonts.Add(item);
@@ -128,7 +152,9 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
         var localFont = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuFontFamily, "Segoe UI");
         if (!Fonts.Select(p => p.LocalName).Contains(localFont))
         {
-            localFont = "Segoe UI";
+            // Preserve a saved family even when enumeration cannot find it.
+            // The renderer can apply its normal fallback without rewriting settings.
+            Fonts.Add(new SystemFont { LocalName = localFont, EngName = localFont });
         }
 
         DanmakuFontFamily = localFont;

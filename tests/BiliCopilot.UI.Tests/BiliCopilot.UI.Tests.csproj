@@ -1,25 +1,46 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <RollForward>LatestMajor</RollForward>
+    <TargetFramework>net11.0</TargetFramework>
+    <RollForward>LatestPatch</RollForward>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <LangVersion>preview</LangVersion>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <!-- Match the production app's observable-property generator configuration. -->
+    <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="coverlet.collector" Version="6.0.4" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="coverlet.collector" Version="10.1.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs" Link="Markdown\MarkdownImageLoader.cs" />
+    <ProjectReference Include="..\..\externals\bili-kernel\src\Services\Services.Media\Services.Media.csproj" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Danmaku\*.cs" Link="Danmaku\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Exercise the real page commands with headless adapters for Windows-only services. -->
+  <ItemGroup>
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\IncrementVerticalScrollControl.xaml.cs" Link="Scroll\IncrementVerticalScrollControl.xaml.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\RecommendationScrollAnchor.cs" Link="Scroll\RecommendationScrollAnchor.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Components\SearchBoxViewModel\*.cs" Link="Search\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Items\SearchSuggestItemViewModel.cs" Link="Search\SearchSuggestItemViewModel.cs" />
+    <ProjectReference Include="..\..\externals\bili-kernel\src\BiliKernel.Abstractions\BiliKernel.Abstractions.csproj" />
+    <ProjectReference Include="..\..\externals\bili-kernel\src\Services\Services.Article\Services.Article.csproj" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\View\PopularPageViewModel\*.cs" Link="Popular\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\View\VideoPartitionPageViewModel\*.cs" Link="Partition\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Components\VideoPartitionDetailViewModel\*.cs" Link="Partition\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Items\PartitionViewModel.cs" Link="Partition\PartitionViewModel.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\PopularSectionType.cs" Link="Popular\PopularSectionType.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\VideoCardStyle.cs" Link="Popular\VideoCardStyle.cs" />
   </ItemGroup>
 
   <!--
@@ -39,4 +60,31 @@
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Toolkits\Pure\*.cs" Link="Toolkits\Pure\%(Filename)%(Extension)" />
   </ItemGroup>
 
+  <!-- Real navigation/cache logic; adapters provide only the Windows presentation surface. -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/NavigationViewModel.cs" Link="Navigation/NavigationViewModel.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/MainFrame.xaml.cs" Link="Navigation/MainFrame.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/OverlayFrame.xaml.cs" Link="Navigation/OverlayFrame.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/IParameterPage.cs" Link="Navigation/IParameterPage.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/IInitializePage.cs" Link="Navigation/IInitializePage.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/ICancelPageViewModel.cs" Link="Navigation/ICancelPageViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/NavigationPageFactory.cs" Link="Navigation/NavigationPageFactory.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Items/NotifyMessageItemViewModel/*.cs" Link="NotifyMessage/%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Playback.cs" Link="Playback/PlayerViewModel.Playback.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/DanmakuRenderViewModel/*.cs" Link="Playback/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/FontCatalog.cs" Link="Playback/FontCatalog.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/DanmakuRendererType.cs" Link="Playback/DanmakuRendererType.cs" />
+  </ItemGroup>
+  <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Speed.cs" Link="Playback/PlayerViewModel.Speed.cs" /></ItemGroup>
+
+  <!-- Article list refresh and reader identity; adapters only supply the card item, comments/AI and OS surface. -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/ArticlePartitionDetailViewModel/*.cs" Link="Article/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/ArticleReaderPageViewModel/*.cs" Link="Article/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/ArticleCardStyle.cs" Link="Article/ArticleCardStyle.cs" />
+  </ItemGroup>
 </Project>

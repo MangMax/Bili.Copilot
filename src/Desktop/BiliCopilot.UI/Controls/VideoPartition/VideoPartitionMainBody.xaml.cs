@@ -9,34 +9,54 @@ namespace BiliCopilot.UI.Controls.VideoPartition;
 /// </summary>
 public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControlBase
 {
+    private readonly RecommendationScrollAnchor _anchor;
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionMainBody"/> class.
     /// </summary>
-    public VideoPartitionMainBody() => InitializeComponent();
+    public VideoPartitionMainBody()
+    {
+        InitializeComponent();
+        _anchor = new(VideoRepeater, View);
+        Loaded += (_, _) => Attach(ViewModel);
+        Unloaded += (_, _) => { Detach(ViewModel); _anchor.Cancel(); };
+    }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
-        }
+        Detach(ViewModel);
     }
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(VideoPartitionDetailViewModel? oldValue, VideoPartitionDetailViewModel? newValue)
     {
-        if (oldValue is not null)
-        {
-            oldValue.VideoListUpdated -= OnVideoListUpdatedAsync;
-        }
+        Detach(oldValue);
+        if (IsLoaded) Attach(newValue);
+    }
 
-        if (newValue is null)
-        {
-            return;
-        }
+    private void Attach(VideoPartitionDetailViewModel? value)
+    {
+        if (value is null) return;
+        Detach(value);
+        value.VideoListUpdated += OnVideoListUpdatedAsync;
+        value.RecommendationListChanging += _anchor.Capture;
+        value.RecommendationListChanged += _anchor.Restore;
+        value.PropertyChanged += OnPagePropertyChanged;
+    }
 
-        newValue.VideoListUpdated += OnVideoListUpdatedAsync;
+    private void Detach(VideoPartitionDetailViewModel? value)
+    {
+        if (value is null || _anchor is null) return;
+        value.VideoListUpdated -= OnVideoListUpdatedAsync;
+        value.RecommendationListChanging -= _anchor.Capture;
+        value.RecommendationListChanged -= _anchor.Restore;
+        value.PropertyChanged -= OnPagePropertyChanged;
+        _anchor.Cancel();
+    }
+
+    private void OnPagePropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(ViewModel.CurrentPartition) or nameof(ViewModel.SelectedSortType) or nameof(ViewModel.IsRecommend)) _anchor.Cancel();
     }
 
     private async void OnVideoListUpdatedAsync(object? sender, EventArgs e)

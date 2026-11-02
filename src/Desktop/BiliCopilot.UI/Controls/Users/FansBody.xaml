@@ -24,7 +24,7 @@
                         Layout="{StaticResource UserLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:UserItemViewModel">
-                                <components:UserCardControl ViewModel="{x:Bind}" />
+                                <components:UserCardControl ViewModel="{Binding}" />
                             </DataTemplate>
                         </repeater:AppRepeater.ItemTemplate>
                     </repeater:AppRepeater>

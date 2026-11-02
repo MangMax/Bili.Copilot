@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Items;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Input;
 using Richasy.MpvKernel.Core.Enums;
@@ -342,8 +343,23 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         SourceFlyout?.Hide();
     }
 
-    private void OnSubtitleFontComboLoaded(object sender, RoutedEventArgs e)
+    private async void OnSubtitleFontComboLoaded(object sender, RoutedEventArgs e)
     {
+        try
+        {
+            await ViewModel.ReloadFontsCommand.ExecuteAsync(default);
+        }
+        catch (Exception ex)
+        {
+            this.Get<ILogger<PlayerOverlay>>().LogWarning(ex, "Unable to load subtitle font choices");
+            return;
+        }
+
+        if (!SubtitleFontComboBox.IsLoaded)
+        {
+            return;
+        }
+
         var font = ViewModel.SubtitleFontFamily;
         var source = ViewModel.Fonts.FirstOrDefault(p => p.LocalName == font);
         if (source != null)

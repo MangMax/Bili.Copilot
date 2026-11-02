@@ -15,6 +15,7 @@ namespace BiliCopilot.UI.ViewModels.Components;
 public sealed partial class SearchBoxViewModel
 {
     private readonly ISearchService _searchService;
+    private readonly TimeProvider _timeProvider;
     private readonly ILogger<SearchBoxViewModel> _logger;
     private readonly List<SearchRecommendItem> _recommendItems = new();
     private CancellationTokenSource? _cancellationTokenSource;
@@ -22,10 +23,10 @@ public sealed partial class SearchBoxViewModel
     private string _extraRegionName = string.Empty;
 
     [ObservableProperty]
-    private string _keyword = string.Empty;
+    public partial string Keyword { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private bool _isHotSearchLoading;
+    public partial bool IsHotSearchLoading { get; set; }
 
     /// <summary>
     /// 搜索建议.
