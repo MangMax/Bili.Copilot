@@ -130,11 +130,21 @@ pwsh -NoProfile -File tests/acceptance/itemsrepeater-recycling/Measure.ps1 -Cycl
 
 # trend arithmetic only (no app, no UI)
 pwsh -NoProfile -File tests/acceptance/itemsrepeater-recycling/GrowthTrend.Tests.ps1
+
+# parameter-binding smoke check (no app, no package lookup)
+pwsh -NoProfile -File tests/acceptance/itemsrepeater-recycling/Measure.ps1 -SelfTest
 ```
 
-Useful parameters: `-WindowWidth`/`-WindowHeight`/`-WindowX`/`-WindowY` (fixed geometry),
-`-WheelNotches` (scroll distance per cycle), `-NavItemCount` (rail items rotated),
-`-SkipScreenshots`, `-NoResize`, `-KeepRunning`, `-ArtifactRoot`.
+Useful parameters: `-WindowWidth`/`-WindowHeight`/`-WindowX`/`-WindowY` (fixed geometry;
+X/Y are screen pixels, e.g. 80), `-WheelNotches` (scroll distance per cycle),
+`-ScrollCyclesPerPageSwitch` (wheel passes per cycle, default 1), `-NavItemCount` (rail
+items rotated), `-SkipScreenshots`, `-NoResize`, `-KeepRunning`, `-ArtifactRoot`, `-SelfTest`.
+
+The wheel is sent by `Measure.ps1` itself, not by `Drive-Uia.ps1`: a child process cannot
+legally take the foreground, so the helper only does read-only UIA snapshots, selections,
+scroll-pattern calls and foreground activation. A helper failure is returned as a typed
+failure record, logged, counted in `summary.uia.errorCount`/`raw.json` and never silently
+becomes `$null`.
 
 ## 4. What is measured, and how growth is judged
 
@@ -142,8 +152,13 @@ Sampled at every cycle boundary (after scroll + page switch + optional teardown,
 CPU-quiet):
 
 * `PrivateMemorySize64` (private commit, MB) — **primary**,
-* `WorkingSetPrivate` (private working set, MB) — secondary,
+* `WorkingSetPrivate` (private working set, MB) — secondary, printed as `n/a` when the
+  performance counter is unavailable (never coerced to 0 MB),
 * handle count, thread count, CPU seconds,
+
+All memory fields and report columns are MB: `privateCommitMb`, `workingSetPrivateMb`,
+`private commit MB`, `private WS MB`. The counters come from bytes and are divided by
+1 MB once, in `Get-AppMetrics`.
 * ambient BiliCopilot processes and total CPU percent (a production instance may be running and is
   never touched),
 * UI Automation `VerticalScrollPercent` before/after the wheel pass (proof the scroll landed),
@@ -155,22 +170,32 @@ cycles pay JIT tiering, XAML template loading, image decode caches and feed load
 `Get-RecyclingVerdict` and the report renderer (in `GrowthTrend.ps1`, unit tested by
 `GrowthTrend.Tests.ps1`) apply, in order:
 
-| rule | verdict |
+| rule | verdict / reason |
 | --- | --- |
-| fewer than 4 measured cycles | `Inconclusive` |
-| slope <= 2 MB/cycle | `NoGrowth` |
-| total growth < 40 MB | `NoGrowth` |
-| R^2 < 0.8 | `Inconclusive` (too noisy to call) |
-| heading slope < 0.5 x overall slope | `Inconclusive` (warm-up plateau, not a linear leak) |
-| slope >= 8 MB/cycle | `Growth` |
-| otherwise | `Inconclusive` |
+| fewer than 4 measured cycles | `Inconclusive` / `insufficient-samples` |
+| slope <= 2 MB/cycle **and** R^2 < 0.8 | `NoGrowth` / `no-growth-beyond-noise` — no growth beyond the threshold, but too noisy to call flat |
+| slope <= 2 MB/cycle **and** R^2 >= 0.8 | `NoGrowth` / `flat` |
+| total growth < 40 MB | `NoGrowth` / `total-growth-below-threshold` |
+| R^2 < 0.8 | `Inconclusive` / `trend-not-monotonic-enough` (too noisy to call) |
+| heading slope < 0.5 x overall slope | `Inconclusive` / `saturating-trend` (warm-up plateau, not a linear leak) |
+| slope >= 8 MB/cycle | `Growth` / `linear-growth` |
+| otherwise | `Inconclusive` / `slope-below-leak-threshold` |
+
+The noisy-flat branch is deliberately **not** called "flat": the tool's own rule says
+R^2 < 0.8 is too noisy to call a trend, so a 0.7 MB/cycle slope with R^2 0.26 is reported
+as "no growth beyond noise", not as evidence that the series is flat.
+
+The 40 MB total-growth rule means a steady trend of at most 5 MB/cycle over 8 cycles
+(5 x 8 = 40) is not called growth. That is a deliberate floor: below it, live-feed noise
+dominates a single session.
 
 Mapping to the ticket's verdict words:
 
 | harness verdict | ticket verdict |
 | --- | --- |
 | `Growth` | **触发** — defect-shaped growth is observable |
-| `NoGrowth` | **未触发** — fixed runtime plus teardown coverage present |
+| `NoGrowth` (with teardown coverage present) | **未触发** — no growth beyond noise on the exercised path |
+| `NoGrowth` (teardown path not exercised) | **未触发 for the exercised loop; the teardown path is undetermined** |
 | `Inconclusive` | **无法判定** — report slope / R^2 / screenshots, change no code |
 
 Handle count never changes the verdict: this defect leaks native XAML objects, not handles. A handle
@@ -206,7 +231,11 @@ Measured results so far live in [RESULTS.md](RESULTS.md).
 * **Player-window cycles are best effort.** The card click uses configurable window-relative points
   (`-PlayerCardXPercent`/`-PlayerCardYPercent`, default 0.5/0.6) plus five fallback points; if no second window appears the
   cycle is marked failed in `raw.json` and the run continues; check `playerWindow.opened` before
-  trusting a teardown-based verdict.
+  trusting a teardown-based verdict. If the UIA subtree is empty after a teardown, that path is
+  undetermined, not evidence of no leak.
+* **UIA failures are recorded, not silent.** `summary.uia.errorCount` and `raw.json` list every
+  failed helper action with its message; a non-zero count appears in `summary.md` and in the
+  run notes. Reduced coverage is visible in the artifact, never swallowed.
 * **DPI is recorded, not changed.** The script never alters the user's scaling; it records
   `GetDpiForWindow` and the window rect so a different DPI is visible in the artifacts.
 * **No forced GC.** The app exposes no GC trigger, so freed-but-not-trimmed working set can lag;
@@ -218,10 +247,14 @@ Measured results so far live in [RESULTS.md](RESULTS.md).
 
 * Only `Mang.BiliCopilot.Dev` is launched — the parameter has a single-value `ValidateSet`,
   and the exe path is resolved from that package's `InstallLocation` and verified before launch.
+* `Resolve-DevPackage` compares the **resolved** `Get-AppxPackage` name with the forbidden
+  list `Mang.BiliCopilot` / `Mang.BiliCopilot.AotDev` before the Dev-identity equality
+  check, so the guard operates on what was actually resolved.
 * `Mang.BiliCopilot` / `Mang.BiliCopilot.AotDev` processes are only *observed* (ids/paths
   recorded in every sample) and never activated, minimized or closed.
 * A second Dev instance is refused (preflight throws if one is already running).
 * Everything the script starts is closed in a `finally` block, with a bounded `CloseMainWindow`
   and a last-resort `Stop-Process` on **that PID only**.
-* Window geometry is restored before exit; the user's DPI/scaling is never touched.
+* Window geometry is restored in a `finally` block, so it happens on success, on exception
+  and with `-KeepRunning`; the user's DPI/scaling is never touched.
 * A `.measure.lock` file in the artifact root prevents two concurrent runs.

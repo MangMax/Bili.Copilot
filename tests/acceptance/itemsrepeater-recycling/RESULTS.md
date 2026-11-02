@@ -1,8 +1,15 @@
 # ItemsRepeater recycling — measurement results (#70)
 
-Verdict for the accepted scope: **未触发 (not triggered)** on Windows App SDK 2.6.4 for the long-list
-and page-switch loop that BiliCopilot actually runs, and **无法判定 (undetermined)** for the one
-in-session teardown path (player window), which this harness cannot measure reliably.
+Verdict for the accepted scope: **no growth beyond noise** on Windows App SDK 2.6.4 for the
+long-list and page-switch loop that BiliCopilot actually runs (**未触发** for that loop), and
+**无法判定 (undetermined)** for the one in-session teardown path (player window), which this
+harness cannot measure reliably.
+
+Precisely: the exercised no-teardown loop shows **no growth**; the teardown path is
+**undetermined**. "No growth" is not the same as "provably flat": the harness calls a series
+with slope <= 2 MB/cycle and R^2 < 0.8 `no-growth-beyond-noise`, because the tool's own rule
+says R^2 < 0.8 is too noisy to call a trend. The 40 MB total-growth rule also means a steady
+trend of <= 5 MB/cycle over 8 cycles (5 x 8 = 40 MB) is not called growth.
 
 No product code was changed. See README.md for the defect model and the harness contract.
 
@@ -12,8 +19,8 @@ No product code was changed. See README.md for the defect model and the harness 
 | --- | --- |
 | package | `Mang.BiliCopilot.Dev` 2.2610.9.132 (JIT Release, x64, `EnabledXamlOptionalChanges` unset) |
 | Windows App SDK runtime | `Microsoft.WindowsAppRuntime.2` 2.6.4.0 (framework package dependency) |
-| OS | Windows 10.0.26300 (26H2) |
-| repo | `feat/spec65-70-itemsrepeater`, base b8c52f2b |
+| OS | Windows 11 10.0.26300 (26H2) |
+| repo | `feat/spec65-70-itemsrepeater` base b8c52f2b (Runs A/B and the original teardown run); `feat/spec65-review-fixes` at integration 95d7786a (Run C) |
 | window | 1440x900 at (80,80), fixed per run |
 | DPI | 144 DPI (150%), recorded per run, never changed |
 | content | live feed, same signed-in Dev instance, identical navigation sequence |
@@ -52,12 +59,39 @@ authoritative geometry.
 | navigation | 16/16 selections succeeded |
 | UIA helper errors | 0 |
 | ambient system CPU | 3% |
-| verdict | `NoGrowth / flat` |
+| verdict | `NoGrowth / no-growth-beyond-noise` (R^2 0.256) |
 
-Two independent runs land at 0.71 and 0.76 MB/cycle with R^2 of 0.37 and 0.26 — a noisy zero, not a
-trend: the 40 MB / 8 MB-per-cycle leak thresholds are nowhere near.
+Two independent runs land at 0.71 and 0.76 MB/cycle with R^2 of 0.366 and 0.256. That is no growth
+beyond the thresholds, but it is **not** a clean flat series either: under the tool's own rule,
+R^2 < 0.8 is too noisy to call a trend, so the reason is `no-growth-beyond-noise`, not `flat`.
+The 40 MB total-growth rule means a <= 5 MB/cycle trend over 8 cycles is not called growth, and
+the 8 MB/cycle leak threshold is far above these slopes.
 
-## Run C — teardown probe (player window), 3 cycles / 1 teardown
+## Run C — review re-run (no teardown), 4 cycles
+
+`artifacts/itemsrepeater-recycling/20261103-004522/` — run after the harness fixes (typed UIA
+failures, geometry restore in `finally`, resolved-package guard, verdict wording).
+
+| metric | value |
+| --- | --- |
+| package | `Mang.BiliCopilot.Dev` 2.2610.9.132 (JIT Release, x64) |
+| private commit samples | 196.27, 198.22, 196.52, 197.57 MB |
+| slope | **0.22 MB/cycle** |
+| R^2 | 0.097 |
+| total delta | +1.3 MB over 4 cycles |
+| private working set | 155.61 -> 153.71 MB |
+| handles | 3499 -> 3344, slope -55.9/cycle |
+| wheel scroll delivered | 4/4 cycles (~89-93% of the list per pass) |
+| navigation | 8/8 selections |
+| UIA helper errors | 0 |
+| window geometry | restored to the pre-run rect before close (logged `window-restored`) |
+| verdict | `NoGrowth / no-growth-beyond-noise` |
+
+This run is shorter (4 measured cycles + 1 warmup) than Runs A/B because it is the verification
+run for the harness fixes, not a new 8-cycle campaign. It confirms the fixed UIA and geometry
+paths and shows the same no-growth-beyond-noise shape.
+
+## Run D — teardown probe (player window), 3 cycles / 1 teardown
 
 `artifacts/itemsrepeater-recycling/20261103-001238/`
 
@@ -83,8 +117,9 @@ and not evidence against one.
 
 1. The defect requires repeater **destruction** (README §1, condition 3). BiliCopilot's
    `MainFrame` caches page instances forever, so page switching never destroys a repeater; the
-   long-list/page-switch loop is the only teardown-free loop the app performs repeatedly, and it is
-   flat over 8 cycles in two runs.
+   long-list/page-switch loop is the only teardown-free loop the app performs repeatedly, and it
+   shows no growth beyond noise over 8 cycles in two runs (0.71 and 0.76 MB/cycle, R^2 0.366 and
+   0.256) and over 4 cycles in the review re-run (0.22 MB/cycle, R^2 0.097).
 2. The runtime carries the fix and the containment change id that gates it is not cataloged as
    disabled in 2.6.4, so the fixed branch is default-on (README §1).
 3. The only remaining teardown path (player window) is not measurable with this harness, so the
@@ -94,6 +129,7 @@ and not evidence against one.
 
 ```powershell
 pwsh -NoProfile -File tests/acceptance/itemsrepeater-recycling/Measure.ps1 -Cycles 8 -WarmupCycles 2 -PlayerWindowCycles 0
+pwsh -NoProfile -File tests/acceptance/itemsrepeater-recycling/Measure.ps1 -Cycles 4 -WarmupCycles 1 -PlayerWindowCycles 0   # Run C
 pwsh -NoProfile -File tests/acceptance/itemsrepeater-recycling/Measure.ps1 -Cycles 3 -WarmupCycles 1 -PlayerWindowCycles 1
 ```
 

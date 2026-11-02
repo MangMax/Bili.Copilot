@@ -18,8 +18,6 @@ namespace BiliCopilot.Acceptance.XamlOptionalChanges;
 /// </summary>
 internal static class Program
 {
-    private const string XamlNamespace = "xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'";
-
     private static string? _tracePath;
 
     internal static ProbeOptions? PendingOptions { get; set; }

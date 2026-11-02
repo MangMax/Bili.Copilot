@@ -44,6 +44,34 @@ function Test-CloseTo {
     Write-Host "PASS  $Name"
 }
 
+function Compare-TestValue {
+    <#
+    .SYNOPSIS
+        Type-sensitive equality for test expectations.
+    .DESCRIPTION
+        Stringifying both operands made $null, $false and "" compare equal. An
+        expectation of $null must fail when the actual value is $false, and a
+        string expectation must not pass for a number. Returns $true/$false so
+        the comparator itself can be asserted (see the meta-tests below).
+    #>
+    param(
+        [Parameter(Mandatory)][AllowNull()][object]$Expected,
+        [Parameter(Mandatory)][AllowNull()][object]$Actual
+    )
+
+    $expectedIsNull = $null -eq $Expected
+    $actualIsNull = $null -eq $Actual
+    if ($expectedIsNull -or $actualIsNull) {
+        return ($expectedIsNull -and $actualIsNull)
+    }
+
+    if ($Expected.GetType() -ne $Actual.GetType()) {
+        return $false
+    }
+
+    return ($Expected -eq $Actual)
+}
+
 function Test-Value {
     param(
         [Parameter(Mandatory)][string]$Name,
@@ -52,9 +80,11 @@ function Test-Value {
     )
 
     $script:Assertions++
-    if ("$Expected" -ne "$Actual") {
-        $script:Failures.Add("$Name : expected $Expected but got $Actual")
-        Write-Host "FAIL  $Name (expected '$Expected', got '$Actual')"
+    if (-not (Compare-TestValue -Expected $Expected -Actual $Actual)) {
+        $expectedText = if ($null -eq $Expected) { '<null>' } else { "'$Expected' ($($Expected.GetType().Name))" }
+        $actualText = if ($null -eq $Actual) { '<null>' } else { "'$Actual' ($($Actual.GetType().Name))" }
+        $script:Failures.Add("$Name : expected $expectedText but got $actualText")
+        Write-Host "FAIL  $Name (expected $expectedText, got $actualText)"
         return
     }
 
@@ -65,6 +95,11 @@ function Test-Value {
 
 $empty = Measure-GrowthTrend -Values @()
 Test-Value -Name 'empty series returns null' -Expected $null -Actual $empty
+Test-Value -Name 'empty series is null, not a boolean' -Expected $false -Actual ($empty -is [bool])
+Test-Value -Name 'null expectation rejects false' -Expected $false -Actual (Compare-TestValue -Expected $null -Actual $false)
+Test-Value -Name 'null expectation rejects empty string' -Expected $false -Actual (Compare-TestValue -Expected $null -Actual '')
+Test-Value -Name 'false expectation accepts false' -Expected $true -Actual (Compare-TestValue -Expected $false -Actual $false)
+Test-Value -Name 'string expectation rejects boolean' -Expected $false -Actual (Compare-TestValue -Expected 'true' -Actual $true)
 
 $line = Measure-GrowthTrend -Values @(100, 105, 110, 115, 120)
 Test-CloseTo -Name 'line slope' -Expected 5 -Actual $line.Slope
@@ -101,6 +136,12 @@ Test-Value -Name 'growth is not a plateau' -Expected $false -Actual $growing.IsP
 
 $stable = Get-RecyclingVerdict -PrivateCommitMb @(100, 101, 100, 101, 100, 100)
 Test-Value -Name 'flat series is NoGrowth' -Expected 'NoGrowth' -Actual $stable.Verdict
+Test-Value -Name 'noisy flat series is NoGrowth beyond noise' -Expected 'no-growth-beyond-noise' -Actual $stable.Reason
+Test-Value -Name 'noisy flat message says noisy, not flat' -Expected $true -Actual ($stable.Message.Contains('too noisy'))
+
+$constant = Get-RecyclingVerdict -PrivateCommitMb @(100, 100, 100, 100, 100, 100)
+Test-Value -Name 'constant series is NoGrowth' -Expected 'NoGrowth' -Actual $constant.Verdict
+Test-Value -Name 'constant series is flat' -Expected 'flat' -Actual $constant.Reason
 
 $noisyVerdict = Get-RecyclingVerdict -PrivateCommitMb @(100, 160, 120, 180, 140, 200)
 Test-Value -Name 'noisy series is Inconclusive' -Expected 'Inconclusive' -Actual $noisyVerdict.Verdict
@@ -122,7 +163,7 @@ Test-Value -Name 'saturating series is a plateau' -Expected $true -Actual $plate
 Test-Value -Name 'saturating series is not Growth' -Expected 'Inconclusive' -Actual $plateau.Verdict
 
 
-# --- New-SummaryMarkdown -----------------------------------------------------
+# --- Write-SummaryMarkdown ---------------------------------------------------
 
 $summaryFixture = [pscustomobject]@{
     runId          = '20260101-000000'
@@ -153,7 +194,7 @@ $summaryFixture = [pscustomobject]@{
     artifacts      = [pscustomobject]@{ runDirectory = 'C:\runs\1'; screenshots = @('a.png') }
 }
 
-$markdown = New-SummaryMarkdown -Summary $summaryFixture
+$markdown = Write-SummaryMarkdown -Summary $summaryFixture
 Test-Value -Name 'summary is a single string' -Expected $true -Actual ($markdown -is [string])
 Test-Value -Name 'summary names the verdict' -Expected $true -Actual ($markdown.Contains('**Verdict: Growth** (linear-growth)'))
 Test-Value -Name 'summary lists package version' -Expected $true -Actual ($markdown.Contains('| package version | 1.0.0.0 |'))

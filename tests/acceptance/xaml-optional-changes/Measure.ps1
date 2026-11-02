@@ -52,6 +52,10 @@ $script:ProbeProject = Join-Path $PSScriptRoot 'Probe\XamlOptionalChangesProbe.c
 $script:ProbeExe = Join-Path $PSScriptRoot 'Probe\bin\x64\Release\net11.0-windows10.0.22621.0\win-x64\XamlOptionalChangesProbe.exe'
 $script:Artifacts = if ($ArtifactsRoot) { [IO.Path]::GetFullPath($ArtifactsRoot) } else { Join-Path $script:RepoRoot 'artifacts\xaml-optional-changes' }
 $script:VersionCounter = 100
+# Window discovery and wake detection poll at this interval. Reported latencies
+# are rounded to it, and it enters the noise floor: a delta smaller than the
+# instrument resolution cannot be reported as an effect.
+$script:PollIntervalMs = 5
 $script:InstalledVariant = $null
 $script:InstalledExe = $null
 $script:ProductionSnapshot = @()
@@ -66,6 +70,17 @@ $script:SwitchOrder = @(
     'OptimizeApplyStyles',
     'DeferContextFlyoutInit',
     'all')
+
+# The exact switches each variant must put into the generated entry point.
+# 'all' is a diagnostic combination (see README), not one of the four verdicts.
+$script:VariantSwitches = @{
+    baseline                  = @()
+    DefaultStyleOptimizations = @('DefaultStyleOptimizations')
+    IconNoGridOptimization    = @('IconNoGridOptimization')
+    OptimizeApplyStyles       = @('OptimizeApplyStyles')
+    DeferContextFlyoutInit    = @('DeferContextFlyoutInit')
+    all                       = @('DefaultStyleOptimizations', 'DeferContextFlyoutInit', 'IconNoGridOptimization', 'OptimizeApplyStyles')
+}
 
 $script:ProbeExpectations = @{
     baseline = @(
@@ -100,7 +115,11 @@ $script:ProbeExpectations = @{
         'fontIconShape=Grid',
         'xamlButtonTemplateBeforeTree=true',
         'enableErrorCount=0',
-        'screenshotMain=ok')
+        'screenshotMain=ok',
+        # Default text flyouts are not exposed by the ContextFlyout getter on 2.6.4;
+        # the probe records the attempt as not observable rather than claiming cover.
+        'textBlockFlyoutCaptured=not-observable',
+        'richTextFlyoutCaptured=not-observable')
 
     IconNoGridOptimization = @(
         'before.IsLocked=false',
@@ -113,7 +132,11 @@ $script:ProbeExpectations = @{
         'symbolIconShape=Grid',
         'xamlButtonTemplateBeforeTree=true',
         'enableErrorCount=0',
-        'screenshotMain=ok')
+        'screenshotMain=ok',
+        # Default text flyouts are not exposed by the ContextFlyout getter on 2.6.4;
+        # the probe records the attempt as not observable rather than claiming cover.
+        'textBlockFlyoutCaptured=not-observable',
+        'richTextFlyoutCaptured=not-observable')
 
     OptimizeApplyStyles = @(
         'before.IsLocked=false',
@@ -126,7 +149,11 @@ $script:ProbeExpectations = @{
         'xamlButtonTemplateBeforeTree=false',
         'xamlButtonTemplateAfterTree=true',
         'enableErrorCount=0',
-        'screenshotMain=ok')
+        'screenshotMain=ok',
+        # Default text flyouts are not exposed by the ContextFlyout getter on 2.6.4;
+        # the probe records the attempt as not observable rather than claiming cover.
+        'textBlockFlyoutCaptured=not-observable',
+        'richTextFlyoutCaptured=not-observable')
 
     DeferContextFlyoutInit = @(
         'before.IsLocked=false',
@@ -138,7 +165,11 @@ $script:ProbeExpectations = @{
         'fontIconShape=Grid',
         'xamlButtonTemplateBeforeTree=true',
         'enableErrorCount=0',
-        'screenshotMain=ok')
+        'screenshotMain=ok',
+        # Default text flyouts are not exposed by the ContextFlyout getter on 2.6.4;
+        # the probe records the attempt as not observable rather than claiming cover.
+        'textBlockFlyoutCaptured=not-observable',
+        'richTextFlyoutCaptured=not-observable')
 
     all = @(
         'inside.IsLocked=true',
@@ -149,7 +180,11 @@ $script:ProbeExpectations = @{
         'fontIconShape=TextBlock',
         'xamlButtonTemplateBeforeTree=false',
         'enableErrorCount=0',
-        'screenshotMain=ok')
+        'screenshotMain=ok',
+        # Default text flyouts are not exposed by the ContextFlyout getter on 2.6.4;
+        # the probe records the attempt as not observable rather than claiming cover.
+        'textBlockFlyoutCaptured=not-observable',
+        'richTextFlyoutCaptured=not-observable')
 }
 
 # ---------------------------------------------------------------------------
@@ -189,18 +224,90 @@ function Get-PooledSigma {
     return [math]::Sqrt(($sigmaA * $sigmaA + $sigmaB * $sigmaB) / 2.0)
 }
 
-# 超出噪声 = 差值的绝对值同时超过 2 倍合并稳健标准差与基线中位数的 1%。
+# 超出噪声 = 差值的绝对值同时超过 2 倍合并稳健标准差、基线中位数的 1%
+# 与仪器分辨率。分辨率必须进入门限，否则亚分辨率差值会被当成效应。
 function Test-BeyondNoise {
     param(
         [double]$BaselineMedian,
         [double]$BaselineMad,
         [double]$VariantMedian,
         [double]$VariantMad,
-        [double]$PracticalFloor = 0.01)
+        [double]$PracticalFloor = 0.01,
+        [double]$Resolution = 0.0)
 
     $delta = [math]::Abs($VariantMedian - $BaselineMedian)
-    $threshold = [math]::Max(2.0 * (Get-PooledSigma $BaselineMad $VariantMad), [math]::Abs($BaselineMedian) * $PracticalFloor)
+    $threshold = [math]::Max(
+        [math]::Max(2.0 * (Get-PooledSigma $BaselineMad $VariantMad), [math]::Abs($BaselineMedian) * $PracticalFloor),
+        [math]::Abs($Resolution))
     return ($delta -gt $threshold)
+}
+
+function Get-BinomialCoefficient {
+    param([int]$N, [int]$K)
+
+    if ($K -lt 0 -or $K -gt $N) { return 0.0 }
+    $K = [math]::Min($K, $N - $K)
+    $result = 1.0
+    for ($i = 1; $i -le $K; $i++) {
+        $result = $result * ($N - $K + $i) / $i
+    }
+
+    return $result
+}
+
+# 精确双侧符号检验：H0 为每轮差值正负各半。零差值不参与（保守做法）。
+function Get-SignTestPValue {
+    param([int]$Positive, [int]$Negative)
+
+    $n = $Positive + $Negative
+    if ($n -eq 0) { return 1.0 }
+    $k = [math]::Min($Positive, $Negative)
+    $tail = 0.0
+    for ($i = 0; $i -le $k; $i++) {
+        $tail += Get-BinomialCoefficient -N $n -K $i
+    }
+
+    $p = 2.0 * $tail / [math]::Pow(2.0, $n)
+    return [math]::Min(1.0, $p)
+}
+
+function Get-PairedStatistics {
+    <#
+    .SYNOPSIS
+        Summary and exact sign test for one paired delta series.
+    #>
+    param([double[]]$Deltas)
+
+    $positive = @($Deltas | Where-Object { $_ -gt 0 }).Count
+    $negative = @($Deltas | Where-Object { $_ -lt 0 }).Count
+    $zero = @($Deltas | Where-Object { $_ -eq 0 }).Count
+    $mean = if ($Deltas.Count -gt 0) { ($Deltas | Measure-Object -Average).Average } else { [double]::NaN }
+    return [pscustomobject]@{
+        count    = $Deltas.Count
+        mean     = [math]::Round($mean, 2)
+        median   = [math]::Round((Get-Median @($Deltas)), 2)
+        positive = $positive
+        negative = $negative
+        zero     = $zero
+        pValue   = [math]::Round((Get-SignTestPValue -Positive $positive -Negative $negative), 4)
+        deltas   = @($Deltas | ForEach-Object { [math]::Round($_, 2) })
+    }
+}
+
+function Get-PairedComparison {
+    <#
+    .SYNOPSIS
+        Per-round paired deltas between two aligned series.
+    #>
+    param([double[]]$Baseline, [double[]]$Variant)
+
+    if ($Baseline.Count -ne $Variant.Count) {
+        throw "Paired series must have the same length (baseline $($Baseline.Count), variant $($Variant.Count))."
+    }
+
+    $deltas = [double[]]@(
+        for ($i = 0; $i -lt $Baseline.Count; $i++) { $Variant[$i] - $Baseline[$i] })
+    return Get-PairedStatistics -Deltas $deltas
 }
 
 function Invoke-SelfTest {
@@ -218,6 +325,16 @@ function Invoke-SelfTest {
     Add-Case 'beyond-noise-no-absolute' (Test-BeyondNoise -BaselineMedian 1000 -BaselineMad 1 -VariantMedian 1000.5 -VariantMad 1) $false
     Add-Case 'beyond-noise-no-practical-floor' (Test-BeyondNoise -BaselineMedian 1000 -BaselineMad 0.1 -VariantMedian 1005 -VariantMad 0.1) $false
     Add-Case 'beyond-noise-zero-mad' (Test-BeyondNoise -BaselineMedian 100 -BaselineMad 0 -VariantMedian 101 -VariantMad 0) $false
+    Add-Case 'beyond-noise-sub-resolution' (Test-BeyondNoise -BaselineMedian 1000 -BaselineMad 0.1 -VariantMedian 1003 -VariantMad 0.1 -Resolution 5) $false
+    Add-Case 'beyond-noise-above-resolution' (Test-BeyondNoise -BaselineMedian 1000 -BaselineMad 0.1 -VariantMedian 1011 -VariantMad 0.1 -Resolution 5) $true
+    Add-Case 'sign-test-7-0' (Get-SignTestPValue -Positive 7 -Negative 0) 0.015625
+    Add-Case 'sign-test-6-1' (Get-SignTestPValue -Positive 6 -Negative 1) 0.125
+    Add-Case 'sign-test-5-2' (Get-SignTestPValue -Positive 5 -Negative 2) 0.453125
+    Add-Case 'sign-test-none' (Get-SignTestPValue -Positive 0 -Negative 0) 1.0
+    $pairedCase = Get-PairedComparison -Baseline @(100, 100, 100, 100, 100) -Variant @(101, 101, 103, 101, 102)
+    Add-Case 'paired-positive-count' $pairedCase.positive 5
+    Add-Case 'paired-p' $pairedCase.pValue 0.0625
+    Add-Case 'paired-mean' $pairedCase.mean 1.6
 
     $failed = 0
     foreach ($case in $cases) {
@@ -307,13 +424,21 @@ public static class XamlMeasureWin32
 '@
 }
 
-if (-not ('XamlPixelDiff' -as [type])) {
+# System.Drawing is loaded on demand; both pixel helpers need the same
+# reference set, so it is collected once here.
+function Add-DrawingType {
+    param([string]$TypeName, [string]$TypeDefinition)
+
+    if ($TypeName -as [type]) { return }
     Add-Type -AssemblyName System.Drawing.Common
-    $script:DrawingReferences = [AppDomain]::CurrentDomain.GetAssemblies() |
+    $references = [AppDomain]::CurrentDomain.GetAssemblies() |
         Where-Object { -not $_.IsDynamic -and $_.Location } |
         ForEach-Object { $_.Location } |
         Select-Object -Unique
-    Add-Type -ReferencedAssemblies $script:DrawingReferences @'
+    Add-Type -ReferencedAssemblies $references -TypeDefinition $TypeDefinition
+}
+
+Add-DrawingType -TypeName 'XamlPixelDiff' -TypeDefinition @'
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -391,19 +516,10 @@ public static class XamlPixelDiff
     }
 }
 '@
-}
 
-if (-not ('XamlFrameCheck' -as [type])) {
-    Add-Type -AssemblyName System.Drawing.Common
-    $script:DrawingReferences = [AppDomain]::CurrentDomain.GetAssemblies() |
-        Where-Object { -not $_.IsDynamic -and $_.Location } |
-        ForEach-Object { $_.Location } |
-        Select-Object -Unique
-    Add-Type -ReferencedAssemblies $script:DrawingReferences @'
+Add-DrawingType -TypeName 'XamlFrameCheck' -TypeDefinition @'
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 
 public static class XamlFrameCheck
 {
@@ -448,9 +564,29 @@ public static class XamlFrameCheck
     }
 }
 '@
+
+function Get-ScreenshotAudit {
+    <#
+    .SYNOPSIS
+        Counts captured product frames and the blank ones the comparison skips.
+    #>
+    $directory = Join-Path $script:Artifacts 'screenshots'
+    $rows = [Collections.Generic.List[object]]::new()
+    foreach ($variant in $Variants) {
+        $files = @(Get-ChildItem $directory -Filter ($variant + '-run*.png') -ErrorAction SilentlyContinue | Sort-Object Name)
+        $blank = @($files | Where-Object { [XamlFrameCheck]::IsBlank($_.FullName) })
+        $rows.Add([pscustomobject]@{
+            variant   = $variant
+            frames    = $files.Count
+            blank     = $blank.Count
+            blankRuns = @($blank | ForEach-Object { $_.BaseName })
+        })
+    }
+
+    return $rows
 }
 
-function Get-RepresentativeScreenshot {
+function Copy-RepresentativeScreenshot {
     param([string]$Variant)
 
     $directory = Join-Path $script:Artifacts 'screenshots'
@@ -520,7 +656,7 @@ function Wait-VisibleWindow {
             return [IntPtr]::Zero
         }
 
-        Start-Sleep -Milliseconds 20
+        Start-Sleep -Milliseconds $script:PollIntervalMs
     }
 
     return [IntPtr]::Zero
@@ -640,9 +776,15 @@ function Assert-Preconditions {
     $script:ProductionSnapshot = @(Get-AppxPackage -Name 'Mang.BiliCopilot*' |
         Where-Object { $_.Name -in $script:ForbiddenPackages } |
         Select-Object Name, Version, PackageFullName)
-    foreach ($forbidden in $script:ForbiddenPackages) {
-        if ($script:PackageName -eq $forbidden) {
-            throw "Refusing to run against $forbidden."
+
+    # Compare the *resolved* package, not the constant target name. The old
+    # check compared $script:PackageName with itself and could never fire.
+    foreach ($package in @(Get-AppxPackage -Name $script:PackageName -ErrorAction SilentlyContinue)) {
+        if ($script:ForbiddenPackages -contains $package.Name) {
+            throw "Refusing to run: resolved package '$($package.Name)' is a production identity."
+        }
+        if ($package.Name -ne $script:PackageName) {
+            throw "Refusing to run: resolved package '$($package.Name)' is not '$($script:PackageName)'."
         }
     }
 }
@@ -662,19 +804,33 @@ function Close-OrphanDevProcesses {
     }
 
     $exe = Join-Path $installed.InstallLocation 'BiliCopilot.UI.exe'
+    # One filter is the guard: the body cannot see a process outside it.
     $orphans = @(Get-Process -Name 'BiliCopilot.UI' -ErrorAction SilentlyContinue |
         Where-Object { $_.Path -eq $exe })
     foreach ($orphan in $orphans) {
-        if ($orphan.Path -ne $exe) {
-            throw "Refusing to touch process $($orphan.Id): not the Dev package executable."
-        }
-
         Write-Output ("closing leftover Dev process {0}" -f $orphan.Id)
         [void]$orphan.CloseMainWindow()
         if (-not $orphan.WaitForExit(10000)) {
             Assert-DevProcess -Process $orphan
             Stop-Process -Id $orphan.Id -Force
         }
+    }
+}
+
+function ConvertFrom-ProbeJournal {
+    param([string]$Variant, [int]$ExitCode, [object]$Json)
+
+    return [pscustomobject]@{
+        variant = $Variant
+        exitCode = $ExitCode
+        passed = [bool]$Json.Passed
+        error = $Json.Error
+        failureReasons = @($Json.FailureReasons)
+        switches = @($Json.Switches)
+        observed = $Json.Observed
+        expectations = @($Json.Expectations)
+        statesBeforeStart = $Json.StatesBeforeStart
+        statesInsideStart = $Json.StatesInsideStart
     }
 }
 
@@ -705,7 +861,7 @@ function Invoke-Probe {
 
     $json = Get-Content $jsonPath -Raw | ConvertFrom-Json
     Add-Type -AssemblyName System.Drawing.Common
-    foreach ($shot in @('gallery', 'gallery-menu')) {
+    foreach ($shot in @('gallery', 'gallery-menu', 'gallery-text-block', 'gallery-rich-text')) {
         $bmpPath = Join-Path $directory ('shots\' + $shot + '.bmp')
         $pngPath = Join-Path $directory ('shots\' + $shot + '.png')
         if (Test-Path $bmpPath) {
@@ -716,18 +872,7 @@ function Invoke-Probe {
         }
     }
 
-    $result = [pscustomobject]@{
-        variant = $Variant
-        exitCode = $process.ExitCode
-        passed = [bool]$json.Passed
-        error = $json.Error
-        failureReasons = @($json.FailureReasons)
-        switches = @($json.Switches)
-        observed = $json.Observed
-        expectations = @($json.Expectations)
-        statesBeforeStart = $json.StatesBeforeStart
-        statesInsideStart = $json.StatesInsideStart
-    }
+    $result = ConvertFrom-ProbeJournal -Variant $Variant -ExitCode $process.ExitCode -Json $json
     $script:ProbeResults[$Variant] = $result
 
     if ($process.ExitCode -ne 0) {
@@ -737,10 +882,82 @@ function Invoke-Probe {
     Write-Output ("probe {0}: states ok, fontIcon={1}, xamlButtonTemplateBeforeTree={2}" -f $Variant, $json.Observed.fontIconShape, $json.Observed.xamlButtonTemplateBeforeTree)
 }
 
+function Get-GeneratedEntryPointFiles {
+    # The SDK keeps IntermediateOutputPath under the project even when OutDir is
+    # redirected to src\_build; check both so this does not depend on which wins.
+    $objRoots = @(
+        (Join-Path $script:RepoRoot 'src\Desktop\BiliCopilot.UI\obj'),
+        (Join-Path $script:RepoRoot 'src\_build\x64\Release\BiliCopilot.UI\obj'))
+
+    $files = [Collections.Generic.List[object]]::new()
+    foreach ($objRoot in $objRoots) {
+        if (-not (Test-Path $objRoot)) { continue }
+        foreach ($file in @(Get-ChildItem $objRoot -Recurse -Filter 'App.g.i.cs' -ErrorAction SilentlyContinue)) {
+            $files.Add($file)
+        }
+    }
+
+    return $files.ToArray()
+}
+
+function Assert-GeneratedEntryPoint {
+    <#
+    .SYNOPSIS
+        Proves the MSBuild switch property reached the generated Main.
+    .DESCRIPTION
+        The product link was previously asserted only by "we passed the property".
+        The XAML compiler writes XamlOptionalChanges.EnableChange(...) into
+        obj/.../App.g.i.cs; parsing that file is the actual proof, and it catches
+        a stale generated entry point left by an earlier variant.
+    #>
+    param([string]$Variant)
+
+    $expected = @($script:VariantSwitches[$Variant] | Sort-Object)
+    $files = @(Get-GeneratedEntryPointFiles)
+    if ($files.Count -eq 0) {
+        throw "No generated App.g.i.cs under the intermediate directory for '$Variant': the switch property did not reach the XAML compiler."
+    }
+
+    foreach ($file in $files) {
+        $text = Get-Content $file.FullName -Raw
+        $calls = [regex]::Matches(
+            $text,
+            'XamlOptionalChanges\.(EnableChange|DisableChange)\(\s*global::Microsoft\.UI\.Xaml\.Settings\.XamlChangeId\.(\w+)\s*\)')
+        $enabled = @($calls | Where-Object { $_.Groups[1].Value -eq 'EnableChange' } |
+            ForEach-Object { $_.Groups[2].Value } | Sort-Object -Unique)
+        $disabled = @($calls | Where-Object { $_.Groups[1].Value -eq 'DisableChange' } |
+            ForEach-Object { $_.Groups[2].Value } | Sort-Object -Unique)
+
+        $actualText = if ($enabled.Count -eq 0) { '<none>' } else { $enabled -join ',' }
+        $expectedText = if ($expected.Count -eq 0) { '<none>' } else { $expected -join ',' }
+        if ($disabled.Count -gt 0) {
+            throw "Generated entry point for '$Variant' disables unexpected change(s) '$($disabled -join ',')': $($file.FullName)"
+        }
+
+        if (($enabled -join ',') -ne ($expected -join ',')) {
+            throw "Generated entry point for '$Variant' enables '$actualText', expected '$expectedText'. Stale generated Main or the MSBuild property did not apply: $($file.FullName)"
+        }
+
+        Write-Output ("generated main {0}: EnableChange({1}) in {2}" -f $Variant, $actualText, $file.FullName)
+    }
+}
+
 function Invoke-ProductionBuild {
     param([string]$Variant)
 
-    $switchValue = if ($Variant -eq 'baseline') { $null } elseif ($Variant -eq 'all') { 'DefaultStyleOptimizations%2CDeferContextFlyoutInit%2CIconNoGridOptimization%2COptimizeApplyStyles' } else { $Variant }
+    if (-not $script:VariantSwitches.ContainsKey($Variant)) {
+        throw "No switch mapping declared for variant '$Variant'."
+    }
+
+    if ($Variant -eq 'baseline') {
+        $switchValue = $null
+    }
+    elseif ($Variant -eq 'all') {
+        $switchValue = ($script:VariantSwitches['all'] | ForEach-Object { $_ }) -join '%2C'
+    }
+    else {
+        $switchValue = $Variant
+    }
     $arguments = @(
         'build',
         (Join-Path $script:RepoRoot 'src\Desktop\BiliCopilot.UI\BiliCopilot.UI.csproj'),
@@ -759,6 +976,13 @@ function Invoke-ProductionBuild {
 
     $log = Join-Path $script:Artifacts ('logs\build-' + $Variant + '.log')
     New-Item -ItemType Directory -Force -Path (Split-Path $log) | Out-Null
+
+    # Force the XAML compiler to regenerate its entry point so the assertion
+    # below inspects this build, never an earlier variant's file.
+    foreach ($generated in Get-GeneratedEntryPointFiles) {
+        Remove-Item -LiteralPath $generated.FullName -Force
+    }
+
     Write-Output ("build {0}: {1}" -f $Variant, ($arguments -join ' '))
     $output = & dotnet @arguments 2>&1
     $output | Set-Content -LiteralPath $log -Encoding utf8
@@ -771,18 +995,7 @@ function Invoke-ProductionBuild {
         throw "Build produced no AppxManifest.xml in $($script:Layout)."
     }
 
-    $text = Get-Content $manifest -Raw
-    $identityMatch = [regex]::Match($text, '<Identity\s+[^>]*?/>')
-    if (-not $identityMatch.Success) {
-        throw 'Could not find Identity element in generated AppxManifest.xml.'
-    }
-
-    return [pscustomobject]@{
-        Variant = $Variant
-        SwitchValue = $switchValue
-        Manifest = $manifest
-        Identity = $identityMatch.Value
-    }
+    Assert-GeneratedEntryPoint -Variant $Variant
 }
 
 function New-DevPackage {
@@ -829,6 +1042,10 @@ function Install-DevPackage {
     $installed = Get-AppxPackage -Name $script:PackageName
     if ($null -eq $installed) {
         throw "Package $($script:PackageName) is not installed after Add-AppxPackage."
+    }
+
+    if ($script:ForbiddenPackages -contains $installed.Name -or $installed.Name -ne $script:PackageName) {
+        throw "Refusing to continue: resolved installed package '$($installed.Name)' is not '$($script:PackageName)'."
     }
 
     if ($installed.Version -ne $package.Version) {
@@ -911,7 +1128,9 @@ function Invoke-MeasuredRun {
         throw "Measured run produced no visible window (variant $Variant, round $Round)."
     }
 
-    $startupMs = [math]::Round($stopwatch.Elapsed.TotalMilliseconds, 1)
+    # Report at the poll resolution instead of a false 0.1 ms precision.
+    $startupRawMs = [math]::Round($stopwatch.Elapsed.TotalMilliseconds, 1)
+    $startupMs = [math]::Round($startupRawMs / $script:PollIntervalMs) * $script:PollIntervalMs
     $process.Refresh()
     if ($process.HasExited) {
         throw "App exited before settle (variant $Variant, round $Round)."
@@ -940,7 +1159,9 @@ function Invoke-MeasuredRun {
     $wake1 = Measure-WakeLatency -WindowHandle $handle
     $wake2 = Measure-WakeLatency -WindowHandle $handle
     $wakeValues = @($wake1, $wake2) | Where-Object { -not [double]::IsNaN($_) }
-    $wakeMedian = if ($wakeValues.Count -gt 0) { Get-Median @($wakeValues) } else { [double]::NaN }
+    $wakeRawMedian = if ($wakeValues.Count -gt 0) { Get-Median @($wakeValues) } else { [double]::NaN }
+    # Same instrument resolution as window discovery: report whole poll ticks.
+    $wakeMedian = if ([double]::IsNaN($wakeRawMedian)) { [double]::NaN } else { [math]::Round($wakeRawMedian / $script:PollIntervalMs) * $script:PollIntervalMs }
 
     $rect = New-Object XamlMeasureCapture+RECT
     $windowSize = 'unknown'
@@ -959,6 +1180,8 @@ function Invoke-MeasuredRun {
         packageVersion = (Get-AppxPackage -Name $script:PackageName).Version
         startedAtUtc = $ambient.capturedAtUtc
         startupMs = $startupMs
+        startupRawMs = $startupRawMs
+        startupResolutionMs = $script:PollIntervalMs
         settleSeconds = $SettleSeconds
         privateWorkingSetMB = [math]::Round($privateWorkingSet / 1MB, 1)
         processWorkingSetMB = $processWorkingSetMB
@@ -968,6 +1191,8 @@ function Invoke-MeasuredRun {
         idleCpuPercentOfOneCore = $idleCpuPercent
         wakeLatencyMs = @([math]::Round($wake1, 1), [math]::Round($wake2, 1))
         wakeLatencyMedianMs = [math]::Round($wakeMedian, 1)
+        wakeLatencyRawMedianMs = [math]::Round($wakeRawMedian, 1)
+        wakeResolutionMs = $script:PollIntervalMs
         windowSize = $windowSize
         screenshot = if ($captured) { $screenshot } else { $null }
         ambient = $ambient
@@ -979,11 +1204,14 @@ function Invoke-MeasuredRun {
 # ---------------------------------------------------------------------------
 
 $script:Metrics = @(
-    @{ Name = 'startupMs'; Label = '启动到首帧 (ms)'; Unit = 'ms' },
-    @{ Name = 'privateWorkingSetMB'; Label = '私有工作集 (MB)'; Unit = 'MB' },
-    @{ Name = 'cpuSecondsAfterSettle'; Label = '稳定后进程 CPU (s)'; Unit = 's' },
-    @{ Name = 'idleCpuPercentOfOneCore'; Label = '空闲 CPU (单核 %)'; Unit = '%' },
-    @{ Name = 'wakeLatencyMedianMs'; Label = '唤回延迟中位数 (ms)'; Unit = 'ms' })
+    # Resolution is the smallest real difference the instrument can express:
+    # window/wake polling runs at PollIntervalMs, other counters are recorded at
+    # the listed precision. It is part of the noise gate.
+    @{ Name = 'startupMs'; Label = '启动到首帧 (ms)'; Unit = 'ms'; Resolution = $script:PollIntervalMs },
+    @{ Name = 'privateWorkingSetMB'; Label = '私有工作集 (MB)'; Unit = 'MB'; Resolution = 0.1 },
+    @{ Name = 'cpuSecondsAfterSettle'; Label = '稳定后进程 CPU (s)'; Unit = 's'; Resolution = 0.01 },
+    @{ Name = 'idleCpuPercentOfOneCore'; Label = '空闲 CPU (单核 %)'; Unit = '%'; Resolution = 0.01 },
+    @{ Name = 'wakeLatencyMedianMs'; Label = '唤回延迟中位数 (ms)'; Unit = 'ms'; Resolution = $script:PollIntervalMs })
 
 function New-Summary {
     $byVariant = @{}
@@ -1025,7 +1253,47 @@ function New-Summary {
                 delta = [math]::Round($delta, 2)
                 deltaPercent = if ($baseMetric.median -ne 0) { [math]::Round(($delta / $baseMetric.median) * 100.0, 1) } else { $null }
                 pooledSigma = [math]::Round((Get-PooledSigma $baseMetric.mad $variantMetric.mad), 2)
-                beyondNoise = (Test-BeyondNoise -BaselineMedian $baseMetric.median -BaselineMad $baseMetric.mad -VariantMedian $variantMetric.median -VariantMad $variantMetric.mad)
+                resolution = $metric.Resolution
+                beyondNoise = (Test-BeyondNoise -BaselineMedian $baseMetric.median -BaselineMad $baseMetric.mad -VariantMedian $variantMetric.median -VariantMad $variantMetric.mad -Resolution $metric.Resolution)
+            })
+        }
+    }
+
+    # 配对分析：同一轮的变体值减基线值。池化的 2σ 门限无法判断系统性
+    # 偏移（例如每个变体轮次都低 1 秒），精确符号检验可以。
+    $paired = [Collections.Generic.List[object]]::new()
+    $baselineRecords = @($script:RunRecords | Where-Object { $_.variant -eq 'baseline' })
+    foreach ($variant in $Variants) {
+        if ($variant -eq 'baseline') { continue }
+        $variantRecords = @($script:RunRecords | Where-Object { $_.variant -eq $variant })
+        foreach ($metric in $script:Metrics) {
+            $deltas = [Collections.Generic.List[double]]::new()
+            foreach ($record in $variantRecords) {
+                $match = $baselineRecords | Where-Object { $_.round -eq $record.round } | Select-Object -First 1
+                if ($null -eq $match) { continue }
+                $variantValue = [double]$record.($metric.Name)
+                $baselineValue = [double]$match.($metric.Name)
+                if ([double]::IsNaN($variantValue) -or [double]::IsNaN($baselineValue)) { continue }
+                $deltas.Add($variantValue - $baselineValue)
+            }
+
+            if ($deltas.Count -eq 0) { continue }
+            $comparison = Get-PairedStatistics -Deltas ([double[]]$deltas)
+            $paired.Add([pscustomobject]@{
+                variant      = $variant
+                metric       = $metric.Name
+                label        = $metric.Label
+                unit         = $metric.Unit
+                resolution   = $metric.Resolution
+                count        = $comparison.count
+                mean         = $comparison.mean
+                median       = $comparison.median
+                positive     = $comparison.positive
+                negative     = $comparison.negative
+                zero         = $comparison.zero
+                pValue       = $comparison.pValue
+                deltas       = $comparison.deltas
+                belowResolution = ([math]::Abs($comparison.median) -lt $metric.Resolution)
             })
         }
     }
@@ -1044,7 +1312,10 @@ function New-Summary {
         idleSeconds = $IdleSeconds
         variants = $byVariant
         comparisons = $comparisons
+        paired = $paired
+        screenshotAudit = @(Get-ScreenshotAudit)
         noiseFloorMad = $noiseFloor
+        pollIntervalMs = $script:PollIntervalMs
         probes = $script:ProbeResults
         notes = $script:ProcedureNotes
     }
@@ -1080,14 +1351,14 @@ function Save-CroppedRegion {
 }
 
 function New-VisualComparison {
-    param([hashtable]$ProbeResults, [string]$BaselineVariant = 'baseline')
+    param([string]$BaselineVariant = 'baseline')
 
     $comparisons = [Collections.Generic.List[object]]::new()
     $baselineProbe = Join-Path $script:Artifacts ('probe\' + $BaselineVariant + '\shots')
     foreach ($variant in $Variants) {
         if ($variant -eq $BaselineVariant) { continue }
         $variantProbe = Join-Path $script:Artifacts ('probe\' + $variant + '\shots')
-        foreach ($shot in @('gallery', 'gallery-menu')) {
+        foreach ($shot in @('gallery', 'gallery-menu', 'gallery-text-block', 'gallery-rich-text')) {
             $left = Join-Path $baselineProbe ($shot + '.png')
             $right = Join-Path $variantProbe ($shot + '.png')
             if ((Test-Path $left) -and (Test-Path $right)) {
@@ -1101,8 +1372,9 @@ function New-VisualComparison {
             }
         }
 
-        $baselineShot = Get-RepresentativeScreenshot -Variant $BaselineVariant
-        $variantShot = Get-RepresentativeScreenshot -Variant $variant
+        # This copies the first non-blank frame to representative/<variant>.png.
+        $baselineShot = Copy-RepresentativeScreenshot -Variant $BaselineVariant
+        $variantShot = Copy-RepresentativeScreenshot -Variant $variant
         if ($null -ne $baselineShot -and $null -ne $variantShot) {
             $comparisons.Add([pscustomobject]@{
                 kind = 'bili-home-full'
@@ -1164,19 +1436,55 @@ function Write-SummaryMarkdown {
     $lines.Add('')
     $lines.Add('## Deltas vs baseline')
     $lines.Add('')
-    $lines.Add('| Switch | Metric | Baseline | Variant | Delta | Delta % | Beyond noise |')
-    $lines.Add('|---|---|---|---|---|---|---|')
+    $lines.Add('| Switch | Metric | Baseline | Variant | Delta | Delta % | Resolution | Beyond noise |')
+    $lines.Add('|---|---|---|---|---|---|---|---|')
     foreach ($comparison in $Summary.comparisons) {
-        $lines.Add(('| {0} | {1} | {2} | {3} | {4} | {5} | {6} |' -f
+        $lines.Add(('| {0} | {1} | {2} | {3} | {4} | {5} | {6} | {7} |' -f
             $comparison.variant,
             $comparison.label,
             $comparison.baselineMedian,
             $comparison.variantMedian,
             $comparison.delta,
             $comparison.deltaPercent,
+            $comparison.resolution,
             $comparison.beyondNoise))
     }
 
+    $lines.Add('')
+    $lines.Add('Noise gate: |delta| > max(2 x pooled robust sigma, 1% of baseline, instrument resolution).')
+    $lines.Add("Instrument resolution: window/wake polling $($Summary.pollIntervalMs) ms; counters are recorded at the resolution listed above.")
+    $lines.Add('')
+    $lines.Add('## Paired per-round deltas (variant - baseline, same round)')
+    $lines.Add('')
+    $lines.Add('| Switch | Metric | n | Mean | Median | + / - / 0 | Exact sign-test p | Below resolution |')
+    $lines.Add('|---|---|---|---|---|---|---|---|')
+    foreach ($comparison in $Summary.paired) {
+        $lines.Add(('| {0} | {1} | {2} | {3} | {4} | {5} / {6} / {7} | {8} | {9} |' -f
+            $comparison.variant,
+            $comparison.label,
+            $comparison.count,
+            $comparison.mean,
+            $comparison.median,
+            $comparison.positive,
+            $comparison.negative,
+            $comparison.zero,
+            $comparison.pValue,
+            $comparison.belowResolution))
+    }
+
+    $lines.Add('')
+    $lines.Add('## Product screenshots')
+    $lines.Add('')
+    $lines.Add('| Variant | Frames | Blank skipped | Blank runs |')
+    $lines.Add('|---|---|---|---|')
+    foreach ($row in $Summary.screenshotAudit) {
+        $runsText = if ($row.blankRuns.Count -eq 0) { '-' } else { $row.blankRuns -join ', ' }
+        $lines.Add(('| {0} | {1} | {2} | {3} |' -f $row.variant, $row.frames, $row.blank, $runsText))
+    }
+
+    $lines.Add('')
+    $lines.Add('Only the first non-blank frame per variant is used for the product comparison;')
+    $lines.Add('blank frames are counted here and skipped, never silently compared.')
     $lines.Add('')
     $lines.Add('## Visual comparisons (diff pixels / total)')
     $lines.Add('')
@@ -1218,18 +1526,7 @@ if ($RegenerateSummary) {
         $probePath = Join-Path $script:Artifacts ('probe\' + $variant + '\probe.json')
         if (Test-Path $probePath) {
             $json = Get-Content $probePath -Raw | ConvertFrom-Json
-            $script:ProbeResults[$variant] = [pscustomobject]@{
-                variant = $variant
-                exitCode = 0
-                passed = [bool]$json.Passed
-                error = $json.Error
-                failureReasons = @($json.FailureReasons)
-                switches = @($json.Switches)
-                observed = $json.Observed
-                expectations = @($json.Expectations)
-                statesBeforeStart = $json.StatesBeforeStart
-                statesInsideStart = $json.StatesInsideStart
-            }
+            $script:ProbeResults[$variant] = ConvertFrom-ProbeJournal -Variant $variant -ExitCode 0 -Json $json
         }
     }
 
@@ -1238,7 +1535,7 @@ if ($RegenerateSummary) {
     }
 
     $summary = New-Summary
-    $visual = New-VisualComparison -ProbeResults $script:ProbeResults
+    $visual = New-VisualComparison
     $summary | Add-Member -NotePropertyName visualComparisons -NotePropertyValue $visual -Force
     $summary | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $script:Artifacts 'summary.json') -Encoding utf8
     $markdown = Write-SummaryMarkdown -Summary $summary -VisualComparisons $visual
@@ -1266,10 +1563,8 @@ if (-not $SkipProbe) {
     }
 }
 
-$packages = @{}
 foreach ($variant in $Variants) {
-    $build = Invoke-ProductionBuild -Variant $variant
-    $packages[$variant] = $build
+    Invoke-ProductionBuild -Variant $variant
 }
 
 if (-not $SkipProbe) {
@@ -1305,7 +1600,7 @@ $summary = New-Summary
 $summary | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $script:Artifacts 'summary.json') -Encoding utf8
 
 if (-not $SkipProbe) {
-    $visual = New-VisualComparison -ProbeResults $script:ProbeResults
+    $visual = New-VisualComparison
     $summary | Add-Member -NotePropertyName visualComparisons -NotePropertyValue $visual -Force
     $summary | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $script:Artifacts 'summary.json') -Encoding utf8
 }

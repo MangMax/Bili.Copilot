@@ -30,9 +30,9 @@ public static class ProbeSwitches
     };
 
     /// <summary>
-    /// 四个开关的规范顺序。
+    /// 四个开关的规范顺序（只读包装，调用方不能通过强制转换改写共享数组）。
     /// </summary>
-    public static IReadOnlyList<string> All => Canonical;
+    public static IReadOnlyList<string> All { get; } = Array.AsReadOnly(Canonical);
 
     /// <summary>
     /// 解析探针的 <c>--switches</c> 参数：<c>none</c>、<c>all</c> 或逗号分隔的开关名。
@@ -48,18 +48,13 @@ public static class ProbeSwitches
 
         if (spec.Trim().Equals("all", StringComparison.OrdinalIgnoreCase))
         {
-            return Canonical;
+            return All;
         }
 
         var result = new List<string>();
         foreach (var raw in spec.Split(','))
         {
-            var name = raw.Trim();
-            if (name.Length == 0)
-            {
-                throw new ArgumentException($"Switch list '{spec}' contains an empty entry.");
-            }
-
+            var name = ParseSwitchName(raw, spec);
             var canonical = Canonical.FirstOrDefault(x => x.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (canonical is null)
             {
@@ -76,6 +71,17 @@ public static class ProbeSwitches
         }
 
         return result;
+    }
+
+    private static string ParseSwitchName(string raw, string spec)
+    {
+        var name = raw.Trim();
+        if (name.Length == 0)
+        {
+            throw new ArgumentException($"Switch list '{spec}' contains an empty entry.");
+        }
+
+        return name;
     }
 }
 
@@ -102,22 +108,7 @@ public static class ProbeExpectations
         var result = new List<ProbeExpectation>();
         foreach (var value in values)
         {
-            var text = value?.Trim() ?? string.Empty;
-            var separator = text.IndexOf('=');
-            if (separator <= 0 || separator == text.Length - 1)
-            {
-                throw new ArgumentException(
-                    $"Expectation '{value}' must use the form name=value with a non-empty name and value.");
-            }
-
-            var name = text[..separator].Trim();
-            var expected = text[(separator + 1)..].Trim();
-            if (name.Length == 0 || expected.Length == 0)
-            {
-                throw new ArgumentException(
-                    $"Expectation '{value}' must use the form name=value with a non-empty name and value.");
-            }
-
+            var (name, expected) = SplitExpectation(value);
             if (result.Any(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ArgumentException($"Expectation '{name}' is specified more than once.");
@@ -127,6 +118,22 @@ public static class ProbeExpectations
         }
 
         return result;
+    }
+
+    private static (string Name, string Value) SplitExpectation(string? value)
+    {
+        var text = value?.Trim() ?? string.Empty;
+        var separator = text.IndexOf('=');
+        // One guard/message for both malformed shapes: missing '=', empty name,
+        // or empty value.
+        if (separator <= 0 || separator == text.Length - 1 ||
+            text[..separator].Trim().Length == 0 || text[(separator + 1)..].Trim().Length == 0)
+        {
+            throw new ArgumentException(
+                $"Expectation '{value}' must use the form name=value with a non-empty name and value.");
+        }
+
+        return (text[..separator].Trim(), text[(separator + 1)..].Trim());
     }
 
     /// <summary>
@@ -142,9 +149,14 @@ public static class ProbeExpectations
         {
             if (!observed.TryGetValue(expectation.Name, out var actual))
             {
-                var match = observed.FirstOrDefault(
-                    x => x.Key.Equals(expectation.Name, StringComparison.OrdinalIgnoreCase));
-                actual = match.Key is null ? null : match.Value;
+                // Fall back to a case-insensitive key lookup when the caller's
+                // dictionary uses an ordinal comparer.
+                var key = observed.Keys.FirstOrDefault(
+                    x => x.Equals(expectation.Name, StringComparison.OrdinalIgnoreCase));
+                if (key is not null)
+                {
+                    actual = observed[key];
+                }
             }
 
             if (actual is null)
