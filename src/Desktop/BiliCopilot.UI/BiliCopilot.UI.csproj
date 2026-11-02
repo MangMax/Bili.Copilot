@@ -1564,6 +1564,11 @@
         <OutputGroup>PublishItemsOutputGroupOutput</OutputGroup>
         <ProjectName>$(ProjectName)</ProjectName>
       </PackagingOutputs>
+      <!-- The native publish closure can contribute both the managed build PDB and
+           the native AOT PDB under the same target name. Symbols are not part of
+           the app payload; drop them so APPX1101 cannot see duplicate paths. -->
+      <_PdbPayload Include="@(PackagingOutputs)" Condition="'%(PackagingOutputs.Extension)' == '.pdb'" />
+      <PackagingOutputs Remove="@(_PdbPayload)" />
     </ItemGroup>
   </Target>
 
