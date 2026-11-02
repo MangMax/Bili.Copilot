@@ -1545,6 +1545,13 @@
     <GenerateDependencyFile Condition="'$(PublishAppxPackage)' == 'true'">false</GenerateDependencyFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(PublishAot)' == 'true' and '$(GenerateAppxPackageOnBuild)' == 'true'">
+    <!-- The MSIX payload does not need symbols, and the managed build PDB and
+         native AOT PDB can collide under the same target name. -->
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
   <!-- .NET 11 no longer populates the MSIX toolchain's _AssembliesToSkipPublish.
        Use the SDK's complete native publish closure instead of merging JIT build
        outputs from this project and its references. Keep MSIX content/PRI outputs. -->
@@ -1564,6 +1571,11 @@
         <OutputGroup>PublishItemsOutputGroupOutput</OutputGroup>
         <ProjectName>$(ProjectName)</ProjectName>
       </PackagingOutputs>
+      <!-- The native publish closure can contribute both the managed build PDB and
+           the native AOT PDB under the same target name. Symbols are not part of
+           the app payload; drop them so APPX1101 cannot see duplicate paths. -->
+      <_PdbPayload Include="@(PackagingOutputs)" Condition="'%(PackagingOutputs.Extension)' == '.pdb'" />
+      <PackagingOutputs Remove="@(_PdbPayload)" />
     </ItemGroup>
   </Target>
 
