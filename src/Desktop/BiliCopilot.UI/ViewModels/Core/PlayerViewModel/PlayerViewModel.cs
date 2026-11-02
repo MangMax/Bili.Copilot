@@ -517,12 +517,14 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         var selected = Sources.FirstOrDefault(s => s.IsSelected);
         SelectedSource = selected;
+        // 选择可能被关闭或换集追上：先捕获会话，重播前复查。
+        var isCurrent = CapturePlaybackValidity();
         _continuePosition = Player?.Position;
         if (_sourceResolver is VideoMediaSourceResolver videoResolver)
         {
             _snapshot.PreferQuality = selected.Data.Quality;
             videoResolver.ResetSnapshot(_snapshot);
-            await Player.ReplayAsync(Player.Position);
+            await ReplayCurrentPositionAsync(isCurrent);
         }
 
         await Task.CompletedTask;
