@@ -782,16 +782,18 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        // 关闭/换集之后到达的按键只属于旧会话。
+        // Escape 只切回默认模式，不触碰 Player/Client；保持原来的“总能退出”行为。
+        if (args.VirtualKey == Windows.System.VirtualKey.Escape)
+        {
+            BackToDefaultModeCommand.Execute(default);
+            return;
+        }
+
+        // 其余分支会碰播放器：关闭/换集之后到达的按键只属于旧会话。
         var isCurrent = CapturePlaybackValidity();
         if (!isCurrent())
         {
             return;
-        }
-
-        if (args.VirtualKey == Windows.System.VirtualKey.Escape)
-        {
-            BackToDefaultModeCommand.Execute(default);
         }
 
         if (Player is null || Player.PlaybackState == MpvPlayerState.Idle || Player.PlaybackState == MpvPlayerState.End)

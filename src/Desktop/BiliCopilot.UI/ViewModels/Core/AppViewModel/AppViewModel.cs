@@ -150,7 +150,15 @@ public sealed partial class AppViewModel : ViewModelBase
             return;
         }
 
-        await _playerSessions.Open().Session.InitializeAsync(snapshot);
+        var session = _playerSessions.Open();
+        if (IsClosed)
+        {
+            // 开启会话后应用才进入退出流程：释放刚登记的会话，避免留下未初始化的播放器。
+            await session.ReleaseAsync();
+            return;
+        }
+
+        await session.InitializeAsync(snapshot);
     }
 
     [RelayCommand]

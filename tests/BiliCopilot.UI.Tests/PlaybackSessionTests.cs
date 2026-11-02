@@ -160,7 +160,7 @@ public sealed class PlaybackSessionTests
         var initialization = session.InitializeAsync(async () => await running.Task);
 
         var release = session.ReleaseAsync();
-        await Task.Delay(50);
+        // 释放会先在 await 初始化处挂起，因此刚调用后必然未完成，无需等待。
         Assert.False(release.IsCompleted);
         Assert.Empty(harness.Released);
 
@@ -234,6 +234,24 @@ public sealed class PlaybackSessionTests
 
         Assert.Equal([session.Session], harness.Released);
         Assert.Empty(harness.Registered);
+    }
+
+    [Fact]
+    public async Task Close_AfterRelease_DoesNotRunCloseWork()
+    {
+        var harness = new SessionHarness();
+        var session = harness.Factory.Open();
+        await session.InitializeAsync(() => Task.CompletedTask).WaitAsync(Timeout);
+        await session.ReleaseAsync().WaitAsync(Timeout);
+        var closeCalls = 0;
+
+        await session.CloseAsync(() =>
+        {
+            closeCalls++;
+            return Task.CompletedTask;
+        }).WaitAsync(Timeout);
+
+        Assert.Equal(0, closeCalls);
     }
 
     [Fact]

@@ -166,7 +166,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private async void OnPlayPauseButtonClick(object sender, RoutedEventArgs e)
     {
         // 关闭/换集之后到达的点击只属于旧会话。
-        if (!ViewModel.CapturePlaybackValidity()())
+        if (!ViewModel.IsSessionCurrent())
         {
             return;
         }
@@ -385,7 +385,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private async void OnQuickSpeedButtonClick(object sender, RoutedEventArgs e)
     {
-        if (!ViewModel.CapturePlaybackValidity()())
+        if (!ViewModel.IsSessionCurrent())
         {
             return;
         }

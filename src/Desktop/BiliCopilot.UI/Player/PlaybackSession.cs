@@ -84,6 +84,12 @@ internal sealed class PlaybackSession<TSession>
     public Task CloseAsync(Func<Task> close)
     {
         ArgumentNullException.ThrowIfNull(close);
+        // 释放已经执行过关闭所需的清理：关闭工作不能再跑一遍（窗口/Tray 生命周期会重复）。
+        if (IsReleased)
+        {
+            return Task.CompletedTask;
+        }
+
         if (_closeTask is not null)
         {
             return _closeTask;

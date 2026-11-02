@@ -41,12 +41,19 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
     {
         // 作者例外：UP 主本人可以看到未解锁清晰度，其他人只看已解锁的。
         var isVideoAuthor = _snapshot.Video.Publisher?.User?.Id == this.Get<AccountViewModel>().MyProfile.User.Id;
-        return QualitySelectionAdapter.SelectFormat(
+        var selection = QualitySelectionAdapter.SelectFormat(
             _playbackInfo?.Formats,
             isVideoAuthor ? QualityEntitlement.VideoAuthor : QualityEntitlement.Standard,
             _snapshot.PreferQuality,
             SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PreferQuality, PreferQualityType.Auto),
             SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedVideoQuality, 0));
+        if (!selection.HasSelection)
+        {
+            // 规格要求把“不可用原因”留给排查：这里只记录，不改变选择行为。
+            logger.LogWarning("未能选择清晰度（{Title}）：{Reason}", _snapshot.Video.Identifier.Title, selection.Reason);
+        }
+
+        return selection.Format;
     }
 
     public override IMpvMediaSourceResolver Clone() => throw new NotImplementedException();

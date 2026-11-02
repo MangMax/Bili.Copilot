@@ -39,12 +39,19 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
     internal PlayerFormatInformation? GetCurrentFormat()
     {
         // PGC 没有作者例外：始终只看当前账号已解锁的清晰度。
-        return QualitySelectionAdapter.SelectFormat(
+        var selection = QualitySelectionAdapter.SelectFormat(
             _playbackInfo?.Formats,
             QualityEntitlement.Standard,
             _snapshot.PreferQuality,
             SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PreferQuality, PreferQualityType.Auto),
             SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedVideoQuality, 0));
+        if (!selection.HasSelection)
+        {
+            // 规格要求把“不可用原因”留给排查：这里只记录，不改变选择行为。
+            logger.LogWarning("未能选择清晰度（{Title}）：{Reason}", _episode.Identifier.Title, selection.Reason);
+        }
+
+        return selection.Format;
     }
 
     public override IMpvMediaSourceResolver Clone() => throw new NotImplementedException();

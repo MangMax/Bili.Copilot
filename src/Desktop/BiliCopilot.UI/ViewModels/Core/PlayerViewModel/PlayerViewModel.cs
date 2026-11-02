@@ -10,11 +10,11 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Richasy.WinUIKernel.Share.ViewModels;
+using System.Diagnostics.CodeAnalysis;
 using WinUIEx;
 
 namespace BiliCopilot.UI.ViewModels.Core;
@@ -50,8 +50,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     private async Task PrepareCloseAsync()
     {
         // Reject and cancel old danmaku work before native destruction or async cleanup.
-        _isDanmakuClosed = true;
-        _danmakuLoadSession?.Dispose();
+        InvalidateForRelease();
         await CompleteCloseAsync();
     }
 
@@ -91,9 +90,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     /// <inheritdoc/>
     public ValueTask DisposeAsync()
     {
-        _isDanmakuClosed = true;
-        _danmakuLoadSession?.Dispose();
-        // 释放闸门在会话里：重复调用加入同一个任务，原生资源只释放一次。
+        // 立即失效（幂等），再走会话的释放闸门：重复调用加入同一个任务，原生资源只释放一次。
+        InvalidateForRelease();
         return new ValueTask(Session.ReleaseAsync());
     }
 
@@ -101,15 +99,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     /// 释放会话已创建的原生资源；只由会话的释放闸门调用一次。
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
-    internal async Task ReleaseSessionAsync()
-    {
-        // 释放前等已接纳的调速与跳转落定，避免它们打到已销毁的客户端。
-#pragma warning disable VSTHRD003
-        await WaitForSpeedChangesAsync();
-        await WaitForPositionChangesAsync();
-#pragma warning restore VSTHRD003
-        await DisposeResourcesAsync();
-    }
+    internal Task ReleaseSessionAsync() => ReleaseSessionCoreAsync(DisposeResourcesAsync);
 
     private async Task DisposeResourcesAsync()
     {

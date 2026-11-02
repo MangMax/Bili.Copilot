@@ -166,6 +166,12 @@ internal static class QualitySelectionStrategy
                 }
 
                 break;
+            case PreferQualityType.High:
+                // “最高画质”不需要额外筛选：与回退规则一样取最高可用画质。
+                break;
+            default:
+                // 新增的偏好值默认按“最高可用画质”处理，避免语义静默改变。
+                break;
         }
 
         var highestIndex = 0;

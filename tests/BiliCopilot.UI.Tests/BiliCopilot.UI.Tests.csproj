@@ -91,6 +91,8 @@
   <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Speed.cs" Link="Playback/PlayerViewModel.Speed.cs" /></ItemGroup>
   <!-- 关闭后/迟到回调的会话复查：入队回调、换集与迟到写入的闸门与 WinUI 无关，直接链接验证。 -->
   <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.LateCallbacks.cs" Link="Playback/PlayerViewModel.LateCallbacks.cs" /></ItemGroup>
+  <!-- 释放/回滚的失效入口与同步会话检查；只用适配器提供的关闭标记与弹幕会话字段。 -->
+  <ItemGroup><Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.Session.cs" Link="Playback/PlayerViewModel.Session.cs" /></ItemGroup>
 
   <!-- 播放会话的生命周期（创建/登记/初始化回滚/释放）与 WinUI 无关，用假会话直接测试。 -->
   <ItemGroup>

@@ -187,6 +187,40 @@ public class QualitySelectionStrategyTests
     }
 
     [Fact]
+    public void Select_HighSettingPicksHighestEnabled()
+    {
+        // “最高画质”是显式分支：即使上次播放记录更低，也取最高可用画质。
+        var request = new QualitySelectionRequest(
+            Formats: [new(116, true), new(120, true), new(80, true)],
+            Entitlement: QualityEntitlement.Standard,
+            PreferredQuality: 0,
+            Setting: PreferQualityType.High,
+            LastSelectedQuality: 80);
+
+        var selection = QualitySelectionStrategy.Select(request);
+
+        Assert.Equal(120, selection.Quality);
+        Assert.Equal(QualitySelectionReason.FallbackHighest, selection.Reason);
+    }
+
+    [Fact]
+    public void Select_UnknownSettingFallsBackToHighest()
+    {
+        // 未来新增的枚举值必须显式决定语义；未指定时按最高可用画质处理。
+        var request = new QualitySelectionRequest(
+            Formats: [new(116, true), new(80, true)],
+            Entitlement: QualityEntitlement.Standard,
+            PreferredQuality: 0,
+            Setting: (PreferQualityType)99,
+            LastSelectedQuality: 80);
+
+        var selection = QualitySelectionStrategy.Select(request);
+
+        Assert.Equal(116, selection.Quality);
+        Assert.Equal(QualitySelectionReason.FallbackHighest, selection.Reason);
+    }
+
+    [Fact]
     public void Select_EmptyFormats_ReturnsNoSelectionAndReason()
     {
         var request = new QualitySelectionRequest(
