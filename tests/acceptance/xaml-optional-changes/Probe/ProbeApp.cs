@@ -11,6 +11,7 @@ using BiliCopilot.Acceptance.XamlOptionalChanges;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -38,6 +39,8 @@ public sealed class ProbeApp : Application
     private Button? _xamlButton;
     private Button? _menuButton;
     private MenuFlyout? _menuFlyout;
+    private TextBlock? _textBlock;
+    private RichTextBlock? _richTextBlock;
     private bool _xamlButtonTemplateBeforeTree;
     private bool _codeButtonTemplateBeforeTree;
     private string _fontIconTree = "none";
@@ -156,11 +159,21 @@ public sealed class ProbeApp : Application
         gallery.Children.Add(buttonPanel);
 
         var textPanel = NewGroup("Rich text");
-        var richText = new RichTextBlock { Width = 230, TextWrapping = TextWrapping.Wrap };
+        _richTextBlock = new RichTextBlock { Width = 230, TextWrapping = TextWrapping.Wrap };
         var paragraph = new Paragraph();
         paragraph.Inlines.Add(new Run { Text = "RichTextBlock sample text." });
-        richText.Blocks.Add(paragraph);
-        textPanel.Children.Add(richText);
+        _richTextBlock.Blocks.Add(paragraph);
+        textPanel.Children.Add(_richTextBlock);
+        // Selectable TextBlock / RichTextBlock are the controls whose default
+        // TextControlCommandBarContextFlyout DeferContextFlyoutInit changes.
+        _textBlock = new TextBlock
+        {
+            Text = "Selectable TextBlock sample text.",
+            Width = 230,
+            TextWrapping = TextWrapping.Wrap,
+            IsTextSelectionEnabled = true,
+        };
+        textPanel.Children.Add(_textBlock);
         textPanel.Children.Add(new TextBlock
         {
             Text = "TextBox / RichEditBox cannot be instantiated in this probe: see README limits.",
@@ -277,14 +290,14 @@ public sealed class ProbeApp : Application
                     RunAfter(600, () =>
                     {
                         Program.LogTrace("loaded: capturing popup");
-                        CapturePopup();
+                        CapturePopup("gallery-menu", "menuPopupCaptured");
                         _menuFlyout.Hide();
-                        RunAfter(300, CompleteCapture);
+                        RunAfter(300, CaptureTextFlyouts);
                     });
                     return;
                 }
 
-                CompleteCapture();
+                CaptureTextFlyouts();
             }
             catch (Exception ex)
             {
@@ -392,7 +405,7 @@ public sealed class ProbeApp : Application
         return string.Join(",", parts);
     }
 
-    private void CapturePopup()
+    private void CapturePopup(string fileStem, string observedKey)
     {
         if (_options.ScreenshotDirectory is null)
         {
@@ -403,22 +416,98 @@ public sealed class ProbeApp : Application
         _journal.PopupWindowCount = windows.Count;
         if (windows.Count == 0)
         {
-            _journal.Observed["menuPopupCaptured"] = "no-popup";
+            _journal.Observed[observedKey] = "no-popup";
             return;
         }
 
-        var path = Path.Combine(_options.ScreenshotDirectory, "gallery-menu.bmp");
+        var path = Path.Combine(_options.ScreenshotDirectory, fileStem + ".bmp");
         if (WindowCapture.TryCapture(windows[0], path, out var bounds))
         {
             _screenshots.Add($"{path}|{bounds.Width}x{bounds.Height}");
-            _journal.Observed["menuPopupCaptured"] = "ok";
-            _journal.Observed["menuPopupWidth"] = bounds.Width.ToString(CultureInfo.InvariantCulture);
-            _journal.Observed["menuPopupHeight"] = bounds.Height.ToString(CultureInfo.InvariantCulture);
+            _journal.Observed[observedKey] = "ok";
+            _journal.Observed[observedKey.Replace("Captured", "Width")] = bounds.Width.ToString(CultureInfo.InvariantCulture);
+            _journal.Observed[observedKey.Replace("Captured", "Height")] = bounds.Height.ToString(CultureInfo.InvariantCulture);
         }
         else
         {
-            _journal.Observed["menuPopupCaptured"] = "failed";
+            _journal.Observed[observedKey] = "failed";
         }
+    }
+
+    private void CaptureTextFlyouts()
+    {
+        var targets = new (string Key, string FileStem, FrameworkElement? Element)[]
+        {
+            ("textBlock", "gallery-text-block", _textBlock),
+            ("richText", "gallery-rich-text", _richTextBlock),
+        };
+        CaptureTextFlyoutAt(targets, 0);
+    }
+
+    private void CaptureTextFlyoutAt(
+        (string Key, string FileStem, FrameworkElement? Element)[] targets,
+        int index)
+    {
+        if (index >= targets.Length)
+        {
+            CompleteCapture();
+            return;
+        }
+
+        var (key, fileStem, element) = targets[index];
+        var capturedKey = key + "FlyoutCaptured";
+        var typeKey = key + "FlyoutType";
+        if (element is null)
+        {
+            _journal.Observed[capturedKey] = "not-observable";
+            _journal.Observed[typeKey] = "null";
+            RunAfter(100, () => CaptureTextFlyoutAt(targets, index + 1));
+            return;
+        }
+
+        FlyoutBase? flyout;
+        try
+        {
+            flyout = element.ContextFlyout;
+        }
+        catch (Exception ex)
+        {
+            Program.LogTrace($"text flyout {key}: ContextFlyout threw {ex.GetType().Name}: {ex.Message}");
+            _journal.Observed[typeKey] = "error";
+            _journal.Observed[capturedKey] = "not-observable";
+            RunAfter(100, () => CaptureTextFlyoutAt(targets, index + 1));
+            return;
+        }
+
+        Program.LogTrace($"text flyout {key}: type={flyout?.GetType().Name ?? "null"}");
+        _journal.Observed[typeKey] = flyout?.GetType().Name ?? "null";
+        if (flyout is null)
+        {
+            // The default TextControlCommandBarContextFlyout is not exposed by
+            // the ContextFlyout getter; record that instead of implying cover.
+            _journal.Observed[capturedKey] = "not-observable";
+            RunAfter(100, () => CaptureTextFlyoutAt(targets, index + 1));
+            return;
+        }
+
+        try
+        {
+            flyout.ShowAt(element);
+        }
+        catch (Exception ex)
+        {
+            Program.LogTrace($"text flyout {key}: ShowAt threw {ex.GetType().Name}: {ex.Message}");
+            _journal.Observed[capturedKey] = "failed";
+            RunAfter(100, () => CaptureTextFlyoutAt(targets, index + 1));
+            return;
+        }
+
+        RunAfter(600, () =>
+        {
+            CapturePopup(fileStem, capturedKey);
+            flyout.Hide();
+            RunAfter(300, () => CaptureTextFlyoutAt(targets, index + 1));
+        });
     }
 
     private void CaptureWindow()

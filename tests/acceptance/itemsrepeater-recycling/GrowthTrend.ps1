@@ -176,8 +176,17 @@ function Get-RecyclingVerdict {
     }
     elseif ($trend.Slope -le $FlatSlopeMbPerCycle) {
         $verdict = 'NoGrowth'
-        $reason = 'flat'
-        $message = "Private commit slope $([math]::Round($trend.Slope, 2)) MB/cycle is at or below the flat threshold $FlatSlopeMbPerCycle MB/cycle."
+        if ($trend.RSquared -lt $MinRSquared) {
+            # 'flat' would contradict the R^2 rule below: the series is not a
+            # clean zero slope, it is just too noisy to distinguish from one.
+            # Report that precisely instead of calling it flat.
+            $reason = 'no-growth-beyond-noise'
+            $message = "Private commit slope $([math]::Round($trend.Slope, 2)) MB/cycle is at or below the flat threshold $FlatSlopeMbPerCycle MB/cycle, but R^2 $([math]::Round($trend.RSquared, 3)) is below ${MinRSquared}: no growth beyond the threshold is observable, yet the series is too noisy to call flat."
+        }
+        else {
+            $reason = 'flat'
+            $message = "Private commit slope $([math]::Round($trend.Slope, 2)) MB/cycle is at or below the flat threshold $FlatSlopeMbPerCycle MB/cycle with R^2 $([math]::Round($trend.RSquared, 3)): flat within run-to-run noise."
+        }
     }
     elseif ($trend.Delta -lt $MinTotalGrowthMb) {
         $verdict = 'NoGrowth'
@@ -212,7 +221,7 @@ function Get-RecyclingVerdict {
     }
 }
 
-function New-SummaryMarkdown {
+function Write-SummaryMarkdown {
     param([pscustomobject]$Summary)
 
     $trend = $Summary.verdict.Trend
@@ -235,6 +244,9 @@ function New-SummaryMarkdown {
     $lines.Add("| repo commit | $($Summary.repository.commit) |")
     $lines.Add("| cycles (measured) | $($Summary.cycles) |")
     $lines.Add("| warmup cycles | $($Summary.warmupCycles) |")
+    if ($null -ne $Summary.PSObject.Properties['uia']) {
+        $lines.Add("| UIA helper errors | $($Summary.uia.errorCount) (nav selections $($Summary.uia.navSucceeded)/$($Summary.uia.navAttempted)) |")
+    }
     $lines.Add('')
     $lines.Add('## Cycle samples')
     $lines.Add('')
@@ -242,7 +254,9 @@ function New-SummaryMarkdown {
     $lines.Add('| --- | --- | --- | --- |')
     for ($i = 0; $i -lt $Summary.series.privateCommitMb.Count; $i++) {
         $ws = $Summary.series.workingSetPrivateMb[$i]
-        $lines.Add("| $($i + 1) | $($Summary.series.privateCommitMb[$i]) | $ws | $($Summary.series.handleCount[$i]) |")
+        # Never print a missing counter as 0: that would read as a real measurement.
+        $wsText = if ($null -eq $ws) { 'n/a' } else { $ws }
+        $lines.Add("| $($i + 1) | $($Summary.series.privateCommitMb[$i]) | $wsText | $($Summary.series.handleCount[$i]) |")
     }
     $lines.Add('')
     if ($null -ne $trend) {

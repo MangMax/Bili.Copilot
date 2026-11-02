@@ -109,6 +109,30 @@ public class XamlOptionalChangeProbeModelTests
     }
 
     [Fact]
+    public void Evaluate_FallsBackToCaseInsensitiveKeyLookup()
+    {
+        // An ordinal dictionary misses the exact key; the fallback must still
+        // find ICON and compare its value case-insensitively.
+        var results = ProbeExpectations.Evaluate(
+            ProbeExpectations.Parse(new[] { "icon=textblock" }),
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["ICON"] = "TextBlock",
+            });
+
+        var result = Assert.Single(results);
+        Assert.True(result.Passed);
+        Assert.Equal("TextBlock", result.Actual);
+    }
+
+    [Fact]
+    public void All_ReturnsReadOnlyList_SoCallersCannotRewriteTheCanonicalArray()
+    {
+        Assert.False(ProbeSwitches.All is string[]);
+        Assert.Equal(4, ProbeSwitches.All.Count);
+    }
+
+    [Fact]
     public void Evaluate_MissingObservation_FailsWithMissingMarker()
     {
         var results = ProbeExpectations.Evaluate(
