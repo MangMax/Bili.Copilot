@@ -188,6 +188,12 @@ artifacts/itemsrepeater-recycling/<runId>/     (gitignored: .gitignore line "art
 
 ## 6. Limits — read before quoting a number
 
+Measured results so far live in [RESULTS.md](RESULTS.md).
+
+* **A programmatic player close makes the app un-automatable.** Closing the detached player window
+  with WM_CLOSE (3/3 attempts) leaves the main window's UI Automation subtree empty: later cycles
+  cannot scroll or navigate, and ~500 MB of media allocation stays resident. A teardown-per-cycle
+  series therefore measures mpv state, not recycled XAML — treat that path as undetermined.
 * **Content is not frozen.** The feed is live Bilibili data fetched by the signed-in Dev instance.
   Mitigations: identical navigation sequence, identical geometry, warmup cycles, per-cycle deltas
   measured *within* one run, screenshots for later inspection. Absolute memory numbers are not
