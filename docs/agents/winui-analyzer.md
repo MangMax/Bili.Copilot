@@ -64,8 +64,13 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 
 1. **WUI3001（301 条）**：把 `[ObservableProperty]` 的字段写法迁移成 partial property。
    迁移完成后先在观测构建里把它升成 error（`-p:WarningsAsErrors=WUI3001`）验证清零，
-   再讨论默认构建是否打开分析器。
-2. **WUI2011（73 条）**：逐页给 `x:Bind` 补 `Mode=OneWay` / `Mode=TwoWay`。
+   再讨论默认构建是否打开分析器。实测这条命令有效：`-t:Rebuild` 下会得到
+   `301 个错误`，清零即可作为收尾判据。迁移完还能顺手删掉 `BiliCopilot.UI.csproj`
+   里为此保留的 `MVVMTK0045;MVVMTK0046` 抑制，让抑制清单只留必要项.
+2. **WUI2011（73 条）**：逐个判断绑定是否需要随数据变化——只有这类绑定才补
+   `Mode=OneWay` / `Mode=TwoWay`。事件/命令绑定（`Click`、`Command`）、
+   一次性静态文案、以及本来就只读一次的模板项不需要补，别为了清零批量加 Mode。
+   仓库当前没有任何 `x:DefaultBindMode`，所以这些命中不是继承模式造成的误报；
    XAML 改动要跟着页面一起回归，不要一次铺开。
 3. **WUI2010（52 条）**：给嵌套 `x:Bind` 补 `FallbackValue` 或改绑扁平属性。
 4. **收紧为阻断**：三类清零后，把 UI 工程的引用从条件开关里挪出来常驻、
@@ -96,3 +101,5 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 - 不要为了让观测构建变绿去加 `NoWarn`、`#pragma warning disable` 或降级规则。
 - 不要在其他工程里引用这个分析器，也不要把它挂进默认构建。
 - 不要顺手清理存量：清理按上面的顺序单独开票，一次一类。
+- 不要为清零批量补 `Mode` / `FallbackValue`：先判断绑定是否会变化、嵌套路径是否真的可空，
+  再决定改法；观测构建只是暴露候选，不是要求逐条照改.
