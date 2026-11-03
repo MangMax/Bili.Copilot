@@ -2,7 +2,9 @@
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
+using Microsoft.Extensions.Logging;
 using Richasy.MpvKernel.Core.Enums;
+using Richasy.WinUIKernel.Share.Toolkits;
 
 namespace BiliCopilot.UI.Controls.Core;
 
@@ -327,6 +329,13 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         ViewModel.IsPopupVisible = true;
     }
 
+    private void OnSubtitleFlyoutClosed(object sender, object e)
+    {
+        ViewModel.IsPopupVisible = false;
+        // 菜单关闭后复位层级，下次打开从第一层开始。
+        ViewModel.IsSubtitleParameterVisible = false;
+    }
+
     private void OnDisplayFlyoutClosed(object sender, object e)
     {
         ViewModel.IsPopupVisible = false;
@@ -405,8 +414,104 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     }
 
     private void OnFlyoutClosed(object sender, object e)
+        => ViewModel.IsPopupVisible = false;
+
+    private async void OnSubtitleParameterEntryClick(object sender, RoutedEventArgs e)
     {
-        ViewModel.IsPopupVisible = false;
+        ViewModel.IsSubtitleParameterVisible = true;
+        // 入口按钮随即被折叠，把焦点交给第二层的返回按钮，键盘用户不会失去落点。
+        MoveSubtitleParameterFocus(SubtitleParameterBackButton);
+        // 每次进入第二层都重新确认字体列表并回显当前字体，首次加载失败时下次进入会重试。
+        await EnsureSubtitleFontSelectionAsync();
+    }
+
+    private void OnSubtitleParameterBackClick(object sender, RoutedEventArgs e)
+    {
+        ViewModel.IsSubtitleParameterVisible = false;
+        // 返回第一层后把焦点还给参数页入口。
+        MoveSubtitleParameterFocus(SubtitleParameterEntryButton);
+    }
+
+    private void MoveSubtitleParameterFocus(Microsoft.UI.Xaml.Controls.Control target)
+        => DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () => target.Focus(FocusState.Programmatic));
+
+    private void OnSubtitlePositionChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        // 参数控件在 XAML 解析阶段就会触发一次（Slider 钳制初始 Value），此时 ViewModel 还没由父级赋值。
+        if (ViewModel?.Player?.IsPlaybackInitialized != true || ViewModel.SubtitlePosition == e.NewValue)
+        {
+            return;
+        }
+
+        ViewModel.ChangeSubtitlePositionCommand.Execute(e.NewValue);
+    }
+
+    private void OnSubtitleFontSizeChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        // 同上：Minimum=1 会在解析期把默认 Value 从 0 钳到 1，从而在 ViewModel 尚未赋值时触发本处理器。
+        if (ViewModel?.Player?.IsPlaybackInitialized != true || ViewModel.SubtitleFontSize == e.NewValue)
+        {
+            return;
+        }
+
+        ViewModel.ChangeSubtitleFontSizeCommand.Execute(e.NewValue);
+    }
+
+    private void OnSubtitleFontChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var item = e.AddedItems.FirstOrDefault() as SystemFont;
+        if (ViewModel?.Player?.IsPlaybackInitialized != true || item == null || ViewModel.SubtitleFontFamily == item.LocalName)
+        {
+            return;
+        }
+
+        ViewModel.ChangeSubtitleFontFamilyCommand.Execute(item.LocalName);
+    }
+
+    private void OnSubtitleDelayChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+    {
+        var value = args.NewValue;
+        if (ViewModel is null || ViewModel.SubtitleDelaySeconds == value)
+        {
+            return;
+        }
+
+        ViewModel.SetSubtitleDelaySecondsCommand.Execute(value);
+    }
+
+    private async void OnSubtitleFontComboLoaded(object sender, RoutedEventArgs e)
+        => await EnsureSubtitleFontSelectionAsync();
+
+    private async Task EnsureSubtitleFontSelectionAsync()
+    {
+        if (ViewModel is null || !SubtitleFontComboBox.IsLoaded)
+        {
+            return;
+        }
+
+        try
+        {
+            await ViewModel.ReloadFontsCommand.ExecuteAsync(default);
+        }
+        catch (Exception ex)
+        {
+            // 字体目录读取失败只影响回显；字体列表仍为空时，下次进入会再次尝试。
+            this.Get<ILogger<OverlayTransportControls>>().LogWarning(ex, "Unable to load subtitle font choices");
+        }
+
+        if (!SubtitleFontComboBox.IsLoaded)
+        {
+            return;
+        }
+
+        var font = ViewModel.SubtitleFontFamily;
+        var source = ViewModel.Fonts.FirstOrDefault(p => p.LocalName == font);
+        if (source != null)
+        {
+            SubtitleFontComboBox.SelectedItem = source;
+        }
     }
 
     private void OnDisplayFlyoutOpened(object sender, object e)

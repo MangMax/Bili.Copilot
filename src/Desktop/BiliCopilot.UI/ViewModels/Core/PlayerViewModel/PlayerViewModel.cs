@@ -28,6 +28,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     private PlaybackSession<PlayerViewModel>? _session;
     private InputPointerSource? _pointerSource;
     private InputKeyboardSource? _keyboardSource;
+    private bool _isApplyingSubtitlePreference;
+    private string? _rememberedSubtitleId;
 
     /// <summary>
     /// Gets 由播放会话工厂创建并登记的生命周期归属；关闭、初始化与释放都经过它。
@@ -242,6 +244,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         _prevPosition = 0;
         ResetSponsorBlock();
         IsSubtitleEmpty = true;
+        ApplySubtitleEnabledPreference(SettingsToolkit.ReadLocalSetting(SettingNames.IsSubtitleEnabled, true), persist: false);
         _isDanmakuInitialized = false;
         _isChapterInitialized = false;
         IsChapterListAvailable = false;
@@ -534,6 +537,14 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     partial void OnIsSubtitleEnabledChanged(bool value)
     {
+        if (_isApplyingSubtitlePreference)
+        {
+            // 恢复设置、关闭态选轨等内部修改只更新状态，副作用由调用方负责。
+            return;
+        }
+
+        // 用户手动切换：先写盘，保证播放器窗口被直接关闭也不会丢失偏好；再作用于播放器。
+        ApplySubtitleEnabledPreference(value, persist: true);
         ToggleSubtitleEnabledCommand.Execute(value);
     }
 }
