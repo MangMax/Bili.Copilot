@@ -1,23 +1,26 @@
-# WinUI Analyzer 观测接入
+# WinUI Analyzer（阻断）
 
 `Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer` 是 WinUI 官方分析器，覆盖 UWP 遗留 API、
-x:Bind 与布局陷阱、MVVM 旧写法、互操作问题。本文件记录它的接入方式、当前基线和
-"先观测、后阻断" 的推进顺序。
+x:Bind 与布局陷阱、MVVM 旧写法、互操作问题。本文件记录它的接入方式、当前基线，
+以及 #114 把"观测"收紧成"阻断"之后的现状、误报处理与回滚方式。
 
-## 现状：只观测，不阻断
+## 现状：常驻，参与阻断
 
-- 分析器只由 `src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj` 引用，版本集中在
-  `src/Directory.Packages.props`，`PrivateAssets="all"`。
-- **默认构建不加载分析器**：引用挂在 `WinUIAnalyzerObservation=true` 开关下，
-  不开开关时包不会被还原，分析器不参与编译；`src/Directory.Build.props` 的
-  warnings-as-errors、0 警告的现状都不变。
-- 观测构建会把**本工程**的 warnings-as-errors 关掉（存量诊断必然命中），
-  不改任何 `NoWarn`、不写 `#pragma warning disable`、不降级任何规则。
-  默认构建仍是 warnings-as-errors。
+- 分析器由 `src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj` **无条件**引用，版本集中在
+  `src/Directory.Packages.props`（`0.7.1`），`PrivateAssets="all"`，不外传给其它工程。
+- **默认构建就加载分析器**：它参与每一次编译，`src/Directory.Build.props` 的
+  `TreatWarningsAsErrors=true` 把任何新的 WUI warning 直接变成编译错误 —— 新写的 `x:Bind`
+  漏 `Mode`、字段式 `[ObservableProperty]` 之类当场让构建失败，不用等观测 job 或人工比对 SARIF。
+- `WinUIAnalyzerObservation=true` 只剩两个职责：把编译器 `ErrorLog` 指向 SARIF（CI 与人工
+  比对用），以及给它建好父目录。它**不再**关掉 warnings-as-errors，本工程与全仓一致；唯一
+  例外是 CS9264 的"不升级为错误"，理由见下面「CS9264」一节。
+- 分析器只在 UI 工程引用，`BiliCopilot.UI.Models` 等工程不加载它；不改任何 `NoWarn`
+  （`MVVMTK0046` 除外，见口径）、不写 `#pragma warning disable`、不降级任何规则。
 
-## 跑一次观测构建
+## 跑一次带 SARIF 的构建
 
-在仓库根目录执行：
+平时改代码不需要这个开关（默认构建已经在拦 WUI 诊断）；要拿 SARIF、核对基线或看 note 级
+规则时，在仓库根目录执行：
 
 ```powershell
 dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Platform=x64 `
@@ -39,7 +42,7 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 
 ## 当前基线
 
-分析器 `0.7.1`，Release / x64，2026-11-03 的观测构建结果：
+分析器 `0.7.1`，Release / x64，2026-11-03 的结果（#114 收紧后复核：默认构建与带 SARIF 的构建都是这个数）：
 
 | 规则 | 级别 | 数量 | 说明 |
 | --- | --- | --- | --- |
@@ -91,77 +94,89 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 说明"写 SARIF 的那次编译"才会产出这些诊断（用 `-p:RunAnalyzers=false` 复测仍有 CS9264，
 可以排除是分析器加的）。
 
-对 #114 的影响：**不会挡住收紧**。默认构建（warnings-as-errors）当前一条 CS9264 都不报，
-收紧成"分析器常驻 + warnings-as-errors"仍然绿；前提是 `ErrorLog` 继续只挂在观测开关上。
-一旦把 `ErrorLog` 也搬进默认构建，这些诊断会随 warnings-as-errors 直接变成错误
-（最小复现工程验证：`/warnaserror+` 下 CS9264 是 error），届时会变成 57 处构建失败。
-另外 CI 的 SARIF 会继续带这些条目，不要当成新回归。
+#114 收紧时的实测（同一棵树）：
 
-## 从观测到阻断的顺序
+- **默认构建（分析器常驻 + warnings-as-errors）仍然绿**：它不写 SARIF，一条 CS9264 都没有。
+- **带 SARIF 的构建必须把 CS9264 从 error 降回 warning**：那次编译同时有 `/warnaserror+` 与
+  `/errorlog`，114 条 CS9264（57 个属性 × `XamlPreCompile` 与 `CoreCompile` 各一遍）会被升成
+  error，先把 `XamlPreCompile` 打挂，再级联出 22 条 WMC0001（`Unknown type '...Converter'`）
+  与 WMC9999（构建 69 个错误）。所以 `BiliCopilot.UI.csproj` 的观测开关里留了
+  `<WarningsNotAsErrors>$(WarningsNotAsErrors);CS9264</WarningsNotAsErrors>`：warnings-as-errors
+  照常开着（WUI 诊断照样能挡住），只这一条"只在 /errorlog 编译里出现"的编译器诊断不升级成
+  错误。这不是 WUI 规则降级，也不影响默认构建。
+- **不要因此把 `ErrorLog` 搬进默认构建**：搬进去这些诊断就会随 warnings-as-errors 变成 57 处
+  构建失败（最小复现工程验证：`/warnaserror+` 下 CS9264 是 error）。
+- CI 的 SARIF 会继续带这些条目（73 条原始记录 / 45 个位置），不要当成新回归。
 
-一次只收紧一类，每一步都要同步更新本文件的基线：
+## 已经阻断（历史）
 
-1. **WUI3001（301 → 0，已完成，#109 + #110）**：把 `[ObservableProperty]` 的字段写法迁移成
-   partial property。清零判据是观测构建里把它升成 error（`-p:WarningsAsErrors=WUI3001`）
-   得到 0 错误，这条命令实测有效：`-t:Rebuild` 下未迁移完时按条数报错，归零即收尾。
-   批次一（#109）迁移警告最密集的 5 个 ViewModel 共 100 条；批次二（#110）收掉剩余 201 条
-   （64 个文件，含 `SubtitleViewModel`、`PlayerNotificationItemViewModel` 等不叫 `*.Properties.cs`
-   的 ViewModel），并删掉 `BiliCopilot.UI.csproj` 里只为字段写法保留的 `MVVMTK0045` 抑制。
-   `MVVMTK0046` 属于另一件事，见上面口径里的说明，这次没有删除。
-   迁移方式统一为 `[ObservableProperty] public partial T Name { get; set; }`，保留生成的属性名、
-   初始化器、可空性与手写 `OnXChanging/OnXChanged` 钩子，不新增任何 `NoWarn` / `#pragma`.
-2. **WUI2011（73 → 0，#111 已完成）**：逐个判断绑定是否真的随数据变化，判定规则：
-   - 路径上能发出变更通知的，才写 `Mode=OneWay`（共 25 处）：页面级
-     `ItemsSource="{x:Bind ViewModel.X}"`（16 处，`ViewModel` 是依赖属性、集合本身可观察）、
-     子控件 `ViewModel` 交接到依赖属性（9 处，父级替换要能传导）；
-   - 源没有变更通知的，写显式 `Mode=OneTime` 把"就是一次性的"讲清楚，不要补 `OneWay`：
-     内核模型（`VideoPart`、`BiliImage`、`UserGroup` 等都是纯 POCO，不实现
-     `INotifyPropertyChanged`）、`x:Name` 元素引用（`TeachingTip.Target`）、
-     构造时就定值的模板项。给这类源补 `OneWay` 只会得到一条永远不更新的死绑定；
-   - 事件绑定（`Click`、`SelectionChanged`）、命令绑定（`Command`、`*Command` 属性）
-     和单独的 `{x:Bind}`（整项 DataContext）本来就不触发这条规则，保持原样。
-   仓库当前没有任何 `x:DefaultBindMode`，所以这些命中不是继承模式造成的误报。
-   命中全部清零后，新写的 `x:Bind` 必须显式写 `Mode`。
-3. **WUI2010（52 → 0，#112 已完成）**：给嵌套 `x:Bind` 补 `FallbackValue` 或改绑扁平属性，
-   52 个位置全部选择补 `FallbackValue`，`Mode` 原样保留（#111 的判定不被覆盖）：
-   - 文本/路径类给空串或空引用（`FallbackValue=''` / `{x:Null}`），中间段为 null 时显示空白占位
-     而不是停在上一目标的旧值；`BasicCoverImage.Source`、`Image.Source`、`TrimTextBlock.Text`
-     都是可空入参，空引用安全；
-   - 布尔/可见性/命令类给"不成立"一侧（`False` / `Collapsed` / `{x:Null}`），
-     让控件在未就绪时保持禁用或隐藏，而不是对 null 求值；
-   - 数值类给控件本身的初值（音量 `0`、倍速 `1`、计数 `0`），与 Slider 的 `Minimum` /
-     `Maximum` 区间一致；
-   - 没有命中改绑扁平属性：这 52 条的中间段（`Player`、`Card`、`SelectedSection`、
-     `MyProfile`、`TopItem`）在对应页面都是单例注入或构造期就位，只有"加载中/未登录"这类
-     瞬时 null，拍平反而要把派生状态再复制一份，故按票面要求优先补 `FallbackValue`。
-   观测构建 `-p:WarningsAsErrors=WUI2010` 下 0 错误，SARIF 里该规则不再出现。
-4. **收紧为阻断**：三类清零后，把 UI 工程的引用从条件开关里挪出来常驻、
-   恢复 warnings-as-errors，并把 `winui-analyzer-observation` job 的
-   `continue-on-error` 去掉、纳入必需检查。届时本文件只保留基线表格和这条历史。
+四类 warning 一次只收紧一类，每一步的判据都是「带 SARIF 的构建 + `-p:WarningsAsErrors=<规则>`
+为 0 错误」；四类都归零之后才收紧成阻断（#114）：
+
+1. **WUI3001 已清零（#109 + #110）**：`[ObservableProperty]` 的字段写法迁成
+   `[ObservableProperty] public partial T Name { get; set; }`，保留生成的属性名、初始化器、
+   可空性与手写 `OnXChanging/OnXChanged` 钩子。批次一（#109）迁移警告最密集的 5 个 ViewModel
+   共 100 条，批次二（#110）收掉剩余 201 条（64 个文件），并删掉只为字段写法保留的
+   `MVVMTK0045` 抑制。`MVVMTK0046` 属于另一件事（见上面口径），没有删除。
+2. **WUI2011 已清零（#111）**：逐个判断绑定是否真的随数据变化 —— 路径上能发变更通知的才写
+   `Mode=OneWay`（25 处）；源没有变更通知的（内核 POCO、`x:Name` 元素引用、构造期定值的
+   模板项）写显式 `Mode=OneTime`，把"就是一次性的"讲清楚，给这类源补 `OneWay` 只会得到一条
+   永远不更新的死绑定；事件绑定、命令绑定和整项 `{x:Bind}` 本来不触发规则，保持原样。
+   仓库没有 `x:DefaultBindMode`，所以这些命中不是继承模式造成的误报。
+3. **WUI2010 已清零（#112）**：52 个位置全部补 `FallbackValue`，`Mode` 原样保留（#111 的判定
+   不被覆盖）：文本/路径类给空串或空引用，布尔/可见性/命令类给"不成立"一侧，数值类给控件
+   初值。没有改绑扁平属性 —— 这些中间段在对应页面都是单例注入或构造期就位，拍平反而要把
+   派生状态再复制一份。
+4. **收紧为阻断（#114）**：引用移出条件开关常驻；观测开关只保留 SARIF 的 `ErrorLog` 与建目录，
+   不再关 warnings-as-errors（CS9264 那一条例外见上一节）；CI job 去掉 `continue-on-error`、
+   去掉 `pull_request.paths` 过滤，纳入分支保护的必需检查。基线从此由构建本身守着：默认构建
+   0 警告，新增任何 WUI warning 当场失败。
+
+## 误报怎么办
+
+收紧之后任何 WUI 诊断都会让构建失败。若某条确实是误报：
+
+- 只能**窄范围**抑制并写明原因：在出问题的那一行 / 那一个文件加最小的
+  `#pragma warning disable WUIxxxx`（或 XAML 里等价的局部写法），紧邻一行注释说明
+  "为什么是误报、什么条件下应该删掉"；
+- 不能整类规则降级：不改 `.editorconfig` 里 `dotnet_diagnostic` 的严重级别、不加 `NoWarn`、
+  不把分析器重新挂回条件开关、也不为了绕过它关掉 warnings-as-errors；
+- 在本文件记一条（规则、位置、理由、复查条件），让下一个人知道这条例外从哪来.
 
 ## CI
 
 `.github/workflows/winui-analyzer.yml` 是独立工作流，只有一个 job
-`winui-analyzer-observation`：
+`winui-analyzer-observation`（job id 就是分支保护里的必需检查上下文名，改名字会让规则失效；
+`observation` 是历史遗留，它现在跑的是阻断构建）：
 
-- 用同一个开关跑观测构建，SARIF 作为 artifact 上传，并送 code scanning
-  （`category: winui-analyzer`）；
-- `pull_request` 带 `paths` 过滤（UI 工程与 `UI.Models`、`Directory.Packages.props`、
-  `Directory.Build.props`、工作流自身）：它不是必需检查，不必每个 PR 都跑一次；
-  转成必需检查时**必须**先删掉这个过滤，否则没触发的 PR 会让必需检查一直停在 pending；
-- `continue-on-error: true`：构建或上传失败不会让工作流变红、不挡 master、
-  不进分支保护，也不影响 `run-unit-tests.yml` 的 `test` 必需检查。但 job 本身仍然会在
-  PR 的 checks 列表里显示成失败（红色叉），只是不阻断合并——看到红色先看日志，
-  不要当成主流程挂了；
-- fork PR 上 `security-events: write` 会被降级成只读，`upload-sarif` 在那里**必然失败**，
-  靠 `continue-on-error` 吞掉，SARIF 只留在 artifact 里；
+- 用同一个开关跑一次构建：warnings-as-errors 开着，所以这一步既是 SARIF 报告，也是门禁 ——
+  新增 WUI 诊断会让这个必需检查直接变红、挡住合并；
+- `pull_request` **没有** `paths` 过滤：必需检查必须在每个 PR 上都触发，否则没触发时检查会
+  停在 pending，永远等不到绿色；
+- 没有 job 级 / 步骤级 `continue-on-error`：构建失败就是红色、就是挡合并；
+- SARIF 作为 artifact 上传，并送 code scanning（`category: winui-analyzer`）；fork PR 上
+  `security-events` 被降级成只读、`upload-sarif` 必然失败，所以那一步在 fork PR 上直接跳过
+  （SARIF 仍留在 artifact 里），免得用与规则无关的步骤把外部 PR 挡红；
 - 构建失败时只上传已经存在的文件（`if-no-files-found: warn`），
   摘要里会写明是没生成 SARIF 还是规则计数。
 
+## 回滚方式
+
+阻断由三处设置共同生效，回滚要一起改回去（等价于 revert #114 的合并提交）：
+
+1. `BiliCopilot.UI.csproj`：把 `Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer` 的
+   `PackageReference` 放回 `Condition="'$(WinUIAnalyzerObservation)' == 'true'"` 的 `ItemGroup`，
+   默认构建不再加载分析器；
+2. 同一个开关的 `PropertyGroup` 里加回 `<TreatWarningsAsErrors>false</TreatWarningsAsErrors>`，
+   并清掉 `WarningsNotAsErrors` 里的 CS9264；
+3. `.github/workflows/winui-analyzer.yml`：job 级与步骤级加回 `continue-on-error: true`，
+   `pull_request` 加回 `paths:` 过滤；同时从分支保护的必需检查里移除
+   `winui-analyzer-observation`，否则没触发的 PR 会一直停在 pending.
+
 ## 不要做
 
-- 不要为了让观测构建变绿去加 `NoWarn`、`#pragma warning disable` 或降级规则。
-- 不要在其他工程里引用这个分析器，也不要把它挂进默认构建。
-- 不要顺手清理存量：清理按上面的顺序单独开票，一次一类。
-- 不要为清零批量补 `Mode` / `FallbackValue`：先判断绑定是否会变化、嵌套路径是否真的可空，
-  再决定改法；观测构建只是暴露候选，不是要求逐条照改.
+- 不要为了消灭诊断去加 `NoWarn`、`#pragma warning disable` 或降级规则；误报按「误报怎么办」处理。
+- 不要把分析器重新挂回条件开关，也不要把 `ErrorLog` 搬进默认构建（CS9264 会变成 57 处硬错误）。
+- 不要在其他工程里引用这个分析器。
+- 不要为凑数批量补 `Mode` / `FallbackValue`：先判断绑定是否会变化、嵌套路径是否真的可空，
+  再决定改法；分析器只是把候选暴露出来，不是要求逐条照改.
