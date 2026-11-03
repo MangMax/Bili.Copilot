@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -59,10 +59,10 @@ public sealed partial class PopularPageViewModel
     private RecommendRefreshSnapshot<VideoItemViewModel>? _recommendRefreshSnapshot;
 
     [ObservableProperty]
-    private bool _isPartitionLoading;
+    public partial bool IsPartitionLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isVideoLoading;
+    public partial bool IsVideoLoading { get; set; }
 
     /// <summary>
     /// 推荐刷新是否正在进行.
@@ -73,7 +73,7 @@ public sealed partial class PopularPageViewModel
     /// </remarks>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RefreshVideoCommand))]
-    private bool _isRecommendRefreshing;
+    public partial bool IsRecommendRefreshing { get; set; }
 
     /// <summary>
     /// 是否可以撤销最近一次推荐刷新.
@@ -82,10 +82,10 @@ public sealed partial class PopularPageViewModel
     /// 由刷新快照是否存在决定。撤销入口与刷新按钮并排，只在刷新成功后出现。
     /// </remarks>
     [ObservableProperty]
-    private bool _canUndoRefresh;
+    public partial bool CanUndoRefresh { get; set; }
 
     [ObservableProperty]
-    private IPopularSectionItemViewModel _selectedSection;
+    public partial IPopularSectionItemViewModel SelectedSection { get; set; }
 
     /// <summary>
     /// 区块加载完成.

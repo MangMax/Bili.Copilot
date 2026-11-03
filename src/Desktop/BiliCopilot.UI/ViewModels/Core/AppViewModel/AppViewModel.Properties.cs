@@ -18,13 +18,13 @@ public sealed partial class AppViewModel : ViewModelBase
     private readonly PlaybackSessionFactory<PlayerViewModel> _playerSessions;
 
     [ObservableProperty]
-    private Window _activatedWindow;
+    public partial Window ActivatedWindow { get; set; }
 
     [ObservableProperty]
-    private bool _isInitialLoading;
+    public partial bool IsInitialLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isUpdateShown;
+    public partial bool IsUpdateShown { get; set; }
 
     public List<PlayerViewModel> Players { get; } = [];
 

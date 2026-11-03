@@ -43,41 +43,73 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 
 | 规则 | 级别 | 数量 | 说明 |
 | --- | --- | --- | --- |
-| WUI3001 | warning | 201 | `[ObservableProperty]` 旧字段写法，未用 partial property（批次一 #109 已迁移 100 条） |
+| WUI3001 | warning | 0 | `[ObservableProperty]` 旧字段写法，未用 partial property（#109 批次一 100 条 + #110 批次二 201 条已全部迁完） |
 | WUI2011 | warning | 0 | `x:Bind` 缺显式 `Mode`（#111 已清零：25 处补 `OneWay`，48 处写显式 `OneTime`） |
 | WUI2010 | warning | 0 | 嵌套 `x:Bind` 路径缺 `FallbackValue`（#112 已清零：52 处逐条补 `FallbackValue`，保留原有 `Mode`） |
 | WUI1001 | warning | 0 | 已清零（#113）：保存图片改用 `Microsoft.Windows.Storage.Pickers` |
-| **warning 小计** | | **201** | 201 + 0 + 0 + 0；WUI2011、WUI2010、WUI1001 清零、WUI3001 批次一迁移后的存量，按规则继续分批 |
+| **warning 小计** | | **0** | 0 + 0 + 0 + 0；四类 warning 全部清零，只剩 note 级 WUI2020 / WUI1010 |
 | WUI2020 | note | 272 | 缺失 `AutomationId` |
 | WUI1010 | note | 2 | 迁移表的特性提示 |
 
 口径：
 
 - 小计是**按位置去重**后的 warning 数（基线 427；#111 清零 WUI2011 后 354，
-  #109 迁移 WUI3001 批次一后 254，#113 清零 WUI1001 后 253，#112 清零 WUI2010 后 201）。
-  WUI2010 清零前 SARIF 里的原始条目是 54，其中
+  #109 迁移 WUI3001 批次一后 254，#113 清零 WUI1001 后 253，#112 清零 WUI2010 后 201，
+  #110 清零 WUI3001 后 0）。WUI2010 清零前 SARIF 里的原始条目是 54，其中
   `Controls/Comment/CommentMainPanel.xaml:63` 与
   `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置），按位置去重后为 52。
 - note 级（WUI2020 / WUI1010）不计入小计，单独记。
-- WUI3001 分两批：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
-  批次二 #110 收掉剩下的 201 条并删除 `MVVMTK0045;MVVMTK0046` 抑制。
-  每批都要求“该批文件在观测构建里 WUI3001 为 0”，而不是整体清零后才算完成。
+- WUI3001 分两批，均已完成：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
+  批次二 #110 收掉剩下的 201 条。每批都要求“该批文件在观测构建里 WUI3001 为 0”，
+  而不是整体清零后才算完成。
+- #110 收口时删掉了 `MVVMTK0045`（只为字段写法存在，迁移后 0 命中）；`MVVMTK0046` 留在
+  `NoWarn` 里，它与字段写法无关（命中的是 8 个 `[GeneratedBindableCustomProperty]` 条目
+  视图模型里的 46 个 `[RelayCommand]` 方法，属 AOT 绑定遗留），删掉会让默认构建直接失败。
 - WUI1001 的 1 条在 #113 一次清零：`GalleryPageViewModel.SaveImageAsync` 换成
   `Microsoft.Windows.Storage.Pickers.FileSavePicker`（构造时传 `WindowId`，取消返回
   `null`，落盘走 `FileStream`）。该 API 由 `Microsoft.WindowsAppSDK.Foundation 2.6.4`
   提供，已用 `winapp find-api` 核对成员；规则留在表里作为回归项，不再是待清存量。
 
+### CS9264：只在写 SARIF 的构建里出现
+
+`[ObservableProperty]` 从字段写法换成 partial property 后，编译器用 `field` 关键字实现属性；
+类有显式构造函数、构造函数里又没给某个非空引用类型属性赋值时，会报 CS9264
+（"退出构造函数时该属性可能为 null"）。字段写法时代报的是 CS8618，而 `src/.editorconfig`
+只把 CS8618 设成 `none`，所以 CS9264 是迁移后才冒出来的新 ID。
+#110 迁移完成后同一棵树、同一份源码的实测结果：
+
+| 构建 | CS9264 |
+| --- | --- |
+| 观测构建（`-p:WinUIAnalyzerObservation=true`，会写 SARIF） | 57 个属性；SARIF 里 73 条原始记录 / 45 个不同位置 |
+| 同上，只把 `ErrorLog` 清空（`-p:ErrorLog=`） | **0**（控制台一条都没有） |
+| 默认构建（warnings-as-errors 开，`-t:Rebuild` 全量编译） | **0** |
+| 默认构建（`-p:TreatWarningsAsErrors=false`，`-t:Rebuild`） | **0** |
+
+所以原因不是增量编译、条件编译、editorconfig 降级或 `WarningLevel`：两边都是
+`/warn:11`、`/nullable:enable`、同一份 `/nowarn`、同样三份 `/analyzerconfig`，
+只把 `ErrorLog` 清空后 WUI2010 / WUI1001 照旧上报、CS9264 却全部消失，
+说明"写 SARIF 的那次编译"才会产出这些诊断（用 `-p:RunAnalyzers=false` 复测仍有 CS9264，
+可以排除是分析器加的）。
+
+对 #114 的影响：**不会挡住收紧**。默认构建（warnings-as-errors）当前一条 CS9264 都不报，
+收紧成"分析器常驻 + warnings-as-errors"仍然绿；前提是 `ErrorLog` 继续只挂在观测开关上。
+一旦把 `ErrorLog` 也搬进默认构建，这些诊断会随 warnings-as-errors 直接变成错误
+（最小复现工程验证：`/warnaserror+` 下 CS9264 是 error），届时会变成 57 处构建失败。
+另外 CI 的 SARIF 会继续带这些条目，不要当成新回归。
+
 ## 从观测到阻断的顺序
 
 一次只收紧一类，每一步都要同步更新本文件的基线：
 
-1. **WUI3001（301 条 → 201 条）**：把 `[ObservableProperty]` 的字段写法迁移成 partial property。
-   迁移完成后先在观测构建里把它升成 error（`-p:WarningsAsErrors=WUI3001`）验证清零，
-   再讨论默认构建是否打开分析器。实测这条命令有效：`-t:Rebuild` 下 301 条时会得到
-   `301 个错误`，迁移掉一批就少对应条数，归零即可作为收尾判据。
-   批次一（#109）已把警告最密集的 5 个 ViewModel 共 100 条迁完，
-   剩余 201 条由批次二（#110）收掉，并在那时删掉 `BiliCopilot.UI.csproj`
-   里为此保留的 `MVVMTK0045;MVVMTK0046` 抑制，让抑制清单只留必要项.
+1. **WUI3001（301 → 0，已完成，#109 + #110）**：把 `[ObservableProperty]` 的字段写法迁移成
+   partial property。清零判据是观测构建里把它升成 error（`-p:WarningsAsErrors=WUI3001`）
+   得到 0 错误，这条命令实测有效：`-t:Rebuild` 下未迁移完时按条数报错，归零即收尾。
+   批次一（#109）迁移警告最密集的 5 个 ViewModel 共 100 条；批次二（#110）收掉剩余 201 条
+   （64 个文件，含 `SubtitleViewModel`、`PlayerNotificationItemViewModel` 等不叫 `*.Properties.cs`
+   的 ViewModel），并删掉 `BiliCopilot.UI.csproj` 里只为字段写法保留的 `MVVMTK0045` 抑制。
+   `MVVMTK0046` 属于另一件事，见上面口径里的说明，这次没有删除。
+   迁移方式统一为 `[ObservableProperty] public partial T Name { get; set; }`，保留生成的属性名、
+   初始化器、可空性与手写 `OnXChanging/OnXChanged` 钩子，不新增任何 `NoWarn` / `#pragma`.
 2. **WUI2011（73 → 0，#111 已完成）**：逐个判断绑定是否真的随数据变化，判定规则：
    - 路径上能发出变更通知的，才写 `Mode=OneWay`（共 25 处）：页面级
      `ItemsSource="{x:Bind ViewModel.X}"`（16 处，`ViewModel` 是依赖属性、集合本身可观察）、

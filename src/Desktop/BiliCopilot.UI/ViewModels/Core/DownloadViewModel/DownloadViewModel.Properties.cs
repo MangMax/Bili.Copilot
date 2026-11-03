@@ -26,16 +26,16 @@ public sealed partial class DownloadViewModel
     private int _currentPartIndex;
 
     [ObservableProperty]
-    private List<PlayerFormatInformation> _formats;
+    public partial List<PlayerFormatInformation> Formats { get; set; }
 
     [ObservableProperty]
-    private List<VideoPart>? _parts;
+    public partial List<VideoPart>? Parts { get; set; }
 
     [ObservableProperty]
-    private List<EpisodeInformation>? _episodes;
+    public partial List<EpisodeInformation>? Episodes { get; set; }
 
     [ObservableProperty]
-    private bool _hasAvailableSubtitle;
+    public partial bool HasAvailableSubtitle { get; set; }
 
     /// <summary>
     /// 元数据初始化完成事件.

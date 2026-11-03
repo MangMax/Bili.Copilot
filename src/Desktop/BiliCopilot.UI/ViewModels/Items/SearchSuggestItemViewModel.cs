@@ -12,10 +12,10 @@ namespace BiliCopilot.UI.ViewModels.Items;
 public sealed partial class SearchSuggestItemViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private string _searchContent;
+    public partial string SearchContent { get; set; }
 
     [ObservableProperty]
-    private string? _regionName;
+    public partial string? RegionName { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchSuggestItemViewModel"/> class.

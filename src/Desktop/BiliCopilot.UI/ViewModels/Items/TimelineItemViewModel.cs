@@ -13,10 +13,10 @@ namespace BiliCopilot.UI.ViewModels.Items;
 public sealed partial class TimelineItemViewModel : ViewModelBase<TimelineInformation>
 {
     [ObservableProperty]
-    private List<SeasonItemViewModel>? _items;
+    public partial List<SeasonItemViewModel>? Items { get; set; }
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TimelineItemViewModel"/> class.

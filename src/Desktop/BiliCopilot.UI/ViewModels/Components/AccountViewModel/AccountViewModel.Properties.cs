@@ -19,22 +19,22 @@ public sealed partial class AccountViewModel
     private readonly ILogger<AccountViewModel> _logger;
 
     [ObservableProperty]
-    private UserDetailProfile _myProfile;
+    public partial UserDetailProfile MyProfile { get; set; }
 
     [ObservableProperty]
-    private bool _isInitializing;
+    public partial bool IsInitializing { get; set; }
 
     [ObservableProperty]
-    private int _momentCount;
+    public partial int MomentCount { get; set; }
 
     [ObservableProperty]
-    private int _followCount;
+    public partial int FollowCount { get; set; }
 
     [ObservableProperty]
-    private int _fansCount;
+    public partial int FansCount { get; set; }
 
     [ObservableProperty]
-    private string _introduce;
+    public partial string Introduce { get; set; }
 
     [ObservableProperty]
     public partial bool IsFlyoutOpened { get; set; }

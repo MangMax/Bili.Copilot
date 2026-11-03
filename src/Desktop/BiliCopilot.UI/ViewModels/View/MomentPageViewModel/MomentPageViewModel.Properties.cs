@@ -15,13 +15,13 @@ public sealed partial class MomentPageViewModel
     private readonly IMomentDiscoveryService _momentDiscoveryService;
 
     [ObservableProperty]
-    private List<IMomentSectionDetailViewModel> _sections;
+    public partial List<IMomentSectionDetailViewModel> Sections { get; set; }
 
     [ObservableProperty]
-    private IMomentSectionDetailViewModel _selectedSection;
+    public partial IMomentSectionDetailViewModel SelectedSection { get; set; }
 
     [ObservableProperty]
-    private bool _isCommentsOpened;
+    public partial bool IsCommentsOpened { get; set; }
 
     /// <summary>
     /// 区块初始化完成.
