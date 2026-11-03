@@ -2,22 +2,12 @@ name: Run Unit Tests
 
 on:
   push:
-    branches: [master, feat/**]
-    paths:
-      - "tests/**"
-      - "src/Desktop/BiliCopilot.UI/SponsorBlock/**"
-      - "src/Desktop/BiliCopilot.UI.Models/Constants/**"
-      - "src/Desktop/BiliCopilot.UI/Extensions/**"
-      - "externals/**"
-      - ".github/workflows/run-unit-tests.yml"
+    branches: [master]
+  # master 把 `test` 作为必需检查，所以每个 PR 都必须跑一次：
+  # 带 paths 过滤时，不碰这些目录的 PR 不会触发工作流，必需检查会一直停在
+  # pending（从未创建），把合并挡死. push 也去掉 paths 过滤，让 master 上的
+  # 结果与 PR 一致.
   pull_request:
-    paths:
-      - "tests/**"
-      - "src/Desktop/BiliCopilot.UI/SponsorBlock/**"
-      - "src/Desktop/BiliCopilot.UI.Models/Constants/**"
-      - "src/Desktop/BiliCopilot.UI/Extensions/**"
-      - "externals/**"
-      - ".github/workflows/run-unit-tests.yml"
   workflow_dispatch:
 
 permissions:
