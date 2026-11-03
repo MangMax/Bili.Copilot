@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
@@ -23,7 +23,30 @@ public sealed partial class UserSpacePageViewModel
     private UserProfile _profile;
     private int _searchPn;
     private bool _preventLoadMoreSearch;
-    private CancellationTokenSource _searchCancellationTokenSource;
+
+    /// <summary>
+    /// 目标加载代次，每次收到新的用户参数递增.
+    /// </summary>
+    /// <remarks>
+    /// 用户空间页是参数化页面，视图模型为单例。旧目标的迟到响应不得写入
+    /// 关注态、用户卡片或搜索状态。
+    /// </remarks>
+    private int _loadGeneration;
+
+    private string _targetId;
+
+    private readonly object _loadLock = new();
+
+    private CancellationTokenSource? _loadCancellation;
+
+    /// <summary>
+    /// 搜索加载代次，每次发起搜索或退出搜索递增.
+    /// </summary>
+    private int _searchGeneration;
+
+    private readonly object _searchLock = new();
+
+    private CancellationTokenSource? _searchCancellation;
 
     [ObservableProperty]
     private List<UserMomentDetailViewModel> _sections;
@@ -74,4 +97,55 @@ public sealed partial class UserSpacePageViewModel
     /// 搜索视频结果.
     /// </summary>
     public ObservableCollection<VideoItemViewModel> SearchVideos { get; } = new();
+
+    /// <summary>
+    /// 当前目标加载代次；页面卸载时用它只取消本页面发起的那一代加载.
+    /// </summary>
+    public int CurrentLoadGeneration
+    {
+        get
+        {
+            lock (_loadLock)
+            {
+                return _loadGeneration;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 当前加载所属的目标标识.
+    /// </summary>
+    public string CurrentTargetId
+    {
+        get
+        {
+            lock (_loadLock)
+            {
+                return _targetId;
+            }
+        }
+    }
+
+    private CancellationToken CurrentLoadToken
+    {
+        get
+        {
+            lock (_loadLock)
+            {
+                if (_loadCancellation is null)
+                {
+                    return CancellationToken.None;
+                }
+
+                try
+                {
+                    return _loadCancellation.Token;
+                }
+                catch (ObjectDisposedException)
+                {
+                    return CancellationToken.None;
+                }
+            }
+        }
+    }
 }

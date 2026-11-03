@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -38,9 +38,53 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         _logger = logger;
     }
 
-    [RelayCommand]
+    /// <summary>
+    /// 取消指定代次的加载；页面失活（切走、关闭、被新目标替换）时用它只取消该页面发起的那一代.
+    /// </summary>
+    /// <param name="generation">页面记录下的加载代次.</param>
+    public void CancelLoad(int generation)
+    {
+        CancellationTokenSource? cancellation = null;
+        var cancelled = false;
+        lock (_loadLock)
+        {
+            if (_loadGeneration == generation)
+            {
+                cancellation = _loadCancellation;
+                _loadCancellation = null;
+
+                // 递增代次，使已经在途的旧成功/异常也无法落地.
+                _loadGeneration++;
+                cancelled = true;
+            }
+        }
+
+        CancelAndDispose(cancellation);
+        if (!cancelled)
+        {
+            // 旧页面记录的代次已经过期，不得误伤之后发起的新加载.
+            return;
+        }
+
+        // 该页面代次同时拥有两个动态分区与搜索模块的在途加载。
+        if (Sections is not null)
+        {
+            foreach (var section in Sections)
+            {
+                section.CancelLoad(section.CurrentLoadGeneration);
+            }
+        }
+
+        InvalidateSearch();
+    }
+
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task InitializeAsync(UserProfile profile)
     {
+        // 用户空间是参数化页面、视图模型是单例：每收到一个新的用户参数就开启新的加载代次，
+        // 并取消上一代的在途请求，保证旧目标的响应不会落到新目标的页面上。
+        var (generation, cancellation) = BeginLoad(profile.Id);
+        var userId = profile.Id;
         _profile = profile;
         Card = default;
         UserName = profile.Name;
@@ -64,6 +108,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         foreach (var item in Sections)
         {
             item.SetShowCommentAction(ShowComment);
+
+            // 重置目标时一并复位动态分区的加载态与代次，上一目标的 IsLoading 不会挡住新目标。
             item.ResetCommand.Execute(profile);
         }
 
@@ -78,7 +124,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             SelectedSection.InitializeCommand.Execute(default);
         }
 
-        await InitializeRelationAsync();
+        await InitializeRelationAsync(generation, userId, cancellation.Token);
+        if (!IsCurrentLoad(generation))
+        {
+            return;
+        }
 
         Initialized?.Invoke(this, EventArgs.Empty);
     }
@@ -121,16 +171,33 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     [RelayCommand]
     private async Task ToggleFollowAsync()
     {
+        var generation = CurrentLoadGeneration;
+        var userId = _profile.Id;
+        var cancellationToken = CurrentLoadToken;
         if (IsFollowed)
         {
             try
             {
-                await _relationshipService.UnfollowUserAsync(_profile.Id);
+                await _relationshipService.UnfollowUserAsync(userId, cancellationToken);
+                if (!IsCurrentLoad(generation))
+                {
+                    return;
+                }
+
                 IsFollowed = false;
                 this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Unfollowed), InfoType.Success));
             }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // 目标已切换，结果作废.
+            }
             catch (Exception ex)
             {
+                if (!IsCurrentLoad(generation))
+                {
+                    return;
+                }
+
                 _logger.LogError(ex, "取消关注用户时失败");
                 this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowUser), InfoType.Error));
             }
@@ -139,12 +206,26 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             try
             {
-                await _relationshipService.FollowUserAsync(_profile.Id);
+                await _relationshipService.FollowUserAsync(userId, cancellationToken);
+                if (!IsCurrentLoad(generation))
+                {
+                    return;
+                }
+
                 IsFollowed = true;
                 this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success));
             }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // 目标已切换，结果作废.
+            }
             catch (Exception ex)
             {
+                if (!IsCurrentLoad(generation))
+                {
+                    return;
+                }
+
                 _logger.LogError(ex, "关注用户时失败");
                 this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowUser), InfoType.Error));
             }
@@ -158,33 +239,60 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
-    [RelayCommand]
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task InitializeUserInformationAsync()
     {
+        // 卡片属于当前目标：记录代次与用户 Id，迟到的响应直接丢弃。
+        var generation = CurrentLoadGeneration;
+        var userId = _profile.Id;
+        var cancellationToken = CurrentLoadToken;
         try
         {
-            Card ??= await _userService.GetUserInformationAsync(_profile.Id);
+            var card = await _userService.GetUserInformationAsync(userId, cancellationToken);
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
+            Card ??= card;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // 目标已切换，结果作废.
         }
         catch (Exception ex)
         {
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
             _logger.LogError(ex, "获取用户信息时失败");
             this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserInformation), InfoType.Error));
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task LoadMoreSearchResultAsync()
     {
-        if (_preventLoadMoreSearch || IsSearching || !IsSearchMode || string.IsNullOrEmpty(SearchKeyword))
+        if (_preventLoadMoreSearch || IsSearching || !IsSearchMode || string.IsNullOrEmpty(SearchKeyword) || _profile is null)
         {
             return;
         }
 
+        // 搜索也带代次：退出搜索或切换目标后，迟到的结果不再追加、不再改加载态。
+        var (generation, cancellation) = BeginSearch();
+        var keyword = SearchKeyword;
+        var userId = _profile.Id;
         try
         {
             IsSearching = true;
-            _searchCancellationTokenSource = new CancellationTokenSource();
-            var (videos, total, hasMore) = await _searchService.SearchUserVideosAsync(_profile.Id, SearchKeyword, _searchPn, _searchCancellationTokenSource.Token);
+            var (videos, total, hasMore) = await _searchService.SearchUserVideosAsync(userId, keyword, _searchPn, cancellation.Token);
+            if (!IsCurrentSearch(generation))
+            {
+                return;
+            }
+
             _preventLoadMoreSearch = !hasMore || videos is null || videos.Count == 0;
             if (videos is not null)
             {
@@ -201,43 +309,67 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 _searchPn++;
             }
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
             // Do nothing.
         }
         catch (Exception ex)
         {
+            if (!IsCurrentSearch(generation))
+            {
+                return;
+            }
+
             _logger.LogError(ex, "搜索用户视频时失败");
             this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToSearchUserVideos), InfoType.Error));
         }
         finally
         {
-            IsSearchEmpty = SearchVideos.Count == 0;
-            IsSearching = false;
+            cancellation.Dispose();
+            if (IsCurrentSearch(generation))
+            {
+                IsSearchEmpty = SearchVideos.Count == 0;
+                IsSearching = false;
+            }
         }
     }
 
     [RelayCommand]
     private void ExitSearch()
     {
+        // 退出搜索即结束当前搜索代次，并复位搜索加载态，避免旧搜索挡住新目标。
+        InvalidateSearch();
         IsSearchMode = false;
         SearchKeyword = string.Empty;
         IsSearchEmpty = false;
         SearchVideos.Clear();
         _preventLoadMoreSearch = false;
         _searchPn = 0;
-        CancelSearch();
     }
 
-    private async Task InitializeRelationAsync()
+    private async Task InitializeRelationAsync(int generation, string userId, CancellationToken cancellationToken)
     {
         try
         {
-            var state = await _relationshipService.GetRelationshipAsync(_profile.Id);
+            var state = await _relationshipService.GetRelationshipAsync(userId, cancellationToken);
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
             IsFollowed = state != UserRelationStatus.Unknown && state != UserRelationStatus.Unfollow;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // 目标已切换，结果作废.
         }
         catch (Exception ex)
         {
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
             _logger.LogError(ex, "获取用户关系时失败");
             this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserRelation), InfoType.Error));
         }
@@ -256,13 +388,86 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         CommentModule.RefreshCommand.Execute(default);
     }
 
-    private void CancelSearch()
+    private (int Generation, CancellationTokenSource Cancellation) BeginLoad(string targetId)
     {
-        if (_searchCancellationTokenSource is not null)
+        var cancellation = new CancellationTokenSource();
+        CancellationTokenSource? previous;
+        int generation;
+        lock (_loadLock)
         {
-            _searchCancellationTokenSource.Cancel();
-            _searchCancellationTokenSource.Dispose();
-            _searchCancellationTokenSource = null;
+            generation = ++_loadGeneration;
+            _targetId = targetId;
+            previous = _loadCancellation;
+            _loadCancellation = cancellation;
         }
+
+        // 先替换当前代次，再在锁外取消旧请求，避免取消回调重入时持锁。
+        CancelAndDispose(previous);
+        return (generation, cancellation);
+    }
+
+    private bool IsCurrentLoad(int generation)
+    {
+        lock (_loadLock)
+        {
+            return generation == _loadGeneration;
+        }
+    }
+
+    private (int Generation, CancellationTokenSource Cancellation) BeginSearch()
+    {
+        var cancellation = new CancellationTokenSource();
+        CancellationTokenSource? previous;
+        int generation;
+        lock (_searchLock)
+        {
+            generation = ++_searchGeneration;
+            previous = _searchCancellation;
+            _searchCancellation = cancellation;
+        }
+
+        CancelAndDispose(previous);
+        return (generation, cancellation);
+    }
+
+    private bool IsCurrentSearch(int generation)
+    {
+        lock (_searchLock)
+        {
+            return generation == _searchGeneration;
+        }
+    }
+
+    private void InvalidateSearch()
+    {
+        CancellationTokenSource? previous;
+        lock (_searchLock)
+        {
+            _searchGeneration++;
+            previous = _searchCancellation;
+            _searchCancellation = null;
+        }
+
+        CancelAndDispose(previous);
+        IsSearching = false;
+    }
+
+    private static void CancelAndDispose(CancellationTokenSource? cancellation)
+    {
+        if (cancellation is null)
+        {
+            return;
+        }
+
+        try
+        {
+            cancellation.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            // 旧搜索已自行释放，取消是幂等的.
+        }
+
+        cancellation.Dispose();
     }
 }
