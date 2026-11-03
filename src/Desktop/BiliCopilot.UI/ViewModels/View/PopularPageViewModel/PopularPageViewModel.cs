@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -173,18 +173,14 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
+        // 必须先复位再通知：列表更新会立刻触发「还差多少」的检查，
+        // 如果复位被排到低优先级队列，检查会排在它前面、被自己挡掉，首屏永远停在第一页。
+        IsVideoLoading = false;
+
         if (Videos.Count > previousCount)
         {
             VideoListUpdated?.Invoke(this, EventArgs.Empty);
         }
-
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
-        {
-            if (version == _sectionVersion)
-            {
-                IsVideoLoading = false;
-            }
-        });
     }
 
     private bool CanRefreshVideo() => !IsRecommendRefreshing;

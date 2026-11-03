@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.Components;
+using BiliCopilot.UI.Toolkits;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -98,6 +99,9 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private void SyncSkeletons()
     {
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
+        // 直接把条目数推给控件：x:Bind 到 Videos.Count 在集合增删时不一定能及时刷新，
+        // 一旦控件读到旧值就会一直认为「还没满」，无限续页。
+        View.ItemCount = ViewModel?.Videos.Count ?? 0;
         if (ViewModel is not null)
         {
             // 手动刷新和首屏共用同一套度量：刷多少由当前视口预算决定。

@@ -93,6 +93,9 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     private void SyncSkeletons()
     {
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
+        // 直接把条目数推给控件：x:Bind 到 Videos.Count 在集合增删时不一定能及时刷新，
+        // 一旦控件读到旧值就会一直认为「还没满」，无限续页。
+        View.ItemCount = ViewModel?.Videos.Count ?? 0;
         var isEmpty = ViewModel is null || ViewModel.Videos.Count == 0;
         var showSkeletons = IsLoaded && isEmpty;
         if (showSkeletons)

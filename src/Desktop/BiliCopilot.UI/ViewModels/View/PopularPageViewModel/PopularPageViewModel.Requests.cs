@@ -329,22 +329,26 @@ public sealed partial class PopularPageViewModel
                 _feedSource = ResolveFeedSource(allowSourceChange: true);
             }
 
-            // 首屏一口气取到视口预算：页与页之间不必等 UI 再测量一轮，
-            // 每一页仍然立即追加，用户看到的是一段一段长出来而不是最后一次性出现。
-            // 没有视口预算信息时（例如单元测试）保持「一次一页」，不改变原有节奏。
-            var target = Videos.Count == 0 && RefreshTargetCount > 0
-                ? Math.Max(MinRefreshTargetCount, RefreshTargetCount)
-                : 0;
+            // 首屏按当前视口预算连续取页：预算在条目落地时由视图更新，
+            // 所以每轮都重新读一次——首帧还没布局时预算不可用，不能按 6 条就停住。
+            // 滚动加载仍然一次只取一页。
+            // 列表还没到视口预算时连续取；达到预算后（滚动加载）一次只取一页。
+            var pipelining = RefreshTargetCount > 0 && Videos.Count < RefreshTargetCount;
             var fetched = 0;
             for (var i = 0; i < MaxInitialPageCount; i++)
             {
+                if (pipelining && i > 0 && Videos.Count >= Math.Max(MinRefreshTargetCount, RefreshTargetCount))
+                {
+                    break;
+                }
+
                 var (videos, nextOffset) = await _feedSource.FetchAsync(_recommendOffset);
                 if (version != _sectionVersion) return;
                 _recommendOffset = nextOffset;
                 _recommendFailureCount = 0;
                 TryAddVideos(videos, VideoCardStyle.Recommend);
                 fetched += videos.Count;
-                if (target <= 0 || fetched >= target || videos.Count == 0)
+                if (videos.Count == 0 || !pipelining || Videos.Count >= Math.Max(MinRefreshTargetCount, RefreshTargetCount))
                 {
                     break;
                 }
