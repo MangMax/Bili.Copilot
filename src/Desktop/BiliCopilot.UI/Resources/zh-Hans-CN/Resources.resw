@@ -2754,13 +2754,19 @@
     <value>在顶部搜索框聚焦时提供搜索建议</value>
   </data>
   <data name="LoginExpiredDescription" xml:space="preserve">
-    <value>尝试获取用户信息失败，这可能是网络原因，也有可能是你近期修改了密码，请重新登录或退出后重启应用</value>
+    <value>登录状态已失效，请重新登录；也可以退出后重启应用</value>
   </data>
   <data name="LoginExpiredTitle" xml:space="preserve">
     <value>登录失败</value>
   </data>
   <data name="ReSignIn" xml:space="preserve">
     <value>重新登录</value>
+  </data>
+  <data name="ProfileLoadFailedTitle" xml:space="preserve">
+    <value>资料加载失败</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>重试</value>
   </data>
   <data name="ArticleEvaluation" xml:space="preserve">
     <value>文章评价</value>
