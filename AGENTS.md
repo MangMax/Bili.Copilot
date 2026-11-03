@@ -13,3 +13,7 @@ Default five triage labels (`needs-triage`, `needs-info`, `ready-for-agent`, `re
 ### Domain docs
 
 Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### WinUI analyzer
+
+Opt-in observation build for `Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer`: baseline (427 warnings), SARIF output, and the order for tightening it into a blocking check. See `docs/agents/winui-analyzer.md`.
