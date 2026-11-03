@@ -77,6 +77,8 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.6.4" />
+    <!-- WinUI 官方分析器，只在 UI 工程的观测构建里引用（见 docs/agents/winui-analyzer.md）. -->
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer" Version="0.7.1" />
     <PackageVersion Include="Polly" Version="8.4.1" />
     <PackageVersion Include="QRCoder" Version="1.4.1" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.0" />

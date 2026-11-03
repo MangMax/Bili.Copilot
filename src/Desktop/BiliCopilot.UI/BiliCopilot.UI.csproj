@@ -21,6 +21,40 @@
   </PropertyGroup>
 
   <!--
+    WinUI 官方分析器（观测模式）.
+
+    默认构建不引用分析器：主构建是 warnings-as-errors，而仓库尚有 427 条存量 WUI 诊断
+    （基线见 docs/agents/winui-analyzer.md），直接引入会让构建立刻失败。所以分析器只在
+    显式开关下进入工程：
+
+      dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Platform=x64 ^
+        -p:SolutionDir=<repo>\src\ -p:GenerateAppxPackageOnBuild=false ^
+        -p:WinUIAnalyzerObservation=true
+
+    开关做三件事，且只影响本工程：
+      1. 引用 Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer（版本由 Directory.Packages.props 集中管理）；
+      2. 把编译器的 ErrorLog 指向 SARIF，分析器与编译器的诊断一起落盘；
+      3. 关掉本工程的 warnings-as-errors——观测构建必然命中存量诊断，这不是规则降级，
+         默认构建仍是 warnings-as-errors。
+    不加开关时这条链路完全不存在：分析器不会被还原、加载或执行.
+  -->
+  <PropertyGroup Condition="'$(WinUIAnalyzerObservation)' == 'true'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WinUIAnalyzerSarifPath Condition="'$(WinUIAnalyzerSarifPath)' == ''">$(RepoRoot)/artifacts/winui-analyzer.sarif</WinUIAnalyzerSarifPath>
+    <ErrorLog>$(WinUIAnalyzerSarifPath),version=2.1</ErrorLog>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(WinUIAnalyzerObservation)' == 'true'">
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer" PrivateAssets="all" />
+  </ItemGroup>
+  <!-- csc 只写文件、不建目录，SARIF 的父目录得先准备好.
+       WinUI 工程在 CoreCompile 之前还有一次 XamlPreCompile 的编译，同样带着 ErrorLog，所以两处都要赶在前面. -->
+  <Target Name="EnsureWinUIAnalyzerSarifDirectory"
+          BeforeTargets="XamlPreCompile;CoreCompile"
+          Condition="'$(WinUIAnalyzerObservation)' == 'true'">
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName($(WinUIAnalyzerSarifPath)))" />
+  </Target>
+
+  <!--
     dev / release 双包身份.
     Debug 配置使用 Mang.BiliCopilot.Dev，其余（含 CI 的 Release）使用 Mang.BiliCopilot，
     以便开发调试版与正式版并存、各自保留本地数据。
@@ -1584,9 +1618,14 @@
     libmpv / ffmpeg 体积大、不进仓库：CI 由 setup-env 下载，本地按 README 放置；
     BBDown 随仓库提交. 缺这些文件时 MSIX 仍能打出来，但装好后无法播放或无法下载，
     因此在这里直接中止打包，而不是等用户装上才发现.
+
+    观测构建（WinUIAnalyzerObservation=true）只编译、不出 MSIX，
+    打包前的依赖体积校验对它没有意义：缺 libmpv 的开发机上，一次成功的观测编译
+    不该因为这条打包前置检查被记成失败。默认构建和发布流程的条件完全不变.
   -->
   <Target Name="ValidateRuntimeDependencies"
-          BeforeTargets="_CreateAppxPackage;_GenerateAppxPackage;GenerateMsixPackage">
+          BeforeTargets="_CreateAppxPackage;_GenerateAppxPackage;GenerateMsixPackage"
+          Condition="'$(WinUIAnalyzerObservation)' != 'true'">
     <Error Condition="'$(Platform)' != 'x64' and '$(Platform)' != 'ARM64'"
            Text="打包中止：平台 $(Platform) 没有对应的运行时依赖，仅支持 x64 / ARM64。" />
     <PropertyGroup>
