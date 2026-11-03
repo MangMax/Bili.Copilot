@@ -45,18 +45,19 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 | --- | --- | --- | --- |
 | WUI3001 | warning | 201 | `[ObservableProperty]` 旧字段写法，未用 partial property（批次一 #109 已迁移 100 条） |
 | WUI2011 | warning | 0 | `x:Bind` 缺显式 `Mode`（#111 已清零：25 处补 `OneWay`，48 处写显式 `OneTime`） |
-| WUI2010 | warning | 52 | 嵌套 `x:Bind` 路径缺 `FallbackValue`，中间段为 null 时显示异常 |
+| WUI2010 | warning | 0 | 嵌套 `x:Bind` 路径缺 `FallbackValue`（#112 已清零：52 处逐条补 `FallbackValue`，保留原有 `Mode`） |
 | WUI1001 | warning | 0 | 已清零（#113）：保存图片改用 `Microsoft.Windows.Storage.Pickers` |
-| **warning 小计** | | **253** | 201 + 0 + 52 + 0；WUI2011、WUI1001 清零、WUI3001 批次一迁移后的存量，按规则继续分批 |
+| **warning 小计** | | **201** | 201 + 0 + 0 + 0；WUI2011、WUI2010、WUI1001 清零、WUI3001 批次一迁移后的存量，按规则继续分批 |
 | WUI2020 | note | 272 | 缺失 `AutomationId` |
 | WUI1010 | note | 2 | 迁移表的特性提示 |
 
 口径：
 
 - 小计是**按位置去重**后的 warning 数（基线 427；#111 清零 WUI2011 后 354，
-  #109 迁移 WUI3001 批次一后 254，#113 清零 WUI1001 后 253）。SARIF 里 WUI2010 的原始条目是 54，其中
+  #109 迁移 WUI3001 批次一后 254，#113 清零 WUI1001 后 253，#112 清零 WUI2010 后 201）。
+  WUI2010 清零前 SARIF 里的原始条目是 54，其中
   `Controls/Comment/CommentMainPanel.xaml:63` 与
-  `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置）。
+  `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置），按位置去重后为 52。
 - note 级（WUI2020 / WUI1010）不计入小计，单独记。
 - WUI3001 分两批：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
   批次二 #110 收掉剩下的 201 条并删除 `MVVMTK0045;MVVMTK0046` 抑制。
@@ -89,7 +90,19 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
      和单独的 `{x:Bind}`（整项 DataContext）本来就不触发这条规则，保持原样。
    仓库当前没有任何 `x:DefaultBindMode`，所以这些命中不是继承模式造成的误报。
    命中全部清零后，新写的 `x:Bind` 必须显式写 `Mode`。
-3. **WUI2010（52 条）**：给嵌套 `x:Bind` 补 `FallbackValue` 或改绑扁平属性。
+3. **WUI2010（52 → 0，#112 已完成）**：给嵌套 `x:Bind` 补 `FallbackValue` 或改绑扁平属性，
+   52 个位置全部选择补 `FallbackValue`，`Mode` 原样保留（#111 的判定不被覆盖）：
+   - 文本/路径类给空串或空引用（`FallbackValue=''` / `{x:Null}`），中间段为 null 时显示空白占位
+     而不是停在上一目标的旧值；`BasicCoverImage.Source`、`Image.Source`、`TrimTextBlock.Text`
+     都是可空入参，空引用安全；
+   - 布尔/可见性/命令类给"不成立"一侧（`False` / `Collapsed` / `{x:Null}`），
+     让控件在未就绪时保持禁用或隐藏，而不是对 null 求值；
+   - 数值类给控件本身的初值（音量 `0`、倍速 `1`、计数 `0`），与 Slider 的 `Minimum` /
+     `Maximum` 区间一致；
+   - 没有命中改绑扁平属性：这 52 条的中间段（`Player`、`Card`、`SelectedSection`、
+     `MyProfile`、`TopItem`）在对应页面都是单例注入或构造期就位，只有"加载中/未登录"这类
+     瞬时 null，拍平反而要把派生状态再复制一份，故按票面要求优先补 `FallbackValue`。
+   观测构建 `-p:WarningsAsErrors=WUI2010` 下 0 错误，SARIF 里该规则不再出现。
 4. **收紧为阻断**：三类清零后，把 UI 工程的引用从条件开关里挪出来常驻、
    恢复 warnings-as-errors，并把 `winui-analyzer-observation` job 的
    `continue-on-error` 去掉、纳入必需检查。届时本文件只保留基线表格和这条历史。
