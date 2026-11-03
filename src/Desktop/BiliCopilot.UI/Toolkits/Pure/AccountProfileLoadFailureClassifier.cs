@@ -28,6 +28,18 @@ public enum AccountProfileLoadFailureKind
 /// 内核把 HTTP 失败、空响应与业务错误码都包成同一种异常，调用方拿不到区分信息。
 /// 这里沿异常链逐层检查状态码与错误文本，只有确证登录态失效才让用户重新登录；
 /// 认不出来的失败一律按可重试处理，宁可多给一次重试，也不能误清登录态。
+/// <para>
+/// 文本类判定依赖内核写死在异常消息里的「请重新登录」「未登录」「登录已失效」，
+/// 这些字符串来自 BiliKernel.Core/Authenticator/BiliAuthenticator.cs 与
+/// Authorizers/Authorizers.Tv/Core/TvAuthorizeClient.cs，是当前内核唯一的类型化
+/// 登录失效信号；内核改写措辞时需要同步检查这里。
+/// </para>
+/// <para>
+/// HTTP 403 与 csrf 业务码 -111 被有意排除：403 可能来自 WAF、地区限制或风控封禁，
+/// -111 只说明这次请求缺少 csrf 校验，二者都不足以证明凭据失效。把它们当成登录失效
+/// 会让其实仍然有效的登录态被清除，所以一律按可重试处理。只有 401 与业务码 -101
+/// （账号未登录）才可靠地指向凭据问题。
+/// </para>
 /// </remarks>
 public static class AccountProfileLoadFailureClassifier
 {
@@ -47,7 +59,15 @@ public static class AccountProfileLoadFailureClassifier
     ];
 
     /// <summary>
-    /// 哔哩哔哩业务响应体里的错误码，-101 表示账号未登录，-111 表示 csrf 校验失败.
+    /// 唯一能证明凭据失效的哔哩哔哩业务码：-101 表示账号未登录.
+    /// </summary>
+    /// <remarks>
+    /// csrf 校验失败（-111）等其它业务码只描述单次请求，不代表登录态失效，故不在此列.
+    /// </remarks>
+    private const string NotLoggedInApiCode = "-101";
+
+    /// <summary>
+    /// 从哔哩哔哩业务响应体里取出错误码.
     /// </summary>
     private static readonly Regex ApiCodePattern = new("\"code\"\\s*:\\s*(-?\\d+)", RegexOptions.CultureInvariant);
 
@@ -74,7 +94,7 @@ public static class AccountProfileLoadFailureClassifier
 
     private static bool HasUnauthorizedStatus(Exception node)
         => node is HttpRequestException httpException
-            && httpException.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden;
+            && httpException.StatusCode == HttpStatusCode.Unauthorized;
 
     private static bool HasAuthenticationMarker(Exception node)
         => AuthenticationMarkers.Any(marker => node.Message.Contains(marker, StringComparison.Ordinal));
@@ -83,7 +103,7 @@ public static class AccountProfileLoadFailureClassifier
     {
         var match = ApiCodePattern.Match(node.Message);
         return match.Success
-            && match.Groups[1].Value is "-101" or "-111";
+            && match.Groups[1].Value == NotLoggedInApiCode;
     }
 
     /// <summary>

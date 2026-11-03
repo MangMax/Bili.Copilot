@@ -61,11 +61,22 @@ public class AccountProfileLoadFailureClassifierTests
                 new HttpRequestException("响应状态代码不表示成功: 401 (Unauthorized)", null, System.Net.HttpStatusCode.Unauthorized)));
 
     [Fact]
-    public void Classify_ForbiddenStatus_ReturnsAuthenticationExpired()
+    public void Classify_ForbiddenStatus_ReturnsTransient()
         => Assert.Equal(
-            AccountProfileLoadFailureKind.AuthenticationExpired,
+            AccountProfileLoadFailureKind.Transient,
             AccountProfileLoadFailureClassifier.Classify(
                 new HttpRequestException("响应状态代码不表示成功: 403 (Forbidden)", null, System.Net.HttpStatusCode.Forbidden)));
+
+    [Fact]
+    public void Classify_UnauthorizedStatusWrappedByKernel_ReturnsAuthenticationExpired()
+    {
+        // 内核把 HttpRequestException 包进 KernelException，401 只有沿异常链内层才能看到。
+        var exception = new InvalidOperationException(
+            "请求失败",
+            new HttpRequestException("响应状态代码不表示成功: 401 (Unauthorized)", null, System.Net.HttpStatusCode.Unauthorized));
+
+        Assert.Equal(AccountProfileLoadFailureKind.AuthenticationExpired, AccountProfileLoadFailureClassifier.Classify(exception));
+    }
 
     [Theory]
     [InlineData("需要令牌，但令牌不存在，请重新登录")]
@@ -105,13 +116,22 @@ public class AccountProfileLoadFailureClassifierTests
     [Theory]
     [InlineData("{\"code\":-101,\"message\":\"账号未登录\"}")]
     [InlineData("{\"code\": -101, \"message\": \"账号未登录\"}")]
-    [InlineData("{\"code\":-111,\"message\":\"csrf 校验失败\"}")]
-    [InlineData("{\"code\": -111, \"message\": \"csrf 校验失败\"}")]
     public void Classify_ApiBodyReportingNoLogin_ReturnsAuthenticationExpired(string apiBody)
     {
         var exception = new InvalidOperationException("哔哩哔哩返回了一个异常响应: 请求失败", new Exception(apiBody));
 
         Assert.Equal(AccountProfileLoadFailureKind.AuthenticationExpired, AccountProfileLoadFailureClassifier.Classify(exception));
+    }
+
+    [Theory]
+    [InlineData("{\"code\":-111,\"message\":\"csrf 校验失败\"}")]
+    [InlineData("{\"code\": -111, \"message\": \"csrf 校验失败\"}")]
+    public void Classify_ApiBodyReportingCsrfRejection_ReturnsTransient(string apiBody)
+    {
+        // csrf 被拒只说明这次请求缺少校验，不代表凭据失效，不能清除登录态。
+        var exception = new InvalidOperationException("哔哩哔哩返回了一个异常响应: 请求失败", new Exception(apiBody));
+
+        Assert.Equal(AccountProfileLoadFailureKind.Transient, AccountProfileLoadFailureClassifier.Classify(exception));
     }
 
     [Theory]
