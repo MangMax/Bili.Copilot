@@ -32,7 +32,7 @@
         <TextBlock
             VerticalAlignment="Center"
             Style="{StaticResource BodyStrongTextBlockStyle}"
-            Text="{x:Bind ViewModel.SelectedSection.SectionType, Mode=OneWay, Converter={StaticResource SectionTextConverter}}" />
+            Text="{x:Bind ViewModel.SelectedSection.SectionType, Mode=OneWay, Converter={StaticResource SectionTextConverter}, FallbackValue=''}" />
         <SelectorBar
             x:Name="SectionSelector"
             Grid.Column="1"

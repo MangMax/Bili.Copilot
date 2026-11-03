@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:AIControlBase
     x:Class="BiliCopilot.UI.Controls.AI.AIHeader"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -58,12 +58,12 @@
                 Height="28"
                 VerticalAlignment="Center"
                 IsAvatar="True"
-                Provider="{x:Bind ViewModel.SelectedService.ProviderType, Mode=OneWay}" />
+                Provider="{x:Bind ViewModel.SelectedService.ProviderType, Mode=OneWay, FallbackValue=OpenAI}" />
             <TextBlock
                 Margin="12,0,0,0"
                 VerticalAlignment="Center"
                 Style="{StaticResource BodyStrongTextBlockStyle}"
-                Text="{x:Bind ViewModel.SelectedService.Name, Mode=OneWay}" />
+                Text="{x:Bind ViewModel.SelectedService.Name, Mode=OneWay, FallbackValue=''}" />
             <Button
                 Margin="8,0,0,0"
                 VerticalAlignment="Center"

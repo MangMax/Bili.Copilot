@@ -24,13 +24,13 @@
                 x:Load="{x:Bind ViewModel.IsFlyoutOpened, Mode=OneWay}"
                 CornerRadius="24"
                 DecodeWidth="100"
-                Source="{x:Bind ViewModel.MyProfile.User.Avatar.Uri, Mode=OneWay}" />
+                Source="{x:Bind ViewModel.MyProfile.User.Avatar.Uri, Mode=OneWay, FallbackValue={x:Null}}" />
             <Image
                 Width="16"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Source="ms-appx:///Assets/vip.png"
-                Visibility="{x:Bind ViewModel.MyProfile.IsVip, Mode=OneWay}" />
+                Visibility="{x:Bind ViewModel.MyProfile.IsVip, Mode=OneWay, FallbackValue=Collapsed}" />
         </Grid>
 
         <StackPanel
@@ -42,23 +42,23 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Style="{StaticResource BodyStrongTextBlockStyle}"
-                    Text="{x:Bind ViewModel.MyProfile.User.Name, Mode=OneWay}"
+                    Text="{x:Bind ViewModel.MyProfile.User.Name, Mode=OneWay, FallbackValue=''}"
                     TextTrimming="CharacterEllipsis" />
                 <Image
                     Height="10"
                     VerticalAlignment="Center"
-                    Source="{x:Bind ViewModel.MyProfile.Level, Mode=OneWay, Converter={StaticResource LevelImageConverter}}"
+                    Source="{x:Bind ViewModel.MyProfile.Level, Mode=OneWay, Converter={StaticResource LevelImageConverter}, FallbackValue={x:Null}}"
                     Stretch="Uniform" />
             </StackPanel>
             <TextBlock
                 x:Name="IntroduceBlock"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 Style="{StaticResource CaptionTextBlockStyle}"
-                Text="{x:Bind ViewModel.MyProfile.Introduce, Mode=OneWay}"
+                Text="{x:Bind ViewModel.MyProfile.Introduce, Mode=OneWay, FallbackValue=''}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="NoWrap">
                 <ToolTipService.ToolTip>
-                    <ToolTip Content="{x:Bind ViewModel.MyProfile.Introduce, Mode=OneWay}" IsEnabled="{x:Bind IntroduceBlock.IsTextTrimmed, Mode=OneWay}" />
+                    <ToolTip Content="{x:Bind ViewModel.MyProfile.Introduce, Mode=OneWay, FallbackValue=''}" IsEnabled="{x:Bind IntroduceBlock.IsTextTrimmed, Mode=OneWay}" />
                 </ToolTipService.ToolTip>
             </TextBlock>
             <HyperlinkButton
