@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
@@ -32,8 +32,6 @@ public sealed partial class UserSpacePageViewModel
     /// 关注态、用户卡片或搜索状态。
     /// </remarks>
     private int _loadGeneration;
-
-    private string _targetId;
 
     private readonly object _loadLock = new();
 
@@ -108,20 +106,6 @@ public sealed partial class UserSpacePageViewModel
             lock (_loadLock)
             {
                 return _loadGeneration;
-            }
-        }
-    }
-
-    /// <summary>
-    /// 当前加载所属的目标标识.
-    /// </summary>
-    public string CurrentTargetId
-    {
-        get
-        {
-            lock (_loadLock)
-            {
-                return _targetId;
             }
         }
     }

@@ -2,38 +2,14 @@
 
 // Headless adapters for the user-space target-ownership tests. The view models
 // under test (UserSpacePageViewModel / UserMomentDetailViewModel) are linked
-// production sources; only the WinUI-bound moment card, the pin shell, the
-// toast surface and the toast severity enum are shimmed here.
+// production sources; only the WinUI-bound moment card, the pin shell and the
+// toast surface are shimmed here. The toast severity enum lives with the
+// AppViewModel adapter in PopularPageTestAdapters.cs.
 
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models.Moment;
-
-namespace Richasy.WinUIKernel.Share.Base
-{
-    /// <summary>
-    /// Toast severity. Production lives in the Windows-only WinUIKernel package;
-    /// the user-space view models only pass it through.
-    /// </summary>
-    public enum InfoType
-    {
-        /// <summary>Information.</summary>
-        Information,
-
-        /// <summary>Error.</summary>
-        Error,
-
-        /// <summary>Warning.</summary>
-        Warning,
-
-        /// <summary>Success.</summary>
-        Success,
-
-        /// <summary>Loading.</summary>
-        Loading,
-    }
-}
 
 namespace BiliCopilot.UI.ViewModels.Items
 {
