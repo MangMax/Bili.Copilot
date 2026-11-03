@@ -483,24 +483,13 @@ public sealed partial class PlayerViewModel
         {
             if (!IsSubtitleEnabled)
             {
-                // 卸载当前字幕轨（当前字幕行随之清空），但保留各轨的选中记忆，供重新开启时恢复。
+                // 卸载当前字幕轨并清空列表勾选，但保留本次会话记住的轨，供重新开启时恢复。
                 await Client.SetSubtitleTrackAsync(default);
+                ClearSubtitleSelection();
                 return;
             }
 
-            var selected = Subtitles.FirstOrDefault(p => p.IsSelected);
-            if (selected is null)
-            {
-                var preferredIndex = SubtitlePreference.SelectPreferredIndex(Subtitles, p => p.Name, p => p.IsAI);
-                if (preferredIndex < 0)
-                {
-                    return;
-                }
-
-                selected = Subtitles[preferredIndex];
-            }
-
-            selected.SelectCommand.Execute(default);
+            SelectSubtitleByPreference();
         }
         catch (Exception ex)
         {

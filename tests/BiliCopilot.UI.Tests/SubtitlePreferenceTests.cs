@@ -189,5 +189,55 @@ public class SubtitlePreferenceTests
         Assert.Equal(1, enabledIndex);
     }
 
-    private sealed record SubtitleMetaStub(string? LanguageName, bool IsAI);
+    [Fact]
+    public void SelectRestoreIndex_DisabledReturnsMinusOneEvenWithRememberedTrack()
+    {
+        var metas = new SubtitleMetaStub[]
+        {
+            new("中文（简体）", false, "track-cn"),
+            new("English", false, "track-en"),
+        };
+
+        var index = SubtitlePreference.SelectRestoreIndex(metas, isEnabled: false, rememberedKey: "track-en", p => p.Id, p => p.LanguageName, p => p.IsAI);
+
+        Assert.Equal(-1, index);
+    }
+
+    [Fact]
+    public void SelectRestoreIndex_RememberedTrackWinsOverLanguagePreference()
+    {
+        var metas = new SubtitleMetaStub[]
+        {
+            new("中文（简体）", false, "track-cn"),
+            new("English", false, "track-en"),
+        };
+
+        var index = SubtitlePreference.SelectRestoreIndex(metas, isEnabled: true, rememberedKey: "track-en", p => p.Id, p => p.LanguageName, p => p.IsAI);
+
+        Assert.Equal(1, index);
+    }
+
+    [Fact]
+    public void SelectRestoreIndex_RememberedTrackMissingFallsBackToLanguagePreference()
+    {
+        var metas = new SubtitleMetaStub[]
+        {
+            new("English", false, "track-en"),
+            new("中文（简体）", false, "track-cn"),
+        };
+
+        var index = SubtitlePreference.SelectRestoreIndex(metas, isEnabled: true, rememberedKey: "track-from-another-video", p => p.Id, p => p.LanguageName, p => p.IsAI);
+
+        Assert.Equal(1, index);
+    }
+
+    [Fact]
+    public void SelectRestoreIndex_EmptyListReturnsMinusOne()
+    {
+        var index = SubtitlePreference.SelectRestoreIndex<SubtitleMetaStub>([], isEnabled: true, rememberedKey: "track-en", p => p.Id, p => p.LanguageName, p => p.IsAI);
+
+        Assert.Equal(-1, index);
+    }
+
+    private sealed record SubtitleMetaStub(string? LanguageName, bool IsAI, string? Id = null);
 }

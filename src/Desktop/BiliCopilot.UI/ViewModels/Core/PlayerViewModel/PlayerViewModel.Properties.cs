@@ -111,8 +111,8 @@ public sealed partial class PlayerViewModel
     public partial bool IsSubtitleEmpty { get; set; }
 
     /// <summary>
-    /// 字幕菜单当前是否处于第二层（参数页）.
-    /// 关闭菜单时复位，保证下次打开从第一层开始.
+    /// 字幕菜单当前是否处于第二层（参数页）。
+    /// 关闭菜单时复位，保证下次打开从第一层开始。
     /// </summary>
     [ObservableProperty]
     public partial bool IsSubtitleParameterVisible { get; set; }
