@@ -46,17 +46,21 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 | WUI3001 | warning | 301 | `[ObservableProperty]` 旧字段写法，未用 partial property |
 | WUI2011 | warning | 73 | `x:Bind` 没写 `Mode`，默认 OneTime，数据变了 UI 不更新 |
 | WUI2010 | warning | 52 | 嵌套 `x:Bind` 路径缺 `FallbackValue`，中间段为 null 时显示异常 |
-| WUI1001 | warning | 1 | `Windows.Storage.Pickers` 应换成 `Microsoft.Windows.Storage.Pickers` |
-| **warning 小计** | | **427** | 与 #91 的临时检测一致 |
+| WUI1001 | warning | 0 | 已清零（#113）：保存图片改用 `Microsoft.Windows.Storage.Pickers` |
+| **warning 小计** | | **426** | 427 基线减去 #113 清零的 1 条 |
 | WUI2020 | note | 272 | 缺失 `AutomationId` |
 | WUI1010 | note | 2 | 迁移表的特性提示 |
 
-两点口径：
+三点口径：
 
-- 427 是**按位置去重**后的 warning 数。SARIF 里 WUI2010 的原始条目是 54，
+- 426（原 427）是**按位置去重**后的 warning 数。SARIF 里 WUI2010 的原始条目是 54，
   其中 `Controls/Comment/CommentMainPanel.xaml:63` 与
   `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置）。
-- note 级（WUI2020 / WUI1010）不计入 427，单独记。
+- note 级（WUI2020 / WUI1010）不计入小计，单独记。
+- WUI1001 的 1 条在 #113 一次清零：`GalleryPageViewModel.SaveImageAsync` 换成
+  `Microsoft.Windows.Storage.Pickers.FileSavePicker`（构造时传 `WindowId`，取消返回
+  `null`，落盘走 `FileStream`）。该 API 由 `Microsoft.WindowsAppSDK.Foundation 2.6.4`
+  提供，已用 `winapp find-api` 核对成员；规则留在表里作为回归项，不再是待清存量。
 
 ## 从观测到阻断的顺序
 
