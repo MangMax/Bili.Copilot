@@ -2923,7 +2923,7 @@
     <value>启用字幕</value>
   </data>
   <data name="SubtitleEnabledDescription" xml:space="preserve">
-    <value>在当前播放窗口中启用字幕功能，关闭后将取消字幕显示（不会延续到下一个播放窗口）</value>
+    <value>对所有视频生效，打开新视频不会重置。关闭后会立即隐藏字幕，再次开启时立即恢复显示</value>
   </data>
   <data name="SubtitlePosition" xml:space="preserve">
     <value>字幕位置</value>

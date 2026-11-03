@@ -1033,21 +1033,49 @@ public sealed partial class PlayerViewModel
         }
     }
 
+    /// <summary>
+    /// 应用字幕开关偏好：按需写盘，并静默更新开关状态，不触发挂载/卸载字幕轨的副作用。
+    /// 用户切换、关闭态选轨与启动时恢复都走这里，因此偏好写盘只在这一处发生。
+    /// </summary>
+    /// <param name="isEnabled">是否启用字幕。</param>
+    /// <param name="persist">是否把偏好写入本地设置。</param>
+    private void ApplySubtitleEnabledPreference(bool isEnabled, bool persist)
+    {
+        if (persist)
+        {
+            SettingsToolkit.WriteLocalSetting(SettingNames.IsSubtitleEnabled, isEnabled);
+        }
+
+        if (IsSubtitleEnabled == isEnabled)
+        {
+            return;
+        }
+
+        _isApplyingSubtitlePreference = true;
+        try
+        {
+            IsSubtitleEnabled = isEnabled;
+        }
+        finally
+        {
+            _isApplyingSubtitlePreference = false;
+        }
+    }
+
     private async Task LoadSubtitlesAsync()
     {
         try
         {
-            if (!IsSubtitleEnabled)
-            {
-                return;
-            }
-
+            // 字幕元数据与轨列表始终加载：开关只决定是否自动挂载，关闭时菜单仍能判断视频有无字幕。
             var service = this.Get<ISubtitleService>();
             if (Connector is VideoConnectorViewModel videoVM)
             {
                 var aid = videoVM._view.Information.Identifier.Id;
                 var cid = videoVM._part.Identifier.Id;
                 var metas = await service.GetSubtitleMetasAsync(aid, cid);
+
+                // 字幕轨集合按播放会话重建，上一会话记住的轨不再有意义。
+                _rememberedSubtitleId = null;
                 Subtitles.Clear();
                 if (metas?.Count > 0)
                 {
@@ -1058,14 +1086,7 @@ public sealed partial class PlayerViewModel
                     }
                 }
 
-                if (Subtitles.Count > 0)
-                {
-                    var preferredIndex = SubtitlePreference.SelectPreferredIndex(Subtitles, p => p.Name, p => p.IsAI);
-                    if (preferredIndex >= 0)
-                    {
-                        Subtitles[preferredIndex].SelectCommand.Execute(default);
-                    }
-                }
+                SelectSubtitleByPreference();
 
                 IsSubtitleEmpty = Subtitles.Count == 0;
             }
@@ -1076,29 +1097,65 @@ public sealed partial class PlayerViewModel
         }
     }
 
-    private async Task SelectSubtitleAsync(SubtitleItemViewModel vm)
+    /// <summary>
+    /// 按本次会话记住的字幕轨与语言偏好挂载一条字幕；开关关闭或没有可用字幕时不做处理。
+    /// </summary>
+    private void SelectSubtitleByPreference()
     {
-        foreach (var item in Subtitles)
-        {
-            item.IsSelected = item.Data.Equals(vm.Data);
-        }
-
-        if (string.IsNullOrEmpty(vm._srtFilePath))
+        if (Subtitles.Count == 0)
         {
             return;
         }
 
-        await Client!.SetExternalSubtitleTrackAsync(vm._srtFilePath);
+        var index = SubtitlePreference.SelectRestoreIndex(Subtitles, IsSubtitleEnabled, _rememberedSubtitleId, p => p.Data.Id, p => p.Name, p => p.IsAI);
+        if (index >= 0)
+        {
+            Subtitles[index].SelectCommand.Execute(default);
+        }
     }
 
-    private async Task DeselectSubtitleAsync(SubtitleItemViewModel vm)
+    private void ClearSubtitleSelection()
     {
         foreach (var item in Subtitles)
         {
             item.IsSelected = false;
         }
+    }
 
-        await Client!.SetSubtitleTrackAsync(default);
+    private async Task SelectSubtitleAsync(SubtitleItemViewModel vm)
+    {
+        if (!IsSubtitleEnabled)
+        {
+            // 关闭状态下选轨视为用户希望观看字幕：写盘并打开开关，随后只挂载这条被选中的轨。
+            ApplySubtitleEnabledPreference(true, persist: true);
+        }
+
+        _rememberedSubtitleId = vm.Data.Id;
+        foreach (var item in Subtitles)
+        {
+            item.IsSelected = item.Data.Equals(vm.Data);
+        }
+
+        if (string.IsNullOrEmpty(vm._srtFilePath) || Client is null)
+        {
+            return;
+        }
+
+        await Client.SetExternalSubtitleTrackAsync(vm._srtFilePath);
+    }
+
+    private async Task DeselectSubtitleAsync(SubtitleItemViewModel vm)
+    {
+        // 用户主动取消选择才清除记忆；关闭开关不属于这种情况。
+        _rememberedSubtitleId = null;
+        ClearSubtitleSelection();
+
+        if (Client is null)
+        {
+            return;
+        }
+
+        await Client.SetSubtitleTrackAsync(default);
     }
 
     private static string[] FindAnime4KShaders(Anime4KMode mode)

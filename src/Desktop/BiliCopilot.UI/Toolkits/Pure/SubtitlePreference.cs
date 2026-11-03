@@ -25,6 +25,66 @@ internal static class SubtitlePreference
         => SelectPreferredIndex(metas, p => p.LanguageName, p => p.IsAI);
 
     /// <summary>
+    /// 按字幕开关的状态选出新播放会话初始化时应自动挂载的字幕索引。
+    /// 开关关闭时不做任何自动选择，开时按语言偏好选择。
+    /// </summary>
+    /// <param name="metas">字幕元数据，包含语言名称与是否为 AI 字幕。</param>
+    /// <param name="isEnabled">字幕开关当前是否为开启状态。</param>
+    /// <returns>应自动挂载的字幕索引；开关关闭或没有可用字幕时为 -1。</returns>
+    public static int SelectInitialIndex(IReadOnlyList<(string LanguageName, bool IsAI)> metas, bool isEnabled)
+        => SelectInitialIndex(metas, isEnabled, p => p.LanguageName, p => p.IsAI);
+
+    /// <summary>
+    /// 按字幕开关的状态选出新播放会话初始化时应自动挂载的字幕索引。
+    /// 开关关闭时不做任何自动选择，开时按语言偏好选择。
+    /// </summary>
+    /// <typeparam name="T">字幕元数据类型。</typeparam>
+    /// <param name="metas">字幕元数据列表。</param>
+    /// <param name="isEnabled">字幕开关当前是否为开启状态。</param>
+    /// <param name="getLanguageName">读取字幕语言名称。</param>
+    /// <param name="getIsAI">读取字幕是否为 AI 生成。</param>
+    /// <returns>应自动挂载的字幕索引；开关关闭或没有可用字幕时为 -1。</returns>
+    public static int SelectInitialIndex<T>(IReadOnlyList<T> metas, bool isEnabled, Func<T, string?> getLanguageName, Func<T, bool> getIsAI)
+        => isEnabled ? SelectPreferredIndex(metas, getLanguageName, getIsAI) : -1;
+
+    /// <summary>
+    /// 选出重新开启字幕或重建字幕列表后应挂载的字幕索引：
+    /// 开关关闭时不做选择，开启时优先恢复本次会话记住的字幕轨，未命中再按语言偏好选择。
+    /// </summary>
+    /// <typeparam name="T">字幕元数据类型。</typeparam>
+    /// <param name="metas">字幕元数据列表。</param>
+    /// <param name="isEnabled">字幕开关当前是否为开启状态。</param>
+    /// <param name="rememberedKey">本次会话记住的字幕轨键，可以是空值。</param>
+    /// <param name="getKey">读取字幕轨的稳定键。</param>
+    /// <param name="getLanguageName">读取字幕语言名称。</param>
+    /// <param name="getIsAI">读取字幕是否为 AI 生成。</param>
+    /// <returns>应恢复的字幕索引；开关关闭、没有可用字幕或无法恢复时为 -1。</returns>
+    public static int SelectRestoreIndex<T>(IReadOnlyList<T> metas, bool isEnabled, string? rememberedKey, Func<T, string?> getKey, Func<T, string?> getLanguageName, Func<T, bool> getIsAI)
+    {
+        ArgumentNullException.ThrowIfNull(getKey);
+        ArgumentNullException.ThrowIfNull(getLanguageName);
+        ArgumentNullException.ThrowIfNull(getIsAI);
+
+        if (!isEnabled || metas is null || metas.Count == 0)
+        {
+            return -1;
+        }
+
+        if (!string.IsNullOrEmpty(rememberedKey))
+        {
+            for (var i = 0; i < metas.Count; i++)
+            {
+                if (string.Equals(getKey(metas[i]), rememberedKey, StringComparison.Ordinal))
+                {
+                    return i;
+                }
+            }
+        }
+
+        return SelectPreferredIndex(metas, getLanguageName, getIsAI);
+    }
+
+    /// <summary>
     /// 按语言偏好选出字幕索引，空列表返回 -1。
     /// </summary>
     /// <typeparam name="T">字幕元数据类型。</typeparam>

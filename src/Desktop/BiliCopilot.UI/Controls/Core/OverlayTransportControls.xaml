@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PlayerControlBase
     x:Class="BiliCopilot.UI.Controls.Core.OverlayTransportControls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -422,52 +422,135 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
-                <Grid Visibility="{x:Bind ViewModel.IsSubtitleEnabled, Mode=OneWay}">
-                    <Button
-                        x:Name="SubtitleButton"
-                        Margin="0,0,8,0"
-                        VerticalAlignment="Center"
-                        Style="{StaticResource BasicPlayerIconButtonStyle}"
-                        ToolTipService.ToolTip="{ext:Locale Name=Subtitle}"
-                        Visibility="{x:Bind ViewModel.IsSubtitleEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
-                        <ic:SymbolIcon FontSize="14" Symbol="Subtitles" />
-                        <Button.Flyout>
-                            <Flyout
-                                Closed="OnFlyoutClosed"
-                                Opened="OnSubtitleFlyoutOpened"
-                                ShouldConstrainToRootBounds="False">
-                                <Flyout.FlyoutPresenterStyle>
-                                    <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
-                                        <Setter Property="Padding" Value="0" />
-                                    </Style>
-                                </Flyout.FlyoutPresenterStyle>
+                <Button
+                    x:Name="SubtitleButton"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="SubtitleButton"
+                    AutomationProperties.Name="{ext:Locale Name=Subtitle}"
+                    Style="{StaticResource BasicPlayerIconButtonStyle}"
+                    ToolTipService.ToolTip="{ext:Locale Name=Subtitle}"
+                    Visibility="{x:Bind ViewModel.IsSubtitleEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                    <Grid>
+                        <!--  字幕开关打开时用主题色点亮图标，关闭时回到默认前景色  -->
+                        <ic:SymbolIcon
+                            FontSize="14"
+                            Symbol="Subtitles"
+                            Visibility="{x:Bind ViewModel.IsSubtitleEnabled, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+                        <ic:SymbolIcon
+                            FontSize="14"
+                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                            IconVariant="Filled"
+                            Symbol="Subtitles"
+                            Visibility="{x:Bind ViewModel.IsSubtitleEnabled, Mode=OneWay}" />
+                    </Grid>
+                    <Button.Flyout>
+                        <Flyout
+                            Closed="OnSubtitleFlyoutClosed"
+                            Opened="OnSubtitleFlyoutOpened"
+                            ShouldConstrainToRootBounds="False">
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
+                                    <Setter Property="Padding" Value="0" />
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
 
-                                <Grid Width="280">
+                            <!--
+                                字幕菜单在同一弹出层内分两级：第一层是字幕总开关与当前视频的字幕轨列表，
+                                第二层承载位置、字号、字体、延迟等参数；返回只切换层级，不关闭菜单。
+                                入口的可见性只取决于当前视频是否有字幕，不受开关状态影响。
+                            -->
+                            <Grid Width="280">
+                                <!--  第一层：字幕总开关 + 字幕轨列表  -->
+                                <Grid Visibility="{x:Bind ViewModel.IsSubtitleParameterVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                    <Grid Margin="16,12" ColumnSpacing="8">
+                                    <!--  标题与参数页入口左右排布：标题在左，设置入口贴右  -->
+                                    <Grid
+                                        Margin="16,8,8,8"
+                                        ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
                                         <TextBlock
-                                            HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontWeight="SemiBold"
                                             Text="{ext:Locale Name=Subtitle}" />
+                                        <HyperlinkButton
+                                            x:Name="SubtitleParameterEntryButton"
+                                            Grid.Column="1"
+                                            MinWidth="0"
+                                            Margin="0,0,4,0"
+                                            Padding="8,4"
+                                            VerticalAlignment="Center"
+                                            AutomationProperties.AutomationId="SubtitleParameterEntryButton"
+                                            AutomationProperties.Name="{ext:Locale Name=Settings}"
+                                            Click="OnSubtitleParameterEntryClick"
+                                            Content="{ext:Locale Name=Settings}"
+                                            FontSize="12" />
                                     </Grid>
-                                    <ScrollView
+                                    <StackPanel
                                         Grid.Row="1"
+                                        Margin="16,0,16,8"
+                                        Spacing="4">
+                                        <Grid ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Text="{ext:Locale Name=SubtitleEnabled}" />
+                                            <ToggleSwitch
+                                                Grid.Column="1"
+                                                MinWidth="0"
+                                                MinHeight="0"
+                                                Margin="0"
+                                                Padding="0"
+                                                VerticalAlignment="Center"
+                                                AutomationProperties.AutomationId="SubtitleEnabledSwitch"
+                                                AutomationProperties.Name="{ext:Locale Name=SubtitleEnabled}"
+                                                IsOn="{x:Bind ViewModel.IsSubtitleEnabled, Mode=TwoWay}"
+                                                OffContent=""
+                                                OnContent="" />
+                                        </Grid>
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Text="{ext:Locale Name=SubtitleEnabledDescription}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <ScrollView
+                                        Grid.Row="2"
                                         MaxHeight="400"
                                         Padding="16,0"
                                         HorizontalScrollMode="Disabled"
                                         VerticalScrollBarVisibility="Auto">
-                                        <Grid Margin="0,0,0,12">
-                                            <ItemsRepeater x:Name="SubtitleRepeater" ItemsSource="{x:Bind ViewModel.Subtitles, Mode=OneWay}">
+                                        <Grid Margin="0,0,0,12" RowSpacing="8">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                Text="{ext:Locale Name=SubtitleList}" />
+                                            <ItemsRepeater
+                                                x:Name="SubtitleRepeater"
+                                                Grid.Row="1"
+                                                ItemsSource="{x:Bind ViewModel.Subtitles, Mode=OneWay}">
                                                 <ItemsRepeater.ItemTemplate>
                                                     <DataTemplate x:DataType="items:SubtitleItemViewModel">
                                                         <base:AppToggleCard
                                                             MinWidth="200"
                                                             MaxWidth="280"
                                                             HorizontalAlignment="Stretch"
+                                                            AutomationProperties.AutomationId="{x:Bind Data.Id, Mode=OneWay}"
+                                                            AutomationProperties.Name="{x:Bind Name, Mode=OneWay}"
                                                             BorderBrush="Transparent"
                                                             BorderThickness="2"
                                                             Command="{x:Bind ActiveCommand, Mode=OneWay}"
@@ -486,10 +569,167 @@
                                         </Grid>
                                     </ScrollView>
                                 </Grid>
-                            </Flyout>
-                        </Button.Flyout>
-                    </Button>
-                </Grid>
+
+                                <!--  第二层：字幕参数  -->
+                                <Grid Visibility="{x:Bind ViewModel.IsSubtitleParameterVisible, Mode=OneWay}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid Margin="8,8,8,0" ColumnSpacing="4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Button
+                                            x:Name="SubtitleParameterBackButton"
+                                            AutomationProperties.AutomationId="SubtitleParameterBackButton"
+                                            Width="32"
+                                            Height="32"
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            AutomationProperties.Name="{ext:Locale Name=Back}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Click="OnSubtitleParameterBackClick"
+                                            CornerRadius="{StaticResource ControlCornerRadius}"
+                                            ToolTipService.ToolTip="{ext:Locale Name=Back}">
+                                            <ic:SymbolIcon FontSize="12" Symbol="ChevronLeft" />
+                                        </Button>
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            FontWeight="SemiBold"
+                                            Text="{ext:Locale Name=SubtitleSetting}" />
+                                    </Grid>
+                                    <ScrollViewer
+                                        Grid.Row="1"
+                                        MaxHeight="400"
+                                        Padding="16,8,16,12"
+                                        HorizontalScrollMode="Disabled"
+                                        VerticalScrollBarVisibility="Auto">
+                                        <StackPanel Spacing="8">
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    Text="{ext:Locale Name=SubtitlePosition}" />
+                                                <Border
+                                                    Grid.Column="1"
+                                                    Padding="4"
+                                                    VerticalAlignment="Center"
+                                                    BorderBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                                    BorderThickness="2"
+                                                    CornerRadius="{StaticResource ControlCornerRadius}">
+                                                    <Grid>
+                                                        <TextBlock
+                                                            FontSize="12"
+                                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                            Text="{ext:Locale Name=HorizontalScreen}"
+                                                            TextLineBounds="Tight"
+                                                            Visibility="{x:Bind ViewModel.IsVerticalScreen, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+                                                        <TextBlock
+                                                            FontSize="12"
+                                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                            Text="{ext:Locale Name=VerticalScreen}"
+                                                            TextLineBounds="Tight"
+                                                            Visibility="{x:Bind ViewModel.IsVerticalScreen, Mode=OneWay}" />
+                                                    </Grid>
+                                                </Border>
+                                            </Grid>
+                                            <base:TrimTextBlock
+                                                FontSize="12"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                MaxLines="2"
+                                                Text="{ext:Locale Name=SubtitlePositionTip}" />
+                                            <Slider
+                                                x:Name="SubtitlePositionSlider"
+                                                AutomationProperties.AutomationId="SubtitlePositionSlider"
+                                                Margin="0,-8,0,0"
+                                                HorizontalAlignment="Stretch"
+                                                AutomationProperties.Name="{ext:Locale Name=SubtitlePosition}"
+                                                Maximum="150"
+                                                Minimum="0"
+                                                ValueChanged="OnSubtitlePositionChanged"
+                                                Value="{x:Bind ViewModel.SubtitlePosition, Mode=OneWay}" />
+                                            <Border
+                                                Width="200"
+                                                Height="2"
+                                                Margin="0,4"
+                                                HorizontalAlignment="Center"
+                                                Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                                CornerRadius="2" />
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    Text="{ext:Locale Name=SubtitleFontSize}"
+                                                    ToolTipService.ToolTip="{ext:Locale Name=SubtitleFontSizeDescription}" />
+                                                <Border
+                                                    Grid.Column="1"
+                                                    Padding="4"
+                                                    VerticalAlignment="Center"
+                                                    BorderBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                                    BorderThickness="2"
+                                                    CornerRadius="{StaticResource ControlCornerRadius}">
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                        Text="{x:Bind ViewModel.SubtitleFontSize, Mode=OneWay}"
+                                                        TextLineBounds="Tight" />
+                                                </Border>
+                                            </Grid>
+                                            <Slider
+                                                x:Name="SubtitleFontSizeSlider"
+                                                AutomationProperties.AutomationId="SubtitleFontSizeSlider"
+                                                Margin="0,-8,0,0"
+                                                HorizontalAlignment="Stretch"
+                                                AutomationProperties.Name="{ext:Locale Name=SubtitleFontSize}"
+                                                Maximum="150"
+                                                Minimum="1"
+                                                ValueChanged="OnSubtitleFontSizeChanged"
+                                                Value="{x:Bind ViewModel.SubtitleFontSize, Mode=OneWay}" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Text="{ext:Locale Name=SubtitleFontFamily}"
+                                                ToolTipService.ToolTip="{ext:Locale Name=SubtitleFontFamilyDescription}" />
+                                            <ComboBox
+                                                x:Name="SubtitleFontComboBox"
+                                                AutomationProperties.AutomationId="SubtitleFontComboBox"
+                                                HorizontalAlignment="Stretch"
+                                                AutomationProperties.Name="{ext:Locale Name=SubtitleFontFamily}"
+                                                ItemsSource="{x:Bind ViewModel.Fonts, Mode=OneWay}"
+                                                Loaded="OnSubtitleFontComboLoaded"
+                                                SelectionChanged="OnSubtitleFontChanged"
+                                                SelectionChangedTrigger="Committed" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Text="{ext:Locale Name=SubtitleDelaySeconds}"
+                                                ToolTipService.ToolTip="{ext:Locale Name=SubtitleDelaySecondsDescription}" />
+                                            <NumberBox
+                                                x:Name="SubtitleDelayNumberBox"
+                                                AutomationProperties.AutomationId="SubtitleDelayNumberBox"
+                                                HorizontalAlignment="Stretch"
+                                                AutomationProperties.Name="{ext:Locale Name=SubtitleDelaySeconds}"
+                                                Maximum="99"
+                                                Minimum="-99"
+                                                SpinButtonPlacementMode="Inline"
+                                                ValueChanged="OnSubtitleDelayChanged"
+                                                Value="{x:Bind ViewModel.SubtitleDelaySeconds, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="6"
