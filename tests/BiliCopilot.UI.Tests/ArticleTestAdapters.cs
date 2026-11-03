@@ -41,12 +41,11 @@ namespace BiliCopilot.UI.ViewModels.Components
 
         public string? LastSourceId { get; private set; }
 
-        public string? Id { get; private set; }
+        public string? Id => LastSourceId;
 
         public void Initialize(string sourceId, CommentTargetType targetType, CommentSortType sortType)
         {
             LastSourceId = sourceId;
-            Id = sourceId;
         }
     }
 }

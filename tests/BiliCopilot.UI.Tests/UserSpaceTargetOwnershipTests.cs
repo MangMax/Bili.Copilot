@@ -286,6 +286,27 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
     }
 
     [Fact]
+    public async Task SwitchingTargetClearsFollowStateBeforeRelationArrives()
+    {
+        var relationships = new RelationshipService();
+        var harness = Create(new MomentService(), relationships, new UserService(), new SearchService());
+        var page = harness.Page;
+        var a = User("A");
+        var b = User("B");
+
+        page.InitializeCommand.Execute(a);
+        relationships.Complete(Assert.Single(relationships.Requests), UserRelationStatus.Following);
+        await page.InitializeCommand.ExecutionTask!;
+        Assert.True(page.IsFollowed);
+
+        // 切到 B 时关系请求仍在途：B 的页面不能先显示 A 的关注态。
+        page.InitializeCommand.Execute(b);
+        var freshRelation = relationships.Requests[1];
+        Assert.Equal("B", freshRelation.UserId);
+        Assert.False(page.IsFollowed);
+    }
+
+    [Fact]
     public async Task LateUserCardResponseAfterTargetSwitchDoesNotLand()
     {
         var users = new UserService();
@@ -351,6 +372,60 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
         await video.InitializeCommand.ExecutionTask!;
         Assert.False(video.IsLoading);
         Assert.Empty(video.Items);
+    }
+
+    [Fact]
+    public async Task PageReArmingKeepsCancellingOnEveryDeactivation()
+    {
+        var moments = new MomentService(honorCancellation: true);
+        var search = new SearchService();
+        var harness = Create(moments, new RelationshipService(), new UserService(), search);
+        var page = harness.Page;
+        var video = harness.Video;
+        var a = User("A");
+
+        page.InitializeCommand.Execute(a);
+        var firstLoad = video.InitializeCommand.ExecutionTask!;
+        var firstRequest = Assert.Single(moments.Requests);
+        var firstGeneration = page.CurrentLoadGeneration;
+
+        // 第一次失活：页面记录本代、取消它，并把记录刷新为新的当前代次。
+        Assert.True(page.CancelLoad(firstGeneration));
+        var rearmedGeneration = page.CurrentLoadGeneration;
+        Assert.NotEqual(firstGeneration, rearmedGeneration);
+        await firstLoad;
+        Assert.False(video.IsLoading);
+
+        // 返回页面后用户继续翻页与搜索：这些请求属于重新武装后的代次。
+        video.LoadItemsCommand.Execute(null);
+        var pagedRequest = moments.Requests[1];
+        page.SearchCommand.Execute("kw");
+        var searchRequest = Assert.Single(search.Requests);
+        Assert.True(video.IsLoading);
+        Assert.True(page.IsSearching);
+
+        // 过期代次不得误伤重新武装后的在途请求。
+        Assert.False(page.CancelLoad(firstGeneration));
+        Assert.False(pagedRequest.Token.IsCancellationRequested);
+        Assert.False(searchRequest.Token.IsCancellationRequested);
+
+        // 第二次失活：用刷新后的代次必须真正取消，而不是退化为空操作。
+        Assert.True(page.CancelLoad(rearmedGeneration));
+        Assert.True(pagedRequest.Token.IsCancellationRequested);
+        Assert.True(searchRequest.Token.IsCancellationRequested);
+        Assert.False(video.IsLoading);
+        Assert.False(page.IsSearching);
+
+        // 迟到的响应不落盘。
+        moments.Complete(pagedRequest, [Moment("a-1", a)], "a-2", true);
+        await video.LoadItemsCommand.ExecutionTask!;
+        search.Complete(searchRequest, [Video("a-1")], 1, true);
+        await page.LoadMoreSearchResultCommand.ExecutionTask!;
+
+        Assert.Empty(video.Items);
+        Assert.Empty(page.SearchVideos);
+        Assert.False(video.IsLoading);
+        Assert.False(page.IsSearching);
     }
 
     [Fact]

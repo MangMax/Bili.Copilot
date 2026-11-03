@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 // Headless adapters only for OS/UI presentation, localization and local settings.
 // Page commands, collections and IVideoDiscoveryService are the production code.
@@ -9,6 +9,31 @@ using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 
+
+namespace Richasy.WinUIKernel.Share.Base
+{
+    /// <summary>
+    /// Toast severity. Production lives in the Windows-only WinUIKernel package;
+    /// the view models here only pass it through to <c>AppViewModel.ShowTipCommand</c>.
+    /// </summary>
+    public enum InfoType
+    {
+        /// <summary>Information.</summary>
+        Information,
+
+        /// <summary>Error.</summary>
+        Error,
+
+        /// <summary>Warning.</summary>
+        Warning,
+
+        /// <summary>Success.</summary>
+        Success,
+
+        /// <summary>Loading.</summary>
+        Loading,
+    }
+}
 
 namespace FluentIcons.Common { public enum Symbol { Balloon, Fire, RibbonStar, Rocket, DesignIdeas, VideoClip, VideoChat, Dust, FilmstripPlay, DocumentBulletList, Chat, Settings } }
 namespace BiliCopilot.UI.ViewModels.View

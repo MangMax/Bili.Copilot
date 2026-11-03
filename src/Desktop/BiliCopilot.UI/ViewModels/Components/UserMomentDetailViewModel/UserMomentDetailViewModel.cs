@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -84,7 +84,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
 
         // 重置目标时同时重置加载态与代次，而不是只清数据：
         // 上一目标的在途响应被作废，它的 IsLoading 也不会把新目标的加载挡掉。
-        ResetLoad();
+        ResetLoadState();
     }
 
     [RelayCommand(AllowConcurrentExecutions = true)]
@@ -164,6 +164,15 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         finally
         {
             cancellation.Dispose();
+            lock (_loadLock)
+            {
+                // 已释放的令牌不再留在字段里，避免后续取消依赖 ObjectDisposedException 兜底。
+                if (ReferenceEquals(_loadCancellation, cancellation))
+                {
+                    _loadCancellation = null;
+                }
+            }
+
             if (IsCurrentLoad(generation))
             {
                 IsEmpty = Items.Count == 0;
@@ -197,7 +206,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         }
     }
 
-    private void ResetLoad()
+    private void ResetLoadState()
     {
         CancellationTokenSource? previous;
         lock (_loadLock)
@@ -226,7 +235,9 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         {
             // 旧加载已自行释放，取消是幂等的.
         }
-
-        cancellation.Dispose();
+        finally
+        {
+            cancellation.Dispose();
+        }
     }
 }
