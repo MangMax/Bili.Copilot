@@ -92,6 +92,12 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private void SyncSkeletons()
     {
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
+        // 手动刷新和首屏共用同一套度量：刷多少由当前视口预算决定。
+        if (ViewModel is not null)
+        {
+            ViewModel.RefreshTargetCount = View.CurrentBudget;
+        }
+
         var plan = VideoSkeletonPlanner.Resolve(budget, ViewModel?.Videos.Count ?? budget);
         while (Skeletons.Count < plan.SlotCount) Skeletons.Add(new VideoCardSkeleton(Skeletons.Count));
         while (Skeletons.Count > plan.SlotCount) Skeletons.RemoveAt(Skeletons.Count - 1);

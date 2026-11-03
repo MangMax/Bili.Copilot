@@ -26,13 +26,19 @@ public sealed partial class PopularPageViewModel
     private RecommendFeedSource _feedSourceKind;
 
     /// <summary>
-    /// 增量刷新时连续取几页推荐.
+    /// 手动刷新至少取回的条数.
     /// </summary>
-    /// <remarks>
-    /// 推荐流单页只有约 6 条视频，点一次刷新只多 6 个卡片对桌面端偏少。
-    /// 这里连续请求多页再合并，用额外的请求次数换取一次刷新补足更多新内容。
-    /// </remarks>
-    private const int RecommendRefreshBatchCount = 3;
+    private const int MinRefreshTargetCount = 6;
+
+    /// <summary>
+    /// 手动刷新最多取回的条数，避免大屏下一次刷新拉太多内容.
+    /// </summary>
+    private const int MaxRefreshTargetCount = 60;
+
+    /// <summary>
+    /// 单次刷新最多连续请求的页数，兜底防止来源一直返回重复内容.
+    /// </summary>
+    private const int MaxRefreshPageCount = 12;
     private long _hotOffset;
     // 切换或刷新后，旧请求和旧调度回调不再拥有当前列表。
     private long _sectionVersion;
@@ -53,6 +59,15 @@ public sealed partial class PopularPageViewModel
     /// 推荐分区刷新前的快照，非 null 表示可以撤销这次刷新.
     /// </summary>
     private RecommendRefreshSnapshot<VideoItemViewModel>? _recommendRefreshSnapshot;
+
+    /// <summary>
+    /// 手动刷新希望取回的条数，由页面按当前视口预算写入.
+    /// </summary>
+    /// <remarks>
+    /// 刷新与首屏共用同一套「一屏需要多少张」的度量：视口大就多取、视口小就少取，
+    /// 与推荐来源、是否增量刷新都无关。未写入时按最小批次处理。
+    /// </remarks>
+    public int RefreshTargetCount { get; set; }
 
     [ObservableProperty]
     private bool _isPartitionLoading;

@@ -302,7 +302,9 @@ public sealed class PopularPageLoadingTests
         PageTestServices.Dispatcher.Drain();
         Assert.Equal("fresh", Assert.Single(page.Videos).Data.BvId);
         await page.LoadVideosCommand.ExecuteAsync(null);
-        Assert.Equal(new long[] { 0, 0, 7 }, offsets);
+        // 刷新按视口预算取到目标条数（这里兜底为最小 6 条），一页不够会再取一页；
+        // 随后滚动加载从刷新后的游标继续。
+        Assert.Equal(new long[] { 0, 0, 7, 7 }, offsets);
     }
 
     [Fact]
@@ -660,6 +662,51 @@ public sealed class PopularPageLoadingTests
         Assert.False(page.CanUndoRefresh);
         SettingsToolkit.IncrementalRecommendRefresh = false;
         SettingsToolkit.RecommendSource = RecommendFeedSource.Mobile;
+    }
+
+    [Fact]
+    public async Task ManualRefreshFillsToTheViewportBudget()
+    {
+        var service = new DiscoveryService
+        {
+            Recommend = offset => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+                (Enumerable.Range(0, 6).Select(i => Video($"v{offset}-{i}")).ToList(), offset + 6)),
+        };
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal(6, page.Videos.Count);
+
+        // 视口预算 16 张：手机端一页 6 条，需要连续取 3 页。
+        page.RefreshTargetCount = 16;
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal(18, page.Videos.Count);
+        Assert.Equal(4, service.Requests.Count(r => r == "Recommend"));
+    }
+
+    [Theory]
+    [InlineData(1, 6)]
+    [InlineData(100, 60)]
+    public async Task ManualRefreshTargetIsClampedBetweenSixAndSixty(int target, int expectedCount)
+    {
+        var service = new DiscoveryService
+        {
+            Recommend = offset => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+                (Enumerable.Range(0, 6).Select(i => Video($"v{offset}-{i}")).ToList(), offset + 6)),
+        };
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        page.RefreshTargetCount = target;
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal(expectedCount, page.Videos.Count);
     }
 
     private static async Task WaitForAsync(Func<bool> condition)

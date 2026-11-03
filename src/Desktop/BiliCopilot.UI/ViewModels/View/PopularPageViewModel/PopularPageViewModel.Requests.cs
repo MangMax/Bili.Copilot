@@ -49,7 +49,7 @@ public sealed partial class PopularPageViewModel
         IsRecommendRefreshing = true;
         try
         {
-            var (videos, nextOffset) = await FetchRecommendBatchAsync(isIncremental ? RecommendRefreshBatchCount : 1, generation);
+            var (videos, nextOffset) = await FetchRecommendBatchAsync(ResolveRefreshTargetCount(), generation);
             var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
             if (!RecommendRefreshResultGuard.ShouldApply(isRecommend, generation, _refreshGeneration))
             {
@@ -132,14 +132,26 @@ public sealed partial class PopularPageViewModel
     /// 这里从偏移 0 起连续取若干页，按资源 Id 去重后合并，下一页偏移以最后一页为准。
     /// 中途某一页失败时保留已取到的部分，避免整次刷新白跑。
     /// </remarks>
-    private async Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchRecommendBatchAsync(int batchCount, int generation)
+    /// <summary>
+    /// 计算本次刷新要取回多少条：跟随视口预算，并夹在 6~60 之间.
+    /// </summary>
+    /// <returns>目标条数.</returns>
+    private int ResolveRefreshTargetCount()
+        => Math.Clamp(
+            RefreshTargetCount > 0 ? RefreshTargetCount : MinRefreshTargetCount,
+            MinRefreshTargetCount,
+            MaxRefreshTargetCount);
+
+    private async Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchRecommendBatchAsync(int targetCount, int generation)
     {
         var videos = new List<VideoInformation>();
         var seenKeys = new HashSet<string>(StringComparer.Ordinal);
         var offset = 0L;
         _feedSource = ResolveFeedSource(allowSourceChange: true);
 
-        for (var i = 0; i < batchCount; i++)
+        // 按「条数」而不是「页数」取：手机端一页约 6 条、网页端一批可达 20 条，
+        // 同样的视口预算在不同来源下需要的请求次数并不相同。
+        for (var i = 0; i < MaxRefreshPageCount && videos.Count < targetCount; i++)
         {
             try
             {
