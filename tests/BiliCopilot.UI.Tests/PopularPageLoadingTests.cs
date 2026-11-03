@@ -586,6 +586,8 @@ public sealed class PopularPageLoadingTests
         public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Hot { get; set; }
             = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("Hot")], 1));
         public Func<Task<IReadOnlyList<VideoInformation>>>? Rank { get; set; }
+        public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Curated { get; set; }
+            = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("Curated")], 1));
         public Task<IReadOnlyList<Partition>> GetVideoPartitionsAsync(CancellationToken cancellationToken = default)
         {
             Requests.Add("partitions");
@@ -604,9 +606,60 @@ public sealed class PopularPageLoadingTests
         public Task<IReadOnlyList<VideoInformation>> GetGlobalRankingListAsync(CancellationToken cancellationToken = default) => Rank?.Invoke() ?? Task.FromResult<IReadOnlyList<VideoInformation>>([Video("Rank")]);
         public Task<IReadOnlyList<VideoInformation>> GetPartitionRankingListAsync(Partition partition, CancellationToken cancellationToken = default) => Rank?.Invoke() ?? Task.FromResult<IReadOnlyList<VideoInformation>>([Video(partition.Id)]);
         public Task<IReadOnlyList<VideoInformation>> GetCuratedPlaylistAsync(CancellationToken cancellationToken = default) => throw new NotSupportedException();
-        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetCuratedFeedAsync(long freshIndex = 0, int pageSize = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetCuratedFeedAsync(long freshIndex = 0, int pageSize = 0, CancellationToken cancellationToken = default)
+        {
+            Requests.Add("Curated");
+            return Curated(freshIndex);
+        }
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> GetPartitionRecommendVideoListAsync(Partition partition, long offset = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset, int NextPageNumber)> GetChildPartitionVideoListAsync(Partition childPartition, long offset = 0, int pageNumber = 0, PartitionVideoSortType sortType = PartitionVideoSortType.Default, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+    }
+
+    [Fact]
+    public async Task InitialLoadUsesConfiguredWebSource()
+    {
+        SettingsToolkit.RecommendSource = RecommendFeedSource.Web;
+        try
+        {
+            var service = new DiscoveryService();
+            service.Partitions.SetResult([]);
+            var page = CreatePage(service, "Recommend");
+
+            await page.InitializeCommand.ExecuteAsync(null);
+            PageTestServices.Dispatcher.Drain();
+
+            Assert.Contains("Curated", service.Requests);
+            Assert.DoesNotContain("Recommend", service.Requests);
+            Assert.Equal("Curated", Assert.Single(page.Videos).Data.BvId);
+        }
+        finally
+        {
+            SettingsToolkit.RecommendSource = RecommendFeedSource.Mobile;
+        }
+    }
+
+    [Fact]
+    public async Task ManualRefreshUsesConfiguredSourceAndReplacesTheListOnSwitch()
+    {
+        SettingsToolkit.RecommendSource = RecommendFeedSource.Mobile;
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal("Recommend", Assert.Single(page.Videos).Data.BvId);
+
+        // 切到网页端后手动刷新：既要走新来源，也要整表替换，不能在旧列表中混入新来源的条目。
+        SettingsToolkit.RecommendSource = RecommendFeedSource.Web;
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Contains("Curated", service.Requests);
+        Assert.Equal("Curated", Assert.Single(page.Videos).Data.BvId);
+        Assert.False(page.CanUndoRefresh);
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+        SettingsToolkit.RecommendSource = RecommendFeedSource.Mobile;
     }
 
     private static async Task WaitForAsync(Func<bool> condition)

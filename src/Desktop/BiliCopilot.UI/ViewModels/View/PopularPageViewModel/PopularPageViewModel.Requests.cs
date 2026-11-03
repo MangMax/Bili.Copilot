@@ -23,7 +23,11 @@ public sealed partial class PopularPageViewModel
             return;
         }
 
-        var isIncremental = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
+        // 换来源必须整表替换：增量刷新会保留旧来源的条目，列表就混源了，撤销也会退回混源状态。
+        var configuredKind = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
+        var isSourceSwitch = _feedSource is not null && _feedSourceKind != configuredKind;
+        var isIncremental = !isSourceSwitch
+            && SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
             && Videos.Count > 0;
 
         // 新一次刷新本身就改变了列表状态，之前发起的刷新即使还在路上也必须失效。
@@ -174,21 +178,23 @@ public sealed partial class PopularPageViewModel
     /// </remarks>
     private IRecommendFeedSource ResolveFeedSource(bool allowSourceChange)
     {
-        var kind = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
-        if (_feedSource is not null && _feedSourceKind == kind)
-        {
-            return _feedSource;
-        }
-
         if (_feedSource is not null && !allowSourceChange)
         {
+            // 滚动加载沿用当前来源，避免把新来源的条目接到旧列表后面。
             return _feedSource;
         }
 
+        // 刷新与首屏重新创建来源：合并来源自己攥着网页端批次，只靠页面游标无法把它重置到头上。
+        var kind = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
+        var kindChanged = _feedSource is null || _feedSourceKind != kind;
         _feedSourceKind = kind;
         _feedSource = RecommendFeedSourceFactory.Create(_service, kind);
-        // 换来源后旧游标不再属于这条流，必须从头上重新取。
-        _recommendOffset = 0;
+        if (kindChanged)
+        {
+            // 只有真的换了来源才作废旧游标；同一来源刷新失败时要保留原游标。
+            _recommendOffset = 0;
+        }
+
         return _feedSource;
     }
 
