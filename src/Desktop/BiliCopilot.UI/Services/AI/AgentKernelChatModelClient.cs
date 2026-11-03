@@ -8,20 +8,20 @@ using Richasy.AgentKernel.Models;
 namespace BiliCopilot.UI.Services.AI;
 
 /// <summary>
-/// 基于 AgentKernel 聊天服务与 Microsoft.Extensions.AI 的模型客户端适配器。
+/// 基于 AgentKernel 聊天服务与 Microsoft.Extensions.AI 的模型客户端适配器.
 /// </summary>
 /// <remarks>
 /// 初始化语义与原视图模型一致：调用 <see cref="IChatService.Initialize(AIServiceConfig)"/>，
-/// 失败时由请求执行器包装为类型化异常。流式请求把增量交给回调并返回拼接后的全文。
+/// 失败时由请求执行器包装为类型化异常.流式请求把增量交给回调并返回拼接后的全文.
 /// </remarks>
 internal sealed class AgentKernelChatModelClient : IAIChatModelClient
 {
     private readonly Func<string, IChatService> _serviceResolver;
 
     /// <summary>
-    /// 初始化 <see cref="AgentKernelChatModelClient"/> 的新实例。
+    /// Initializes a new instance of the <see cref="AgentKernelChatModelClient"/> class.
     /// </summary>
-    /// <param name="serviceResolver">按提供方名称解析聊天服务的委托。</param>
+    /// <param name="serviceResolver">按提供方名称解析聊天服务的委托.</param>
     public AgentKernelChatModelClient(Func<string, IChatService> serviceResolver)
     {
         ArgumentNullException.ThrowIfNull(serviceResolver);

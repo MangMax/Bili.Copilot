@@ -6,11 +6,11 @@ using Microsoft.UI.Dispatching;
 namespace BiliCopilot.UI.Services.AI;
 
 /// <summary>
-/// 基于界面消息队列的编排调度适配器。
+/// 基于界面消息队列的编排调度适配器.
 /// </summary>
 /// <remarks>
 /// 状态更新立即封送到界面线程；流式增量保留 75 毫秒的合并延迟后再封送，
-/// 与原来的节流行为一致。
+/// 与原来的节流行为一致.
 /// </remarks>
 internal sealed class DispatcherQueueConversationScheduler : IAIConversationScheduler
 {
@@ -19,9 +19,9 @@ internal sealed class DispatcherQueueConversationScheduler : IAIConversationSche
     private readonly DispatcherQueue _dispatcherQueue;
 
     /// <summary>
-    /// 初始化 <see cref="DispatcherQueueConversationScheduler"/> 的新实例。
+    /// Initializes a new instance of the <see cref="DispatcherQueueConversationScheduler"/> class.
     /// </summary>
-    /// <param name="dispatcherQueue">界面消息队列。</param>
+    /// <param name="dispatcherQueue">界面消息队列.</param>
     public DispatcherQueueConversationScheduler(DispatcherQueue dispatcherQueue)
     {
         ArgumentNullException.ThrowIfNull(dispatcherQueue);

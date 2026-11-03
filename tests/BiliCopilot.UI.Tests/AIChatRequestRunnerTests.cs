@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.AI.Chat;
+using BiliCopilot.UI.Tests.Support;
 
 namespace BiliCopilot.UI.Tests;
 
@@ -9,9 +10,6 @@ namespace BiliCopilot.UI.Tests;
 /// </summary>
 public class AIChatRequestRunnerTests
 {
-    /// <summary>
-    /// 模型返回空响应时抛出类型化异常，消息包含 provider 与 model。
-    /// </summary>
     [Fact]
     public async Task RunAsync_EmptyResponse_ThrowsTypedExceptionWithProviderAndModel()
     {
@@ -28,9 +26,6 @@ public class AIChatRequestRunnerTests
         Assert.Empty(stream.Published);
     }
 
-    /// <summary>
-    /// 初始化失败时抛出类型化异常，保留内部异常且不发起请求。
-    /// </summary>
     [Fact]
     public async Task RunAsync_InitializationFailure_ThrowsTypedExceptionWithInnerError()
     {
@@ -53,9 +48,6 @@ public class AIChatRequestRunnerTests
         Assert.Empty(stream.Published);
     }
 
-    /// <summary>
-    /// 取消以 OperationCanceledException 传播，且不发布最终结果。
-    /// </summary>
     [Fact]
     public async Task RunAsync_Cancellation_PropagatesAndNeverPublishesFinal()
     {
@@ -78,9 +70,6 @@ public class AIChatRequestRunnerTests
         Assert.DoesNotContain(stream.Published, p => p.Final);
     }
 
-    /// <summary>
-    /// 流式增量按到达顺序发布，完成时立即发布最终全文。
-    /// </summary>
     [Fact]
     public async Task RunAsync_StreamingDeltas_PublishInOrderAndFinalTextImmediately()
     {
@@ -107,9 +96,6 @@ public class AIChatRequestRunnerTests
         Assert.Equal(2, stream.Published.Count);
     }
 
-    /// <summary>
-    /// 空分片不调度发布；全是空分片且最终文本为空时按空响应处理。
-    /// </summary>
     [Fact]
     public async Task RunAsync_EmptyDeltas_DoNotScheduleOrPublishAndCountAsEmptyResponse()
     {
@@ -131,9 +117,6 @@ public class AIChatRequestRunnerTests
         Assert.Empty(stream.Published);
     }
 
-    /// <summary>
-    /// 非流式请求只发布一次最终结果，且不向模型客户端传入增量回调。
-    /// </summary>
     [Fact]
     public async Task RunAsync_NonStreaming_PublishesSingleFinalAndPassesNoDeltaCallback()
     {
@@ -152,9 +135,6 @@ public class AIChatRequestRunnerTests
         Assert.Single(stream.Published);
     }
 
-    /// <summary>
-    /// 新代次开始后，旧代次的迟到分片不发布，也不覆盖新代次的最终结果。
-    /// </summary>
     [Fact]
     public async Task RunAsync_ReplacedGeneration_DropsLateChunksAndKeepsNewFinal()
     {
@@ -197,9 +177,6 @@ public class AIChatRequestRunnerTests
         first.Dispose();
     }
 
-    /// <summary>
-    /// 请求中途切换配置不影响在途请求：读取只在开始时发生一次。
-    /// </summary>
     [Fact]
     public async Task RunAsync_ConfigSwitchMidRequest_UsesSnapshotCapturedAtStart()
     {
@@ -227,70 +204,5 @@ public class AIChatRequestRunnerTests
         AIChatConfigSnapshot snapshot,
         Func<AIChatConfigSnapshot, string, Action<string>?, CancellationToken, Task<string>> complete)
         => new(new FakeSnapshotReader(snapshot), new FakeChatModelClient(complete));
-
-    private sealed class FakeSnapshotReader(AIChatConfigSnapshot snapshot) : IAIChatConfigSnapshotReader
-    {
-        public AIChatConfigSnapshot Snapshot { get; set; } = snapshot;
-
-        public int ReadCount { get; private set; }
-
-        public Task<AIChatConfigSnapshot> ReadAsync(CancellationToken cancellationToken = default)
-        {
-            ReadCount++;
-            return Task.FromResult(Snapshot);
-        }
-    }
-
-    private sealed class FakeChatModelClient(
-        Func<AIChatConfigSnapshot, string, Action<string>?, CancellationToken, Task<string>> complete) : IAIChatModelClient
-    {
-        public AIChatConfigSnapshot? InitializedWith { get; private set; }
-
-        public AIChatConfigSnapshot? CompletedWith { get; private set; }
-
-        public Exception? InitializationError { get; set; }
-
-        public bool ReceivedStreamingCallback { get; private set; }
-
-        public Task InitializeAsync(AIChatConfigSnapshot snapshot, CancellationToken cancellationToken = default)
-        {
-            InitializedWith = snapshot;
-            return InitializationError is null
-                ? Task.CompletedTask
-                : Task.FromException(InitializationError);
-        }
-
-        public Task<string> CompleteAsync(
-            AIChatConfigSnapshot snapshot,
-            string prompt,
-            Action<string>? onDelta,
-            CancellationToken cancellationToken = default)
-        {
-            CompletedWith = snapshot;
-            ReceivedStreamingCallback = onDelta is not null;
-            return complete(snapshot, prompt, onDelta, cancellationToken);
-        }
-    }
-
-    private sealed class QueueStreamTarget
-    {
-        public QueueStreamTarget()
-        {
-            Target = new AIChatStreamTarget(Pending.Enqueue, (text, final) => Published.Add((text, final)));
-        }
-
-        public Queue<Action> Pending { get; } = new();
-
-        public List<(string Text, bool Final)> Published { get; } = new();
-
-        public AIChatStreamTarget Target { get; }
-
-        public void Drain()
-        {
-            while (Pending.Count > 0)
-            {
-                Pending.Dequeue()();
-            }
-        }
-    }
 }
+

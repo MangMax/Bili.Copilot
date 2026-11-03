@@ -5,7 +5,7 @@ namespace BiliCopilot.UI.AI.Context;
 /// <summary>
 /// 上下文采集请求.
 /// </summary>
-public sealed record AIContextRequest
+internal sealed record AIContextRequest
 {
     /// <summary>
     /// 目标类型.

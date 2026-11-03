@@ -6,15 +6,15 @@ using Richasy.AgentKernel.Models;
 namespace BiliCopilot.UI.Services.AI;
 
 /// <summary>
-/// 当前选中的服务与模型，由视图模型提供。
+/// 当前选中的服务与模型，由视图模型提供.
 /// </summary>
 internal sealed class AIChatConfigSelection
 {
     /// <summary>
-    /// 初始化 <see cref="AIChatConfigSelection"/> 的新实例。
+    /// Initializes a new instance of the <see cref="AIChatConfigSelection"/> class.
     /// </summary>
-    /// <param name="provider">聊天服务提供方类型。</param>
-    /// <param name="model">选中的聊天模型。</param>
+    /// <param name="provider">聊天服务提供方类型.</param>
+    /// <param name="model">选中的聊天模型.</param>
     public AIChatConfigSelection(ChatProviderType provider, ChatModel model)
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -23,12 +23,12 @@ internal sealed class AIChatConfigSelection
     }
 
     /// <summary>
-    /// 获取聊天服务提供方类型。
+    /// 获取聊天服务提供方类型.
     /// </summary>
     public ChatProviderType Provider { get; }
 
     /// <summary>
-    /// 获取选中的聊天模型。
+    /// 获取选中的聊天模型.
     /// </summary>
     public ChatModel Model { get; }
 }

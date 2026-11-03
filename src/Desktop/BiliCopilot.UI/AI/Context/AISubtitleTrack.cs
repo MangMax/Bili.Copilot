@@ -9,4 +9,4 @@ namespace BiliCopilot.UI.AI.Context;
 /// <param name="LanguageName">语言名称.</param>
 /// <param name="Url">字幕地址.</param>
 /// <param name="IsAI">是否为 AI 生成字幕.</param>
-public sealed record AISubtitleTrack(string Id, string LanguageName, string Url, bool IsAI);
+internal sealed record AISubtitleTrack(string Id, string LanguageName, string Url, bool IsAI);

@@ -3,14 +3,14 @@
 namespace BiliCopilot.UI.AI.Conversation;
 
 /// <summary>
-/// 编排状态变化事件参数。
+/// 编排状态变化事件参数.
 /// </summary>
 public sealed class AIConversationStateChangedEventArgs : EventArgs
 {
     /// <summary>
-    /// 初始化 <see cref="AIConversationStateChangedEventArgs"/> 的新实例。
+    /// Initializes a new instance of the <see cref="AIConversationStateChangedEventArgs"/> class.
     /// </summary>
-    /// <param name="snapshot">变化后的状态快照。</param>
+    /// <param name="snapshot">变化后的状态快照.</param>
     public AIConversationStateChangedEventArgs(AIConversationSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
@@ -18,7 +18,7 @@ public sealed class AIConversationStateChangedEventArgs : EventArgs
     }
 
     /// <summary>
-    /// 获取变化后的状态快照。
+    /// 获取变化后的状态快照.
     /// </summary>
     public AIConversationSnapshot Snapshot { get; }
 }

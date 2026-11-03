@@ -7,16 +7,16 @@ using BiliCopilot.UI.AI.Prompts;
 namespace BiliCopilot.UI.AI.Conversation;
 
 /// <summary>
-/// AI 对话编排服务：把上下文采集、提示词构建、配置快照与请求执行组合成一次请求。
+/// AI 对话编排服务：把上下文采集、提示词构建、配置快照与请求执行组合成一次请求.
 /// </summary>
 /// <remarks>
 /// <para>
 /// 六个入口共用同一份实现，由 <see cref="AIConversationRequest.Kind"/> 区分采集范围与提示词占位符；
-/// 错误处理、代次隔离与取消只在这里写一次。
+/// 错误处理、代次隔离与取消只在这里写一次.
 /// </para>
 /// <para>
 /// 状态变化通过 <see cref="StateChanged"/> 发布，并通过 <see cref="IAIConversationScheduler"/> 封送到界面线程；
-/// 旧代次的迟到增量不会写入新代次，取消后不再提交结果。
+/// 旧代次的迟到增量不会写入新代次，取消后不再提交结果.
 /// </para>
 /// </remarks>
 public sealed class AIConversationOrchestrator
@@ -46,12 +46,12 @@ public sealed class AIConversationOrchestrator
     }
 
     /// <summary>
-    /// 在状态发生变化时触发；回调在调度器指定的线程上执行。
+    /// 在状态发生变化时触发；回调在调度器指定的线程上执行.
     /// </summary>
     public event EventHandler<AIConversationStateChangedEventArgs>? StateChanged;
 
     /// <summary>
-    /// 获取当前状态快照。
+    /// 获取当前状态快照.
     /// </summary>
     public AIConversationSnapshot State
     {
@@ -65,10 +65,10 @@ public sealed class AIConversationOrchestrator
     }
 
     /// <summary>
-    /// 执行一次请求；取消与失败不会向调用方抛出，统一记录在状态快照中。
+    /// 执行一次请求；取消与失败不会向调用方抛出，统一记录在状态快照中.
     /// </summary>
-    /// <param name="request">请求描述。</param>
-    /// <returns>请求结束（完成、失败或取消）后的任务。</returns>
+    /// <param name="request">请求描述.</param>
+    /// <returns>请求结束（完成、失败或取消）后的任务.</returns>
     public async Task RunAsync(AIConversationRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -127,8 +127,9 @@ public sealed class AIConversationOrchestrator
             var target = new AIChatStreamTarget(
                 callback => _scheduler.Schedule(callback, generation.Token),
                 (text, isFinal) => ApplyStreamedText(runId, text, isFinal));
-            chatStarted = true;
-            await _requestRunner.RunAsync(generation, prompt, target).ConfigureAwait(false);
+            await _requestRunner
+                .RunAsync(generation, prompt, target, () => chatStarted = true)
+                .ConfigureAwait(false);
             if (!IsCurrentRun(runId, generation))
             {
                 return;
@@ -166,7 +167,7 @@ public sealed class AIConversationOrchestrator
     }
 
     /// <summary>
-    /// 取消当前请求并清空状态；没有进行中的请求时仅清空状态。
+    /// 取消当前请求并清空状态；没有进行中的请求时仅清空状态.
     /// </summary>
     public void Cancel()
     {

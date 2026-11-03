@@ -4,6 +4,7 @@ using BiliCopilot.UI.AI.Chat;
 using BiliCopilot.UI.AI.Context;
 using BiliCopilot.UI.AI.Conversation;
 using BiliCopilot.UI.AI.Prompts;
+using BiliCopilot.UI.Tests.Support;
 
 namespace BiliCopilot.UI.Tests;
 
@@ -219,6 +220,56 @@ public class AIOrchestratorTests
     }
 
     [Fact]
+    public async Task RunAsync_SourceSwitchedFromVideoToArticle_LateVideoResultsDoNotOverwriteArticleAnswer()
+    {
+        var videoStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseVideo = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var callCount = 0;
+        var client = new FakeChatModelClient(async (_, _, onDelta, _) =>
+        {
+            if (Interlocked.Increment(ref callCount) == 1)
+            {
+                onDelta?.Invoke("旧视频回答");
+                videoStarted.SetResult(true);
+                await releaseVideo.Task;
+                onDelta?.Invoke("旧视频-迟到");
+                return "旧视频-迟到";
+            }
+
+            return "文章回答";
+        });
+        var scheduler = new QueueScheduler();
+        var orchestrator = CreateOrchestrator(
+            new FakeSubtitleSource([], []),
+            new FakeCommentSource([]),
+            client,
+            scheduler,
+            StreamingSnapshot());
+        var states = Record(orchestrator);
+
+        var videoRun = orchestrator.RunAsync(VideoRequest(AIPromptKind.VideoSummary, VideoTemplate));
+        await videoStarted.Task;
+        var articleRun = orchestrator.RunAsync(ArticleRequest("<p>第一段<br/>正文</p>", AIPromptKind.ArticleSummary, ArticleTemplate));
+        await articleRun;
+        scheduler.Drain();
+        releaseVideo.SetResult(true);
+        await videoRun;
+        scheduler.Drain();
+
+        var last = states[^1];
+        Assert.Equal("总结《文章标题》的内容", last.RequestText);
+        Assert.Equal("文章回答", last.FinalResult);
+        Assert.Equal(string.Empty, last.TempResult);
+        Assert.False(last.IsGenerating);
+        Assert.Null(last.Stage);
+        Assert.Equal(AIConversationErrorKind.None, last.ErrorKind);
+        Assert.Contains("文章内容：第一段正文", client.LastPrompt);
+        Assert.DoesNotContain("视频字幕", client.LastPrompt);
+        Assert.DoesNotContain(states, p => p.FinalResult.Contains("旧视频", StringComparison.Ordinal));
+        Assert.DoesNotContain(states, p => p.TempResult.Contains("旧视频", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task RunAsync_ConfigSwitchedMidRequest_KeepsSnapshotCapturedAtStart()
     {
         var initial = new AIChatConfigSnapshot("OpenAI", "gpt-start", new object(), useStreaming: false);
@@ -243,6 +294,31 @@ public class AIOrchestratorTests
         Assert.Same(initial, client.InitializedWith);
         Assert.Same(initial, client.CompletedWith);
         Assert.Equal("开始时回答", states[^1].FinalResult);
+    }
+
+    [Fact]
+    public async Task RunAsync_SelectionCleared_RecordsContextFailureWithoutCallingModel()
+    {
+        var client = new FakeChatModelClient((_, _, _, _) => Task.FromResult("不应调用"));
+        var scheduler = new QueueScheduler();
+        var orchestrator = new AIConversationOrchestrator(
+            new AIContextCollector(new FakeSubtitleSource([], []), new FakeCommentSource([])),
+            new AIChatRequestRunner(new ThrowingSnapshotReader("尚未选择 AI 服务或模型"), client),
+            scheduler);
+        var states = Record(orchestrator);
+
+        await orchestrator.RunAsync(VideoRequest(AIPromptKind.VideoSummary, VideoTemplate));
+        scheduler.Drain();
+
+        var last = states[^1];
+        Assert.Equal(AIConversationErrorKind.ContextFailure, last.ErrorKind);
+        Assert.Equal("尚未选择 AI 服务或模型", last.ErrorMessage);
+        Assert.False(last.IsGenerating);
+        Assert.Null(last.Stage);
+        Assert.Equal(string.Empty, last.TempResult);
+        Assert.Equal(string.Empty, last.FinalResult);
+        Assert.False(client.Initialized);
+        Assert.Null(client.LastPrompt);
     }
 
     [Fact]
@@ -398,89 +474,5 @@ public class AIOrchestratorTests
                 HtmlContent = html,
             },
         };
-
-    private sealed class FakeSnapshotReader(AIChatConfigSnapshot snapshot) : IAIChatConfigSnapshotReader
-    {
-        public AIChatConfigSnapshot Snapshot { get; set; } = snapshot;
-
-        public int ReadCount { get; private set; }
-
-        public Task<AIChatConfigSnapshot> ReadAsync(CancellationToken cancellationToken = default)
-        {
-            ReadCount++;
-            return Task.FromResult(Snapshot);
-        }
-    }
-
-    private sealed class FakeChatModelClient(
-        Func<AIChatConfigSnapshot, string, Action<string>?, CancellationToken, Task<string>> complete) : IAIChatModelClient
-    {
-        public AIChatConfigSnapshot? InitializedWith { get; private set; }
-
-        public AIChatConfigSnapshot? CompletedWith { get; private set; }
-
-        public string? LastPrompt { get; private set; }
-
-        public Exception? InitializationError { get; init; }
-
-        public bool Initialized => InitializedWith is not null;
-
-        public Task InitializeAsync(AIChatConfigSnapshot snapshot, CancellationToken cancellationToken = default)
-        {
-            InitializedWith = snapshot;
-            return InitializationError is null
-                ? Task.CompletedTask
-                : Task.FromException(InitializationError);
-        }
-
-        public Task<string> CompleteAsync(
-            AIChatConfigSnapshot snapshot,
-            string prompt,
-            Action<string>? onDelta,
-            CancellationToken cancellationToken = default)
-        {
-            CompletedWith = snapshot;
-            LastPrompt = prompt;
-            return complete(snapshot, prompt, onDelta, cancellationToken);
-        }
-    }
-
-    private sealed class QueueScheduler : IAIConversationScheduler
-    {
-        public Queue<Action> Pending { get; } = new();
-
-        public void Post(Action callback) => Pending.Enqueue(callback);
-
-        public void Schedule(Action callback, CancellationToken cancellationToken) => Pending.Enqueue(callback);
-
-        public void Drain()
-        {
-            while (Pending.Count > 0)
-            {
-                Pending.Dequeue()();
-            }
-        }
-    }
-
-    private sealed class FakeSubtitleSource(
-        IReadOnlyList<AISubtitleTrack> tracks,
-        IReadOnlyList<AISubtitleCue> cues) : IAISubtitleSource
-    {
-        public Task<IReadOnlyList<AISubtitleTrack>> GetTracksAsync(string videoId, string? partId, CancellationToken cancellationToken = default)
-            => Task.FromResult(tracks);
-
-        public Task<IReadOnlyList<AISubtitleCue>> GetCuesAsync(AISubtitleTrack track, CancellationToken cancellationToken = default)
-            => Task.FromResult(cues);
-    }
-
-    private sealed class FakeCommentSource(IReadOnlyList<AIComment> comments) : IAICommentSource
-    {
-        public int CallCount { get; private set; }
-
-        public Task<IReadOnlyList<AIComment>> GetHotCommentsAsync(string targetId, AIContextTarget target, CancellationToken cancellationToken = default)
-        {
-            CallCount++;
-            return Task.FromResult(comments);
-        }
-    }
 }
+

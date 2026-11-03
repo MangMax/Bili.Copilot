@@ -11,7 +11,7 @@ namespace BiliCopilot.UI.AI.Context;
 /// 只依赖端口，不引用 WinUI、AgentKernel 或 kernel 模型；进度通过 <see cref="AIContextStage"/> 上报，
 /// 本地化文案由上层映射.
 /// </remarks>
-public sealed class AIContextCollector
+internal sealed class AIContextCollector
 {
     private readonly IAISubtitleSource _subtitleSource;
     private readonly IAICommentSource _commentSource;
@@ -21,7 +21,7 @@ public sealed class AIContextCollector
     /// </summary>
     /// <param name="subtitleSource">字幕来源.</param>
     /// <param name="commentSource">评论来源.</param>
-    public AIContextCollector(IAISubtitleSource subtitleSource, IAICommentSource commentSource)
+    internal AIContextCollector(IAISubtitleSource subtitleSource, IAICommentSource commentSource)
     {
         ArgumentNullException.ThrowIfNull(subtitleSource);
         ArgumentNullException.ThrowIfNull(commentSource);

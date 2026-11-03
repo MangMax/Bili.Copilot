@@ -9,10 +9,10 @@ using Richasy.WinUIKernel.Share.Toolkits;
 namespace BiliCopilot.UI.Services.AI;
 
 /// <summary>
-/// 基于本地提示词文件与默认模板的模板来源适配器。
+/// 基于本地提示词文件与默认模板的模板来源适配器.
 /// </summary>
 /// <remarks>
-/// 与原有行为一致：四个可编辑模板的文件缺失时写入默认模板，提问类提示词直接使用内置常量。
+/// 与原有行为一致：四个可编辑模板的文件缺失时写入默认模板，提问类提示词直接使用内置常量.
 /// </remarks>
 internal sealed class FileAIPromptTemplateProvider : IAIPromptTemplateProvider
 {
@@ -29,9 +29,9 @@ internal sealed class FileAIPromptTemplateProvider : IAIPromptTemplateProvider
     private readonly IFileToolkit _fileToolkit;
 
     /// <summary>
-    /// 初始化 <see cref="FileAIPromptTemplateProvider"/> 的新实例。
+    /// Initializes a new instance of the <see cref="FileAIPromptTemplateProvider"/> class.
     /// </summary>
-    /// <param name="fileToolkit">本地文件工具。</param>
+    /// <param name="fileToolkit">本地文件工具.</param>
     public FileAIPromptTemplateProvider(IFileToolkit fileToolkit)
     {
         ArgumentNullException.ThrowIfNull(fileToolkit);

@@ -5,7 +5,7 @@ namespace BiliCopilot.UI.AI.Context;
 /// <summary>
 /// 评论来源端口：提供热评.
 /// </summary>
-public interface IAICommentSource
+internal interface IAICommentSource
 {
     /// <summary>
     /// 获取目标下的热评.

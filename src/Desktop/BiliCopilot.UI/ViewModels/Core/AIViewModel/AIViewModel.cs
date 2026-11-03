@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.AI.Conversation;
 using BiliCopilot.UI.Models.Constants;
@@ -241,7 +241,8 @@ public sealed partial class AIViewModel : ViewModelBase
             AIConversationStage.SubtitleMetadata => ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleMeta),
             AIConversationStage.SubtitleDetail => ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleInformation),
             AIConversationStage.Comments => ResourceToolkit.GetLocalizedString(StringNames.GettingHotComments),
-            AIConversationStage.ArticleContent => ResourceToolkit.GetLocalizedString(StringNames.GettingArticleContent),
+            // 旧的文章流程没有该进度提示，保持不显示。
+            AIConversationStage.ArticleContent => string.Empty,
             AIConversationStage.Summarizing => ResourceToolkit.GetLocalizedString(StringNames.Summarizing),
             AIConversationStage.Generating => ResourceToolkit.GetLocalizedString(StringNames.Generating),
             _ => string.Empty,
@@ -295,9 +296,14 @@ public sealed partial class AIViewModel : ViewModelBase
 
     private void UpdateSelectionSnapshot()
     {
+        // 服务或模型被清空时同步清空快照，避免请求静默沿用上一次的选择。
         if (SelectedService is not null && SelectedModel is not null)
         {
             _selectionAccessor.Update(SelectedService.ProviderType, SelectedModel.Data);
+        }
+        else
+        {
+            _selectionAccessor.Clear();
         }
     }
 

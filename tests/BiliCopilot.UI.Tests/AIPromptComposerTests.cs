@@ -133,6 +133,46 @@ public class AIPromptComposerTests
     }
 
     [Fact]
+    public void Build_VideoSummary_TokensOfOtherKindsAreKeptAsIs()
+    {
+        var variables = new AIPromptVariables
+        {
+            Title = "视频标题",
+            Subtitle = "字幕内容",
+            Comments = "评论内容",
+            ArticleContent = "正文内容",
+            Question = "问题",
+        };
+
+        var prompt = AIPromptComposer.Build(
+            AIPromptKind.VideoSummary,
+            "{title}|{subtitle}|{comments}|{content}|{question}",
+            variables);
+
+        Assert.Equal("视频标题|字幕内容|{comments}|{content}|{question}", prompt);
+    }
+
+    [Fact]
+    public void Build_ArticleSummary_TokensOfOtherKindsAreKeptAsIs()
+    {
+        var variables = new AIPromptVariables
+        {
+            Title = "文章标题",
+            ArticleContent = "正文内容",
+            Description = "简介",
+            Subtitle = "字幕内容",
+            Comments = "评论内容",
+        };
+
+        var prompt = AIPromptComposer.Build(
+            AIPromptKind.ArticleSummary,
+            "{title}|{content}|{description}|{subtitle}|{comments}",
+            variables);
+
+        Assert.Equal("文章标题|正文内容|{description}|{subtitle}|{comments}", prompt);
+    }
+
+    [Fact]
     public void Build_UnknownPlaceholdersAreKeptAsIs()
     {
         var prompt = AIPromptComposer.Build(

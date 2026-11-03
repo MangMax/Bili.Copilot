@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <!-- 与 UI 工程的 GlobalUsing.cs 对齐：链接的 AI 源文件直接使用 StringBuilder 等类型。 -->
+    <Using Include="System.Text" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs" Link="Markdown\MarkdownImageLoader.cs" />
     <ProjectReference Include="..\..\externals\bili-kernel\src\Services\Services.Media\Services.Media.csproj" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Danmaku\*.cs" Link="Danmaku\%(Filename)%(Extension)" />

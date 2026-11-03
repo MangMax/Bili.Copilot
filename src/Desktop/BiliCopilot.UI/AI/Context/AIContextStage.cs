@@ -8,7 +8,7 @@ namespace BiliCopilot.UI.AI.Context;
 /// <remarks>
 /// 核心层只报告阶段，不取本地化文案；展示文案由上层映射.
 /// </remarks>
-public enum AIContextStage
+internal enum AIContextStage
 {
     /// <summary>
     /// 正在获取字幕元数据.
