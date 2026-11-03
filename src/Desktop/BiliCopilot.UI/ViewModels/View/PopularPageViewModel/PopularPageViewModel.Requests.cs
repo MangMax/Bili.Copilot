@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -137,7 +137,7 @@ public sealed partial class PopularPageViewModel
         {
             try
             {
-                var (page, nextOffset) = await _service.GetRecommendVideoListAsync(offset, RecommendPageSize);
+                var (page, nextOffset) = await _service.GetRecommendVideoListAsync(offset);
                 if (generation != _refreshGeneration || page is null || page.Count == 0) break;
                 var previousCount = videos.Count;
                 foreach (var video in page)
@@ -166,7 +166,7 @@ public sealed partial class PopularPageViewModel
     {
         try
         {
-            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset, RecommendPageSize);
+            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset);
             if (version != _sectionVersion) return;
             _recommendOffset = nextOffset;
             TryAddVideos(videos, VideoCardStyle.Recommend);

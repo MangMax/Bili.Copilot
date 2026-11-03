@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -19,15 +19,6 @@ public sealed partial class PopularPageViewModel
     private readonly Dictionary<IPopularSectionItemViewModel, List<VideoItemViewModel>> _videoCache = new();
 
     private long _recommendOffset;
-
-    /// <summary>
-    /// 推荐流每页请求的条数.
-    /// </summary>
-    /// <remarks>
-    /// 服务端对推荐流有自己的页大小，传 ps 也不会改变实际返回（实测固定约 9 条卡片、其中 6 条左右是视频），
-    /// 因此这个值只是「尽力声明」，真正决定一页有多少条的是服务端。
-    /// </remarks>
-    private const int RecommendPageSize = 30;
 
     /// <summary>
     /// 增量刷新时连续取几页推荐.
