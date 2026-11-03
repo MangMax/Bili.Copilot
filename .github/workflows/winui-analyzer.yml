@@ -1,19 +1,16 @@
 name: WinUI Analyzer Observation
 
-# WinUI 官方分析器（Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer）的观测构建.
+# WinUI 官方分析器（Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer）的观测构建：
+# 用显式开关跑一次 UI 工程，把 WUI 诊断落成 SARIF，供分批清理存量时比对
+# （基线、开关与清理顺序见 docs/agents/winui-analyzer.md）.
 #
-# 这个工作流只做一件事：用显式开关跑一次 UI 工程的观测构建，把 WUI 诊断落成 SARIF，
-# 供分批清理存量时比对（基线见 docs/agents/winui-analyzer.md）.
-#
-# 它必须是非阻断的：master 的必需检查只有 run-unit-tests.yml 里的 `test`，
-# 这里既不进分支保护，也不允许失败扩散 —— job 级 continue-on-error，
-# 构建失败只留下日志和已经生成的 SARIF 片段，不挡合并与发布.
+# 必须非阻断：master 的必需检查只有 run-unit-tests.yml 的 `test`，这里不进分支保护，
+# 失败只留日志与已生成的 SARIF.
 on:
   push:
     branches: [master]
-  # 这个 job 不是必需检查，所以可以按路径过滤：不碰被分析代码的 PR 不必花十几分钟
-  # 跑一次观测构建. 一旦它被纳入分支保护（见 docs/agents/winui-analyzer.md 的
-  # "收紧为阻断"），必须删掉本过滤 —— 否则没触发的工作流会让必需检查永远停在 pending.
+  # 不是必需检查，所以可以按路径过滤；一旦纳入分支保护（见 docs 的"收紧为阻断"）
+  # 必须删掉本过滤，否则没触发的 PR 会让必需检查一直停在 pending.
   pull_request:
     paths:
       # 被分析的工程本体（源码、XAML、csproj、resw 都在这里）
@@ -32,8 +29,7 @@ permissions:
   security-events: write
 
 jobs:
-  winui-analyzer:
-    name: winui-analyzer-observation
+  winui-analyzer-observation:
     runs-on: windows-latest
     # 非阻断的关键：任何一步失败都不会让这个 job 成为红色阻断项.
     continue-on-error: true
@@ -54,12 +50,9 @@ jobs:
         with:
           global-json-file: global.json
 
-      # WinUIAnalyzerObservation=true 同时负责三件事：引用分析器、关掉本工程的
-      # warnings-as-errors（存量 427 条诊断必然命中）、把诊断写进 SARIF.
-      # GenerateAppxPackageOnBuild=false：只要编译结果，不碰 MSIX 打包 ——
-      # runner 上没有 libmpv / ffmpeg 等运行时依赖，打包本来就会中止.
+      # 开关语义见 csproj 与 docs；GenerateAppxPackageOnBuild=false 是因为 runner 上没有
+      # libmpv 等运行时依赖，只要编译结果，不碰 MSIX 打包.
       - name: 观测构建并生成 SARIF
-        id: observe
         continue-on-error: true
         shell: pwsh
         run: |
@@ -120,9 +113,8 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      # 有文件才上传；upload-sarif 在没有 SARIF 时会直接失败，所以用 hashFiles 兜住.
-      # 守卫用 env.Sarif_File 而不是字面量：路径挪动时守卫跟着走，不会静默跳过上传.
-      # hashFiles 只认工作区相对模式，因此 Sarif_File 必须是相对路径.
+      # 有文件才上传：upload-sarif 拿到空的 sarif_file 会直接失败，用 hashFiles 兜住；
+      # hashFiles 只认工作区相对模式，所以 Sarif_File 不能是绝对路径.
       - name: 上传 SARIF 到 code scanning
         if: always() && hashFiles(env.Sarif_File) != ''
         continue-on-error: true
