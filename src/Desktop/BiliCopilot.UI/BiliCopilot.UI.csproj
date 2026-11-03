@@ -29,10 +29,11 @@
   <!--
     WinUI 官方分析器（观测模式），开关与命令见 docs/agents/winui-analyzer.md.
 
-    默认构建不引用：主构建是 warnings-as-errors，而仓库仍有 WUI2010 / WUI1001 等存量 WUI
-    诊断（WUI3001 已清零，见 docs/agents/winui-analyzer.md），直接引入会让构建立刻失败。
-    开关只影响本工程，负责引用分析器、把编译器 ErrorLog 指向 SARIF、并关掉本工程的
-    warnings-as-errors（默认构建仍是 warnings-as-errors，这不是规则降级）。
+    默认构建不引用：主构建是 warnings-as-errors，把分析器挪进默认构建是 #114 的收口动作
+    （届时它常驻，新诊断由 warnings-as-errors 直接阻断）。存量 WUI warning 已在 #110~#113
+    清零，见 docs/agents/winui-analyzer.md。开关只影响本工程，负责引用分析器、把编译器
+    ErrorLog 指向 SARIF、并关掉本工程的 warnings-as-errors（默认构建仍是 warnings-as-errors，
+    这不是规则降级）。
     不加开关时分析器不会被还原、加载或执行.
   -->
   <PropertyGroup Condition="'$(WinUIAnalyzerObservation)' == 'true'">

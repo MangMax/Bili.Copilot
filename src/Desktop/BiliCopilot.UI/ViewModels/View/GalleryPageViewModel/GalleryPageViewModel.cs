@@ -4,15 +4,15 @@ using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI;
+using Microsoft.Windows.Storage.Pickers;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.System.UserProfile;
-using WinRT.Interop;
 using WinUIEx;
 
 namespace BiliCopilot.UI.ViewModels.View;
@@ -97,21 +97,28 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
 
         var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
         var extension = Path.GetExtension(fileName);
-        var savePicker = new FileSavePicker
+
+        // 新选择器在构造时就绑定窗口标识，不再需要 InitializeWithWindow 把 UWP 选择器挂到 HWND 上.
+        // 默认文件名带扩展名、类型过滤只留图片扩展名，和旧版行为一致；不额外设 DefaultFileExtension，
+        // 免得用户改名时不带扩展名的情况出现两套补全规则.
+        var hwnd = this.Get<AppViewModel>().ActivatedWindow.GetWindowHandle();
+        var savePicker = new FileSavePicker(Win32Interop.GetWindowIdFromWindow(hwnd))
         {
             SuggestedStartLocation = PickerLocationId.PicturesLibrary,
             SuggestedFileName = fileName,
         };
 
         savePicker.FileTypeChoices.Add($"{extension.TrimStart('.').ToUpper()} 图片", [extension]);
-        InitializeWithWindow.Initialize(savePicker, this.Get<AppViewModel>().ActivatedWindow.GetWindowHandle());
-        var file = await savePicker.PickSaveFileAsync();
-        if (file is null)
+        var result = await savePicker.PickSaveFileAsync();
+
+        // 取消时返回 null：不建文件、不提示错误，保持旧版语义.
+        if (result is null)
         {
             return;
         }
 
-        using var stream = await file.OpenStreamForWriteAsync();
+        // 新接口只给路径，没有 StorageFile；用异步 FileStream 维持原有的非阻塞写入.
+        using var stream = new FileStream(result.Path, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
         using var client = new HttpClient();
         using var response = await client.GetAsync(SelectedImage.SourceUri);
         await response.Content.CopyToAsync(stream);

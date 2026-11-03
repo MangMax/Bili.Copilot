@@ -45,7 +45,7 @@
             Margin="10,0,-6,0"
             VerticalAlignment="Center"
             Style="{StaticResource BodyStrongTextBlockStyle}"
-            Text="{x:Bind ViewModel.SelectedMainSection.Title, Mode=OneWay}"
+            Text="{x:Bind ViewModel.SelectedMainSection.Title, Mode=OneWay, FallbackValue=''}"
             Visibility="{x:Bind ViewModel.IsSubNavEnabled, Mode=OneWay}" />
         <livepartition:LivePartitionMainSideBody
             Grid.Row="2"

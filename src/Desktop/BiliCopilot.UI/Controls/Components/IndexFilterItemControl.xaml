@@ -21,7 +21,7 @@
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <base:TrimTextBlock VerticalAlignment="Center" Text="{x:Bind ViewModel.Data.Name, Mode=OneWay}" />
+        <base:TrimTextBlock VerticalAlignment="Center" Text="{x:Bind ViewModel.Data.Name, Mode=OneWay, FallbackValue=''}" />
         <ComboBox
             x:Name="ConditionComboBox"
             Grid.Column="1"

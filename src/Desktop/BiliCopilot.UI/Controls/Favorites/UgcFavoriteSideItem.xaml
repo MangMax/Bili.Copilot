@@ -26,6 +26,6 @@
             Grid.Column="1"
             VerticalAlignment="Center"
             MaxLines="1"
-            Text="{x:Bind ViewModel.Data.Title, Mode=OneWay}" />
+            Text="{x:Bind ViewModel.Data.Title, Mode=OneWay, FallbackValue=''}" />
     </Grid>
 </local:UgcFavoriteControlBase>

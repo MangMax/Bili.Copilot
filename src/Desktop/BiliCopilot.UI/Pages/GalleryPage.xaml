@@ -54,7 +54,7 @@
             VerticalScrollMode="Enabled"
             ViewChanged="OnScrollViewChanged"
             ZoomMode="Enabled">
-            <Image x:Name="Image" Source="{x:Bind ViewModel.SelectedImage.SourceUri, Mode=OneWay, Converter={StaticResource BitmapConverter}}" />
+            <Image x:Name="Image" Source="{x:Bind ViewModel.SelectedImage.SourceUri, Mode=OneWay, Converter={StaticResource BitmapConverter}, FallbackValue={x:Null}}" />
         </ScrollView>
 
         <!--  用于进行图片操作  -->

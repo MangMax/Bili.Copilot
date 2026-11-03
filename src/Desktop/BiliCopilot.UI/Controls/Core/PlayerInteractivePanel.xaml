@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PlayerControlBase
     x:Class="BiliCopilot.UI.Controls.Core.PlayerInteractivePanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -357,7 +357,7 @@
             VerticalAlignment="Stretch"
             Fill="Transparent" />
 
-        <Border Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+        <Border Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Collapsed}">
             <Border Visibility="{x:Bind ViewModel.IsControlsVisible, Mode=OneWay}">
                 <Button
                     Margin="0,0,16,0"

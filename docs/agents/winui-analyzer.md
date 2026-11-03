@@ -45,18 +45,19 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 | --- | --- | --- | --- |
 | WUI3001 | warning | 0 | `[ObservableProperty]` 旧字段写法，未用 partial property（#109 批次一 100 条 + #110 批次二 201 条已全部迁完） |
 | WUI2011 | warning | 0 | `x:Bind` 缺显式 `Mode`（#111 已清零：25 处补 `OneWay`，48 处写显式 `OneTime`） |
-| WUI2010 | warning | 52 | 嵌套 `x:Bind` 路径缺 `FallbackValue`，中间段为 null 时显示异常 |
-| WUI1001 | warning | 1 | `Windows.Storage.Pickers` 应换成 `Microsoft.Windows.Storage.Pickers` |
-| **warning 小计** | | **53** | 0 + 0 + 52 + 1；WUI3001、WUI2011 已清零，剩 WUI2010 与 WUI1001 两类存量 |
+| WUI2010 | warning | 0 | 嵌套 `x:Bind` 路径缺 `FallbackValue`（#112 已清零：52 处逐条补 `FallbackValue`，保留原有 `Mode`） |
+| WUI1001 | warning | 0 | 已清零（#113）：保存图片改用 `Microsoft.Windows.Storage.Pickers` |
+| **warning 小计** | | **0** | 0 + 0 + 0 + 0；四类 warning 全部清零，只剩 note 级 WUI2020 / WUI1010 |
 | WUI2020 | note | 272 | 缺失 `AutomationId` |
 | WUI1010 | note | 2 | 迁移表的特性提示 |
 
 口径：
 
 - 小计是**按位置去重**后的 warning 数（基线 427；#111 清零 WUI2011 后 354，
-  #109 迁移 WUI3001 批次一后 254，#110 清零 WUI3001 后 53）。SARIF 里 WUI2010 的原始条目是 54，其中
+  #109 迁移 WUI3001 批次一后 254，#113 清零 WUI1001 后 253，#112 清零 WUI2010 后 201，
+  #110 清零 WUI3001 后 0）。WUI2010 清零前 SARIF 里的原始条目是 54，其中
   `Controls/Comment/CommentMainPanel.xaml:63` 与
-  `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置）。
+  `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置），按位置去重后为 52。
 - note 级（WUI2020 / WUI1010）不计入小计，单独记。
 - WUI3001 分两批，均已完成：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
   批次二 #110 收掉剩下的 201 条。每批都要求“该批文件在观测构建里 WUI3001 为 0”，
@@ -64,6 +65,10 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 - #110 收口时删掉了 `MVVMTK0045`（只为字段写法存在，迁移后 0 命中）；`MVVMTK0046` 留在
   `NoWarn` 里，它与字段写法无关（命中的是 8 个 `[GeneratedBindableCustomProperty]` 条目
   视图模型里的 46 个 `[RelayCommand]` 方法，属 AOT 绑定遗留），删掉会让默认构建直接失败。
+- WUI1001 的 1 条在 #113 一次清零：`GalleryPageViewModel.SaveImageAsync` 换成
+  `Microsoft.Windows.Storage.Pickers.FileSavePicker`（构造时传 `WindowId`，取消返回
+  `null`，落盘走 `FileStream`）。该 API 由 `Microsoft.WindowsAppSDK.Foundation 2.6.4`
+  提供，已用 `winapp find-api` 核对成员；规则留在表里作为回归项，不再是待清存量。
 
 ### CS9264：只在写 SARIF 的构建里出现
 
@@ -82,7 +87,7 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 
 所以原因不是增量编译、条件编译、editorconfig 降级或 `WarningLevel`：两边都是
 `/warn:11`、`/nullable:enable`、同一份 `/nowarn`、同样三份 `/analyzerconfig`，
-唯一去掉 `ErrorLog` 后 WUI2010 / WUI1001 照旧上报、CS9264 却全部消失，
+只把 `ErrorLog` 清空后 WUI2010 / WUI1001 照旧上报、CS9264 却全部消失，
 说明"写 SARIF 的那次编译"才会产出这些诊断（用 `-p:RunAnalyzers=false` 复测仍有 CS9264，
 可以排除是分析器加的）。
 
@@ -117,7 +122,19 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
      和单独的 `{x:Bind}`（整项 DataContext）本来就不触发这条规则，保持原样。
    仓库当前没有任何 `x:DefaultBindMode`，所以这些命中不是继承模式造成的误报。
    命中全部清零后，新写的 `x:Bind` 必须显式写 `Mode`。
-3. **WUI2010（52 条）**：给嵌套 `x:Bind` 补 `FallbackValue` 或改绑扁平属性。
+3. **WUI2010（52 → 0，#112 已完成）**：给嵌套 `x:Bind` 补 `FallbackValue` 或改绑扁平属性，
+   52 个位置全部选择补 `FallbackValue`，`Mode` 原样保留（#111 的判定不被覆盖）：
+   - 文本/路径类给空串或空引用（`FallbackValue=''` / `{x:Null}`），中间段为 null 时显示空白占位
+     而不是停在上一目标的旧值；`BasicCoverImage.Source`、`Image.Source`、`TrimTextBlock.Text`
+     都是可空入参，空引用安全；
+   - 布尔/可见性/命令类给"不成立"一侧（`False` / `Collapsed` / `{x:Null}`），
+     让控件在未就绪时保持禁用或隐藏，而不是对 null 求值；
+   - 数值类给控件本身的初值（音量 `0`、倍速 `1`、计数 `0`），与 Slider 的 `Minimum` /
+     `Maximum` 区间一致；
+   - 没有命中改绑扁平属性：这 52 条的中间段（`Player`、`Card`、`SelectedSection`、
+     `MyProfile`、`TopItem`）在对应页面都是单例注入或构造期就位，只有"加载中/未登录"这类
+     瞬时 null，拍平反而要把派生状态再复制一份，故按票面要求优先补 `FallbackValue`。
+   观测构建 `-p:WarningsAsErrors=WUI2010` 下 0 错误，SARIF 里该规则不再出现。
 4. **收紧为阻断**：三类清零后，把 UI 工程的引用从条件开关里挪出来常驻、
    恢复 warnings-as-errors，并把 `winui-analyzer-observation` job 的
    `continue-on-error` 去掉、纳入必需检查。届时本文件只保留基线表格和这条历史。

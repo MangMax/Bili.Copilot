@@ -19,7 +19,7 @@
             IsClosable="True"
             IsIconVisible="True"
             IsOpen="{x:Bind ViewModel.IsNotificationVisible, Mode=OneWay}"
-            Message="{x:Bind ViewModel.Data.Message, Mode=OneWay}"
+            Message="{x:Bind ViewModel.Data.Message, Mode=OneWay, FallbackValue=''}"
             Severity="Informational">
             <InfoBar.ActionButton>
                 <HyperlinkButton Command="{x:Bind ViewModel.ActiveCommand, Mode=OneWay}" Content="{ext:Locale Name=Play}" />

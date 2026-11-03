@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PlayerControlBase
     x:Class="BiliCopilot.UI.Controls.Core.PlayerOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -102,7 +102,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="{ext:Locale Name=Loading}"
-                Visibility="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay}" />
+                Visibility="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay, FallbackValue=Collapsed}" />
         </Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -393,7 +393,7 @@
                     TitleMaxWidth="480">
                     <base:AppTitleBar.LeftEdgeElement>
                         <Grid>
-                            <Grid Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                            <Grid Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Collapsed}">
                                 <Button
                                     Command="{x:Bind ViewModel.BackCommand, Mode=OneWay}"
                                     Style="{StaticResource LeftEdgeButtonStyle}"
@@ -406,7 +406,7 @@
                                 Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}"
                                 Style="{StaticResource LeftEdgeButtonStyle}"
                                 ToolTipService.ToolTip="{ext:Locale Name=ExitCompactOverlay}"
-                                Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay}">
+                                Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, FallbackValue=Collapsed}">
                                 <ic:SymbolIcon FontSize="14" Symbol="ContractDownLeft" />
                             </Button>
                         </Grid>
@@ -438,7 +438,7 @@
                                         MaxWidth="220"
                                         VerticalAlignment="Center"
                                         MaxLines="1"
-                                        Text="{x:Bind ViewModel.SelectedSource.Name, Mode=OneWay}" />
+                                        Text="{x:Bind ViewModel.SelectedSource.Name, Mode=OneWay, FallbackValue=''}" />
                                 </StackPanel>
 
                                 <DropDownButton.Flyout>
@@ -541,7 +541,7 @@
                                             MinWidth="140"
                                             MinHeight="40"
                                             Click="OnSubtitleSettingItemClick"
-                                            IsEnabled="{x:Bind ViewModel.Player.IsPlaybackInitialized, Mode=OneWay}"
+                                            IsEnabled="{x:Bind ViewModel.Player.IsPlaybackInitialized, Mode=OneWay, FallbackValue=False}"
                                             Text="{ext:Locale Name=SubtitleSetting}" />
                                     </MenuFlyout>
                                 </Button.Flyout>
@@ -552,7 +552,7 @@
                                 VerticalAlignment="Center"
                                 Click="OnCloseButtonClick"
                                 Style="{StaticResource AccentButtonStyle}"
-                                Visibility="{x:Bind ViewModel.Player.IsFullScreen, Mode=OneWay}">
+                                Visibility="{x:Bind ViewModel.Player.IsFullScreen, Mode=OneWay, FallbackValue=Collapsed}">
                                 <base:IconTextBlock
                                     IconBrush="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                                     Symbol="Dismiss"

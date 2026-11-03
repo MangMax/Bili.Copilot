@@ -22,7 +22,7 @@
             <Grid Margin="0,16">
                 <repeater:AppRepeater
                     x:Name="SeasonRepeater"
-                    ItemsSource="{x:Bind ViewModel.SelectedTimeline.Items, Mode=OneWay}"
+                    ItemsSource="{x:Bind ViewModel.SelectedTimeline.Items, Mode=OneWay, FallbackValue={x:Null}}"
                     Layout="{StaticResource PgcLayout}">
                     <repeater:AppRepeater.ItemTemplate>
                         <DataTemplate x:DataType="items:SeasonItemViewModel">
@@ -36,7 +36,7 @@
         <base:EmptyHolder
             Description="{ext:Locale Name=TimelineHasNoVideo}"
             Emoji="&#x1F92A;"
-            Visibility="{x:Bind ViewModel.SelectedTimeline.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+            Visibility="{x:Bind ViewModel.SelectedTimeline.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
 
         <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}" />
     </Grid>
