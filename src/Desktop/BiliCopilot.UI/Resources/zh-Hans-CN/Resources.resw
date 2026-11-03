@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -3287,6 +3287,21 @@
   </data>
   <data name="IncrementalRecommendRefreshDescription" xml:space="preserve">
     <value>刷新推荐视频时保留当前列表，仅在顶部插入新视频</value>
+  </data>
+  <data name="RecommendSource" xml:space="preserve">
+    <value>推荐流来源</value>
+  </data>
+  <data name="RecommendSourceDescription" xml:space="preserve">
+    <value>选择推荐流使用手机端、网页端，或同时请求两端并合并；切换后刷新生效</value>
+  </data>
+  <data name="RecommendSourceMobile" xml:space="preserve">
+    <value>手机端</value>
+  </data>
+  <data name="RecommendSourceWeb" xml:space="preserve">
+    <value>网页端</value>
+  </data>
+  <data name="RecommendSourceMerged" xml:space="preserve">
+    <value>合并推荐</value>
   </data>
   <data name="UndoRefresh" xml:space="preserve">
     <value>撤销刷新</value>

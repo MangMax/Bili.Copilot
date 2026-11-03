@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Collections.ObjectModel;
 using BiliCopilot.UI.Controls;
@@ -398,6 +398,7 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
         public Task<IReadOnlyList<VideoInformation>> GetGlobalRankingListAsync(CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<VideoInformation>>([Video("Rank")]);
         public Task<IReadOnlyList<VideoInformation>> GetPartitionRankingListAsync(Partition partition, CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<VideoInformation>>([Video(partition.Id)]);
         public Task<IReadOnlyList<VideoInformation>> GetCuratedPlaylistAsync(CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetCuratedFeedAsync(long freshIndex = 0, int pageSize = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> GetPartitionRecommendVideoListAsync(Partition partition, long offset = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset, int NextPageNumber)> GetChildPartitionVideoListAsync(Partition childPartition, long offset = 0, int pageNumber = 0, PartitionVideoSortType sortType = PartitionVideoSortType.Default, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
@@ -414,5 +415,6 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
         public Task<IReadOnlyList<VideoInformation>> GetPartitionRankingListAsync(Partition partition, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<IReadOnlyList<VideoInformation>> GetGlobalRankingListAsync(CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<IReadOnlyList<VideoInformation>> GetCuratedPlaylistAsync(CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetCuratedFeedAsync(long freshIndex = 0, int pageSize = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 }

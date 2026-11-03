@@ -1,7 +1,9 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
+using BiliCopilot.UI.ViewModels.Recommend;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Media;
@@ -19,6 +21,9 @@ public sealed partial class PopularPageViewModel
     private readonly Dictionary<IPopularSectionItemViewModel, List<VideoItemViewModel>> _videoCache = new();
 
     private long _recommendOffset;
+    // 当前列表实际使用的推荐流来源；设置变更后要等到下一次刷新才切换，避免同一条列表混源。
+    private IRecommendFeedSource? _feedSource;
+    private RecommendFeedSource _feedSourceKind;
 
     /// <summary>
     /// 增量刷新时连续取几页推荐.

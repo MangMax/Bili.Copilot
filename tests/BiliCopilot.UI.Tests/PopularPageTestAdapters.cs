@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 // Headless adapters only for OS/UI presentation, localization and local settings.
 // Page commands, collections and IVideoDiscoveryService are the production code.
@@ -94,7 +94,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string LastSection { get; set; } = "Recommend";
         public static bool IncrementalRecommendRefresh { get; set; }
         public static bool ShowSearchRecommend { get; set; } = true;
-        public static T ReadLocalSetting<T>(SettingNames name, T fallback) => NavigationTestServices.Settings.Value is { } settings ? (settings.TryGetValue(name, out var value) ? (T)value! : fallback) : name == SettingNames.IncrementalRecommendRefresh ? (T)(object)IncrementalRecommendRefresh : name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : (T)(object)LastSection;
+        public static T ReadLocalSetting<T>(SettingNames name, T fallback) => NavigationTestServices.Settings.Value is { } settings ? (settings.TryGetValue(name, out var value) ? (T)value! : fallback) : name == SettingNames.IncrementalRecommendRefresh ? (T)(object)IncrementalRecommendRefresh : name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : name == SettingNames.RecommendFeedSource ? fallback : (T)(object)LastSection;
         public static void WriteLocalSetting<T>(SettingNames name, T value)
         {
             if (NavigationTestServices.Settings.Value is { } settings) settings[name] = value;

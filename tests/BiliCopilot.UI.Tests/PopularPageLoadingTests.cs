@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
@@ -261,6 +261,8 @@ public sealed class PopularPageLoadingTests
         var nextSection = savedSection == "Hot" ? PopularSectionType.Recommend : PopularSectionType.Hot;
         page.SelectSectionCommand.Execute(page.Sections.OfType<PopularSectionItemViewModel>().Single(x => x.Type == nextSection));
         PageTestServices.Dispatcher.Drain();
+        // 取数经由来源协作者，多一层异步续体；等新栏目的请求真正发出后再断言旧结果不落地。
+        await WaitForAsync(() => service.Requests.Contains(nextSection.ToString()));
 
         old.SetResult([Video("stale")]);
         PageTestServices.Dispatcher.Drain();
@@ -268,6 +270,8 @@ public sealed class PopularPageLoadingTests
         Assert.Empty(page.Videos);
         current.SetResult([Video("current")]);
         PageTestServices.Dispatcher.Drain();
+        // 结果落地要多跳一次异步续体，等可观测状态稳定后再断言。
+        await WaitForAsync(() => page.Videos.Count > 0 && !page.IsVideoLoading);
         Assert.Equal("current", Assert.Single(page.Videos).Data.BvId);
         Assert.False(page.IsVideoLoading);
     }
@@ -600,8 +604,17 @@ public sealed class PopularPageLoadingTests
         public Task<IReadOnlyList<VideoInformation>> GetGlobalRankingListAsync(CancellationToken cancellationToken = default) => Rank?.Invoke() ?? Task.FromResult<IReadOnlyList<VideoInformation>>([Video("Rank")]);
         public Task<IReadOnlyList<VideoInformation>> GetPartitionRankingListAsync(Partition partition, CancellationToken cancellationToken = default) => Rank?.Invoke() ?? Task.FromResult<IReadOnlyList<VideoInformation>>([Video(partition.Id)]);
         public Task<IReadOnlyList<VideoInformation>> GetCuratedPlaylistAsync(CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetCuratedFeedAsync(long freshIndex = 0, int pageSize = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> GetPartitionRecommendVideoListAsync(Partition partition, long offset = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset, int NextPageNumber)> GetChildPartitionVideoListAsync(Partition childPartition, long offset = 0, int pageNumber = 0, PartitionVideoSortType sortType = PartitionVideoSortType.Default, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+    }
+
+    private static async Task WaitForAsync(Func<bool> condition)
+    {
+        for (var i = 0; i < 200 && !condition(); i++)
+        {
+            await Task.Delay(5);
+        }
     }
 
     private static VideoInformation Video(string id) => new(new(id, id, null!), null!, bvId: id);

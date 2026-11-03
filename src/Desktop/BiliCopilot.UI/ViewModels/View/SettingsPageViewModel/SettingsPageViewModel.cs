@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.AI;
 using BiliCopilot.UI.Models.Constants;
@@ -112,6 +112,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         UseWebPlayerWhenLive = SettingsToolkit.ReadLocalSetting(SettingNames.UseWebPlayerWhenLive, false);
         ShowSearchRecommend = SettingsToolkit.ReadLocalSetting(SettingNames.ShowSearchRecommend, false);
         IncrementalRecommendRefresh = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false);
+        RecommendSourceIndex = (int)SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
 
         ScreenshotAction = SettingsToolkit.ReadLocalSetting(SettingNames.ScreenshotAction, ScreenshotAction.Open);
         var customScreenshotFolderPath = SettingsToolkit.ReadLocalSetting(SettingNames.CustomScreenshotFolderPath, string.Empty);
@@ -509,6 +510,12 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         // 页面控件常驻、只切换可见性，收不到重新加载事件；关闭增量刷新时主动收敛撤销入口。
         this.Get<PopularPageViewModel>().OnIncrementalRecommendRefreshChanged(value);
         this.Get<VideoPartitionPageViewModel>().OnIncrementalRecommendRefreshChanged(value);
+    }
+
+    partial void OnRecommendSourceIndexChanged(int value)
+    {
+        var source = Enum.IsDefined(typeof(RecommendFeedSource), value) ? (RecommendFeedSource)value : RecommendFeedSource.Mobile;
+        SettingsToolkit.WriteLocalSetting(SettingNames.RecommendFeedSource, source);
     }
 
     partial void OnIsPopularNavVisibleChanged(bool value)

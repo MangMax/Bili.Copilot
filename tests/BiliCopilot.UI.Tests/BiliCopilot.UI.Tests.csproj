@@ -42,6 +42,8 @@
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\View\VideoPartitionPageViewModel\*.cs" Link="Partition\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Components\VideoPartitionDetailViewModel\*.cs" Link="Partition\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Items\PartitionViewModel.cs" Link="Partition\PartitionViewModel.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Recommend\*.cs" Link="Recommend\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\RecommendFeedSource.cs" Link="Recommend\RecommendFeedSource.cs" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\PopularSectionType.cs" Link="Popular\PopularSectionType.cs" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\VideoCardStyle.cs" Link="Popular\VideoCardStyle.cs" />
   </ItemGroup>

@@ -3,6 +3,7 @@
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
+using BiliCopilot.UI.ViewModels.Recommend;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
@@ -132,13 +133,14 @@ public sealed partial class PopularPageViewModel
         var videos = new List<VideoInformation>();
         var seenKeys = new HashSet<string>(StringComparer.Ordinal);
         var offset = 0L;
+        _feedSource = ResolveFeedSource(allowSourceChange: true);
 
         for (var i = 0; i < batchCount; i++)
         {
             try
             {
-                var (page, nextOffset) = await _service.GetRecommendVideoListAsync(offset);
-                if (generation != _refreshGeneration || page is null || page.Count == 0) break;
+                var (page, nextOffset) = await _feedSource!.FetchAsync(offset);
+                if (generation != _refreshGeneration || page.Count == 0) break;
                 var previousCount = videos.Count;
                 foreach (var video in page)
                 {
@@ -162,11 +164,45 @@ public sealed partial class PopularPageViewModel
         return (videos, offset);
     }
 
+    /// <summary>
+    /// 取得当前列表应该使用的推荐流来源.
+    /// </summary>
+    /// <param name="allowSourceChange">是否允许在此处切换来源（刷新与首次加载允许，滚动加载不允许）.</param>
+    /// <remarks>
+    /// 设置改变后立即换源会让新来源的条目追加到旧来源的列表后面，造成同一条列表混源；
+    /// 因此滚动加载继续用旧的来源，只有刷新或首屏才切到新来源并从头上重新取。
+    /// </remarks>
+    private IRecommendFeedSource ResolveFeedSource(bool allowSourceChange)
+    {
+        var kind = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
+        if (_feedSource is not null && _feedSourceKind == kind)
+        {
+            return _feedSource;
+        }
+
+        if (_feedSource is not null && !allowSourceChange)
+        {
+            return _feedSource;
+        }
+
+        _feedSourceKind = kind;
+        _feedSource = RecommendFeedSourceFactory.Create(_service, kind);
+        // 换来源后旧游标不再属于这条流，必须从头上重新取。
+        _recommendOffset = 0;
+        return _feedSource;
+    }
+
     private async Task LoadRecommendVideosAsync(long version)
     {
         try
         {
-            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset);
+            // 首屏按设置选来源；列表已有内容时沿用当前来源，避免滚动加载把新来源的条目接到旧列表后面。
+            if (Videos.Count == 0 || _feedSource is null)
+            {
+                _feedSource = ResolveFeedSource(allowSourceChange: true);
+            }
+
+            var (videos, nextOffset) = await _feedSource.FetchAsync(_recommendOffset);
             if (version != _sectionVersion) return;
             _recommendOffset = nextOffset;
             TryAddVideos(videos, VideoCardStyle.Recommend);
