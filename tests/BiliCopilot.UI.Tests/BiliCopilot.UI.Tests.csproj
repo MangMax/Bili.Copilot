@@ -114,4 +114,13 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/ArticleReaderPageViewModel/*.cs" Link="Article/%(Filename)%(Extension)" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/ArticleCardStyle.cs" Link="Article/ArticleCardStyle.cs" />
   </ItemGroup>
+
+  <!-- 用户空间页的目标归属：页面与动态分区视图模型是生产代码，适配器只补 WinUI 展示层与内核接口假实现。 -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/UserSpacePageViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserMomentDetailViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/PinItem.cs" Link="UserSpace/PinItem.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/PinContentType.cs" Link="UserSpace/PinContentType.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/MomentCardStyle.cs" Link="UserSpace/MomentCardStyle.cs" />
+  </ItemGroup>
 </Project>

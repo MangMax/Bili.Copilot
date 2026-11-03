@@ -36,10 +36,17 @@ namespace BiliCopilot.UI.ViewModels.Components
         public CommunityToolkit.Mvvm.Input.IAsyncRelayCommand LoadItemsCommand { get; }
             = new CommunityToolkit.Mvvm.Input.AsyncRelayCommand(() => Task.CompletedTask);
 
+        public CommunityToolkit.Mvvm.Input.IRelayCommand RefreshCommand { get; }
+            = new CommunityToolkit.Mvvm.Input.RelayCommand(() => { });
+
         public string? LastSourceId { get; private set; }
 
+        public string? Id => LastSourceId;
+
         public void Initialize(string sourceId, CommentTargetType targetType, CommentSortType sortType)
-            => LastSourceId = sourceId;
+        {
+            LastSourceId = sourceId;
+        }
     }
 }
 

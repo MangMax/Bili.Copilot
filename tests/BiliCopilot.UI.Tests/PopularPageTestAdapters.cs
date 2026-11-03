@@ -10,6 +10,31 @@ using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 
 
+namespace Richasy.WinUIKernel.Share.Base
+{
+    /// <summary>
+    /// Toast severity. Production lives in the Windows-only WinUIKernel package;
+    /// the view models here only pass it through to <c>AppViewModel.ShowTipCommand</c>.
+    /// </summary>
+    public enum InfoType
+    {
+        /// <summary>Information.</summary>
+        Information,
+
+        /// <summary>Error.</summary>
+        Error,
+
+        /// <summary>Warning.</summary>
+        Warning,
+
+        /// <summary>Success.</summary>
+        Success,
+
+        /// <summary>Loading.</summary>
+        Loading,
+    }
+}
+
 namespace FluentIcons.Common { public enum Symbol { Balloon, Fire, RibbonStar, Rocket, DesignIdeas, VideoClip, VideoChat, Dust, FilmstripPlay, DocumentBulletList, Chat, Settings } }
 namespace BiliCopilot.UI.ViewModels.View
 {
@@ -81,7 +106,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
@@ -113,7 +138,16 @@ namespace BiliCopilot.UI.ViewModels.Core
 {
     public sealed class AppViewModel
     {
+        public AppViewModel()
+            => ShowTipCommand = new AsyncRelayCommand<(string, Richasy.WinUIKernel.Share.Base.InfoType)>(data =>
+            {
+                Tips.Add((data.Item1, data.Item2));
+                return Task.CompletedTask;
+            });
+
         public List<BiliCopilot.UI.Forms.MainWindow> Windows { get; } = new();
         public RelayCommand<MediaSnapshot> OpenPlayerCommand { get; } = new(_ => { });
+        public List<(string Message, Richasy.WinUIKernel.Share.Base.InfoType Type)> Tips { get; } = new();
+        public IAsyncRelayCommand<(string, Richasy.WinUIKernel.Share.Base.InfoType)> ShowTipCommand { get; }
     }
 }

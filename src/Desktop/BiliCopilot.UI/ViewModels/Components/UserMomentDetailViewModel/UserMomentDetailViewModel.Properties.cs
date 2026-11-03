@@ -22,6 +22,19 @@ public sealed partial class UserMomentDetailViewModel
     private UserProfile _user;
     private Action<MomentItemViewModel> _showCommentAction;
 
+    /// <summary>
+    /// 动态列表的加载代次，每次重新加载递增.
+    /// </summary>
+    /// <remarks>
+    /// 用户空间是参数化页面，两个动态分区被同一份视图模型复用。旧目标的
+    /// 响应不得写入列表、分页游标或加载态。
+    /// </remarks>
+    private int _loadGeneration;
+
+    private readonly object _loadLock = new();
+
+    private CancellationTokenSource? _loadCancellation;
+
     [ObservableProperty]
     private bool _isEmpty;
 
@@ -38,4 +51,18 @@ public sealed partial class UserMomentDetailViewModel
     /// 列表已完成更新.
     /// </summary>
     public event EventHandler ListUpdated;
+
+    /// <summary>
+    /// 当前加载的代次；页面卸载时用它只取消本页面发起的那一代加载.
+    /// </summary>
+    public int CurrentLoadGeneration
+    {
+        get
+        {
+            lock (_loadLock)
+            {
+                return _loadGeneration;
+            }
+        }
+    }
 }
