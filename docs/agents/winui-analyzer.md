@@ -47,7 +47,8 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 
 ## 当前基线
 
-分析器 `0.7.1`，Release / x64，2026-11-03 的结果（#114 收紧后复核：默认构建与带 SARIF 的构建都是这个数）：
+分析器 `0.7.1`，Release / x64，2026-11-03 的结果（#114 收紧后复核：默认构建与带 SARIF 的构建都是这个数；
+#116 把 master 的 #94 字幕改动合进来后按同一口径复核过，warning 仍是 0，note 由 272 降为 264）：
 
 | 规则 | 级别 | 数量 | 说明 |
 | --- | --- | --- | --- |
@@ -56,7 +57,7 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 | WUI2010 | warning | 0 | 嵌套 `x:Bind` 路径缺 `FallbackValue`（#112 已清零：52 处逐条补 `FallbackValue`，保留原有 `Mode`） |
 | WUI1001 | warning | 0 | 已清零（#113）：保存图片改用 `Microsoft.Windows.Storage.Pickers` |
 | **warning 小计** | | **0** | 0 + 0 + 0 + 0；四类 warning 全部清零，只剩 note 级 WUI2020 / WUI1010 |
-| WUI2020 | note | 272 | 缺失 `AutomationId` |
+| WUI2020 | note | 264 | 缺失 `AutomationId`（#116 合入 #94 字幕改动后 272 → 264，见口径） |
 | WUI1010 | note | 2 | 迁移表的特性提示 |
 
 口径：
@@ -67,6 +68,12 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
   `Controls/Comment/CommentMainPanel.xaml:63` 与
   `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置），按位置去重后为 52。
 - note 级（WUI2020 / WUI1010）不计入小计，单独记。
+- WUI2020 从 272 降到 264 是 #94 字幕设置改版的直接结果，不是漏报：字幕设置控件从
+  `Controls/Core/PlayerOverlay.xaml` 搬进 `Controls/Core/OverlayTransportControls.xaml`，
+  PlayerOverlay 的 note 由 13 降到 6（旧的入口按钮、开关、两条滑杆、字体下拉、延迟数字框随
+  TeachingTip 一起删除），OverlayTransportControls 由 27 降到 26（新按钮/开关/滑杆/下拉/数字框
+  都写了 `AutomationId`，旧的可视化体积被合并）。SARIF：`artifacts/winui-analyzer.sarif`，
+  WUI2020 264 条、WUI1010 2 条、四类 warning 一条不剩。
 - WUI3001 分两批，均已完成：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
   批次二 #110 收掉剩下的 201 条。每批都要求“该批文件在观测构建里 WUI3001 为 0”，
   而不是整体清零后才算完成。
