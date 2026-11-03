@@ -45,7 +45,7 @@
                             CornerRadius="{StaticResource ControlCornerRadius}"
                             DataContext="{x:Bind}"
                             DecodeWidth="200"
-                            Source="{x:Bind Uri}"
+                            Source="{x:Bind Uri, Mode=OneTime}"
                             Tapped="OnImageTapped" />
                     </Grid>
                 </DataTemplate>

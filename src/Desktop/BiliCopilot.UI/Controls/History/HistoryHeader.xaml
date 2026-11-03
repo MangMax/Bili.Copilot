@@ -102,6 +102,6 @@
             IsLightDismissEnabled="True"
             PreferredPlacement="BottomLeft"
             Subtitle="{ext:Locale Name=ClearHistoryWarning}"
-            Target="{x:Bind CleanButton}" />
+            Target="{x:Bind CleanButton, Mode=OneTime}" />
     </Grid>
 </local:HistoryPageControlBase>

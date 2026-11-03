@@ -13,6 +13,6 @@
         x:Name="View"
         Padding="20,0"
         Style="{StaticResource PageScrollViewStyle}">
-        <ContentPresenter Content="{x:Bind Element}" />
+        <ContentPresenter Content="{x:Bind Element, Mode=OneWay}" />
     </ScrollView>
 </base:LayoutUserControlBase>

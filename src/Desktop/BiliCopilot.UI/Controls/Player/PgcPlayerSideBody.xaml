@@ -22,7 +22,7 @@
             <local:PgcSeasonsSection ViewModel="{x:Bind}" />
         </DataTemplate>
         <DataTemplate x:Key="InfoTemplate" x:DataType="components:PgcPlayerInfoSectionDetailViewModel">
-            <local:PgcInfoSection ViewModel="{x:Bind Page}" />
+            <local:PgcInfoSection ViewModel="{x:Bind Page, Mode=OneTime}" />
         </DataTemplate>
         <extensions:PlayerSectionTemplateSelector
             x:Key="Selector"

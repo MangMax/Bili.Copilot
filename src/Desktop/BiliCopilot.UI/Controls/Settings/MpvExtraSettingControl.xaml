@@ -27,7 +27,7 @@
                 Header="{ext:Locale Name=D3D11Adapter}">
                 <ComboBox
                     MinWidth="120"
-                    ItemsSource="{x:Bind ViewModel.GpuDevices}"
+                    ItemsSource="{x:Bind ViewModel.GpuDevices, Mode=OneWay}"
                     SelectedItem="{x:Bind ViewModel.D3D11AdapterName, Mode=TwoWay}" />
             </base:SettingsCard>
             <base:SettingsCard
@@ -36,7 +36,7 @@
                 Header="{ext:Locale Name=VulkanDevice}">
                 <ComboBox
                     MinWidth="120"
-                    ItemsSource="{x:Bind ViewModel.GpuDevices}"
+                    ItemsSource="{x:Bind ViewModel.GpuDevices, Mode=OneWay}"
                     SelectedItem="{x:Bind ViewModel.VulkanDeviceName, Mode=TwoWay}" />
             </base:SettingsCard>
             <base:SettingsCard

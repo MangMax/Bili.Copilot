@@ -631,7 +631,7 @@
             IsLightDismissEnabled="True"
             IsOpen="{x:Bind ViewModel.IsDanmakuOptionsVisible, Mode=TwoWay}"
             PreferredPlacement="TopLeft"
-            Target="{x:Bind DanmakuOptionButton}">
+            Target="{x:Bind DanmakuOptionButton, Mode=OneTime}">
             <danmaku:DanmakuDisplayOptions ViewModel="{x:Bind ViewModel.Danmaku, Mode=OneWay}" />
         </TeachingTip>
 

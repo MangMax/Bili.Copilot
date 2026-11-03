@@ -34,7 +34,7 @@
         <ItemsView
             x:Name="SectionView"
             Padding="2,8,8,8"
-            ItemsSource="{x:Bind ViewModel.Sections}"
+            ItemsSource="{x:Bind ViewModel.Sections, Mode=OneWay}"
             ScrollViewer.HorizontalScrollMode="Disabled"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             SelectionMode="Single">

@@ -20,7 +20,7 @@
             HorizontalAlignment="Stretch"
             Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
         <Grid Grid.Row="1" Padding="0,4,0,8">
-            <local:PgcPlayerSideHeader ViewModel="{x:Bind ViewModel}" />
+            <local:PgcPlayerSideHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         </Grid>
         <Border
             Grid.Row="2"
@@ -28,7 +28,7 @@
             HorizontalAlignment="Stretch"
             Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
         <Grid Grid.Row="3">
-            <local:PgcPlayerSideBody ViewModel="{x:Bind ViewModel}" />
+            <local:PgcPlayerSideBody ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         </Grid>
     </Grid>
 </local:PgcPlayerControlBase>

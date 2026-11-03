@@ -47,7 +47,7 @@
             IsLightDismissEnabled="True"
             PreferredPlacement="Right"
             Subtitle="{ext:Locale Name=FavoriteTip}"
-            Target="{x:Bind Btn}">
+            Target="{x:Bind Btn, Mode=OneTime}">
             <ScrollView
                 MaxHeight="360"
                 Margin="0,8"
@@ -68,12 +68,12 @@
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         MaxLines="1"
-                                        Text="{x:Bind Data.Title}"
+                                        Text="{x:Bind Data.Title, Mode=OneTime}"
                                         TextTrimming="CharacterEllipsis" />
                                     <TextBlock
                                         Grid.Column="1"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{x:Bind Data.TotalCount}"
+                                        Text="{x:Bind Data.TotalCount, Mode=OneTime}"
                                         ToolTipService.ToolTip="{ext:Locale Name=Total}" />
                                 </Grid>
                             </ToggleButton>

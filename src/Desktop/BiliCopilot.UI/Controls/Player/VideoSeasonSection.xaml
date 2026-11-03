@@ -27,7 +27,7 @@
             SelectionChanged="OnSeasonChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate x:DataType="media:VideoSeason">
-                    <TextBlock Text="{x:Bind Title}" />
+                    <TextBlock Text="{x:Bind Title, Mode=OneTime}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

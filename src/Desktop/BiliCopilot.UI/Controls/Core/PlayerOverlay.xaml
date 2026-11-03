@@ -565,7 +565,7 @@
                     IsLightDismissEnabled="True"
                     IsOpen="{x:Bind ViewModel.IsSubtitleSettingsVisible, Mode=TwoWay}"
                     PreferredPlacement="Bottom"
-                    Target="{x:Bind HeaderSettingButton}">
+                    Target="{x:Bind HeaderSettingButton, Mode=OneTime}">
                     <StackPanel Width="280" Spacing="8">
                         <TextBlock
                             HorizontalAlignment="Left"
