@@ -20,37 +20,37 @@ public sealed partial class ChatMessageSectionDetailViewModel
     private int _requestedMessageCount = InitialMessageCount;
 
     [ObservableProperty]
-    private string _lastMessage;
+    public partial string LastMessage { get; set; }
 
     [ObservableProperty]
-    private string _lastMessageTime;
+    public partial string LastMessageTime { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isLoadingOlder;
+    public partial bool IsLoadingOlder { get; set; }
 
     [ObservableProperty]
-    private bool _hasMoreMessages;
+    public partial bool HasMoreMessages { get; set; }
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private int _unreadCount;
+    public partial int UnreadCount { get; set; }
 
     [ObservableProperty]
-    private bool _isSending;
+    public partial bool IsSending { get; set; }
 
     [ObservableProperty]
-    private string _inputText;
+    public partial string InputText { get; set; }
 
     /// <summary>
     /// 消息列表.
     /// </summary>
     [ObservableProperty]
-    private ObservableCollection<ChatMessageItemViewModel> _messages = new();
+    public partial ObservableCollection<ChatMessageItemViewModel> Messages { get; set; } = new();
 
     /// <summary>
     /// 请求滚动到底部.

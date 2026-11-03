@@ -43,29 +43,35 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 
 | 规则 | 级别 | 数量 | 说明 |
 | --- | --- | --- | --- |
-| WUI3001 | warning | 301 | `[ObservableProperty]` 旧字段写法，未用 partial property |
+| WUI3001 | warning | 201 | `[ObservableProperty]` 旧字段写法，未用 partial property（批次一 #109 已迁移 100 条） |
 | WUI2011 | warning | 0 | `x:Bind` 缺显式 `Mode`（#111 已清零：25 处补 `OneWay`，48 处写显式 `OneTime`） |
 | WUI2010 | warning | 52 | 嵌套 `x:Bind` 路径缺 `FallbackValue`，中间段为 null 时显示异常 |
 | WUI1001 | warning | 1 | `Windows.Storage.Pickers` 应换成 `Microsoft.Windows.Storage.Pickers` |
-| **warning 小计** | | **354** | WUI2011 清零后的剩余存量，按规则继续分批 |
+| **warning 小计** | | **254** | 201 + 0 + 52 + 1；WUI2011 清零、WUI3001 批次一迁移后的存量，按规则继续分批 |
 | WUI2020 | note | 272 | 缺失 `AutomationId` |
 | WUI1010 | note | 2 | 迁移表的特性提示 |
 
-两点口径：
+口径：
 
-- 354 是**按位置去重**后的 warning 数（WUI2011 清零前是 427）。SARIF 里 WUI2010 的原始条目是 54，
-  其中 `Controls/Comment/CommentMainPanel.xaml:63` 与
+- 小计是**按位置去重**后的 warning 数（基线 427；#111 清零 WUI2011 后 354，
+  #109 迁移 WUI3001 批次一后 254）。SARIF 里 WUI2010 的原始条目是 54，其中
+  `Controls/Comment/CommentMainPanel.xaml:63` 与
   `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置）。
-- note 级（WUI2020 / WUI1010）不计入 354，单独记。
+- note 级（WUI2020 / WUI1010）不计入小计，单独记。
+- WUI3001 分两批：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
+  批次二 #110 收掉剩下的 201 条并删除 `MVVMTK0045;MVVMTK0046` 抑制。
+  每批都要求“该批文件在观测构建里 WUI3001 为 0”，而不是整体清零后才算完成。
 
 ## 从观测到阻断的顺序
 
 一次只收紧一类，每一步都要同步更新本文件的基线：
 
-1. **WUI3001（301 条）**：把 `[ObservableProperty]` 的字段写法迁移成 partial property。
+1. **WUI3001（301 条 → 201 条）**：把 `[ObservableProperty]` 的字段写法迁移成 partial property。
    迁移完成后先在观测构建里把它升成 error（`-p:WarningsAsErrors=WUI3001`）验证清零，
-   再讨论默认构建是否打开分析器。实测这条命令有效：`-t:Rebuild` 下会得到
-   `301 个错误`，清零即可作为收尾判据。迁移完还能顺手删掉 `BiliCopilot.UI.csproj`
+   再讨论默认构建是否打开分析器。实测这条命令有效：`-t:Rebuild` 下 301 条时会得到
+   `301 个错误`，迁移掉一批就少对应条数，归零即可作为收尾判据。
+   批次一（#109）已把警告最密集的 5 个 ViewModel 共 100 条迁完，
+   剩余 201 条由批次二（#110）收掉，并在那时删掉 `BiliCopilot.UI.csproj`
    里为此保留的 `MVVMTK0045;MVVMTK0046` 抑制，让抑制清单只留必要项.
 2. **WUI2011（73 → 0，#111 已完成）**：逐个判断绑定是否真的随数据变化，判定规则：
    - 路径上能发出变更通知的，才写 `Mode=OneWay`（共 25 处）：页面级
