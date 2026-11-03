@@ -50,8 +50,8 @@
             Grid.Column="2"
             VerticalAlignment="Center"
             AutomationProperties.Name="{ext:Locale Name=Refresh}"
-            Command="{x:Bind ViewModel.SelectedSection.RefreshCommand, Mode=OneWay}"
-            IsEnabled="{x:Bind ViewModel.SelectedSection.IsEmpty, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+            Command="{x:Bind ViewModel.SelectedSection.RefreshCommand, Mode=OneWay, FallbackValue={x:Null}}"
+            IsEnabled="{x:Bind ViewModel.SelectedSection.IsEmpty, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}, FallbackValue=False}"
             ToolTipService.ToolTip="{ext:Locale Name=Refresh}">
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <ic:SymbolIcon
