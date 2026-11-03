@@ -1,12 +1,10 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Items;
-using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Input;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.WinUIKernel.Share.Base;
-using Richasy.WinUIKernel.Share.Toolkits;
 using System.ComponentModel;
 
 namespace BiliCopilot.UI.Controls.Core;
@@ -185,22 +183,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     private void OnBackRequested(object sender, EventArgs e)
         => ViewModel.BackCommand.Execute(default);
 
-    private void OnSubtitleSettingItemClick(object sender, RoutedEventArgs e)
-    {
-        ViewModel.IsSubtitleSettingsVisible = false;
-        ViewModel.IsSubtitleSettingsVisible = true;
-    }
-
-    private void OnSubtitlePositionChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
-    {
-        if (ViewModel.Player?.IsPlaybackInitialized != true || ViewModel.SubtitlePosition == e.NewValue)
-        {
-            return;
-        }
-
-        ViewModel.ChangeSubtitlePositionCommand.Execute(e.NewValue);
-    }
-
     private void OnHeaderBarSizeChanged(object sender, SizeChangedEventArgs e)
     {
         if (e.NewSize.Width == 0)
@@ -268,16 +250,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         return point.X >= lt.X && point.X <= rb.X && point.Y >= lt.Y && point.Y <= rb.Y;
     }
 
-    private void OnSubtitleFontSizeChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
-    {
-        if (ViewModel?.Player == null || ViewModel.Player?.IsPlaybackInitialized != true || ViewModel.SubtitleFontSize == e.NewValue)
-        {
-            return;
-        }
-
-        ViewModel.ChangeSubtitleFontSizeCommand.Execute(e.NewValue);
-    }
-
 #pragma warning disable CA1822
     private string GetTimeText(double seconds)
         => TimeSpan.FromSeconds(seconds).ToString(@"hh\:mm\:ss");
@@ -288,28 +260,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     private string GetSpeedText(double speed)
         => $"{Math.Round(speed, 2)}x";
 #pragma warning restore CA1822
-
-    private void OnSubtitleFontChanged(object sender, SelectionChangedEventArgs e)
-    {
-        var item = e.AddedItems.FirstOrDefault() as SystemFont;
-        if (ViewModel?.Player == null || ViewModel.Player?.IsPlaybackInitialized != true || item == null || ViewModel.SubtitleFontFamily == item.LocalName)
-        {
-            return;
-        }
-
-        ViewModel.ChangeSubtitleFontFamilyCommand.Execute(item.LocalName);
-    }
-
-    private void OnSubtitleDelayChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
-    {
-        var v = args.NewValue;
-        if (v == ViewModel.SubtitleDelaySeconds)
-        {
-            return;
-        }
-
-        ViewModel.SetSubtitleDelaySecondsCommand.Execute(v);
-    }
 
     internal static bool IsPaused(MpvPlayerState state)
     {
@@ -341,30 +291,5 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         var selectedSource = (sender as FrameworkElement)?.DataContext as SourceItemViewModel;
         selectedSource?.ActiveCommand.Execute(default);
         SourceFlyout?.Hide();
-    }
-
-    private async void OnSubtitleFontComboLoaded(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            await ViewModel.ReloadFontsCommand.ExecuteAsync(default);
-        }
-        catch (Exception ex)
-        {
-            this.Get<ILogger<PlayerOverlay>>().LogWarning(ex, "Unable to load subtitle font choices");
-            return;
-        }
-
-        if (!SubtitleFontComboBox.IsLoaded)
-        {
-            return;
-        }
-
-        var font = ViewModel.SubtitleFontFamily;
-        var source = ViewModel.Fonts.FirstOrDefault(p => p.LocalName == font);
-        if (source != null)
-        {
-            SubtitleFontComboBox.SelectedItem = source;
-        }
     }
 }
