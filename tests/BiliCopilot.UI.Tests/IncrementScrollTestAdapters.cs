@@ -49,9 +49,9 @@ namespace BiliCopilot.UI.Controls
     {
         public object? DefaultValue { get; } = value;
     }
-    public sealed class SizeChangedEventArgs(double width) : EventArgs
+    public sealed class SizeChangedEventArgs(double width, double height = 600) : EventArgs
     {
-        public (double Width, double Height) NewSize => (width, 600);
+        public (double Width, double Height) NewSize => (width, height);
     }
     public sealed class ScrollView
     {
@@ -59,6 +59,7 @@ namespace BiliCopilot.UI.Controls
         public double ViewportHeight { get; set; } = 600;
         public double VerticalOffset { get; set; }
         public double HorizontalOffset { get; set; }
+        public double ActualWidth { get; set; } = 1000;
         public double ActualHeight => ViewportHeight;
         public ScrollTestDispatcher DispatcherQueue { get; } = new();
         public event Action<ScrollView, object>? ViewChanged;
@@ -66,7 +67,7 @@ namespace BiliCopilot.UI.Controls
         public int ViewChangedSubscriptions => ViewChanged?.GetInvocationList().Length ?? 0;
         public int SizeChangedSubscriptions => SizeChanged?.GetInvocationList().Length ?? 0;
         public void ChangeView() => ViewChanged?.Invoke(this, EventArgs.Empty);
-        public void Resize(double width = 1000) => SizeChanged?.Invoke(this, new(width));
+        public void Resize(double width = 1000, double height = 600) => SizeChanged?.Invoke(this, new(width, height));
         public void ScrollTo(double x, double y) => VerticalOffset = y;
         public void ScrollTo(double x, double y, ScrollingScrollOptions options) => VerticalOffset = y;
     }

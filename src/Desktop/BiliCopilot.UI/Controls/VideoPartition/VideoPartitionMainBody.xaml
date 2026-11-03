@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:VideoPartitionDetailControlBase
     x:Class="BiliCopilot.UI.Controls.VideoPartition.VideoPartitionMainBody"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -17,9 +17,21 @@
     <Grid>
         <controls:IncrementVerticalScrollControl
             x:Name="View"
+            ItemCount="{x:Bind ViewModel.Videos.Count, Mode=OneWay}"
             LoadMoreCommand="{x:Bind ViewModel.LoadVideosCommand, Mode=OneWay}">
             <controls:IncrementVerticalScrollControl.Element>
                 <Grid Margin="0,16">
+                    <repeater:AppRepeater
+                        x:Name="SkeletonRepeater"
+                        IsHitTestVisible="False"
+                        ItemsSource="{x:Bind Skeletons}"
+                        Layout="{StaticResource VideoSkeletonLayout}">
+                        <repeater:AppRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="components:VideoCardSkeleton">
+                                <components:SkeletonCardControl />
+                            </DataTemplate>
+                        </repeater:AppRepeater.ItemTemplate>
+                    </repeater:AppRepeater>
                     <repeater:AppRepeater
                         x:Name="VideoRepeater"
                         ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
