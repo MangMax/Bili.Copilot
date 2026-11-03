@@ -1,6 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Controls.Components;
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Extensions;
@@ -16,8 +17,20 @@ internal sealed partial class VideoCardTemplateSelector : DataTemplateSelector
 
     public DataTemplate RankTemplate { get; set; }
 
+    public DataTemplate PartitionTemplate { get; set; }
+
+    /// <summary>
+    /// 骨架占位模板.
+    /// </summary>
+    public DataTemplate SkeletonTemplate { get; set; }
+
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
+        if (item is VideoCardSkeleton)
+        {
+            return SkeletonTemplate;
+        }
+
         if (item is VideoItemViewModel vm)
         {
             return vm.Style switch
@@ -25,6 +38,7 @@ internal sealed partial class VideoCardTemplateSelector : DataTemplateSelector
                 VideoCardStyle.Recommend => RecommendTemplate,
                 VideoCardStyle.Hot => HotTemplate,
                 VideoCardStyle.Rank => RankTemplate,
+                VideoCardStyle.Partition => PartitionTemplate,
                 _ => default
             };
         }

@@ -24,11 +24,15 @@
         <DataTemplate x:Key="RankStyle" x:DataType="items:VideoItemViewModel">
             <components:VideoCardControl Style="{StaticResource RankVideoCardStyle}" ViewModel="{Binding}" />
         </DataTemplate>
+        <DataTemplate x:Key="SkeletonStyle">
+            <components:SkeletonCardControl />
+        </DataTemplate>
         <ext:VideoCardTemplateSelector
             x:Key="CardSelector"
             HotTemplate="{StaticResource HotStyle}"
             RankTemplate="{StaticResource RankStyle}"
-            RecommendTemplate="{StaticResource RecommendStyle}" />
+            RecommendTemplate="{StaticResource RecommendStyle}"
+            SkeletonTemplate="{StaticResource SkeletonStyle}" />
     </UserControl.Resources>
 
     <Grid>
@@ -39,22 +43,11 @@
             <controls:IncrementVerticalScrollControl.Element>
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
-                        x:Name="SkeletonRepeater"
-                        IsHitTestVisible="False"
-                        ItemsSource="{x:Bind Skeletons}"
-                        Layout="{StaticResource VideoSkeletonLayout}">
-                        <repeater:AppRepeater.ItemTemplate>
-                            <DataTemplate x:DataType="components:VideoCardSkeleton">
-                                <components:SkeletonCardControl />
-                            </DataTemplate>
-                        </repeater:AppRepeater.ItemTemplate>
-                    </repeater:AppRepeater>
-                    <repeater:AppRepeater
                         x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind ViewModel.Videos}"
+                        ItemsSource="{x:Bind DisplayItems}"
                         Layout="{StaticResource VideoLayout}">
                         <repeater:AppRepeater.ItemTemplate>
-                            <DataTemplate x:DataType="items:VideoItemViewModel">
+                            <DataTemplate>
                                 <ContentControl
                                     Content="{Binding}"
                                     ContentTemplateSelector="{StaticResource CardSelector}"
