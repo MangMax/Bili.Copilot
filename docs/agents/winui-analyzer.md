@@ -46,21 +46,25 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 | WUI3001 | warning | 201 | `[ObservableProperty]` 旧字段写法，未用 partial property（批次一 #109 已迁移 100 条） |
 | WUI2011 | warning | 0 | `x:Bind` 缺显式 `Mode`（#111 已清零：25 处补 `OneWay`，48 处写显式 `OneTime`） |
 | WUI2010 | warning | 52 | 嵌套 `x:Bind` 路径缺 `FallbackValue`，中间段为 null 时显示异常 |
-| WUI1001 | warning | 1 | `Windows.Storage.Pickers` 应换成 `Microsoft.Windows.Storage.Pickers` |
-| **warning 小计** | | **254** | 201 + 0 + 52 + 1；WUI2011 清零、WUI3001 批次一迁移后的存量，按规则继续分批 |
+| WUI1001 | warning | 0 | 已清零（#113）：保存图片改用 `Microsoft.Windows.Storage.Pickers` |
+| **warning 小计** | | **253** | 201 + 0 + 52 + 0；WUI2011、WUI1001 清零、WUI3001 批次一迁移后的存量，按规则继续分批 |
 | WUI2020 | note | 272 | 缺失 `AutomationId` |
 | WUI1010 | note | 2 | 迁移表的特性提示 |
 
 口径：
 
 - 小计是**按位置去重**后的 warning 数（基线 427；#111 清零 WUI2011 后 354，
-  #109 迁移 WUI3001 批次一后 254）。SARIF 里 WUI2010 的原始条目是 54，其中
+  #109 迁移 WUI3001 批次一后 254，#113 清零 WUI1001 后 253）。SARIF 里 WUI2010 的原始条目是 54，其中
   `Controls/Comment/CommentMainPanel.xaml:63` 与
   `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置）。
 - note 级（WUI2020 / WUI1010）不计入小计，单独记。
 - WUI3001 分两批：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
   批次二 #110 收掉剩下的 201 条并删除 `MVVMTK0045;MVVMTK0046` 抑制。
   每批都要求“该批文件在观测构建里 WUI3001 为 0”，而不是整体清零后才算完成。
+- WUI1001 的 1 条在 #113 一次清零：`GalleryPageViewModel.SaveImageAsync` 换成
+  `Microsoft.Windows.Storage.Pickers.FileSavePicker`（构造时传 `WindowId`，取消返回
+  `null`，落盘走 `FileStream`）。该 API 由 `Microsoft.WindowsAppSDK.Foundation 2.6.4`
+  提供，已用 `winapp find-api` 核对成员；规则留在表里作为回归项，不再是待清存量。
 
 ## 从观测到阻断的顺序
 
