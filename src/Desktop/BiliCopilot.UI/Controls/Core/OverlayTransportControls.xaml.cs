@@ -2,7 +2,9 @@
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
+using Microsoft.Extensions.Logging;
 using Richasy.MpvKernel.Core.Enums;
+using Richasy.WinUIKernel.Share.Toolkits;
 
 namespace BiliCopilot.UI.Controls.Core;
 
@@ -407,6 +409,81 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private void OnFlyoutClosed(object sender, object e)
     {
         ViewModel.IsPopupVisible = false;
+        // 菜单关闭后复位层级，下次打开从第一层开始。
+        ViewModel.IsSubtitleParameterVisible = false;
+    }
+
+    private void OnSubtitleParameterEntryClick(object sender, RoutedEventArgs e)
+        => ViewModel.IsSubtitleParameterVisible = true;
+
+    private void OnSubtitleParameterBackClick(object sender, RoutedEventArgs e)
+        => ViewModel.IsSubtitleParameterVisible = false;
+
+    private void OnSubtitlePositionChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        if (ViewModel.Player?.IsPlaybackInitialized != true || ViewModel.SubtitlePosition == e.NewValue)
+        {
+            return;
+        }
+
+        ViewModel.ChangeSubtitlePositionCommand.Execute(e.NewValue);
+    }
+
+    private void OnSubtitleFontSizeChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        if (ViewModel.Player?.IsPlaybackInitialized != true || ViewModel.SubtitleFontSize == e.NewValue)
+        {
+            return;
+        }
+
+        ViewModel.ChangeSubtitleFontSizeCommand.Execute(e.NewValue);
+    }
+
+    private void OnSubtitleFontChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var item = e.AddedItems.FirstOrDefault() as SystemFont;
+        if (ViewModel.Player?.IsPlaybackInitialized != true || item == null || ViewModel.SubtitleFontFamily == item.LocalName)
+        {
+            return;
+        }
+
+        ViewModel.ChangeSubtitleFontFamilyCommand.Execute(item.LocalName);
+    }
+
+    private void OnSubtitleDelayChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+    {
+        var value = args.NewValue;
+        if (ViewModel.SubtitleDelaySeconds == value)
+        {
+            return;
+        }
+
+        ViewModel.SetSubtitleDelaySecondsCommand.Execute(value);
+    }
+
+    private async void OnSubtitleFontComboLoaded(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await ViewModel.ReloadFontsCommand.ExecuteAsync(default);
+        }
+        catch (Exception ex)
+        {
+            this.Get<ILogger<OverlayTransportControls>>().LogWarning(ex, "Unable to load subtitle font choices");
+            return;
+        }
+
+        if (!SubtitleFontComboBox.IsLoaded)
+        {
+            return;
+        }
+
+        var font = ViewModel.SubtitleFontFamily;
+        var source = ViewModel.Fonts.FirstOrDefault(p => p.LocalName == font);
+        if (source != null)
+        {
+            SubtitleFontComboBox.SelectedItem = source;
+        }
     }
 
     private void OnDisplayFlyoutOpened(object sender, object e)
