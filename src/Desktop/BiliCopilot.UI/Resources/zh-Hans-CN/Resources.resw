@@ -2762,6 +2762,12 @@
   <data name="ReSignIn" xml:space="preserve">
     <value>重新登录</value>
   </data>
+  <data name="ProfileLoadFailedTitle" xml:space="preserve">
+    <value>资料加载失败</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>重试</value>
+  </data>
   <data name="ArticleEvaluation" xml:space="preserve">
     <value>文章评价</value>
   </data>
