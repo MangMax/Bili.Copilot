@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <!-- 与 UI 工程的 GlobalUsing.cs 对齐：链接的 AI 源文件直接使用 StringBuilder 等类型。 -->
+    <Using Include="System.Text" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs" Link="Markdown\MarkdownImageLoader.cs" />
     <ProjectReference Include="..\..\externals\bili-kernel\src\Services\Services.Media\Services.Media.csproj" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Danmaku\*.cs" Link="Danmaku\%(Filename)%(Extension)" />
@@ -59,6 +61,14 @@
   -->
   <ItemGroup>
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Toolkits\Pure\*.cs" Link="Toolkits\Pure\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!--
+    AI 编排核心（上下文采集、提示词构建、配置快照、请求执行）与 WinUI 无关，
+    整目录链接以便直接测试；WinUI/AgentKernel 适配器放在 Services\AI，不在此列。
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\AI\**\*.cs" Link="AI\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <!--

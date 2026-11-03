@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.AI.Conversation;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Services.AI;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -27,10 +29,17 @@ public sealed partial class AIViewModel : ViewModelBase
     /// </summary>
     public AIViewModel(
         ILogger<AIViewModel> logger,
-        DispatcherQueue dispatcherQueue)
+        DispatcherQueue dispatcherQueue,
+        AIConversationOrchestrator orchestrator,
+        IAIPromptTemplateProvider promptTemplateProvider,
+        AIChatSelectionAccessor selectionAccessor)
     {
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
+        _orchestrator = orchestrator;
+        _promptTemplates = promptTemplateProvider;
+        _selectionAccessor = selectionAccessor;
+        _orchestrator.StateChanged += OnConversationStateChanged;
     }
 
     /// <summary>
@@ -47,7 +56,6 @@ public sealed partial class AIViewModel : ViewModelBase
         SourceCover = _videoView.Information.Identifier.Cover.Uri;
         SourceTitle = _videoView.Information.Identifier.Title;
         SourceSubtitle = string.IsNullOrEmpty(desc) ? _videoPart.Identifier.Title : desc;
-        _subtitles = default;
         await InitializeVideoPromptsAsync();
     }
 
@@ -60,7 +68,6 @@ public sealed partial class AIViewModel : ViewModelBase
         QuickItems = [];
         _videoView = null;
         _videoPart = null;
-        _subtitles = null;
         _articleDetail = article;
         SourceCover = article.Identifier.Cover?.Uri;
         SourceTitle = article.Identifier.Title;
@@ -82,7 +89,7 @@ public sealed partial class AIViewModel : ViewModelBase
     [RelayCommand]
     private void Clear()
     {
-        Cancel();
+        Discard();
         SelectedService = default;
         SelectedModel = default;
         _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
@@ -179,13 +186,9 @@ public sealed partial class AIViewModel : ViewModelBase
     [RelayCommand]
     private void Discard()
     {
-        _generateCancellationTokenSource?.Cancel();
-        _generateCancellationTokenSource = null;
-        Erase();
-        RequestText = string.Empty;
-        ProgressTip = default;
-        IsGenerating = false;
+        _orchestrator.Cancel();
         _currentPrompt = default;
+        _lastQuestion = string.Empty;
         CheckQuickItemsShown();
     }
 
@@ -203,18 +206,7 @@ public sealed partial class AIViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Cancel()
-    {
-        if (_generateCancellationTokenSource is not null)
-        {
-            _generateCancellationTokenSource.Cancel();
-            _generateCancellationTokenSource = default;
-        }
-
-        ProgressTip = default;
-        IsGenerating = false;
-        Discard();
-    }
+    private void Cancel() => Discard();
 
     [RelayCommand]
     private void CopyAnswer()
@@ -243,16 +235,77 @@ public sealed partial class AIViewModel : ViewModelBase
         }
     }
 
-    private void Erase()
+    private static string MapProgressTip(AIConversationStage? stage)
+        => stage switch
+        {
+            AIConversationStage.SubtitleMetadata => ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleMeta),
+            AIConversationStage.SubtitleDetail => ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleInformation),
+            AIConversationStage.Comments => ResourceToolkit.GetLocalizedString(StringNames.GettingHotComments),
+            // 旧的文章流程没有该进度提示，保持不显示。
+            AIConversationStage.ArticleContent => string.Empty,
+            AIConversationStage.Summarizing => ResourceToolkit.GetLocalizedString(StringNames.Summarizing),
+            AIConversationStage.Generating => ResourceToolkit.GetLocalizedString(StringNames.Generating),
+            _ => string.Empty,
+        };
+
+    private static string MapErrorMessage(AIConversationSnapshot snapshot)
+        => snapshot.ErrorKind switch
+        {
+            AIConversationErrorKind.ArticleContentEmpty => ResourceToolkit.GetLocalizedString(StringNames.ArticleContentEmpty),
+            AIConversationErrorKind.None when snapshot.Warning == AIConversationWarning.NoSubtitle => ResourceToolkit.GetLocalizedString(StringNames.NoSubtitleAvailable),
+            AIConversationErrorKind.None => string.Empty,
+            _ => snapshot.ErrorMessage,
+        };
+
+    private static bool ShouldShowTip(AIConversationErrorKind errorKind)
+        => errorKind is AIConversationErrorKind.EmptyResponse
+            or AIConversationErrorKind.InitializationFailure
+            or AIConversationErrorKind.ChatFailure;
+
+    private void OnConversationStateChanged(object? sender, AIConversationStateChangedEventArgs e)
     {
-        FinalResult = string.Empty;
-        ErrorMessage = string.Empty;
-        TempResult = string.Empty;
-        _lastQuestion = string.Empty;
+        var snapshot = e.Snapshot;
+        RequestText = snapshot.RequestText;
+        IsGenerating = snapshot.IsGenerating;
+        TempResult = snapshot.TempResult;
+        FinalResult = snapshot.FinalResult;
+        ProgressTip = MapProgressTip(snapshot.Stage);
+        ErrorMessage = MapErrorMessage(snapshot);
+
+        if (snapshot.ErrorKind == AIConversationErrorKind.None)
+        {
+            _notifiedErrorKind = AIConversationErrorKind.None;
+            return;
+        }
+
+        if (_notifiedErrorKind == snapshot.ErrorKind)
+        {
+            return;
+        }
+
+        _notifiedErrorKind = snapshot.ErrorKind;
+        _logger.LogError("AI 请求失败（{Kind}）：{Message}", snapshot.ErrorKind, snapshot.ErrorMessage);
+        if (ShouldShowTip(snapshot.ErrorKind))
+        {
+            this.Get<AppViewModel>().ShowTipCommand.Execute((snapshot.ErrorMessage, InfoType.Error));
+        }
     }
 
     private void CheckQuickItemsShown()
         => IsQuickItemsVisible = !IsGenerating && !IsNoService && !IsNoModel && string.IsNullOrEmpty(FinalResult) && string.IsNullOrEmpty(RequestText);
+
+    private void UpdateSelectionSnapshot()
+    {
+        // 服务或模型被清空时同步清空快照，避免请求静默沿用上一次的选择。
+        if (SelectedService is not null && SelectedModel is not null)
+        {
+            _selectionAccessor.Update(SelectedService.ProviderType, SelectedModel.Data);
+        }
+        else
+        {
+            _selectionAccessor.Clear();
+        }
+    }
 
     partial void OnIsGeneratingChanged(bool value)
         => CheckQuickItemsShown();
@@ -263,11 +316,16 @@ public sealed partial class AIViewModel : ViewModelBase
     partial void OnFinalResultChanged(string value)
         => CheckQuickItemsShown();
 
+    partial void OnSelectedServiceChanged(ChatServiceItemViewModel value)
+        => UpdateSelectionSnapshot();
+
     partial void OnSelectedModelChanged(ChatModelItemViewModel value)
     {
         if (value is not null && SelectedService is not null)
         {
             this.Get<ISettingsToolkit>().WriteLocalSetting($"LastSelected{SelectedService.ProviderType}Model", value.Id);
         }
+
+        UpdateSelectionSnapshot();
     }
 }
