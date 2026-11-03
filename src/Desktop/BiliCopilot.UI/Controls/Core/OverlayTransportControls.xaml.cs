@@ -419,16 +419,28 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private async void OnSubtitleParameterEntryClick(object sender, RoutedEventArgs e)
     {
         ViewModel.IsSubtitleParameterVisible = true;
+        // 入口按钮随即被折叠，把焦点交给第二层的返回按钮，键盘用户不会失去落点。
+        MoveSubtitleParameterFocus(SubtitleParameterBackButton);
         // 每次进入第二层都重新确认字体列表并回显当前字体，首次加载失败时下次进入会重试。
         await EnsureSubtitleFontSelectionAsync();
     }
 
     private void OnSubtitleParameterBackClick(object sender, RoutedEventArgs e)
-        => ViewModel.IsSubtitleParameterVisible = false;
+    {
+        ViewModel.IsSubtitleParameterVisible = false;
+        // 返回第一层后把焦点还给参数页入口。
+        MoveSubtitleParameterFocus(SubtitleParameterEntryButton);
+    }
+
+    private void MoveSubtitleParameterFocus(Microsoft.UI.Xaml.Controls.Control target)
+        => DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () => target.Focus(FocusState.Programmatic));
 
     private void OnSubtitlePositionChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
-        if (ViewModel.Player?.IsPlaybackInitialized != true || ViewModel.SubtitlePosition == e.NewValue)
+        // 参数控件在 XAML 解析阶段就会触发一次（Slider 钳制初始 Value），此时 ViewModel 还没由父级赋值。
+        if (ViewModel?.Player?.IsPlaybackInitialized != true || ViewModel.SubtitlePosition == e.NewValue)
         {
             return;
         }
@@ -438,7 +450,8 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void OnSubtitleFontSizeChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
-        if (ViewModel.Player?.IsPlaybackInitialized != true || ViewModel.SubtitleFontSize == e.NewValue)
+        // 同上：Minimum=1 会在解析期把默认 Value 从 0 钳到 1，从而在 ViewModel 尚未赋值时触发本处理器。
+        if (ViewModel?.Player?.IsPlaybackInitialized != true || ViewModel.SubtitleFontSize == e.NewValue)
         {
             return;
         }
@@ -449,7 +462,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private void OnSubtitleFontChanged(object sender, SelectionChangedEventArgs e)
     {
         var item = e.AddedItems.FirstOrDefault() as SystemFont;
-        if (ViewModel.Player?.IsPlaybackInitialized != true || item == null || ViewModel.SubtitleFontFamily == item.LocalName)
+        if (ViewModel?.Player?.IsPlaybackInitialized != true || item == null || ViewModel.SubtitleFontFamily == item.LocalName)
         {
             return;
         }
@@ -460,7 +473,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private void OnSubtitleDelayChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
     {
         var value = args.NewValue;
-        if (ViewModel.SubtitleDelaySeconds == value)
+        if (ViewModel is null || ViewModel.SubtitleDelaySeconds == value)
         {
             return;
         }
@@ -473,7 +486,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private async Task EnsureSubtitleFontSelectionAsync()
     {
-        if (!SubtitleFontComboBox.IsLoaded)
+        if (ViewModel is null || !SubtitleFontComboBox.IsLoaded)
         {
             return;
         }
