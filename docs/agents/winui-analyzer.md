@@ -163,15 +163,16 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 
 `.github/workflows/winui-analyzer.yml` 是独立工作流，只有一个 job
 `winui-analyzer-observation`（job id 就是分支保护里的必需检查上下文名，改名字会让规则失效；
-`observation` 是历史遗留，它现在跑的是阻断构建）。这个 job **应当**是分支保护里的必需检查，
-构建变红就是合并被挡；保护规则由维护者设置（agent 的令牌没有管理分支保护的权限）：
+`observation` 是历史遗留，它现在跑的是阻断构建）。这个 job 已经写进 master 分支保护的必需检查
+（当前要求 `test` 与 `winui-analyzer-observation` 两项），构建变红就是合并被挡。
+规则若丢失或被覆盖，用完整保护配置接口恢复（单独 PUT `required_status_checks` 子资源会返回 404）：
 
 ```bash
-gh api --method PUT repos/MangMax/Bili.Copilot/branches/master/protection/required_status_checks \
-  -f strict=false -f 'contexts[]=test' -f 'contexts[]=winui-analyzer-observation'
+'{"required_status_checks":{"strict":false,"contexts":["test","winui-analyzer-observation"]}}' \
+  | gh api --method PUT repos/MangMax/Bili.Copilot/branches/master/protection --input -
 ```
 
-设置前它只会把 PR 变红、不会真正挡住合并 —— 这是配置缺失，不是工作流失效。
+注意这个 PUT 会覆盖其它保护字段，恢复前先 `gh api .../protection` 确认现有配置。
 
 - 用同一个开关跑一次构建：warnings-as-errors 开着，所以这一步既是 SARIF 报告，也是门禁 ——
   新增 WUI 诊断会让这个必需检查直接变红、挡住合并；
