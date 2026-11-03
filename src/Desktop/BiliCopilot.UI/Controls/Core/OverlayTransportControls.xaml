@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PlayerControlBase
     x:Class="BiliCopilot.UI.Controls.Core.OverlayTransportControls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -431,7 +431,19 @@
                     Style="{StaticResource BasicPlayerIconButtonStyle}"
                     ToolTipService.ToolTip="{ext:Locale Name=Subtitle}"
                     Visibility="{x:Bind ViewModel.IsSubtitleEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
-                    <ic:SymbolIcon FontSize="14" Symbol="Subtitles" />
+                    <Grid>
+                        <!--  字幕开关打开时用主题色点亮图标，关闭时回到默认前景色  -->
+                        <ic:SymbolIcon
+                            FontSize="14"
+                            Symbol="Subtitles"
+                            Visibility="{x:Bind ViewModel.IsSubtitleEnabled, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+                        <ic:SymbolIcon
+                            FontSize="14"
+                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                            IconVariant="Filled"
+                            Symbol="Subtitles"
+                            Visibility="{x:Bind ViewModel.IsSubtitleEnabled, Mode=OneWay}" />
+                    </Grid>
                     <Button.Flyout>
                         <Flyout
                             Closed="OnSubtitleFlyoutClosed"
@@ -454,13 +466,40 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                    <TextBlock
-                                        Margin="16,12"
-                                        FontWeight="SemiBold"
-                                        Text="{ext:Locale Name=Subtitle}" />
+                                    <!--  标题与参数页入口左右排布：标题在左，设置入口贴右  -->
+                                    <Grid
+                                        Margin="16,8,8,8"
+                                        ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontWeight="SemiBold"
+                                            Text="{ext:Locale Name=Subtitle}" />
+                                        <Button
+                                            x:Name="SubtitleParameterEntryButton"
+                                            Grid.Column="1"
+                                            MinWidth="0"
+                                            Margin="0,0,4,0"
+                                            Padding="10,6"
+                                            VerticalAlignment="Center"
+                                            AutomationProperties.AutomationId="SubtitleParameterEntryButton"
+                                            AutomationProperties.Name="{ext:Locale Name=Settings}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Click="OnSubtitleParameterEntryClick"
+                                            CornerRadius="{StaticResource ControlCornerRadius}"
+                                            FontSize="12"
+                                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}">
+                                            <TextBlock
+                                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                                Text="{ext:Locale Name=Settings}" />
+                                        </Button>
+                                    </Grid>
                                     <StackPanel
                                         Grid.Row="1"
                                         Margin="16,0,16,8"
@@ -480,6 +519,7 @@
                                                 Margin="0"
                                                 Padding="0"
                                                 VerticalAlignment="Center"
+                                                AutomationProperties.AutomationId="SubtitleEnabledSwitch"
                                                 AutomationProperties.Name="{ext:Locale Name=SubtitleEnabled}"
                                                 IsOn="{x:Bind ViewModel.IsSubtitleEnabled, Mode=TwoWay}"
                                                 OffContent=""
@@ -491,39 +531,8 @@
                                             Text="{ext:Locale Name=SubtitleEnabledDescription}"
                                             TextWrapping="Wrap" />
                                     </StackPanel>
-                                    <Button
-                                        x:Name="SubtitleParameterEntryButton"
-                                        Grid.Row="2"
-                                        Margin="16,0,16,8"
-                                        Padding="12,8"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        AutomationProperties.Name="{ext:Locale Name=SubtitleSetting}"
-                                        Click="OnSubtitleParameterEntryClick"
-                                        CornerRadius="{StaticResource ControlCornerRadius}">
-                                        <Grid ColumnSpacing="8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <ic:SymbolIcon
-                                                VerticalAlignment="Center"
-                                                FontSize="14"
-                                                Symbol="Settings" />
-                                            <TextBlock
-                                                Grid.Column="1"
-                                                VerticalAlignment="Center"
-                                                Text="{ext:Locale Name=SubtitleSetting}" />
-                                            <ic:SymbolIcon
-                                                Grid.Column="2"
-                                                VerticalAlignment="Center"
-                                                FontSize="12"
-                                                Symbol="ChevronRight" />
-                                        </Grid>
-                                    </Button>
                                     <ScrollView
-                                        Grid.Row="3"
+                                        Grid.Row="2"
                                         MaxHeight="400"
                                         Padding="16,0"
                                         HorizontalScrollMode="Disabled"
@@ -580,6 +589,7 @@
                                         </Grid.ColumnDefinitions>
                                         <Button
                                             x:Name="SubtitleParameterBackButton"
+                                            AutomationProperties.AutomationId="SubtitleParameterBackButton"
                                             Width="32"
                                             Height="32"
                                             Padding="0"
@@ -644,6 +654,7 @@
                                                 Text="{ext:Locale Name=SubtitlePositionTip}" />
                                             <Slider
                                                 x:Name="SubtitlePositionSlider"
+                                                AutomationProperties.AutomationId="SubtitlePositionSlider"
                                                 Margin="0,-8,0,0"
                                                 HorizontalAlignment="Stretch"
                                                 AutomationProperties.Name="{ext:Locale Name=SubtitlePosition}"
@@ -683,6 +694,7 @@
                                             </Grid>
                                             <Slider
                                                 x:Name="SubtitleFontSizeSlider"
+                                                AutomationProperties.AutomationId="SubtitleFontSizeSlider"
                                                 Margin="0,-8,0,0"
                                                 HorizontalAlignment="Stretch"
                                                 AutomationProperties.Name="{ext:Locale Name=SubtitleFontSize}"
@@ -696,6 +708,7 @@
                                                 ToolTipService.ToolTip="{ext:Locale Name=SubtitleFontFamilyDescription}" />
                                             <ComboBox
                                                 x:Name="SubtitleFontComboBox"
+                                                AutomationProperties.AutomationId="SubtitleFontComboBox"
                                                 HorizontalAlignment="Stretch"
                                                 AutomationProperties.Name="{ext:Locale Name=SubtitleFontFamily}"
                                                 ItemsSource="{x:Bind ViewModel.Fonts, Mode=OneWay}"
@@ -707,6 +720,8 @@
                                                 Text="{ext:Locale Name=SubtitleDelaySeconds}"
                                                 ToolTipService.ToolTip="{ext:Locale Name=SubtitleDelaySecondsDescription}" />
                                             <NumberBox
+                                                x:Name="SubtitleDelayNumberBox"
+                                                AutomationProperties.AutomationId="SubtitleDelayNumberBox"
                                                 HorizontalAlignment="Stretch"
                                                 AutomationProperties.Name="{ext:Locale Name=SubtitleDelaySeconds}"
                                                 Maximum="99"
