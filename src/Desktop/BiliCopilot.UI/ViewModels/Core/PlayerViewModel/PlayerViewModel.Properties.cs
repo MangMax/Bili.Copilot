@@ -165,9 +165,6 @@ public sealed partial class PlayerViewModel
     public partial bool UseIntegrationOperation { get; set; }
 
     [ObservableProperty]
-    public partial bool IsSubtitleSettingsVisible { get; set; }
-
-    [ObservableProperty]
     public partial bool IsVerticalScreen { get; set; }
 
     [ObservableProperty]
