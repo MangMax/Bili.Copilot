@@ -38,8 +38,8 @@ public sealed class ImageClientTlsTests
 
         Assert.IsAssignableFrom<AuthenticationException>(exception.InnerException);
 
-        // 客户端拒绝证书：服务器看得到握手尝试，但没有一次完成.
-        // 客户端在验证服务端证书时失败；服务端侧的握手可能已经完成，但没有请求被处理过.
+        // 客户端在验证服务端证书时失败：服务器能观察到握手尝试，但没有任何请求被处理.
+        // 服务端侧的握手可能已经完成，因此只断言“没有请求被处理”，不断言握手失败.
         Assert.True(await server.WaitForHandshakeAttemptAsync(), "服务器应观察到客户端发起的 TLS 握手");
         Assert.Equal(0, server.CompletedRequests);
     }
