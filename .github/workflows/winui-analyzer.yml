@@ -1,26 +1,17 @@
-name: WinUI Analyzer Observation
+name: WinUI Analyzer
 
-# WinUI 官方分析器（Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer）的观测构建：
-# 用显式开关跑一次 UI 工程，把 WUI 诊断落成 SARIF，供分批清理存量时比对
-# （基线、开关与清理顺序见 docs/agents/winui-analyzer.md）.
+# WinUI 官方分析器（Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer）的阻断构建：
+# 分析器已常驻 UI 工程的默认构建（#114），新写的 WUI 诊断会被 warnings-as-errors 直接
+# 变成编译错误；本工作流在 Windows runner 上跑同一次构建，把诊断落成 SARIF 送 code scanning
+# （基线、开关与回滚方式见 docs/agents/winui-analyzer.md）.
 #
-# 必须非阻断：master 的必需检查只有 run-unit-tests.yml 的 `test`，这里不进分支保护，
-# 失败只留日志与已生成的 SARIF.
+# 阻断：这里没有 continue-on-error，并且已纳入分支保护的必需检查（上下文名
+# winui-analyzer-observation），构建变红就是合并被挡.
 on:
   push:
     branches: [master]
-  # 不是必需检查，所以可以按路径过滤；一旦纳入分支保护（见 docs 的"收紧为阻断"）
-  # 必须删掉本过滤，否则没触发的 PR 会让必需检查一直停在 pending.
+  # 必需检查不能按路径过滤：没触发的 PR 会让检查一直停在 pending，永远等不到绿色.
   pull_request:
-    paths:
-      # 被分析的工程本体（源码、XAML、csproj、resw 都在这里）
-      - src/Desktop/BiliCopilot.UI/**
-      # 它的直接项目引用与资源：类型变了，XAML / x:Bind 的诊断也会变
-      - src/Desktop/BiliCopilot.UI.Models/**
-      # 分析器版本、warnings-as-errors 等构建开关
-      - src/Directory.Packages.props
-      - src/Directory.Build.props
-      - .github/workflows/winui-analyzer.yml
   workflow_dispatch:
 
 permissions:
@@ -29,10 +20,10 @@ permissions:
   security-events: write
 
 jobs:
+  # job id 就是分支保护里的必需检查名（winui-analyzer-observation），改名字会让规则失效；
+  # "observation" 是历史遗留，现在它跑的是阻断构建.
   winui-analyzer-observation:
     runs-on: windows-latest
-    # 非阻断的关键：任何一步失败都不会让这个 job 成为红色阻断项.
-    continue-on-error: true
     env:
       Project_Path: src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj
       # SARIF 文件名只在这里写一次：构建的输出路径、hashFiles 守卫、两处上传都从它派生，
@@ -50,10 +41,11 @@ jobs:
         with:
           global-json-file: global.json
 
-      # 开关语义见 csproj 与 docs；GenerateAppxPackageOnBuild=false 是因为 runner 上没有
-      # libmpv 等运行时依赖，只要编译结果，不碰 MSIX 打包.
-      - name: 观测构建并生成 SARIF
-        continue-on-error: true
+      # 开关语义见 csproj 与 docs：WinUIAnalyzerObservation 只剩"把 ErrorLog 指向 SARIF"，
+      # warnings-as-errors 照常开着，所以这一步既是报告也是门禁.
+      # GenerateAppxPackageOnBuild=false 是因为 runner 上没有 libmpv 等运行时依赖，
+      # 只要编译结果，不碰 MSIX 打包.
+      - name: 阻断构建并生成 SARIF
         shell: pwsh
         run: |
           $common = @(
@@ -91,7 +83,7 @@ jobs:
             "$($_.ruleId)|$($loc.artifactLocation.uri)|$($loc.region.startLine)|$($loc.region.startColumn)"
           } | ForEach-Object { $_.Group[0] })
 
-          "### WinUI Analyzer 观测结果" | Out-File $summary -Append
+          "### WinUI Analyzer 结果" | Out-File $summary -Append
           "" | Out-File $summary -Append
           "| 规则 | 数量 |" | Out-File $summary -Append
           "| --- | --- |" | Out-File $summary -Append
@@ -115,9 +107,11 @@ jobs:
 
       # 有文件才上传：upload-sarif 拿到空的 sarif_file 会直接失败，用 hashFiles 兜住；
       # hashFiles 只认工作区相对模式，所以 Sarif_File 不能是绝对路径.
+      # fork PR 上 security-events 被降级成只读，upload-sarif 必然失败；这一步不再是
+      # continue-on-error，所以在 fork PR 上直接跳过 —— 否则 WUI 诊断干净的外部 PR 也会
+      # 被这个与规则无关的步骤挡红. SARIF 仍留在 artifact 里.
       - name: 上传 SARIF 到 code scanning
-        if: always() && hashFiles(env.Sarif_File) != ''
-        continue-on-error: true
+        if: always() && hashFiles(env.Sarif_File) != '' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ env.Sarif_File }}

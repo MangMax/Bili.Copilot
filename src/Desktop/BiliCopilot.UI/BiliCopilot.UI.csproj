@@ -27,23 +27,29 @@
   </PropertyGroup>
 
   <!--
-    WinUI 官方分析器（观测模式），开关与命令见 docs/agents/winui-analyzer.md.
+    WinUI 官方分析器（阻断模式），开关与命令见 docs/agents/winui-analyzer.md.
 
-    默认构建不引用：主构建是 warnings-as-errors，把分析器挪进默认构建是 #114 的收口动作
-    （届时它常驻，新诊断由 warnings-as-errors 直接阻断）。存量 WUI warning 已在 #110~#113
-    清零，见 docs/agents/winui-analyzer.md。开关只影响本工程，负责引用分析器、把编译器
-    ErrorLog 指向 SARIF、并关掉本工程的 warnings-as-errors（默认构建仍是 warnings-as-errors，
-    这不是规则降级）。
-    不加开关时分析器不会被还原、加载或执行.
+    引用常驻（#114）：分析器参与每一次编译，新写的 WUI 诊断由 src/Directory.Build.props 的
+    warnings-as-errors 直接变成构建错误。存量四类 warning 已在 #109~#113 清零，基线 0。
+    WinUIAnalyzerObservation 开关不再负责分析器引用、也不再关掉 warnings-as-errors，只剩把编译器
+    ErrorLog 指向 SARIF（外加给它建父目录），供 CI 与人工比对。
+    ErrorLog 不搬进默认构建：CS9264 只在带 /errorlog 的编译里出现（#110 实测 57 个属性），
+    进了默认构建就会被 warnings-as-errors 变成硬错误，详见文档「CS9264」一节.
   -->
-  <PropertyGroup Condition="'$(WinUIAnalyzerObservation)' == 'true'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WinUIAnalyzerSarifPath Condition="'$(WinUIAnalyzerSarifPath)' == ''">$(RepoRoot)/artifacts/winui-analyzer.sarif</WinUIAnalyzerSarifPath>
-    <ErrorLog>$(WinUIAnalyzerSarifPath),version=2.1</ErrorLog>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(WinUIAnalyzerObservation)' == 'true'">
+  <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer" PrivateAssets="all" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(WinUIAnalyzerObservation)' == 'true'">
+    <WinUIAnalyzerSarifPath Condition="'$(WinUIAnalyzerSarifPath)' == ''">$(RepoRoot)/artifacts/winui-analyzer.sarif</WinUIAnalyzerSarifPath>
+    <ErrorLog>$(WinUIAnalyzerSarifPath),version=2.1</ErrorLog>
+    <!--
+      只在这一个构建里把 CS9264 从 error 降回 warning：它只在带 /errorlog 的编译里出现
+      （#110 实测 57 个属性，/errorlog 一清就消失），本工程的 warnings-as-errors 开着就会
+      变成 114 条硬错误，连带把 XamlPreCompile 打挂（WMC0001 级联）。这不是 WUI 规则、
+      也不影响默认构建（默认构建不写 SARIF，一条 CS9264 都没有），详见文档「CS9264」一节.
+    -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS9264</WarningsNotAsErrors>
+  </PropertyGroup>
   <!-- csc 只写文件、不建目录：XamlPreCompile 与 CoreCompile 共用同一个 ErrorLog，两处都要先建父目录.
        路径可能带空格，GetDirectoryName 的参数必须加单引号，否则会被拆成两个参数. -->
   <Target Name="EnsureWinUIAnalyzerSarifDirectory"
