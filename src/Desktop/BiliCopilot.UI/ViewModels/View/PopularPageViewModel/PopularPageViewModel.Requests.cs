@@ -52,6 +52,11 @@ public sealed partial class PopularPageViewModel
 
         // 手动刷新是用户明确的「重试一次」，把连续失败计数清掉。
         _recommendFailureCount = 0;
+        if (isIncremental)
+        {
+            // 增量刷新先在顶部预留位置，卡片按页填进去，避免每次插入都把整列往下顶。
+            RecommendRefreshStarted?.Invoke(ResolveRefreshTargetCount());
+        }
         IsRecommendRefreshing = true;
         var target = ResolveRefreshTargetCount();
         var applied = 0;
@@ -136,6 +141,7 @@ public sealed partial class PopularPageViewModel
         finally
         {
             if (generation == _refreshGeneration) IsRecommendRefreshing = false;
+            if (isIncremental) RecommendRefreshCompleted?.Invoke(this, EventArgs.Empty);
         }
     }
 

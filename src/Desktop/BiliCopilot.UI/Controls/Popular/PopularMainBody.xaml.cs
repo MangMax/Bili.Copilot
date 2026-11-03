@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.Components;
+using BiliCopilot.UI.Toolkits;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -17,6 +18,8 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private const int InitialSkeletonEstimate = 16;
 
     private bool _isActive;
+    // 增量刷新尚未到达的条数；大于 0 时在列表顶部留出等量的骨架位置。
+    private int _pendingRefreshCount;
     private readonly RecommendationScrollAnchor _anchor;
 
     /// <summary>
@@ -52,6 +55,8 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         ViewModel.VideoListUpdated += OnVideoListUpdatedAsync;
         ViewModel.RecommendationListChanging += _anchor.Capture;
         ViewModel.RecommendationListChanged += _anchor.Restore;
+        ViewModel.RecommendRefreshStarted += OnRefreshStarted;
+        ViewModel.RecommendRefreshCompleted += OnRefreshCompleted;
         ViewModel.PropertyChanged += OnPagePropertyChanged;
         ViewModel.Videos.CollectionChanged += OnVideosChanged;
         SyncDisplayItems();
@@ -68,8 +73,11 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
         ViewModel.RecommendationListChanging -= _anchor.Capture;
         ViewModel.RecommendationListChanged -= _anchor.Restore;
+        ViewModel.RecommendRefreshStarted -= OnRefreshStarted;
+        ViewModel.RecommendRefreshCompleted -= OnRefreshCompleted;
         ViewModel.PropertyChanged -= OnPagePropertyChanged;
         ViewModel.Videos.CollectionChanged -= OnVideosChanged;
+        _pendingRefreshCount = 0;
         _anchor.Cancel();
     }
 
@@ -84,8 +92,21 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         if (e.PropertyName == nameof(ViewModel.SelectedSection))
         {
             _anchor.Cancel();
+            _pendingRefreshCount = 0;
             SyncDisplayItems();
         }
+    }
+
+    private void OnRefreshStarted(int targetCount)
+    {
+        _pendingRefreshCount = Math.Max(0, targetCount);
+        SyncDisplayItems();
+    }
+
+    private void OnRefreshCompleted(object? sender, EventArgs e)
+    {
+        _pendingRefreshCount = 0;
+        SyncDisplayItems();
     }
 
     private void OnVideosChanged(object? sender, NotifyCollectionChangedEventArgs e) => SyncDisplayItems();
@@ -114,15 +135,38 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         var videos = ViewModel?.Videos;
         var count = videos?.Count ?? 0;
 
-        // 1) 真实卡片按顺序占住自己的位置（骨架随之被顶掉）。
+        // 增量刷新时顶部先占住整行位置：新卡片按页填进这些位置，
+        // 后面的旧卡片就不会被一页一页往下顶。
+        var columns = Math.Max(1, ScrollSlotBudget.Columns(View.ActualWidth, SlotLayout.Video));
+        var pendingRows = _pendingRefreshCount > 0
+            ? (int)Math.Ceiling(_pendingRefreshCount / (double)columns)
+            : 0;
+        var pendingSlots = pendingRows * columns;
+
+        // 1) 顶部占位区。
+        var index = 0;
+        for (; index < pendingSlots; index++)
+        {
+            if (index < DisplayItems.Count && DisplayItems[index] is VideoCardSkeleton)
+            {
+                continue;
+            }
+
+            var placeholder = new VideoCardSkeleton(index);
+            if (index < DisplayItems.Count) DisplayItems.Insert(index, placeholder);
+            else DisplayItems.Add(placeholder);
+        }
+
+        // 2) 真实卡片按顺序占住自己的位置（占位区之后的骨架随之被顶掉）。
         for (var i = 0; i < count; i++)
         {
             var item = videos![i];
-            if (i < DisplayItems.Count)
+            var target = pendingSlots + i;
+            if (target < DisplayItems.Count)
             {
-                if (!ReferenceEquals(DisplayItems[i], item))
+                if (!ReferenceEquals(DisplayItems[target], item))
                 {
-                    DisplayItems[i] = item;
+                    DisplayItems[target] = item;
                 }
             }
             else
@@ -131,8 +175,9 @@ public sealed partial class PopularMainBody : PopularPageControlBase
             }
         }
 
-        // 2) 列表变短时清掉多余的卡片项，骨架留到最后统一裁剪。
-        for (var i = DisplayItems.Count - 1; i >= count; i--)
+        // 3) 多余的卡片项清掉（列表变短时），骨架留到最后统一裁剪。
+        var cardsEnd = pendingSlots + count;
+        for (var i = DisplayItems.Count - 1; i >= cardsEnd; i--)
         {
             if (DisplayItems[i] is not VideoCardSkeleton)
             {
@@ -140,10 +185,10 @@ public sealed partial class PopularMainBody : PopularPageControlBase
             }
         }
 
-        // 3) 剩余位置用骨架补齐到视口预算。
-        var target = Math.Max(count, budget);
-        while (DisplayItems.Count < target) DisplayItems.Add(new VideoCardSkeleton(DisplayItems.Count - count));
-        while (DisplayItems.Count > target) DisplayItems.RemoveAt(DisplayItems.Count - 1);
+        // 4) 剩余位置用骨架补齐到视口预算。
+        var targetCount = Math.Max(cardsEnd, budget);
+        while (DisplayItems.Count < targetCount) DisplayItems.Add(new VideoCardSkeleton(DisplayItems.Count - cardsEnd));
+        while (DisplayItems.Count > targetCount) DisplayItems.RemoveAt(DisplayItems.Count - 1);
 
         View.ItemCount = count;
         // 还有骨架占位时只按预算判断是否续页，避免 extent 被骨架撑满后无限预取。
