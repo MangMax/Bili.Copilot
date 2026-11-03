@@ -7,12 +7,16 @@ on:
       - "tests/**"
       - "src/Desktop/BiliCopilot.UI/SponsorBlock/**"
       - "src/Desktop/BiliCopilot.UI.Models/Constants/**"
+      - "src/Desktop/BiliCopilot.UI/Extensions/**"
+      - "externals/**"
       - ".github/workflows/run-unit-tests.yml"
   pull_request:
     paths:
       - "tests/**"
       - "src/Desktop/BiliCopilot.UI/SponsorBlock/**"
       - "src/Desktop/BiliCopilot.UI.Models/Constants/**"
+      - "src/Desktop/BiliCopilot.UI/Extensions/**"
+      - "externals/**"
       - ".github/workflows/run-unit-tests.yml"
   workflow_dispatch:
 

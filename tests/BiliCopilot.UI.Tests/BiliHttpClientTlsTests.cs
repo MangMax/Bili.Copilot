@@ -2,7 +2,9 @@
 
 using BiliCopilot.UI.Tests.Support;
 using Microsoft.Extensions.DependencyInjection;
+using Richasy.BiliKernel;
 using Richasy.BiliKernel.Http;
+using RichasyKernel;
 using System.Security.Authentication;
 
 namespace BiliCopilot.UI.Tests;
@@ -10,7 +12,9 @@ namespace BiliCopilot.UI.Tests;
 /// <summary>
 /// Proves that <see cref="BiliHttpClient"/> enforces TLS certificate validation by default,
 /// while still preserving the cancellation paths of <see cref="BiliHttpClient.SendAsync(HttpRequestMessage, CancellationToken)"/>.
+/// 这些测试会临时改写当前用户根证书存储，故与图片客户端测试归入同一非并行集合.
 /// </summary>
+[Collection(CurrentUserCertificateTrustCollection.Name)]
 public sealed class BiliHttpClientTlsTests
 {
     [Fact]
@@ -23,7 +27,10 @@ public sealed class BiliHttpClientTlsTests
         var exception = await Assert.ThrowsAsync<RichasyKernel.KernelException>(() => client.SendAsync(request));
 
         AssertCertificateFailure(exception);
-        Assert.Equal(0, server.RequestCount);
+
+        // 客户端在验证服务端证书时失败；服务端侧的握手可能已经完成，但没有请求被处理过.
+        Assert.True(await server.WaitForHandshakeAttemptAsync(), "服务器应观察到客户端发起的 TLS 握手");
+        Assert.Equal(0, server.CompletedRequests);
     }
 
     [Fact]
@@ -38,7 +45,8 @@ public sealed class BiliHttpClientTlsTests
         var body = await client.GetStringAsync(request);
 
         Assert.Equal("tls-probe", body);
-        Assert.Equal(1, server.RequestCount);
+        Assert.Equal(1, server.CompletedHandshakes);
+        Assert.Equal(1, server.CompletedRequests);
     }
 
     [Fact]
@@ -52,7 +60,9 @@ public sealed class BiliHttpClientTlsTests
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => client.SendAsync(request, source.Token));
 
-        Assert.Equal(0, server.RequestCount);
+        // 已取消的令牌在建立连接前就生效.
+        Assert.Equal(0, server.HandshakeAttempts);
+        Assert.Equal(0, server.CompletedRequests);
     }
 
     [Fact]
@@ -67,19 +77,19 @@ public sealed class BiliHttpClientTlsTests
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => client.SendAsync(request, source.Token));
 
-        Assert.Equal(0, server.RequestCount);
+        // 取消发生在延迟的握手中：握手已被尝试，但从未完成，也没有请求被处理.
+        Assert.True(await server.WaitForHandshakeAttemptAsync(), "取消必须发生在握手阶段，而不是连接建立之前");
+        Assert.Equal(0, server.CompletedHandshakes);
+        Assert.Equal(0, server.CompletedRequests);
     }
 
     [Fact]
     public async Task DiResolvedClient_RejectsUntrustedCertificate()
     {
-        // Mirrors KernelExtensions.AddBiliClient: only the client is registered, no HttpMessageHandler,
-        // so the container must pick the parameterless constructor.
-        var services = new ServiceCollection();
-        services.AddSingleton<BiliHttpClient>();
-        Assert.DoesNotContain(services, descriptor => descriptor.ServiceType == typeof(HttpMessageHandler));
-
-        using var provider = services.BuildServiceProvider();
+        // 走真实注册路径：应用在 GlobalDependencies.cs:46 调用 KernelExtensions.AddBiliClient（KernelExtensions.cs:23），
+        // 那里只注册 BiliHttpClient 单例，不注入任何 HttpMessageHandler，因此容器必须选中校验证书的默认构造函数.
+        var builder = Kernel.CreateBuilder().AddBiliClient();
+        using var provider = builder.Services.BuildServiceProvider();
         var client = provider.GetRequiredService<BiliHttpClient>();
         using var server = LocalTlsServer.Start();
         using var request = BiliHttpClient.CreateRequest(HttpMethod.Get, server.GetUri());
@@ -87,23 +97,21 @@ public sealed class BiliHttpClientTlsTests
         var exception = await Assert.ThrowsAsync<RichasyKernel.KernelException>(() => client.SendAsync(request));
 
         AssertCertificateFailure(exception);
-        Assert.Equal(0, server.RequestCount);
+
+        // 客户端在验证服务端证书时失败；服务端侧的握手可能已经完成，但没有请求被处理过.
+        Assert.True(await server.WaitForHandshakeAttemptAsync(), "服务器应观察到客户端发起的 TLS 握手");
+        Assert.Equal(0, server.CompletedRequests);
     }
 
     private static void AssertCertificateFailure(Exception exception)
     {
+        // 不依赖本地化文本：证书失败的真实证据是异常链里存在 AuthenticationException（由 SslStream 抛出）.
         var chain = GetExceptionChain(exception).ToList();
         var description = string.Join(" -> ", chain.Select(item => item.GetType().Name + ": " + item.Message));
 
-        var namesCertificate = chain.Any(item =>
-            item is AuthenticationException ||
-            item.Message.Contains("certificate", StringComparison.OrdinalIgnoreCase) ||
-            item.Message.Contains("SSL", StringComparison.OrdinalIgnoreCase) ||
-            item.Message.Contains("TLS", StringComparison.OrdinalIgnoreCase) ||
-            item.Message.Contains("证书", StringComparison.Ordinal));
-
-        Assert.True(namesCertificate, "Expected a certificate/SSL failure in the exception chain, got: " + description);
-        Assert.Contains(chain, item => item is HttpRequestException || item is AuthenticationException);
+        Assert.True(
+            chain.Any(item => item is AuthenticationException),
+            "Expected an AuthenticationException in the exception chain, got: " + description);
     }
 
     private static IEnumerable<Exception> GetExceptionChain(Exception exception)
