@@ -1,7 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.Components;
-using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -95,7 +94,7 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     {
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
         var isEmpty = ViewModel is null || ViewModel.Videos.Count == 0;
-        var showSkeletons = _isActive && isEmpty;
+        var showSkeletons = IsLoaded && isEmpty;
         if (showSkeletons)
         {
             while (Skeletons.Count < budget) Skeletons.Add(new VideoCardSkeleton(Skeletons.Count));
