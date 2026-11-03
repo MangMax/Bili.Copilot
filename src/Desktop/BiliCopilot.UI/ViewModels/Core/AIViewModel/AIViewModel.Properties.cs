@@ -1,12 +1,13 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.AI.Conversation;
+using BiliCopilot.UI.Services.AI;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Models.Article;
 using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.Subtitle;
 using Richasy.WinUIKernel.AI.ViewModels;
 
 namespace BiliCopilot.UI.ViewModels.Core;
@@ -18,16 +19,17 @@ public sealed partial class AIViewModel
 {
     private readonly ILogger<AIViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
+    private readonly AIConversationOrchestrator _orchestrator;
+    private readonly IAIPromptTemplateProvider _promptTemplates;
+    private readonly AIChatSelectionAccessor _selectionAccessor;
 
     private VideoPlayerView? _videoView;
     private VideoPart? _videoPart;
-    private List<SubtitleInformation>? _subtitles;
     private ArticleDetail? _articleDetail;
 
     private AIQuickItemViewModel? _currentPrompt;
     private string? _lastQuestion;
-
-    private CancellationTokenSource? _generateCancellationTokenSource;
+    private AIConversationErrorKind _notifiedErrorKind;
 
     [ObservableProperty]
     private List<ChatServiceItemViewModel> _services;
