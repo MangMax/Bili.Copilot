@@ -1,7 +1,11 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.AI.Chat;
+using BiliCopilot.UI.AI.Conversation;
+using BiliCopilot.UI.AI.Context;
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Resolvers;
+using BiliCopilot.UI.Services.AI;
 using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -11,7 +15,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Richasy.AgentKernel;
+using Richasy.AgentKernel.Chat;
 using Richasy.BiliKernel;
+using Richasy.BiliKernel.Bili.Comment;
+using Richasy.BiliKernel.Bili.Media;
 using Richasy.WinUIKernel.AI;
 using Richasy.WinUIKernel.Share;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -69,6 +76,7 @@ internal static class GlobalDependencies
             .AddSubtitleService()
             .AddPlayerService()
             .AddSponsorBlockService()
+            .AddAIConversation()
 
             .AddOpenAIChatService()
             .AddAzureOpenAIChatService()
@@ -176,6 +184,32 @@ internal static class GlobalDependencies
     {
         builder.Services
             .AddSingleton<IChatConfigManager, ChatConfigManager>();
+        return builder;
+    }
+
+    public static IKernelBuilder AddAIConversation(this IKernelBuilder builder)
+    {
+        builder.Services.AddSingleton<AIChatSelectionAccessor>();
+        builder.Services.AddSingleton<IAIChatConfigSnapshotReader>(sp => new ChatConfigSnapshotReader(
+            sp.GetRequiredService<IChatConfigManager>(),
+            () => sp.GetRequiredService<AIChatSelectionAccessor>().Current
+                ?? throw new InvalidOperationException("尚未选择 AI 服务或模型")));
+        builder.Services.AddSingleton<IAIChatModelClient>(
+            _ => new AgentKernelChatModelClient(name => Kernel.GetRequiredService<IChatService>(name)));
+        builder.Services.AddSingleton<IAIConversationScheduler>(
+            sp => new DispatcherQueueConversationScheduler(sp.GetRequiredService<DispatcherQueue>()));
+        builder.Services.AddSingleton<IAIPromptTemplateProvider>(
+            sp => new FileAIPromptTemplateProvider(sp.GetRequiredService<IFileToolkit>()));
+        builder.Services.AddTransient<AIContextCollector>(sp => new AIContextCollector(
+            new BiliKernelSubtitleSource(sp.GetRequiredService<ISubtitleService>()),
+            new BiliKernelCommentSource(sp.GetRequiredService<ICommentService>())));
+        builder.Services.AddTransient<AIChatRequestRunner>(sp => new AIChatRequestRunner(
+            sp.GetRequiredService<IAIChatConfigSnapshotReader>(),
+            sp.GetRequiredService<IAIChatModelClient>()));
+        builder.Services.AddTransient<AIConversationOrchestrator>(sp => new AIConversationOrchestrator(
+            sp.GetRequiredService<AIContextCollector>(),
+            sp.GetRequiredService<AIChatRequestRunner>(),
+            sp.GetRequiredService<IAIConversationScheduler>()));
         return builder;
     }
 
