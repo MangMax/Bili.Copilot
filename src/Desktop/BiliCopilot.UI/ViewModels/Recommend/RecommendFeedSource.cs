@@ -22,11 +22,6 @@ public interface IRecommendFeedSource
     RecommendFeedSource Kind { get; }
 
     /// <summary>
-    /// 最近一次取数是否发生了降级，非 null 表示可以提示给用户.
-    /// </summary>
-    string? Notice { get; }
-
-    /// <summary>
     /// 取一批推荐.
     /// </summary>
     /// <param name="offset">游标，首次传 0.</param>
@@ -45,9 +40,6 @@ public sealed class MobileRecommendFeedSource(IVideoDiscoveryService service) : 
     public RecommendFeedSource Kind => RecommendFeedSource.Mobile;
 
     /// <inheritdoc/>
-    public string? Notice => null;
-
-    /// <inheritdoc/>
     public Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchAsync(long offset, CancellationToken cancellationToken = default)
         // 直接返回服务任务：手机端不做任何加工，加载路径上不多出一层异步续体。
         => service.GetRecommendVideoListAsync(offset, cancellationToken: cancellationToken);
@@ -60,9 +52,6 @@ public sealed class WebRecommendFeedSource(IVideoDiscoveryService service, int p
 {
     /// <inheritdoc/>
     public RecommendFeedSource Kind => RecommendFeedSource.Web;
-
-    /// <inheritdoc/>
-    public string? Notice => null;
 
     /// <inheritdoc/>
     public Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchAsync(long offset, CancellationToken cancellationToken = default)
@@ -83,9 +72,6 @@ public sealed class MergedRecommendFeedSource(IRecommendFeedSource mobile, IReco
 
     /// <inheritdoc/>
     public RecommendFeedSource Kind => RecommendFeedSource.Merged;
-
-    /// <inheritdoc/>
-    public string? Notice { get; private set; }
 
     /// <inheritdoc/>
     public async Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchAsync(long offset, CancellationToken cancellationToken = default)
@@ -114,11 +100,7 @@ public sealed class MergedRecommendFeedSource(IRecommendFeedSource mobile, IReco
             throw new InvalidOperationException("合并推荐为空");
         }
 
-        Notice = mobilePage is null
-            ? "手机端推荐不可用，当前仅使用网页端推荐"
-            : webPage is null
-                ? "网页端推荐不可用，当前仅使用手机端推荐"
-                : null;
+        // 单路失败时静默用另一路继续，不需要额外提示。
         return (merged, mobilePage?.Offset ?? offset);
     }
 

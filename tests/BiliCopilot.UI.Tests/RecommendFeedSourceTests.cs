@@ -51,7 +51,6 @@ public sealed class RecommendFeedSourceTests
         var (videos, _) = await source.FetchAsync(0);
 
         Assert.Equal(new[] { "a", "shared", "w" }, videos.Select(p => p.Identifier.Id));
-        Assert.Null(source.Notice);
     }
 
     [Fact]
@@ -68,8 +67,8 @@ public sealed class RecommendFeedSourceTests
 
         var (videos, _) = await source.FetchAsync(0);
 
+        // 单路失败时静默使用另一路，不再提示来源。
         Assert.Equal("a", Assert.Single(videos).Identifier.Id);
-        Assert.Contains("网页端", source.Notice);
     }
 
     [Fact]
