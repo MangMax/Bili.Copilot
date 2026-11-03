@@ -1,0 +1,113 @@
+name: WinUI Analyzer Observation
+
+# WinUI 官方分析器（Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer）的观测构建.
+#
+# 这个工作流只做一件事：用显式开关跑一次 UI 工程的观测构建，把 WUI 诊断落成 SARIF，
+# 供分批清理存量时比对（基线见 docs/agents/winui-analyzer.md）.
+#
+# 它必须是非阻断的：master 的必需检查只有 run-unit-tests.yml 里的 `test`，
+# 这里既不进分支保护，也不允许失败扩散 —— job 级 continue-on-error，
+# 构建失败只留下日志和已经生成的 SARIF 片段，不挡合并与发布.
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # upload-sarif 要求写 security-events；本工作流只上传自己生成的 SARIF.
+  security-events: write
+
+jobs:
+  winui-analyzer:
+    name: winui-analyzer-observation
+    runs-on: windows-latest
+    # 非阻断的关键：任何一步失败都不会让这个 job 成为红色阻断项.
+    continue-on-error: true
+    env:
+      Project_Path: src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj
+      Sarif_Path: ${{ github.workspace }}/winui-analyzer.sarif
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET from global.json
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      # WinUIAnalyzerObservation=true 同时负责三件事：引用分析器、关掉本工程的
+      # warnings-as-errors（存量 427 条诊断必然命中）、把诊断写进 SARIF.
+      # GenerateAppxPackageOnBuild=false：只要编译结果，不碰 MSIX 打包 ——
+      # runner 上没有 libmpv / ffmpeg 等运行时依赖，打包本来就会中止.
+      - name: 观测构建并生成 SARIF
+        id: observe
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $common = @(
+            "-p:Platform=x64",
+            "-p:SolutionDir=${{ github.workspace }}/src/",
+            "-p:WinUIAnalyzerObservation=true"
+          )
+          dotnet restore ${{ env.Project_Path }} @common
+          dotnet build ${{ env.Project_Path }} -c Release --no-restore @common `
+            -p:GenerateAppxPackageOnBuild=false `
+            -p:WinUIAnalyzerSarifPath="${{ env.Sarif_Path }}"
+
+      # 构建失败也照样跑：只汇总已经生成的内容.
+      - name: 汇总 SARIF 中的 WUI 诊断
+        if: always()
+        shell: pwsh
+        run: |
+          $sarif = "${{ env.Sarif_Path }}"
+          $summary = $env:GITHUB_STEP_SUMMARY
+          if (!(Test-Path $sarif)) {
+            "未生成 SARIF（构建失败或分析器未加载），详见上一步日志." | Out-File $summary -Append
+            exit 0
+          }
+
+          $doc = Get-Content $sarif -Raw | ConvertFrom-Json
+          $results = @($doc.runs | ForEach-Object { $_.results } | Where-Object { $_ })
+          $wui = @($results | Where-Object { "$($_.ruleId)" -like "WUI*" })
+
+          # 同一位置偶尔会被上报两次（见 docs/agents/winui-analyzer.md 的基线口径），
+          # 按 "规则 + 位置" 去重，计数才能和基线对齐.
+          $distinct = @($wui | Group-Object {
+            $loc = $_.locations[0].physicalLocation
+            "$($_.ruleId)|$($loc.artifactLocation.uri)|$($loc.region.startLine)|$($loc.region.startColumn)"
+          } | ForEach-Object { $_.Group[0] })
+
+          "### WinUI Analyzer 观测结果" | Out-File $summary -Append
+          "" | Out-File $summary -Append
+          "| 规则 | 数量 |" | Out-File $summary -Append
+          "| --- | --- |" | Out-File $summary -Append
+          $distinct | Group-Object ruleId | Sort-Object Count -Descending |
+            ForEach-Object { "| $($_.Name) | $($_.Count) |" | Out-File $summary -Append }
+
+          $warnings = @($distinct | Where-Object { $_.level -ne "note" }).Count
+          $notes = @($distinct | Where-Object { $_.level -eq "note" }).Count
+          "" | Out-File $summary -Append
+          "WUI 合计 $($distinct.Count) 条：warning $warnings 条、note $notes 条；基线见 docs/agents/winui-analyzer.md." | Out-File $summary -Append
+          "SARIF: $sarif" | Out-File $summary -Append
+
+      - name: 上传 SARIF 工件
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: winui-analyzer-sarif
+          path: ${{ env.Sarif_Path }}
+          if-no-files-found: warn
+          retention-days: 30
+
+      # 有文件才上传；upload-sarif 在没有 SARIF 时会直接失败，所以用 hashFiles 兜住.
+      - name: 上传 SARIF 到 code scanning
+        if: always() && hashFiles('winui-analyzer.sarif') != ''
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: winui-analyzer.sarif
+          category: winui-analyzer
