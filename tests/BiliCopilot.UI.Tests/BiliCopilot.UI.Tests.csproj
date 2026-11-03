@@ -61,6 +61,14 @@
   </ItemGroup>
 
   <!--
+    图片客户端只依赖 System.Net.Http，与 WinUI 无关；直接链接源文件，
+    用本地 TLS 服务器验证真实客户端的证书校验与取消行为。
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Extensions\InternalHttpExtensions.cs" Link="Extensions\InternalHttpExtensions.cs" />
+  </ItemGroup>
+
+  <!--
     清晰度选择策略是纯逻辑：只依赖格式与偏好，不依赖 WinUI / 账号 VM，
     因此直接链接源文件验证选择规则，无需引用 WinUI 可执行项目。
   -->

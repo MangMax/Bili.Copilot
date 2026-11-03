@@ -41,8 +41,7 @@ internal static partial class InternalHttpExtensions
             PreAuthenticate = true,
             ClientCertificateOptions = ClientCertificateOption.Automatic,
             AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.Brotli,
-            UseCookies = false, // Emby API does not use cookies for authentication
-            ServerCertificateCustomValidationCallback = (_, _, _, _) => true, // Bypass SSL validation for self-signed certificates (not recommended for production)
+            UseCookies = false, // Cover requests do not rely on cookies
         };
 
         var client = new HttpClient(handler);
