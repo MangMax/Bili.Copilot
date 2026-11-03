@@ -1621,8 +1621,9 @@
     BBDown 随仓库提交. 缺这些文件时 MSIX 仍能打出来，但装好后无法播放或无法下载，
     因此在这里直接中止打包，而不是等用户装上才发现.
 
-    这条校验只跟"是否真的要打包"有关，不跟任何分析器开关有关：CI 打包靠
-    .github/packaging.props 打开 GenerateAppxPackageOnBuild，发布流程照旧在这里中止；
+    这条校验只跟"是否真的要打包"有关，不跟任何分析器开关有关：CI 打包时由
+    .github/actions/build-app 在命令行传 /p:GenerateAppxPackageOnBuild=true，
+    build-sideload-latest 另经 .github/packaging.props 设同一个属性；发布流程照旧在这里中止.
     只编译的观测构建（GenerateAppxPackageOnBuild=false）没有包要出，也就没有依赖要校验.
 
     条件不能省：MSBuild 会先执行挂在 BeforeTargets 上的目标、再看被挂目标的 Condition，
