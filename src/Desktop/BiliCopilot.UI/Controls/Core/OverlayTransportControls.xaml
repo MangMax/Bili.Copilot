@@ -434,7 +434,7 @@
                     <ic:SymbolIcon FontSize="14" Symbol="Subtitles" />
                     <Button.Flyout>
                         <Flyout
-                            Closed="OnFlyoutClosed"
+                            Closed="OnSubtitleFlyoutClosed"
                             Opened="OnSubtitleFlyoutOpened"
                             ShouldConstrainToRootBounds="False">
                             <Flyout.FlyoutPresenterStyle>
@@ -445,8 +445,8 @@
 
                             <!--
                                 字幕菜单在同一弹出层内分两级：第一层是字幕总开关与当前视频的字幕轨列表，
-                                第二层承载位置、字号、字体、延迟等参数；返回只切换层级，不关闭菜单.
-                                入口的可见性只取决于当前视频是否有字幕，不受开关状态影响.
+                                第二层承载位置、字号、字体、延迟等参数；返回只切换层级，不关闭菜单。
+                                入口的可见性只取决于当前视频是否有字幕，不受开关状态影响。
                             -->
                             <Grid Width="280">
                                 <!--  第一层：字幕总开关 + 字幕轨列表  -->

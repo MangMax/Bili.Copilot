@@ -1034,30 +1034,31 @@ public sealed partial class PlayerViewModel
     }
 
     /// <summary>
-    /// 从本地设置恢复字幕开关，只更新状态，不挂载/卸载字幕轨，也不写盘。
-    /// </summary>
-    private void RestoreSubtitleEnabledPreference()
-        => SetSubtitleEnabledSilently(SettingsToolkit.ReadLocalSetting(SettingNames.IsSubtitleEnabled, true));
-
-    /// <summary>
-    /// 静默设置字幕开关：不触发挂载/卸载字幕轨的副作用，由调用方决定是否写盘。
+    /// 应用字幕开关偏好：按需写盘，并静默更新开关状态，不触发挂载/卸载字幕轨的副作用。
+    /// 用户切换、关闭态选轨与启动时恢复都走这里，因此偏好写盘只在这一处发生。
     /// </summary>
     /// <param name="isEnabled">是否启用字幕。</param>
-    private void SetSubtitleEnabledSilently(bool isEnabled)
+    /// <param name="persist">是否把偏好写入本地设置。</param>
+    private void ApplySubtitleEnabledPreference(bool isEnabled, bool persist)
     {
+        if (persist)
+        {
+            SettingsToolkit.WriteLocalSetting(SettingNames.IsSubtitleEnabled, isEnabled);
+        }
+
         if (IsSubtitleEnabled == isEnabled)
         {
             return;
         }
 
-        _isSubtitleEnabledChangeSilent = true;
+        _isApplyingSubtitlePreference = true;
         try
         {
             IsSubtitleEnabled = isEnabled;
         }
         finally
         {
-            _isSubtitleEnabledChangeSilent = false;
+            _isApplyingSubtitlePreference = false;
         }
     }
 
@@ -1072,6 +1073,9 @@ public sealed partial class PlayerViewModel
                 var aid = videoVM._view.Information.Identifier.Id;
                 var cid = videoVM._part.Identifier.Id;
                 var metas = await service.GetSubtitleMetasAsync(aid, cid);
+
+                // 字幕轨集合按播放会话重建，上一会话记住的轨不再有意义。
+                _rememberedSubtitleId = null;
                 Subtitles.Clear();
                 if (metas?.Count > 0)
                 {
@@ -1082,14 +1086,7 @@ public sealed partial class PlayerViewModel
                     }
                 }
 
-                if (Subtitles.Count > 0)
-                {
-                    var initialIndex = SubtitlePreference.SelectInitialIndex(Subtitles, IsSubtitleEnabled, p => p.Name, p => p.IsAI);
-                    if (initialIndex >= 0)
-                    {
-                        Subtitles[initialIndex].SelectCommand.Execute(default);
-                    }
-                }
+                SelectSubtitleByPreference();
 
                 IsSubtitleEmpty = Subtitles.Count == 0;
             }
@@ -1100,15 +1097,40 @@ public sealed partial class PlayerViewModel
         }
     }
 
+    /// <summary>
+    /// 按本次会话记住的字幕轨与语言偏好挂载一条字幕；开关关闭或没有可用字幕时不做处理。
+    /// </summary>
+    private void SelectSubtitleByPreference()
+    {
+        if (Subtitles.Count == 0)
+        {
+            return;
+        }
+
+        var index = SubtitlePreference.SelectRestoreIndex(Subtitles, IsSubtitleEnabled, _rememberedSubtitleId, p => p.Data.Id, p => p.Name, p => p.IsAI);
+        if (index >= 0)
+        {
+            Subtitles[index].SelectCommand.Execute(default);
+        }
+    }
+
+    private void ClearSubtitleSelection()
+    {
+        foreach (var item in Subtitles)
+        {
+            item.IsSelected = false;
+        }
+    }
+
     private async Task SelectSubtitleAsync(SubtitleItemViewModel vm)
     {
         if (!IsSubtitleEnabled)
         {
-            // 关闭状态下选轨视为用户希望观看字幕：静默开启并写盘，随后只挂载这条被选中的轨。
-            SettingsToolkit.WriteLocalSetting(SettingNames.IsSubtitleEnabled, true);
-            SetSubtitleEnabledSilently(true);
+            // 关闭状态下选轨视为用户希望观看字幕：写盘并打开开关，随后只挂载这条被选中的轨。
+            ApplySubtitleEnabledPreference(true, persist: true);
         }
 
+        _rememberedSubtitleId = vm.Data.Id;
         foreach (var item in Subtitles)
         {
             item.IsSelected = item.Data.Equals(vm.Data);
@@ -1124,10 +1146,9 @@ public sealed partial class PlayerViewModel
 
     private async Task DeselectSubtitleAsync(SubtitleItemViewModel vm)
     {
-        foreach (var item in Subtitles)
-        {
-            item.IsSelected = false;
-        }
+        // 用户主动取消选择才清除记忆；关闭开关不属于这种情况。
+        _rememberedSubtitleId = null;
+        ClearSubtitleSelection();
 
         if (Client is null)
         {

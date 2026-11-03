@@ -329,6 +329,13 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         ViewModel.IsPopupVisible = true;
     }
 
+    private void OnSubtitleFlyoutClosed(object sender, object e)
+    {
+        ViewModel.IsPopupVisible = false;
+        // 菜单关闭后复位层级，下次打开从第一层开始。
+        ViewModel.IsSubtitleParameterVisible = false;
+    }
+
     private void OnDisplayFlyoutClosed(object sender, object e)
     {
         ViewModel.IsPopupVisible = false;
@@ -407,14 +414,14 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     }
 
     private void OnFlyoutClosed(object sender, object e)
-    {
-        ViewModel.IsPopupVisible = false;
-        // 菜单关闭后复位层级，下次打开从第一层开始。
-        ViewModel.IsSubtitleParameterVisible = false;
-    }
+        => ViewModel.IsPopupVisible = false;
 
-    private void OnSubtitleParameterEntryClick(object sender, RoutedEventArgs e)
-        => ViewModel.IsSubtitleParameterVisible = true;
+    private async void OnSubtitleParameterEntryClick(object sender, RoutedEventArgs e)
+    {
+        ViewModel.IsSubtitleParameterVisible = true;
+        // 每次进入第二层都重新确认字体列表并回显当前字体，首次加载失败时下次进入会重试。
+        await EnsureSubtitleFontSelectionAsync();
+    }
 
     private void OnSubtitleParameterBackClick(object sender, RoutedEventArgs e)
         => ViewModel.IsSubtitleParameterVisible = false;
@@ -462,15 +469,23 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     }
 
     private async void OnSubtitleFontComboLoaded(object sender, RoutedEventArgs e)
+        => await EnsureSubtitleFontSelectionAsync();
+
+    private async Task EnsureSubtitleFontSelectionAsync()
     {
+        if (!SubtitleFontComboBox.IsLoaded)
+        {
+            return;
+        }
+
         try
         {
             await ViewModel.ReloadFontsCommand.ExecuteAsync(default);
         }
         catch (Exception ex)
         {
+            // 字体目录读取失败只影响回显；字体列表仍为空时，下次进入会再次尝试。
             this.Get<ILogger<OverlayTransportControls>>().LogWarning(ex, "Unable to load subtitle font choices");
-            return;
         }
 
         if (!SubtitleFontComboBox.IsLoaded)
