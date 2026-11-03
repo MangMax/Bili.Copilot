@@ -42,7 +42,11 @@ namespace BiliCopilot.UI.ViewModels.Core
         public PinnerViewModel()
             => AddItemCommand = new AsyncRelayCommand<PinItem>(item =>
             {
-                Items.Add(item);
+                if (item is not null)
+                {
+                    Items.Add(item);
+                }
+
                 return Task.CompletedTask;
             });
 
