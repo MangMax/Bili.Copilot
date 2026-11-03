@@ -28,10 +28,10 @@
             <local:VideoPlaylistSection ViewModel="{x:Bind}" />
         </DataTemplate>
         <DataTemplate x:Key="InfoTemplate" x:DataType="components:VideoPlayerInfoSectionDetailViewModel">
-            <local:VideoInfoSection ViewModel="{x:Bind Page}" />
+            <local:VideoInfoSection ViewModel="{x:Bind Page, Mode=OneTime}" />
         </DataTemplate>
         <DataTemplate x:Key="AITemplate" x:DataType="components:VideoPlayerAISectionDetailViewModel">
-            <local:VideoAISection ViewModel="{x:Bind AI}" />
+            <local:VideoAISection ViewModel="{x:Bind AI, Mode=OneTime}" />
         </DataTemplate>
         <extensions:PlayerSectionTemplateSelector
             x:Key="Selector"

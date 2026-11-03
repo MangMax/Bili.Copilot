@@ -71,7 +71,7 @@
                                     <local:CommentItemControl
                                         Margin="0,2"
                                         ShowMoreCommand="{x:Bind ShowMoreCommand}"
-                                        ViewModel="{x:Bind Data}" />
+                                        ViewModel="{x:Bind Data, Mode=OneTime}" />
                                 </DataTemplate>
                             </repeater:AppRepeater.ItemTemplate>
                         </repeater:AppRepeater>

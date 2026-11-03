@@ -17,7 +17,7 @@
         <ItemsView
             x:Name="GroupView"
             Padding="2,8,8,8"
-            ItemsSource="{x:Bind ViewModel.Groups}"
+            ItemsSource="{x:Bind ViewModel.Groups, Mode=OneWay}"
             ScrollViewer.HorizontalScrollMode="Disabled"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             SelectionMode="Single">
@@ -37,12 +37,12 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 MaxLines="1"
-                                Text="{x:Bind Name}" />
+                                Text="{x:Bind Name, Mode=OneTime}" />
                             <InfoBadge
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 Style="{StaticResource InformationalValueInfoBadgeStyle}"
-                                Value="{x:Bind TotalCount}" />
+                                Value="{x:Bind TotalCount, Mode=OneTime}" />
                         </Grid>
                     </ItemContainer>
                 </DataTemplate>

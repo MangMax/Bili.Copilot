@@ -10,8 +10,8 @@
 
     <ScrollView Style="{StaticResource PageScrollViewStyle}">
         <StackPanel Margin="16,12" Spacing="20">
-            <local:VideoDescriptorControl ViewModel="{x:Bind ViewModel}" />
-            <local:VideoOperationControl ViewModel="{x:Bind ViewModel}" />
+            <local:VideoDescriptorControl ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+            <local:VideoOperationControl ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         </StackPanel>
     </ScrollView>
 </local:VideoPlayerControlBase>

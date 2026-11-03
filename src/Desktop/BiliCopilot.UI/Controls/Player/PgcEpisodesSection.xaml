@@ -35,7 +35,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         FontWeight="Bold"
-                        Text="{x:Bind Index}" />
+                        Text="{x:Bind Index, Mode=OneTime}" />
                 </Grid>
             </base:AppToggleCard>
         </DataTemplate>

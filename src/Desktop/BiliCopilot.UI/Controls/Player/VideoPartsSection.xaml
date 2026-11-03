@@ -26,7 +26,7 @@
                     <base:TrimTextBlock
                         VerticalAlignment="Center"
                         MaxLines="1"
-                        Text="{x:Bind Identifier.Title}" />
+                        Text="{x:Bind Identifier.Title, Mode=OneTime}" />
                     <TextBlock
                         Grid.Column="1"
                         VerticalAlignment="Center"
@@ -37,14 +37,14 @@
             </ItemContainer>
         </DataTemplate>
         <DataTemplate x:Name="IndexTemplate" x:DataType="media:VideoPart">
-            <ItemContainer Style="{StaticResource AppItemContainerStyle}" ToolTipService.ToolTip="{x:Bind Identifier.Title}">
+            <ItemContainer Style="{StaticResource AppItemContainerStyle}" ToolTipService.ToolTip="{x:Bind Identifier.Title, Mode=OneTime}">
                 <Grid Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="14"
                         FontWeight="Bold"
-                        Text="{x:Bind Index}" />
+                        Text="{x:Bind Index, Mode=OneTime}" />
                 </Grid>
             </ItemContainer>
         </DataTemplate>

@@ -10,8 +10,8 @@
 
     <ScrollView Style="{StaticResource PageScrollViewStyle}">
         <StackPanel Margin="16,12" Spacing="20">
-            <local:PgcDescriptorControl ViewModel="{x:Bind ViewModel}" />
-            <local:PgcOperationControl ViewModel="{x:Bind ViewModel}" />
+            <local:PgcDescriptorControl ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+            <local:PgcOperationControl ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         </StackPanel>
     </ScrollView>
 </local:PgcPlayerControlBase>

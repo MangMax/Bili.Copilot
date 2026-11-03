@@ -44,19 +44,19 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 | 规则 | 级别 | 数量 | 说明 |
 | --- | --- | --- | --- |
 | WUI3001 | warning | 301 | `[ObservableProperty]` 旧字段写法，未用 partial property |
-| WUI2011 | warning | 73 | `x:Bind` 没写 `Mode`，默认 OneTime，数据变了 UI 不更新 |
+| WUI2011 | warning | 0 | `x:Bind` 缺显式 `Mode`（#111 已清零：25 处补 `OneWay`，48 处写显式 `OneTime`） |
 | WUI2010 | warning | 52 | 嵌套 `x:Bind` 路径缺 `FallbackValue`，中间段为 null 时显示异常 |
 | WUI1001 | warning | 1 | `Windows.Storage.Pickers` 应换成 `Microsoft.Windows.Storage.Pickers` |
-| **warning 小计** | | **427** | 与 #91 的临时检测一致 |
+| **warning 小计** | | **354** | WUI2011 清零后的剩余存量，按规则继续分批 |
 | WUI2020 | note | 272 | 缺失 `AutomationId` |
 | WUI1010 | note | 2 | 迁移表的特性提示 |
 
 两点口径：
 
-- 427 是**按位置去重**后的 warning 数。SARIF 里 WUI2010 的原始条目是 54，
+- 354 是**按位置去重**后的 warning 数（WUI2011 清零前是 427）。SARIF 里 WUI2010 的原始条目是 54，
   其中 `Controls/Comment/CommentMainPanel.xaml:63` 与
   `Controls/Search/SearchHeader.xaml:49` 各被上报两次（同一位置）。
-- note 级（WUI2020 / WUI1010）不计入 427，单独记。
+- note 级（WUI2020 / WUI1010）不计入 354，单独记。
 
 ## 从观测到阻断的顺序
 
@@ -67,11 +67,18 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
    再讨论默认构建是否打开分析器。实测这条命令有效：`-t:Rebuild` 下会得到
    `301 个错误`，清零即可作为收尾判据。迁移完还能顺手删掉 `BiliCopilot.UI.csproj`
    里为此保留的 `MVVMTK0045;MVVMTK0046` 抑制，让抑制清单只留必要项.
-2. **WUI2011（73 条）**：逐个判断绑定是否需要随数据变化——只有这类绑定才补
-   `Mode=OneWay` / `Mode=TwoWay`。事件/命令绑定（`Click`、`Command`）、
-   一次性静态文案、以及本来就只读一次的模板项不需要补，别为了清零批量加 Mode。
-   仓库当前没有任何 `x:DefaultBindMode`，所以这些命中不是继承模式造成的误报；
-   XAML 改动要跟着页面一起回归，不要一次铺开。
+2. **WUI2011（73 → 0，#111 已完成）**：逐个判断绑定是否真的随数据变化，判定规则：
+   - 路径上能发出变更通知的，才写 `Mode=OneWay`（共 25 处）：页面级
+     `ItemsSource="{x:Bind ViewModel.X}"`（16 处，`ViewModel` 是依赖属性、集合本身可观察）、
+     子控件 `ViewModel` 交接到依赖属性（9 处，父级替换要能传导）；
+   - 源没有变更通知的，写显式 `Mode=OneTime` 把"就是一次性的"讲清楚，不要补 `OneWay`：
+     内核模型（`VideoPart`、`BiliImage`、`UserGroup` 等都是纯 POCO，不实现
+     `INotifyPropertyChanged`）、`x:Name` 元素引用（`TeachingTip.Target`）、
+     构造时就定值的模板项。给这类源补 `OneWay` 只会得到一条永远不更新的死绑定；
+   - 事件绑定（`Click`、`SelectionChanged`）、命令绑定（`Command`、`*Command` 属性）
+     和单独的 `{x:Bind}`（整项 DataContext）本来就不触发这条规则，保持原样。
+   仓库当前没有任何 `x:DefaultBindMode`，所以这些命中不是继承模式造成的误报。
+   命中全部清零后，新写的 `x:Bind` 必须显式写 `Mode`。
 3. **WUI2010（52 条）**：给嵌套 `x:Bind` 补 `FallbackValue` 或改绑扁平属性。
 4. **收紧为阻断**：三类清零后，把 UI 工程的引用从条件开关里挪出来常驻、
    恢复 warnings-as-errors，并把 `winui-analyzer-observation` job 的

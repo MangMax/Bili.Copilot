@@ -17,12 +17,12 @@
     <UserControl.Resources>
         <DataTemplate x:Key="AppNavItemTemplate" x:DataType="viewmodels:AppNavigationItemViewModel">
             <base:AppNavigationViewItem
-                Content="{x:Bind Title}"
+                Content="{x:Bind Title, Mode=OneTime}"
                 IsSelected="{x:Bind IsSelected, Mode=TwoWay}"
                 SelectsOnInvoked="True"
                 ShowUnread="{x:Bind ShowUnread, Mode=OneWay}"
                 Style="{StaticResource MainNavigationViewItemStyle}"
-                Symbol="{x:Bind Symbol}"
+                Symbol="{x:Bind Symbol, Mode=OneTime}"
                 Tag="{x:Bind}"
                 Visibility="{x:Bind IsVisible, Mode=OneWay}" />
         </DataTemplate>

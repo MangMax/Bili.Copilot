@@ -86,6 +86,6 @@
             IsLightDismissEnabled="True"
             PreferredPlacement="BottomLeft"
             Subtitle="{ext:Locale Name=ClearViewLaterWarning}"
-            Target="{x:Bind CleanButton}" />
+            Target="{x:Bind CleanButton, Mode=OneTime}" />
     </Grid>
 </local:ViewLaterPageControlBase>

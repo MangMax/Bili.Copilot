@@ -28,8 +28,8 @@
                         Padding="0"
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
-                        AutomationProperties.AutomationId="{x:Bind local:MomentImageGallery.GetImageAutomationId(Uri)}"
-                        AutomationProperties.Name="{x:Bind local:MomentImageGallery.GetImageAutomationName(Uri)}"
+                        AutomationProperties.AutomationId="{x:Bind local:MomentImageGallery.GetImageAutomationId(Uri), Mode=OneTime}"
+                        AutomationProperties.Name="{x:Bind local:MomentImageGallery.GetImageAutomationName(Uri), Mode=OneTime}"
                         Background="Transparent"
                         BorderThickness="0"
                         Click="OnImageClick"
@@ -42,7 +42,7 @@
                             VerticalAlignment="Stretch"
                             CornerRadius="{StaticResource ControlCornerRadius}"
                             DecodeWidth="300"
-                            Source="{x:Bind Uri}" />
+                            Source="{x:Bind Uri, Mode=OneTime}" />
                     </Button>
                 </DataTemplate>
             </ItemsRepeater.ItemTemplate>

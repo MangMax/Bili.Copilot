@@ -45,6 +45,6 @@
             IsLightDismissEnabled="True"
             PreferredPlacement="Top"
             Subtitle="{ext:Locale Name=TripleTip}"
-            Target="{x:Bind Btn}" />
+            Target="{x:Bind Btn, Mode=OneTime}" />
     </Grid>
 </base:LayoutUserControlBase>
