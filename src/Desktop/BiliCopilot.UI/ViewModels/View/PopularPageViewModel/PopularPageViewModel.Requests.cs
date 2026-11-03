@@ -50,13 +50,13 @@ public sealed partial class PopularPageViewModel
         // 新一次刷新会替换旧快照，撤销入口先收起，成功后按当前模式重新决定是否出现。
         CanUndoRefresh = false;
 
+        // 手动刷新是用户明确的「重试一次」，把连续失败计数清掉。
+        _recommendFailureCount = 0;
         IsRecommendRefreshing = true;
         var target = ResolveRefreshTargetCount();
         var applied = 0;
         var listReset = false;
         var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
-        // 点击即进入加载形态：视图先按目标条数在顶部预留骨架位置，数据一页一页落地。
-        RecommendRefreshStarted?.Invoke(target);
         try
         {
 
@@ -79,7 +79,6 @@ public sealed partial class PopularPageViewModel
                 }
 
                 applied += ApplyRefreshPage(page, isIncremental);
-                RecommendRefreshProgress?.Invoke(Math.Max(0, target - applied));
                 VideoListUpdated?.Invoke(this, EventArgs.Empty);
             });
 
@@ -137,7 +136,6 @@ public sealed partial class PopularPageViewModel
         finally
         {
             if (generation == _refreshGeneration) IsRecommendRefreshing = false;
-            RecommendRefreshCompleted?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -316,6 +314,13 @@ public sealed partial class PopularPageViewModel
 
     private async Task LoadRecommendVideosAsync(long version)
     {
+        if (_recommendFailureCount >= MaxRecommendFailureCount)
+        {
+            // 连续失败后不再自动重试：每次布局变化都试一次会把接口打到限流，
+            // 交给手动刷新或切换分区来重置。
+            return;
+        }
+
         try
         {
             // 首屏按设置选来源；列表已有内容时沿用当前来源，避免滚动加载把新来源的条目接到旧列表后面。
@@ -324,14 +329,31 @@ public sealed partial class PopularPageViewModel
                 _feedSource = ResolveFeedSource(allowSourceChange: true);
             }
 
-            var (videos, nextOffset) = await _feedSource.FetchAsync(_recommendOffset);
-            if (version != _sectionVersion) return;
-            _recommendOffset = nextOffset;
-            TryAddVideos(videos, VideoCardStyle.Recommend);
+            // 首屏一口气取到视口预算：页与页之间不必等 UI 再测量一轮，
+            // 每一页仍然立即追加，用户看到的是一段一段长出来而不是最后一次性出现。
+            // 没有视口预算信息时（例如单元测试）保持「一次一页」，不改变原有节奏。
+            var target = Videos.Count == 0 && RefreshTargetCount > 0
+                ? Math.Max(MinRefreshTargetCount, RefreshTargetCount)
+                : 0;
+            var fetched = 0;
+            for (var i = 0; i < MaxInitialPageCount; i++)
+            {
+                var (videos, nextOffset) = await _feedSource.FetchAsync(_recommendOffset);
+                if (version != _sectionVersion) return;
+                _recommendOffset = nextOffset;
+                _recommendFailureCount = 0;
+                TryAddVideos(videos, VideoCardStyle.Recommend);
+                fetched += videos.Count;
+                if (target <= 0 || fetched >= target || videos.Count == 0)
+                {
+                    break;
+                }
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载推荐视频时出错.");
+            _recommendFailureCount++;
+            _logger.LogError(ex, "尝试加载推荐视频时出错（连续第 {Count} 次）.", _recommendFailureCount);
         }
     }
 

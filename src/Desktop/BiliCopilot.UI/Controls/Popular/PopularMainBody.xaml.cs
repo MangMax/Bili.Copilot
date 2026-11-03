@@ -18,8 +18,6 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private const int InitialSkeletonEstimate = 16;
 
     private bool _isActive;
-    // 本次刷新还没取回的条数；大于 0 时在列表顶部预留同等大小的骨架位置。
-    private int _pendingRefreshCount;
     private readonly RecommendationScrollAnchor _anchor;
 
     /// <summary>
@@ -51,9 +49,6 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         ViewModel.VideoListUpdated += OnVideoListUpdatedAsync;
         ViewModel.RecommendationListChanging += _anchor.Capture;
         ViewModel.RecommendationListChanged += _anchor.Restore;
-        ViewModel.RecommendRefreshStarted += OnRefreshStarted;
-        ViewModel.RecommendRefreshProgress += OnRefreshProgress;
-        ViewModel.RecommendRefreshCompleted += OnRefreshCompleted;
         ViewModel.PropertyChanged += OnPagePropertyChanged;
         ViewModel.Videos.CollectionChanged += OnVideosChanged;
         SyncSkeletons();
@@ -70,12 +65,8 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
         ViewModel.RecommendationListChanging -= _anchor.Capture;
         ViewModel.RecommendationListChanged -= _anchor.Restore;
-        ViewModel.RecommendRefreshStarted -= OnRefreshStarted;
-        ViewModel.RecommendRefreshProgress -= OnRefreshProgress;
-        ViewModel.RecommendRefreshCompleted -= OnRefreshCompleted;
         ViewModel.PropertyChanged -= OnPagePropertyChanged;
         ViewModel.Videos.CollectionChanged -= OnVideosChanged;
-        _pendingRefreshCount = 0;
         _anchor.Cancel();
     }
 
@@ -90,7 +81,6 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         if (e.PropertyName == nameof(ViewModel.SelectedSection))
         {
             _anchor.Cancel();
-            _pendingRefreshCount = 0;
             SyncSkeletons();
         }
     }
@@ -99,54 +89,36 @@ public sealed partial class PopularMainBody : PopularPageControlBase
 
     private void OnBudgetChanged(int budget) => SyncSkeletons();
 
-    private void OnRefreshStarted(int targetCount)
-    {
-        _pendingRefreshCount = Math.Max(0, targetCount);
-        SyncSkeletons();
-    }
-
-    private void OnRefreshProgress(int remaining)
-    {
-        _pendingRefreshCount = Math.Max(0, remaining);
-        SyncSkeletons();
-    }
-
-    private void OnRefreshCompleted(object? sender, EventArgs e)
-    {
-        _pendingRefreshCount = 0;
-        SyncSkeletons();
-    }
-
+    /// <summary>
+    /// 列表为空时显示骨架，有数据就整体切换到卡片.
+    /// </summary>
+    /// <remarks>
+    /// 骨架和卡片是两个互斥的视图状态，不做逐格替换，也不垫在卡片下面，
+    /// 因此不会出现两层叠在一起，也不会因为骨架撑高 extent 而反复触发加载。
+    /// </remarks>
     private void SyncSkeletons()
     {
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
-        // 手动刷新和首屏共用同一套度量：刷多少由当前视口预算决定。
         if (ViewModel is not null)
         {
+            // 手动刷新和首屏共用同一套度量：刷多少由当前视口预算决定。
             ViewModel.RefreshTargetCount = View.CurrentBudget;
         }
 
-        // 增量刷新保留旧内容，新条目从顶部进来；先按整行预留位置，真实条目到达后再收回去。
-        var layout = SlotLayout.Video;
-        var columns = Math.Max(1, ScrollSlotBudget.Columns(View.ActualWidth, layout));
-        var pendingRows = _pendingRefreshCount > 0
-            ? (int)Math.Ceiling(_pendingRefreshCount / (double)columns)
-            : 0;
-        var pendingSlots = pendingRows * columns;
-        VideoRepeater.Margin = new Thickness(0, pendingRows * (layout.ItemHeight + layout.RowSpacing), 0, 0);
+        var isEmpty = ViewModel is null || ViewModel.Videos.Count == 0;
+        var showSkeletons = _isActive && isEmpty;
+        if (showSkeletons)
+        {
+            while (Skeletons.Count < budget) Skeletons.Add(new VideoCardSkeleton(Skeletons.Count));
+            while (Skeletons.Count > budget) Skeletons.RemoveAt(Skeletons.Count - 1);
+        }
+        else
+        {
+            Skeletons.Clear();
+        }
 
-        var plan = VideoSkeletonPlanner.Resolve(budget, ViewModel?.Videos.Count ?? budget);
-        var slotCount = plan.SlotCount + pendingSlots;
-        while (Skeletons.Count < slotCount) Skeletons.Add(new VideoCardSkeleton(Skeletons.Count));
-        while (Skeletons.Count > slotCount) Skeletons.RemoveAt(Skeletons.Count - 1);
-
-        var showSkeletons = _isActive
-            && ViewModel is not null
-            && (_pendingRefreshCount > 0 || plan.Visible);
         SkeletonRepeater.Visibility = showSkeletons ? Visibility.Visible : Visibility.Collapsed;
-
-        // 骨架把 extent 撑成视口高度后，「滚动余量不足」会永远成立；
-        // 此时必须关掉这条兜底，否则会无限预取。
+        // 骨架把 extent 撑成视口高度后，「滚动余量不足」会永远成立；此时只按预算判断。
         View.ExtentFallbackEnabled = !showSkeletons;
     }
 }

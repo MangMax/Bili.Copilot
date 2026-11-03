@@ -394,7 +394,7 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
         public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Recommend { get; set; }
             = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([], 0));
         public Task<IReadOnlyList<Partition>> GetVideoPartitionsAsync(CancellationToken cancellationToken = default) => Partitions.Task;
-        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, int pageSize = 0, CancellationToken cancellationToken = default) => Recommend(offset);
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, CancellationToken cancellationToken = default) => Recommend(offset);
         public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetHotVideoListAsync(long offset = 0, CancellationToken cancellationToken = default) => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("Hot")], 1));
         public Task<IReadOnlyList<VideoInformation>> GetGlobalRankingListAsync(CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<VideoInformation>>([Video("Rank")]);
         public Task<IReadOnlyList<VideoInformation>> GetPartitionRankingListAsync(Partition partition, CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<VideoInformation>>([Video(partition.Id)]);
@@ -411,7 +411,7 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
         public Task<IReadOnlyList<Partition>> GetVideoPartitionsAsync(CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Partition>>([Parent()]);
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> GetPartitionRecommendVideoListAsync(Partition partition, long offset = 0, CancellationToken cancellationToken = default) => Fetch(offset);
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset, int NextPageNumber)> GetChildPartitionVideoListAsync(Partition partition, long offset = 0, int pageNumber = 0, PartitionVideoSortType sortType = PartitionVideoSortType.Default, CancellationToken cancellationToken = default) => throw new NotSupportedException();
-        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, int pageSize = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetHotVideoListAsync(long offset = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<IReadOnlyList<VideoInformation>> GetPartitionRankingListAsync(Partition partition, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<IReadOnlyList<VideoInformation>> GetGlobalRankingListAsync(CancellationToken cancellationToken = default) => throw new NotSupportedException();

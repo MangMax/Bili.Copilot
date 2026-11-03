@@ -21,6 +21,13 @@ public sealed partial class PopularPageViewModel
     private readonly Dictionary<IPopularSectionItemViewModel, List<VideoItemViewModel>> _videoCache = new();
 
     private long _recommendOffset;
+    // 连续失败次数：达到上限后停止自动补页，避免失败后每次布局变化都重试、把接口打到限流。
+    private int _recommendFailureCount;
+
+    /// <summary>
+    /// 连续失败多少次后暂停自动补页.
+    /// </summary>
+    private const int MaxRecommendFailureCount = 3;
     // 当前列表实际使用的推荐流来源；设置变更后要等到下一次刷新才切换，避免同一条列表混源。
     private IRecommendFeedSource? _feedSource;
     private RecommendFeedSource _feedSourceKind;
@@ -39,6 +46,11 @@ public sealed partial class PopularPageViewModel
     /// 单次刷新最多连续请求的页数，兜底防止来源一直返回重复内容.
     /// </summary>
     private const int MaxRefreshPageCount = 12;
+
+    /// <summary>
+    /// 首屏最多连续请求的页数.
+    /// </summary>
+    private const int MaxInitialPageCount = 6;
     private long _hotOffset;
     // 切换或刷新后，旧请求和旧调度回调不再拥有当前列表。
     private long _sectionVersion;
@@ -107,21 +119,6 @@ public sealed partial class PopularPageViewModel
     /// 视频列表已完成更新.
     /// </summary>
     public event EventHandler VideoListUpdated;
-
-    /// <summary>
-    /// 推荐刷新开始，参数为本次要取回的条数.
-    /// </summary>
-    public event Action<int>? RecommendRefreshStarted;
-
-    /// <summary>
-    /// 推荐刷新进度，参数为尚未取回的条数.
-    /// </summary>
-    public event Action<int>? RecommendRefreshProgress;
-
-    /// <summary>
-    /// 推荐刷新结束（成功或失败都会触发）.
-    /// </summary>
-    public event EventHandler? RecommendRefreshCompleted;
 
     public event Action<RecommendationListChange>? RecommendationListChanging;
     public event EventHandler? RecommendationListChanged;

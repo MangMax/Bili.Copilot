@@ -8,19 +8,18 @@ public sealed class RecommendationKernelIntegrationTests
 {
     [Theory]
     [InlineData(0)]
-    [InlineData(8)]
-    public async Task ColumnReachesTransportAndPageSizeIsNeverSent(int column)
+    public async Task ColumnStaysAtFourAndPageSizeIsNeverSent(int column)
     {
         using var source = new CancellationTokenSource();
         using var handler = new Handler(source);
         using var client = new BiliHttpClient(handler);
         var service = new VideoDiscoveryService(client, new BiliAuthenticator(null, null), null!);
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => service.GetRecommendVideoListAsync(42, column, source.Token));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => service.GetRecommendVideoListAsync(42, source.Token));
         Assert.Equal(1, handler.Attempts);
         Assert.Contains("idx=42", handler.Query);
         // 推荐流不认 ps，旧实现传的页大小既无效又误导，必须彻底消失。
         Assert.DoesNotContain("ps=", handler.Query);
-        Assert.Contains(column > 0 ? "column=8" : "column=7", handler.Query);
+        Assert.Contains("column=4", handler.Query);
     }
 
     private sealed class Handler(CancellationTokenSource source) : HttpMessageHandler

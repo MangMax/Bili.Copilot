@@ -89,24 +89,26 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     private void OnBudgetChanged(int budget) => SyncSkeletons();
 
     /// <summary>
-    /// 让骨架层始终铺满「预算内尚未被真实卡片覆盖」的位置.
+    /// 列表为空时显示骨架，有数据就整体切换到卡片.
     /// </summary>
-    /// <remarks>
-    /// 骨架和真实卡片共用同一套网格尺寸，骨架铺满整份预算并垫在下面，
-    /// 真实卡片到达后直接盖住对应的格子，因此收窄后不会残留等不到的占位，也不需要重排。
-    /// </remarks>
     private void SyncSkeletons()
     {
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
-        var plan = VideoSkeletonPlanner.Resolve(budget, ViewModel?.Videos.Count ?? budget);
-        while (Skeletons.Count < plan.SlotCount) Skeletons.Add(new VideoCardSkeleton(Skeletons.Count));
-        while (Skeletons.Count > plan.SlotCount) Skeletons.RemoveAt(Skeletons.Count - 1);
+        var isEmpty = ViewModel is null || ViewModel.Videos.Count == 0;
+        var showSkeletons = _isActive && isEmpty;
+        if (showSkeletons)
+        {
+            while (Skeletons.Count < budget) Skeletons.Add(new VideoCardSkeleton(Skeletons.Count));
+            while (Skeletons.Count > budget) Skeletons.RemoveAt(Skeletons.Count - 1);
+        }
+        else
+        {
+            Skeletons.Clear();
+        }
 
-        var showSkeletons = plan.Visible && ViewModel is not null;
         SkeletonRepeater.Visibility = showSkeletons ? Visibility.Visible : Visibility.Collapsed;
 
-        // 骨架把 extent 撑成视口高度后，「滚动余量不足」会永远成立；
-        // 此时必须关掉这条兜底，否则会无限预取。
+        // 骨架把 extent 撑成视口高度后，「滚动余量不足」会永远成立；此时只按预算判断。
         View.ExtentFallbackEnabled = !showSkeletons;
     }
 }

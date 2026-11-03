@@ -595,7 +595,7 @@ public sealed class PopularPageLoadingTests
             Requests.Add("partitions");
             return Partitions.Task;
         }
-        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, int pageSize = 0, CancellationToken cancellationToken = default)
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, CancellationToken cancellationToken = default)
         {
             Requests.Add("Recommend");
             return Recommend(offset);
@@ -720,10 +720,6 @@ public sealed class PopularPageLoadingTests
         PageTestServices.Dispatcher.Drain();
         Assert.Equal("Recommend", Assert.Single(page.Videos).Data.BvId);
 
-        var progress = new List<int>();
-        var started = 0;
-        page.RecommendRefreshStarted += target => started = target;
-        page.RecommendRefreshProgress += progress.Add;
         page.RefreshTargetCount = 12;
         var calls = 0;
         service.Recommend = _ => ++calls == 1
@@ -733,10 +729,8 @@ public sealed class PopularPageLoadingTests
         var refresh = page.RefreshVideoCommand.ExecuteAsync(null);
         await WaitForAsync(() => page.Videos.Count == 1);
 
-        // 第一页到达就替换掉骨架，不必等整批。
-        Assert.Equal(12, started);
+        // 第一页到达就落地，不必等整批。
         Assert.Equal("p1", page.Videos[0].Data.BvId);
-        Assert.NotEmpty(progress);
 
         gate.SetResult(([Video("p2")], 2));
         await refresh;

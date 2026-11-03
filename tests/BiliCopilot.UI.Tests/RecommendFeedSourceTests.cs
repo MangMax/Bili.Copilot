@@ -105,7 +105,7 @@ public sealed class RecommendFeedSourceTests
         public long LastCuratedOffset { get; private set; } = -1;
         public int LastCuratedPageSize { get; private set; }
 
-        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, int column = 0, CancellationToken cancellationToken = default)
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, CancellationToken cancellationToken = default)
         {
             LastRecommendOffset = offset;
             var (ids, next) = Recommend(offset, cancellationToken);
