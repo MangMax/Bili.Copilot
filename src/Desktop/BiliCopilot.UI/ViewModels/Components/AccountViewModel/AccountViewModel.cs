@@ -45,46 +45,127 @@ public sealed partial class AccountViewModel : ViewModelBase
         IsInitializing = true;
         try
         {
-            MyProfile = await _myProfileService.GetMyProfileAsync();
-            Introduce = string.IsNullOrEmpty(MyProfile.Introduce)
-                ? ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NoSelfIntroduce)
-                : MyProfile.Introduce;
-            this.Get<AppViewModel>().IsInitialLoading = false;
-            this.Get<AppViewModel>().CheckUpateCommand.Execute(default);
-            UpdateUnreadCommand.Execute(default);
+            await LoadProfileAsync();
         }
-        catch (Exception ex)
+        finally
         {
-            _logger.LogCritical(ex, "无法获取登录用户的资料");
+            IsInitializing = false;
+        }
+    }
 
-            // 用户可能更改了密码，提醒用户是否需要重新登录.
-            var dialog = new ContentDialog()
+    /// <summary>
+    /// 加载当前登录用户的资料。网络故障只提示重试，登录态失效才引导重新登录.
+    /// </summary>
+    /// <remarks>
+    /// 资料加载失败可能只是网络抖动，把它当成登录失效会误清登录态，
+    /// 所以只有分类器确证凭据失效时才走重新登录的流程。
+    /// </remarks>
+    private async Task LoadProfileAsync()
+    {
+        while (true)
+        {
+            this.Get<AppViewModel>().IsInitialLoading = true;
+            try
             {
-                Title = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LoginExpiredTitle),
-                Content = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LoginExpiredDescription),
-                PrimaryButtonText = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.ReSignIn),
-                CloseButtonText = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Exit),
-                DefaultButton = ContentDialogButton.Primary,
-                XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
-            };
+                await ApplyProfileAsync();
+                return;
+            }
+            catch (Exception ex) when (AccountProfileLoadFailureClassifier.Classify(ex) == AccountProfileLoadFailureKind.AuthenticationExpired)
+            {
+                _logger.LogCritical(ex, "无法获取登录用户的资料");
+                await HandleAuthenticationExpiredAsync();
+                return;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "获取登录用户的资料时遇到网络错误，等待用户重试");
+                if (await ShouldRetryProfileLoadAsync())
+                {
+                    continue;
+                }
 
-            var result = await dialog.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-            {
-                await SignOutAsync();
-            }
-            else if (this.Get<AppViewModel>().Windows.OfType<MainWindow>().FirstOrDefault() is { } mainWindow)
-            {
-                // Share the tray-aware exit so players and tray resources are cleaned up.
-                await mainWindow.RequestExitAsync();
-            }
-            else
-            {
-                App.Current.Exit();
+                // 用户放弃重试：只按原有托盘退出语义离开，绝不清理登录态.
+                this.Get<AppViewModel>().IsInitialLoading = false;
+                await ExitApplicationAsync();
+                return;
             }
         }
+    }
 
-        IsInitializing = false;
+    /// <summary>
+    /// 拉取资料并更新与登录用户相关的界面状态.
+    /// </summary>
+    private async Task ApplyProfileAsync()
+    {
+        MyProfile = await _myProfileService.GetMyProfileAsync();
+        Introduce = string.IsNullOrEmpty(MyProfile.Introduce)
+            ? ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NoSelfIntroduce)
+            : MyProfile.Introduce;
+        this.Get<AppViewModel>().IsInitialLoading = false;
+        this.Get<AppViewModel>().CheckUpateCommand.Execute(default);
+        UpdateUnreadCommand.Execute(default);
+    }
+
+    /// <summary>
+    /// 提示登录态已失效，并按用户选择重新登录或退出.
+    /// </summary>
+    private async Task HandleAuthenticationExpiredAsync()
+    {
+        // 用户可能更改了密码，提醒用户是否需要重新登录.
+        var dialog = new ContentDialog()
+        {
+            Title = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LoginExpiredTitle),
+            Content = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LoginExpiredDescription),
+            PrimaryButtonText = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.ReSignIn),
+            CloseButtonText = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Exit),
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
+        };
+
+        var result = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary)
+        {
+            await SignOutAsync();
+            return;
+        }
+
+        await ExitApplicationAsync();
+    }
+
+    /// <summary>
+    /// 询问用户是否重试加载资料.
+    /// </summary>
+    /// <returns>用户选择重试时返回 <c>true</c>.</returns>
+    private async Task<bool> ShouldRetryProfileLoadAsync()
+    {
+        var dialog = new ContentDialog()
+        {
+            Title = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.ProfileLoadFailedTitle),
+            Content = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NetworkError),
+            PrimaryButtonText = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Retry),
+            CloseButtonText = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Exit),
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
+        };
+
+        var result = await dialog.ShowAsync();
+        return result == ContentDialogResult.Primary;
+    }
+
+    /// <summary>
+    /// 按托盘感知的退出语义离开应用.
+    /// </summary>
+    private async Task ExitApplicationAsync()
+    {
+        if (this.Get<AppViewModel>().Windows.OfType<MainWindow>().FirstOrDefault() is { } mainWindow)
+        {
+            // Share the tray-aware exit so players and tray resources are cleaned up.
+            await mainWindow.RequestExitAsync();
+        }
+        else
+        {
+            App.Current.Exit();
+        }
     }
 
     [RelayCommand]
