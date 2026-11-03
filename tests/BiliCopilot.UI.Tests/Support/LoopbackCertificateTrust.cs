@@ -22,7 +22,7 @@ internal static class LoopbackCertificateTrust
         {
             ServerCertificateCustomValidationCallback = (_, certificate, _, _) =>
                 certificate is not null
-                && string.Equals(certificate.GetCertHashString(), thumbprint, StringComparison.OrdinalIgnoreCase),
+                && string.Equals(certificate.Thumbprint, thumbprint, StringComparison.OrdinalIgnoreCase),
         };
     }
 }
