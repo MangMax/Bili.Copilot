@@ -9,9 +9,6 @@ namespace BiliCopilot.UI.Tests;
 /// </summary>
 public class AIGenerationTests
 {
-    /// <summary>
-    /// 新请求开始后，旧代次被取消且不再属于当前代次。
-    /// </summary>
     [Fact]
     public void Begin_NewGenerationCancelsPreviousAndBecomesCurrent()
     {
@@ -24,9 +21,6 @@ public class AIGenerationTests
         Assert.True(second.IsCurrent);
     }
 
-    /// <summary>
-    /// 取消代次会使令牌进入取消状态，并退出当前代次。
-    /// </summary>
     [Fact]
     public void Cancel_CancelsTokenAndDropsCurrent()
     {
@@ -39,9 +33,6 @@ public class AIGenerationTests
         Assert.False(generation.IsCurrent);
     }
 
-    /// <summary>
-    /// 释放后的代次不再属于当前代次，且释放可重复调用。
-    /// </summary>
     [Fact]
     public void Dispose_ReleasesGenerationAndIsIdempotent()
     {
@@ -57,9 +48,6 @@ public class AIGenerationTests
         Assert.False(generation.IsCurrent);
     }
 
-    /// <summary>
-    /// 释放之后再次取消不应抛出异常（迟到的取消路径）。
-    /// </summary>
     [Fact]
     public void Cancel_AfterDispose_DoesNotThrow()
     {

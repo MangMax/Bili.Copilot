@@ -8,4 +8,4 @@ namespace BiliCopilot.UI.AI.Context;
 /// <param name="StartSeconds">起始位置（秒）.</param>
 /// <param name="EndSeconds">结束位置（秒）.</param>
 /// <param name="Content">字幕内容.</param>
-public sealed record AISubtitleCue(double StartSeconds, double EndSeconds, string Content);
+internal sealed record AISubtitleCue(double StartSeconds, double EndSeconds, string Content);

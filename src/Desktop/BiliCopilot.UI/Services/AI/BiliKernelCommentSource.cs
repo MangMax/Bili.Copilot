@@ -25,10 +25,10 @@ public sealed class BiliKernelCommentSource : IAICommentSource
     }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<AIComment>> GetHotCommentsAsync(
+    async Task<IReadOnlyList<AIComment>> IAICommentSource.GetHotCommentsAsync(
         string targetId,
         AIContextTarget target,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var targetType = target == AIContextTarget.Article
             ? CommentTargetType.Article

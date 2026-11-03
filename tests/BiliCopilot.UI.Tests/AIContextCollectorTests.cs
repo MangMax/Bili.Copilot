@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.AI.Context;
+using BiliCopilot.UI.Tests.Support;
 
 namespace BiliCopilot.UI.Tests;
 
@@ -228,49 +229,4 @@ public class AIContextCollectorTests
             Description = "视频简介",
             IncludeComments = includeComments,
         };
-
-    private sealed class FakeSubtitleSource(
-        IReadOnlyList<AISubtitleTrack> tracks,
-        IReadOnlyList<AISubtitleCue> cues) : IAISubtitleSource
-    {
-        public Action? OnGetCues { get; init; }
-
-        public int TrackCallCount { get; private set; }
-
-        public Task<IReadOnlyList<AISubtitleTrack>> GetTracksAsync(string videoId, string? partId, CancellationToken cancellationToken = default)
-        {
-            TrackCallCount++;
-            return Task.FromResult(tracks);
-        }
-
-        public string? LastRequestedTrackId { get; private set; }
-
-        public Task<IReadOnlyList<AISubtitleCue>> GetCuesAsync(AISubtitleTrack track, CancellationToken cancellationToken = default)
-        {
-            LastRequestedTrackId = track.Id;
-            OnGetCues?.Invoke();
-            return Task.FromResult(cues);
-        }
-    }
-
-    private sealed class RecordingProgress : IProgress<AIContextStage>
-    {
-        public List<AIContextStage> Stages { get; } = [];
-
-        public void Report(AIContextStage value) => Stages.Add(value);
-    }
-
-    private sealed class FakeCommentSource(IReadOnlyList<AIComment> comments) : IAICommentSource
-    {
-        public Action? OnGetComments { get; init; }
-
-        public int CallCount { get; private set; }
-
-        public Task<IReadOnlyList<AIComment>> GetHotCommentsAsync(string targetId, AIContextTarget target, CancellationToken cancellationToken = default)
-        {
-            CallCount++;
-            OnGetComments?.Invoke();
-            return Task.FromResult(comments);
-        }
-    }
 }

@@ -5,7 +5,7 @@ namespace BiliCopilot.UI.AI.Context;
 /// <summary>
 /// 一次 AI 请求可用的源上下文.
 /// </summary>
-public sealed record AISourceContext
+internal sealed record AISourceContext
 {
     /// <summary>
     /// 标题.

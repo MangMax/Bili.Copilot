@@ -1,6 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using System.Globalization;
+using BiliCopilot.UI.Toolkits;
 
 namespace BiliCopilot.UI.AI.Context;
 
@@ -23,18 +23,8 @@ internal static class AIContextFormatting
 
         return string.Join(
             Environment.NewLine,
-            cues.Select(cue => $"{FormatDuration(TimeSpan.FromSeconds(cue.StartSeconds))} - {FormatDuration(TimeSpan.FromSeconds(cue.EndSeconds))}: {cue.Content}"));
+            cues.Select(cue => $"{DurationFormatter.Format(TimeSpan.FromSeconds(cue.StartSeconds))} - {DurationFormatter.Format(TimeSpan.FromSeconds(cue.EndSeconds))}: {cue.Content}"));
     }
-
-    /// <summary>
-    /// 格式化时长，规则与 <c>AppToolkit.FormatDuration</c> 一致：满 1 小时为 hh:mm:ss，否则为 mm:ss.
-    /// </summary>
-    /// <param name="duration">时长.</param>
-    /// <returns>时长文本.</returns>
-    public static string FormatDuration(TimeSpan duration)
-        => duration.TotalHours >= 1
-            ? duration.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)
-            : duration.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
 
     /// <summary>
     /// 把文章 HTML 转为纯文本：去除标签、折叠空白并去除首尾空白.

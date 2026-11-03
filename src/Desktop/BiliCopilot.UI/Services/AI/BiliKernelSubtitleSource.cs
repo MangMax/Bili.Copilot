@@ -25,7 +25,7 @@ public sealed class BiliKernelSubtitleSource : IAISubtitleSource
     }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<AISubtitleTrack>> GetTracksAsync(string videoId, string? partId, CancellationToken cancellationToken = default)
+    async Task<IReadOnlyList<AISubtitleTrack>> IAISubtitleSource.GetTracksAsync(string videoId, string? partId, CancellationToken cancellationToken)
     {
         var metas = await _subtitleService
             .GetSubtitleMetasAsync(videoId, partId ?? string.Empty, cancellationToken)
@@ -36,7 +36,7 @@ public sealed class BiliKernelSubtitleSource : IAISubtitleSource
     }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<AISubtitleCue>> GetCuesAsync(AISubtitleTrack track, CancellationToken cancellationToken = default)
+    async Task<IReadOnlyList<AISubtitleCue>> IAISubtitleSource.GetCuesAsync(AISubtitleTrack track, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(track);
 

@@ -5,7 +5,7 @@ namespace BiliCopilot.UI.AI.Context;
 /// <summary>
 /// 字幕采集状态.
 /// </summary>
-public enum AISubtitleStatus
+internal enum AISubtitleStatus
 {
     /// <summary>
     /// 本次请求不需要字幕（例如文章目标）.

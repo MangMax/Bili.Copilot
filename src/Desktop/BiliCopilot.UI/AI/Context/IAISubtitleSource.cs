@@ -5,7 +5,7 @@ namespace BiliCopilot.UI.AI.Context;
 /// <summary>
 /// 字幕来源端口：提供字幕元数据与明细.
 /// </summary>
-public interface IAISubtitleSource
+internal interface IAISubtitleSource
 {
     /// <summary>
     /// 获取视频的字幕元数据.
