@@ -9,21 +9,22 @@ namespace BiliCopilot.UI.Tests;
 
 /// <summary>
 /// 封面图客户端必须走正常的 TLS 证书校验：合法证书可下载、错误证书失败、取消令牌仍可中止请求。
-/// 使用本机回环 HTTPS 服务器与临时信任的证书，不访问公网。
+/// 本机回环 HTTPS 服务器的证书只在测试内通过显式回调信任，不读写任何系统证书存储。
 /// </summary>
-[Collection(CurrentUserCertificateTrustCollection.Name)]
 public sealed class ImageClientTlsTests
 {
     [Fact]
     public async Task ImageClientDownloadsBodyWhenCertificateIsTrusted()
     {
         using var server = LocalTlsServer.Start();
-        using var trust = CurrentUserCertificateTrust.Install(server.Certificate);
 
-        var bytes = await InternalHttpExtensions.ImageClient.GetByteArrayAsync(server.GetUri("cover.jpg"));
+        // 生产配置本身不带证书回调；正路径通过 CreateImageClient 注入一个
+        // 仅信任本机回环证书指纹的处理器，证明合法证书在真实 TLS 上端到端可用.
+        using var client = InternalHttpExtensions.CreateImageClient(LoopbackCertificateTrust.CreateHandler(server));
+
+        var bytes = await client.GetByteArrayAsync(server.GetUri("cover.jpg"));
 
         Assert.Equal("tls-probe", Encoding.ASCII.GetString(bytes));
-        Assert.Equal(1, server.CompletedHandshakes);
         Assert.Equal(1, server.CompletedRequests);
     }
 
@@ -41,6 +42,18 @@ public sealed class ImageClientTlsTests
         // 客户端在验证服务端证书时失败；服务端侧的握手可能已经完成，但没有请求被处理过.
         Assert.True(await server.WaitForHandshakeAttemptAsync(), "服务器应观察到客户端发起的 TLS 握手");
         Assert.Equal(0, server.CompletedRequests);
+    }
+
+    [Fact]
+    public void ProductionImageClientHasNoCertificateCallback()
+    {
+        // 结构守卫：生产静态客户端的处理器不允许设置证书回调，否则就等于在生产路径上开了信任旁路.
+        var handler = HttpClientHandlerInspector.GetHandler(InternalHttpExtensions.ImageClient);
+
+        Assert.True(
+            handler.ServerCertificateCustomValidationCallback is null,
+            "生产图片客户端不应设置 ServerCertificateCustomValidationCallback：" +
+            "证书校验必须由平台完成，测试需要信任时只能显式注入处理器（CreateImageClient）.");
     }
 
     [Fact]

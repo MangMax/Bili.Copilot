@@ -44,6 +44,20 @@ internal static partial class InternalHttpExtensions
             UseCookies = false, // Cover requests do not rely on cookies
         };
 
+        return CreateImageClient(handler);
+    }
+
+    /// <summary>
+    /// 用指定的传输处理器构建图片下载客户端.
+    /// </summary>
+    /// <remarks>
+    /// 生产路径不设置任何证书回调，证书校验由平台完成；传输处理器参数只用于测试中
+    /// 显式注入“仅信任本机测试服务器证书”的配置，避免测试改写系统证书存储.
+    /// </remarks>
+    /// <param name="handler">传输处理器，由返回的 <see cref="HttpClient"/> 负责释放.</param>
+    /// <returns>图片下载客户端.</returns>
+    internal static HttpClient CreateImageClient(HttpMessageHandler handler)
+    {
         var client = new HttpClient(handler);
         client.DefaultRequestHeaders.Add("User-Agent", VideoUserAgent);
         return client;

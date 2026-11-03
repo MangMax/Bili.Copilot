@@ -19,8 +19,8 @@ internal sealed class LocalTlsServer : IDisposable
 {
     private const string ResponseBody = "tls-probe";
 
-    // 自签名证书（RSA 2048 密钥生成）整轮测试只生成一次：既只支付一次密钥生成的时间，
-    // 也避免受信任证书测试在两次服务器之间留下半安装的当前用户根证书条目.
+    // 自签名证书（RSA 2048 密钥生成）整轮测试只生成一次，只支付一次密钥生成的时间；
+    // 证书只在测试进程内共享，既不写入也不读取任何系统证书存储.
     private static readonly Lazy<X509Certificate2> SharedCertificate =
         new(CreateSelfSignedCertificate, LazyThreadSafetyMode.ExecutionAndPublication);
 
@@ -47,9 +47,9 @@ internal sealed class LocalTlsServer : IDisposable
     }
 
     /// <summary>
-    /// Certificate presented to clients. Never trusted by the machine unless
-    /// <see cref="CurrentUserCertificateTrust.Install"/> is called. It is generated once per test run
-    /// and owned by the process-wide holder, so a server never disposes it.
+    /// Certificate presented to clients. It is never installed into an OS certificate store:
+    /// positive-path tests configure explicit verification instead. It is generated once per
+    /// test run and owned by the process-wide holder, so a server never disposes it.
     /// </summary>
     public X509Certificate2 Certificate => _certificate;
 
@@ -253,57 +253,6 @@ internal sealed class LocalTlsServer : IDisposable
             {
                 return;
             }
-        }
-    }
-}
-
-/// <summary>
-/// Temporarily trusts a certificate for the current Windows user, so a test can prove the
-/// positive path (a valid certificate is accepted) without touching a public CA.
-/// </summary>
-internal sealed class CurrentUserCertificateTrust : IDisposable
-{
-    private readonly X509Store _store;
-    private readonly X509Certificate2 _certificate;
-    private readonly bool _added;
-
-    private CurrentUserCertificateTrust(X509Store store, X509Certificate2 certificate, bool added)
-    {
-        _store = store;
-        _certificate = certificate;
-        _added = added;
-    }
-
-    /// <summary>
-    /// Adds <paramref name="certificate"/> to the current user's trusted root store until disposed.
-    /// </summary>
-    public static CurrentUserCertificateTrust Install(X509Certificate2 certificate)
-    {
-        var store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-        store.Open(OpenFlags.ReadWrite);
-        var publicOnly = X509CertificateLoader.LoadCertificate(certificate.RawData);
-        var alreadyPresent = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, validOnly: false).Count > 0;
-        if (!alreadyPresent)
-        {
-            store.Add(publicOnly);
-        }
-
-        return new CurrentUserCertificateTrust(store, publicOnly, !alreadyPresent);
-    }
-
-    public void Dispose()
-    {
-        try
-        {
-            if (_added)
-            {
-                _store.Remove(_certificate);
-            }
-        }
-        finally
-        {
-            _store.Dispose();
-            _certificate.Dispose();
         }
     }
 }

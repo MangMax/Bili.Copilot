@@ -12,11 +12,28 @@ namespace BiliCopilot.UI.Tests;
 /// <summary>
 /// Proves that <see cref="BiliHttpClient"/> enforces TLS certificate validation by default,
 /// while still preserving the cancellation paths of <see cref="BiliHttpClient.SendAsync(HttpRequestMessage, CancellationToken)"/>.
-/// 这些测试会临时改写当前用户根证书存储，故与图片客户端测试归入同一非并行集合.
+/// 正路径只通过公开的 <see cref="BiliHttpClient(HttpMessageHandler)"/> 构造注入显式信任；
+/// 测试不读写任何系统证书存储.
 /// </summary>
-[Collection(CurrentUserCertificateTrustCollection.Name)]
 public sealed class BiliHttpClientTlsTests
 {
+    [Fact]
+    public async Task ExplicitlyTrustedHandler_AcceptsLoopbackCertificate()
+    {
+        using var server = LocalTlsServer.Start();
+
+        // 显式传入手柄是本用例唯一信任来源：只固定本机回环测试证书的指纹.
+        using var client = new BiliHttpClient(LoopbackCertificateTrust.CreateHandler(server));
+        using var request = BiliHttpClient.CreateRequest(HttpMethod.Get, server.GetUri());
+
+        // GetStringAsync keeps the transport response without running the Bilibili JSON body check.
+        var body = await client.GetStringAsync(request);
+
+        Assert.Equal("tls-probe", body);
+        Assert.Equal(1, server.CompletedHandshakes);
+        Assert.Equal(1, server.CompletedRequests);
+    }
+
     [Fact]
     public async Task DefaultClient_RejectsUntrustedCertificate_WithoutCompletingHandshake()
     {
@@ -34,19 +51,16 @@ public sealed class BiliHttpClientTlsTests
     }
 
     [Fact]
-    public async Task DefaultClient_AcceptsTrustedCertificate()
+    public void DefaultClientHasNoCertificateCallback()
     {
-        using var server = LocalTlsServer.Start();
-        using var trust = CurrentUserCertificateTrust.Install(server.Certificate);
+        // 结构守卫：默认构造的客户端（真实注册路径使用的构造函数）不允许设置证书回调.
         using var client = new BiliHttpClient();
-        using var request = BiliHttpClient.CreateRequest(HttpMethod.Get, server.GetUri());
+        var handler = HttpClientHandlerInspector.GetHandler(HttpClientHandlerInspector.GetInnerClient(client));
 
-        // GetStringAsync keeps the transport response without running the Bilibili JSON body check.
-        var body = await client.GetStringAsync(request);
-
-        Assert.Equal("tls-probe", body);
-        Assert.Equal(1, server.CompletedHandshakes);
-        Assert.Equal(1, server.CompletedRequests);
+        Assert.True(
+            handler.ServerCertificateCustomValidationCallback is null,
+            "BiliHttpClient 默认构造函数不应设置 ServerCertificateCustomValidationCallback：" +
+            "证书校验必须由平台完成，测试需要信任时只能通过 BiliHttpClient(HttpMessageHandler) 显式注入.");
     }
 
     [Fact]
