@@ -108,6 +108,21 @@ public sealed partial class PopularPageViewModel
     /// </summary>
     public event EventHandler VideoListUpdated;
 
+    /// <summary>
+    /// 推荐刷新开始，参数为本次要取回的条数.
+    /// </summary>
+    public event Action<int>? RecommendRefreshStarted;
+
+    /// <summary>
+    /// 推荐刷新进度，参数为尚未取回的条数.
+    /// </summary>
+    public event Action<int>? RecommendRefreshProgress;
+
+    /// <summary>
+    /// 推荐刷新结束（成功或失败都会触发）.
+    /// </summary>
+    public event EventHandler? RecommendRefreshCompleted;
+
     public event Action<RecommendationListChange>? RecommendationListChanging;
     public event EventHandler? RecommendationListChanged;
 

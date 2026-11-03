@@ -211,7 +211,7 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
     }
 
     [Fact]
-    public async Task NonIncrementalRefreshReportsPreserveVisibleCard()
+    public async Task NonIncrementalRefreshReportsResetToTopBecauseTheListIsRebuilt()
     {
         var service = new DiscoveryService();
         var page = await CreatePopularPageAsync(service, 31);
@@ -224,7 +224,8 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
         await page.RefreshVideoCommand.ExecuteAsync(null);
         ui.Drain();
 
-        Assert.Equal([RecommendationListChange.PreserveVisibleCard], changes);
+        // 替换刷新现在会清空列表再逐页填充，无法保留原来的可见卡片，只能回到顶部。
+        Assert.Equal([RecommendationListChange.ResetToTop], changes);
     }
 
     [Fact]

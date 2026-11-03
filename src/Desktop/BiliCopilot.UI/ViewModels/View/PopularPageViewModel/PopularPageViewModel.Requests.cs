@@ -37,44 +37,71 @@ public sealed partial class PopularPageViewModel
         // 回来后只要代次变了，这批结果就不属于当前列表，不能写回去。
         var generation = _refreshGeneration;
         var undoVersion = _undoSnapshotVersion;
+        var previousOffset = _recommendOffset;
 
         // 只有增量刷新才需要「刷新前列表」用于撤销；非增量是替换刷新，不提供本次撤销。
         var snapshot = isIncremental
             ? RecommendRefreshSnapshot.Capture<VideoItemViewModel>(Videos, _recommendOffset)
             : null;
 
+        // 替换刷新会先清空列表，失败时用它把旧内容还回去。
+        var backup = isIncremental ? null : Videos.ToList();
+
         // 新一次刷新会替换旧快照，撤销入口先收起，成功后按当前模式重新决定是否出现。
         CanUndoRefresh = false;
 
         IsRecommendRefreshing = true;
+        var target = ResolveRefreshTargetCount();
+        var applied = 0;
+        var listReset = false;
+        var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
+        // 点击即进入加载形态：视图先按目标条数在顶部预留骨架位置，数据一页一页落地。
+        RecommendRefreshStarted?.Invoke(target);
         try
         {
-            var (videos, nextOffset) = await FetchRecommendBatchAsync(ResolveRefreshTargetCount(), generation);
-            var isRecommend = SelectedSection is PopularSectionItemViewModel { Type: PopularSectionType.Recommend };
+
+            var nextOffset = await FetchRecommendPagesAsync(target, generation, page =>
+            {
+                if (generation != _refreshGeneration)
+                {
+                    return;
+                }
+
+                if (!listReset)
+                {
+                    // 第一页到了才动列表：刷新失败时内容和视口都保持原样。
+                    listReset = true;
+                    RecommendationListChanging?.Invoke(RecommendationListChange.ResetToTop);
+                    if (!isIncremental)
+                    {
+                        Videos.Clear();
+                    }
+                }
+
+                applied += ApplyRefreshPage(page, isIncremental);
+                RecommendRefreshProgress?.Invoke(Math.Max(0, target - applied));
+                VideoListUpdated?.Invoke(this, EventArgs.Empty);
+            });
+
+            if (listReset)
+            {
+                // 整批落地后再恢复视口：中途逐页恢复会让列表在用户脚下反复跳动。
+                RecommendationListChanged?.Invoke(this, EventArgs.Empty);
+            }
+
             if (!RecommendRefreshResultGuard.ShouldApply(isRecommend, generation, _refreshGeneration))
             {
                 return;
             }
 
-            if (videos.Count == 0)
+            if (applied == 0)
             {
+                // 一条都没拿到：替换刷新把旧列表和游标一起还回去，增量刷新原本就没动列表。
+                RestoreRefreshBackup(backup);
+                _recommendOffset = previousOffset;
                 KeepPreviousUndoOrInvalidate(isIncremental);
                 return;
             }
-
-            var application = RecommendRefreshApplier.Apply(
-                Videos,
-                videos?.Select(p => new VideoItemViewModel(p, VideoCardStyle.Recommend)),
-                p => p.Data.Identifier.Id,
-                isIncremental);
-
-            // 只改动真正变化的条目：未变化的条目保持原引用，卡片容器不会被重建。
-            RecommendationListChanging?.Invoke(isIncremental ? RecommendationListChange.ResetToTop : RecommendationListChange.PreserveVisibleCard);
-            if (generation != _refreshGeneration) return;
-            RecommendListDiff.Apply(Videos, application.Items, p => p.Data.Identifier.Id, () => generation == _refreshGeneration);
-            if (generation != _refreshGeneration) return;
-            RecommendationListChanged?.Invoke(this, EventArgs.Empty);
-            if (generation != _refreshGeneration) return;
 
             // 请求期间用户可能关掉增量刷新；落地时以当前设置为准，避免入口在关闭后又亮起。
             if (isIncremental && undoVersion == _undoSnapshotVersion && SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false))
@@ -90,22 +117,83 @@ public sealed partial class PopularPageViewModel
             if (generation != _refreshGeneration) return;
             _recommendOffset = nextOffset;
             _videoCache.Remove(SelectedSection);
-
-            // 替换刷新会让列表变短（例如一页约 6 条），此时也必须通知主体检查视口并继续补页，
-            // 不能只在数量增长时通知，否则刷新后永远停在第一页。
-            VideoListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
             // A stale refresh must not publish into the current section.
-            if (generation == _refreshGeneration) KeepPreviousUndoOrInvalidate(isIncremental);
+            if (generation == _refreshGeneration)
+            {
+                if (applied == 0)
+                {
+                    RestoreRefreshBackup(backup);
+                    _recommendOffset = previousOffset;
+                }
+
+                KeepPreviousUndoOrInvalidate(isIncremental);
+            }
+
             _logger.LogError(ex, "尝试刷新推荐视频时出错.");
         }
         finally
         {
             if (generation == _refreshGeneration) IsRecommendRefreshing = false;
+            RecommendRefreshCompleted?.Invoke(this, EventArgs.Empty);
         }
     }
+
+    /// <summary>
+    /// 把替换刷新清掉的旧列表还回去.
+    /// </summary>
+    /// <param name="backup">刷新前的列表，增量刷新时为 null.</param>
+    private void RestoreRefreshBackup(List<VideoItemViewModel>? backup)
+    {
+        if (backup is null || Videos.Count > 0)
+        {
+            return;
+        }
+
+        foreach (var item in backup)
+        {
+            Videos.Add(item);
+        }
+    }
+
+    /// <summary>
+    /// 把一页推荐落到列表里.
+    /// </summary>
+    /// <param name="page">本页视频，已按资源 Id 去重.</param>
+    /// <param name="isIncremental">增量刷新把新条目插到顶部，替换刷新直接追加.</param>
+    /// <returns>真正加入列表的条数.</returns>
+    private int ApplyRefreshPage(IReadOnlyList<VideoInformation> page, bool isIncremental)
+    {
+        if (!isIncremental)
+        {
+            foreach (var video in page)
+            {
+                Videos.Add(new VideoItemViewModel(video, VideoCardStyle.Recommend));
+            }
+
+            return page.Count;
+        }
+
+        var existing = new HashSet<string>(Videos.Select(p => p.Data.Identifier.Id), StringComparer.Ordinal);
+        var added = 0;
+        // 倒序插入才能保持本页的原始顺序。
+        for (var i = page.Count - 1; i >= 0; i--)
+        {
+            var video = page[i];
+            if (!existing.Add(video.Identifier.Id))
+            {
+                continue;
+            }
+
+            Videos.Insert(0, new VideoItemViewModel(video, VideoCardStyle.Recommend));
+            added++;
+        }
+
+        return added;
+    }
+
 
     /// <summary>
     /// 刷新没有拿到新内容时，保留上一次增量刷新留下的撤销，或清掉不属于当前模式的旧快照.
@@ -142,31 +230,48 @@ public sealed partial class PopularPageViewModel
             MinRefreshTargetCount,
             MaxRefreshTargetCount);
 
-    private async Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> FetchRecommendBatchAsync(int targetCount, int generation)
+    /// <summary>
+    /// 逐页取推荐，每取到一页就立刻交给调用方落地.
+    /// </summary>
+    /// <param name="targetCount">目标条数.</param>
+    /// <param name="generation">发起刷新时的代次.</param>
+    /// <param name="onPage">每页的回调，参数已按资源 Id 去重.</param>
+    /// <returns>最后一页的游标.</returns>
+    private async Task<long> FetchRecommendPagesAsync(
+        int targetCount,
+        int generation,
+        Action<IReadOnlyList<VideoInformation>> onPage)
     {
-        var videos = new List<VideoInformation>();
         var seenKeys = new HashSet<string>(StringComparer.Ordinal);
         var offset = 0L;
+        var applied = 0;
         _feedSource = ResolveFeedSource(allowSourceChange: true);
 
         // 按「条数」而不是「页数」取：手机端一页约 6 条、网页端一批可达 20 条，
         // 同样的视口预算在不同来源下需要的请求次数并不相同。
-        for (var i = 0; i < MaxRefreshPageCount && videos.Count < targetCount; i++)
+        for (var i = 0; i < MaxRefreshPageCount && applied < targetCount; i++)
         {
             try
             {
                 var (page, nextOffset) = await _feedSource!.FetchAsync(offset);
-                if (generation != _refreshGeneration || page.Count == 0) break;
-                var previousCount = videos.Count;
-                foreach (var video in page)
+                if (generation != _refreshGeneration || page.Count == 0)
                 {
-                    if (seenKeys.Add(video.Identifier.Id))
-                    {
-                        videos.Add(video);
-                    }
+                    break;
                 }
 
-                if (videos.Count == previousCount || nextOffset == offset) break;
+                var fresh = page.Where(p => seenKeys.Add(p.Identifier.Id)).ToList();
+                if (fresh.Count == 0)
+                {
+                    break;
+                }
+
+                onPage(fresh);
+                applied += fresh.Count;
+                if (nextOffset == offset)
+                {
+                    break;
+                }
+
                 offset = nextOffset;
             }
             catch (Exception ex) when (i > 0)
@@ -177,9 +282,8 @@ public sealed partial class PopularPageViewModel
             }
         }
 
-        return (videos, offset);
+        return offset;
     }
-
     /// <summary>
     /// 取得当前列表应该使用的推荐流来源.
     /// </summary>

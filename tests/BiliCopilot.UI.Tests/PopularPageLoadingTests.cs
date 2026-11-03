@@ -709,6 +709,57 @@ public sealed class PopularPageLoadingTests
         Assert.Equal(expectedCount, page.Videos.Count);
     }
 
+    [Fact]
+    public async Task ReplaceRefreshLandsPagesAsTheyArriveInsteadOfWaitingForTheBatch()
+    {
+        var gate = new TaskCompletionSource<(IReadOnlyList<VideoInformation>, long)>();
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal("Recommend", Assert.Single(page.Videos).Data.BvId);
+
+        var progress = new List<int>();
+        var started = 0;
+        page.RecommendRefreshStarted += target => started = target;
+        page.RecommendRefreshProgress += progress.Add;
+        page.RefreshTargetCount = 12;
+        var calls = 0;
+        service.Recommend = _ => ++calls == 1
+            ? Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("p1")], 1))
+            : gate.Task;
+
+        var refresh = page.RefreshVideoCommand.ExecuteAsync(null);
+        await WaitForAsync(() => page.Videos.Count == 1);
+
+        // 第一页到达就替换掉骨架，不必等整批。
+        Assert.Equal(12, started);
+        Assert.Equal("p1", page.Videos[0].Data.BvId);
+        Assert.NotEmpty(progress);
+
+        gate.SetResult(([Video("p2")], 2));
+        await refresh;
+        Assert.Equal(new[] { "p1", "p2" }, page.Videos.Select(v => v.Data.BvId));
+    }
+
+    [Fact]
+    public async Task FailedReplaceRefreshKeepsTheOldList()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        service.Recommend = _ => Task.FromException<(IReadOnlyList<VideoInformation>, long)>(new IOException("offline"));
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal("Recommend", Assert.Single(page.Videos).Data.BvId);
+        Assert.False(page.CanUndoRefresh);
+    }
+
     private static async Task WaitForAsync(Func<bool> condition)
     {
         for (var i = 0; i < 200 && !condition(); i++)
