@@ -30,6 +30,9 @@ jobs:
       # 换位置时改这一行就够了. 必须保持工作区相对路径 —— hashFiles 只接受相对模式，
       # 绝对路径会让守卫永远为空、上传被静默跳过.
       Sarif_File: winui-analyzer.sarif
+      # 送 code scanning 的是只含 WUI 规则的过滤副本（ErrorLog 里还混着 IDE/CA/RCS 诊断），
+      # 完整 SARIF 仍作为 artifact 保留. 同样必须是工作区相对路径，供 hashFiles 守卫使用.
+      Sarif_Wui_File: winui-analyzer-wui.sarif
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,6 +48,9 @@ jobs:
       # warnings-as-errors 照常开着，所以这一步既是报告也是门禁.
       # GenerateAppxPackageOnBuild=false 是因为 runner 上没有 libmpv 等运行时依赖，
       # 只要编译结果，不碰 MSIX 打包.
+      # AppxPackageSigningEnabled=false：runner 上没有发布证书（CN=Mang），而 MSIX 打包管线
+      # 即使在 GenerateAppxPackageOnBuild=false 时仍会跑签名校验，报
+      # SigningCertificateThumbprintNotInStore 把构建打红；这个 job 只要编译诊断，不产包也不签名.
       - name: 阻断构建并生成 SARIF
         shell: pwsh
         run: |
@@ -58,6 +64,7 @@ jobs:
           $sarifPath = Join-Path $env:GITHUB_WORKSPACE $env:Sarif_File
           dotnet build ${{ env.Project_Path }} -c Release --no-restore @common `
             -p:GenerateAppxPackageOnBuild=false `
+            -p:AppxPackageSigningEnabled=false `
             -p:WinUIAnalyzerSarifPath="$sarifPath"
 
       # 构建失败也照样跑：只汇总已经生成的内容.
@@ -96,6 +103,41 @@ jobs:
           "WUI 合计 $($distinct.Count) 条：warning $warnings 条、note $notes 条；基线见 docs/agents/winui-analyzer.md." | Out-File $summary -Append
           "SARIF: $sarif" | Out-File $summary -Append
 
+      # code scanning 只收 WUI 规则：ErrorLog 里混着 ~2751 条 IDE/CA/RCS 诊断，全量上传会把
+      # 代码扫描变成 IDE 风格检查面板，还会留下规则已清零后的陈旧告警.
+      # 这里保留 SARIF 信封（version、$schema、runs[0] 的 tool/artifacts/invocations 原样），
+      # 只把 runs[0].results 换成 WUI* 子集；完整 SARIF 仍走下面的 artifact.
+      - name: 过滤出 WUI 结果供 code scanning 使用
+        if: always()
+        shell: pwsh
+        run: |
+          $full = Join-Path $env:GITHUB_WORKSPACE $env:Sarif_File
+          if (!(Test-Path $full)) {
+            "未生成 SARIF，跳过过滤（构建失败或分析器未加载）." | Out-File $env:GITHUB_STEP_SUMMARY -Append
+            exit 0
+          }
+
+          $filtered = Join-Path $env:GITHUB_WORKSPACE $env:Sarif_Wui_File
+          $doc = Get-Content $full -Raw | ConvertFrom-Json
+          $runs = @($doc.runs)
+          if ($runs.Count -eq 0) {
+            "SARIF 里没有 run，跳过过滤（多半是编译在写 ErrorLog 前就失败了）." | Out-File $env:GITHUB_STEP_SUMMARY -Append
+            exit 0
+          }
+
+          $run = $runs[0]
+          $wui = @(@($run.results) | Where-Object { "$($_.ruleId)" -like 'WUI*' })
+          $run.results = @($wui)
+          # 单 run：信封字段原样带过去，只替换结果集.
+          $doc.runs = @($run)
+          $doc | ConvertTo-Json -Depth 64 | Set-Content -Path $filtered -Encoding utf8
+
+          $byRule = ($wui | Group-Object ruleId | Sort-Object Count -Descending |
+            ForEach-Object { "$($_.Name) $($_.Count)" }) -join '、'
+          $warnings = @($wui | Where-Object { $_.level -ne 'note' }).Count
+          "已过滤 SARIF：WUI $($wui.Count) 条（$byRule），warning $warnings 条 -> $filtered" |
+            Out-File $env:GITHUB_STEP_SUMMARY -Append
+
       - name: 上传 SARIF 工件
         if: always()
         uses: actions/upload-artifact@v4
@@ -105,14 +147,15 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      # 上传过滤副本（只含 WUI 规则），完整 SARIF 留在 artifact 里.
       # 有文件才上传：upload-sarif 拿到空的 sarif_file 会直接失败，用 hashFiles 兜住；
-      # hashFiles 只认工作区相对模式，所以 Sarif_File 不能是绝对路径.
+      # hashFiles 只认工作区相对模式，所以这两个文件名都不能是绝对路径.
       # fork PR 上 security-events 被降级成只读，upload-sarif 必然失败；这一步不再是
       # continue-on-error，所以在 fork PR 上直接跳过 —— 否则 WUI 诊断干净的外部 PR 也会
       # 被这个与规则无关的步骤挡红. SARIF 仍留在 artifact 里.
       - name: 上传 SARIF 到 code scanning
-        if: always() && hashFiles(env.Sarif_File) != '' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        if: always() && hashFiles(env.Sarif_Wui_File) != '' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ env.Sarif_File }}
+          sarif_file: ${{ env.Sarif_Wui_File }}
           category: winui-analyzer
