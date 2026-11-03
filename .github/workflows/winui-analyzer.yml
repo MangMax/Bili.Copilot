@@ -11,7 +11,19 @@ name: WinUI Analyzer Observation
 on:
   push:
     branches: [master]
+  # 这个 job 不是必需检查，所以可以按路径过滤：不碰被分析代码的 PR 不必花十几分钟
+  # 跑一次观测构建. 一旦它被纳入分支保护（见 docs/agents/winui-analyzer.md 的
+  # "收紧为阻断"），必须删掉本过滤 —— 否则没触发的工作流会让必需检查永远停在 pending.
   pull_request:
+    paths:
+      # 被分析的工程本体（源码、XAML、csproj、resw 都在这里）
+      - src/Desktop/BiliCopilot.UI/**
+      # 它的直接项目引用与资源：类型变了，XAML / x:Bind 的诊断也会变
+      - src/Desktop/BiliCopilot.UI.Models/**
+      # 分析器版本、warnings-as-errors 等构建开关
+      - src/Directory.Packages.props
+      - src/Directory.Build.props
+      - .github/workflows/winui-analyzer.yml
   workflow_dispatch:
 
 permissions:
@@ -27,7 +39,10 @@ jobs:
     continue-on-error: true
     env:
       Project_Path: src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj
-      Sarif_Path: ${{ github.workspace }}/winui-analyzer.sarif
+      # SARIF 文件名只在这里写一次：构建的输出路径、hashFiles 守卫、两处上传都从它派生，
+      # 换位置时改这一行就够了. 必须保持工作区相对路径 —— hashFiles 只接受相对模式，
+      # 绝对路径会让守卫永远为空、上传被静默跳过.
+      Sarif_File: winui-analyzer.sarif
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,16 +69,18 @@ jobs:
             "-p:WinUIAnalyzerObservation=true"
           )
           dotnet restore ${{ env.Project_Path }} @common
+          # 绝对路径在这里拼：SARIF 落在工作区根目录，与下面 hashFiles 的相对模式对齐.
+          $sarifPath = Join-Path $env:GITHUB_WORKSPACE $env:Sarif_File
           dotnet build ${{ env.Project_Path }} -c Release --no-restore @common `
             -p:GenerateAppxPackageOnBuild=false `
-            -p:WinUIAnalyzerSarifPath="${{ env.Sarif_Path }}"
+            -p:WinUIAnalyzerSarifPath="$sarifPath"
 
       # 构建失败也照样跑：只汇总已经生成的内容.
       - name: 汇总 SARIF 中的 WUI 诊断
         if: always()
         shell: pwsh
         run: |
-          $sarif = "${{ env.Sarif_Path }}"
+          $sarif = Join-Path $env:GITHUB_WORKSPACE $env:Sarif_File
           $summary = $env:GITHUB_STEP_SUMMARY
           if (!(Test-Path $sarif)) {
             "未生成 SARIF（构建失败或分析器未加载），详见上一步日志." | Out-File $summary -Append
@@ -99,15 +116,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: winui-analyzer-sarif
-          path: ${{ env.Sarif_Path }}
+          path: ${{ env.Sarif_File }}
           if-no-files-found: warn
           retention-days: 30
 
       # 有文件才上传；upload-sarif 在没有 SARIF 时会直接失败，所以用 hashFiles 兜住.
+      # 守卫用 env.Sarif_File 而不是字面量：路径挪动时守卫跟着走，不会静默跳过上传.
+      # hashFiles 只认工作区相对模式，因此 Sarif_File 必须是相对路径.
       - name: 上传 SARIF 到 code scanning
-        if: always() && hashFiles('winui-analyzer.sarif') != ''
+        if: always() && hashFiles(env.Sarif_File) != ''
         continue-on-error: true
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: winui-analyzer.sarif
+          sarif_file: ${{ env.Sarif_File }}
           category: winui-analyzer

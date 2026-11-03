@@ -51,7 +51,9 @@
   <Target Name="EnsureWinUIAnalyzerSarifDirectory"
           BeforeTargets="XamlPreCompile;CoreCompile"
           Condition="'$(WinUIAnalyzerObservation)' == 'true'">
-    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName($(WinUIAnalyzerSarifPath)))" />
+    <!-- 路径可能带空格（本地或 CI 自定义 SARIF 位置），GetDirectoryName 的参数必须用单引号包住，
+         否则会被拆成两个参数. -->
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(WinUIAnalyzerSarifPath)'))" />
   </Target>
 
   <!--
@@ -1619,13 +1621,18 @@
     BBDown 随仓库提交. 缺这些文件时 MSIX 仍能打出来，但装好后无法播放或无法下载，
     因此在这里直接中止打包，而不是等用户装上才发现.
 
-    观测构建（WinUIAnalyzerObservation=true）只编译、不出 MSIX，
-    打包前的依赖体积校验对它没有意义：缺 libmpv 的开发机上，一次成功的观测编译
-    不该因为这条打包前置检查被记成失败。默认构建和发布流程的条件完全不变.
+    这条校验只跟"是否真的要打包"有关，不跟任何分析器开关有关：CI 打包靠
+    .github/packaging.props 打开 GenerateAppxPackageOnBuild，发布流程照旧在这里中止；
+    只编译的观测构建（GenerateAppxPackageOnBuild=false）没有包要出，也就没有依赖要校验.
+
+    条件不能省：MSBuild 会先执行挂在 BeforeTargets 上的目标、再看被挂目标的 Condition，
+    所以哪怕 GenerateMsixPackage 自己因条件为 false 而不执行，本目标仍会被调度.
+    没有这条 Condition，缺 libmpv 的机器上任何一次普通构建都会在编译完成后报"打包中止"，
+    观测构建（以及不下载运行时依赖的 CI job）就拿不到退出码 0.
   -->
   <Target Name="ValidateRuntimeDependencies"
           BeforeTargets="_CreateAppxPackage;_GenerateAppxPackage;GenerateMsixPackage"
-          Condition="'$(WinUIAnalyzerObservation)' != 'true'">
+          Condition="'$(GenerateAppxPackageOnBuild)' == 'true' or '$(PublishAppxPackage)' == 'true'">
     <Error Condition="'$(Platform)' != 'x64' and '$(Platform)' != 'ARM64'"
            Text="打包中止：平台 $(Platform) 没有对应的运行时依赖，仅支持 x64 / ARM64。" />
     <PropertyGroup>

@@ -29,8 +29,9 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 - `SolutionDir` 必须给：`BiliCopilot.UI.Models` 靠它找 `Resources.resw`，
   少了它资源生成器不产出 `StringNames`，UI 工程会编译失败。
 - `GenerateAppxPackageOnBuild=false`：只要编译结果，不跑 MSIX 打包。
-  观测开关本身也会跳过打包前的运行时依赖校验，所以本机没有 libmpv / ffmpeg 也能得到
-  退出码 0。
+  打包前的运行时依赖校验只挂在打包目标上，打包不跑它自然也不跑，所以本机没有
+  libmpv / ffmpeg 也能得到退出码 0。观测开关本身**不会**跳过这条校验：一旦真的打包，
+  无论开不开观测开关都会先校验依赖。
 - SARIF 默认写到 `artifacts/winui-analyzer.sarif`（`artifacts/` 已被忽略），
   需要换位置时加 `-p:WinUIAnalyzerSarifPath=<绝对路径>`。
 - csc 只在真正执行编译时写 ErrorLog。上一次构建是最新的时候不会重跑编译器，
@@ -78,8 +79,15 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
 
 - 用同一个开关跑观测构建，SARIF 作为 artifact 上传，并送 code scanning
   （`category: winui-analyzer`）；
-- `continue-on-error: true`：构建或上传失败都只留日志，不挡 master、
-  不进分支保护，也不影响 `run-unit-tests.yml` 的 `test` 必需检查；
+- `pull_request` 带 `paths` 过滤（UI 工程与 `UI.Models`、`Directory.Packages.props`、
+  `Directory.Build.props`、工作流自身）：它不是必需检查，不必每个 PR 都跑一次；
+  转成必需检查时**必须**先删掉这个过滤，否则没触发的 PR 会让必需检查一直停在 pending；
+- `continue-on-error: true`：构建或上传失败不会让工作流变红、不挡 master、
+  不进分支保护，也不影响 `run-unit-tests.yml` 的 `test` 必需检查。但 job 本身仍然会在
+  PR 的 checks 列表里显示成失败（红色叉），只是不阻断合并——看到红色先看日志，
+  不要当成主流程挂了；
+- fork PR 上 `security-events: write` 会被降级成只读，`upload-sarif` 在那里**必然失败**，
+  靠 `continue-on-error` 吞掉，SARIF 只留在 artifact 里；
 - 构建失败时只上传已经存在的文件（`if-no-files-found: warn`），
   摘要里会写明是没生成 SARIF 还是规则计数。
 
