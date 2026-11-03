@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -39,19 +39,19 @@ public sealed partial class VideoPartitionDetailViewModel
     private RecommendRefreshSnapshot<VideoItemViewModel>? _recommendRefreshSnapshot;
 
     [ObservableProperty]
-    private List<PartitionVideoSortType> _sortTypes;
+    public partial List<PartitionVideoSortType> SortTypes { get; set; }
 
     [ObservableProperty]
-    private List<PartitionViewModel> _children;
+    public partial List<PartitionViewModel> Children { get; set; }
 
     [ObservableProperty]
-    private PartitionVideoSortType _selectedSortType;
+    public partial PartitionVideoSortType SelectedSortType { get; set; }
 
     [ObservableProperty]
-    private bool _isRecommend;
+    public partial bool IsRecommend { get; set; }
 
     [ObservableProperty]
-    private bool _isVideoLoading;
+    public partial bool IsVideoLoading { get; set; }
 
     /// <summary>
     /// 推荐刷新是否正在进行.
@@ -62,7 +62,7 @@ public sealed partial class VideoPartitionDetailViewModel
     /// </remarks>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
-    private bool _isRecommendRefreshing;
+    public partial bool IsRecommendRefreshing { get; set; }
 
     /// <summary>
     /// 是否可以撤销最近一次推荐刷新.
@@ -71,10 +71,10 @@ public sealed partial class VideoPartitionDetailViewModel
     /// 由刷新快照是否存在决定。撤销入口与刷新按钮并排，只在刷新成功后出现。
     /// </remarks>
     [ObservableProperty]
-    private bool _canUndoRefresh;
+    public partial bool CanUndoRefresh { get; set; }
 
     [ObservableProperty]
-    private PartitionViewModel _currentPartition;
+    public partial PartitionViewModel CurrentPartition { get; set; }
 
     /// <summary>
     /// 初始化完成.

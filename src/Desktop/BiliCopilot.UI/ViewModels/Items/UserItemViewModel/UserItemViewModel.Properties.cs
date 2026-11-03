@@ -10,7 +10,7 @@ namespace BiliCopilot.UI.ViewModels.Items;
 public sealed partial class UserItemViewModel
 {
     [ObservableProperty]
-    private bool _isFollowed;
+    public partial bool IsFollowed { get; set; }
 
     /// <summary>
     /// 用户名.

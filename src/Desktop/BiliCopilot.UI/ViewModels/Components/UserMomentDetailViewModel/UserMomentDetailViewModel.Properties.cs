@@ -36,16 +36,16 @@ public sealed partial class UserMomentDetailViewModel
     private CancellationTokenSource? _loadCancellation;
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private string _title;
+    public partial string Title { get; set; }
 
     [ObservableProperty]
-    private ObservableCollection<MomentItemViewModel> _items = new();
+    public partial ObservableCollection<MomentItemViewModel> Items { get; set; } = new();
 
     /// <summary>
     /// 列表已完成更新.

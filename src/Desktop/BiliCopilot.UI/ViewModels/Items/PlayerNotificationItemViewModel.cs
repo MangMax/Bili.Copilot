@@ -18,16 +18,16 @@ public sealed partial class PlayerNotificationItemViewModel : ViewModelBase<Play
     private bool _isCancelled;
 
     [ObservableProperty]
-    private int _durationInMilliseconds;
+    public partial int DurationInMilliseconds { get; set; }
 
     [ObservableProperty]
-    private int _progressInMilliseconds;
+    public partial int ProgressInMilliseconds { get; set; }
 
     [ObservableProperty]
-    private bool _isProgressVisible;
+    public partial bool IsProgressVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isNotificationVisible;
+    public partial bool IsNotificationVisible { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerNotificationItemViewModel"/> class.

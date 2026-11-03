@@ -12,10 +12,10 @@ namespace BiliCopilot.UI.ViewModels;
 public abstract partial class LayoutPageViewModelBase : ViewModelBase
 {
     [ObservableProperty]
-    private double _navColumnWidth;
+    public partial double NavColumnWidth { get; set; }
 
     [ObservableProperty]
-    private bool _isNavColumnManualHide;
+    public partial bool IsNavColumnManualHide { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LayoutPageViewModelBase"/> class.

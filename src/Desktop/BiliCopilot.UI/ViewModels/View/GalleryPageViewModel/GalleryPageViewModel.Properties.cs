@@ -11,14 +11,14 @@ namespace BiliCopilot.UI.ViewModels.View;
 public sealed partial class GalleryPageViewModel
 {
     [ObservableProperty]
-    private List<BiliImage>? _images;
+    public partial List<BiliImage>? Images { get; set; }
 
     [ObservableProperty]
-    private bool _isGroup;
+    public partial bool IsGroup { get; set; }
 
     [ObservableProperty]
-    private bool _isMenuHide;
+    public partial bool IsMenuHide { get; set; }
 
     [ObservableProperty]
-    private BiliImage _selectedImage;
+    public partial BiliImage SelectedImage { get; set; }
 }

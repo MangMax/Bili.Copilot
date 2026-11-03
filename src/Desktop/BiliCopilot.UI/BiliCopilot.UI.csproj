@@ -15,7 +15,13 @@
     <Nullable>enable</Nullable>
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
     <DefaultLanguage>zh-CN</DefaultLanguage>
-	<NoWarn>$(NoWarn);CS1998;CS0612;NU1903;IL2104;IL3053;MVVMTK0045;MVVMTK0046;CS1591;WMC1510;IL2067;IL2059;IL3050;IL2075;IL2072;IL2055;IL2060;IL2077;IL2070;IL2058;IL2026;IL2065;IL3000;IL3002;IL2057;IL2093;IL2111;IL2080;IL2090;IL2091;IL2113;IL2087;IL2062;IL2046;IL2122;IL2096</NoWarn>
+	<!--
+	  MVVMTK0045 只为字段式 [ObservableProperty] 保留：#109/#110 全量迁到 partial property 后它已不再出现，故已删除.
+	  MVVMTK0046 与字段写法无关：它命中的是 8 个 [GeneratedBindableCustomProperty] 条目视图模型里
+	  46 个 [RelayCommand] 方法（生成器看不到 Toolkit 生成的命令属性，属 AOT 绑定遗留，删掉会让默认构建
+	  直接失败），要修得逐个手写命令属性，不在本票范围.
+	-->
+	<NoWarn>$(NoWarn);CS1998;CS0612;NU1903;IL2104;IL3053;CS1591;WMC1510;IL2067;IL2059;IL3050;IL2075;IL2072;IL2055;IL2060;IL2077;IL2070;IL2058;IL2026;IL2065;IL3000;IL3002;IL2057;IL2093;IL2111;IL2080;IL2090;IL2091;IL2113;IL2087;IL2062;IL2046;IL2122;IL2096;MVVMTK0046</NoWarn>
     <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <AllowUnsafe>True</AllowUnsafe>
   </PropertyGroup>
@@ -23,10 +29,11 @@
   <!--
     WinUI 官方分析器（观测模式），开关与命令见 docs/agents/winui-analyzer.md.
 
-    默认构建不引用：主构建是 warnings-as-errors，而仓库尚有 427 条存量 WUI 诊断，
-    直接引入会让构建立刻失败。开关只影响本工程，负责引用分析器、把编译器 ErrorLog
-    指向 SARIF、并关掉本工程的 warnings-as-errors（默认构建仍是 warnings-as-errors，
-    这不是规则降级）。不加开关时分析器不会被还原、加载或执行.
+    默认构建不引用：主构建是 warnings-as-errors，而仓库仍有 WUI2010 / WUI1001 等存量 WUI
+    诊断（WUI3001 已清零，见 docs/agents/winui-analyzer.md），直接引入会让构建立刻失败。
+    开关只影响本工程，负责引用分析器、把编译器 ErrorLog 指向 SARIF、并关掉本工程的
+    warnings-as-errors（默认构建仍是 warnings-as-errors，这不是规则降级）。
+    不加开关时分析器不会被还原、加载或执行.
   -->
   <PropertyGroup Condition="'$(WinUIAnalyzerObservation)' == 'true'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>

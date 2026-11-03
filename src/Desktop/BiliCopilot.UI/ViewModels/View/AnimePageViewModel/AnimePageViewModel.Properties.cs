@@ -16,10 +16,10 @@ public sealed partial class AnimePageViewModel
     private readonly ILogger<AnimePageViewModel> _logger;
 
     [ObservableProperty]
-    private List<IPgcSectionDetailViewModel>? _sections;
+    public partial List<IPgcSectionDetailViewModel>? Sections { get; set; }
 
     [ObservableProperty]
-    private IPgcSectionDetailViewModel? _selectedSection;
+    public partial IPgcSectionDetailViewModel? SelectedSection { get; set; }
 
     /// <summary>
     /// 区块加载完成.

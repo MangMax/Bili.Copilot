@@ -17,10 +17,10 @@ public sealed partial class CommentItemViewModel
     private readonly Action<CommentItemViewModel> _markReplyTargetAction;
 
     [ObservableProperty]
-    private bool _isLiked;
+    public partial bool IsLiked { get; set; }
 
     [ObservableProperty]
-    private int _likeCount;
+    public partial int LikeCount { get; set; }
 
     /// <summary>
     /// 子评论条数.

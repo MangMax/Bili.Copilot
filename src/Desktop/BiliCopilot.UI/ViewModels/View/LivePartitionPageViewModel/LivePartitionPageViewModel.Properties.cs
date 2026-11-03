@@ -22,31 +22,31 @@ public sealed partial class LivePartitionPageViewModel
     private int _recommendOffset;
 
     [ObservableProperty]
-    private double _subNavColumnWidth;
+    public partial double SubNavColumnWidth { get; set; }
 
     [ObservableProperty]
-    private bool _isSubNavEnabled;
+    public partial bool IsSubNavEnabled { get; set; }
 
     [ObservableProperty]
-    private List<PartitionViewModel>? _subPartitions;
+    public partial List<PartitionViewModel>? SubPartitions { get; set; }
 
     [ObservableProperty]
-    private bool _isSectionLoading;
+    public partial bool IsSectionLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isRecommendLoading;
+    public partial bool IsRecommendLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isFollowRoomsEmpty;
+    public partial bool IsFollowRoomsEmpty { get; set; }
 
     [ObservableProperty]
-    private PartitionViewModel _selectedMainSection;
+    public partial PartitionViewModel SelectedMainSection { get; set; }
 
     [ObservableProperty]
-    private PartitionViewModel _selectedSubSection;
+    public partial PartitionViewModel SelectedSubSection { get; set; }
 
     [ObservableProperty]
-    private LivePartitionDetailViewModel _selectedDetail;
+    public partial LivePartitionDetailViewModel SelectedDetail { get; set; }
 
     /// <summary>
     /// 分区加载完成.
