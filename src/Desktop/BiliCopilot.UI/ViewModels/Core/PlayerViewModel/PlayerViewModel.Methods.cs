@@ -1033,15 +1033,39 @@ public sealed partial class PlayerViewModel
         }
     }
 
+    /// <summary>
+    /// 从本地设置恢复字幕开关，只更新状态，不挂载/卸载字幕轨，也不写盘。
+    /// </summary>
+    private void RestoreSubtitleEnabledPreference()
+        => SetSubtitleEnabledSilently(SettingsToolkit.ReadLocalSetting(SettingNames.IsSubtitleEnabled, true));
+
+    /// <summary>
+    /// 静默设置字幕开关：不触发挂载/卸载字幕轨的副作用，由调用方决定是否写盘。
+    /// </summary>
+    /// <param name="isEnabled">是否启用字幕。</param>
+    private void SetSubtitleEnabledSilently(bool isEnabled)
+    {
+        if (IsSubtitleEnabled == isEnabled)
+        {
+            return;
+        }
+
+        _isSubtitleEnabledChangeSilent = true;
+        try
+        {
+            IsSubtitleEnabled = isEnabled;
+        }
+        finally
+        {
+            _isSubtitleEnabledChangeSilent = false;
+        }
+    }
+
     private async Task LoadSubtitlesAsync()
     {
         try
         {
-            if (!IsSubtitleEnabled)
-            {
-                return;
-            }
-
+            // 字幕元数据与轨列表始终加载：开关只决定是否自动挂载，关闭时菜单仍能判断视频有无字幕。
             var service = this.Get<ISubtitleService>();
             if (Connector is VideoConnectorViewModel videoVM)
             {
@@ -1060,10 +1084,10 @@ public sealed partial class PlayerViewModel
 
                 if (Subtitles.Count > 0)
                 {
-                    var preferredIndex = SubtitlePreference.SelectPreferredIndex(Subtitles, p => p.Name, p => p.IsAI);
-                    if (preferredIndex >= 0)
+                    var initialIndex = SubtitlePreference.SelectInitialIndex(Subtitles, IsSubtitleEnabled, p => p.Name, p => p.IsAI);
+                    if (initialIndex >= 0)
                     {
-                        Subtitles[preferredIndex].SelectCommand.Execute(default);
+                        Subtitles[initialIndex].SelectCommand.Execute(default);
                     }
                 }
 
@@ -1078,17 +1102,24 @@ public sealed partial class PlayerViewModel
 
     private async Task SelectSubtitleAsync(SubtitleItemViewModel vm)
     {
+        if (!IsSubtitleEnabled)
+        {
+            // 关闭状态下选轨视为用户希望观看字幕：静默开启并写盘，随后只挂载这条被选中的轨。
+            SettingsToolkit.WriteLocalSetting(SettingNames.IsSubtitleEnabled, true);
+            SetSubtitleEnabledSilently(true);
+        }
+
         foreach (var item in Subtitles)
         {
             item.IsSelected = item.Data.Equals(vm.Data);
         }
 
-        if (string.IsNullOrEmpty(vm._srtFilePath))
+        if (string.IsNullOrEmpty(vm._srtFilePath) || Client is null)
         {
             return;
         }
 
-        await Client!.SetExternalSubtitleTrackAsync(vm._srtFilePath);
+        await Client.SetExternalSubtitleTrackAsync(vm._srtFilePath);
     }
 
     private async Task DeselectSubtitleAsync(SubtitleItemViewModel vm)
@@ -1098,7 +1129,12 @@ public sealed partial class PlayerViewModel
             item.IsSelected = false;
         }
 
-        await Client!.SetSubtitleTrackAsync(default);
+        if (Client is null)
+        {
+            return;
+        }
+
+        await Client.SetSubtitleTrackAsync(default);
     }
 
     private static string[] FindAnime4KShaders(Anime4KMode mode)
