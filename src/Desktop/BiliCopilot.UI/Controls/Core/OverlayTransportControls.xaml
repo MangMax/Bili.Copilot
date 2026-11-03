@@ -480,25 +480,18 @@
                                             VerticalAlignment="Center"
                                             FontWeight="SemiBold"
                                             Text="{ext:Locale Name=Subtitle}" />
-                                        <Button
+                                        <HyperlinkButton
                                             x:Name="SubtitleParameterEntryButton"
                                             Grid.Column="1"
                                             MinWidth="0"
                                             Margin="0,0,4,0"
-                                            Padding="12,4"
+                                            Padding="8,4"
                                             VerticalAlignment="Center"
                                             AutomationProperties.AutomationId="SubtitleParameterEntryButton"
                                             AutomationProperties.Name="{ext:Locale Name=Settings}"
-                                            Background="Transparent"
-                                            BorderThickness="0"
                                             Click="OnSubtitleParameterEntryClick"
-                                            CornerRadius="{StaticResource ControlCornerRadius}"
-                                            FontSize="12"
-                                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}">
-                                            <TextBlock
-                                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                                Text="{ext:Locale Name=Settings}" />
-                                        </Button>
+                                            Content="{ext:Locale Name=Settings}"
+                                            FontSize="12" />
                                     </Grid>
                                     <StackPanel
                                         Grid.Row="1"
