@@ -112,7 +112,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         UseWebPlayerWhenLive = SettingsToolkit.ReadLocalSetting(SettingNames.UseWebPlayerWhenLive, false);
         ShowSearchRecommend = SettingsToolkit.ReadLocalSetting(SettingNames.ShowSearchRecommend, false);
         IncrementalRecommendRefresh = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false);
-        RecommendSourceIndex = (int)SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
+        RecommendSourceIndex = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, (int)RecommendFeedSource.Mobile);
 
         ScreenshotAction = SettingsToolkit.ReadLocalSetting(SettingNames.ScreenshotAction, ScreenshotAction.Open);
         var customScreenshotFolderPath = SettingsToolkit.ReadLocalSetting(SettingNames.CustomScreenshotFolderPath, string.Empty);
@@ -514,8 +514,9 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 
     partial void OnRecommendSourceIndexChanged(int value)
     {
-        var source = Enum.IsDefined(typeof(RecommendFeedSource), value) ? (RecommendFeedSource)value : RecommendFeedSource.Mobile;
-        SettingsToolkit.WriteLocalSetting(SettingNames.RecommendFeedSource, source);
+        // 应用设置存储只支持基础类型，枚举必须落成 int。
+        var index = Enum.IsDefined(typeof(RecommendFeedSource), value) ? value : (int)RecommendFeedSource.Mobile;
+        SettingsToolkit.WriteLocalSetting(SettingNames.RecommendFeedSource, index);
     }
 
     partial void OnIsPopularNavVisibleChanged(bool value)

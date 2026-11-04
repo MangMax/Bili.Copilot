@@ -620,7 +620,7 @@ public sealed class PopularPageLoadingTests
     [Fact]
     public async Task InitialLoadUsesConfiguredWebSource()
     {
-        SettingsToolkit.RecommendSource = RecommendFeedSource.Web;
+        SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Web;
         try
         {
             var service = new DiscoveryService();
@@ -636,14 +636,14 @@ public sealed class PopularPageLoadingTests
         }
         finally
         {
-            SettingsToolkit.RecommendSource = RecommendFeedSource.Mobile;
+            SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Mobile;
         }
     }
 
     [Fact]
     public async Task ManualRefreshUsesConfiguredSourceAndReplacesTheListOnSwitch()
     {
-        SettingsToolkit.RecommendSource = RecommendFeedSource.Mobile;
+        SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Mobile;
         SettingsToolkit.IncrementalRecommendRefresh = true;
         var service = new DiscoveryService();
         service.Partitions.SetResult([]);
@@ -653,7 +653,7 @@ public sealed class PopularPageLoadingTests
         Assert.Equal("Recommend", Assert.Single(page.Videos).Data.BvId);
 
         // 切到网页端后手动刷新：既要走新来源，也要整表替换，不能在旧列表中混入新来源的条目。
-        SettingsToolkit.RecommendSource = RecommendFeedSource.Web;
+        SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Web;
         await page.RefreshVideoCommand.ExecuteAsync(null);
         PageTestServices.Dispatcher.Drain();
 
@@ -661,7 +661,7 @@ public sealed class PopularPageLoadingTests
         Assert.Equal("Curated", Assert.Single(page.Videos).Data.BvId);
         Assert.False(page.CanUndoRefresh);
         SettingsToolkit.IncrementalRecommendRefresh = false;
-        SettingsToolkit.RecommendSource = RecommendFeedSource.Mobile;
+        SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Mobile;
     }
 
     [Fact]

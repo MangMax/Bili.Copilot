@@ -1,7 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.Components;
-using BiliCopilot.UI.Toolkits;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -20,6 +19,8 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private bool _isActive;
     // 增量刷新尚未到达的条数；大于 0 时在列表顶部留出等量的骨架位置。
     private int _pendingRefreshCount;
+    // 刷新开始时的列表长度，用来判断顶部占位被填掉了多少。
+    private int _refreshBaselineCount;
     private readonly RecommendationScrollAnchor _anchor;
 
     /// <summary>
@@ -100,12 +101,14 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private void OnRefreshStarted(int targetCount)
     {
         _pendingRefreshCount = Math.Max(0, targetCount);
+        _refreshBaselineCount = ViewModel?.Videos.Count ?? 0;
         SyncDisplayItems();
     }
 
     private void OnRefreshCompleted(object? sender, EventArgs e)
     {
         _pendingRefreshCount = 0;
+        _refreshBaselineCount = 0;
         SyncDisplayItems();
     }
 
@@ -123,6 +126,11 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     /// <summary>
     /// 让列表里的骨架逐格被真实卡片替换.
     /// </summary>
+    /// <remarks>
+    /// 期望的渲染序列 = 顶部占位（增量刷新尚未到达的位置） + 真实卡片 + 尾巴占位（补齐视口预算）。
+    /// 新卡片到达时天然占据顶部占位的位置，旧卡片不会被一页一页往下顶；
+    /// 占位只存在于这个视图集合里，不进入业务列表、撤销快照与列差异计算。
+    /// </remarks>
     private void SyncDisplayItems()
     {
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
@@ -135,63 +143,67 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         var videos = ViewModel?.Videos;
         var count = videos?.Count ?? 0;
 
-        // 增量刷新时顶部先占住整行位置：新卡片按页填进这些位置，
-        // 后面的旧卡片就不会被一页一页往下顶。
-        var columns = Math.Max(1, ScrollSlotBudget.Columns(View.ActualWidth, SlotLayout.Video));
-        var pendingRows = _pendingRefreshCount > 0
-            ? (int)Math.Ceiling(_pendingRefreshCount / (double)columns)
+        // 增量刷新：本次新插到顶部的条目数，决定还有多少顶部占位要留着。
+        var inserted = Math.Max(0, count - _refreshBaselineCount);
+        var leading = _pendingRefreshCount > 0
+            ? Math.Max(0, _pendingRefreshCount - inserted)
             : 0;
-        var pendingSlots = pendingRows * columns;
+        var tail = Math.Max(0, budget - leading - count);
 
-        // 1) 顶部占位区。
-        var index = 0;
-        for (; index < pendingSlots; index++)
+        ApplyDesired(leading + count + tail, i =>
         {
-            if (index < DisplayItems.Count && DisplayItems[index] is VideoCardSkeleton)
+            if (i < leading)
+            {
+                return null;
+            }
+
+            var videoIndex = i - leading;
+            return videoIndex < count ? videos![videoIndex] : null;
+        });
+
+        View.ItemCount = count;
+        // 还有骨架占位时只按预算判断是否续页，避免 extent 被骨架撑满后无限预取。
+        View.ExtentFallbackEnabled = leading == 0 && tail == 0;
+    }
+
+    /// <summary>
+    /// 把视图集合对齐到期望序列；占位项复用已有实例，避免每次同步都重建骨架.
+    /// </summary>
+    /// <param name="desiredCount">期望长度.</param>
+    /// <param name="itemAt">按索引取真实条目，返回 null 表示该位置放骨架.</param>
+    private void ApplyDesired(int desiredCount, Func<int, object?> itemAt)
+    {
+        for (var i = 0; i < desiredCount; i++)
+        {
+            var desired = itemAt(i);
+            var current = i < DisplayItems.Count ? DisplayItems[i] : null;
+            if (desired is null)
+            {
+                if (current is VideoCardSkeleton)
+                {
+                    continue;
+                }
+
+                desired = new VideoCardSkeleton(i);
+            }
+            else if (ReferenceEquals(current, desired))
             {
                 continue;
             }
 
-            var placeholder = new VideoCardSkeleton(index);
-            if (index < DisplayItems.Count) DisplayItems.Insert(index, placeholder);
-            else DisplayItems.Add(placeholder);
-        }
-
-        // 2) 真实卡片按顺序占住自己的位置（占位区之后的骨架随之被顶掉）。
-        for (var i = 0; i < count; i++)
-        {
-            var item = videos![i];
-            var target = pendingSlots + i;
-            if (target < DisplayItems.Count)
+            if (i < DisplayItems.Count)
             {
-                if (!ReferenceEquals(DisplayItems[target], item))
-                {
-                    DisplayItems[target] = item;
-                }
+                DisplayItems[i] = desired;
             }
             else
             {
-                DisplayItems.Add(item);
+                DisplayItems.Add(desired);
             }
         }
 
-        // 3) 多余的卡片项清掉（列表变短时），骨架留到最后统一裁剪。
-        var cardsEnd = pendingSlots + count;
-        for (var i = DisplayItems.Count - 1; i >= cardsEnd; i--)
+        while (DisplayItems.Count > desiredCount)
         {
-            if (DisplayItems[i] is not VideoCardSkeleton)
-            {
-                DisplayItems.RemoveAt(i);
-            }
+            DisplayItems.RemoveAt(DisplayItems.Count - 1);
         }
-
-        // 4) 剩余位置用骨架补齐到视口预算。
-        var targetCount = Math.Max(cardsEnd, budget);
-        while (DisplayItems.Count < targetCount) DisplayItems.Add(new VideoCardSkeleton(DisplayItems.Count - cardsEnd));
-        while (DisplayItems.Count > targetCount) DisplayItems.RemoveAt(DisplayItems.Count - 1);
-
-        View.ItemCount = count;
-        // 还有骨架占位时只按预算判断是否续页，避免 extent 被骨架撑满后无限预取。
-        View.ExtentFallbackEnabled = DisplayItems.Count <= count;
     }
 }

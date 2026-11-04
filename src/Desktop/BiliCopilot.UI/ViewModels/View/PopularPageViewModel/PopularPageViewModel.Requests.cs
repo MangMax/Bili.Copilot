@@ -305,7 +305,11 @@ public sealed partial class PopularPageViewModel
         }
 
         // 刷新与首屏重新创建来源：合并来源自己攥着网页端批次，只靠页面游标无法把它重置到头上。
-        var kind = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
+        // 设置里存的是下标（int），读出来再收敛到合法枚举，避免类型不匹配抛异常。
+        var rawKind = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, (int)RecommendFeedSource.Mobile);
+        var kind = Enum.IsDefined(typeof(RecommendFeedSource), rawKind)
+            ? (RecommendFeedSource)rawKind
+            : RecommendFeedSource.Mobile;
         var kindChanged = _feedSource is null || _feedSourceKind != kind;
         _feedSourceKind = kind;
         _feedSource = RecommendFeedSourceFactory.Create(_service, kind);

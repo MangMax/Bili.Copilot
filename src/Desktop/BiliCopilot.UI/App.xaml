@@ -77,15 +77,6 @@
                 MinItemWidth="232"
                 MinRowSpacing="20" />
 
-            <!-- 骨架层与真实卡片网格同尺，但必须是独立实例：同一个 Layout 不能被两个 repeater 共用。 -->
-            <UniformGridLayout
-                x:Key="VideoSkeletonLayout"
-                ItemsStretch="Uniform"
-                MinColumnSpacing="20"
-                MinItemHeight="238"
-                MinItemWidth="232"
-                MinRowSpacing="20" />
-
             <UniformGridLayout
                 x:Key="PgcLayout"
                 ItemsStretch="Uniform"

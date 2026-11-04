@@ -97,43 +97,44 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     private void SyncDisplayItems()
     {
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
-
         var videos = ViewModel?.Videos;
         var count = videos?.Count ?? 0;
+        var desiredCount = Math.Max(count, budget);
 
-        // 1) 真实卡片按顺序占住自己的位置（骨架随之被顶掉）。
-        for (var i = 0; i < count; i++)
+        for (var i = 0; i < desiredCount; i++)
         {
-            var item = videos![i];
+            var desired = i < count ? (object?)videos![i] : null;
+            var current = i < DisplayItems.Count ? DisplayItems[i] : null;
+            if (desired is null)
+            {
+                if (current is VideoCardSkeleton)
+                {
+                    continue;
+                }
+
+                desired = new VideoCardSkeleton(i);
+            }
+            else if (ReferenceEquals(current, desired))
+            {
+                continue;
+            }
+
             if (i < DisplayItems.Count)
             {
-                if (!ReferenceEquals(DisplayItems[i], item))
-                {
-                    DisplayItems[i] = item;
-                }
+                DisplayItems[i] = desired;
             }
             else
             {
-                DisplayItems.Add(item);
+                DisplayItems.Add(desired);
             }
         }
 
-        // 2) 列表变短时清掉多余的卡片项，骨架留到最后统一裁剪。
-        for (var i = DisplayItems.Count - 1; i >= count; i--)
+        while (DisplayItems.Count > desiredCount)
         {
-            if (DisplayItems[i] is not VideoCardSkeleton)
-            {
-                DisplayItems.RemoveAt(i);
-            }
+            DisplayItems.RemoveAt(DisplayItems.Count - 1);
         }
-
-        // 3) 剩余位置用骨架补齐到视口预算。
-        var target = Math.Max(count, budget);
-        while (DisplayItems.Count < target) DisplayItems.Add(new VideoCardSkeleton(DisplayItems.Count - count));
-        while (DisplayItems.Count > target) DisplayItems.RemoveAt(DisplayItems.Count - 1);
 
         View.ItemCount = count;
-        // 还有骨架占位时只按预算判断是否续页，避免 extent 被骨架撑满后无限预取。
-        View.ExtentFallbackEnabled = DisplayItems.Count <= count;
+        View.ExtentFallbackEnabled = desiredCount <= count;
     }
 }
