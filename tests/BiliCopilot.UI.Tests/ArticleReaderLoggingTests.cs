@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Core;
@@ -9,6 +9,8 @@ using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Article;
 using Richasy.BiliKernel.Models.User;
+
+using static BiliCopilot.UI.Tests.ArticleReaderFixture;
 
 namespace BiliCopilot.UI.Tests;
 
@@ -116,40 +118,6 @@ public sealed class ArticleReaderLoggingTests
             Exception? exception, Func<TState, Exception?, string> formatter)
             => Entries.Add(new(logLevel, exception,
                 ((IEnumerable<KeyValuePair<string, object?>>)state!).ToDictionary(p => p.Key, p => p.Value)));
-    }
-
-    private static ArticleDetail Detail(ArticleIdentifier identifier, bool? liked = false, bool? favorited = false)
-    {
-        var id = identifier.Id!;
-        var user = new UserProfile(id, $"Author {id}", new BiliImage(new Uri($"https://example.invalid/{id}.png")));
-        var card = new UserCard(new UserDetailProfile(user), new UserCommunityInformation(id));
-        return new ArticleDetail(
-            identifier,
-            card,
-            new ArticleCommunityInformation(id),
-            $"<p>{id}</p>",
-            DateTimeOffset.UnixEpoch,
-            [],
-            liked,
-            favorited);
-    }
-
-    private sealed class Operation : IArticleOperationService
-    {
-        public List<bool> Likes { get; } = [];
-        public List<bool> Favorites { get; } = [];
-
-        public Task ToggleLikeAsync(ArticleIdentifier article, bool isLike, CancellationToken cancellationToken = default)
-        {
-            Likes.Add(isLike);
-            return Task.CompletedTask;
-        }
-
-        public Task ToggleFavoriteAsync(ArticleIdentifier article, bool isFavorite, CancellationToken cancellationToken = default)
-        {
-            Favorites.Add(isFavorite);
-            return Task.CompletedTask;
-        }
     }
 
     private sealed class Discovery : IArticleDiscoveryService

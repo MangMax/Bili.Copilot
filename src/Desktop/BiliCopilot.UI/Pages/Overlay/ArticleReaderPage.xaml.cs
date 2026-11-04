@@ -67,7 +67,9 @@ public sealed partial class ArticleReaderPage : ArticleReaderPageBase, IParamete
             && !ReferenceEquals(_injectedContent, ViewModel.Content))
         {
             _injectedContent = ViewModel.Content;
-            await Reader.LoadContentAsync(_injectedContent);
+            var generation = _loadGeneration;
+            await Reader.LoadContentAsync(_injectedContent,
+                isCurrent: () => generation == ViewModel.CurrentLoadGeneration);
         }
     }
 }
