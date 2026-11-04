@@ -19,7 +19,7 @@ public sealed partial class VideoPlayerPlaylistSectionDetailViewModel : ViewMode
     private readonly string _videoId;
 
     [ObservableProperty]
-    private List<VideoItemViewModel> _items;
+    public partial List<VideoItemViewModel> Items { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPlaylistSectionDetailViewModel"/> class.

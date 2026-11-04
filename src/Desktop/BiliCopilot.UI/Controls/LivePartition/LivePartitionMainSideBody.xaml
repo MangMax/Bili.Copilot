@@ -16,7 +16,7 @@
         <ItemsView
             x:Name="PartitionView"
             Padding="2,8,8,8"
-            ItemsSource="{x:Bind ViewModel.MainSections}"
+            ItemsSource="{x:Bind ViewModel.MainSections, Mode=OneWay}"
             ScrollViewer.HorizontalScrollMode="Disabled"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             SelectionChanged="OnPartitionSelectionChanged"

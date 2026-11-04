@@ -36,13 +36,13 @@
                         VerticalAlignment="Center"
                         CornerRadius="21"
                         DecodeWidth="100"
-                        Source="{x:Bind Cover}" />
+                        Source="{x:Bind Cover, Mode=OneTime}" />
                     <base:TrimTextBlock
                         x:Name="TitleBlock"
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         MaxLines="2"
-                        Text="{x:Bind Title}" />
+                        Text="{x:Bind Title, Mode=OneTime}" />
                     <ic:SymbolIcon
                         Grid.Column="2"
                         Margin="12,0,0,0"
@@ -93,7 +93,7 @@
                     MinWidth="320"
                     x:Load="{x:Bind ViewModel.IsFlyoutOpened, Mode=OneWay}"
                     ItemTemplate="{StaticResource PinTemplate}"
-                    ItemsSource="{x:Bind ViewModel.Items}">
+                    ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
                     <ItemsRepeater.Layout>
                         <StackLayout Spacing="8" />
                     </ItemsRepeater.Layout>

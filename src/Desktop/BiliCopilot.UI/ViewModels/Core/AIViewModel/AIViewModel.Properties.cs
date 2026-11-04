@@ -32,56 +32,56 @@ public sealed partial class AIViewModel
     private AIConversationErrorKind _notifiedErrorKind;
 
     [ObservableProperty]
-    private List<ChatServiceItemViewModel> _services;
+    public partial List<ChatServiceItemViewModel> Services { get; set; }
 
     [ObservableProperty]
-    private List<ChatModelItemViewModel> _models;
+    public partial List<ChatModelItemViewModel> Models { get; set; }
 
     [ObservableProperty]
-    private List<AIQuickItemViewModel> _quickItems;
+    public partial List<AIQuickItemViewModel> QuickItems { get; set; }
 
     [ObservableProperty]
-    private List<AIQuickItemViewModel> _morePrompts;
+    public partial List<AIQuickItemViewModel> MorePrompts { get; set; }
 
     [ObservableProperty]
-    private ChatServiceItemViewModel _selectedService;
+    public partial ChatServiceItemViewModel SelectedService { get; set; }
 
     [ObservableProperty]
-    private ChatModelItemViewModel _selectedModel;
+    public partial ChatModelItemViewModel SelectedModel { get; set; }
 
     [ObservableProperty]
-    private bool _isNoService;
+    public partial bool IsNoService { get; set; }
 
     [ObservableProperty]
-    private bool _isNoModel;
+    public partial bool IsNoModel { get; set; }
 
     [ObservableProperty]
-    private bool _isQuickItemsVisible;
+    public partial bool IsQuickItemsVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isGenerating;
+    public partial bool IsGenerating { get; set; }
 
     [ObservableProperty]
-    private string _requestText;
+    public partial string RequestText { get; set; }
 
     [ObservableProperty]
-    private string _tempResult;
+    public partial string TempResult { get; set; }
 
     [ObservableProperty]
-    private string _finalResult;
+    public partial string FinalResult { get; set; }
 
     [ObservableProperty]
-    private string _errorMessage;
+    public partial string ErrorMessage { get; set; }
 
     [ObservableProperty]
-    private string _progressTip;
+    public partial string ProgressTip { get; set; }
 
     [ObservableProperty]
-    private string? _sourceTitle;
+    public partial string? SourceTitle { get; set; }
 
     [ObservableProperty]
-    private string? _sourceSubtitle;
+    public partial string? SourceSubtitle { get; set; }
 
     [ObservableProperty]
-    private Uri? _sourceCover;
+    public partial Uri? SourceCover { get; set; }
 }

@@ -37,7 +37,7 @@ public sealed partial class PopularPageViewModel
     /// 手动刷新或切换分区会把它复位.
     /// </remarks>
     [ObservableProperty]
-    private bool _isRecommendLoadFailed;
+    public partial bool IsRecommendLoadFailed { get; set; }
 
     /// <summary>
     /// 是否应该显示整页加载遮罩.
@@ -47,7 +47,7 @@ public sealed partial class PopularPageViewModel
     /// 否则用户会看到内容整块闪一下.
     /// </remarks>
     [ObservableProperty]
-    private bool _isPageLoading;
+    public partial bool IsPageLoading { get; set; }
     // 当前列表实际使用的推荐流来源；设置变更后要等到下一次刷新才切换，避免同一条列表混源。
     private IRecommendFeedSource? _feedSource;
     private RecommendFeedSource _feedSourceKind;
@@ -102,10 +102,10 @@ public sealed partial class PopularPageViewModel
     public int RefreshTargetCount { get; set; }
 
     [ObservableProperty]
-    private bool _isPartitionLoading;
+    public partial bool IsPartitionLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isVideoLoading;
+    public partial bool IsVideoLoading { get; set; }
 
     /// <summary>
     /// 推荐刷新是否正在进行.
@@ -116,7 +116,7 @@ public sealed partial class PopularPageViewModel
     /// </remarks>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RefreshVideoCommand))]
-    private bool _isRecommendRefreshing;
+    public partial bool IsRecommendRefreshing { get; set; }
 
     /// <summary>
     /// 是否可以撤销最近一次推荐刷新.
@@ -125,10 +125,10 @@ public sealed partial class PopularPageViewModel
     /// 由刷新快照是否存在决定。撤销入口与刷新按钮并排，只在刷新成功后出现。
     /// </remarks>
     [ObservableProperty]
-    private bool _canUndoRefresh;
+    public partial bool CanUndoRefresh { get; set; }
 
     [ObservableProperty]
-    private IPopularSectionItemViewModel _selectedSection;
+    public partial IPopularSectionItemViewModel SelectedSection { get; set; }
 
     /// <summary>
     /// 区块加载完成.

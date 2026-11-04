@@ -62,7 +62,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="items:SponsorBlockCategorySettingViewModel">
-                            <base:SettingsCard Header="{x:Bind DisplayName}" Style="{StaticResource DefaultSettingsExpanderItemStyle}">
+                            <base:SettingsCard Header="{x:Bind DisplayName, Mode=OneTime}" Style="{StaticResource DefaultSettingsExpanderItemStyle}">
                                 <!--
                                     用 Grid 而不是横向 StackPanel：StackPanel 会按子元素自身高度排布，
                                     按钮与下拉框永远各算各的；Grid 让两者落在同一行并各自纵向撑满，
@@ -83,9 +83,9 @@
                                     <Button
                                         VerticalAlignment="Stretch"
                                         Padding="8,4"
-                                        AutomationProperties.AutomationId="{x:Bind ColorAutomationId}"
+                                        AutomationProperties.AutomationId="{x:Bind ColorAutomationId, Mode=OneTime}"
                                         AutomationProperties.HelpText="{ext:Locale Name=SponsorBlockColor}"
-                                        AutomationProperties.Name="{x:Bind DisplayName}"
+                                        AutomationProperties.Name="{x:Bind DisplayName, Mode=OneTime}"
                                         Click="OnColorButtonClick"
                                         CornerRadius="6"
                                         ToolTipService.ToolTip="{ext:Locale Name=SponsorBlockColor}">
@@ -128,10 +128,10 @@
                                     <ComboBox
                                         x:Name="BehaviorSelector"
                                         Grid.Column="1"
-                                        AutomationProperties.AutomationId="{x:Bind Category}"
-                                        AutomationProperties.Name="{x:Bind DisplayName}"
+                                        AutomationProperties.AutomationId="{x:Bind Category, Mode=OneTime}"
+                                        AutomationProperties.Name="{x:Bind DisplayName, Mode=OneTime}"
                                         MinWidth="140"
-                                        ItemsSource="{x:Bind AvailableBehaviors}"
+                                        ItemsSource="{x:Bind AvailableBehaviors, Mode=OneTime}"
                                         Loaded="OnBehaviorComboBoxLoaded"
                                         SelectionChanged="OnBehaviorSelectionChanged"
                                         Tag="{x:Bind}">

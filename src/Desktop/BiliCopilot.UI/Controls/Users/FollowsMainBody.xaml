@@ -20,7 +20,7 @@
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
                         x:Name="UserRepeater"
-                        ItemsSource="{x:Bind ViewModel.Users}"
+                        ItemsSource="{x:Bind ViewModel.Users, Mode=OneWay}"
                         Layout="{StaticResource UserLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:UserItemViewModel">

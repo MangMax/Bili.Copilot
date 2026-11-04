@@ -16,19 +16,19 @@ public sealed partial class SearchPageViewModel
     private readonly ILogger<SearchPageViewModel> _logger;
 
     [ObservableProperty]
-    private string _keyword;
+    public partial string Keyword { get; set; }
 
     [ObservableProperty]
-    private bool _isSearching;
+    public partial bool IsSearching { get; set; }
 
     [ObservableProperty]
-    private ISearchSectionDetailViewModel _selectedSection;
+    public partial ISearchSectionDetailViewModel SelectedSection { get; set; }
 
     /// <summary>
     /// 详情分区列表.
     /// </summary>
     [ObservableProperty]
-    private List<ISearchSectionDetailViewModel>? _sections;
+    public partial List<ISearchSectionDetailViewModel>? Sections { get; set; }
 
     /// <summary>
     /// 分区初始化完成.

@@ -21,7 +21,7 @@
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <base:TrimTextBlock VerticalAlignment="Center" Text="{x:Bind ViewModel.Data.Name, Mode=OneWay}" />
+        <base:TrimTextBlock VerticalAlignment="Center" Text="{x:Bind ViewModel.Data.Name, Mode=OneWay, FallbackValue=''}" />
         <ComboBox
             x:Name="ConditionComboBox"
             Grid.Column="1"
@@ -31,7 +31,7 @@
             SelectedItem="{x:Bind ViewModel.CurrentCondition, Mode=OneWay}">
             <ComboBox.ItemTemplate>
                 <DataTemplate x:DataType="appearance:Condition">
-                    <TextBlock Text="{x:Bind Name}" />
+                    <TextBlock Text="{x:Bind Name, Mode=OneTime}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

@@ -80,12 +80,12 @@
                                                 <ic:SymbolIcon
                                                     VerticalAlignment="Center"
                                                     FontSize="14"
-                                                    Symbol="{x:Bind Symbol}" />
+                                                    Symbol="{x:Bind Symbol, Mode=OneTime}" />
                                                 <base:TrimTextBlock
                                                     Grid.Column="1"
                                                     VerticalAlignment="Center"
                                                     MaxLines="1"
-                                                    Text="{x:Bind Title}" />
+                                                    Text="{x:Bind Title, Mode=OneTime}" />
                                             </Grid>
                                         </Button>
                                     </DataTemplate>

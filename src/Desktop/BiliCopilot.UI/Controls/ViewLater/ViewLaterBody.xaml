@@ -20,7 +20,7 @@
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
                         x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind ViewModel.Videos}"
+                        ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
                         Layout="{StaticResource VideoLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:VideoItemViewModel">

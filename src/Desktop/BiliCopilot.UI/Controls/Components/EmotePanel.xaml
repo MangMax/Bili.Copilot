@@ -33,7 +33,7 @@
                             Height="28"
                             CornerRadius="{StaticResource ControlCornerRadius}"
                             DecodeWidth="60"
-                            Source="{x:Bind Icon.Uri}" />
+                            Source="{x:Bind Icon.Uri, Mode=OneTime}" />
                     </ItemContainer>
                 </DataTemplate>
             </ItemsView.ItemTemplate>
@@ -61,12 +61,12 @@
                                 Height="32"
                                 CornerRadius="{StaticResource ControlCornerRadius}"
                                 DecodeWidth="100"
-                                Source="{x:Bind Image.Uri}"
-                                Visibility="{x:Bind Image, Converter={StaticResource ObjectToVisibilityConverter}}" />
+                                Source="{x:Bind Image.Uri, Mode=OneTime}"
+                                Visibility="{x:Bind Image, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneTime}" />
                             <TextBlock
                                 FontSize="12"
-                                Text="{x:Bind Key}"
-                                Visibility="{x:Bind Image, Converter={StaticResource ObjectToVisibilityReverseConverter}}" />
+                                Text="{x:Bind Key, Mode=OneTime}"
+                                Visibility="{x:Bind Image, Converter={StaticResource ObjectToVisibilityReverseConverter}, Mode=OneTime}" />
                         </Grid>
                     </ItemContainer>
                 </DataTemplate>

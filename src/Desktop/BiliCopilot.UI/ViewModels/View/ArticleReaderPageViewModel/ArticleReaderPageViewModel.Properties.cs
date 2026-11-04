@@ -32,43 +32,43 @@ public sealed partial class ArticleReaderPageViewModel
     private CancellationTokenSource? _contentCancellation;
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private string _title;
+    public partial string Title { get; set; }
 
     [ObservableProperty]
-    private string? _author;
+    public partial string? Author { get; set; }
 
     [ObservableProperty]
-    private Uri? _avatar;
+    public partial Uri? Avatar { get; set; }
 
     [ObservableProperty]
-    private bool _isVip;
+    public partial bool IsVip { get; set; }
 
     [ObservableProperty]
-    private bool _isFollowed;
+    public partial bool IsFollowed { get; set; }
 
     [ObservableProperty]
-    private bool? _isLiked;
+    public partial bool? IsLiked { get; set; }
 
     [ObservableProperty]
-    private bool? _isFavorited;
+    public partial bool? IsFavorited { get; set; }
 
     [ObservableProperty]
-    private int _likeCount;
+    public partial int LikeCount { get; set; }
 
     [ObservableProperty]
-    private int _commentCount;
+    public partial int CommentCount { get; set; }
 
     [ObservableProperty]
-    private int _favoriteCount;
+    public partial int FavoriteCount { get; set; }
 
     [ObservableProperty]
-    private bool _isCommentsOpened;
+    public partial bool IsCommentsOpened { get; set; }
 
     [ObservableProperty]
-    private bool _isAIOverlayOpened;
+    public partial bool IsAIOverlayOpened { get; set; }
 
     /// <summary>
     /// 文章已加载.

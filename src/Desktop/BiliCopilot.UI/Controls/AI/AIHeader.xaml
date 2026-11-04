@@ -33,13 +33,13 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         IsAvatar="True"
-                        Provider="{x:Bind ProviderType}" />
+                        Provider="{x:Bind ProviderType, Mode=OneTime}" />
                     <TextBlock
                         Grid.Column="1"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         MaxLines="1"
-                        Text="{x:Bind Name}"
+                        Text="{x:Bind Name, Mode=OneTime}"
                         TextTrimming="CharacterEllipsis" />
                 </Grid>
             </Button>
@@ -58,12 +58,12 @@
                 Height="28"
                 VerticalAlignment="Center"
                 IsAvatar="True"
-                Provider="{x:Bind ViewModel.SelectedService.ProviderType, Mode=OneWay}" />
+                Provider="{x:Bind ViewModel.SelectedService.ProviderType, Mode=OneWay, FallbackValue=OpenAI}" />
             <TextBlock
                 Margin="12,0,0,0"
                 VerticalAlignment="Center"
                 Style="{StaticResource BodyStrongTextBlockStyle}"
-                Text="{x:Bind ViewModel.SelectedService.Name, Mode=OneWay}" />
+                Text="{x:Bind ViewModel.SelectedService.Name, Mode=OneWay, FallbackValue=''}" />
             <Button
                 Margin="8,0,0,0"
                 VerticalAlignment="Center"
@@ -102,7 +102,7 @@
             Visibility="{x:Bind ViewModel.IsNoModel, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
             <ComboBox.ItemTemplate>
                 <DataTemplate x:DataType="aiVM:ChatModelItemViewModel">
-                    <TextBlock Text="{x:Bind Name}" />
+                    <TextBlock Text="{x:Bind Name, Mode=OneTime}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

@@ -20,79 +20,79 @@ public sealed partial class SettingsPageViewModel
     public partial bool IsRestartTipShown { get; set; }
 
     [ObservableProperty]
-    private ElementTheme _appTheme;
+    public partial ElementTheme AppTheme { get; set; }
 
     [ObservableProperty]
-    private string _appThemeText;
+    public partial string AppThemeText { get; set; }
 
     [ObservableProperty]
-    private bool _isTopNavShown;
+    public partial bool IsTopNavShown { get; set; }
 
     [ObservableProperty]
-    private bool _isAutoPlayNextRecommendVideo;
+    public partial bool IsAutoPlayNextRecommendVideo { get; set; }
 
     [ObservableProperty]
-    private PlayerDisplayMode _defaultPlayerDisplayMode;
+    public partial PlayerDisplayMode DefaultPlayerDisplayMode { get; set; }
 
     [ObservableProperty]
-    private bool _playNextWithoutTip;
+    public partial bool PlayNextWithoutTip { get; set; }
 
     [ObservableProperty]
-    private bool _endWithPlaylist;
+    public partial bool EndWithPlaylist { get; set; }
 
     [ObservableProperty]
-    private bool _isMpvCustomOptionVisible;
+    public partial bool IsMpvCustomOptionVisible { get; set; }
 
     [ObservableProperty]
-    private PreferCodecType _preferCodec;
+    public partial PreferCodecType PreferCodec { get; set; }
 
     [ObservableProperty]
-    private PreferQualityType _preferQuality;
+    public partial PreferQualityType PreferQuality { get; set; }
 
     [ObservableProperty]
-    private PreferDecodeType _preferDecode;
+    public partial PreferDecodeType PreferDecode { get; set; }
 
     [ObservableProperty]
-    private MTCBehavior _mTCBehavior;
+    public partial MTCBehavior MTCBehavior { get; set; }
 
     [ObservableProperty]
-    private bool _playerSpeedEnhancement;
+    public partial bool PlayerSpeedEnhancement { get; set; }
 
     [ObservableProperty]
-    private bool _globalPlayerSpeed;
+    public partial bool GlobalPlayerSpeed { get; set; }
 
     [ObservableProperty]
-    private string _packageVersion;
+    public partial string PackageVersion { get; set; }
 
     [ObservableProperty]
-    private string _copyright;
+    public partial string Copyright { get; set; }
 
     [ObservableProperty]
-    private bool _isCopyScreenshot;
+    public partial bool IsCopyScreenshot { get; set; }
 
     [ObservableProperty]
-    private bool _isOpenScreenshotFile;
+    public partial bool IsOpenScreenshotFile { get; set; }
 
     [ObservableProperty]
-    private bool _hideWhenCloseWindow;
+    public partial bool HideWhenCloseWindow { get; set; }
 
     [ObservableProperty]
-    private bool _isNotificationEnabled;
+    public partial bool IsNotificationEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isVideoMomentNotificationEnabled;
+    public partial bool IsVideoMomentNotificationEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _bottomProgressVisible;
+    public partial bool BottomProgressVisible { get; set; }
 
     [ObservableProperty]
-    private bool _noP2P;
+    public partial bool NoP2P { get; set; }
 
     /// <summary>
     /// 是否启用空降助手.
     /// </summary>
     [ObservableProperty]
-    private bool _isSponsorBlockEnabled = true;
+    public partial bool IsSponsorBlockEnabled { get; set; } = true;
 
     /// <summary>
     /// 是否在进度条上绘制片段标记.
@@ -101,79 +101,79 @@ public sealed partial class SettingsPageViewModel
     public partial bool IsSponsorBlockMarkerVisible { get; set; }
 
     [ObservableProperty]
-    private string _defaultDownloadPath;
+    public partial string DefaultDownloadPath { get; set; }
 
     [ObservableProperty]
-    private bool _downloadWithDanmaku;
+    public partial bool DownloadWithDanmaku { get; set; }
 
     [ObservableProperty]
-    private bool _openFolderAfterDownload;
+    public partial bool OpenFolderAfterDownload { get; set; }
 
     [ObservableProperty]
-    private bool _useExternalBBDown;
+    public partial bool UseExternalBBDown { get; set; }
 
     [ObservableProperty]
-    private bool _onlyCopyCommandWhenDownload;
+    public partial bool OnlyCopyCommandWhenDownload { get; set; }
 
     [ObservableProperty]
-    private bool _withoutCredentialWhenGenDownloadCommand;
+    public partial bool WithoutCredentialWhenGenDownloadCommand { get; set; }
 
     [ObservableProperty]
-    private bool _filterAISubtitle;
+    public partial bool FilterAISubtitle { get; set; }
 
     [ObservableProperty]
-    private bool _isAIStreamingResponse;
+    public partial bool IsAIStreamingResponse { get; set; }
 
     [ObservableProperty]
-    private bool _isWebDavEnabled;
+    public partial bool IsWebDavEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isWebDavEmpty;
+    public partial bool IsWebDavEmpty { get; set; }
 
     [ObservableProperty]
-    private List<PlayerDisplayMode> _playerDisplayModeCollection;
+    public partial List<PlayerDisplayMode> PlayerDisplayModeCollection { get; set; }
 
     [ObservableProperty]
-    private List<PreferCodecType> _preferCodecCollection;
+    public partial List<PreferCodecType> PreferCodecCollection { get; set; }
 
     [ObservableProperty]
-    private List<PreferQualityType> _preferQualityCollection;
+    public partial List<PreferQualityType> PreferQualityCollection { get; set; }
 
     [ObservableProperty]
-    private List<PreferDecodeType> _preferDecodeCollection;
+    public partial List<PreferDecodeType> PreferDecodeCollection { get; set; }
 
     [ObservableProperty]
-    private List<ExternalPlayerType> _externalPlayerTypeCollection;
+    public partial List<ExternalPlayerType> ExternalPlayerTypeCollection { get; set; }
 
     [ObservableProperty]
-    private List<MTCBehavior> _mTCBehaviorCollection;
+    public partial List<MTCBehavior> MTCBehaviorCollection { get; set; }
 
     [ObservableProperty]
-    private bool _useWebPlayerWhenLive;
+    public partial bool UseWebPlayerWhenLive { get; set; }
 
     [ObservableProperty]
-    private bool _showSearchRecommend;
+    public partial bool ShowSearchRecommend { get; set; }
 
     [ObservableProperty]
-    private bool _isPopularNavVisible;
+    public partial bool IsPopularNavVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isMomentNavVisible;
+    public partial bool IsMomentNavVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isVideoNavVisible;
+    public partial bool IsVideoNavVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isLiveNavVisible;
+    public partial bool IsLiveNavVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isAnimeNavVisible;
+    public partial bool IsAnimeNavVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isCinemaNavVisible;
+    public partial bool IsCinemaNavVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isArticleNavVisible;
+    public partial bool IsArticleNavVisible { get; set; }
 
     [ObservableProperty]
     public partial ScreenshotAction ScreenshotAction { get; set; }

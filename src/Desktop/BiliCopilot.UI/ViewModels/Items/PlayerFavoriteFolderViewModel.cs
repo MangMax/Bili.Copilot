@@ -12,7 +12,7 @@ namespace BiliCopilot.UI.ViewModels.Items;
 public sealed partial class PlayerFavoriteFolderViewModel : ViewModelBase<VideoFavoriteFolder>
 {
     [ObservableProperty]
-    private bool _isSelected;
+    public partial bool IsSelected { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFavoriteFolderViewModel"/> class.

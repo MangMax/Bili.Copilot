@@ -62,8 +62,8 @@
                     <StackPanel Margin="0,0,0,12">
                         <local:CommentItemControl
                             Margin="0,0,0,4"
-                            ShowMoreCommand="{x:Bind ViewModel.TopItem.ShowMoreCommand, Mode=OneWay}"
-                            ViewModel="{x:Bind ViewModel.TopItem.Data, Mode=OneWay}"
+                            ShowMoreCommand="{x:Bind ViewModel.TopItem.ShowMoreCommand, Mode=OneWay, FallbackValue={x:Null}}"
+                            ViewModel="{x:Bind ViewModel.TopItem.Data, Mode=OneWay, FallbackValue={x:Null}}"
                             Visibility="{x:Bind ViewModel.TopItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
                         <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.Comments, Mode=OneWay}">
                             <repeater:AppRepeater.ItemTemplate>
@@ -71,7 +71,7 @@
                                     <local:CommentItemControl
                                         Margin="0,2"
                                         ShowMoreCommand="{x:Bind ShowMoreCommand}"
-                                        ViewModel="{x:Bind Data}" />
+                                        ViewModel="{x:Bind Data, Mode=OneTime}" />
                                 </DataTemplate>
                             </repeater:AppRepeater.ItemTemplate>
                         </repeater:AppRepeater>

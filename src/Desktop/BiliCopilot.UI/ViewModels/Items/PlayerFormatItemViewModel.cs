@@ -13,7 +13,7 @@ namespace BiliCopilot.UI.ViewModels.Items;
 public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFormatInformation>
 {
     [ObservableProperty]
-    private bool _isEnabled;
+    public partial bool IsEnabled { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFormatItemViewModel"/> class.

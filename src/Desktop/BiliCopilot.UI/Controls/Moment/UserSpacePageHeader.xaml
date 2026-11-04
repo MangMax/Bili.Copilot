@@ -50,13 +50,13 @@
                                             VerticalAlignment="Top"
                                             CornerRadius="24"
                                             DecodeWidth="100"
-                                            Source="{x:Bind ViewModel.Card.Profile.User.Avatar.SourceUri, Mode=OneWay}" />
+                                            Source="{x:Bind ViewModel.Card.Profile.User.Avatar.SourceUri, Mode=OneWay, FallbackValue={x:Null}}" />
                                         <Image
                                             Width="16"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Bottom"
                                             Source="ms-appx:///Assets/vip.png"
-                                            Visibility="{x:Bind ViewModel.Card.Profile.IsVip, Mode=OneWay}" />
+                                            Visibility="{x:Bind ViewModel.Card.Profile.IsVip, Mode=OneWay, FallbackValue=Collapsed}" />
                                     </Grid>
 
                                     <Grid Grid.Column="1" ColumnSpacing="8">
@@ -69,7 +69,7 @@
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Style="{StaticResource BodyStrongTextBlockStyle}"
-                                                Text="{x:Bind ViewModel.Card.Community.FansCount, Mode=OneWay, Converter={StaticResource CountConverter}}" />
+                                                Text="{x:Bind ViewModel.Card.Community.FansCount, Mode=OneWay, Converter={StaticResource CountConverter}, FallbackValue=0}" />
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -82,7 +82,7 @@
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Style="{StaticResource BodyStrongTextBlockStyle}"
-                                                Text="{x:Bind ViewModel.Card.Community.FollowCount, Mode=OneWay, Converter={StaticResource CountConverter}}" />
+                                                Text="{x:Bind ViewModel.Card.Community.FollowCount, Mode=OneWay, Converter={StaticResource CountConverter}, FallbackValue=0}" />
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -95,7 +95,7 @@
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Style="{StaticResource BodyStrongTextBlockStyle}"
-                                                Text="{x:Bind ViewModel.Card.Community.LikeCount, Mode=OneWay, Converter={StaticResource CountConverter}}" />
+                                                Text="{x:Bind ViewModel.Card.Community.LikeCount, Mode=OneWay, Converter={StaticResource CountConverter}, FallbackValue=0}" />
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -108,11 +108,11 @@
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Style="{StaticResource BodyStrongTextBlockStyle}"
-                                            Text="{x:Bind ViewModel.Card.Profile.User.Name, Mode=OneWay}" />
+                                            Text="{x:Bind ViewModel.Card.Profile.User.Name, Mode=OneWay, FallbackValue=''}" />
                                         <Image
                                             Height="12"
                                             VerticalAlignment="Center"
-                                            Source="{x:Bind ViewModel.Card.Profile.Level, Mode=OneWay, Converter={StaticResource LevelImageConverter}}" />
+                                            Source="{x:Bind ViewModel.Card.Profile.Level, Mode=OneWay, Converter={StaticResource LevelImageConverter}, FallbackValue={x:Null}}" />
                                         <Border
                                             Padding="4,2"
                                             VerticalAlignment="Center"
@@ -122,7 +122,7 @@
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                 IsTextSelectionEnabled="True"
                                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                                Text="{x:Bind ViewModel.Card.Profile.User.Id, Mode=OneWay}" />
+                                                Text="{x:Bind ViewModel.Card.Profile.User.Id, Mode=OneWay, FallbackValue=''}" />
                                         </Border>
                                     </StackPanel>
                                     <base:TrimTextBlock
@@ -130,7 +130,7 @@
                                         FontSize="12"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                         MaxLines="2"
-                                        Text="{x:Bind ViewModel.Card.Profile.Introduce, Mode=OneWay}" />
+                                        Text="{x:Bind ViewModel.Card.Profile.Introduce, Mode=OneWay, FallbackValue=''}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">

@@ -22,13 +22,13 @@ public sealed partial class LivePartitionDetailViewModel
     private bool _preventLoadMore;
 
     [ObservableProperty]
-    private List<LiveTag>? _children;
+    public partial List<LiveTag>? Children { get; set; }
 
     [ObservableProperty]
-    private bool _isLiveLoading;
+    public partial bool IsLiveLoading { get; set; }
 
     [ObservableProperty]
-    private LiveTag _currentTag;
+    public partial LiveTag CurrentTag { get; set; }
 
     /// <summary>
     /// 初始化完成.

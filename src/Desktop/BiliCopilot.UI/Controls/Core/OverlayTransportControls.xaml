@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <local:PlayerControlBase
     x:Class="BiliCopilot.UI.Controls.Core.OverlayTransportControls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -59,7 +59,7 @@
             <UserControl
                 Grid.Column="1"
                 VerticalAlignment="Center"
-                IsEnabled="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}">
+                IsEnabled="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}, FallbackValue=False}">
                 <StackPanel Orientation="Horizontal">
                     <Button
                         x:Name="PrevButton"
@@ -245,7 +245,7 @@
                         SmallChange="1"
                         TickFrequency="1"
                         ValueChanged="OnVolumeValueChanged"
-                        Value="{x:Bind ViewModel.Player.Volume, Mode=OneWay}" />
+                        Value="{x:Bind ViewModel.Player.Volume, Mode=OneWay, FallbackValue=0}" />
                 </StackPanel>
                 <Button
                     x:Name="SlimVolumeButton"
@@ -309,7 +309,7 @@
                                     SmallChange="1"
                                     TickFrequency="1"
                                     ValueChanged="OnVolumeValueChanged"
-                                    Value="{x:Bind ViewModel.Player.Volume, Mode=OneWay}" />
+                                    Value="{x:Bind ViewModel.Player.Volume, Mode=OneWay, FallbackValue=0}" />
                             </StackPanel>
                         </Flyout>
                     </Button.Flyout>
@@ -417,7 +417,7 @@
                                     SmallChange="0.05"
                                     StepFrequency="0.05"
                                     ValueChanged="OnSpeedValueChanged"
-                                    Value="{x:Bind ViewModel.Player.PlaybackRate, Mode=OneWay}" />
+                                    Value="{x:Bind ViewModel.Player.PlaybackRate, Mode=OneWay, FallbackValue=1}" />
                             </StackPanel>
                         </Flyout>
                     </Button.Flyout>
@@ -741,7 +741,7 @@
                         Content="弹"
                         FontSize="12"
                         FontWeight="Black"
-                        IsChecked="{x:Bind ViewModel.Danmaku.IsShowDanmaku, Mode=TwoWay}"
+                        IsChecked="{x:Bind ViewModel.Danmaku.IsShowDanmaku, Mode=TwoWay, FallbackValue=False}"
                         IsEnabled="{x:Bind ViewModel.IsDanmakuLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
                         Style="{StaticResource TogglePlayerIconButtonStyle}"
                         ToolTipService.ToolTip="{ext:Locale Name=DanmakuSwitch}" />
@@ -853,7 +853,7 @@
                 Margin="0,0,4,0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
-                IsEnabled="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                IsEnabled="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}, FallbackValue=False}"
                 ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
             <TextBlock
                 Grid.Column="2"
@@ -871,7 +871,7 @@
             IsLightDismissEnabled="True"
             IsOpen="{x:Bind ViewModel.IsDanmakuOptionsVisible, Mode=TwoWay}"
             PreferredPlacement="TopLeft"
-            Target="{x:Bind DanmakuOptionButton}">
+            Target="{x:Bind DanmakuOptionButton, Mode=OneTime}">
             <danmaku:DanmakuDisplayOptions ViewModel="{x:Bind ViewModel.Danmaku, Mode=OneWay}" />
         </TeachingTip>
 

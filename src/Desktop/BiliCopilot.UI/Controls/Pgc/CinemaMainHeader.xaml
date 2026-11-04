@@ -33,7 +33,7 @@
             <TextBlock
                 VerticalAlignment="Center"
                 Style="{StaticResource BodyStrongTextBlockStyle}"
-                Text="{x:Bind ViewModel.SelectedSection.SectionType, Converter={StaticResource SectionTextConverter}, Mode=OneWay}" />
+                Text="{x:Bind ViewModel.SelectedSection.SectionType, Converter={StaticResource SectionTextConverter}, Mode=OneWay, FallbackValue=''}" />
             <TextBlock
                 VerticalAlignment="Center"
                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -63,7 +63,7 @@
             Padding="12,8"
             VerticalAlignment="Center"
             AutomationProperties.Name="{ext:Locale Name=Refresh}"
-            Command="{x:Bind ViewModel.SelectedSection.RefreshCommand, Mode=OneWay}"
+            Command="{x:Bind ViewModel.SelectedSection.RefreshCommand, Mode=OneWay, FallbackValue={x:Null}}"
             ToolTipService.ToolTip="{ext:Locale Name=Refresh}">
             <ic:SymbolIcon
                 FontSize="14"

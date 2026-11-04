@@ -47,7 +47,7 @@
             IsLightDismissEnabled="True"
             PreferredPlacement="Top"
             Subtitle="{ext:Locale Name=CoinTip}"
-            Target="{x:Bind Btn}">
+            Target="{x:Bind Btn, Mode=OneTime}">
             <TeachingTip.Content>
                 <CheckBox Content="{ext:Locale Name=AlsoLike}" IsChecked="{x:Bind AlsoLike, Mode=TwoWay}" />
             </TeachingTip.Content>

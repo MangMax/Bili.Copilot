@@ -16,4 +16,4 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 
 ### WinUI analyzer
 
-Opt-in observation build for `Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer`: baseline (427 warnings), SARIF output, and the order for tightening it into a blocking check. See `docs/agents/winui-analyzer.md`.
+Blocking WinUI analyzer (`Microsoft.Windows.SDK.BuildTools.WinUIAnalyzer`) in the default build: baseline 0 warnings (only note-level rules left), SARIF output via the observation switch, false-positive policy, and the rollback path. See `docs/agents/winui-analyzer.md`.

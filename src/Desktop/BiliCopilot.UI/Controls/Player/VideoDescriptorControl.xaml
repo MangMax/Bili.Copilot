@@ -29,10 +29,10 @@
                 <DataTemplate x:DataType="app:BiliTag">
                     <Button
                         Padding="6,4"
-                        AutomationProperties.Name="{x:Bind Name}"
+                        AutomationProperties.Name="{x:Bind Name, Mode=OneTime}"
                         Background="Transparent"
                         Click="OnTagButtonClick"
-                        Content="{x:Bind Name}"
+                        Content="{x:Bind Name, Mode=OneTime}"
                         FontSize="11" />
                 </DataTemplate>
             </repeater:AppRepeater.ItemTemplate>
@@ -46,7 +46,7 @@
             CornerRadius="{StaticResource ControlCornerRadius}"
             Visibility="{x:Bind ViewModel.Description, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
             <components:TimestampTextBlock
-                SeekCommand="{x:Bind ViewModel.Parent.SeekToTimestampCommand, Mode=OneWay}"
+                SeekCommand="{x:Bind ViewModel.Parent.SeekToTimestampCommand, Mode=OneWay, FallbackValue={x:Null}}"
                 Text="{x:Bind ViewModel.Description, Mode=OneWay}" />
         </Grid>
     </StackPanel>

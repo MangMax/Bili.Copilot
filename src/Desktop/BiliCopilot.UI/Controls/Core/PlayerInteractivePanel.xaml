@@ -357,7 +357,7 @@
             VerticalAlignment="Stretch"
             Fill="Transparent" />
 
-        <Border Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+        <Border Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Collapsed}">
             <Border Visibility="{x:Bind ViewModel.IsControlsVisible, Mode=OneWay}">
                 <Button
                     Margin="0,0,16,0"

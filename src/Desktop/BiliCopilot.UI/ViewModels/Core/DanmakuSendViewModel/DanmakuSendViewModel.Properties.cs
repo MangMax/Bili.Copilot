@@ -18,16 +18,16 @@ public sealed partial class DanmakuSendViewModel
     private string _cid;
 
     [ObservableProperty]
-    private bool _isStandardSize;
+    public partial bool IsStandardSize { get; set; }
 
     [ObservableProperty]
-    private DanmakuLocation _location;
+    public partial DanmakuLocation Location { get; set; }
 
     [ObservableProperty]
-    private Color _color;
+    public partial Color Color { get; set; }
 
     [ObservableProperty]
-    private List<DanmakuLocation> _locations;
+    public partial List<DanmakuLocation> Locations { get; set; }
 
     public ObservableCollection<Color> Colors { get; } = [];
 }
