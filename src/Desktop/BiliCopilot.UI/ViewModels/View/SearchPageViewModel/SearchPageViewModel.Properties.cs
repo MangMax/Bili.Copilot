@@ -12,6 +12,8 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class SearchPageViewModel
 {
+    private readonly Guid _pageId = Guid.NewGuid();
+    private long _searchGeneration;
     private readonly ISearchService _service;
     private readonly ILogger<SearchPageViewModel> _logger;
 
