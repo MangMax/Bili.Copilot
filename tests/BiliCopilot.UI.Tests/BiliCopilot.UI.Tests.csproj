@@ -135,4 +135,16 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/PinContentType.cs" Link="UserSpace/PinContentType.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/MomentCardStyle.cs" Link="UserSpace/MomentCardStyle.cs" />
   </ItemGroup>
+  <!-- Opt-in red investigation suite for #124. -->
+  <PropertyGroup Condition="'$(SearchRecoveryInvestigation)' == 'true'">
+    <DefineConstants>$(DefineConstants);SEARCH_RECOVERY_INVESTIGATION</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(SearchRecoveryInvestigation)' == 'true'">
+    <Compile Remove="NavigationFrameTests.cs;NavigationViewModelTests.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/Overlay/SearchPage.xaml.cs" Link="SearchRecovery/SearchPage.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/SearchPageViewModel/*.cs" Link="SearchRecovery/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/VideoSearchSectionDetailViewModel/*.cs" Link="SearchRecovery/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Items/ISearchSectionDetailViewModel.cs" Link="SearchRecovery/ISearchSectionDetailViewModel.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/SearchSectionType.cs" Link="SearchRecovery/SearchSectionType.cs" />
+  </ItemGroup>
 </Project>

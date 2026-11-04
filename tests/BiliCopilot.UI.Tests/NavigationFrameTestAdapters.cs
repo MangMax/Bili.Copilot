@@ -77,7 +77,9 @@ namespace BiliCopilot.UI.Pages.Overlay
     public sealed class FavoritesPage : NavigationTestPage { }
     public sealed class FollowsPage : NavigationTestPage { }
     public sealed class HistoryPage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
+#if !SEARCH_RECOVERY_INVESTIGATION
     public sealed class SearchPage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
+#endif
     public sealed class UserSpacePage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
     public sealed class ViewLaterPage : NavigationTestPage { }
 }
