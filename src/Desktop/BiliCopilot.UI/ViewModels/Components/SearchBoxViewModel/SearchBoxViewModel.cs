@@ -179,18 +179,43 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     [RelayCommand]
     private void Search(SearchSuggestItemViewModel vm)
     {
+        SubmitSearch(vm, BeginSubmission());
+    }
+
+    /// <summary>Record input before UI suppression or navigation can fail.</summary>
+    public Guid BeginSubmission()
+    {
+        var id = Guid.NewGuid();
+        RecordSubmission(id, "submitted");
+        return id;
+    }
+
+    internal void RecordSubmission(Guid id, string stage)
+    {
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("SearchSubmission {SubmissionId} {Stage}", id, stage);
+        }
+    }
+
+    /// <summary>Submit using the identity captured at the input event.</summary>
+    public void SubmitSearch(SearchSuggestItemViewModel vm, Guid submissionId)
+    {
+        RecordSubmission(submissionId, "command");
         var keyword = vm.Keyword;
         if (string.IsNullOrEmpty(keyword))
         {
+            RecordSubmission(submissionId, "empty");
             return;
         }
 
         if (string.IsNullOrEmpty(vm.RegionId) || vm.RegionId == "global")
         {
-            this.Get<NavigationViewModel>().Search(keyword);
+            this.Get<NavigationViewModel>().Search(keyword, submissionId);
         }
         else
         {
+            RecordSubmission(submissionId, "region");
             this.Get<NavigationViewModel>().SearchInRegion(keyword);
         }
     }

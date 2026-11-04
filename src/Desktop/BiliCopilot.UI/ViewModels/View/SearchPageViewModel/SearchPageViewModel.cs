@@ -36,8 +36,14 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         => nameof(SearchPage);
 
     [RelayCommand]
-    private async Task SearchAsync(string keyword)
+    private async Task SearchAsync(object parameter)
     {
+        var submission = parameter as SearchSubmission;
+        if (submission is not null && _logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("SearchSubmission {SubmissionId} page", submission.Id);
+        }
+        var keyword = submission?.Keyword ?? parameter as string;
         if (string.IsNullOrEmpty(keyword))
         {
             throw new ArgumentNullException(nameof(keyword));
@@ -76,6 +82,10 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         if (_logger.IsEnabled(LogLevel.Information))
         {
             _logger.LogInformation("Search {PageId} {QueryId} accepted", _pageId, generation);
+        }
+        if (submission is not null && _logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Search {PageId} {QueryId} submission {SubmissionId}", _pageId, generation, submission.Id);
         }
         Keyword = keyword;
         Sections = default;
