@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.Components;
+using BiliCopilot.UI.Toolkits;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -117,13 +118,6 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private void OnBudgetChanged(int budget) => SyncDisplayItems();
 
     /// <summary>
-    /// 列表为空时显示骨架，有数据就整体切换到卡片.
-    /// </summary>
-    /// <remarks>
-    /// 骨架和卡片是两个互斥的视图状态，不做逐格替换，也不垫在卡片下面，
-    /// 因此不会出现两层叠在一起，也不会因为骨架撑高 extent 而反复触发加载。
-    /// </remarks>
-    /// <summary>
     /// 让列表里的骨架逐格被真实卡片替换.
     /// </summary>
     /// <remarks>
@@ -143,29 +137,30 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         var videos = ViewModel?.Videos;
         var count = videos?.Count ?? 0;
 
-        // 增量刷新：本次新插到顶部的条目数，决定还有多少顶部占位要留着。
-        var inserted = Math.Max(0, count - _refreshBaselineCount);
-        var leading = _pendingRefreshCount > 0
-            ? Math.Max(0, _pendingRefreshCount - inserted)
-            : 0;
-        // 加载彻底失败时不再补骨架，让页面明确显示"没有内容"，而不是永远转圈.
-        var failed = ViewModel?.IsRecommendLoadFailed == true;
-        var tail = failed ? 0 : Math.Max(0, budget - leading - count);
+        // 增量刷新：Videos 头部是本次新插入的条目，尾部是刷新前的旧条目。
+        // 排布交给纯函数计算，便于单测覆盖「预留区高度恒定、新卡片从顶部往下填」。
+        var layout = RefreshSlotLayout.Compute(
+            count,
+            _refreshBaselineCount,
+            _pendingRefreshCount,
+            budget);
 
-        ApplyDesired(leading + count + tail, i =>
+        // 加载彻底失败时不再补尾巴骨架，页面明确呈现“没有内容”，而不是永远转圈.
+        if (ViewModel?.IsRecommendLoadFailed == true)
         {
-            if (i < leading)
-            {
-                return null;
-            }
+            layout = RefreshSlotLayout.Compute(count, _refreshBaselineCount, _pendingRefreshCount, 0);
+        }
 
-            var videoIndex = i - leading;
-            return videoIndex < count ? videos![videoIndex] : null;
+        ApplyDesired(layout.TotalCount, i =>
+        {
+            var videoIndex = layout.VideoIndexAt(i);
+            return videoIndex < 0 ? null : videos![videoIndex];
         });
 
         View.ItemCount = count;
         // 还有骨架占位时只按预算判断是否续页，避免 extent 被骨架撑满后无限预取。
-        View.ExtentFallbackEnabled = leading == 0 && tail == 0;
+        var hasPlaceholders = layout.Remaining > 0 || layout.TailCount > 0;
+        View.ExtentFallbackEnabled = !hasPlaceholders;
     }
 
     /// <summary>

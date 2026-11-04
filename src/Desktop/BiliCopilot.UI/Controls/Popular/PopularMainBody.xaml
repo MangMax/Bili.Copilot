@@ -59,6 +59,6 @@
         </controls:IncrementVerticalScrollControl>
         <base:LoadingWidget
             Text="{ext:Locale Name=LoadingAndWait}"
-            Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}" />
+            Visibility="{x:Bind ViewModel.IsPageLoading, Mode=OneWay}" />
     </Grid>
 </local:PopularPageControlBase>

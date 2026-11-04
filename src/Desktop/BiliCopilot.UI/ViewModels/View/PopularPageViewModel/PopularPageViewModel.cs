@@ -146,6 +146,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
 
         IsVideoLoading = true;
+        IsPageLoading = Videos.Count == 0;
         var version = _sectionVersion;
         var previousCount = Videos.Count;
         if (SelectedSection is PopularSectionItemViewModel section)
@@ -176,6 +177,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         // 必须先复位再通知：列表更新会立刻触发「还差多少」的检查，
         // 如果复位被排到低优先级队列，检查会排在它前面、被自己挡掉，首屏永远停在第一页。
         IsVideoLoading = false;
+        IsPageLoading = false;
 
         if (Videos.Count > previousCount)
         {

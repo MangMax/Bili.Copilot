@@ -38,6 +38,16 @@ public sealed partial class PopularPageViewModel
     /// </remarks>
     [ObservableProperty]
     private bool _isRecommendLoadFailed;
+
+    /// <summary>
+    /// 是否应该显示整页加载遮罩.
+    /// </summary>
+    /// <remarks>
+    /// 只有列表还空着（首屏）才需要整页遮罩；后续补页、刷新都不该让遮罩重新盖住已有内容，
+    /// 否则用户会看到内容整块闪一下.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _isPageLoading;
     // 当前列表实际使用的推荐流来源；设置变更后要等到下一次刷新才切换，避免同一条列表混源。
     private IRecommendFeedSource? _feedSource;
     private RecommendFeedSource _feedSourceKind;
