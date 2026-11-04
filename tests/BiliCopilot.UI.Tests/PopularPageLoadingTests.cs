@@ -107,6 +107,45 @@ public sealed class PopularPageLoadingTests
         await initialization;
     }
 
+    [Fact]
+    public async Task IncrementalRefreshKeepsEarlierPagesWhereTheyLanded()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("saved")], 1));
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal("saved", Assert.Single(page.Videos).Data.BvId);
+
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        try
+        {
+            // 刷新目标 6 条，每页 3 条：两页先后到达。
+            page.RefreshTargetCount = 6;
+            var batches = new[]
+            {
+                new[] { Video("a-1"), Video("a-2"), Video("a-3") },
+                new[] { Video("b-1"), Video("b-2"), Video("b-3") },
+            };
+            var index = 0;
+            service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+                (batches[Math.Min(index++, batches.Length - 1)], index));
+
+            await page.RefreshVideoCommand.ExecuteAsync(null);
+            PageTestServices.Dispatcher.Drain();
+
+            // 先到的页必须留在原位，后到的页接在它后面，而不是把前一页顶下去。
+            Assert.Equal(
+                new[] { "a-1", "a-2", "a-3", "b-1", "b-2", "b-3" },
+                page.Videos.Take(6).Select(v => v.Data.BvId));
+        }
+        finally
+        {
+            SettingsToolkit.IncrementalRecommendRefresh = false;
+        }
+    }
+
     private static PopularPageViewModel CreatePage(DiscoveryService service, string savedSection)
     {
         SettingsToolkit.LastSection = savedSection;

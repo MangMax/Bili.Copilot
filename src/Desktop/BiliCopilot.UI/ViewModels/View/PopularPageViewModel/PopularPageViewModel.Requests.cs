@@ -84,7 +84,9 @@ public sealed partial class PopularPageViewModel
                     }
                 }
 
-                applied += ApplyRefreshPage(page, isIncremental);
+                // 新页接在已插入的新条目后面，保持「先到的先显示」：
+                // 否则后一页会插到前一页前面，用户看到的是旧卡片被一页一页往下顶。
+                applied += ApplyRefreshPage(page, isIncremental, applied);
                 VideoListUpdated?.Invoke(this, EventArgs.Empty);
             });
 
@@ -168,8 +170,9 @@ public sealed partial class PopularPageViewModel
     /// </summary>
     /// <param name="page">本页视频，已按资源 Id 去重.</param>
     /// <param name="isIncremental">增量刷新把新条目插到顶部，替换刷新直接追加.</param>
+    /// <param name="insertAt">增量刷新时的插入位置，等于本次刷新已经插入的条数.</param>
     /// <returns>真正加入列表的条数.</returns>
-    private int ApplyRefreshPage(IReadOnlyList<VideoInformation> page, bool isIncremental)
+    private int ApplyRefreshPage(IReadOnlyList<VideoInformation> page, bool isIncremental, int insertAt)
     {
         if (!isIncremental)
         {
@@ -182,17 +185,17 @@ public sealed partial class PopularPageViewModel
         }
 
         var existing = new HashSet<string>(Videos.Select(p => p.Data.Identifier.Id), StringComparer.Ordinal);
+        var index = insertAt;
         var added = 0;
-        // 倒序插入才能保持本页的原始顺序。
-        for (var i = page.Count - 1; i >= 0; i--)
+        // 正序插入，本页顺序保持原样，且接在上一页之后。
+        foreach (var video in page)
         {
-            var video = page[i];
             if (!existing.Add(video.Identifier.Id))
             {
                 continue;
             }
 
-            Videos.Insert(0, new VideoItemViewModel(video, VideoCardStyle.Recommend));
+            Videos.Insert(index++, new VideoItemViewModel(video, VideoCardStyle.Recommend));
             added++;
         }
 
