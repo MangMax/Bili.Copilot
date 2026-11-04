@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using static BiliCopilot.UI.Tests.ArticleReaderFixture;
+
 using Richasy.BiliKernel.Models.Article;
 
 namespace BiliCopilot.UI.Tests;

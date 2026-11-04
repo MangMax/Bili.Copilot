@@ -17,6 +17,8 @@ using Richasy.BiliKernel.Services.Article;
 using System.Net;
 using System.Text;
 
+using static BiliCopilot.UI.Tests.ArticleReaderFixture;
+
 namespace BiliCopilot.UI.Tests;
 
 /// <summary>
@@ -349,40 +351,6 @@ public sealed partial class ArticleReaderLatestWinsTests
             NullLogger<ArticleReaderPageViewModel>.Instance,
             new CommentMainViewModel(),
             new AIViewModel());
-
-    private static ArticleDetail Detail(ArticleIdentifier identifier, bool? liked = false, bool? favorited = false)
-    {
-        var id = identifier.Id!;
-        var user = new UserProfile(id, $"Author {id}", new BiliImage(new Uri($"https://example.invalid/{id}.png")));
-        var card = new UserCard(new UserDetailProfile(user), new UserCommunityInformation(id));
-        return new ArticleDetail(
-            identifier,
-            card,
-            new ArticleCommunityInformation(id),
-            $"<p>{id}</p>",
-            DateTimeOffset.UnixEpoch,
-            [],
-            liked,
-            favorited);
-    }
-
-    private sealed class Operation : IArticleOperationService
-    {
-        public List<bool> Likes { get; } = [];
-        public List<bool> Favorites { get; } = [];
-
-        public Task ToggleLikeAsync(ArticleIdentifier article, bool isLike, CancellationToken cancellationToken = default)
-        {
-            Likes.Add(isLike);
-            return Task.CompletedTask;
-        }
-
-        public Task ToggleFavoriteAsync(ArticleIdentifier article, bool isFavorite, CancellationToken cancellationToken = default)
-        {
-            Favorites.Add(isFavorite);
-            return Task.CompletedTask;
-        }
-    }
 
     private sealed class Discovery : IArticleDiscoveryService
     {

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
@@ -134,5 +134,8 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/PinItem.cs" Link="UserSpace/PinItem.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/PinContentType.cs" Link="UserSpace/PinContentType.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/MomentCardStyle.cs" Link="UserSpace/MomentCardStyle.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/Article/ArticleReader.Content.cs" Link="Article/ArticleReader.Content.cs" />
   </ItemGroup>
 </Project>
