@@ -134,8 +134,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         {
             if (generation == _searchGeneration && ex is not OperationCanceledException)
             {
-                SearchErrorMessage = ResourceToolkit.GetLocalizedString(ex is SearchVerificationRequiredException
-                    ? StringNames.SearchVerificationRequired : StringNames.SearchFailed);
+                SetSearchError(ex);
             }
             var outcome = ex is SearchVerificationRequiredException ? "verification" : ex is OperationCanceledException ? "cancelled" : ex is HttpRequestException ? "network" : "failure";
             // Never attach the exception: its message/stack may include the query, response or credentials.
@@ -194,11 +193,23 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 
     private VideoSearchSectionDetailViewModel CreateVideoSection(string keyword, IReadOnlyList<VideoInformation> videos, int? page)
     {
+        var generation = _searchGeneration;
         var newSection = new VideoSearchSectionDetailViewModel(_service);
+        newSection.LoadFailed += (sender, error) =>
+        {
+            if (generation == _searchGeneration && ReferenceEquals(SelectedSection, sender) && error is not OperationCanceledException)
+            {
+                SetSearchError(error);
+            }
+        };
         newSection.Initialize(keyword, new SearchPartition(0, ResourceToolkit.GetLocalizedString(StringNames.Video)));
         newSection.SetFirstPageData(videos, page);
         return newSection;
     }
+
+    private void SetSearchError(Exception error)
+        => SearchErrorMessage = ResourceToolkit.GetLocalizedString(error is SearchVerificationRequiredException
+            ? StringNames.SearchVerificationRequired : StringNames.SearchFailed);
 
     private ISearchSectionDetailViewModel CreateSection(string keyword, SearchSectionType type)
     {

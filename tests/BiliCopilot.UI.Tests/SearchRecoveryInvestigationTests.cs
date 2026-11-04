@@ -387,6 +387,66 @@ public sealed class SearchRecoveryInvestigationTests : IDisposable
     }
 
     [Fact]
+    public async Task EmptySectionRefreshVerificationPublishesPageErrorAndAllowsRetry()
+    {
+        Submit("query-a");
+        await Complete(0, empty: true);
+        await VideoSection.RefreshCommand.ExecuteAsync(null);
+        _dispatcher.Drain();
+        Assert.Equal(2, _service.Requests.Count);
+        _service.Requests[1].Completion.SetException(new SearchVerificationRequiredException());
+        _dispatcher.Drain();
+        Assert.True(_model.HasSearchError);
+        Assert.Equal("SearchVerificationRequired", _model.SearchErrorMessage);
+        Assert.True(_model.RetryCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task OldSectionRefreshVerificationCannotReplaceNewQueryResults()
+    {
+        Submit("query-a");
+        await Complete(0, empty: true);
+        await VideoSection.RefreshCommand.ExecuteAsync(null);
+        _dispatcher.Drain();
+        Submit("query-b");
+        await Complete(2);
+        _service.Requests[1].Completion.SetException(new SearchVerificationRequiredException());
+        _dispatcher.Drain();
+        Assert.False(_model.HasSearchError);
+        Assert.Single(VideoSection.Items);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PaginationOrSortVerificationPublishesPageError(bool sort)
+    {
+        Submit("query-a");
+        var firstLoad = _model.SearchCommand.ExecutionTask!;
+        _service.Requests[0].Completion.SetResult(([new VideoInformation(new MediaIdentifier("42", null, null), default!)], 2));
+        await firstLoad;
+        _dispatcher.Drain();
+        var section = VideoSection;
+        Task loading = Task.CompletedTask;
+        if (sort)
+        {
+            section.ChangeSortTypeCommand.Execute(ComprehensiveSearchSortType.Newest);
+            _dispatcher.Drain();
+        }
+        else
+        {
+            loading = section.LoadItemsCommand.ExecuteAsync(null);
+        }
+
+        Assert.Equal(2, _service.Requests.Count);
+        _service.Requests[1].Completion.SetException(new SearchVerificationRequiredException());
+        await loading;
+        _dispatcher.Drain();
+        Assert.True(_model.HasSearchError);
+        Assert.Equal("SearchVerificationRequired", _model.SearchErrorMessage);
+    }
+
+    [Fact]
     public async Task CloseAndReopenSearchConstructsPageAndDifferentKeywordRecovers()
     {
         var original = Submit("query-a");

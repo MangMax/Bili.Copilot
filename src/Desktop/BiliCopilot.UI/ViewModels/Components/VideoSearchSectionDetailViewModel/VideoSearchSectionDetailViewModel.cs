@@ -29,6 +29,11 @@ public sealed partial class VideoSearchSectionDetailViewModel : ViewModelBase, I
         Sorts = [.. Enum.GetValues<ComprehensiveSearchSortType>()];
     }
 
+    /// <summary>
+    /// Raised when a refresh, sort or pagination request fails.
+    /// </summary>
+    public event EventHandler<Exception>? LoadFailed;
+
     /// <inheritdoc/>
     public void Initialize(string keyword, SearchPartition partition)
     {
@@ -107,7 +112,8 @@ public sealed partial class VideoSearchSectionDetailViewModel : ViewModelBase, I
         catch (Exception ex)
         {
             _isPreventLoadMore = true;
-            _logger.LogError(ex, "加载视频搜索结果时出错.");
+            _logger.LogWarning("Search section request failed: {Outcome}", ex is SearchVerificationRequiredException ? "verification" : "failure");
+            LoadFailed?.Invoke(this, ex);
         }
         finally
         {
