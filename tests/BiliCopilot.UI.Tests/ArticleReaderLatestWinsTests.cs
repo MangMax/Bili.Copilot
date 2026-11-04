@@ -23,7 +23,7 @@ namespace BiliCopilot.UI.Tests;
 /// 阅读器视图模型是单例：连续打开不同文章时，第二次点击不能被正在进行的
 /// 第一次加载挡掉，旧响应也不能覆盖新文章的标题、作者、正文或加载态。
 /// </summary>
-public sealed class ArticleReaderLatestWinsTests
+public sealed partial class ArticleReaderLatestWinsTests
 {
     [Theory]
     [InlineData(null)]

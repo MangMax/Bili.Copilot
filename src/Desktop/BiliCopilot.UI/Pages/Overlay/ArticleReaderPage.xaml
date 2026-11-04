@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <local:ArticleReaderPageBase
     x:Class="BiliCopilot.UI.Pages.Overlay.ArticleReaderPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -19,12 +19,29 @@
         <article:ArticleReader
             x:Name="Reader"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
+            VerticalAlignment="Stretch"
+            Visibility="{x:Bind ViewModel.HasContent, Mode=OneWay}" />
         <article:ArticleReaderToolBar
             Margin="12"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+            Visibility="{x:Bind ViewModel.HasContent, Mode=OneWay}" />
+        <InfoBar
+            AutomationProperties.AutomationId="ArticleLoadFailure"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsClosable="False"
+            IsOpen="{x:Bind ViewModel.HasLoadFailed, Mode=OneWay}"
+            Message="{ext:Locale Name=ArticleLoadFailed}"
+            Severity="Error">
+            <InfoBar.ActionButton>
+                <Button
+                    AutomationProperties.AutomationId="ArticleRetryButton"
+                    AutomationProperties.Name="{ext:Locale Name=ArticleRetry}"
+                    Command="{x:Bind ViewModel.RetryCommand, Mode=OneWay}"
+                    Content="{ext:Locale Name=ArticleRetry}" />
+            </InfoBar.ActionButton>
+        </InfoBar>
         <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
         <comment:CommentOverlayPanel IsPanelOpened="{x:Bind ViewModel.IsCommentsOpened, Mode=TwoWay}" ViewModel="{x:Bind ViewModel.CommentModule, Mode=OneWay}" />
         <ai:AIOverlayPanel IsPanelOpened="{x:Bind ViewModel.IsAIOverlayOpened, Mode=TwoWay}" ViewModel="{x:Bind ViewModel.AI, Mode=OneWay}" />

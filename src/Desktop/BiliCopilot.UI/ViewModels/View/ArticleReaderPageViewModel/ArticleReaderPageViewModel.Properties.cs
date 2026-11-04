@@ -32,7 +32,18 @@ public sealed partial class ArticleReaderPageViewModel
     private CancellationTokenSource? _contentCancellation;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RetryCommand))]
     public partial bool IsLoading { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RetryCommand))]
+    public partial bool HasLoadFailed { get; set; }
+
+    [ObservableProperty]
+    public partial bool HasContent { get; set; }
+
+    /// <summary>重试把页面拥有的加载代次从旧代更新为新代.</summary>
+    public event Action<int, int>? LoadRetried;
 
     [ObservableProperty]
     public partial string Title { get; set; }

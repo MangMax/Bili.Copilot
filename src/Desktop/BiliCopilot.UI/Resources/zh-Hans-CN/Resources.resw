@@ -3315,4 +3315,10 @@
   <data name="ArticleFavoriteStateUnknown" xml:space="preserve">
     <value>收藏状态未知，暂时无法收藏或取消收藏</value>
   </data>
+  <data name="ArticleLoadFailed" xml:space="preserve">
+    <value>文章加载失败，请检查网络后重试。</value>
+  </data>
+  <data name="ArticleRetry" xml:space="preserve">
+    <value>重试加载文章</value>
+  </data>
 </root>
