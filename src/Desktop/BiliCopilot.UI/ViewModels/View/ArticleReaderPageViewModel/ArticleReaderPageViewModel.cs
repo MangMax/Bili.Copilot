@@ -85,7 +85,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
             if (IsCurrentLoad(generation))
             {
                 HasLoadFailed = true;
-                _logger.LogError(ex, "加载文章内容时失败");
+                _logger.LogError(ex, "加载文章内容时失败 (ArticleId: {ArticleId}, LoadGeneration: {LoadGeneration})", article.Id, generation);
             }
         }
         finally
