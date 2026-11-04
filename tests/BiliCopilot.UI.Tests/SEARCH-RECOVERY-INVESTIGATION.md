@@ -1,36 +1,33 @@
-# Search recovery investigation (#124, spec #123)
+# Search recovery regression (#125, spec #123)
 
-This is an opt-in investigation, not the #125 fix. Production files are unchanged.
-The full report stays outside the repository:
-`C:/Users/hp/.t3/userdata/search-spec-123/investigation.md`.
-
-Run from repository root (pinned .NET 11 preview SDK, VSTest/xUnit v2):
+The #124 baseline on integration tip `60f1c74646e0ca88a059942a7b83b27b507c0a49`
+was 7 passed / 2 failed: same-keyword empty retry and late empty response ownership.
+#125 turns these into passing regressions and extends the lifecycle/concurrency coverage.
 
 ```powershell
-dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj -p:SearchRecoveryInvestigation=true --filter FullyQualifiedName~SearchRecoveryInvestigationTests
+dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj -p:SearchRecoveryRegression=true --filter FullyQualifiedName~SearchRecoveryInvestigationTests
 ```
 
-Expected investigation baseline: **Passed: 7, Failed: 2, Skipped: 0**.
-The two `InvestigationRed` cases intentionally assert spec behavior and fail on
-unchanged production code. Hand them to #125 to turn green; do not mark skipped:
+Expected: 21 passed, 0 failed, 0 skipped. The old `SearchRecoveryInvestigation=true`
+switch remains an alias. No intentional red/skip tests remain. Rebuild when switching
+modes: `--no-build` can otherwise run the previous mode's assembly.
 
-- `Investigation_CompletedEmptyAllowsExplicitSameKeywordRetry`: expected two service requests, actual one.
-- `Investigation_LateEmptyResponseMustNotOverwriteNewKeywordVideo`: B's video disappears when older A completes empty.
+This opt-in mode links production SearchBoxViewModel, NavigationViewModel, OverlayFrame,
+page factory, SearchPage, SearchPageViewModel, video and PGC section commands. Controlled
+ISearchService responses prove request identity, empty/error recovery, stale publication,
+latest loading, close/reopen, video paging/refresh and lazy PGC query snapshots. Live,
+user and article sections remain inert adapters; they throw if loaded. Windows lifecycle,
+dispatcher, card presentation, localization and playback remain adapted.
 
-`CompletedEmptyThenDifferentKeywordPublishesNewVideoOnReusedPage` passes.
-`LateEmptyOverwriteDoesNotPermanentlyBlockAnotherDifferentKeyword` also passes.
-Neither same-keyword deduplication nor the reproduced race establishes the reported
-persistent failure for every subsequent different keyword.
+NavigationFrameTests and NavigationViewModelTests need their existing SearchPage stub;
+they are excluded only in this mode. Run them separately without the switch, alongside
+SearchSuggestionTests and PopularPageLoadingTests. No shared test adapter redesign.
 
-The opt-in build replaces the existing fake SearchPage with the **linked production**
-SearchPage, SearchPageViewModel and video section, retaining real SearchBoxViewModel,
-NavigationViewModel, OverlayFrame and page factory. The two old navigation test classes
-require their original fake SearchPage and are excluded only in this opt-in build;
-run them in the default build. Other partition objects are inert, explicitly out of
-scope, and throw if their load command is invoked. The OS Loaded/Unloaded events,
-dispatcher, item presentation, localization and playback surfaces are adapted.
-No actual XAML binding, Enter/IME/suggestion-click event, real HTTP, or non-video
-partition behavior is proved by this harness. The full report specifies follow-up.
+The XAML refresh assertion is a **source binding contract**, not actual UI automation.
+The harness does not prove Enter/IME/suggestion-click, runtime bindings, HTTP/authentication
+or live/user/article section behavior. It does not reproduce the original report of all
+subsequent different words permanently failing; the confirmed defects are narrower.
 
-After switching build modes, rebuild: `--no-build` can otherwise run the previous
-mode's assembly. Investigation results must report nine discovered cases.
+External reports and actual command evidence:
+- `C:/Users/hp/.t3/userdata/search-spec-123/investigation.md`
+- `C:/Users/hp/.t3/userdata/search-spec-123/implementation.md`

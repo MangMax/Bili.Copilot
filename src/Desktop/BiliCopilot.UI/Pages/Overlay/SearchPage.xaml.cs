@@ -41,6 +41,7 @@ public sealed partial class SearchPage : SearchPageBase, IParameterPage
     protected override void OnPageUnloaded()
     {
         _keyword = string.Empty;
+        ViewModel.DeactivateCommand.Execute(default);
     }
 
     private void ExecuteSearch()

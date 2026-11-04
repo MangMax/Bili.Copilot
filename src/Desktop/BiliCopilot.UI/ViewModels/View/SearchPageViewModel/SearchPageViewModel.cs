@@ -43,12 +43,6 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             throw new ArgumentNullException(nameof(keyword));
         }
 
-        // 上次搜索失败时 Sections 为空，即使是同一关键字也应允许重试.
-        if (keyword == Keyword && Sections is not null)
-        {
-            return;
-        }
-
         if (keyword.StartsWith("av", StringComparison.InvariantCultureIgnoreCase))
         {
             var videoId = keyword[2..];
@@ -77,6 +71,12 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             }
         }
 
+        var generation = ++_searchGeneration;
+        var timer = Stopwatch.StartNew();
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Search {PageId} {QueryId} accepted", _pageId, generation);
+        }
         Keyword = keyword;
         Sections = default;
         SelectedSection = default;
@@ -84,28 +84,71 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         try
         {
             IsSearching = true;
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Search {PageId} {QueryId} start", _pageId, generation);
+            }
             var (videos, nextVideoOffset) = await _service.GetComprehensiveSearchResultAsync(keyword);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Search {PageId} {QueryId} complete {Count} {ElapsedMs}", _pageId, generation, videos.Count, timer.ElapsedMilliseconds);
+            }
+            if (generation != _searchGeneration)
+            {
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation("Search {PageId} {QueryId} discard", _pageId, generation);
+                }
+                return;
+            }
+
             var sections = new List<ISearchSectionDetailViewModel>
             {
-                CreateVideoSection(videos, nextVideoOffset),
-                CreateSection(SearchSectionType.Anime),
-                CreateSection(SearchSectionType.Cinema),
-                CreateSection(SearchSectionType.Live),
-                CreateSection(SearchSectionType.User),
-                CreateSection(SearchSectionType.Article),
+                CreateVideoSection(keyword, videos, nextVideoOffset),
+                CreateSection(keyword, SearchSectionType.Anime),
+                CreateSection(keyword, SearchSectionType.Cinema),
+                CreateSection(keyword, SearchSectionType.Live),
+                CreateSection(keyword, SearchSectionType.User),
+                CreateSection(keyword, SearchSectionType.Article),
             };
             Sections = [.. sections];
             SelectSection(Sections.FirstOrDefault());
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Search {PageId} {QueryId} publish", _pageId, generation);
+            }
             SectionInitialized?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试获取搜索结果时失败.");
+            var outcome = ex is OperationCanceledException ? "cancelled" : ex is HttpRequestException ? "network" : "failure";
+            // Never attach the exception: its message/stack may include the query, response or credentials.
+            if (_logger.IsEnabled(LogLevel.Warning))
+            {
+                _logger.LogWarning("Search {PageId} {QueryId} {Outcome} {IsCurrent} {ElapsedMs}", _pageId, generation, outcome, generation == _searchGeneration, timer.ElapsedMilliseconds);
+            }
         }
         finally
         {
-            IsSearching = false;
+            if (generation == _searchGeneration)
+            {
+                IsSearching = false;
+            }
         }
+    }
+
+    /// <summary>
+    /// Invalidate pending publication when the page leaves the visual tree.
+    /// </summary>
+    [RelayCommand]
+    private void Deactivate()
+    {
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Search {PageId} {QueryId} unloaded", _pageId, _searchGeneration);
+        }
+        _searchGeneration++;
+        IsSearching = false;
     }
 
     /// <summary>
@@ -123,15 +166,15 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         section.TryFirstLoadCommand.Execute(default);
     }
 
-    private VideoSearchSectionDetailViewModel CreateVideoSection(IReadOnlyList<VideoInformation> videos, int? page)
+    private VideoSearchSectionDetailViewModel CreateVideoSection(string keyword, IReadOnlyList<VideoInformation> videos, int? page)
     {
         var newSection = new VideoSearchSectionDetailViewModel(_service);
-        newSection.Initialize(Keyword, new SearchPartition(0, ResourceToolkit.GetLocalizedString(StringNames.Video)));
+        newSection.Initialize(keyword, new SearchPartition(0, ResourceToolkit.GetLocalizedString(StringNames.Video)));
         newSection.SetFirstPageData(videos, page);
         return newSection;
     }
 
-    private ISearchSectionDetailViewModel CreateSection(SearchSectionType type)
+    private ISearchSectionDetailViewModel CreateSection(string keyword, SearchSectionType type)
     {
         var sectionDetail = type switch
         {
@@ -152,7 +195,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             _ => default
         };
 
-        sectionDetail?.Initialize(Keyword, partition);
+        sectionDetail?.Initialize(keyword, partition);
         return sectionDetail;
     }
 }
