@@ -37,7 +37,7 @@ public sealed partial class PopularPageViewModel
     /// 手动刷新或切换分区会把它复位.
     /// </remarks>
     [ObservableProperty]
-    private bool _isRecommendLoadFailed;
+    public partial bool IsRecommendLoadFailed { get; set; }
 
     /// <summary>
     /// 是否应该显示整页加载遮罩.
@@ -47,7 +47,7 @@ public sealed partial class PopularPageViewModel
     /// 否则用户会看到内容整块闪一下.
     /// </remarks>
     [ObservableProperty]
-    private bool _isPageLoading;
+    public partial bool IsPageLoading { get; set; }
     // 当前列表实际使用的推荐流来源；设置变更后要等到下一次刷新才切换，避免同一条列表混源。
     private IRecommendFeedSource? _feedSource;
     private RecommendFeedSource _feedSourceKind;
