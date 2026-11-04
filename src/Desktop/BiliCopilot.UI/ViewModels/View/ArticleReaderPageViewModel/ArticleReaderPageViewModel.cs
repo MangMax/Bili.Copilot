@@ -168,15 +168,15 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
-        if (Article is null)
+        if (Article is null || IsLiked is not bool currentState)
         {
             return;
         }
 
-        var state = !IsLiked;
+        var state = !currentState;
         try
         {
-            await _operationService.ToggleLikeAsync(Article.Value, state ?? false);
+            await _operationService.ToggleLikeAsync(Article.Value, state);
             IsLiked = state;
             if (IsLiked ?? false)
             {
@@ -196,15 +196,15 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task ToggleFavoriteAsync()
     {
-        if (Article is null)
+        if (Article is null || IsFavorited is not bool currentState)
         {
             return;
         }
 
-        var state = !IsFavorited;
+        var state = !currentState;
         try
         {
-            await _operationService.ToggleFavoriteAsync(Article.Value, state ?? false);
+            await _operationService.ToggleFavoriteAsync(Article.Value, state);
             IsFavorited = state;
             if (IsFavorited ?? false)
             {
