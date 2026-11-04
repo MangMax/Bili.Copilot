@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PopularPageControlBase
     x:Class="BiliCopilot.UI.Controls.Popular.PopularMainBody"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -24,11 +24,15 @@
         <DataTemplate x:Key="RankStyle" x:DataType="items:VideoItemViewModel">
             <components:VideoCardControl Style="{StaticResource RankVideoCardStyle}" ViewModel="{Binding}" />
         </DataTemplate>
+        <DataTemplate x:Key="SkeletonStyle">
+            <components:SkeletonCardControl />
+        </DataTemplate>
         <ext:VideoCardTemplateSelector
             x:Key="CardSelector"
             HotTemplate="{StaticResource HotStyle}"
             RankTemplate="{StaticResource RankStyle}"
-            RecommendTemplate="{StaticResource RecommendStyle}" />
+            RecommendTemplate="{StaticResource RecommendStyle}"
+            SkeletonTemplate="{StaticResource SkeletonStyle}" />
     </UserControl.Resources>
 
     <Grid>
@@ -39,10 +43,10 @@
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
                         x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
+                        ItemsSource="{x:Bind DisplayItems, Mode=OneWay}"
                         Layout="{StaticResource VideoLayout}">
                         <repeater:AppRepeater.ItemTemplate>
-                            <DataTemplate x:DataType="items:VideoItemViewModel">
+                            <DataTemplate>
                                 <ContentControl
                                     Content="{Binding}"
                                     ContentTemplateSelector="{StaticResource CardSelector}"
@@ -55,6 +59,6 @@
         </controls:IncrementVerticalScrollControl>
         <base:LoadingWidget
             Text="{ext:Locale Name=LoadingAndWait}"
-            Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}" />
+            Visibility="{x:Bind ViewModel.IsPageLoading, Mode=OneWay}" />
     </Grid>
 </local:PopularPageControlBase>

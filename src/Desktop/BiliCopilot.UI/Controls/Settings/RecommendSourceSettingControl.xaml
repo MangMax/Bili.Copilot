@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:SettingsPageControlBase
+    x:Class="BiliCopilot.UI.Controls.Settings.RecommendSourceSettingControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:local="using:BiliCopilot.UI.Controls.Settings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <base:SettingsCard
+        Description="{ext:Locale Name=RecommendSourceDescription}"
+        Header="{ext:Locale Name=RecommendSource}">
+        <base:SettingsCard.HeaderIcon>
+            <ic:SymbolIcon Symbol="Stream" />
+        </base:SettingsCard.HeaderIcon>
+        <ComboBox
+            MinWidth="150"
+            AutomationProperties.AutomationId="RecommendSourceComboBox"
+            AutomationProperties.Name="{ext:Locale Name=RecommendSource}"
+            SelectedIndex="{x:Bind ViewModel.RecommendSourceIndex, Mode=TwoWay}">
+            <ComboBoxItem Content="{ext:Locale Name=RecommendSourceMobile}" />
+            <ComboBoxItem Content="{ext:Locale Name=RecommendSourceWeb}" />
+            <ComboBoxItem Content="{ext:Locale Name=RecommendSourceMerged}" />
+        </ComboBox>
+    </base:SettingsCard>
+</local:SettingsPageControlBase>

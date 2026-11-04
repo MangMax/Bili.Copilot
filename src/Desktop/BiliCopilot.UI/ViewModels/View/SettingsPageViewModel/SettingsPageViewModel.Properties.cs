@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -189,6 +189,12 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     public partial bool IncrementalRecommendRefresh { get; set; }
+
+    /// <summary>
+    /// 推荐流来源的下标（0 手机端 / 1 网页端 / 2 合并推荐）.
+    /// </summary>
+    [ObservableProperty]
+    public partial int RecommendSourceIndex { get; set; }
 
     [ObservableProperty]
     public partial bool CacheOnDisk { get; set; }

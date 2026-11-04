@@ -305,6 +305,156 @@ public sealed class IncrementVerticalScrollControlTests
         control.DispatcherQueue.Drain();
         Assert.Equal(1, loads);
     }
+    [Fact]
+    public void BudgetShortfallLoadsEvenWhenScrollRemainingIsLarge()
+    {
+        var control = new IncrementVerticalScrollControl();
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        control.ItemCount = 6;
+        control.View.ActualWidth = 1000;
+        control.View.ExtentHeight = 3000;
+        control.View.ViewportHeight = 600;
+        control.Load();
+        control.DispatcherQueue.Drain();
+        // 余量 2400 本不该触发，但 6 张远不够一屏预算。
+        Assert.Equal(1, loads);
+        Assert.Equal(16, control.CurrentBudget);
+    }
+
+    [Fact]
+    public void PlaceholderSpaceDisablesExtentFallbackSoBudgetAloneDrivesLoading()
+    {
+        var control = new IncrementVerticalScrollControl();
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        control.ItemCount = 16;
+        control.ExtentFallbackEnabled = false;
+        control.View.ActualWidth = 1000;
+        // 骨架把 extent 撑成视口高度，余量判据会一直成立。
+        control.View.ExtentHeight = 600;
+        control.View.ViewportHeight = 600;
+        control.Load();
+        control.DispatcherQueue.Drain();
+        Assert.Equal(0, loads);
+
+        control.ItemCount = 15;
+        control.View.ChangeView();
+        control.DispatcherQueue.Drain();
+        Assert.Equal(1, loads);
+    }
+
+    [Fact]
+    public void UnsetItemCountKeepsExtentOnlyTrigger()
+    {
+        var control = new IncrementVerticalScrollControl();
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        control.View.ActualWidth = 1000;
+        control.View.ExtentHeight = 3000;
+        control.View.ViewportHeight = 600;
+        control.Load();
+        control.DispatcherQueue.Drain();
+        Assert.Equal(0, loads);
+        Assert.Equal(-1, control.CurrentBudget);
+
+        control.View.ExtentHeight = 1000;
+        control.View.ChangeView();
+        control.DispatcherQueue.Drain();
+        Assert.Equal(1, loads);
+    }
+
+    [Fact]
+    public void WiderViewportRaisesBudgetAndPullsAnotherPage()
+    {
+        var control = new IncrementVerticalScrollControl();
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        control.ItemCount = 16;
+        control.View.ActualWidth = 1000;
+        control.View.ExtentHeight = 3000;
+        control.View.ViewportHeight = 600;
+        control.Load();
+        control.DispatcherQueue.Drain();
+        Assert.Equal(0, loads);
+
+        control.View.ActualWidth = 1600;
+        control.View.Resize(1600, 600);
+        control.DispatcherQueue.Drain();
+        Assert.Equal(1, loads);
+        Assert.Equal(24, control.CurrentBudget);
+    }
+
+    [Fact]
+    public async Task BudgetSettlesOnceAfterResizeBurst()
+    {
+        var clock = new ManualClock();
+        var control = new IncrementVerticalScrollControl(clock);
+        var budgets = new List<int>();
+        control.LoadMoreCommand = new RelayCommand(() => { });
+        control.ItemCount = 16;
+        control.View.ActualWidth = 1000;
+        control.View.ViewportHeight = 600;
+        control.BudgetChanged += budgets.Add;
+        control.Load();
+
+        clock.Advance(120);
+        await control.BudgetSettleTask;
+        Assert.Equal(new[] { 16 }, budgets);
+
+        control.View.ActualWidth = 1600;
+        for (var i = 0; i < 20; i++)
+        {
+            control.View.Resize(1600, 600);
+        }
+
+        clock.Advance(120);
+        await control.BudgetSettleTask;
+        Assert.Equal(new[] { 16, 24 }, budgets);
+        control.Unload();
+    }
+
+    [Fact]
+    public void BudgetModeChecksImmediatelySoPagesPipeline()
+    {
+        var clock = new ManualClock();
+        var control = new IncrementVerticalScrollControl(clock);
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        control.ItemCount = 6;
+        control.View.ActualWidth = 1000;
+        control.View.ViewportHeight = 600;
+        control.Load();
+        control.DispatcherQueue.Drain();
+        loads = 0;
+
+        var check = control.DelayCheckItemsAsync();
+        Assert.True(check.IsCompleted);
+        control.DispatcherQueue.Drain();
+        Assert.Equal(1, loads);
+    }
+
+    [Fact]
+    public async Task LegacyModeStillWaitsForLayoutBeforeChecking()
+    {
+        var clock = new ManualClock();
+        var control = new IncrementVerticalScrollControl(clock);
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        control.View.ExtentHeight = 300;
+        control.Load();
+        control.DispatcherQueue.Drain();
+        loads = 0;
+
+        var check = control.DelayCheckItemsAsync();
+        clock.Advance(499);
+        Assert.False(check.IsCompleted);
+        clock.Advance(1);
+        await check;
+        control.DispatcherQueue.Drain();
+        Assert.Equal(1, loads);
+    }
+
     // Controlled time is local to this control's tests, not shared test infrastructure.
     private sealed class ManualClock : TimeProvider
     {
