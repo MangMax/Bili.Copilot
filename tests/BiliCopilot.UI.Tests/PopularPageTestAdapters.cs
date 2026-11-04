@@ -93,7 +93,12 @@ namespace BiliCopilot.UI.Toolkits
     {
         public static string LastSection { get; set; } = "Recommend";
         public static bool IncrementalRecommendRefresh { get; set; }
-        public static int RecommendSourceIndex { get; set; } = (int)BiliCopilot.UI.Models.Constants.RecommendFeedSource.Mobile;
+        private static readonly AsyncLocal<int> _recommendSourceIndex = new();
+        public static int RecommendSourceIndex
+        {
+            get => _recommendSourceIndex.Value;
+            set => _recommendSourceIndex.Value = value;
+        }
         public static bool ShowSearchRecommend { get; set; } = true;
         public static T ReadLocalSetting<T>(SettingNames name, T fallback) => NavigationTestServices.Settings.Value is { } settings ? (settings.TryGetValue(name, out var value) ? (T)value! : fallback) : name == SettingNames.IncrementalRecommendRefresh ? (T)(object)IncrementalRecommendRefresh : name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : name == SettingNames.RecommendFeedSource ? (T)(object)RecommendSourceIndex : (T)(object)LastSection;
         public static void WriteLocalSetting<T>(SettingNames name, T value)

@@ -92,6 +92,26 @@ public sealed class RecommendFeedSourceTests
     }
 
     [Fact]
+    public async Task SettingChangesInParallelTestContextDoNotLeakToCaller()
+    {
+        var original = BiliCopilot.UI.Toolkits.SettingsToolkit.RecommendSourceIndex;
+        try
+        {
+            RecommendFeedSourceSetting.Write(RecommendFeedSource.Mobile);
+            await Task.Run(() =>
+            {
+                RecommendFeedSourceSetting.Write(RecommendFeedSource.Web);
+                Assert.Equal(RecommendFeedSource.Web, RecommendFeedSourceSetting.Read());
+            });
+            Assert.Equal(RecommendFeedSource.Mobile, RecommendFeedSourceSetting.Read());
+        }
+        finally
+        {
+            BiliCopilot.UI.Toolkits.SettingsToolkit.RecommendSourceIndex = original;
+        }
+    }
+
+    [Fact]
     public void SettingReadsBackWhatItWrote()
     {
         var original = BiliCopilot.UI.Toolkits.SettingsToolkit.RecommendSourceIndex;
