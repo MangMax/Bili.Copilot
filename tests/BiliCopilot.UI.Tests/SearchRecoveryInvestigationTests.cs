@@ -1,4 +1,4 @@
-#if SEARCH_RECOVERY_INVESTIGATION
+﻿#if SEARCH_RECOVERY_INVESTIGATION
 using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Pages.Overlay;
@@ -33,7 +33,7 @@ public sealed class SearchRecoveryInvestigationTests : IDisposable
     public SearchRecoveryInvestigationTests()
     {
         _model = new((ISearchService)_service, _logger);
-        _box = new((ISearchService)_service, NullLogger<SearchBoxViewModel>.Instance);
+        _box = new((ISearchService)_service, _logger);
         var app = new AppViewModel();
         app.Windows.Add(new MainWindow());
         NavigationTestServices.Settings.Value = new();
@@ -355,19 +355,83 @@ public sealed class SearchRecoveryInvestigationTests : IDisposable
             Assert.DoesNotContain("secret", e.Message);
             Assert.DoesNotContain("controlled offline", e.Message);
         });
-        var events = _logger.Entries.Select(e => e.Message.Split(' ')).ToArray();
+        var events = _logger.Entries.Where(e => e.Message.StartsWith("Search ")).Select(e => e.Message.Split(' ')).ToArray();
         Assert.All(events, e => Assert.True(Guid.TryParse(e[1], out _)));
         Assert.Single(events.Select(e => e[1]).Distinct());
         Assert.Equal(3, events.Where(e => e[3] == "accepted").Select(e => e[2]).Distinct().Count());
     }
 
-    private sealed class CaptureLogger : ILogger<SearchPageViewModel>
+    [Fact]
+    public async Task SubmissionBeforePageLoadIsVisibleAndCorrelatesWithStartedRequest()
+    {
+        _box.SearchCommand.Execute(new SearchSuggestItemViewModel(new SearchSuggestItem("secret-token", "secret-token")));
+        var page = Assert.IsType<SearchPage>(_overlay.GetCurrentContent());
+        Assert.Empty(_service.Requests);
+        var submitted = Assert.Single(_logger.Entries, e => e.Message.EndsWith(" submitted"));
+        var id = submitted.Message.Split(' ')[1];
+        Assert.True(Guid.TryParse(id, out _));
+        Assert.Contains(_logger.Entries, e => e.Message == $"SearchSubmission {id} navigation");
+        Assert.DoesNotContain(_logger.Entries, e => e.Message.Contains(" start"));
+        page.Load();
+        await Complete(0);
+        Assert.Contains(_logger.Entries, e => e.Message.Contains($" submission {id}"));
+        Assert.All(_logger.Entries, e => { Assert.Null(e.Exception); Assert.DoesNotContain("secret", e.Message); });
+    }
+
+    [Fact]
+    public async Task ReusedPageSubmissionsHaveDistinctIdsAndRedactedFailure()
+    {
+        Submit("secret-first");
+        await Complete(0, empty: true);
+        Submit("secret-second");
+        _service.Requests[1].Completion.SetException(new HttpRequestException("Cookie=secret; token=secret; secret-second"));
+        await _model.SearchCommand.ExecutionTask!;
+        var ids = _logger.Entries.Where(e => e.Message.EndsWith(" submitted")).Select(e => e.Message.Split(' ')[1]).ToArray();
+        Assert.Equal(2, ids.Distinct().Count());
+        Assert.All(ids, id => Assert.Contains(_logger.Entries, e => e.Message.Contains($" submission {id}")));
+        Assert.Contains(_logger.Entries, e => e.Message.Contains("network True"));
+        Assert.All(_logger.Values, value =>
+        {
+            Assert.False(value is Exception);
+            Assert.DoesNotContain("secret", value?.ToString() ?? "");
+            Assert.DoesNotContain("Cookie", value?.ToString() ?? "");
+        });
+        Assert.All(_logger.Entries, e =>
+        {
+            Assert.Null(e.Exception);
+            Assert.DoesNotContain("secret", e.Message);
+            Assert.DoesNotContain("Cookie", e.Message);
+            Assert.DoesNotContain("token", e.Message);
+        });
+    }
+
+    [Fact]
+    public async Task InputBoundaryRecordsSubmissionBeforeDispatch()
+    {
+        var id = _box.BeginSubmission(); // Same entry called first by QuerySubmitted.
+        Assert.Equal($"SearchSubmission {id} submitted", Assert.Single(_logger.Entries).Message);
+        Assert.Empty(_service.Requests);
+        Assert.Null(_overlay.GetCurrentContent());
+        _box.SubmitSearch(new SearchSuggestItemViewModel(new SearchSuggestItem("secret", "secret")), id);
+        Assert.Contains(_logger.Entries, e => e.Message == $"SearchSubmission {id} command");
+        Assert.IsType<SearchPage>(_overlay.GetCurrentContent()).Load();
+        await Complete(0);
+        Assert.Contains(_logger.Entries, e => e.Message == $"SearchSubmission {id} page");
+        Assert.Contains(_logger.Entries, e => e.Message.Contains($" submission {id}"));
+    }
+
+    private sealed class CaptureLogger : ILogger<SearchPageViewModel>, ILogger<SearchBoxViewModel>
     {
         public List<(string Message, Exception? Exception)> Entries { get; } = [];
+        public List<object?> Values { get; } = [];
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
         public bool IsEnabled(LogLevel level) => true;
         public void Log<TState>(LogLevel level, EventId id, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-            => Entries.Add((formatter(state, exception), exception));
+        {
+            Entries.Add((formatter(state, exception), exception));
+            if (state is IEnumerable<KeyValuePair<string, object?>> fields)
+                Values.AddRange(fields.Select(field => field.Value));
+        }
     }
 
     public void Dispose() { NavigationTestServices.Current.Value = null; NavigationTestServices.Settings.Value = null; }

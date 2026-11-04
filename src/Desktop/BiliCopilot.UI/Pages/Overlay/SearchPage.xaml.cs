@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -10,7 +11,7 @@ namespace BiliCopilot.UI.Pages.Overlay;
 /// </summary>
 public sealed partial class SearchPage : SearchPageBase, IParameterPage
 {
-    private string _keyword = string.Empty;
+    private object? _parameter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPage"/> class.
@@ -19,12 +20,12 @@ public sealed partial class SearchPage : SearchPageBase, IParameterPage
 
     public void SetParameter(object? parameter)
     {
-        if (parameter is not string keyword)
+        if (parameter is not string && parameter is not SearchSubmission)
         {
             return;
         }
 
-        _keyword = keyword;
+        _parameter = parameter;
 
         // OverlayFrame 会复用已存在的 SearchPage 实例，此时不会再次触发 OnPageLoaded，
         // 因此已加载的页面需要在收到新参数时立即执行搜索.
@@ -40,15 +41,15 @@ public sealed partial class SearchPage : SearchPageBase, IParameterPage
 
     protected override void OnPageUnloaded()
     {
-        _keyword = string.Empty;
+        _parameter = null;
         ViewModel.DeactivateCommand.Execute(default);
     }
 
     private void ExecuteSearch()
     {
-        if (!string.IsNullOrEmpty(_keyword))
+        if (_parameter is SearchSubmission || _parameter is string { Length: > 0 })
         {
-            ViewModel.SearchCommand.Execute(_keyword);
+            ViewModel.SearchCommand.Execute(_parameter);
         }
     }
 }

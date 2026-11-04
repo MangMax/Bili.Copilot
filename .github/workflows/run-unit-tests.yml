@@ -39,3 +39,9 @@ jobs:
 
       - name: Test
         run: dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj --no-build -c Release --logger "console;verbosity=normal"
+
+      # This mode links the real search page and omits navigation test files.
+      # Keep the default build/test above. Always rebuild when switching modes:
+      # --no-build here could silently run the previous default assembly.
+      - name: Test search recovery regression
+        run: dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj -c Release -p:SearchRecoveryRegression=true --filter FullyQualifiedName~SearchRecoveryInvestigationTests --logger "console;verbosity=normal"

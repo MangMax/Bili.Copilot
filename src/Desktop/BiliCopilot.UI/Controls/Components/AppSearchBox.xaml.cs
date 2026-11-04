@@ -157,6 +157,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
     private void OnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
+        var submissionId = ViewModel.BeginSubmission();
         _suggestionInteractionVersion++;
         _isSubmittingQuery = true;
         CloseSuggestionList();
@@ -172,12 +173,12 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
                 ViewModel.Keyword = item.SearchContent;
             }
 
-            ViewModel.SearchCommand.Execute(item);
+            ViewModel.SubmitSearch(item, submissionId);
         }
         else if (!string.IsNullOrEmpty(args.QueryText))
         {
             var vm = new SearchSuggestItemViewModel(new SearchSuggestItem(args.QueryText, args.QueryText));
-            ViewModel.SearchCommand.Execute(vm);
+            ViewModel.SubmitSearch(vm, submissionId);
         }
 
         ViewModel.TryCancelSuggestCommand.Execute(default);
