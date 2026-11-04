@@ -194,10 +194,17 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
             return;
         }
 
+        var article = Article.Value;
+        var generation = CurrentLoadGeneration;
         var state = !currentState;
         try
         {
-            await _operationService.ToggleLikeAsync(Article.Value, state);
+            await _operationService.ToggleLikeAsync(article, state);
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
             IsLiked = state;
             LikeCount += state ? 1 : -1;
         }
@@ -215,10 +222,17 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
             return;
         }
 
+        var article = Article.Value;
+        var generation = CurrentLoadGeneration;
         var state = !currentState;
         try
         {
-            await _operationService.ToggleFavoriteAsync(Article.Value, state);
+            await _operationService.ToggleFavoriteAsync(article, state);
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
             IsFavorited = state;
             FavoriteCount += state ? 1 : -1;
         }

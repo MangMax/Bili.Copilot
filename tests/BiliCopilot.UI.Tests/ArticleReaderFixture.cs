@@ -28,19 +28,24 @@ internal static class ArticleReaderFixture
 
     public sealed class Operation : IArticleOperationService
     {
+        public Task? Pending { get; set; }
+        public List<ArticleIdentifier> Targets { get; } = [];
+
         public List<bool> Likes { get; } = [];
         public List<bool> Favorites { get; } = [];
 
         public Task ToggleLikeAsync(ArticleIdentifier article, bool isLike, CancellationToken cancellationToken = default)
         {
+            Targets.Add(article);
             Likes.Add(isLike);
-            return Task.CompletedTask;
+            return Pending ?? Task.CompletedTask;
         }
 
         public Task ToggleFavoriteAsync(ArticleIdentifier article, bool isFavorite, CancellationToken cancellationToken = default)
         {
+            Targets.Add(article);
             Favorites.Add(isFavorite);
-            return Task.CompletedTask;
+            return Pending ?? Task.CompletedTask;
         }
     }
 }
