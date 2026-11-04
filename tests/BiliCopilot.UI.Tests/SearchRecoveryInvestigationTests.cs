@@ -71,6 +71,170 @@ public sealed class SearchRecoveryInvestigationTests : IDisposable
     private VideoSearchSectionDetailViewModel VideoSection => Assert.IsType<VideoSearchSectionDetailViewModel>(_model.SelectedSection);
 
     [Fact]
+    public async Task PendingOldRetryDoesNotDisableLatestErrorRetry()
+    {
+        Submit("query-a");
+        _service.Requests[0].Completion.SetException(new SearchVerificationRequiredException());
+        await _model.SearchCommand.ExecutionTask!;
+        var oldRetry = _model.RetryCommand.ExecuteAsync(null);
+        Submit("query-b");
+        await Complete(2, fail: true);
+        Assert.True(_model.RetryCommand.CanExecute(null));
+        var retry = _model.RetryCommand.ExecuteAsync(null);
+        Assert.Equal("query-b", _service.Requests[3].Keyword);
+        _service.Requests[3].Completion.SetResult(([new VideoInformation(new MediaIdentifier("42", null, null), default!)], null));
+        await retry;
+        _dispatcher.Drain();
+        _service.Requests[1].Completion.SetException(new SearchVerificationRequiredException());
+        await oldRetry;
+        Assert.False(_model.HasSearchError);
+        Assert.Single(VideoSection.Items);
+        Assert.False(_model.IsSearching);
+    }
+
+    [Fact]
+    public async Task UnloadClearsPublishedVerificationAndDisablesRetry()
+    {
+        var page = Submit("query-a");
+        _service.Requests[0].Completion.SetException(new SearchVerificationRequiredException());
+        await _model.SearchCommand.ExecutionTask!;
+        Assert.True(_model.RetryCommand.CanExecute(null));
+        page.Unload();
+        Assert.Null(_model.SearchErrorMessage);
+        Assert.False(_model.HasSearchError);
+        Assert.False(_model.RetryCommand.CanExecute(null));
+        await _model.RetryCommand.ExecuteAsync(null);
+        Assert.Single(_service.Requests);
+    }
+
+    [Fact]
+    public async Task OrdinaryFailureHasDistinctMessageAndNormalEmptyHasNoError()
+    {
+        Submit("query-a");
+        await Complete(0, fail: true);
+        Assert.True(_model.HasSearchError);
+        Assert.Equal("SearchFailed", _model.SearchErrorMessage);
+        Assert.True(_model.RetryCommand.CanExecute(null));
+        Submit("query-b");
+        Assert.False(_model.HasSearchError);
+        Assert.False(_model.RetryCommand.CanExecute(null));
+        await Complete(1, empty: true);
+        Assert.False(_model.HasSearchError);
+        Assert.Null(_model.SearchErrorMessage);
+        Assert.True(VideoSection.IsEmpty);
+        Assert.False(_model.RetryCommand.CanExecute(null));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public async Task LateVerificationCannotReplaceLatestPendingErrorOrResults(int latest)
+    {
+        Submit("query-a");
+        var old = _model.SearchCommand.ExecutionTask!;
+        Submit("query-b");
+        if (latest == 1) await Complete(1, fail: true);
+        if (latest == 2) await Complete(1);
+        _service.Requests[0].Completion.SetException(new SearchVerificationRequiredException());
+        await old;
+        _dispatcher.Drain();
+        Assert.Equal("query-b", _model.Keyword);
+        Assert.Equal(latest == 1 ? "SearchFailed" : null, _model.SearchErrorMessage);
+        if (latest == 0)
+        {
+            Assert.True(_model.IsSearching);
+            await Complete(1);
+        }
+        if (latest != 1) Assert.Single(VideoSection.Items);
+    }
+
+    [Fact]
+    public async Task NewQueryClearsVerificationAndUnloadDiscardsLateVerification()
+    {
+        var page = Submit("query-a");
+        _service.Requests[0].Completion.SetException(new SearchVerificationRequiredException());
+        await _model.SearchCommand.ExecutionTask!;
+        Assert.True(_model.HasSearchError);
+        Submit("query-b");
+        Assert.False(_model.HasSearchError);
+        var pending = _model.SearchCommand.ExecutionTask!;
+        page.Unload();
+        _service.Requests[1].Completion.SetException(new SearchVerificationRequiredException());
+        await pending;
+        Assert.False(_model.HasSearchError);
+        Assert.False(_model.IsSearching);
+        _navigation.Back();
+        Submit("query-b");
+        await Complete(2);
+        Assert.Single(VideoSection.Items);
+        Assert.False(_model.HasSearchError);
+    }
+
+    [Fact]
+    public async Task VerificationDiagnosticsNeverExposeExceptionPayload()
+    {
+        var marker = Guid.NewGuid().ToString();
+        Submit(marker);
+        var exception = new SearchVerificationRequiredException();
+        exception.Data["v_voucher"] = marker;
+        _service.Requests[0].Completion.SetException(exception);
+        await _model.SearchCommand.ExecutionTask!;
+        Assert.Contains(_logger.Entries, e => e.Message.Contains("verification True"));
+        Assert.All(_logger.Entries, e =>
+        {
+            Assert.Null(e.Exception);
+            Assert.DoesNotContain(marker, e.Message);
+            Assert.DoesNotContain("v_voucher", e.Message);
+            Assert.DoesNotContain(exception.Message, e.Message);
+        });
+        Assert.All(_logger.Values, value =>
+        {
+            Assert.False(value is Exception);
+            Assert.DoesNotContain(marker, value?.ToString() ?? "");
+            Assert.DoesNotContain("v_voucher", value?.ToString() ?? "");
+        });
+        Assert.Equal("SearchVerificationRequired", _model.SearchErrorMessage);
+    }
+
+    [Fact]
+    public async Task VerificationRefreshWithoutSectionRetriesSameQueryAndRecovers()
+    {
+        Submit("query-a");
+        _service.Requests[0].Completion.SetException(new SearchVerificationRequiredException());
+        await _model.SearchCommand.ExecutionTask!;
+        var retry = _model.RetryCommand.ExecuteAsync(null);
+        Assert.Equal(new[] { "query-a", "query-a" }, _service.Requests.Select(r => r.Keyword));
+        Assert.False(_model.HasSearchError);
+        _service.Requests[1].Completion.SetResult(([new VideoInformation(new MediaIdentifier("42", null, null), default!)], null));
+        await retry;
+        _dispatcher.Drain();
+        Assert.Single(VideoSection.Items);
+        Assert.False(_model.HasSearchError);
+    }
+
+    [Fact]
+    public async Task VerificationFailurePublishesPersistentVisibleErrorState()
+    {
+        Submit("private-query");
+        var changes = new List<string?>();
+        _model.PropertyChanged += (_, e) => changes.Add(e.PropertyName);
+        _service.Requests[0].Completion.SetException(new SearchVerificationRequiredException());
+        await _model.SearchCommand.ExecutionTask!;
+        _dispatcher.Drain();
+        Assert.True(_model.HasSearchError);
+        Assert.Equal("SearchVerificationRequired", _model.SearchErrorMessage);
+        Assert.Contains(nameof(_model.HasSearchError), changes);
+        Assert.Contains(nameof(_model.SearchErrorMessage), changes);
+        Assert.False(_model.IsSearching);
+        Assert.Null(_model.SelectedSection);
+        Assert.True(_model.RetryCommand.CanExecute(null));
+        Assert.Single(_service.Requests);
+        _dispatcher.Drain();
+        Assert.True(_model.HasSearchError);
+    }
+
+    [Fact]
     public async Task CompletedEmptyThenDifferentKeywordPublishesNewVideoOnReusedPage()
     {
         var page = Submit("query-a");

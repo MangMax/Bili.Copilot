@@ -87,6 +87,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         {
             _logger.LogInformation("Search {PageId} {QueryId} submission {SubmissionId}", _pageId, generation, submission.Id);
         }
+        SearchErrorMessage = null;
         Keyword = keyword;
         Sections = default;
         SelectedSection = default;
@@ -131,7 +132,12 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         }
         catch (Exception ex)
         {
-            var outcome = ex is OperationCanceledException ? "cancelled" : ex is HttpRequestException ? "network" : "failure";
+            if (generation == _searchGeneration && ex is not OperationCanceledException)
+            {
+                SearchErrorMessage = ResourceToolkit.GetLocalizedString(ex is SearchVerificationRequiredException
+                    ? StringNames.SearchVerificationRequired : StringNames.SearchFailed);
+            }
+            var outcome = ex is SearchVerificationRequiredException ? "verification" : ex is OperationCanceledException ? "cancelled" : ex is HttpRequestException ? "network" : "failure";
             // Never attach the exception: its message/stack may include the query, response or credentials.
             if (_logger.IsEnabled(LogLevel.Warning))
             {
@@ -147,6 +153,15 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         }
     }
 
+    [RelayCommand(CanExecute = nameof(CanRetry), AllowConcurrentExecutions = true)]
+    private async Task RetryAsync()
+    {
+        if (CanRetry)
+        {
+            await SearchAsync(Keyword);
+        }
+    }
+
     /// <summary>
     /// Invalidate pending publication when the page leaves the visual tree.
     /// </summary>
@@ -158,6 +173,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             _logger.LogInformation("Search {PageId} {QueryId} unloaded", _pageId, _searchGeneration);
         }
         _searchGeneration++;
+        SearchErrorMessage = null;
         IsSearching = false;
     }
 
