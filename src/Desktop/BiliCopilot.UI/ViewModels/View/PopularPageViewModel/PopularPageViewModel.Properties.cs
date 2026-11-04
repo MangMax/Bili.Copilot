@@ -1,7 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
+using BiliCopilot.UI.ViewModels.Recommend;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Media;
@@ -19,24 +21,56 @@ public sealed partial class PopularPageViewModel
     private readonly Dictionary<IPopularSectionItemViewModel, List<VideoItemViewModel>> _videoCache = new();
 
     private long _recommendOffset;
+    // 连续失败次数：达到上限后停止自动补页，避免失败后每次布局变化都重试、把接口打到限流。
+    private int _recommendFailureCount;
 
     /// <summary>
-    /// 推荐流每页请求的条数.
+    /// 连续失败多少次后暂停自动补页.
     /// </summary>
-    /// <remarks>
-    /// 服务端对推荐流有自己的页大小，传 ps 也不会改变实际返回（实测固定约 9 条卡片、其中 6 条左右是视频），
-    /// 因此这个值只是「尽力声明」，真正决定一页有多少条的是服务端。
-    /// </remarks>
-    private const int RecommendPageSize = 30;
+    private const int MaxRecommendFailureCount = 3;
 
     /// <summary>
-    /// 增量刷新时连续取几页推荐.
+    /// 推荐流是否已经彻底加载失败（连续失败达到上限）.
     /// </summary>
     /// <remarks>
-    /// 推荐流单页只有约 6 条视频，点一次刷新只多 6 个卡片对桌面端偏少。
-    /// 这里连续请求多页再合并，用额外的请求次数换取一次刷新补足更多新内容。
+    /// 失败后必须让骨架让位：否则页面会永远停在骨架屏上，用户既看不到内容也不知道出了什么事.
+    /// 手动刷新或切换分区会把它复位.
     /// </remarks>
-    private const int RecommendRefreshBatchCount = 3;
+    [ObservableProperty]
+    private bool _isRecommendLoadFailed;
+
+    /// <summary>
+    /// 是否应该显示整页加载遮罩.
+    /// </summary>
+    /// <remarks>
+    /// 只有列表还空着（首屏）才需要整页遮罩；后续补页、刷新都不该让遮罩重新盖住已有内容，
+    /// 否则用户会看到内容整块闪一下.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _isPageLoading;
+    // 当前列表实际使用的推荐流来源；设置变更后要等到下一次刷新才切换，避免同一条列表混源。
+    private IRecommendFeedSource? _feedSource;
+    private RecommendFeedSource _feedSourceKind;
+
+    /// <summary>
+    /// 手动刷新至少取回的条数.
+    /// </summary>
+    private const int MinRefreshTargetCount = 6;
+
+    /// <summary>
+    /// 手动刷新最多取回的条数，避免大屏下一次刷新拉太多内容.
+    /// </summary>
+    private const int MaxRefreshTargetCount = 60;
+
+    /// <summary>
+    /// 单次刷新最多连续请求的页数，兜底防止来源一直返回重复内容.
+    /// </summary>
+    private const int MaxRefreshPageCount = 12;
+
+    /// <summary>
+    /// 首屏最多连续请求的页数.
+    /// </summary>
+    private const int MaxInitialPageCount = 6;
     private long _hotOffset;
     // 切换或刷新后，旧请求和旧调度回调不再拥有当前列表。
     private long _sectionVersion;
@@ -57,6 +91,15 @@ public sealed partial class PopularPageViewModel
     /// 推荐分区刷新前的快照，非 null 表示可以撤销这次刷新.
     /// </summary>
     private RecommendRefreshSnapshot<VideoItemViewModel>? _recommendRefreshSnapshot;
+
+    /// <summary>
+    /// 手动刷新希望取回的条数，由页面按当前视口预算写入.
+    /// </summary>
+    /// <remarks>
+    /// 刷新与首屏共用同一套「一屏需要多少张」的度量：视口大就多取、视口小就少取，
+    /// 与推荐来源、是否增量刷新都无关。未写入时按最小批次处理。
+    /// </remarks>
+    public int RefreshTargetCount { get; set; }
 
     [ObservableProperty]
     private bool _isPartitionLoading;
@@ -96,6 +139,16 @@ public sealed partial class PopularPageViewModel
     /// 视频列表已完成更新.
     /// </summary>
     public event EventHandler VideoListUpdated;
+
+    /// <summary>
+    /// 增量刷新开始，参数为本次要取回的条数.
+    /// </summary>
+    public event Action<int>? RecommendRefreshStarted;
+
+    /// <summary>
+    /// 增量刷新结束（成功或失败都会触发）.
+    /// </summary>
+    public event EventHandler? RecommendRefreshCompleted;
 
     public event Action<RecommendationListChange>? RecommendationListChanging;
     public event EventHandler? RecommendationListChanged;

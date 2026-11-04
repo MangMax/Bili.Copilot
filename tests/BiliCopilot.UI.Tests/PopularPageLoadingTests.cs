@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
@@ -105,6 +105,45 @@ public sealed class PopularPageLoadingTests
 
         service.Partitions.SetResult([]);
         await initialization;
+    }
+
+    [Fact]
+    public async Task IncrementalRefreshKeepsEarlierPagesWhereTheyLanded()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("saved")], 1));
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal("saved", Assert.Single(page.Videos).Data.BvId);
+
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        try
+        {
+            // 刷新目标 6 条，每页 3 条：两页先后到达。
+            page.RefreshTargetCount = 6;
+            var batches = new[]
+            {
+                new[] { Video("a-1"), Video("a-2"), Video("a-3") },
+                new[] { Video("b-1"), Video("b-2"), Video("b-3") },
+            };
+            var index = 0;
+            service.Recommend = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+                (batches[Math.Min(index++, batches.Length - 1)], index));
+
+            await page.RefreshVideoCommand.ExecuteAsync(null);
+            PageTestServices.Dispatcher.Drain();
+
+            // 先到的页必须留在原位，后到的页接在它后面，而不是把前一页顶下去。
+            Assert.Equal(
+                new[] { "a-1", "a-2", "a-3", "b-1", "b-2", "b-3" },
+                page.Videos.Take(6).Select(v => v.Data.BvId));
+        }
+        finally
+        {
+            SettingsToolkit.IncrementalRecommendRefresh = false;
+        }
     }
 
     private static PopularPageViewModel CreatePage(DiscoveryService service, string savedSection)
@@ -261,6 +300,8 @@ public sealed class PopularPageLoadingTests
         var nextSection = savedSection == "Hot" ? PopularSectionType.Recommend : PopularSectionType.Hot;
         page.SelectSectionCommand.Execute(page.Sections.OfType<PopularSectionItemViewModel>().Single(x => x.Type == nextSection));
         PageTestServices.Dispatcher.Drain();
+        // 取数经由来源协作者，多一层异步续体；等新栏目的请求真正发出后再断言旧结果不落地。
+        await WaitForAsync(() => service.Requests.Contains(nextSection.ToString()));
 
         old.SetResult([Video("stale")]);
         PageTestServices.Dispatcher.Drain();
@@ -268,6 +309,8 @@ public sealed class PopularPageLoadingTests
         Assert.Empty(page.Videos);
         current.SetResult([Video("current")]);
         PageTestServices.Dispatcher.Drain();
+        // 结果落地要多跳一次异步续体，等可观测状态稳定后再断言。
+        await WaitForAsync(() => page.Videos.Count > 0 && !page.IsVideoLoading);
         Assert.Equal("current", Assert.Single(page.Videos).Data.BvId);
         Assert.False(page.IsVideoLoading);
     }
@@ -298,7 +341,9 @@ public sealed class PopularPageLoadingTests
         PageTestServices.Dispatcher.Drain();
         Assert.Equal("fresh", Assert.Single(page.Videos).Data.BvId);
         await page.LoadVideosCommand.ExecuteAsync(null);
-        Assert.Equal(new long[] { 0, 0, 7 }, offsets);
+        // 刷新按视口预算取到目标条数（这里兜底为最小 6 条），一页不够会再取一页；
+        // 随后滚动加载从刷新后的游标继续。
+        Assert.Equal(new long[] { 0, 0, 7, 7 }, offsets);
     }
 
     [Fact]
@@ -582,12 +627,14 @@ public sealed class PopularPageLoadingTests
         public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Hot { get; set; }
             = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("Hot")], 1));
         public Func<Task<IReadOnlyList<VideoInformation>>>? Rank { get; set; }
+        public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Curated { get; set; }
+            = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("Curated")], 1));
         public Task<IReadOnlyList<Partition>> GetVideoPartitionsAsync(CancellationToken cancellationToken = default)
         {
             Requests.Add("partitions");
             return Partitions.Task;
         }
-        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, int pageSize = 0, CancellationToken cancellationToken = default)
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetRecommendVideoListAsync(long offset = 0, CancellationToken cancellationToken = default)
         {
             Requests.Add("Recommend");
             return Recommend(offset);
@@ -600,8 +647,158 @@ public sealed class PopularPageLoadingTests
         public Task<IReadOnlyList<VideoInformation>> GetGlobalRankingListAsync(CancellationToken cancellationToken = default) => Rank?.Invoke() ?? Task.FromResult<IReadOnlyList<VideoInformation>>([Video("Rank")]);
         public Task<IReadOnlyList<VideoInformation>> GetPartitionRankingListAsync(Partition partition, CancellationToken cancellationToken = default) => Rank?.Invoke() ?? Task.FromResult<IReadOnlyList<VideoInformation>>([Video(partition.Id)]);
         public Task<IReadOnlyList<VideoInformation>> GetCuratedPlaylistAsync(CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task<(IReadOnlyList<VideoInformation> Items, long Offset)> GetCuratedFeedAsync(long freshIndex = 0, int pageSize = 0, CancellationToken cancellationToken = default)
+        {
+            Requests.Add("Curated");
+            return Curated(freshIndex);
+        }
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset)> GetPartitionRecommendVideoListAsync(Partition partition, long offset = 0, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<(IReadOnlyList<VideoInformation> Videos, long Offset, int NextPageNumber)> GetChildPartitionVideoListAsync(Partition childPartition, long offset = 0, int pageNumber = 0, PartitionVideoSortType sortType = PartitionVideoSortType.Default, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+    }
+
+    [Fact]
+    public async Task InitialLoadUsesConfiguredWebSource()
+    {
+        SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Web;
+        try
+        {
+            var service = new DiscoveryService();
+            service.Partitions.SetResult([]);
+            var page = CreatePage(service, "Recommend");
+
+            await page.InitializeCommand.ExecuteAsync(null);
+            PageTestServices.Dispatcher.Drain();
+
+            Assert.Contains("Curated", service.Requests);
+            Assert.DoesNotContain("Recommend", service.Requests);
+            Assert.Equal("Curated", Assert.Single(page.Videos).Data.BvId);
+        }
+        finally
+        {
+            SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Mobile;
+        }
+    }
+
+    [Fact]
+    public async Task ManualRefreshUsesConfiguredSourceAndReplacesTheListOnSwitch()
+    {
+        SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Mobile;
+        SettingsToolkit.IncrementalRecommendRefresh = true;
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal("Recommend", Assert.Single(page.Videos).Data.BvId);
+
+        // 切到网页端后手动刷新：既要走新来源，也要整表替换，不能在旧列表中混入新来源的条目。
+        SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Web;
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Contains("Curated", service.Requests);
+        Assert.Equal("Curated", Assert.Single(page.Videos).Data.BvId);
+        Assert.False(page.CanUndoRefresh);
+        SettingsToolkit.IncrementalRecommendRefresh = false;
+        SettingsToolkit.RecommendSourceIndex = (int)RecommendFeedSource.Mobile;
+    }
+
+    [Fact]
+    public async Task ManualRefreshFillsToTheViewportBudget()
+    {
+        var service = new DiscoveryService
+        {
+            Recommend = offset => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+                (Enumerable.Range(0, 6).Select(i => Video($"v{offset}-{i}")).ToList(), offset + 6)),
+        };
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal(6, page.Videos.Count);
+
+        // 视口预算 16 张：手机端一页 6 条，需要连续取 3 页。
+        page.RefreshTargetCount = 16;
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal(18, page.Videos.Count);
+        Assert.Equal(4, service.Requests.Count(r => r == "Recommend"));
+    }
+
+    [Theory]
+    [InlineData(1, 6)]
+    [InlineData(100, 60)]
+    public async Task ManualRefreshTargetIsClampedBetweenSixAndSixty(int target, int expectedCount)
+    {
+        var service = new DiscoveryService
+        {
+            Recommend = offset => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(
+                (Enumerable.Range(0, 6).Select(i => Video($"v{offset}-{i}")).ToList(), offset + 6)),
+        };
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        page.RefreshTargetCount = target;
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal(expectedCount, page.Videos.Count);
+    }
+
+    [Fact]
+    public async Task ReplaceRefreshLandsPagesAsTheyArriveInsteadOfWaitingForTheBatch()
+    {
+        var gate = new TaskCompletionSource<(IReadOnlyList<VideoInformation>, long)>();
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+        Assert.Equal("Recommend", Assert.Single(page.Videos).Data.BvId);
+
+        page.RefreshTargetCount = 12;
+        var calls = 0;
+        service.Recommend = _ => ++calls == 1
+            ? Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("p1")], 1))
+            : gate.Task;
+
+        var refresh = page.RefreshVideoCommand.ExecuteAsync(null);
+        await WaitForAsync(() => page.Videos.Count == 1);
+
+        // 第一页到达就落地，不必等整批。
+        Assert.Equal("p1", page.Videos[0].Data.BvId);
+
+        gate.SetResult(([Video("p2")], 2));
+        await refresh;
+        Assert.Equal(new[] { "p1", "p2" }, page.Videos.Select(v => v.Data.BvId));
+    }
+
+    [Fact]
+    public async Task FailedReplaceRefreshKeepsTheOldList()
+    {
+        var service = new DiscoveryService();
+        service.Partitions.SetResult([]);
+        var page = CreatePage(service, "Recommend");
+        await page.InitializeCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        service.Recommend = _ => Task.FromException<(IReadOnlyList<VideoInformation>, long)>(new IOException("offline"));
+        await page.RefreshVideoCommand.ExecuteAsync(null);
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal("Recommend", Assert.Single(page.Videos).Data.BvId);
+        Assert.False(page.CanUndoRefresh);
+    }
+
+    private static async Task WaitForAsync(Func<bool> condition)
+    {
+        for (var i = 0; i < 200 && !condition(); i++)
+        {
+            await Task.Delay(5);
+        }
     }
 
     private static VideoInformation Video(string id) => new(new(id, id, null!), null!, bvId: id);

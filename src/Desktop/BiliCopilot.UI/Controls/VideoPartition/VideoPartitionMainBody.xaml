@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:VideoPartitionDetailControlBase
     x:Class="BiliCopilot.UI.Controls.VideoPartition.VideoPartitionMainBody"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -14,6 +14,19 @@
     xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <DataTemplate x:Key="PartitionStyle" x:DataType="items:VideoItemViewModel">
+            <components:VideoCardControl Style="{StaticResource PartitionVideoCardStyle}" ViewModel="{Binding}" />
+        </DataTemplate>
+        <DataTemplate x:Key="SkeletonStyle">
+            <components:SkeletonCardControl />
+        </DataTemplate>
+        <ext:VideoCardTemplateSelector
+            x:Key="CardSelector"
+            PartitionTemplate="{StaticResource PartitionStyle}"
+            SkeletonTemplate="{StaticResource SkeletonStyle}" />
+    </UserControl.Resources>
+
     <Grid>
         <controls:IncrementVerticalScrollControl
             x:Name="View"
@@ -22,11 +35,14 @@
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
                         x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
+                        ItemsSource="{x:Bind DisplayItems, Mode=OneWay}"
                         Layout="{StaticResource VideoLayout}">
                         <repeater:AppRepeater.ItemTemplate>
-                            <DataTemplate x:DataType="items:VideoItemViewModel">
-                                <components:VideoCardControl Style="{StaticResource PartitionVideoCardStyle}" ViewModel="{Binding}" />
+                            <DataTemplate>
+                                <ContentControl
+                                    Content="{Binding}"
+                                    ContentTemplateSelector="{StaticResource CardSelector}"
+                                    Style="{StaticResource AppContentControlStyle}" />
                             </DataTemplate>
                         </repeater:AppRepeater.ItemTemplate>
                     </repeater:AppRepeater>
