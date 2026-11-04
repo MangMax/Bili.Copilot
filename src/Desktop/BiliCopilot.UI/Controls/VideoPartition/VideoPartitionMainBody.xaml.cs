@@ -22,8 +22,8 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
         InitializeComponent();
         _anchor = new(VideoRepeater, View);
         View.BudgetChanged += OnBudgetChanged;
-        Loaded += (_, _) => Attach(ViewModel);
-        Unloaded += (_, _) => { Detach(ViewModel); _anchor.Cancel(); };
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
     }
 
     /// <summary>
@@ -36,21 +36,29 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     public ObservableCollection<object> DisplayItems { get; } = new();
 
     /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-    {
-        Detach(ViewModel);
-    }
+    protected override void OnControlUnloaded() => Detach(ViewModel);
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(VideoPartitionDetailViewModel? oldValue, VideoPartitionDetailViewModel? newValue)
     {
         Detach(oldValue);
-        if (IsLoaded) Attach(newValue);
+        if (IsLoaded)
+        {
+            Attach(newValue);
+        }
     }
+
+    private void OnLoaded(object sender, RoutedEventArgs e) => Attach(ViewModel);
+
+    private void OnUnloaded(object sender, RoutedEventArgs e) => Detach(ViewModel);
 
     private void Attach(VideoPartitionDetailViewModel? value)
     {
-        if (value is null) return;
+        if (value is null)
+        {
+            return;
+        }
+
         Detach(value);
         value.VideoListUpdated += OnVideoListUpdatedAsync;
         value.RecommendationListChanging += _anchor.Capture;
@@ -62,7 +70,11 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
 
     private void Detach(VideoPartitionDetailViewModel? value)
     {
-        if (value is null || _anchor is null) return;
+        if (value is null)
+        {
+            return;
+        }
+
         value.VideoListUpdated -= OnVideoListUpdatedAsync;
         value.RecommendationListChanging -= _anchor.Capture;
         value.RecommendationListChanged -= _anchor.Restore;
@@ -73,7 +85,10 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
 
     private void OnPagePropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(ViewModel.CurrentPartition) or nameof(ViewModel.SelectedSortType) or nameof(ViewModel.IsRecommend)) _anchor.Cancel();
+        if (e.PropertyName is nameof(ViewModel.CurrentPartition) or nameof(ViewModel.SelectedSortType) or nameof(ViewModel.IsRecommend))
+        {
+            _anchor.Cancel();
+        }
     }
 
     private async void OnVideoListUpdatedAsync(object? sender, EventArgs e)
@@ -91,13 +106,18 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     /// </summary>
     private void SyncDisplayItems()
     {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
         var budget = View.CurrentBudget > 0 ? View.CurrentBudget : VideoListDisplay.InitialSkeletonEstimate;
-        var videos = ViewModel?.Videos;
-        var count = videos?.Count ?? 0;
+        var count = ViewModel.Videos.Count;
         var desiredCount = Math.Max(count, budget);
-        VideoListDisplay.Apply(DisplayItems, desiredCount, i => i < count ? videos![i] : null);
+
+        VideoListDisplay.Apply(DisplayItems, desiredCount, i => i < count ? ViewModel.Videos[i] : null);
 
         View.ItemCount = count;
-        View.ExtentFallbackEnabled = desiredCount <= count;
+        View.ExtentFallbackEnabled = desiredCount == count;
     }
 }

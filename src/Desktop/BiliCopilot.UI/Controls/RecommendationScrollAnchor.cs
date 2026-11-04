@@ -55,8 +55,11 @@ internal sealed class RecommendationScrollAnchor(FrameworkElement root, Incremen
         scroll.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (version != _version || !root.IsLoaded) return;
+            // 布局不只是为了读坐标：它会泵出重入的排版与数据更新，
+            // 之后必须重新确认这次恢复还有效，否则会把新页面滚回旧位置。
             root.UpdateLayout();
             if (version != _version || !root.IsLoaded) return;
+
             if (change != RecommendationListChange.PreserveVisibleCard)
             {
                 // Both reset and undo have an absolute target. Undo restores the offset
