@@ -145,16 +145,23 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     /// <summary>
     /// 执行搜索.
     /// </summary>
-    public void Search(string keyword)
+    public void Search(string keyword, Guid submissionId = default)
     {
+        object parameter = keyword;
+        if (submissionId != Guid.Empty)
+        {
+            this.Get<SearchBoxViewModel>().RecordSubmission(submissionId, "navigation");
+            parameter = new SearchSubmission(keyword, submissionId);
+        }
+
         if (_overFrame is not null && _overFrame.GetCurrentContent() is SearchPage page)
         {
             IsOverlayOpen = true;
-            page.ViewModel.SearchCommand.Execute(keyword);
+            page.ViewModel.SearchCommand.Execute(parameter);
             return;
         }
 
-        NavigateToOver(typeof(SearchPage), keyword);
+        NavigateToOver(typeof(SearchPage), parameter);
     }
 
     /// <summary>

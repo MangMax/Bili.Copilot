@@ -36,17 +36,17 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         => nameof(SearchPage);
 
     [RelayCommand]
-    private async Task SearchAsync(string keyword)
+    private async Task SearchAsync(object parameter)
     {
+        var submission = parameter as SearchSubmission;
+        if (submission is not null && _logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("SearchSubmission {SubmissionId} page", submission.Id);
+        }
+        var keyword = submission?.Keyword ?? parameter as string;
         if (string.IsNullOrEmpty(keyword))
         {
             throw new ArgumentNullException(nameof(keyword));
-        }
-
-        // 上次搜索失败时 Sections 为空，即使是同一关键字也应允许重试.
-        if (keyword == Keyword && Sections is not null)
-        {
-            return;
         }
 
         if (keyword.StartsWith("av", StringComparison.InvariantCultureIgnoreCase))
@@ -77,6 +77,17 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             }
         }
 
+        var generation = ++_searchGeneration;
+        var timer = Stopwatch.StartNew();
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Search {PageId} {QueryId} accepted", _pageId, generation);
+        }
+        if (submission is not null && _logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Search {PageId} {QueryId} submission {SubmissionId}", _pageId, generation, submission.Id);
+        }
+        SearchErrorMessage = null;
         Keyword = keyword;
         Sections = default;
         SelectedSection = default;
@@ -84,28 +95,85 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         try
         {
             IsSearching = true;
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Search {PageId} {QueryId} start", _pageId, generation);
+            }
             var (videos, nextVideoOffset) = await _service.GetComprehensiveSearchResultAsync(keyword);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Search {PageId} {QueryId} complete {Count} {ElapsedMs}", _pageId, generation, videos.Count, timer.ElapsedMilliseconds);
+            }
+            if (generation != _searchGeneration)
+            {
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation("Search {PageId} {QueryId} discard", _pageId, generation);
+                }
+                return;
+            }
+
             var sections = new List<ISearchSectionDetailViewModel>
             {
-                CreateVideoSection(videos, nextVideoOffset),
-                CreateSection(SearchSectionType.Anime),
-                CreateSection(SearchSectionType.Cinema),
-                CreateSection(SearchSectionType.Live),
-                CreateSection(SearchSectionType.User),
-                CreateSection(SearchSectionType.Article),
+                CreateVideoSection(keyword, videos, nextVideoOffset),
+                CreateSection(keyword, SearchSectionType.Anime),
+                CreateSection(keyword, SearchSectionType.Cinema),
+                CreateSection(keyword, SearchSectionType.Live),
+                CreateSection(keyword, SearchSectionType.User),
+                CreateSection(keyword, SearchSectionType.Article),
             };
             Sections = [.. sections];
             SelectSection(Sections.FirstOrDefault());
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Search {PageId} {QueryId} publish", _pageId, generation);
+            }
             SectionInitialized?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试获取搜索结果时失败.");
+            if (generation == _searchGeneration && ex is not OperationCanceledException)
+            {
+                SetSearchError(ex);
+            }
+            var outcome = ex is SearchVerificationRequiredException ? "verification" : ex is OperationCanceledException ? "cancelled" : ex is HttpRequestException ? "network" : "failure";
+            // Never attach the exception: its message/stack may include the query, response or credentials.
+            if (_logger.IsEnabled(LogLevel.Warning))
+            {
+                _logger.LogWarning("Search {PageId} {QueryId} {Outcome} {IsCurrent} {ElapsedMs}", _pageId, generation, outcome, generation == _searchGeneration, timer.ElapsedMilliseconds);
+            }
         }
         finally
         {
-            IsSearching = false;
+            if (generation == _searchGeneration)
+            {
+                IsSearching = false;
+            }
         }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanRetry), AllowConcurrentExecutions = true)]
+    private async Task RetryAsync()
+    {
+        if (CanRetry)
+        {
+            await SearchAsync(Keyword);
+        }
+    }
+
+    /// <summary>
+    /// Invalidate pending publication when the page leaves the visual tree.
+    /// </summary>
+    [RelayCommand]
+    private void Deactivate()
+    {
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Search {PageId} {QueryId} unloaded", _pageId, _searchGeneration);
+        }
+        _searchGeneration++;
+        SearchErrorMessage = null;
+        IsSearching = false;
     }
 
     /// <summary>
@@ -123,15 +191,34 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         section.TryFirstLoadCommand.Execute(default);
     }
 
-    private VideoSearchSectionDetailViewModel CreateVideoSection(IReadOnlyList<VideoInformation> videos, int? page)
+    private VideoSearchSectionDetailViewModel CreateVideoSection(string keyword, IReadOnlyList<VideoInformation> videos, int? page)
     {
+        var generation = _searchGeneration;
         var newSection = new VideoSearchSectionDetailViewModel(_service);
-        newSection.Initialize(Keyword, new SearchPartition(0, ResourceToolkit.GetLocalizedString(StringNames.Video)));
+        newSection.LoadCompleted += (sender, error) =>
+        {
+            if (generation == _searchGeneration && ReferenceEquals(SelectedSection, sender) && error is not OperationCanceledException)
+            {
+                if (error is null)
+                {
+                    SearchErrorMessage = null;
+                }
+                else
+                {
+                    SetSearchError(error);
+                }
+            }
+        };
+        newSection.Initialize(keyword, new SearchPartition(0, ResourceToolkit.GetLocalizedString(StringNames.Video)));
         newSection.SetFirstPageData(videos, page);
         return newSection;
     }
 
-    private ISearchSectionDetailViewModel CreateSection(SearchSectionType type)
+    private void SetSearchError(Exception error)
+        => SearchErrorMessage = ResourceToolkit.GetLocalizedString(error is SearchVerificationRequiredException
+            ? StringNames.SearchVerificationRequired : StringNames.SearchFailed);
+
+    private ISearchSectionDetailViewModel CreateSection(string keyword, SearchSectionType type)
     {
         var sectionDetail = type switch
         {
@@ -152,7 +239,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             _ => default
         };
 
-        sectionDetail?.Initialize(Keyword, partition);
+        sectionDetail?.Initialize(keyword, partition);
         return sectionDetail;
     }
 }
