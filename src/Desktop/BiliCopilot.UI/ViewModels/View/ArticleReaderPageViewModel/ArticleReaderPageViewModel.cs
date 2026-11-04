@@ -40,6 +40,8 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         // 每次加载记下代次并取消上一次请求，只有最后一次的结果可以写入页面，
         // 避免旧请求在新文章已经打开后仍继续读取或把状态改回去。
         var (generation, cancellation) = BeginLoad();
+        HasLoadFailed = false;
+        HasContent = false;
         Title = article.Title;
         Content = default;
         IsLoading = true;
@@ -67,7 +69,8 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
                 return;
             }
 
-            Content = content;
+            Content = content ?? throw new InvalidOperationException("Article content is unavailable.");
+            HasContent = true;
             AI.InjectArticleAsync(Content);
             InitializeUser();
             InitializeStats();
@@ -81,6 +84,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         {
             if (IsCurrentLoad(generation))
             {
+                HasLoadFailed = true;
                 _logger.LogError(ex, "加载文章内容时失败 (ArticleId: {ArticleId}, LoadGeneration: {LoadGeneration})", article.Id, generation);
             }
         }
@@ -92,6 +96,23 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
                 IsLoading = false;
             }
         }
+    }
+
+    private bool CanRetry() => HasLoadFailed && !IsLoading && Article is not null;
+
+    [RelayCommand(CanExecute = nameof(CanRetry))]
+    private async Task RetryAsync()
+    {
+        // 命令入口也守卫，防止程序直接执行时产生重复请求。
+        if (!CanRetry())
+        {
+            return;
+        }
+
+        var previous = CurrentLoadGeneration;
+        var task = InitializeAsync(Article!.Value);
+        LoadRetried?.Invoke(previous, CurrentLoadGeneration);
+        await task;
     }
 
     /// <summary>
