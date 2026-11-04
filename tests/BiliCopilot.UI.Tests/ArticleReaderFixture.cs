@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Bili.Article;
@@ -44,4 +44,3 @@ internal static class ArticleReaderFixture
         }
     }
 }
-
