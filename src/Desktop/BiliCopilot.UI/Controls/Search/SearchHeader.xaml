@@ -50,6 +50,7 @@
             Grid.Column="2"
             VerticalAlignment="Center"
             AutomationProperties.Name="{ext:Locale Name=Refresh}"
+            AutomationProperties.AutomationId="SearchRefreshButton"
             Command="{x:Bind ViewModel.SelectedSection.RefreshCommand, Mode=OneWay, FallbackValue={x:Null}}"
             IsEnabled="{x:Bind ViewModel.SelectedSection, Mode=OneWay, Converter={StaticResource ObjectToBoolConverter}}"
             ToolTipService.ToolTip="{ext:Locale Name=Refresh}">
