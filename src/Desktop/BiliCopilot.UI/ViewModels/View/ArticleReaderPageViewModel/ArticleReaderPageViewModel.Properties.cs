@@ -42,7 +42,9 @@ public sealed partial class ArticleReaderPageViewModel
     [ObservableProperty]
     public partial bool HasContent { get; set; }
 
-    /// <summary>重试把页面拥有的加载代次从旧代更新为新代.</summary>
+    /// <summary>
+    /// 重试后通知页面更新其拥有的加载代次.
+    /// </summary>
     public event Action<int, int>? LoadRetried;
 
     [ObservableProperty]

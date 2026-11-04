@@ -199,14 +199,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         {
             await _operationService.ToggleLikeAsync(Article.Value, state);
             IsLiked = state;
-            if (IsLiked ?? false)
-            {
-                LikeCount++;
-            }
-            else
-            {
-                LikeCount--;
-            }
+            LikeCount += state ? 1 : -1;
         }
         catch (Exception ex)
         {
@@ -227,14 +220,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         {
             await _operationService.ToggleFavoriteAsync(Article.Value, state);
             IsFavorited = state;
-            if (IsFavorited ?? false)
-            {
-                FavoriteCount++;
-            }
-            else
-            {
-                FavoriteCount--;
-            }
+            FavoriteCount += state ? 1 : -1;
         }
         catch (Exception ex)
         {

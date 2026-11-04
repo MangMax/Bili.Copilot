@@ -24,9 +24,9 @@ public sealed partial class ArticleReader : LayoutUserControlBase
     /// Initializes a new instance of the <see cref="ArticleReader"/> class.
     /// </summary>
     public ArticleReader()
-        : this(ReadTemplateAsync, null!, null!)
     {
         InitializeComponent();
+        _readTemplate = ReadTemplateAsync;
         _navigate = html => MainView.CoreWebView2.NavigateToString(html);
         _clear = () =>
         {

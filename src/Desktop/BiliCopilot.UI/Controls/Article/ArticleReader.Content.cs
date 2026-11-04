@@ -43,7 +43,7 @@ public sealed partial class ArticleReader
             .Replace("$date$", article.PublishTime.ToString("yyyy-MM-dd HH:mm:ss"))
             .Replace("$view$", FormatViews(article))
             .Replace("$body$", article.HtmlContent);
-        // Template I/O can finish after another article or page owns the reader.
+        // 模板读取期间可能已换文或卸载，导航前重新确认归属。
         if (generation == _injectionGeneration && (isCurrent?.Invoke() ?? true))
         {
             _navigate(html);
