@@ -195,11 +195,18 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     {
         var generation = _searchGeneration;
         var newSection = new VideoSearchSectionDetailViewModel(_service);
-        newSection.LoadFailed += (sender, error) =>
+        newSection.LoadCompleted += (sender, error) =>
         {
             if (generation == _searchGeneration && ReferenceEquals(SelectedSection, sender) && error is not OperationCanceledException)
             {
-                SetSearchError(error);
+                if (error is null)
+                {
+                    SearchErrorMessage = null;
+                }
+                else
+                {
+                    SetSearchError(error);
+                }
             }
         };
         newSection.Initialize(keyword, new SearchPartition(0, ResourceToolkit.GetLocalizedString(StringNames.Video)));

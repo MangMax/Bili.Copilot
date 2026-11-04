@@ -401,6 +401,69 @@ public sealed class SearchRecoveryInvestigationTests : IDisposable
         Assert.True(_model.RetryCommand.CanExecute(null));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SuccessfulSectionRefreshOrSortClearsPreviousVerification(bool sort)
+    {
+        Submit("query-a");
+        await Complete(0, empty: true);
+        var section = VideoSection;
+        await section.RefreshCommand.ExecuteAsync(null);
+        _dispatcher.Drain();
+        _service.Requests[1].Completion.SetException(new SearchVerificationRequiredException());
+        _dispatcher.Drain();
+        Assert.True(_model.HasSearchError);
+
+        if (sort) section.ChangeSortTypeCommand.Execute(ComprehensiveSearchSortType.Newest);
+        else await section.RefreshCommand.ExecuteAsync(null);
+        _dispatcher.Drain();
+        _service.Requests[2].Completion.SetResult(([new VideoInformation(new MediaIdentifier("42", null, null), default!)], null));
+        _dispatcher.Drain();
+
+        Assert.Single(section.Items);
+        Assert.False(_model.HasSearchError);
+        Assert.Null(_model.SearchErrorMessage);
+        Assert.False(_model.RetryCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task OldSectionSuccessDoesNotClearLatestQueryVerification()
+    {
+        Submit("query-a");
+        await Complete(0, empty: true);
+        await VideoSection.RefreshCommand.ExecuteAsync(null);
+        _dispatcher.Drain();
+        Submit("query-b");
+        var latest = _model.SearchCommand.ExecutionTask!;
+        _service.Requests[2].Completion.SetException(new SearchVerificationRequiredException());
+        await latest;
+        Assert.True(_model.HasSearchError);
+
+        _service.Requests[1].Completion.SetResult(([new VideoInformation(new MediaIdentifier("42", null, null), default!)], null));
+        _dispatcher.Drain();
+        Assert.True(_model.HasSearchError);
+        Assert.Equal("SearchVerificationRequired", _model.SearchErrorMessage);
+        Assert.Equal("query-b", _model.Keyword);
+    }
+
+    [Fact]
+    public async Task QueuedFirstPagePublicationDoesNotClearPaginationVerification()
+    {
+        Submit("query-a");
+        var firstLoad = _model.SearchCommand.ExecutionTask!;
+        _service.Requests[0].Completion.SetResult(([new VideoInformation(new MediaIdentifier("42", null, null), default!)], 2));
+        await firstLoad;
+        var paging = VideoSection.LoadItemsCommand.ExecuteAsync(null);
+        _service.Requests[1].Completion.SetException(new SearchVerificationRequiredException());
+        await paging;
+        Assert.True(_model.HasSearchError);
+
+        _dispatcher.Drain();
+        Assert.True(_model.HasSearchError);
+        Assert.Equal("SearchVerificationRequired", _model.SearchErrorMessage);
+    }
+
     [Fact]
     public async Task OldSectionRefreshVerificationCannotReplaceNewQueryResults()
     {

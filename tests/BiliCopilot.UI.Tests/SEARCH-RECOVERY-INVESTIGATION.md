@@ -8,8 +8,8 @@ was 7 passed / 2 failed: same-keyword empty retry and late empty response owners
 dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj -p:SearchRecoveryRegression=true --filter FullyQualifiedName~SearchRecoveryInvestigationTests
 ```
 
-Expected: 21 passed, 0 failed, 0 skipped. The old `SearchRecoveryInvestigation=true`
-switch remains an alias. No intentional red/skip tests remain. Rebuild when switching
+The old `SearchRecoveryInvestigation=true` switch remains an alias.
+No intentional red/skip tests remain. Rebuild when switching
 modes: `--no-build` can otherwise run the previous mode's assembly.
 
 This opt-in mode links production SearchBoxViewModel, NavigationViewModel, OverlayFrame,
@@ -28,9 +28,7 @@ The harness does not prove Enter/IME/suggestion-click, runtime bindings, HTTP/au
 or live/user/article section behavior. It does not reproduce the original report of all
 subsequent different words permanently failing; the confirmed defects are narrower.
 
-External reports and actual command evidence:
-- `C:/Users/hp/.t3/userdata/search-spec-123/investigation.md`
-- `C:/Users/hp/.t3/userdata/search-spec-123/implementation.md`
+Investigation and validation evidence is recorded in [#125](https://github.com/MangMax/Bili.Copilot/issues/125).
 
 ## Review-fix CI and submission diagnostics
 

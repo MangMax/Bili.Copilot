@@ -30,9 +30,9 @@ public sealed partial class VideoSearchSectionDetailViewModel : ViewModelBase, I
     }
 
     /// <summary>
-    /// Raised when a refresh, sort or pagination request fails.
+    /// Reports a refresh, sort or pagination result; a null error means success.
     /// </summary>
-    public event EventHandler<Exception>? LoadFailed;
+    public event EventHandler<Exception?>? LoadCompleted;
 
     /// <inheritdoc/>
     public void Initialize(string keyword, SearchPartition partition)
@@ -108,12 +108,13 @@ public sealed partial class VideoSearchSectionDetailViewModel : ViewModelBase, I
             }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);
+            LoadCompleted?.Invoke(this, null);
         }
         catch (Exception ex)
         {
             _isPreventLoadMore = true;
             _logger.LogWarning("Search section request failed: {Outcome}", ex is SearchVerificationRequiredException ? "verification" : "failure");
-            LoadFailed?.Invoke(this, ex);
+            LoadCompleted?.Invoke(this, ex);
         }
         finally
         {
