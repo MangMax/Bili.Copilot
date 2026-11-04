@@ -91,6 +91,37 @@ public sealed class RecommendFeedSourceTests
         Assert.Equal(5, service.LastRecommendOffset);
     }
 
+    [Fact]
+    public void SettingReadsBackWhatItWrote()
+    {
+        var original = BiliCopilot.UI.Toolkits.SettingsToolkit.RecommendSourceIndex;
+        try
+        {
+            RecommendFeedSourceSetting.Write(RecommendFeedSource.Web);
+            Assert.Equal(RecommendFeedSource.Web, RecommendFeedSourceSetting.Read());
+        }
+        finally
+        {
+            BiliCopilot.UI.Toolkits.SettingsToolkit.RecommendSourceIndex = original;
+        }
+    }
+
+    [Fact]
+    public void SettingFallsBackWhenTheStoredValueIsOutOfRange()
+    {
+        var original = BiliCopilot.UI.Toolkits.SettingsToolkit.RecommendSourceIndex;
+        try
+        {
+            // 越界值（例如旧版本写入的其他含义）不应让推荐流加载失败。
+            BiliCopilot.UI.Toolkits.SettingsToolkit.RecommendSourceIndex = 99;
+            Assert.Equal(RecommendFeedSource.Mobile, RecommendFeedSourceSetting.Read());
+        }
+        finally
+        {
+            BiliCopilot.UI.Toolkits.SettingsToolkit.RecommendSourceIndex = original;
+        }
+    }
+
     private static VideoInformation Video(string id) => new(new(id, id, null!), null!, bvId: id);
 
     private sealed class FakeService : IVideoDiscoveryService

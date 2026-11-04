@@ -24,7 +24,7 @@ public sealed partial class PopularPageViewModel
         }
 
         // 换来源必须整表替换：增量刷新会保留旧来源的条目，列表就混源了，撤销也会退回混源状态。
-        var configuredKind = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
+        var configuredKind = RecommendFeedSourceSetting.Read();
         var isSourceSwitch = _feedSource is not null && _feedSourceKind != configuredKind;
         var isIncremental = !isSourceSwitch
             && SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false)
@@ -52,6 +52,7 @@ public sealed partial class PopularPageViewModel
 
         // 手动刷新是用户明确的「重试一次」，把连续失败计数清掉。
         _recommendFailureCount = 0;
+        IsRecommendLoadFailed = false;
         if (isIncremental)
         {
             // 增量刷新先在顶部预留位置，卡片按页填进去，避免每次插入都把整列往下顶。
@@ -305,11 +306,8 @@ public sealed partial class PopularPageViewModel
         }
 
         // 刷新与首屏重新创建来源：合并来源自己攥着网页端批次，只靠页面游标无法把它重置到头上。
-        // 设置里存的是下标（int），读出来再收敛到合法枚举，避免类型不匹配抛异常。
-        var rawKind = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, (int)RecommendFeedSource.Mobile);
-        var kind = Enum.IsDefined(typeof(RecommendFeedSource), rawKind)
-            ? (RecommendFeedSource)rawKind
-            : RecommendFeedSource.Mobile;
+        // 设置里存的是下标（int）；旧版本存的是枚举，读取处统一做兼容与迁移。
+        var kind = RecommendFeedSourceSetting.Read();
         var kindChanged = _feedSource is null || _feedSourceKind != kind;
         _feedSourceKind = kind;
         _feedSource = RecommendFeedSourceFactory.Create(_service, kind);
@@ -328,6 +326,7 @@ public sealed partial class PopularPageViewModel
         {
             // 连续失败后不再自动重试：每次布局变化都试一次会把接口打到限流，
             // 交给手动刷新或切换分区来重置。
+            IsRecommendLoadFailed = true;
             return;
         }
 
@@ -368,6 +367,7 @@ public sealed partial class PopularPageViewModel
         {
             _recommendFailureCount++;
             _logger.LogError(ex, "尝试加载推荐视频时出错（连续第 {Count} 次）.", _recommendFailureCount);
+            if (_recommendFailureCount >= MaxRecommendFailureCount) IsRecommendLoadFailed = true;
         }
     }
 

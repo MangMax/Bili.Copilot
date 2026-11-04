@@ -99,6 +99,7 @@ namespace BiliCopilot.UI.Toolkits
         public static void WriteLocalSetting<T>(SettingNames name, T value)
         {
             if (NavigationTestServices.Settings.Value is { } settings) settings[name] = value;
+            else if (name == SettingNames.RecommendFeedSource) RecommendSourceIndex = (int)(object)value!;
             else LastSection = value!.ToString()!;
         }
     }

@@ -28,6 +28,16 @@ public sealed partial class PopularPageViewModel
     /// 连续失败多少次后暂停自动补页.
     /// </summary>
     private const int MaxRecommendFailureCount = 3;
+
+    /// <summary>
+    /// 推荐流是否已经彻底加载失败（连续失败达到上限）.
+    /// </summary>
+    /// <remarks>
+    /// 失败后必须让骨架让位：否则页面会永远停在骨架屏上，用户既看不到内容也不知道出了什么事.
+    /// 手动刷新或切换分区会把它复位.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _isRecommendLoadFailed;
     // 当前列表实际使用的推荐流来源；设置变更后要等到下一次刷新才切换，避免同一条列表混源。
     private IRecommendFeedSource? _feedSource;
     private RecommendFeedSource _feedSourceKind;

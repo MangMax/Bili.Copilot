@@ -148,7 +148,9 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         var leading = _pendingRefreshCount > 0
             ? Math.Max(0, _pendingRefreshCount - inserted)
             : 0;
-        var tail = Math.Max(0, budget - leading - count);
+        // 加载彻底失败时不再补骨架，让页面明确显示"没有内容"，而不是永远转圈.
+        var failed = ViewModel?.IsRecommendLoadFailed == true;
+        var tail = failed ? 0 : Math.Max(0, budget - leading - count);
 
         ApplyDesired(leading + count + tail, i =>
         {

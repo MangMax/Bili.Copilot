@@ -5,6 +5,7 @@ using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
+using BiliCopilot.UI.ViewModels.Recommend;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -112,7 +113,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         UseWebPlayerWhenLive = SettingsToolkit.ReadLocalSetting(SettingNames.UseWebPlayerWhenLive, false);
         ShowSearchRecommend = SettingsToolkit.ReadLocalSetting(SettingNames.ShowSearchRecommend, false);
         IncrementalRecommendRefresh = SettingsToolkit.ReadLocalSetting(SettingNames.IncrementalRecommendRefresh, false);
-        RecommendSourceIndex = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, (int)RecommendFeedSource.Mobile);
+        RecommendSourceIndex = (int)RecommendFeedSourceSetting.Read();
 
         ScreenshotAction = SettingsToolkit.ReadLocalSetting(SettingNames.ScreenshotAction, ScreenshotAction.Open);
         var customScreenshotFolderPath = SettingsToolkit.ReadLocalSetting(SettingNames.CustomScreenshotFolderPath, string.Empty);
@@ -514,9 +515,9 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 
     partial void OnRecommendSourceIndexChanged(int value)
     {
-        // 应用设置存储只支持基础类型，枚举必须落成 int。
-        var index = Enum.IsDefined(typeof(RecommendFeedSource), value) ? value : (int)RecommendFeedSource.Mobile;
-        SettingsToolkit.WriteLocalSetting(SettingNames.RecommendFeedSource, index);
+        // 应用设置存储只支持基础类型，枚举统一落成 int。
+        var source = Enum.IsDefined(typeof(RecommendFeedSource), value) ? (RecommendFeedSource)value : RecommendFeedSource.Mobile;
+        RecommendFeedSourceSetting.Write(source);
     }
 
     partial void OnIsPopularNavVisibleChanged(bool value)

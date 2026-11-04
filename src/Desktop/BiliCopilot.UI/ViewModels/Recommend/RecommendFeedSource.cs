@@ -146,3 +146,48 @@ public static class RecommendFeedSourceFactory
             _ => new MobileRecommendFeedSource(service),
         };
 }
+/// <summary>
+/// 推荐流来源设置的读写.
+/// </summary>
+/// <remarks>
+/// 早期版本把枚举直接写进了应用设置，而设置存储只支持基础类型，
+/// 现在统一按下标（int）读写；读取时兼容旧值，避免升级后整个推荐流因类型不匹配而加载失败.
+/// </remarks>
+public static class RecommendFeedSourceSetting
+{
+    /// <summary>
+    /// 读取推荐流来源.
+    /// </summary>
+    /// <returns>当前设置的来源，无法识别时回退到手机端.</returns>
+    public static RecommendFeedSource Read()
+    {
+        try
+        {
+            var index = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, (int)RecommendFeedSource.Mobile);
+            return Enum.IsDefined(typeof(RecommendFeedSource), index)
+                ? (RecommendFeedSource)index
+                : RecommendFeedSource.Mobile;
+        }
+        catch (InvalidCastException)
+        {
+            // 旧版本存的是枚举本身；读出来后顺手迁移成下标。
+            try
+            {
+                var legacy = SettingsToolkit.ReadLocalSetting(SettingNames.RecommendFeedSource, RecommendFeedSource.Mobile);
+                Write(legacy);
+                return legacy;
+            }
+            catch (InvalidCastException)
+            {
+                return RecommendFeedSource.Mobile;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 写入推荐流来源.
+    /// </summary>
+    /// <param name="source">要保存的来源.</param>
+    public static void Write(RecommendFeedSource source)
+        => SettingsToolkit.WriteLocalSetting(SettingNames.RecommendFeedSource, (int)source);
+}
