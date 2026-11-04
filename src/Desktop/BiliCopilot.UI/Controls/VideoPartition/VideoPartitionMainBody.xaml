@@ -30,13 +30,12 @@
     <Grid>
         <controls:IncrementVerticalScrollControl
             x:Name="View"
-            ItemCount="{x:Bind ViewModel.Videos.Count, Mode=OneWay}"
             LoadMoreCommand="{x:Bind ViewModel.LoadVideosCommand, Mode=OneWay}">
             <controls:IncrementVerticalScrollControl.Element>
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
                         x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind DisplayItems}"
+                        ItemsSource="{x:Bind DisplayItems, Mode=OneWay}"
                         Layout="{StaticResource VideoLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate>
