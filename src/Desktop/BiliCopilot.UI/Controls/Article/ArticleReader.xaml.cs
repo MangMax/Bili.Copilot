@@ -23,7 +23,17 @@ public sealed partial class ArticleReader : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleReader"/> class.
     /// </summary>
-    public ArticleReader() => InitializeComponent();
+    public ArticleReader()
+    {
+        InitializeComponent();
+        _readTemplate = ReadTemplateAsync;
+        _navigate = html => MainView.CoreWebView2.NavigateToString(html);
+        _clear = () =>
+        {
+            MainView?.CoreWebView2?.NavigateToString(string.Empty);
+            MainView?.Close();
+        };
+    }
 
     /// <summary>
     /// 控件加载完成.
@@ -35,15 +45,7 @@ public sealed partial class ArticleReader : LayoutUserControlBase
     /// </summary>
     public bool IsInitialized { get; private set; }
 
-    /// <summary>
-    /// 加载文章内容.
-    /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
-    public async Task LoadContentAsync(
-        ArticleDetail article,
-        string fontFamily = "Segoe UI",
-        double fontSize = 16,
-        double lineHeight = 1.5)
+    private static async Task<(string Html, string Css, string Theme)> ReadTemplateAsync()
     {
         var path = Path.Combine(Package.Current.InstalledPath, "Assets/Reader");
         var theme = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.AppTheme, ElementTheme.Default).ToString();
@@ -54,28 +56,11 @@ public sealed partial class ArticleReader : LayoutUserControlBase
 
         var localHtml = await File.ReadAllTextAsync(Path.Combine(path, "ShowPage.html"));
         var localCss = await File.ReadAllTextAsync(Path.Combine(path, $"{theme}.css"));
-        localCss = localCss.Replace("$FontFamily$", fontFamily)
-            .Replace("$FontSize$", $"{fontSize}")
-            .Replace("$LineHeight$", $"{lineHeight}");
-        var html = localHtml.Replace("$theme$", theme.ToLower())
-            .Replace("$style$", localCss)
-            .Replace("$title$", article.Identifier.Title)
-            .Replace("$author$", article.Author.Profile.User.Name)
-            .Replace("$date$", article.PublishTime.ToString("yyyy-MM-dd HH:mm:ss"))
-            .Replace("$view$", AppToolkit.FormatCount(article.CommunityInformation.ViewCount ?? 0))
-            .Replace("$body$", article.HtmlContent);
-        MainView.CoreWebView2.NavigateToString(html);
+        return (localHtml, localCss, theme);
     }
 
-    /// <summary>
-    /// 清除内容.
-    /// </summary>
-    public void ClearContent()
-    {
-        // 快速返回时 WebView 可能还没完成初始化，CoreWebView2 仍为空。
-        MainView?.CoreWebView2?.NavigateToString(string.Empty);
-        MainView?.Close();
-    }
+    private static string FormatViews(ArticleDetail article)
+        => AppToolkit.FormatCount(article.CommunityInformation.ViewCount ?? 0);
 
     /// <inheritdoc/>
     protected override async void OnControlLoaded()

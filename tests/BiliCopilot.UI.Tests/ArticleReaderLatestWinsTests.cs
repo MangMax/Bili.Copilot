@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Core;
@@ -17,14 +17,109 @@ using Richasy.BiliKernel.Services.Article;
 using System.Net;
 using System.Text;
 
+using static BiliCopilot.UI.Tests.ArticleReaderFixture;
+
 namespace BiliCopilot.UI.Tests;
 
 /// <summary>
 /// 阅读器视图模型是单例：连续打开不同文章时，第二次点击不能被正在进行的
 /// 第一次加载挡掉，旧响应也不能覆盖新文章的标题、作者、正文或加载态。
 /// </summary>
-public sealed class ArticleReaderLatestWinsTests
+public sealed partial class ArticleReaderLatestWinsTests
 {
+    [Theory]
+    [InlineData(null)]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task LikeCommandPreservesUnknownAndTogglesKnownState(bool? initial)
+    {
+        var discovery = new Discovery();
+        var operation = new Operation();
+        var vm = new ArticleReaderPageViewModel(discovery, operation,
+            NullLogger<ArticleReaderPageViewModel>.Instance, new CommentMainViewModel(), new AIViewModel());
+        var article = new ArticleIdentifier("1001", "Article A", null, null);
+        vm.InitializeCommand.Execute(article);
+        discovery.Complete("1001", Detail(article, initial, null));
+        await vm.InitializeCommand.ExecutionTask!;
+
+        await vm.ToggleLikeCommand.ExecuteAsync(null);
+
+        if (initial is null)
+        {
+            Assert.Empty(operation.Likes);
+            Assert.Null(vm.IsLiked);
+            Assert.Equal(0, vm.LikeCount);
+        }
+        else
+        {
+            Assert.Equal(!initial.Value, Assert.Single(operation.Likes));
+            Assert.Equal(!initial.Value, vm.IsLiked);
+            Assert.Equal(initial.Value ? -1 : 1, vm.LikeCount);
+        }
+
+        Assert.Null(vm.IsFavorited);
+        Assert.Equal(0, vm.FavoriteCount);
+        Assert.Empty(operation.Favorites);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task FavoriteCommandPreservesUnknownAndTogglesKnownState(bool? initial)
+    {
+        var discovery = new Discovery();
+        var operation = new Operation();
+        var vm = new ArticleReaderPageViewModel(discovery, operation,
+            NullLogger<ArticleReaderPageViewModel>.Instance, new CommentMainViewModel(), new AIViewModel());
+        var article = new ArticleIdentifier("1001", "Article A", null, null);
+        vm.InitializeCommand.Execute(article);
+        discovery.Complete("1001", Detail(article, null, initial));
+        await vm.InitializeCommand.ExecutionTask!;
+
+        await vm.ToggleFavoriteCommand.ExecuteAsync(null);
+
+        if (initial is null)
+        {
+            Assert.Empty(operation.Favorites);
+            Assert.Null(vm.IsFavorited);
+            Assert.Equal(0, vm.FavoriteCount);
+        }
+        else
+        {
+            Assert.Equal(!initial.Value, Assert.Single(operation.Favorites));
+            Assert.Equal(!initial.Value, vm.IsFavorited);
+            Assert.Equal(initial.Value ? -1 : 1, vm.FavoriteCount);
+        }
+
+        Assert.Null(vm.IsLiked);
+        Assert.Equal(0, vm.LikeCount);
+    }
+
+    [Fact]
+    public async Task MissingStatsPreservesBodyAuthorAndUnknownStates()
+    {
+        var discovery = new Discovery();
+        var operation = new Operation();
+        var vm = new ArticleReaderPageViewModel(discovery, operation,
+            NullLogger<ArticleReaderPageViewModel>.Instance, new CommentMainViewModel(), new AIViewModel());
+        var article = new ArticleIdentifier("1001", "Article A", null, null);
+        vm.InitializeCommand.Execute(article);
+        discovery.Complete("1001", Detail(article, null, null));
+        await vm.InitializeCommand.ExecutionTask!;
+        await vm.ToggleLikeCommand.ExecuteAsync(null);
+        await vm.ToggleFavoriteCommand.ExecuteAsync(null);
+        Assert.Equal("<p>1001</p>", vm.Content!.HtmlContent);
+        Assert.Equal("Author 1001", vm.Author);
+        Assert.False(vm.IsLoading);
+        Assert.Null(vm.IsLiked);
+        Assert.Null(vm.IsFavorited);
+        Assert.Equal(0, vm.LikeCount);
+        Assert.Equal(0, vm.FavoriteCount);
+        Assert.Empty(operation.Likes);
+        Assert.Empty(operation.Favorites);
+    }
+
     [Fact]
     public async Task SecondOpenRunsAndStaleResponseCannotOverwriteIt()
     {
@@ -232,7 +327,7 @@ public sealed class ArticleReaderLatestWinsTests
 
         vm.InitializeCommand.Execute(first);
         var firstTask = vm.InitializeCommand.ExecutionTask!;
-        await handler.FirstContentRequested;
+        await handler.FirstContentRequested.WaitAsync(TimeSpan.FromSeconds(10));
 
         vm.InitializeCommand.Execute(second);
         var secondTask = vm.InitializeCommand.ExecutionTask!;
@@ -256,29 +351,6 @@ public sealed class ArticleReaderLatestWinsTests
             NullLogger<ArticleReaderPageViewModel>.Instance,
             new CommentMainViewModel(),
             new AIViewModel());
-
-    private static ArticleDetail Detail(ArticleIdentifier identifier)
-    {
-        var id = identifier.Id!;
-        var user = new UserProfile(id, $"Author {id}", new BiliImage(new Uri($"https://example.invalid/{id}.png")));
-        var card = new UserCard(new UserDetailProfile(user), new UserCommunityInformation(id));
-        return new ArticleDetail(
-            identifier,
-            card,
-            new ArticleCommunityInformation(id),
-            $"<p>{id}</p>",
-            DateTimeOffset.UnixEpoch,
-            [],
-            false,
-            false);
-    }
-
-    private sealed class Operation : IArticleOperationService
-    {
-        public Task ToggleLikeAsync(ArticleIdentifier article, bool isLike, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task ToggleFavoriteAsync(ArticleIdentifier article, bool isFavorite, CancellationToken cancellationToken = default) => Task.CompletedTask;
-    }
 
     private sealed class Discovery : IArticleDiscoveryService
     {
@@ -330,7 +402,7 @@ public sealed class ArticleReaderLatestWinsTests
     private sealed class BlockingArticleHandler : HttpMessageHandler
     {
         private const string SecondContentState = """
-            {"readInfo":{"id":1002,"title":"Article B","publish_time":1700000000,"author":{"mid":43,"name":"Author 1002","face":"https://example.invalid/b.png","fans":1,"level":2},"content":"<p>B body</p>","tags":[]}}
+            {"code":0,"data":{"id":1002,"title":"Article B","publish_time":1700000000,"author":{"mid":43,"name":"Author 1002","face":"https://example.invalid/b.png","fans":1,"level":2},"content":"<p>B body</p>","tags":[]}}
             """;
 
         private const string SecondViewState = """
@@ -360,7 +432,7 @@ public sealed class ArticleReaderLatestWinsTests
         {
             var uri = request.RequestUri!;
             var isFirst = uri.Query.Contains("id=1001", StringComparison.Ordinal);
-            if (uri.AbsolutePath.Contains("read/native", StringComparison.Ordinal))
+            if (uri.AbsolutePath == "/x/article/view")
             {
                 if (isFirst)
                 {
@@ -380,7 +452,7 @@ public sealed class ArticleReaderLatestWinsTests
                 }
 
                 Interlocked.Increment(ref _secondContentRequests);
-                return Html($"<html><script>window.__INITIAL_STATE__ = {SecondContentState};</script></html>");
+                return Json(SecondContentState);
             }
 
             if (uri.AbsolutePath.Contains("article/viewinfo", StringComparison.Ordinal))

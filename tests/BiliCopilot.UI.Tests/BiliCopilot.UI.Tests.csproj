@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
@@ -148,5 +148,8 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/SeasonCardStyle.cs" Link="SearchRecovery/SeasonCardStyle.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Items/ISearchSectionDetailViewModel.cs" Link="SearchRecovery/ISearchSectionDetailViewModel.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/SearchSectionType.cs" Link="SearchRecovery/SearchSectionType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/Article/ArticleReader.Content.cs" Link="Article/ArticleReader.Content.cs" />
   </ItemGroup>
 </Project>
