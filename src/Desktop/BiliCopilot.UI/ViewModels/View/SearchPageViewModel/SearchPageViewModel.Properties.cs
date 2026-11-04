@@ -18,9 +18,20 @@ public sealed partial class SearchPageViewModel
     private readonly ILogger<SearchPageViewModel> _logger;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RetryCommand))]
     public partial string Keyword { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSearchError))]
+    [NotifyCanExecuteChangedFor(nameof(RetryCommand))]
+    public partial string? SearchErrorMessage { get; set; }
+
+    private bool CanRetry => HasSearchError && !IsSearching && !string.IsNullOrEmpty(Keyword);
+
+    public bool HasSearchError => !string.IsNullOrEmpty(SearchErrorMessage);
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RetryCommand))]
     public partial bool IsSearching { get; set; }
 
     [ObservableProperty]
