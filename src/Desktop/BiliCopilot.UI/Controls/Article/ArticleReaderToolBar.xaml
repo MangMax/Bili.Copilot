@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <local:ArticleReaderPageControlBase
     x:Class="BiliCopilot.UI.Controls.Article.ArticleReaderToolBar"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -68,7 +68,12 @@
             </Button>
 
             <ToggleButton
+                AutomationProperties.AutomationId="ArticleLikeButton"
+                AutomationProperties.HelpText="{x:Bind local:ArticleReaderToolBar.GetLikeHelp(ViewModel.IsLiked), Mode=OneWay}"
+                AutomationProperties.Name="{x:Bind local:ArticleReaderToolBar.GetLikeHelp(ViewModel.IsLiked), Mode=OneWay}"
                 Command="{x:Bind ViewModel.ToggleLikeCommand, Mode=OneWay}"
+                IsEnabled="{x:Bind local:ArticleReaderToolBar.IsKnown(ViewModel.IsLiked), Mode=OneWay}"
+                ToolTipService.ToolTip="{x:Bind local:ArticleReaderToolBar.GetLikeHelp(ViewModel.IsLiked), Mode=OneWay}"
                 IsChecked="{x:Bind ViewModel.IsLiked, Mode=OneWay}"
                 Style="{StaticResource IconToggleButtonStyle}">
                 <StackPanel Spacing="4">
@@ -102,7 +107,12 @@
                 </StackPanel>
             </ToggleButton>
             <ToggleButton
+                AutomationProperties.AutomationId="ArticleFavoriteButton"
+                AutomationProperties.HelpText="{x:Bind local:ArticleReaderToolBar.GetFavoriteHelp(ViewModel.IsFavorited), Mode=OneWay}"
+                AutomationProperties.Name="{x:Bind local:ArticleReaderToolBar.GetFavoriteHelp(ViewModel.IsFavorited), Mode=OneWay}"
                 Command="{x:Bind ViewModel.ToggleFavoriteCommand, Mode=OneWay}"
+                IsEnabled="{x:Bind local:ArticleReaderToolBar.IsKnown(ViewModel.IsFavorited), Mode=OneWay}"
+                ToolTipService.ToolTip="{x:Bind local:ArticleReaderToolBar.GetFavoriteHelp(ViewModel.IsFavorited), Mode=OneWay}"
                 IsChecked="{x:Bind ViewModel.IsFavorited, Mode=OneWay}"
                 Style="{StaticResource IconToggleButtonStyle}">
                 <StackPanel Spacing="4">

@@ -3309,4 +3309,10 @@
   <data name="RefreshingRecommendVideos" xml:space="preserve">
     <value>正在刷新推荐视频</value>
   </data>
+  <data name="ArticleLikeStateUnknown" xml:space="preserve">
+    <value>点赞状态未知，暂时无法点赞或取消点赞</value>
+  </data>
+  <data name="ArticleFavoriteStateUnknown" xml:space="preserve">
+    <value>收藏状态未知，暂时无法收藏或取消收藏</value>
+  </data>
 </root>
