@@ -26,24 +26,6 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
         DependencyProperty.Register(nameof(ItemCount), typeof(int), typeof(IncrementVerticalScrollControl), new PropertyMetadata(-1));
 
     /// <summary>
-    /// 卡片网格尺寸，用于推算一屏放得下多少张卡片.
-    /// </summary>
-    public static readonly DependencyProperty ItemLayoutProperty =
-        DependencyProperty.Register(nameof(ItemLayout), typeof(SlotLayout), typeof(IncrementVerticalScrollControl), new PropertyMetadata(SlotLayout.Video));
-
-    /// <summary>
-    /// 视口之外额外预留的行数.
-    /// </summary>
-    public static readonly DependencyProperty LookaheadRowsProperty =
-        DependencyProperty.Register(nameof(LookaheadRows), typeof(int), typeof(IncrementVerticalScrollControl), new PropertyMetadata(ScrollSlotBudget.DefaultLookaheadRows));
-
-    /// <summary>
-    /// 槽位上限.
-    /// </summary>
-    public static readonly DependencyProperty MaxSlotCountProperty =
-        DependencyProperty.Register(nameof(MaxSlotCount), typeof(int), typeof(IncrementVerticalScrollControl), new PropertyMetadata(ScrollSlotBudget.DefaultMaxSlots));
-
-    /// <summary>
     /// 是否保留「滚动余量不足」这条兜底判据.
     /// </summary>
     /// <remarks>
@@ -94,33 +76,6 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
     }
 
     /// <summary>
-    /// 卡片网格尺寸.
-    /// </summary>
-    public SlotLayout ItemLayout
-    {
-        get => GetValue(ItemLayoutProperty) is SlotLayout value ? value : SlotLayout.Video;
-        set => SetValue(ItemLayoutProperty, value);
-    }
-
-    /// <summary>
-    /// 视口之外额外预留的行数.
-    /// </summary>
-    public int LookaheadRows
-    {
-        get => GetValue(LookaheadRowsProperty) is int value ? value : ScrollSlotBudget.DefaultLookaheadRows;
-        set => SetValue(LookaheadRowsProperty, value);
-    }
-
-    /// <summary>
-    /// 槽位上限.
-    /// </summary>
-    public int MaxSlotCount
-    {
-        get => GetValue(MaxSlotCountProperty) is int value ? value : ScrollSlotBudget.DefaultMaxSlots;
-        set => SetValue(MaxSlotCountProperty, value);
-    }
-
-    /// <summary>
     /// 是否保留滚动余量兜底判据.
     /// </summary>
     public bool ExtentFallbackEnabled
@@ -135,10 +90,9 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
     public int CurrentBudget { get; private set; } = -1;
 
     /// <summary>
-    /// 按当前视口重新计算预算.
+    /// 按当前视口重新计算预算；预算变化时通知观察者.
     /// </summary>
-    /// <returns>槽位数；布局尚未完成时返回 -1.</returns>
-    public int RefreshBudget()
+    private int RefreshBudget()
     {
         if (View is null)
         {
@@ -152,7 +106,7 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
             return CurrentBudget;
         }
 
-        var budget = ScrollSlotBudget.Compute(width, height, ItemLayout, LookaheadRows, MaxSlotCount);
+        var budget = ScrollSlotBudget.Compute(width, height, SlotLayout.Video);
         if (budget == CurrentBudget)
         {
             return CurrentBudget;
@@ -200,16 +154,6 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
         }
 
         View.ScrollTo(0, 0);
-    }
-
-    public double GetScrollPosition()
-    {
-        if (View is null)
-        {
-            return 0;
-        }
-
-        return View.VerticalOffset;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)

@@ -1,6 +1,5 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.Controls.Components;
 using BiliCopilot.UI.Toolkits;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,11 +11,6 @@ namespace BiliCopilot.UI.Controls.Popular;
 /// </summary>
 public sealed partial class PopularMainBody : PopularPageControlBase
 {
-    /// <summary>
-    /// 布局尚未完成时先按这个数量铺骨架，等真实尺寸算出来后立刻校正.
-    /// </summary>
-    private const int InitialSkeletonEstimate = 16;
-
     private bool _isActive;
     // 增量刷新尚未到达的条数；大于 0 时在列表顶部留出等量的骨架位置。
     private int _pendingRefreshCount;
@@ -127,7 +121,7 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     /// </remarks>
     private void SyncDisplayItems()
     {
-        var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
+        var budget = View.CurrentBudget > 0 ? View.CurrentBudget : VideoListDisplay.InitialSkeletonEstimate;
         if (ViewModel is not null)
         {
             // 手动刷新和首屏共用同一套度量：刷多少由当前视口预算决定。
@@ -138,20 +132,12 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         var count = videos?.Count ?? 0;
 
         // 增量刷新：Videos 头部是本次新插入的条目，尾部是刷新前的旧条目。
-        // 排布交给纯函数计算，便于单测覆盖「预留区高度恒定、新卡片从顶部往下填」。
-        var layout = RefreshSlotLayout.Compute(
-            count,
-            _refreshBaselineCount,
-            _pendingRefreshCount,
-            budget);
-
+        // 排布由纯函数计算，便于单测覆盖「预留区高度恒定、新卡片从顶部往下填」。
         // 加载彻底失败时不再补尾巴骨架，页面明确呈现“没有内容”，而不是永远转圈.
-        if (ViewModel?.IsRecommendLoadFailed == true)
-        {
-            layout = RefreshSlotLayout.Compute(count, _refreshBaselineCount, _pendingRefreshCount, 0);
-        }
+        var tail = ViewModel?.IsRecommendLoadFailed == true ? 0 : budget;
+        var layout = RefreshSlotLayout.Compute(count, _refreshBaselineCount, _pendingRefreshCount, tail);
 
-        ApplyDesired(layout.TotalCount, i =>
+        VideoListDisplay.Apply(DisplayItems, layout.TotalCount, i =>
         {
             var videoIndex = layout.VideoIndexAt(i);
             return videoIndex < 0 ? null : videos![videoIndex];
@@ -161,46 +147,5 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         // 还有骨架占位时只按预算判断是否续页，避免 extent 被骨架撑满后无限预取。
         var hasPlaceholders = layout.Remaining > 0 || layout.TailCount > 0;
         View.ExtentFallbackEnabled = !hasPlaceholders;
-    }
-
-    /// <summary>
-    /// 把视图集合对齐到期望序列；占位项复用已有实例，避免每次同步都重建骨架.
-    /// </summary>
-    /// <param name="desiredCount">期望长度.</param>
-    /// <param name="itemAt">按索引取真实条目，返回 null 表示该位置放骨架.</param>
-    private void ApplyDesired(int desiredCount, Func<int, object?> itemAt)
-    {
-        for (var i = 0; i < desiredCount; i++)
-        {
-            var desired = itemAt(i);
-            var current = i < DisplayItems.Count ? DisplayItems[i] : null;
-            if (desired is null)
-            {
-                if (current is VideoCardSkeleton)
-                {
-                    continue;
-                }
-
-                desired = new VideoCardSkeleton(i);
-            }
-            else if (ReferenceEquals(current, desired))
-            {
-                continue;
-            }
-
-            if (i < DisplayItems.Count)
-            {
-                DisplayItems[i] = desired;
-            }
-            else
-            {
-                DisplayItems.Add(desired);
-            }
-        }
-
-        while (DisplayItems.Count > desiredCount)
-        {
-            DisplayItems.RemoveAt(DisplayItems.Count - 1);
-        }
     }
 }

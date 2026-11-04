@@ -1,6 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.Controls.Components;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,11 +12,6 @@ namespace BiliCopilot.UI.Controls.VideoPartition;
 /// </summary>
 public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControlBase
 {
-    /// <summary>
-    /// 布局尚未完成时先按这个数量铺骨架，等真实尺寸算出来后立刻校正.
-    /// </summary>
-    private const int InitialSkeletonEstimate = 16;
-
     private readonly RecommendationScrollAnchor _anchor;
 
     /// <summary>
@@ -96,43 +91,11 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     /// </summary>
     private void SyncDisplayItems()
     {
-        var budget = View.CurrentBudget > 0 ? View.CurrentBudget : InitialSkeletonEstimate;
+        var budget = View.CurrentBudget > 0 ? View.CurrentBudget : VideoListDisplay.InitialSkeletonEstimate;
         var videos = ViewModel?.Videos;
         var count = videos?.Count ?? 0;
         var desiredCount = Math.Max(count, budget);
-
-        for (var i = 0; i < desiredCount; i++)
-        {
-            var desired = i < count ? (object?)videos![i] : null;
-            var current = i < DisplayItems.Count ? DisplayItems[i] : null;
-            if (desired is null)
-            {
-                if (current is VideoCardSkeleton)
-                {
-                    continue;
-                }
-
-                desired = new VideoCardSkeleton(i);
-            }
-            else if (ReferenceEquals(current, desired))
-            {
-                continue;
-            }
-
-            if (i < DisplayItems.Count)
-            {
-                DisplayItems[i] = desired;
-            }
-            else
-            {
-                DisplayItems.Add(desired);
-            }
-        }
-
-        while (DisplayItems.Count > desiredCount)
-        {
-            DisplayItems.RemoveAt(DisplayItems.Count - 1);
-        }
+        VideoListDisplay.Apply(DisplayItems, desiredCount, i => i < count ? videos![i] : null);
 
         View.ItemCount = count;
         View.ExtentFallbackEnabled = desiredCount <= count;
