@@ -5,6 +5,7 @@ using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
+using BiliCopilot.UI.ViewModels.Components;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -26,6 +27,8 @@ namespace BiliCopilot.UI.ViewModels.Items;
 [GeneratedBindableCustomProperty]
 public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 {
+    private PublisherFollowingState? _followingState;
+    private bool _hasCardMetadata;
     private readonly Action<VideoItemViewModel>? _removeAction;
     private readonly VideoFavoriteFolder? _favFolder;
     private readonly Action<VideoItemViewModel>? _playAction;
@@ -48,22 +51,76 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         Style = style;
         Title = HtmlText.Decode(info.Identifier.Title);
         Cover = info.Identifier.Cover?.Uri;
-        Author = info.Publisher?.User?.Name;
+        Author = info.Publisher?.User?.Name
+            ?? (style == VideoCardStyle.Partition ? info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.Subtitle) : null);
         Avatar = info.Publisher?.User?.Avatar?.Uri;
         Duration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(info.Duration ?? 0));
-        PublishRelativeTime = info.PublishTime?.Humanize(culture: new CultureInfo(primaryLan));
+        PublishRelativeTime = info.PublishTime is { Year: > 1970 } published
+            ? published.Humanize(culture: new CultureInfo(primaryLan)) : null;
         PlayCount = info.CommunityInformation?.PlayCount;
         DanmakuCount = info.CommunityInformation?.DanmakuCount;
         LikeCount = info.CommunityInformation?.LikeCount;
         TagName = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.TagName);
         RecommendReason = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.RecommendReason);
         Subtitle = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.Subtitle);
-        CollectTime = info.GetExtensionIfNotNull<DateTimeOffset>(VideoExtensionDataId.CollectTime).Humanize(default, new CultureInfo("zh-CN"));
+        if (IsFeedCard && !string.IsNullOrWhiteSpace(info.Publisher?.User?.Id))
+        {
+            var following = info.GetExtensionIfNotNull<bool?>(VideoExtensionDataId.PublisherIsFollowed)
+                ?? (IsServerFollowingReason ? true : null);
+            _followingState = new(this.Get<UserRelationBatcher>(), this.Get<AccountViewModel>().MyProfile?.User.Id,
+                info.Publisher?.User?.Id ?? string.Empty, following);
+            IsAuthorFollowed = _followingState.Current;
+        }
+        var collected = info.GetExtensionIfNotNull<DateTimeOffset>(VideoExtensionDataId.CollectTime);
+        CollectTime = collected.Year > 1970 ? collected.Humanize(default, new CultureInfo("zh-CN")) : null;
+        var initialMetadata = VideoCardMetadata.FromVideo(info);
+        CreatorCount = initialMetadata.CreatorCount;
+        IsCollaborativeSubmission = initialMetadata.IsCollaborativeSubmission;
+        IsChargingExclusive = initialMetadata.IsChargingExclusive;
         IsUserValid = info.Publisher?.User is not null;
         var progress = info.GetExtensionIfNotNull<int?>(VideoExtensionDataId.Progress);
         if (progress is not null)
         {
             ProgressText = AppToolkit.FormatDuration(TimeSpan.FromSeconds(progress.Value));
+        }
+    }
+
+    /// <summary>Consumes the latest shared relationship while preserving this card's successful state.</summary>
+    public async Task LoadPopularFollowingAsync(CancellationToken cancellationToken)
+    {
+        if (_followingState is null) return;
+        var account = this.Get<AccountViewModel>();
+        var accountId = account.MyProfile?.User.Id;
+        var loading = _followingState.LoadAsync(accountId, cancellationToken);
+        IsAuthorFollowed = _followingState.Current;
+        var following = await loading;
+        cancellationToken.ThrowIfCancellationRequested();
+        if (account.MyProfile?.User.Id == accountId) IsAuthorFollowed = following;
+    }
+
+    /// <summary>Applies missing public card fields from the shared metadata provider.</summary>
+    public async Task LoadPopularMetadataAsync(CancellationToken cancellationToken)
+    {
+        if (!IsFeedCard || _hasCardMetadata) return;
+        var provider = this.Get<VideoCardMetadataProvider>();
+        var userId = Data.Publisher?.User?.Id;
+        if (userId is not null) Avatar ??= provider.GetKnownAvatar(userId);
+        var metadata = await provider.GetAsync(Data.Identifier, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+        CreatorCount = metadata.CreatorCount;
+        IsCollaborativeSubmission = metadata.IsCollaborativeSubmission;
+        IsChargingExclusive = metadata.IsChargingExclusive;
+        _hasCardMetadata = true;
+        // The provider verifies the video identity; partition results may omit the publisher ID.
+        if (string.IsNullOrWhiteSpace(userId) || metadata.PublisherId == userId) Avatar ??= metadata.Avatar;
+        if (metadata.PublishTime is { Year: > 1970 } published)
+            PublishRelativeTime ??= published.Humanize(culture: new CultureInfo(ApplicationLanguages.Languages[0]));
+        if (string.IsNullOrWhiteSpace(TagName)) TagName = metadata.TagName;
+        if (string.IsNullOrWhiteSpace(userId) && metadata.PublisherId is { Length: > 0 } publisherId)
+        {
+            _followingState ??= new(this.Get<UserRelationBatcher>(), this.Get<AccountViewModel>().MyProfile?.User.Id,
+                publisherId, null);
+            await LoadPopularFollowingAsync(cancellationToken);
         }
     }
 

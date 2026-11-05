@@ -37,6 +37,7 @@
             <Button
                 VerticalAlignment="Center"
                 AutomationProperties.Name="{ext:Locale Name=Refresh}"
+                AutomationProperties.AutomationId="ViewLaterRefresh"
                 Command="{x:Bind ViewModel.RefreshCommand}"
                 IsEnabled="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}">
                 <StackPanel Orientation="Horizontal" Spacing="8">

@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.ComponentModel;
+using BiliCopilot.UI.Toolkits;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -14,6 +15,10 @@ public sealed partial class VideoItemViewModel
     /// 样式.
     /// </summary>
     public VideoCardStyle Style { get; }
+
+    /// <summary>Whether this scene uses the shared grid-feed card.</summary>
+    public bool IsFeedCard => Style is VideoCardStyle.Recommend or VideoCardStyle.Hot or VideoCardStyle.Rank
+        or VideoCardStyle.Partition or VideoCardStyle.Search or VideoCardStyle.ViewLater or VideoCardStyle.Favorite;
 
     /// <summary>
     /// 标题.
@@ -43,12 +48,15 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 发布时间.
     /// </summary>
-    public string? PublishRelativeTime { get; init; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PopularDisplayTime))]
+    public partial string? PublishRelativeTime { get; set; }
 
     /// <summary>
     /// 作者头像.
     /// </summary>
-    public Uri? Avatar { get; init; }
+    [ObservableProperty]
+    public partial Uri? Avatar { get; set; }
 
     /// <summary>
     /// 播放数.
@@ -68,7 +76,9 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 标签名称.
     /// </summary>
-    public string? TagName { get; init; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPopularLabels))]
+    public partial string? TagName { get; set; }
 
     /// <summary>
     /// 推荐理由.
@@ -98,6 +108,56 @@ public sealed partial class VideoItemViewModel
     /// 需要点击时再通过视频详情补全。
     /// </remarks>
     public bool CanOpenUserSpace => IsUserValid || (Style == VideoCardStyle.Partition && !string.IsNullOrWhiteSpace(Subtitle));
+
+    /// <summary>Distinct creators, including the primary uploader once.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AuthorDisplayName))]
+    public partial int CreatorCount { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsCollaborativeSubmission { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsChargingExclusive { get; set; }
+
+    public string AuthorDisplayName => CreatorCount > 1
+        ? string.Format(ResourceToolkit.GetLocalizedString(StringNames.CollaborativeAuthor), Author, CreatorCount)
+        : Author;
+
+    /// <summary>One-based position in the selected ranking; absent outside ranking results.</summary>
+    public int? RankPosition { get; init; }
+
+    /// <summary>Display label for a server-ordered ranking item.</summary>
+    public string? RankLabel => RankPosition?.ToString("D2", System.Globalization.CultureInfo.CurrentCulture);
+
+    /// <summary>Whether the popular card has any recommendation or category labels.</summary>
+    public bool HasPopularLabels => !string.IsNullOrWhiteSpace(PopularRecommendReason) || !string.IsNullOrWhiteSpace(TagName);
+
+    /// <summary>Relationship reasons belong beside the author, not in the metadata row.</summary>
+    public string? PopularRecommendReason => IsServerFollowingReason ? null : RecommendReason;
+
+    private bool IsServerFollowingReason => string.Equals(RecommendReason?.Trim(), "已关注", StringComparison.Ordinal)
+        || string.Equals(RecommendReason?.Trim(), ResourceToolkit.GetLocalizedString(StringNames.Followed), StringComparison.Ordinal);
+
+    /// <summary>First text element used while the author's avatar is unavailable.</summary>
+    public string AuthorInitial => string.IsNullOrWhiteSpace(Author) ? "?" : System.Globalization.StringInfo.GetNextTextElement(Author);
+
+    /// <summary>Uses collection time in libraries and server publish-time text in feeds.</summary>
+    public string? PopularDisplayTime => Style is VideoCardStyle.ViewLater or VideoCardStyle.Favorite
+        ? CollectTime
+        : PublishRelativeTime ?? (Style == VideoCardStyle.Hot ? Subtitle : null);
+
+    public bool HasPopularDanmaku => Style != VideoCardStyle.Rank && DanmakuCount.HasValue;
+
+    public bool HasPopularLikes => Style == VideoCardStyle.Rank && LikeCount.HasValue;
+
+    /// <summary>Whether the current account follows the author; null means unknown.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsFollowing))]
+    public partial bool? IsAuthorFollowed { get; set; }
+
+    /// <summary>Only a confirmed following relationship is shown as a label.</summary>
+    public bool IsFollowing => IsAuthorFollowed is true;
 
     [ObservableProperty]
     public partial bool IsSelected { get; set; }

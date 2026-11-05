@@ -45,3 +45,9 @@ jobs:
       # --no-build here could silently run the previous default assembly.
       - name: Test search recovery regression
         run: dotnet test tests/BiliCopilot.UI.Tests/BiliCopilot.UI.Tests.csproj -c Release -p:SearchRecoveryRegression=true --filter FullyQualifiedName~SearchRecoveryInvestigationTests --logger "console;verbosity=normal"
+
+      - name: Test popular card data and relationships
+        run: dotnet test tests/BiliCopilot.PopularCard.Tests/BiliCopilot.PopularCard.Tests.csproj -c Release --logger "console;verbosity=normal"
+
+      - name: Test referenced bili-kernel
+        run: dotnet test externals/bili-kernel/src/Tests/BiliKernel.Tests/BiliKernel.Tests.csproj -c Release --logger "console;verbosity=normal"

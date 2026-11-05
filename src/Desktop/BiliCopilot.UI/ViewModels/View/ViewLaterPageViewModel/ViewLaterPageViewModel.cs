@@ -29,11 +29,13 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        if (Videos.Count > 0 || IsEmpty)
+        if (Videos.Count > 0 || (IsEmpty && !IsLoadFailed))
         {
             return;
         }
 
+        IsEmpty = false;
+        IsLoadFailed = false;
         await LoadVideosAsync();
     }
 
@@ -41,6 +43,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     private async Task RefreshAsync()
     {
         IsEmpty = false;
+        IsLoadFailed = false;
         _pageNumber = 0;
         TotalCount = 0;
         Videos.Clear();
@@ -50,7 +53,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsLoading || IsEmpty || (Videos.Count >= TotalCount && Videos.Count > 0))
+        if (IsLoading || IsLoadFailed || IsEmpty || (Videos.Count >= TotalCount && Videos.Count > 0))
         {
             return;
         }
@@ -82,6 +85,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
+            IsLoadFailed = true;
             _logger.LogError(ex, "尝试加载稍后再看时出现异常");
         }
         finally
