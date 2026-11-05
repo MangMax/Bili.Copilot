@@ -455,7 +455,10 @@ public sealed partial class PopularPageViewModel
         {
             foreach (var item in videos)
             {
-                Videos.Add(new VideoItemViewModel(item, style));
+                Videos.Add(new VideoItemViewModel(item, style)
+                {
+                    RankPosition = style == VideoCardStyle.Rank ? Videos.Count + 1 : null,
+                });
             }
         }
     }

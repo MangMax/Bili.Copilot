@@ -127,13 +127,15 @@ namespace BiliCopilot.UI.ViewModels.Items
     {
         public Partition Data { get; } = data;
     }
-    public sealed class VideoItemViewModel(VideoInformation data, VideoCardStyle style)
+    public sealed class VideoItemViewModel(VideoInformation data, VideoCardStyle style, Action<VideoItemViewModel>? removeAction = null)
     {
         public VideoInformation Data { get; } = data;
+        public Action<VideoItemViewModel>? RemoveAction { get; } = removeAction;
 #if SEARCH_RECOVERY_INVESTIGATION
         public RelayCommand PlayCommand { get; } = new(() => throw new NotSupportedException());
 #endif
         public VideoCardStyle Style { get; } = style;
+        public int? RankPosition { get; init; }
     }
 }
 namespace BiliCopilot.UI.Models

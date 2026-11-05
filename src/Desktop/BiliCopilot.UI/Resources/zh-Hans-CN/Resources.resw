@@ -3327,4 +3327,16 @@
   <data name="ArticleRetry" xml:space="preserve">
     <value>重试加载文章</value>
   </data>
+  <data name="ViewLaterLoadFailed" xml:space="preserve">
+    <value>稍后再看列表加载失败，请点击刷新重试。</value>
+  </data>
+  <data name="CollaborativeSubmission" xml:space="preserve">
+    <value>联合投稿</value>
+  </data>
+  <data name="ChargingExclusive" xml:space="preserve">
+    <value>充电专属</value>
+  </data>
+  <data name="CollaborativeAuthor" xml:space="preserve">
+    <value>{0} 等 {1} 人</value>
+  </data>
 </root>

@@ -675,6 +675,9 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
             return request.Completion.Task;
         }
 
+        public Task<IReadOnlyDictionary<string, UserRelationStatus>> GetRelationshipsAsync(IEnumerable<string> userIds, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public Task FollowUserAsync(string userId, CancellationToken cancellationToken = default)
         {
             Follows.Add(userId);

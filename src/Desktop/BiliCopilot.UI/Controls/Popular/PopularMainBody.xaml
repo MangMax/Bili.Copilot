@@ -16,23 +16,21 @@
 
     <UserControl.Resources>
         <DataTemplate x:Key="RecommendStyle" x:DataType="items:VideoItemViewModel">
-            <components:VideoCardControl Style="{StaticResource RecommendVideoCardStyle}" ViewModel="{Binding}" />
+            <components:VideoCardControl Style="{StaticResource PopularFeedVideoCardStyle}" ViewModel="{Binding}" />
         </DataTemplate>
         <DataTemplate x:Key="HotStyle" x:DataType="items:VideoItemViewModel">
-            <components:VideoCardControl Style="{StaticResource HotVideoCardStyle}" ViewModel="{Binding}" />
+            <components:VideoCardControl Style="{StaticResource PopularFeedVideoCardStyle}" ViewModel="{Binding}" />
         </DataTemplate>
         <DataTemplate x:Key="RankStyle" x:DataType="items:VideoItemViewModel">
-            <components:VideoCardControl Style="{StaticResource RankVideoCardStyle}" ViewModel="{Binding}" />
+            <components:VideoCardControl Style="{StaticResource PopularFeedVideoCardStyle}" ViewModel="{Binding}" />
         </DataTemplate>
-        <DataTemplate x:Key="SkeletonStyle">
-            <components:SkeletonCardControl />
-        </DataTemplate>
+
         <ext:VideoCardTemplateSelector
             x:Key="CardSelector"
             HotTemplate="{StaticResource HotStyle}"
             RankTemplate="{StaticResource RankStyle}"
             RecommendTemplate="{StaticResource RecommendStyle}"
-            SkeletonTemplate="{StaticResource SkeletonStyle}" />
+            SkeletonTemplate="{StaticResource FeedVideoSkeletonTemplate}" />
     </UserControl.Resources>
 
     <Grid>
@@ -43,11 +41,15 @@
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
                         x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind DisplayItems, Mode=OneWay}"
-                        Layout="{StaticResource VideoLayout}">
+                        ItemsSource="{x:Bind DisplayItems, Mode=OneWay}">
+                        <repeater:AppRepeater.Layout>
+                            <!-- Omit MinItemHeight: measure the complete card at the stretched column width. -->
+                            <UniformGridLayout ItemsStretch="Fill" MinItemWidth="232" MinColumnSpacing="20" MinRowSpacing="20" />
+                        </repeater:AppRepeater.Layout>
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate>
                                 <ContentControl
+                                    VerticalContentAlignment="Top"
                                     Content="{Binding}"
                                     ContentTemplateSelector="{StaticResource CardSelector}"
                                     Style="{StaticResource AppContentControlStyle}" />
