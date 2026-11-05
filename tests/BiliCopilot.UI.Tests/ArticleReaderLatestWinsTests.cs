@@ -472,9 +472,6 @@ public sealed partial class ArticleReaderLatestWinsTests
             throw new InvalidOperationException($"Unexpected request path '{uri.AbsolutePath}'.");
         }
 
-        private static HttpResponseMessage Html(string html)
-            => new(HttpStatusCode.OK) { Content = new StringContent(html, Encoding.UTF8, "text/html") };
-
         private static HttpResponseMessage Json(string json)
             => new(HttpStatusCode.OK) { Content = new StringContent(json, Encoding.UTF8, "application/json") };
     }
