@@ -27,6 +27,123 @@ namespace BiliCopilot.UI.Tests;
 /// </summary>
 public sealed partial class ArticleReaderLatestWinsTests
 {
+    public static IEnumerable<object[]> StaleInteractionCases()
+    {
+        foreach (var favorite in new[] { false, true })
+        foreach (var initial in new[] { false, true })
+        foreach (var destination in new[] { "success", "loading", "failed", "unload", "reopen", "return", "retry" })
+            yield return new object[] { favorite, initial, destination };
+    }
+
+    [Theory]
+    [MemberData(nameof(StaleInteractionCases))]
+    public async Task DelayedInteractionMustNotOverwriteNewReading(bool favorite, bool initial, string destination)
+    {
+        var discovery = new Discovery();
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var operation = new Operation { Pending = completion.Task };
+        var vm = new ArticleReaderPageViewModel(discovery, operation,
+            NullLogger<ArticleReaderPageViewModel>.Instance, new CommentMainViewModel(), new AIViewModel());
+        var first = new ArticleIdentifier("1001", "Article A", null, null);
+        var second = new ArticleIdentifier("1002", "Article B", null, null);
+        async Task Open(ArticleIdentifier article, bool? state)
+        {
+            vm.InitializeCommand.Execute(article);
+            discovery.Complete(article.Id!, Detail(article, state, state));
+            await vm.InitializeCommand.ExecutionTask!;
+        }
+
+        await Open(first, initial);
+        var interaction = favorite ? vm.ToggleFavoriteCommand : vm.ToggleLikeCommand;
+        var pending = interaction.ExecuteAsync(null);
+        Assert.False(pending.IsCompleted);
+        Assert.Equal(first, Assert.Single(operation.Targets));
+        Assert.Equal(!initial, Assert.Single(favorite ? operation.Favorites : operation.Likes));
+        if (destination == "unload")
+            vm.CancelLoad(vm.CurrentLoadGeneration);
+        else if (destination == "reopen")
+            await Open(first, !initial);
+        else
+        {
+            vm.InitializeCommand.Execute(second);
+            if (destination == "failed" || destination == "retry")
+                discovery.Fail(second.Id!, new InvalidOperationException("load failed"));
+            else if (destination != "loading")
+                discovery.Complete(second.Id!, Detail(second, !initial, !initial));
+            if (destination != "loading")
+                await vm.InitializeCommand.ExecutionTask!;
+            if (destination == "return")
+                await Open(first, !initial);
+            if (destination == "retry")
+            {
+                vm.RetryCommand.Execute(null);
+                discovery.Complete(second.Id!, Detail(second, !initial, !initial));
+                await vm.RetryCommand.ExecutionTask!;
+            }
+        }
+
+        var liked = vm.IsLiked;
+        var favorited = vm.IsFavorited;
+        var likes = vm.LikeCount;
+        var favorites = vm.FavoriteCount;
+        completion.SetResult();
+        await pending;
+        Assert.Equal(liked, vm.IsLiked);
+        Assert.Equal(favorited, vm.IsFavorited);
+        Assert.Equal(likes, vm.LikeCount);
+        Assert.Equal(favorites, vm.FavoriteCount);
+        Assert.Equal(first, Assert.Single(operation.Targets));
+        if (destination == "loading")
+        {
+            Assert.True(vm.IsLoading);
+            Assert.Null(vm.IsLiked);
+            Assert.Null(vm.IsFavorited);
+            discovery.Complete(second.Id!, Detail(second));
+            await vm.InitializeCommand.ExecutionTask!;
+        }
+        if (destination == "failed")
+        {
+            Assert.True(vm.HasLoadFailed);
+            Assert.Null(vm.IsLiked);
+            Assert.Null(vm.IsFavorited);
+        }
+    }
+
+    [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(false, true, false)]
+    [InlineData(true, false, false)]
+    [InlineData(true, true, false)]
+    [InlineData(false, false, true)]
+    [InlineData(false, true, true)]
+    [InlineData(true, false, true)]
+    [InlineData(true, true, true)]
+    public async Task CurrentDelayedInteractionUpdatesOnlyOnSuccess(bool favorite, bool initial, bool fail)
+    {
+        var discovery = new Discovery();
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var operation = new Operation { Pending = completion.Task };
+        var vm = new ArticleReaderPageViewModel(discovery, operation,
+            NullLogger<ArticleReaderPageViewModel>.Instance, new CommentMainViewModel(), new AIViewModel());
+        var article = new ArticleIdentifier("1001", "Article A", null, null);
+        vm.InitializeCommand.Execute(article);
+        discovery.Complete(article.Id!, Detail(article, favorite ? null : initial, favorite ? initial : null));
+        await vm.InitializeCommand.ExecutionTask!;
+        var pending = (favorite ? vm.ToggleFavoriteCommand : vm.ToggleLikeCommand).ExecuteAsync(null);
+        Assert.Equal(initial, favorite ? vm.IsFavorited : vm.IsLiked);
+        Assert.Equal(0, favorite ? vm.FavoriteCount : vm.LikeCount);
+        if (fail)
+            completion.SetException(new InvalidOperationException("interaction failed"));
+        else
+            completion.SetResult();
+        await pending;
+        Assert.Equal(fail ? initial : !initial, favorite ? vm.IsFavorited : vm.IsLiked);
+        Assert.Equal(fail ? 0 : initial ? -1 : 1, favorite ? vm.FavoriteCount : vm.LikeCount);
+        Assert.Null(favorite ? vm.IsLiked : vm.IsFavorited);
+        Assert.Equal(0, favorite ? vm.LikeCount : vm.FavoriteCount);
+        Assert.Equal(article, Assert.Single(operation.Targets));
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData(false)]
