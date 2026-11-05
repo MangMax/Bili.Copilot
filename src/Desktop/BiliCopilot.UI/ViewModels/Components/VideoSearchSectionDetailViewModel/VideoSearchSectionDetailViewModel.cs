@@ -29,6 +29,11 @@ public sealed partial class VideoSearchSectionDetailViewModel : ViewModelBase, I
         Sorts = [.. Enum.GetValues<ComprehensiveSearchSortType>()];
     }
 
+    /// <summary>
+    /// Reports a refresh, sort or pagination result; a null error means success.
+    /// </summary>
+    public event EventHandler<Exception?>? LoadCompleted;
+
     /// <inheritdoc/>
     public void Initialize(string keyword, SearchPartition partition)
     {
@@ -103,11 +108,13 @@ public sealed partial class VideoSearchSectionDetailViewModel : ViewModelBase, I
             }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);
+            LoadCompleted?.Invoke(this, null);
         }
         catch (Exception ex)
         {
             _isPreventLoadMore = true;
-            _logger.LogError(ex, "加载视频搜索结果时出错.");
+            _logger.LogWarning("Search section request failed: {Outcome}", ex is SearchVerificationRequiredException ? "verification" : "failure");
+            LoadCompleted?.Invoke(this, ex);
         }
         finally
         {

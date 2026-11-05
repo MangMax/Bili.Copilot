@@ -65,6 +65,7 @@
     <Grid>
         <AutoSuggestBox
             x:Name="Box"
+            AutomationProperties.AutomationId="AppSearchBox"
             HorizontalAlignment="Stretch"
             GettingFocus="OnBoxGettingFocus"
             IsTabStop="True"

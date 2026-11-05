@@ -93,7 +93,12 @@ namespace BiliCopilot.UI.Toolkits
     {
         public static string LastSection { get; set; } = "Recommend";
         public static bool IncrementalRecommendRefresh { get; set; }
-        public static int RecommendSourceIndex { get; set; } = (int)BiliCopilot.UI.Models.Constants.RecommendFeedSource.Mobile;
+        private static readonly AsyncLocal<int> _recommendSourceIndex = new();
+        public static int RecommendSourceIndex
+        {
+            get => _recommendSourceIndex.Value;
+            set => _recommendSourceIndex.Value = value;
+        }
         public static bool ShowSearchRecommend { get; set; } = true;
         public static T ReadLocalSetting<T>(SettingNames name, T fallback) => NavigationTestServices.Settings.Value is { } settings ? (settings.TryGetValue(name, out var value) ? (T)value! : fallback) : name == SettingNames.IncrementalRecommendRefresh ? (T)(object)IncrementalRecommendRefresh : name == SettingNames.ShowSearchRecommend ? (T)(object)ShowSearchRecommend : name == SettingNames.RecommendFeedSource ? (T)(object)RecommendSourceIndex : (T)(object)LastSection;
         public static void WriteLocalSetting<T>(SettingNames name, T value)
@@ -108,7 +113,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { SearchVerificationRequired, SearchFailed, Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, User, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
@@ -125,6 +130,9 @@ namespace BiliCopilot.UI.ViewModels.Items
     public sealed class VideoItemViewModel(VideoInformation data, VideoCardStyle style)
     {
         public VideoInformation Data { get; } = data;
+#if SEARCH_RECOVERY_INVESTIGATION
+        public RelayCommand PlayCommand { get; } = new(() => throw new NotSupportedException());
+#endif
         public VideoCardStyle Style { get; } = style;
     }
 }

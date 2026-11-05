@@ -3309,6 +3309,12 @@
   <data name="RefreshingRecommendVideos" xml:space="preserve">
     <value>正在刷新推荐视频</value>
   </data>
+  <data name="SearchVerificationRequired" xml:space="preserve">
+    <value>搜索需要验证。请在哔哩哔哩官网完成验证后，点击刷新重试。</value>
+  </data>
+  <data name="SearchFailed" xml:space="preserve">
+    <value>搜索失败，请稍后点击刷新重试。</value>
+  </data>
   <data name="ArticleLikeStateUnknown" xml:space="preserve">
     <value>点赞状态未知，暂时无法点赞或取消点赞</value>
   </data>
