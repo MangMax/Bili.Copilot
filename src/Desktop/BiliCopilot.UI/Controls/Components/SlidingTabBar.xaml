@@ -107,7 +107,7 @@
             IsTabStop="False"
             VerticalScrollBarVisibility="Disabled"
             VerticalScrollMode="Disabled">
-            <Grid x:Name="Track" HorizontalAlignment="Left">
+            <Grid x:Name="Track" HorizontalAlignment="Center">
                 <Canvas IsHitTestVisible="False">
                     <Border
                         x:Name="Indicator"
