@@ -8,7 +8,6 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
                     <StaticResource x:Key="SlidingTabHoverForeground" ResourceKey="AccentTextFillColorPrimaryBrush" />
-                    <StaticResource x:Key="SlidingTabSelectedHoverForeground" ResourceKey="TextFillColorPrimaryBrush" />
                     <StaticResource x:Key="SlidingTabPressedForeground" ResourceKey="TextFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
@@ -16,7 +15,6 @@
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <StaticResource x:Key="SlidingTabHoverForeground" ResourceKey="AccentTextFillColorPrimaryBrush" />
-                    <StaticResource x:Key="SlidingTabSelectedHoverForeground" ResourceKey="TextFillColorPrimaryBrush" />
                     <StaticResource x:Key="SlidingTabPressedForeground" ResourceKey="TextFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
@@ -28,7 +26,6 @@
                     <SolidColorBrush x:Key="SlidingTabStroke" Color="{ThemeResource SystemColorHighlightColor}" />
                     <SolidColorBrush x:Key="SlidingTabHoverForeground" Color="{ThemeResource SystemColorHighlightColor}" />
                     <SolidColorBrush x:Key="SlidingTabPressedFill" Color="{ThemeResource SystemColorHighlightColor}" />
-                    <SolidColorBrush x:Key="SlidingTabSelectedHoverForeground" Color="{ThemeResource SystemColorWindowTextColor}" />
                     <SolidColorBrush x:Key="SlidingTabPressedForeground" Color="{ThemeResource SystemColorHighlightTextColor}" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
@@ -68,8 +65,8 @@
                                         </VisualState>
                                         <VisualState x:Name="SelectedPointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="PART_TextVisual.Foreground" Value="{ThemeResource SlidingTabSelectedHoverForeground}" />
-                                                <Setter Target="PART_IconVisual.Foreground" Value="{ThemeResource SlidingTabSelectedHoverForeground}" />
+                                                <Setter Target="PART_TextVisual.Foreground" Value="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                                <Setter Target="PART_IconVisual.Foreground" Value="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="SelectedPressed">
