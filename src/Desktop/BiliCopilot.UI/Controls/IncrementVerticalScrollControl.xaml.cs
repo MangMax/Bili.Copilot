@@ -253,6 +253,16 @@ public sealed partial class IncrementVerticalScrollControl : LayoutUserControlBa
 
     private bool NeedsMoreItems()
     {
+        // 缓存分区折叠后仍可能收到排队的布局回调，隐藏时不触发分页。
+        for (DependencyObject? ancestor = this; ancestor is not null;
+            ancestor = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(ancestor))
+        {
+            if (ancestor is FrameworkElement { Visibility: Visibility.Collapsed })
+            {
+                return false;
+            }
+        }
+
         var nearEnd = View.ExtentHeight - View.ViewportHeight - View.VerticalOffset <= 800;
         if (ItemCount < 0)
         {
