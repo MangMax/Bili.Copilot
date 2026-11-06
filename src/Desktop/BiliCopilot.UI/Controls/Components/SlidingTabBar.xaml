@@ -12,7 +12,7 @@
                     <StaticResource x:Key="SelectorBarItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
                     <StaticResource x:Key="SelectorBarItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
                 </ResourceDictionary>
-                <ResourceDictionary x:Key="Default">
+                <ResourceDictionary x:Key="Dark">
                     <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
                     <StaticResource x:Key="SelectorBarItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
