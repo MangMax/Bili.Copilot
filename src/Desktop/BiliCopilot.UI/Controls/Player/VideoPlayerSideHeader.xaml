@@ -12,5 +12,6 @@
     <components:SlidingTabBar
         x:Name="Tabs"
         Margin="8,0"
+        HorizontalAlignment="Center"
         AutomationProperties.AutomationId="VideoPlayerSectionTabs" />
 </local:VideoPlayerControlBase>
