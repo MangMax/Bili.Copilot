@@ -204,3 +204,11 @@ interruption, OS animations disabled/dynamic changes, High Contrast, 100%/200% D
 and resizing still require the parent verification pass. No OS preferences changed.
 The isolated host content label is not proof of real video content. No further
 visual redesign, issue closing, PR push or monitoring was performed.
+
+## Hover clarification (2026-11-06)
+
+User feedback supersedes the earlier hover-fill acceptance: selected and unselected
+pointer-over states now change text/icon foreground only. They do not fill or outline
+the item, so the shared moving selection background remains visible throughout its
+transition. Pressed and keyboard-focus feedback are unchanged. Earlier screenshots
+of hover fills describe the superseded implementation.
