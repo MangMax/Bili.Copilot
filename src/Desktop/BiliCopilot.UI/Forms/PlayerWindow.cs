@@ -21,7 +21,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     private readonly AppWindow _rootWindow;
     private readonly DesktopWindowXamlSource _xamlSource;
     private readonly CursorGrid _rootGrid;
-    private readonly PresenterChangeSession _presenterChange = new(() => Task.Delay(500));
+    private readonly PlayerWindowPlacementSession _presenterChange;
     private InputActivationListener _inputActivationListener;
     private bool _isFirstActivated = true;
     private bool _enteringFullScreen;
@@ -31,6 +31,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     public PlayerWindow()
     {
         _rootWindow = AppWindow.Create();
+        _presenterChange = new(new CompactPositionAdapter(_rootWindow), () => Task.Delay(500));
         _rootWindow.AssociateWithDispatcherQueue(DispatcherQueue.GetForCurrentThread());
         _rootWindow.Destroying += OnWindowDestroying;
 
@@ -94,8 +95,9 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             return ValueTask.CompletedTask;
         }
 
-        IsDisposed = true;
+        SaveCurrentWindowStats();
         _presenterChange.Close();
+        IsDisposed = true;
 
         if (_rootWindow != null)
         {
@@ -190,7 +192,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
             _enteringFullScreen = true;
             _enteringCompactOverlay = false;
-            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.FullScreen));
+            _ = _presenterChange.ChangeAsync(WindowPlacementMode.FullScreen, () => _rootWindow.SetPresenter(AppWindowPresenterKind.FullScreen));
         }
     }
 
@@ -204,7 +206,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen)
         {
             _enteringFullScreen = false;
-            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
+            _ = _presenterChange.ChangeAsync(WindowPlacementMode.Ordinary, () => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
         }
     }
 
@@ -224,7 +226,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
             _enteringCompactOverlay = true;
             _enteringFullScreen = false;
-            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay));
+            _ = _presenterChange.ChangeAsync(WindowPlacementMode.CompactOverlay, () => _rootWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay));
         }
     }
 
@@ -238,7 +240,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
         {
             _enteringCompactOverlay = false;
-            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
+            _ = _presenterChange.ChangeAsync(WindowPlacementMode.Ordinary, () => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
         }
     }
 
@@ -327,7 +329,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         _activeChangedAction?.Invoke(sender.State == InputActivationState.Activated);
 
-        if (_rootWindow.Position.X < -10000 || _rootWindow.Position.Y < -10000)
+        if (_presenterChange.CanSaveOrdinaryWindow && (_rootWindow.Position.X < -10000 || _rootWindow.Position.Y < -10000))
         {
             MoveAndResize();
         }
@@ -335,6 +337,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
     private void OnWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
     {
+        if (IsClosed || IsDisposed)
+        {
+            return;
+        }
+
         if (args.DidSizeChange)
         {
             var size = _rootWindow.Presenter.Kind is AppWindowPresenterKind.FullScreen or AppWindowPresenterKind.CompactOverlay
@@ -383,12 +390,12 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
     private void OnWindowDestroying(AppWindow sender, object args)
     {
-        IsClosed = true;
+        SaveCurrentWindowStats();
         _presenterChange.Close();
+        IsClosed = true;
         _inputActivationListener.InputActivationChanged -= OnInputActivationChanged;
         _rootWindow.Destroying -= OnWindowDestroying;
         _rootWindow.Changed -= OnWindowChanged;
-        SaveCurrentWindowStats();
         _inputActivationListener = default;
     }
 
@@ -477,6 +484,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
     private void MoveAndResize()
     {
+        if (!_presenterChange.CanSaveOrdinaryWindow || _rootWindow.Presenter.Kind != AppWindowPresenterKind.Overlapped)
+        {
+            return;
+        }
+
         var lastPoint = GetSavedWindowPosition();
         var displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
             ?? DisplayArea.Primary;
@@ -491,10 +503,21 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
     private void SaveCurrentWindowStats()
     {
+        if (IsClosed || IsDisposed)
+        {
+            return;
+        }
+
+        _presenterChange.GeometryChanged();
+        if (!_presenterChange.CanSaveOrdinaryWindow || _rootWindow.Presenter.Kind != AppWindowPresenterKind.Overlapped)
+        {
+            return;
+        }
+
         var isMaximized = PInvoke.IsZoomed(new HWND(Handle));
         SettingsToolkit.WriteLocalSetting(SettingNames.IsPlayerWindowMaximized, (bool)isMaximized);
 
-        if (!isMaximized && !_enteringFullScreen && !_enteringCompactOverlay && _rootWindow.Presenter.Kind == AppWindowPresenterKind.Overlapped)
+        if (!isMaximized && !_enteringFullScreen && !_enteringCompactOverlay)
         {
             var left = _rootWindow.Position.X;
             var top = _rootWindow.Position.Y;
