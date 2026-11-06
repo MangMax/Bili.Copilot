@@ -50,7 +50,7 @@ internal sealed class MpvMediaDisplaySource : IDisposable
             _acceptEvents = false;
             if (!_client.IsDisposed)
             {
-                _previousEntry = ReadInteger("playlist-entry-id") ?? _previousEntry;
+                _previousEntry = ReadPlayingEntry() ?? _loadedEntry ?? _previousEntry;
             }
 
             _loadedEntry = null;
@@ -123,7 +123,7 @@ internal sealed class MpvMediaDisplaySource : IDisposable
         {
             if (!_closed && _acceptEvents && !_client.IsDisposed)
             {
-                var entry = ReadInteger("playlist-entry-id");
+                var entry = ReadPlayingEntry();
                 _loadedEntry = entry != _previousEntry ? entry : null;
             }
         }
@@ -139,7 +139,7 @@ internal sealed class MpvMediaDisplaySource : IDisposable
             }
 
             ResetWindowGeneration();
-            if (_loadedEntry is not long entry || ReadInteger("playlist-entry-id") != entry)
+            if (_loadedEntry is not long entry || ReadPlayingEntry() != entry)
             {
                 return;
             }
@@ -148,7 +148,7 @@ internal sealed class MpvMediaDisplaySource : IDisposable
             // Read twice to avoid publishing a torn tuple during output reconfiguration.
             var first = ReadOutput();
             var second = ReadOutput();
-            if (first != second || ReadInteger("playlist-entry-id") != entry)
+            if (first != second || ReadPlayingEntry() != entry)
             {
                 return;
             }
@@ -169,6 +169,26 @@ internal sealed class MpvMediaDisplaySource : IDisposable
 
     private (long? Width, long? Height, long? Rotation) ReadOutput()
         => (ReadInteger("video-out-params/dw"), ReadInteger("video-out-params/dh"), ReadInteger("video-out-params/rotate"));
+
+    private long? ReadPlayingEntry()
+    {
+        // playlist-playing-pos is a mutable index, not the lifetime-unique entry ID.
+        // A negative position means no playing entry, including during transitions.
+        var position = ReadInteger("playlist-playing-pos");
+        if (position is not >= 0)
+        {
+            return null;
+        }
+
+        var property = FormattableString.Invariant($"playlist/{position}/id");
+        var entry = ReadInteger(property);
+        // The playlist may move or replace this slot between native property reads.
+        return entry is >= 0
+            && ReadInteger("playlist-playing-pos") == position
+            && ReadInteger(property) == entry
+            ? entry
+            : null;
+    }
 
     private long? ReadInteger(string property)
     {

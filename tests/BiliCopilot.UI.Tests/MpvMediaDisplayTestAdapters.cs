@@ -52,9 +52,11 @@ namespace Richasy.MpvKernel.Core
         public void Loading() => ReachFileLoading?.Invoke(this, EventArgs.Empty);
         public void Loaded() => ReachFileLoaded?.Invoke(this, EventArgs.Empty);
         public void End() => ReachFileEnd?.Invoke(this, EventArgs.Empty);
-        public void SetOutput(long entry, long width, long height, long rotation = 0)
+        public void SetOutput(long entry, long width, long height, long rotation = 0, long position = 0)
         {
-            Handle.Properties["playlist-entry-id"] = entry;
+            // mpv exposes the playing slot separately from its lifetime-unique entry ID.
+            Handle.Properties["playlist-playing-pos"] = position;
+            Handle.Properties[$"playlist/{position}/id"] = entry;
             Handle.Properties["video-out-params/dw"] = width;
             Handle.Properties["video-out-params/dh"] = height;
             Handle.Properties["video-out-params/rotate"] = rotation;

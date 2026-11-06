@@ -25,7 +25,15 @@ has no output-size event. Equal ratios do not resize again.
 
 File events invalidate the media generation; application source switches suspend
 sampling before stop/initialization. Loaded playlist entry IDs reject the old
-file, and IDs are rechecked around a repeated dimensions sample. Disposal stops
+file. The [mpv playlist property contract](https://mpv.io/manual/stable/#property-list)
+provides `playlist-playing-pos` (the playing slot, or -1 during idle/transitions)
+and `playlist/N/id` (the entry ID unique for the core lifetime). There is no
+`playlist-entry-id` property; `playlist_entry_id` is an event field. The adapter
+checks both the slot and ID during resolution, and rechecks the ID around a
+repeated dimensions sample. Reordering preserves identity; reusing a slot for a
+different entry does not. Suspension retains the last loaded ID if the playing
+properties are already unavailable, so a delayed old loaded event stays rejected.
+Disposal stops
 the timer and detaches backend events before the client is disposed.
 
 ## Window and setting behavior
