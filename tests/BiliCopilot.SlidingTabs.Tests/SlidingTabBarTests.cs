@@ -68,6 +68,26 @@ public sealed class SlidingTabBarTests
     }
 
     [Fact]
+    public void DeferredUnloadAfterImmediateReinsertKeepsContentSynchronizedOnce()
+    {
+        var tabs = CreateLaidOutTabs(out var first, out var second);
+        object? content = first.Tag;
+        var changes = 0;
+        tabs.SelectionChanged += (_, _) => { content = tabs.SelectedItem; changes++; };
+        // Native remove + insert in one dispatch sends Loaded before the old Unloaded.
+        tabs.RaiseLoaded();
+        tabs.RaiseDeferredUnloaded();
+        tabs.TestSelector.SelectedItem = second;
+        Assert.Same(second.Tag, content);
+        Assert.Equal(1, changes);
+        Assert.Equal(Visibility.Visible, tabs.TestIndicator.Visibility);
+        tabs.RaiseUnloaded();
+        tabs.TestSelector.SelectedItem = first;
+        Assert.Equal(1, changes);
+        Assert.Equal(Visibility.Collapsed, tabs.TestIndicator.Visibility);
+    }
+
+    [Fact]
     public void DisabledMotionAndScaleChangesPositionImmediately()
     {
         var tabs = CreateLaidOutTabs(out var first, out var second);

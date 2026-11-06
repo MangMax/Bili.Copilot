@@ -113,6 +113,12 @@ public sealed partial class SlidingTabBar : UserControl
         }
 
         HideIndicator();
+        // An immediate remove/reinsert can deliver the old Unloaded after the new
+        // Loaded. Release the old mount above, then attach to the live tree again.
+        if (IsLoaded)
+        {
+            OnLoaded(this, e);
+        }
     }
 
     private void OnSelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)

@@ -29,8 +29,10 @@ namespace Microsoft.UI.Xaml
         public int BringIntoViewCount { get; private set; }
         public void StartBringIntoView() => BringIntoViewCount++;
         public void RaiseLayoutUpdated() => LayoutUpdated?.Invoke(this, new());
-        public void RaiseLoaded() => Loaded?.Invoke(this, new());
-        public void RaiseUnloaded() => Unloaded?.Invoke(this, new());
+        public bool IsLoaded { get; set; }
+        public void RaiseLoaded() { IsLoaded = true; Loaded?.Invoke(this, new()); }
+        public void RaiseUnloaded() { IsLoaded = false; Unloaded?.Invoke(this, new()); }
+        public void RaiseDeferredUnloaded() => Unloaded?.Invoke(this, new());
     }
     public class XamlRootChangedEventArgs : EventArgs { }
     public class XamlRoot

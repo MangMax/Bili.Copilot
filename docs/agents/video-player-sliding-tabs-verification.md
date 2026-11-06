@@ -137,3 +137,70 @@ must not be presented as timing-accurate proof of a 180-ms transition.
 
 The native testing skill's two fix-and-rerun limit was reached; the remaining failures
 are reported rather than silently marked passed. No issue/PR was closed or pushed.
+
+## Focused native diagnosis and lifecycle repair (2026-11-06)
+
+Prepared checkout `t3-3560a7e9` started at `f073b511256503d8ec3af5f8a21296db0034bca5`,
+verified against `integration/spec-158`. The isolated host now links this checkout's
+production XAML/C#. Installed Dev/Release packages were not modified.
+
+Evidence root: `C:/Users/hp/AppData/Local/Temp/spec159-focused-evidence/`.
+`native-trace.txt` records native/public selection, focused AutomationId, lifecycle,
+IsLoaded and subscription state. Copies of `MainPage.xaml.cs`, `MainPage.xaml`, and
+`SlidingTabsAcceptance.csproj` preserve the instrumented host. Diagnostics stay
+outside production. The runnable host remains at the previous temporary host path.
+
+### Causes established before fixes
+
+- **Remount is a production defect.** At 23:10:02.674 Loaded arrived while the old
+  `_attached=true`, so attachment was skipped. At 23:10:02.685 the old Unloaded
+  arrived with `IsLoaded=true` and detached selection handling. At 23:10:03.242
+  native selection became Comments, with no public event and content still Collection.
+  Native immediate remove/insert can deliver Loaded before the previous Unloaded;
+  the original adapter only exercised Unloaded followed by Loaded.
+- **Keyboard failure is a test input assumption.** At 23:10:21.649 Right reached
+  Long0 but did not move after UIA programmatic focus. Space activated it; the two
+  remaining Rights reached Long2. An unmodified stock SelectorBar reproduced this
+  at 23:11:33.153 (Plain0). Activating with Space BEFORE three Rights reaches Long3
+  and updates host content to AI. Actual Tab entry also passed: focus Remount,
+  `tab tab left left left`, then assert Long0 focus and its host content
+  (`tab-entry.json`, trace at 23:13:43). No keyboard/template workaround was added.
+
+The lifecycle fix releases old subscriptions and animation, then reattaches if
+IsLoaded already indicates a live tree. It advances the mount generation, retaining
+protection against queued old motion-preference callbacks. Genuine unload still
+cleans up and hides the indicator.
+
+### Verification
+
+- `DeferredUnloadAfterImmediateReinsertKeepsContentSynchronizedOnce`: RED on old
+  source (9 passed / 1 failed, `red.trx`), GREEN with the fix. The public content
+  assertion caught the defect. Also checks exactly one notification, visible
+  indicator, and no notification/hidden indicator after genuine unload.
+- `dotnet test tests/BiliCopilot.SlidingTabs.Tests/BiliCopilot.SlidingTabs.Tests.csproj`
+  plus TRX output: **Passed: 10, Failed: 0, Skipped: 0**, `green.trx`. Existing
+  regressions retain ordinary remount, header command wiring and stale callbacks.
+- `ui-tests.ps1 -AppPid <fresh local host PID>`: **4 passed, 0 failed**,
+  `native-results.json`. Stock SelectorBar focus comparison; activated long-title
+  keyboard traversal with focus, selection, viewport and host content assertions;
+  five Empty/Rebuild/immediate remount/click cycles; keyboard content update after
+  remount. The script checks native exit codes and assertion timeouts.
+- Fixed trace at 23:12:55.627 and 23:12:57.442 captures delayed Unloaded with
+  `IsLoaded=true`, now `_attached=true`; each subsequent Comments selection raises
+  exactly one public event. The remaining three cycles show normal event ordering.
+- Inspected every final PNG: `long-keyboard.png`, `remount.png`,
+  `remount-keyboard.png`. AI is fully visible and focused in the narrow viewport;
+  Comments/AI agree with host content after remount. Light, actual scale 1.5.
+  The preceding long title is intentionally scrolled partially outside the viewport.
+- Normal Release/x64 build using the command above: exit 0, **0 errors**, no WinUI
+  analyzer warnings. One existing external protobuf unused-import warning in
+  `pgc/gateway/vega/v1.proto`; `build.log`. Analyzer gates unchanged. Host build has
+  four existing generated sample ViewModel warnings (MVVMTK0045/WUI3001).
+
+These results resolve the two focused failures, not full #159 acceptance. Actual
+player launch remains blocked by installed non-development Dev/Release identities.
+Real ordinary-video content and video replacement, final rendered motion/rapid
+interruption, OS animations disabled/dynamic changes, High Contrast, 100%/200% DPI,
+and resizing still require the parent verification pass. No OS preferences changed.
+The isolated host content label is not proof of real video content. No further
+visual redesign, issue closing, PR push or monitoring was performed.
