@@ -28,15 +28,15 @@
                             </DataTemplate>
                         </repeater:AppRepeater.ItemTemplate>
                     </repeater:AppRepeater>
+                    <base:EmptyHolder
+                        Description="{ext:Locale Name=NoSpecificData}"
+                        Emoji="&#x1F440;"
+                        Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
                 </Grid>
             </controls:IncrementVerticalScrollControl.Element>
         </controls:IncrementVerticalScrollControl>
 
-        <base:EmptyHolder
-            Description="{ext:Locale Name=NoSpecificData}"
-            Emoji="&#x1F440;"
-            Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-
-        <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
     </Grid>
 </local:UserMomentDetailControlBase>

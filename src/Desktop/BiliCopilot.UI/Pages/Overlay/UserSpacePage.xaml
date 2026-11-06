@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <local:UserSpacePageBase
     x:Class="BiliCopilot.UI.Pages.Overlay.UserSpacePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,24 +9,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:moment="using:BiliCopilot.UI.Controls.Moment"
     mc:Ignorable="d">
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="56" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Border
-            Grid.Row="1"
-            Height="1"
-            HorizontalAlignment="Stretch"
-            Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
-        <moment:UserSpacePageHeader />
-        <moment:UserSpacePageBody Grid.Row="2" Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-        <moment:UserSpaceVideoSearchSection Grid.Row="2" Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}" />
+    <Grid
+        x:Name="PageLayout"
+        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+        SizeChanged="OnPageSizeChanged">
+        <moment:UserSpacePageBody
+            x:Name="SpaceBody"
+            Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+        <moment:UserSpaceVideoSearchSection
+            x:Name="SearchSection"
+            Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}" />
+        <moment:UserSpacePageHeader
+            x:Name="SpaceHeader"
+            VerticalAlignment="Top"
+            SizeChanged="OnSpaceHeaderSizeChanged"
+            PointerWheelChanged="OnHeaderPointerWheelChanged" />
         <comment:CommentOverlayPanel
             x:Name="CommentPanel"
-            Grid.RowSpan="3"
             IsPanelOpened="{x:Bind ViewModel.IsCommentsOpened, Mode=TwoWay}"
             ViewModel="{x:Bind ViewModel.CommentModule, Mode=OneWay}" />
     </Grid>
