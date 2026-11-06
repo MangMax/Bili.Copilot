@@ -77,9 +77,16 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
         {
             SupersedePendingLoad();
+            CacheDisplayedArticles();
             _childPartitionArticleCache.Clear();
             Articles.Clear();
+            _displayedPartition = CurrentPartition;
             _childPartitionOffsetCache.Clear();
+            foreach (var partition in Children.Where(p => p.Data.Id != Data.Data.Id))
+            {
+                _stoppedPartitions.Remove(partition.Data.Id);
+                _noProgressPages.Remove(partition.Data.Id);
+            }
             await LoadArticlesAsync();
         });
     }
@@ -94,11 +101,11 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             // 刷新必须以当前列表为准：清空集合的同时作废清空前发起的加载，
             // 否则旧分页结果会在清空后追加回来，刷新看起来“没有生效”。
             SupersedePendingLoad();
+            CacheDisplayedArticles();
             if (IsRecommend)
             {
                 _recommendOffset = 0;
                 _recommendCache?.Clear();
-                _preventLoadMore = false;
             }
             else
             {
@@ -106,7 +113,10 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
                 _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
             }
 
+            _stoppedPartitions.Remove(CurrentPartition.Data.Id);
+            _noProgressPages.Remove(CurrentPartition.Data.Id);
             Articles.Clear();
+            _displayedPartition = CurrentPartition;
             await LoadArticlesAsync();
         });
     }
@@ -120,25 +130,22 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         }
 
         IsRecommend = partition.Data.Id == Data.Data.Id;
-        if (Articles.Count > 0)
-        {
-            if (IsRecommend)
-            {
-                _recommendCache = Articles.ToList();
-            }
-            else
-            {
-                _childPartitionArticleCache[CurrentPartition.Data.Id] = Articles.ToList();
-            }
-        }
-
         CurrentPartition = partition;
         SupersedePendingLoad();
+        var generation = _listGeneration;
 
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
         {
+            // 已被后续选择或刷新替代的切换不能清空列表、作废新请求或重复补屏。
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
             SupersedePendingLoad();
+            CacheDisplayedArticles();
             Articles.Clear();
+            _displayedPartition = partition;
             if (IsRecommend && _recommendCache?.Count > 0)
             {
                 foreach (var item in _recommendCache)
@@ -165,10 +172,29 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         });
     }
 
+    private void CacheDisplayedArticles()
+    {
+        if (Articles.Count == 0 || _displayedPartition is null)
+        {
+            return;
+        }
+
+        if (_displayedPartition.Data.Id == Data.Data.Id)
+        {
+            _recommendCache = Articles.ToList();
+        }
+        else
+        {
+            _childPartitionArticleCache[_displayedPartition.Data.Id] = Articles.ToList();
+        }
+    }
+
     [RelayCommand]
     private async Task LoadArticlesAsync()
     {
-        if (IsArticleLoading || _preventLoadMore)
+        if (IsArticleLoading || CurrentPartition is null
+            || _displayedPartition?.Data.Id != CurrentPartition.Data.Id
+            || _stoppedPartitions.Contains(CurrentPartition.Data.Id))
         {
             return;
         }
@@ -226,11 +252,17 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
                 return;
             }
 
+            ApplyPage(articles, _recommendOffset, offset);
             _recommendOffset = offset;
-            TryAddArticles(articles);
         }
         catch (Exception ex)
         {
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
+            _stoppedPartitions.Add(CurrentPartition.Data.Id);
             _logger.LogError(ex, $"尝试加载 {Data.Data.Name} 分区推荐文章列表时出错.");
         }
     }
@@ -252,11 +284,17 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
                 return;
             }
 
+            ApplyPage(articles, pn, nextPn);
             _childPartitionOffsetCache[partitionId] = nextPn;
-            TryAddArticles(articles);
         }
         catch (Exception ex)
         {
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
+            _stoppedPartitions.Add(CurrentPartition.Data.Id);
             _logger.LogError(ex, $"尝试加载 {Data.Data.Name}/{CurrentPartition.Data.Name} 分区文章时出错.");
         }
     }
@@ -284,12 +322,18 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         }
         catch (Exception ex)
         {
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
+            _stoppedPartitions.Add(CurrentPartition.Data.Id);
             _logger.LogError(ex, "尝试加载热门专栏分区时出错.");
         }
 
         if (generation == _listGeneration)
         {
-            _preventLoadMore = true;
+            _stoppedPartitions.Add(CurrentPartition.Data.Id);
         }
     }
 
@@ -303,12 +347,36 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
                 return;
             }
 
+            ApplyPage(articles, _recommendOffset, offset);
             _recommendOffset = offset;
-            TryAddArticles(articles);
         }
         catch (Exception ex)
         {
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
+            _stoppedPartitions.Add(CurrentPartition.Data.Id);
             _logger.LogError(ex, "尝试加载推荐文章时出错.");
+        }
+    }
+
+    private void ApplyPage(IReadOnlyList<ArticleInformation> articles, int previousPage, int nextPage)
+    {
+        var partitionId = CurrentPartition.Data.Id;
+        var previousCount = Articles.Count;
+        TryAddArticles(articles);
+        var noProgress = Articles.Count == previousCount
+            ? _noProgressPages.GetValueOrDefault(partitionId) + 1
+            : 0;
+        _noProgressPages[partitionId] = noProgress;
+
+        // 服务的页号由客户端递增，不是服务端的 has-more 标记；短页也不代表结束。
+        // 允许一次跨页重叠，但连续两页没有新条目时暂停补屏，用户可刷新恢复。
+        if (articles.Count == 0 || nextPage <= previousPage || noProgress >= 2)
+        {
+            _stoppedPartitions.Add(partitionId);
         }
     }
 

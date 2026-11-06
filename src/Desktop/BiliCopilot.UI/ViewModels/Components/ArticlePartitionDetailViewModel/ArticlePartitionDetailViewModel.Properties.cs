@@ -22,8 +22,11 @@ public sealed partial class ArticlePartitionDetailViewModel
     private readonly bool _isHotPartition;
 
     private List<ArticleItemViewModel> _recommendCache;
+    // 选择先于低优先级列表替换生效，缓存必须跟随实际显示的分区。
+    private PartitionViewModel _displayedPartition;
     private int _recommendOffset;
-    private bool _preventLoadMore;
+    private readonly HashSet<string> _stoppedPartitions = new();
+    private readonly Dictionary<string, int> _noProgressPages = new();
 
     /// <summary>
     /// 当前文章列表的代次，刷新、切换子分区或切换排序时递增.
