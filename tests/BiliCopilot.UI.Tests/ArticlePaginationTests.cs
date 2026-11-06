@@ -172,6 +172,104 @@ public sealed class ArticlePaginationTests : IDisposable
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RapidRoundTripKeepsDisplayedListAndChildCursor(bool cachedChild)
+    {
+        var service = new Discovery();
+        var vm = Create("main", service);
+        service.Page = (id, page) => Task.FromResult<(IReadOnlyList<ArticleInformation>, int)>(([Article(id)], page + 1));
+        if (cachedChild)
+        {
+            vm.ChangeChildPartitionCommand.Execute(vm.Children[1]);
+            _dispatcher.Drain();
+            vm.ChangeChildPartitionCommand.Execute(vm.Children[0]);
+            _dispatcher.Drain();
+        }
+
+        var calls = service.Calls.Count;
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[1]);
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[0]);
+        // Both selections happen before any low-priority switch callback runs.
+        _dispatcher.Drain();
+        Assert.Equal("initial", Assert.Single(vm.Articles).Data.Identifier.Id);
+        Assert.Equal(calls, service.Calls.Count);
+
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[1]);
+        _dispatcher.Drain();
+        Assert.Equal("2", Assert.Single(vm.Articles).Data.Identifier.Id);
+        Assert.Equal(calls + (cachedChild ? 0 : 1), service.Calls.Count);
+        await vm.LoadArticlesCommand.ExecuteAsync(null);
+        Assert.Equal(("2", ArticleSortType.Default, 1), service.Calls[^1]);
+        Assert.Equal("2", Assert.Single(vm.Articles).Data.Identifier.Id);
+    }
+
+    [Fact]
+    public async Task QueuedSwitchesStartOnlyLatestChildRequest()
+    {
+        var service = new Discovery();
+        var vm = Create("main", service);
+        var pending = new TaskCompletionSource<(IReadOnlyList<ArticleInformation>, int)>();
+        service.Page = (_, _) => pending.Task;
+        var calls = service.Calls.Count;
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[1]);
+        // A load triggered before the switch callback cannot append B to A's list.
+        await vm.LoadArticlesCommand.ExecuteAsync(null);
+        Assert.Equal(calls, service.Calls.Count);
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[0]);
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[1]);
+        _dispatcher.Drain();
+        Assert.Equal(calls + 1, service.Calls.Count);
+        Assert.Equal(("2", ArticleSortType.Default, 0), service.Calls[^1]);
+        Assert.True(vm.IsArticleLoading);
+        _dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () => pending.SetResult(([Article("child")], 7)));
+        _dispatcher.Drain();
+        Assert.Equal("child", Assert.Single(vm.Articles).Data.Identifier.Id);
+        Assert.False(vm.IsArticleLoading);
+        service.Page = (_, page) => Task.FromResult<(IReadOnlyList<ArticleInformation>, int)>(([Article("next")], page + 1));
+        await vm.LoadArticlesCommand.ExecuteAsync(null);
+        Assert.Equal(7, service.Calls[^1].Page);
+        Assert.Equal(new[] { "child", "next" }, vm.Articles.Select(a => a.Data.Identifier.Id));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RapidSwitchesPreserveChildStopAndNoProgressBudget(bool stopped)
+    {
+        var service = new Discovery();
+        var vm = Create("main", service);
+        service.Page = (_, page) => Task.FromResult<(IReadOnlyList<ArticleInformation>, int)>(([Article("child")], page + 1));
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[1]);
+        _dispatcher.Drain();
+        if (stopped)
+        {
+            service.Page = (_, _) => throw new InvalidOperationException("child failure");
+        }
+
+        await vm.LoadArticlesCommand.ExecuteAsync(null);
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[0]);
+        _dispatcher.Drain();
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[1]);
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[0]);
+        vm.ChangeChildPartitionCommand.Execute(vm.Children[1]);
+        _dispatcher.Drain();
+        Assert.Equal("child", Assert.Single(vm.Articles).Data.Identifier.Id);
+        var calls = service.Calls.Count;
+        await vm.LoadArticlesCommand.ExecuteAsync(null);
+        Assert.Equal(calls + (stopped ? 0 : 1), service.Calls.Count);
+        if (!stopped)
+        {
+            Assert.Equal(2, service.Calls[^1].Page);
+        }
+
+        await vm.LoadArticlesCommand.ExecuteAsync(null);
+        Assert.Equal(calls + (stopped ? 0 : 1), service.Calls.Count);
+        Assert.Equal(stopped ? 1 : 0, _errors.Exceptions.Count);
+        Assert.False(vm.IsArticleLoading);
+    }
+
+    [Theory]
     [InlineData("recommend")]
     [InlineData("main")]
     [InlineData("child")]

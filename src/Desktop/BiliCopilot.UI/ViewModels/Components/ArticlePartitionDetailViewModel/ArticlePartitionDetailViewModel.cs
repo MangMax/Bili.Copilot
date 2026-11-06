@@ -79,6 +79,7 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             SupersedePendingLoad();
             _childPartitionArticleCache.Clear();
             Articles.Clear();
+            _displayedPartition = CurrentPartition;
             _childPartitionOffsetCache.Clear();
             _stoppedPartitions.Clear();
             _noProgressPages.Clear();
@@ -110,6 +111,7 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             _stoppedPartitions.Remove(CurrentPartition.Data.Id);
             _noProgressPages.Remove(CurrentPartition.Data.Id);
             Articles.Clear();
+            _displayedPartition = CurrentPartition;
             await LoadArticlesAsync();
         });
     }
@@ -122,26 +124,34 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             return;
         }
 
-        if (Articles.Count > 0)
-        {
-            if (IsRecommend)
-            {
-                _recommendCache = Articles.ToList();
-            }
-            else
-            {
-                _childPartitionArticleCache[CurrentPartition.Data.Id] = Articles.ToList();
-            }
-        }
-
         IsRecommend = partition.Data.Id == Data.Data.Id;
         CurrentPartition = partition;
         SupersedePendingLoad();
+        var generation = _listGeneration;
 
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
         {
+            // 已被后续选择或刷新替代的切换不能清空列表、作废新请求或重复补屏。
+            if (generation != _listGeneration)
+            {
+                return;
+            }
+
             SupersedePendingLoad();
+            if (Articles.Count > 0 && _displayedPartition is not null)
+            {
+                if (_displayedPartition.Data.Id == Data.Data.Id)
+                {
+                    _recommendCache = Articles.ToList();
+                }
+                else
+                {
+                    _childPartitionArticleCache[_displayedPartition.Data.Id] = Articles.ToList();
+                }
+            }
+
             Articles.Clear();
+            _displayedPartition = partition;
             if (IsRecommend && _recommendCache?.Count > 0)
             {
                 foreach (var item in _recommendCache)
@@ -171,7 +181,9 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     [RelayCommand]
     private async Task LoadArticlesAsync()
     {
-        if (IsArticleLoading || CurrentPartition is null || _stoppedPartitions.Contains(CurrentPartition.Data.Id))
+        if (IsArticleLoading || CurrentPartition is null
+            || _displayedPartition?.Data.Id != CurrentPartition.Data.Id
+            || _stoppedPartitions.Contains(CurrentPartition.Data.Id))
         {
             return;
         }
