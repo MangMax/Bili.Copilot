@@ -14,5 +14,6 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/Pure/UserRelationBatcher.cs" Link="UserRelationBatcher.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/Pure/PublisherFollowingState.cs" Link="PublisherFollowingState.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/Pure/VideoCardMetadataProvider.cs" Link="VideoCardMetadataProvider.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/Pure/BiliImagePreview.cs" Link="BiliImagePreview.cs" />
   </ItemGroup>
 </Project>

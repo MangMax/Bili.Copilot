@@ -146,6 +146,7 @@ public sealed class RecommendFeedSourceTests
 
     private sealed class FakeService : IVideoDiscoveryService
     {
+        public Task SubmitRecommendationFeedbackAsync(RecommendationFeedbackContext context, RecommendationFeedbackReason reason, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Func<long, CancellationToken, (string[] Ids, long Offset)> Recommend { get; set; }
             = (_, _) => (["recommend"], 1);
 

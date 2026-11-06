@@ -1,8 +1,10 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.ComponentModel;
 using BiliCopilot.UI.Toolkits;
+using Richasy.BiliKernel.Models.Appearance;
+using Richasy.BiliKernel.Models.Media;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -23,7 +25,28 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 标题.
     /// </summary>
-    public string Title { get; init; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AccessibleTitle))]
+    public partial string Title { get; set; }
+
+    public IReadOnlyList<RecommendationFeedbackReason> RecommendationFeedbackOptions
+    {
+        get
+        {
+            if (Style != VideoCardStyle.Recommend || Data.RecommendationFeedback is not { } context) return [];
+            return context.Options
+                .Where(reason => reason.Operation != RecommendationFeedbackOperation.AvoidPublisher
+                    || (reason.Mid ?? context.PublisherId) == context.PublisherId)
+                .OrderBy(reason => reason.Operation)
+                .DistinctBy(reason => reason.Operation)
+                .ToArray();
+        }
+    }
+
+    public bool IsDynamicVideo { get; }
+
+    public string AccessibleTitle => string.IsNullOrWhiteSpace(Title)
+        ? ResourceToolkit.GetLocalizedString(IsDynamicVideo ? StringNames.DynamicVideo : StringNames.NoTitleVideo) : Title;
 
     /// <summary>
     /// 副标题.
@@ -61,12 +84,23 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 播放数.
     /// </summary>
-    public double? PlayCount { get; init; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPopularPlayCount))]
+    public partial double? PlayCount { get; set; }
 
     /// <summary>
     /// 弹幕数.
     /// </summary>
-    public double? DanmakuCount { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPopularDanmaku))]
+    public partial double? DanmakuCount { get; set; }
+
+    /// <summary>Video introduction, separate from the author's dynamic text.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DescriptionContent))]
+    public partial string? Description { get; set; }
+
+    public EmoteText? DescriptionContent => string.IsNullOrEmpty(Description) ? null : new EmoteText(Description, null);
 
     /// <summary>
     /// 点赞数.
@@ -147,9 +181,11 @@ public sealed partial class VideoItemViewModel
         ? CollectTime
         : PublishRelativeTime ?? (Style == VideoCardStyle.Hot ? Subtitle : null);
 
-    public bool HasPopularDanmaku => Style != VideoCardStyle.Rank && DanmakuCount.HasValue;
+    public bool HasPopularPlayCount => PlayCount >= 0;
 
-    public bool HasPopularLikes => Style == VideoCardStyle.Rank && LikeCount.HasValue;
+    public bool HasPopularDanmaku => Style != VideoCardStyle.Rank && DanmakuCount >= 0;
+
+    public bool HasPopularLikes => Style == VideoCardStyle.Rank && LikeCount >= 0;
 
     /// <summary>Whether the current account follows the author; null means unknown.</summary>
     [ObservableProperty]
