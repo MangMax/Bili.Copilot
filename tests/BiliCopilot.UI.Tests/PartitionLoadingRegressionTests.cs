@@ -202,6 +202,7 @@ public sealed class PartitionLoadingRegressionTests : IDisposable
 
     private sealed class Discovery : IVideoDiscoveryService
     {
+        public Task SubmitRecommendationFeedbackAsync(RecommendationFeedbackContext context, RecommendationFeedbackReason reason, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public List<long> Offsets { get; } = new();
         public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Fetch { get; set; }
             = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([Video("original")], 1));

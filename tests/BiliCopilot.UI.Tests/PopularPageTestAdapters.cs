@@ -127,10 +127,11 @@ namespace BiliCopilot.UI.ViewModels.Items
     {
         public Partition Data { get; } = data;
     }
-    public sealed class VideoItemViewModel(VideoInformation data, VideoCardStyle style, Action<VideoItemViewModel>? removeAction = null)
+    public sealed class VideoItemViewModel(VideoInformation data, VideoCardStyle style, Action<VideoItemViewModel>? removeAction = null, Action<VideoItemViewModel, RecommendationFeedbackReason>? feedbackAccepted = null)
     {
         public VideoInformation Data { get; } = data;
         public Action<VideoItemViewModel>? RemoveAction { get; } = removeAction;
+        public Action<VideoItemViewModel, RecommendationFeedbackReason>? FeedbackAccepted { get; } = feedbackAccepted;
 #if SEARCH_RECOVERY_INVESTIGATION
         public RelayCommand PlayCommand { get; } = new(() => throw new NotSupportedException());
 #endif

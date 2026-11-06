@@ -1,66 +1,74 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
-    xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
-    xmlns:local="using:BiliCopilot.UI.Controls.Components"
-    xmlns:moment="using:BiliCopilot.UI.Controls.Moment">
-
+    xmlns:local="using:BiliCopilot.UI.Controls.Components">
     <Style x:Key="VideoMomentCardStyle" TargetType="local:MomentCardControl">
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:MomentCardControl">
-                    <base:CardControl x:Name="RootCard">
-                        <local:VideoMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
-                    </base:CardControl>
+                    <Grid Background="Transparent">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="MomentSurfaceStates">
+                                <VisualState x:Name="MomentNormal" />
+                                <VisualState x:Name="MomentHovered">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootSurface.Background" Value="{ThemeResource ButtonBackgroundPointerOver}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="RootSurface"
+                            Background="{ThemeResource ButtonBackground}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1" CornerRadius="12">
+                            <Border.RenderTransform>
+                                <TranslateTransform x:Name="MomentLift" />
+                            </Border.RenderTransform>
+                            <local:VideoMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
+                        </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style x:Key="PersonalVideoMomentCardStyle" TargetType="local:MomentCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:MomentCardControl">
-                    <base:CardControl x:Name="RootCard">
-                        <local:PersonalVideoMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
-                    </base:CardControl>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
+    <Style x:Key="PersonalVideoMomentCardStyle" TargetType="local:MomentCardControl" BasedOn="{StaticResource VideoMomentCardStyle}" />
     <Style x:Key="FullMomentCardStyle" TargetType="local:MomentCardControl">
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:MomentCardControl">
-                    <base:CardControl x:Name="RootCard">
-                        <local:FullMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
-                    </base:CardControl>
+                    <Grid Background="Transparent">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="MomentSurfaceStates">
+                                <VisualState x:Name="MomentNormal" />
+                                <VisualState x:Name="MomentHovered">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootSurface.Background" Value="{ThemeResource ButtonBackgroundPointerOver}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="RootSurface"
+                            Background="{ThemeResource ButtonBackground}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1" CornerRadius="12">
+                            <Border.RenderTransform>
+                                <TranslateTransform x:Name="MomentLift" />
+                            </Border.RenderTransform>
+                            <local:FullMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
+                        </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
+    <Style x:Key="PersonalFullMomentCardStyle" TargetType="local:MomentCardControl" BasedOn="{StaticResource FullMomentCardStyle}" />
     <Style x:Key="ForwardMomentCardStyle" TargetType="local:MomentCardControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:MomentCardControl">
                     <local:ForwardMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="PersonalFullMomentCardStyle" TargetType="local:MomentCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:MomentCardControl">
-                    <base:CardControl x:Name="RootCard">
-                        <local:PersonalFullMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
-                    </base:CardControl>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

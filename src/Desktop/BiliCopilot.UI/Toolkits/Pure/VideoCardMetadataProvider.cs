@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using Richasy.BiliKernel.Models.Media;
 
@@ -6,7 +6,8 @@ namespace BiliCopilot.UI.Toolkits;
 
 /// <summary>Public video fields used to complete a card, independent of the signed-in account.</summary>
 public sealed record VideoCardMetadata(string? PublisherId, Uri? Avatar, DateTimeOffset? PublishTime, string? TagName,
-    int CreatorCount = 0, bool IsCollaborativeSubmission = false, bool IsChargingExclusive = false)
+    int CreatorCount = 0, bool IsCollaborativeSubmission = false, bool IsChargingExclusive = false,
+    double? PlayCount = null, double? DanmakuCount = null, string? Description = null, string? Title = null)
 {
     /// <summary>Uses explicit server flags and distinct creator IDs; titles and descriptions are not classification signals.</summary>
     public static VideoCardMetadata FromVideo(VideoInformation video)
@@ -21,7 +22,9 @@ public sealed record VideoCardMetadata(string? PublisherId, Uri? Avatar, DateTim
         return new(video.Publisher?.User?.Id, video.Publisher?.User?.Avatar?.Uri, video.PublishTime,
             video.GetExtensionIfNotNull<string>(VideoExtensionDataId.TagName), creators.Count,
             creators.Count > 1 || video.GetExtensionIfNotNull<bool?>(VideoExtensionDataId.IsCollaborativeSubmission) is true,
-            video.GetExtensionIfNotNull<bool?>(VideoExtensionDataId.IsChargingExclusive) is true);
+            video.GetExtensionIfNotNull<bool?>(VideoExtensionDataId.IsChargingExclusive) is true,
+            video.CommunityInformation?.PlayCount, video.CommunityInformation?.DanmakuCount,
+            video.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description), video.Identifier.Title);
     }
 }
 

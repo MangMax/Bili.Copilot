@@ -61,6 +61,8 @@
         <Button
             x:Name="OverflowButton"
             Grid.Row="2"
+            Click="OnOverflowClick"
+            AutomationProperties.AutomationId="EmoteTextExpand"
             Margin="0,4,0,0"
             Padding="6,4"
             BorderThickness="0"

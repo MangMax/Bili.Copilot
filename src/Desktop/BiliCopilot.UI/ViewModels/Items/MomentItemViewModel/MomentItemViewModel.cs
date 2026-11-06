@@ -38,7 +38,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         IsLiked = data.CommunityInformation?.IsLiked ?? false;
         LikeCount = data.CommunityInformation?.LikeCount;
         CommentCount = data.CommunityInformation?.CommentCount;
-        Author = data.User?.Name;
+        Author = data.User?.Name?.TrimStart('@');
         Avatar = data.User?.Avatar?.Uri;
         Tip = data.Tip;
         Description = data.Description;
@@ -61,21 +61,21 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             }
             else if (data.Data is IEnumerable<BiliImage> images)
             {
-                InnerContent = images;
+                InnerContent = images.ToList();
             }
 
             if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
             {
                 VideoTitle = vinfo.Identifier.Title ?? ResourceToolkit.GetLocalizedString(StringNames.NoTitleVideo);
                 VideoCover = vinfo.Identifier.Cover.Uri;
-                VideoDuration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(vinfo.Duration!.Value));
+                VideoDuration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(vinfo.Duration ?? 0));
             }
             else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
             {
                 IsPgc = true;
                 VideoTitle = einfo.Identifier.Title;
                 VideoCover = einfo.Identifier.Cover.Uri;
-                VideoDuration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(einfo.Duration!.Value));
+                VideoDuration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(einfo.Duration ?? 0));
             }
         }
     }
@@ -96,12 +96,23 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             }
 
             IsLiked = state;
-            LikeCount += state ? 1 : -1;
+            LikeCount = Math.Max(0, (LikeCount ?? 0) + (state ? 1 : -1));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "切换评论点赞状态时失败");
         }
+    }
+
+    [RelayCommand]
+    private void CopyMomentLink()
+    {
+        var url = new Uri($"https://t.bilibili.com/{Data.Id}");
+        var package = new DataPackage();
+        package.SetText(url.AbsoluteUri);
+        package.SetWebLink(url);
+        Clipboard.SetContent(package);
+        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
     }
 
     [RelayCommand]

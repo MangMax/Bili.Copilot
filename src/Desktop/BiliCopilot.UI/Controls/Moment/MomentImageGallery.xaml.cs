@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
+using Microsoft.UI.Xaml.Media;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Appearance;
@@ -17,23 +18,60 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
     /// <see cref="ItemsSource"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty ItemsSourceProperty =
-        DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(MomentImageGallery), new PropertyMetadata(default));
+        DependencyProperty.Register(nameof(ItemsSource), typeof(IReadOnlyList<BiliImage>), typeof(MomentImageGallery), new PropertyMetadata(default, OnItemsSourceChanged));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentImageGallery"/> class.
     /// </summary>
-    public MomentImageGallery() => InitializeComponent();
+    public MomentImageGallery()
+    {
+        InitializeComponent();
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
+    }
 
     /// <summary>
     /// 图片源.
     /// </summary>
-    public object ItemsSource
+    public IReadOnlyList<BiliImage>? ItemsSource
     {
-        get => (object)GetValue(ItemsSourceProperty);
+        get => (IReadOnlyList<BiliImage>?)GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
     }
 
-    protected override void OnControlUnloaded()
+    private void OnLoaded(object sender, RoutedEventArgs args)
+    {
+        ImageRepeater.ItemsSource = ItemsSource;
+        UpdateSingleImageRatio();
+    }
+
+    private static void OnItemsSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+        => ((MomentImageGallery)sender).UpdateSingleImageRatio();
+
+    private void UpdateSingleImageRatio()
+    {
+        if (ImageLayout is not null)
+        {
+            ImageLayout.SingleImageRatio = ItemsSource is [var image] && image.Width > 0 && image.Height > 0
+                ? image.Width / image.Height : 1;
+        }
+    }
+
+    private void OnElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args)
+    {
+        if (args.Element is Button { Content: RecommendationCoverImage image })
+        {
+            image.Stretch = ItemsSource is { Count: 1 } ? Stretch.Uniform : Stretch.UniformToFill;
+        }
+    }
+
+    private void OnImageOpened(object? sender, EventArgs args)
+    {
+        if (ItemsSource is [var source] && (source.Width <= 0 || source.Height <= 0) && sender is RecommendationCoverImage { SourcePixelWidth: > 0, SourcePixelHeight: > 0 } image)
+            ImageLayout.SingleImageRatio = (double)image.SourcePixelWidth / image.SourcePixelHeight;
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs args)
         => ImageRepeater.ItemsSource = default;
 
     /// <summary>
@@ -64,7 +102,7 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
             return;
         }
 
-        var itemsSource = ItemsSource as List<BiliImage>;
+        var itemsSource = ItemsSource?.ToList();
         new GalleryWindow(image, itemsSource).Activate();
     }
 }

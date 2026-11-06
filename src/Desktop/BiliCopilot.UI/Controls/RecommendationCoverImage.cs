@@ -2,13 +2,14 @@
 
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Toolkits;
+using BiliCopilot.UI.Models.Constants;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.Extensions.Logging;
-using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.UI.Xaml;
-using Microsoft.UI;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.Graphics.Imaging;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace BiliCopilot.UI.Controls;
 
@@ -19,6 +20,9 @@ public sealed partial class RecommendationCoverImage : UserControl
     // This helper never enters the visual tree or starts a Win2D image load.
     private static readonly BasicCoverImage Cache = new();
     private static readonly SemaphoreSlim Downloads = new(8);
+    // The CDN may negotiate WebP even when the requested suffix is AVIF.
+    private static readonly bool SupportsModernPreviews = new[] { ".avif", ".webp" }.All(extension =>
+        BitmapDecoder.GetDecoderInformationEnumerator().Any(codec => codec.FileExtensions.Contains(extension)));
     // Cached/off-screen realized covers share this budget too. A resize must not
     // enqueue a native decode and a UI surface upload for every cached card at once.
     private static readonly SemaphoreSlim Decodes = new(2);
@@ -26,11 +30,15 @@ public sealed partial class RecommendationCoverImage : UserControl
     private readonly Image _image = new() { Stretch = Stretch.UniformToFill };
     private readonly Shimmer _loading = new();
     private readonly Grid _root = new();
+    private readonly Button _retry = new() { Visibility = Visibility.Collapsed, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+
+    public event EventHandler? ImageOpened;
+
+    public uint SourcePixelWidth { get; private set; }
+
+    public uint SourcePixelHeight { get; private set; }
     private CancellationTokenSource? _request;
     private XamlRoot? _observedRoot;
-    private CanvasDevice? _device;
-    private long _lastRecovery;
-    private CancellationTokenSource? _recoveryDelay;
     private long? _cornerRadiusToken;
     private (Uri? Source, int Width, int Height) _requested;
     private Microsoft.UI.Dispatching.DispatcherQueueTimer? _resizeTimer;
@@ -45,10 +53,33 @@ public sealed partial class RecommendationCoverImage : UserControl
         set => SetValue(SourceProperty, value);
     }
 
+    public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(
+        nameof(Stretch), typeof(Stretch), typeof(RecommendationCoverImage),
+        new PropertyMetadata(Stretch.UniformToFill, OnStretchChanged));
+
+    public Stretch Stretch
+    {
+        get => (Stretch)GetValue(StretchProperty);
+        set => SetValue(StretchProperty, value);
+    }
+
+    private static void OnStretchChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+    {
+        var cover = (RecommendationCoverImage)sender;
+        cover._image.Stretch = (Stretch)args.NewValue;
+        cover._requested = default;
+        cover.Reload();
+    }
+
     public RecommendationCoverImage()
     {
         _root.Children.Add(_image);
         _root.Children.Add(_loading);
+        _retry.Content = ResourceToolkit.GetLocalizedString(StringNames.Retry);
+        AutomationProperties.SetName(_retry, ResourceToolkit.GetLocalizedString(StringNames.Retry));
+        AutomationProperties.SetAutomationId(_retry, "RetryImage");
+        _retry.Click += (_, _) => { _requested = default; Reload(); };
+        _root.Children.Add(_retry);
         Content = _root;
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
@@ -73,7 +104,6 @@ public sealed partial class RecommendationCoverImage : UserControl
         }
 
         _root.CornerRadius = CornerRadius;
-        CompositionTarget.SurfaceContentsLost += OnSurfaceContentsLost;
         _observedRoot = XamlRoot;
         if (_observedRoot is not null)
         {
@@ -96,13 +126,6 @@ public sealed partial class RecommendationCoverImage : UserControl
             _cornerRadiusToken = null;
         }
 
-        CompositionTarget.SurfaceContentsLost -= OnSurfaceContentsLost;
-        if (_device is not null)
-        {
-            _device.DeviceLost -= OnDeviceLost;
-            _device = null;
-        }
-
         if (_observedRoot is not null)
         {
             _observedRoot.Changed -= OnRootChanged;
@@ -111,10 +134,9 @@ public sealed partial class RecommendationCoverImage : UserControl
 
         _request?.Cancel();
         _request = null;
-        _recoveryDelay?.Cancel();
-        _recoveryDelay = null;
         _requested = default;
         _image.Source = null;
+        _retry.Visibility = Visibility.Collapsed;
         _loading.IsActive = false;
     }
 
@@ -161,62 +183,6 @@ public sealed partial class RecommendationCoverImage : UserControl
         _resizeTimer.Start();
     }
 
-    private void OnSurfaceContentsLost(object? sender, object args)
-    {
-        _requested = default;
-        Reload();
-    }
-
-    private void OnDeviceLost(CanvasDevice sender, object args)
-    {
-        // Win2D can notify from another thread. Ignore queued callbacks after
-        // recycling and never dispose a device shared with other controls.
-        DispatcherQueue.TryEnqueue(() => _ = RecoverDeviceAsync(sender));
-    }
-
-    private async Task RecoverDeviceAsync(CanvasDevice sender)
-    {
-        if (_recoveryDelay is not null || !IsLoaded || !ReferenceEquals(sender, _device))
-        {
-            return;
-        }
-
-        using var recovery = new CancellationTokenSource();
-        _recoveryDelay = recovery;
-        try
-        {
-            // Throttle consecutive losses without dropping the recovery request.
-            var elapsed = Environment.TickCount64 - _lastRecovery;
-            if (_lastRecovery != 0 && elapsed < 3000)
-            {
-                await Task.Delay((int)(3000 - elapsed), recovery.Token);
-            }
-
-            if (recovery.IsCancellationRequested || !IsLoaded || !ReferenceEquals(sender, _device))
-            {
-                return;
-            }
-
-            _lastRecovery = Environment.TickCount64;
-            _requested = default;
-            Reload();
-        }
-        catch (OperationCanceledException)
-        {
-        }
-        catch (Exception ex)
-        {
-            this.Get<ILogger<RecommendationCoverImage>>().LogWarning(ex, "Unable to recover recommendation cover device");
-        }
-        finally
-        {
-            if (ReferenceEquals(_recoveryDelay, recovery))
-            {
-                _recoveryDelay = null;
-            }
-        }
-    }
-
     private async void Reload()
     {
         if (!IsLoaded || ActualWidth <= 0 || ActualHeight <= 0)
@@ -242,6 +208,7 @@ public sealed partial class RecommendationCoverImage : UserControl
             _image.Source = null;
         }
 
+        _retry.Visibility = Visibility.Collapsed;
         _loading.IsActive = Source is not null && _image.Source is null;
         _loading.Visibility = _loading.IsActive ? Visibility.Visible : Visibility.Collapsed;
         try
@@ -251,7 +218,9 @@ public sealed partial class RecommendationCoverImage : UserControl
                 return;
             }
 
-            using var stream = await OpenAsync(key.Source, token);
+            var preview = BiliImagePreview.Create(key.Source, key.Item2, key.Item3,
+                Stretch == Stretch.UniformToFill, SupportsModernPreviews);
+            using var stream = await OpenAsync(preview, token);
             using var random = stream.AsRandomAccessStream();
             await Decodes.WaitAsync(token);
             try
@@ -267,36 +236,23 @@ public sealed partial class RecommendationCoverImage : UserControl
                     decoder.OrientedPixelWidth, decoder.OrientedPixelHeight, key.Item2, key.Item3, 1);
                 var width = decoder.PixelWidth == decoder.OrientedPixelWidth ? outputWidth : outputHeight;
                 var height = decoder.PixelHeight == decoder.OrientedPixelHeight ? outputHeight : outputWidth;
-                ImageSource result;
                 var pixels = await decoder.GetPixelDataAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied,
                     new BitmapTransform { ScaledWidth = width, ScaledHeight = height, InterpolationMode = BitmapInterpolationMode.Fant },
                     ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb).AsTask();
                 token.ThrowIfCancellationRequested();
-                var device = CanvasDevice.GetSharedDevice();
-                if (!ReferenceEquals(_device, device))
+                var result = new WriteableBitmap((int)outputWidth, (int)outputHeight);
+                using (var buffer = result.PixelBuffer.AsStream())
                 {
-                    if (_device is not null)
-                    {
-                        _device.DeviceLost -= OnDeviceLost;
-                    }
-
-                    _device = device;
-                    device.DeviceLost += OnDeviceLost;
+                    await buffer.WriteAsync(pixels.DetachPixelData(), token);
                 }
-
-                using var bitmap = CanvasBitmap.CreateFromBytes(device, pixels.DetachPixelData(),
-                    (int)outputWidth, (int)outputHeight, Windows.Graphics.DirectX.DirectXPixelFormat.B8G8R8A8UIntNormalized);
-                var surface = new CanvasImageSource(device, outputWidth, outputHeight, 96);
-                using (var session = surface.CreateDrawingSession(Colors.Transparent))
-                {
-                    session.DrawImage(bitmap);
-                }
-
-                result = surface;
+                result.Invalidate();
                 token.ThrowIfCancellationRequested();
                 if (ReferenceEquals(_request, request) && IsLoaded)
                 {
                     _image.Source = result;
+                    SourcePixelWidth = decoder.OrientedPixelWidth;
+                    SourcePixelHeight = decoder.OrientedPixelHeight;
+                    ImageOpened?.Invoke(this, EventArgs.Empty);
                 }
             }
             finally
@@ -307,15 +263,14 @@ public sealed partial class RecommendationCoverImage : UserControl
         catch (OperationCanceledException)
         {
         }
-        catch (Exception ex) when (_device?.IsDeviceLost(ex.HResult) == true)
-        {
-            _device.RaiseDeviceLost();
-        }
         catch (Exception ex)
         {
             this.Get<ILogger<RecommendationCoverImage>>().LogWarning(ex, "Unable to load recommendation cover");
-            // As with an ordinary cover without HolderImage: end loading and
-            // leave the cover empty. A later source/reload may retry.
+            if (ReferenceEquals(_request, request))
+            {
+                _requested = default;
+                _retry.Visibility = _image.Source is null && IsLoaded ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
         finally
         {
@@ -361,10 +316,11 @@ public sealed partial class RecommendationCoverImage : UserControl
     {
         try
         {
-            await Downloads.WaitAsync();
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            await Downloads.WaitAsync(deadline.Token);
             try
             {
-                var bytes = await InternalHttpExtensions.ImageClient.GetByteArrayAsync(uri);
+                var bytes = await InternalHttpExtensions.ImageClient.GetByteArrayAsync(uri, deadline.Token);
                 // A recycled consumer must not cancel another consumer or leave
                 // a partially written cache entry behind.
                 await Cache.WriteCacheAsync(uri.ToString(), bytes);
@@ -374,6 +330,10 @@ public sealed partial class RecommendationCoverImage : UserControl
             {
                 Downloads.Release();
             }
+        }
+        catch (OperationCanceledException ex)
+        {
+            completion.TrySetException(new TimeoutException("Image download exceeded its deadline.", ex));
         }
         catch (Exception ex)
         {
