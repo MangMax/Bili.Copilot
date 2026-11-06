@@ -327,6 +327,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
 
         _sourceResolver.WindowHandle = Window!.Handle;
+        _sourceResolver.PublishDisplayDimensionsAsync = _mediaDisplaySource?.CreateMetadataPublisher();
 
         if (_historyResolver != null && Player != null)
         {

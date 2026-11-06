@@ -27,6 +27,8 @@ internal sealed class MpvMediaDisplaySource : IDisposable
     private long? _previousEntry;
     private bool _acceptEvents;
     private bool _closed;
+    private bool _awaitingLoad;
+    private bool _hasRuntimeDimensions;
 
     public MpvMediaDisplaySource(MpvClient client, DispatcherQueue queue, Func<long> beginMedia, Action<long, double, double> publish)
     {
@@ -39,7 +41,47 @@ internal sealed class MpvMediaDisplaySource : IDisposable
         _timer.Tick += OnTick;
         client.ReachFileLoading += OnLoading;
         client.ReachFileLoaded += OnLoaded;
-        client.ReachFileEnd += OnLoading;
+        client.ReachFileEnd += OnEnded;
+    }
+
+    /// <summary>Capture the application source lifetime before resolving its selected DASH stream.</summary>
+    public Func<double, double, Task> CreateMetadataPublisher()
+    {
+        long generation;
+        lock (_gate)
+        {
+            ResetWindowGeneration();
+            generation = _generation;
+        }
+
+        return (width, height) =>
+        {
+            var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (!_queue.TryEnqueue(() =>
+            {
+                try
+                {
+                    lock (_gate)
+                    {
+                        if (!_closed && generation == _generation && !_hasRuntimeDimensions)
+                        {
+                            _publish(_windowGeneration, width, height);
+                        }
+                    }
+
+                    completion.TrySetResult();
+                }
+                catch (Exception ex)
+                {
+                    completion.TrySetException(ex);
+                }
+            }))
+            {
+                completion.TrySetResult();
+            }
+
+            return completion.Task;
+        };
     }
 
     /// <summary>Invalidate immediately, before awaiting any old-media stop work.</summary>
@@ -72,6 +114,7 @@ internal sealed class MpvMediaDisplaySource : IDisposable
             }
 
             _acceptEvents = true;
+            _awaitingLoad = true;
         }
 
         _timer.Start();
@@ -90,7 +133,7 @@ internal sealed class MpvMediaDisplaySource : IDisposable
         _timer.Tick -= OnTick;
         _client.ReachFileLoading -= OnLoading;
         _client.ReachFileLoaded -= OnLoaded;
-        _client.ReachFileEnd -= OnLoading;
+        _client.ReachFileEnd -= OnEnded;
     }
 
     private void OnLoading(object? sender, EventArgs args)
@@ -103,6 +146,14 @@ internal sealed class MpvMediaDisplaySource : IDisposable
             }
 
             _loadedEntry = null;
+            // The first load belongs to the already prepared API hint. Later loads
+            // (or file end) invalidate it, just like an application source switch.
+            if (_awaitingLoad)
+            {
+                _awaitingLoad = false;
+                return;
+            }
+
             var generation = ++_generation;
             _queue.TryEnqueue(() =>
             {
@@ -114,6 +165,15 @@ internal sealed class MpvMediaDisplaySource : IDisposable
                     }
                 }
             });
+        }
+    }
+
+    private void OnEnded(object? sender, EventArgs args)
+    {
+        lock (_gate)
+        {
+            _awaitingLoad = false;
+            OnLoading(sender, args);
         }
     }
 
@@ -154,7 +214,11 @@ internal sealed class MpvMediaDisplaySource : IDisposable
             }
 
             var dimensions = MediaDisplayDimensions.FromOutput(first.Width ?? 0, first.Height ?? 0, first.Rotation ?? double.NaN);
-            _publish(_windowGeneration, dimensions.Width, dimensions.Height);
+            if (dimensions.Width > 0 && dimensions.Height > 0)
+            {
+                _hasRuntimeDimensions = true;
+                _publish(_windowGeneration, dimensions.Width, dimensions.Height);
+            }
         }
     }
 
@@ -162,6 +226,7 @@ internal sealed class MpvMediaDisplaySource : IDisposable
     {
         if (_observedGeneration != _generation)
         {
+            _hasRuntimeDimensions = false;
             _observedGeneration = _generation;
             _windowGeneration = _beginMedia();
         }

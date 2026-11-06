@@ -23,8 +23,9 @@ OSD dimensions, or window dimensions. Invalid/unavailable properties mean wait.
 A 500 ms UI timer provides changes even while paused because the pinned wrapper
 has no output-size event. Equal ratios do not resize again.
 
-File events invalidate the media generation; application source switches suspend
-sampling before stop/initialization. Loaded playlist entry IDs reject the old
+File end and subsequent loading events invalidate the media generation; the first
+loading event after application initialization preserves its prepared API hint.
+Application source switches suspend sampling before stop/initialization. Loaded playlist entry IDs reject the old
 file. The [mpv playlist property contract](https://mpv.io/manual/stable/#property-list)
 provides `playlist-playing-pos` (the playing slot, or -1 during idle/transitions)
 and `playlist/N/id` (the entry ID unique for the core lifetime). There is no
@@ -35,6 +36,36 @@ different entry does not. Suspension retains the last loaded ID if the playing
 properties are already unavailable, so a delayed old loaded event stays rejected.
 Disposal stops
 the timer and detaches backend events before the client is disposed.
+
+## Early selected-stream dimensions
+
+`VideoConnectorViewModel._part` / `PgcConnectorViewModel._episode` initialize the
+corresponding resolver. The ordinary video REST play request uses that part's
+CID; PGC uses the current episode's CID and episode ID. Both REST response paths
+map `PlayerInformation.Dash.Video[].Width/Height` into `DashSegmentInformation`.
+After the existing quality and codec selection, the resolver uses **that same
+selected video segment** for both the URL and dimensions. No first-part lookup,
+cover dimensions or `MediaAspectRatio` enum is involved; no kernel changes are
+required.
+
+`PlayerViewModel` supplies a generation-captured metadata publisher to the
+resolver. `GetSourceAsync` captures it before awaiting the API, then awaits its
+UI dispatch before returning `MpvMediaSource` to the player for loading. The
+publisher forwards the hint to the existing window ratio coordinator. Zero or
+invalid dimensions keep waiting. The first load preserves the hint so an equal
+runtime ratio does not undo manual sizing during startup. The first valid mpv
+output sample takes priority even when its ratio equals the hint; later API
+hints cannot overwrite it. Suspend, file end, later loads and disposal invalidate
+queued/late hints. The global preference and duplicate-ratio behavior remain
+owned by the same coordinator.
+
+The DASH model exposes no rotation or sample-aspect-ratio contract. API width and
+height are therefore provisional, not authoritative display output: no rotation
+is guessed. mpv's aspect-corrected output and remaining rotation correct the hint.
+Missing API dimensions, audio-only sources and backend-driven reloads without a
+fresh application initialization continue to wait for runtime output. The unused
+gRPC adapter currently creates zero dimensions and would likewise wait if that
+API path were selected in future.
 
 ## Window and setting behavior
 
