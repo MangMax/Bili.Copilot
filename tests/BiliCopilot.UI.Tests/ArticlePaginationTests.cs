@@ -331,6 +331,54 @@ public sealed class ArticlePaginationTests : IDisposable
         Assert.Equal(new[] { "fresh", "next" }, vm.Articles.Select(a => a.Data.Identifier.Id));
     }
 
+    [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(false, true, false)]
+    [InlineData(true, false, false)]
+    [InlineData(true, true, false)]
+    [InlineData(false, false, true)]
+    [InlineData(true, false, true)]
+    public async Task ReplacementBeforeQueuedSwitchPreservesOutgoingArticlesAndCursor(bool stopped, bool sort, bool outgoingChild)
+    {
+        var service = new Discovery();
+        var vm = Create(outgoingChild ? "child" : "main", service);
+        var outgoing = vm.Children[outgoingChild ? 1 : 0];
+        var incoming = vm.Children[outgoingChild ? 0 : 1];
+        service.Page = (id, page) => Task.FromResult<(IReadOnlyList<ArticleInformation>, int)>(([Article($"{id}-{page}")], page + 1));
+        await vm.LoadArticlesCommand.ExecuteAsync(null);
+        if (stopped)
+        {
+            service.Page = (_, _) => throw new InvalidOperationException("outgoing failure");
+            await vm.LoadArticlesCommand.ExecuteAsync(null);
+        }
+
+        service.Page = (id, page) => Task.FromResult<(IReadOnlyList<ArticleInformation>, int)>(([Article($"{id}-{page}")], page + 1));
+        vm.ChangeChildPartitionCommand.Execute(incoming);
+        if (sort)
+        {
+            vm.ChangeSortTypeCommand.Execute(ArticleSortType.Newest);
+        }
+        else
+        {
+            vm.RefreshCommand.Execute(null);
+        }
+        _dispatcher.Drain();
+        Assert.Equal($"{incoming.Data.Id}-0", Assert.Single(vm.Articles).Data.Identifier.Id);
+
+        var calls = service.Calls.Count;
+        vm.ChangeChildPartitionCommand.Execute(outgoing);
+        _dispatcher.Drain();
+        Assert.Equal(new[] { "initial", $"{outgoing.Data.Id}-1" }, vm.Articles.Select(a => a.Data.Identifier.Id));
+        Assert.Equal(calls, service.Calls.Count);
+        await vm.LoadArticlesCommand.ExecuteAsync(null);
+        Assert.Equal(calls + (stopped ? 0 : 1), service.Calls.Count);
+        if (!stopped)
+        {
+            Assert.Equal((outgoing.Data.Id, ArticleSortType.Default, 2), service.Calls[^1]);
+            Assert.Equal(new[] { "initial", $"{outgoing.Data.Id}-1", $"{outgoing.Data.Id}-2" }, vm.Articles.Select(a => a.Data.Identifier.Id));
+        }
+    }
+
     [Fact]
     public async Task HotLoadsAllCategoriesOnceAndRefreshRecoversFailure()
     {
