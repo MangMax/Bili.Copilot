@@ -11,27 +11,22 @@
                     <StaticResource x:Key="SlidingTabPressedForeground" ResourceKey="TextFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
-                    <StaticResource x:Key="SlidingTabPressedFill" ResourceKey="SubtleFillColorTertiaryBrush" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <StaticResource x:Key="SlidingTabHoverForeground" ResourceKey="AccentTextFillColorPrimaryBrush" />
                     <StaticResource x:Key="SlidingTabPressedForeground" ResourceKey="TextFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
-                    <StaticResource x:Key="SlidingTabPressedFill" ResourceKey="SubtleFillColorTertiaryBrush" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="HighContrast">
                     <!-- An outlined selection keeps the platform's hover/disabled text legible. -->
                     <SolidColorBrush x:Key="SlidingTabFill" Color="{ThemeResource SystemColorWindowColor}" />
                     <SolidColorBrush x:Key="SlidingTabStroke" Color="{ThemeResource SystemColorHighlightColor}" />
                     <SolidColorBrush x:Key="SlidingTabHoverForeground" Color="{ThemeResource SystemColorHighlightColor}" />
-                    <SolidColorBrush x:Key="SlidingTabPressedFill" Color="{ThemeResource SystemColorHighlightColor}" />
-                    <SolidColorBrush x:Key="SlidingTabPressedForeground" Color="{ThemeResource SystemColorHighlightTextColor}" />
+                    <SolidColorBrush x:Key="SlidingTabPressedForeground" Color="{ThemeResource SystemColorWindowTextColor}" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <!-- WinUI 2.6.4 has no selected hover/pressed background resource hooks.
-                 Scope this visual-only item template here; SelectorBarItem still owns
-                 input, selection, system focus visuals and its automation peer. -->
+            <!-- Keep item interaction feedback in the foreground so it cannot cover the moving indicator. -->
             <Thickness x:Key="SelectorBarPadding">0</Thickness>
             <Thickness x:Key="SelectorBarItemFocusVisualMargin">0</Thickness>
             <Style TargetType="SelectorBarItem">
@@ -53,7 +48,6 @@
                                         </VisualState>
                                         <VisualState x:Name="UnselectedPressed">
                                             <VisualState.Setters>
-                                                <Setter Target="Feedback.Background" Value="{ThemeResource SlidingTabPressedFill}" />
                                                 <Setter Target="PART_TextVisual.Foreground" Value="{ThemeResource SlidingTabPressedForeground}" />
                                                 <Setter Target="PART_IconVisual.Foreground" Value="{ThemeResource SlidingTabPressedForeground}" />
                                             </VisualState.Setters>
@@ -71,7 +65,6 @@
                                         </VisualState>
                                         <VisualState x:Name="SelectedPressed">
                                             <VisualState.Setters>
-                                                <Setter Target="Feedback.Background" Value="{ThemeResource SlidingTabPressedFill}" />
                                                 <Setter Target="PART_TextVisual.Foreground" Value="{ThemeResource SlidingTabPressedForeground}" />
                                                 <Setter Target="PART_IconVisual.Foreground" Value="{ThemeResource SlidingTabPressedForeground}" />
                                             </VisualState.Setters>
@@ -87,7 +80,6 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <Border x:Name="Feedback" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="{TemplateBinding CornerRadius}" />
                                 <StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}" Spacing="{ThemeResource SelectorBarItemSpacing}">
                                     <ContentPresenter x:Name="PART_IconVisual" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" />
                                     <TextBlock x:Name="PART_TextVisual" Text="{TemplateBinding Text}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" />
