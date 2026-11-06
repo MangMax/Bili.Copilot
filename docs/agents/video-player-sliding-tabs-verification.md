@@ -6,7 +6,8 @@ identities through `SetItems(items, selectedIdentity)`. `Select(identity)` synch
 caller state without raising a user event. `SelectionChanged` exposes the selected
 identity; the header forwards it to the existing `SelectSectionCommand` once.
 
-The native SelectorBar template, keyboard handling and automation peer are preserved.
+The native SelectorBar, item input/selection state machine and automation peer are preserved.
+Only the item visual template is scoped to this control; system focus visuals stay enabled.
 The single background uses measured item bounds, a 180 ms cubic ease-out and semantic
 theme brushes. Layout changes settle immediately. No animation completion callback
 writes selection or geometry. Loaded/unloaded subscriptions and queued system-motion
@@ -80,3 +81,59 @@ an app launch or readable UIA tree alone does not prove selection/content agreem
   of this implementation, no real input/content comparison, no UIA selection check,
   and no light/dark/contrast, 100%/150%/200% DPI or motion-preference visual acceptance.
   The procedure above is the remaining acceptance checklist, not a passed test report.
+
+
+## Review repair and native host evidence (2026-11-06)
+
+Base: `72d79928` (including the explicit Dark dictionary), verified as HEAD before
+editing and as an ancestor of this repair. No checkout was created.
+
+The installed `Microsoft.WindowsAppSDK.WinUI/2.6.4` generic template confirms that
+`SelectedPointerOver` and `SelectedPressed` use the same foreground and animation;
+neither consumes the proposed pointer border resources. Resource overrides therefore
+cannot distinguish them. The repair uses a small item-only visual template with the
+native `CombinedStates` and `DisabledStates` names. The SelectorBar template and C#
+input/selection code are unchanged. Hover and pressed now target the visible feedback
+border; pressed also changes text/icon foreground. High Contrast uses system
+Window/WindowText/Highlight/HighlightText brushes. Selection uses the shared moving
+background and accent text, without changing font metrics. Disabled text and native
+system focus visuals remain separate from selection.
+
+A real packaged host also exposed a startup failure: the existing `BasedOn` lookup
+for `DefaultSelectorBarItemStyle` was unresolved at runtime. Removing the dependency
+on that internal style key allowed the linked production XAML to render. The host
+was created with `winapp new`, pinned to WindowsAppSDK 2.6.4, and links the production
+SlidingTabBar XAML/C# directly. It is NOT the ordinary video player; its content is a
+label updated from the control's public selection event.
+
+Evidence root on the implementation machine:
+`C:/Users/hp/AppData/Local/Temp/spec159-fix-evidence/`.
+Host source: `C:/Users/hp/AppData/Local/Temp/spec159-native-host/`.
+Launch: `winapp run <host-directory> --arch x64 --detach --json`.
+The batch scripts contain the captured local PID/HWND; refresh them from launch and
+`winapp ui list-windows` before replay. Do not reuse them against another process.
+
+| Check | Actual result / evidence |
+| --- | --- |
+| Adapter regression | Passed: 9, Failed: 0, Skipped: 0; `regression.trx` counters parsed. Same command above plus `--logger "trx;LogFileName=regression.trx" --results-directory <evidence-root>`. |
+| Final normal Release/x64 build | Exit 0, 0 warnings, 0 errors; default blocking analyzer unchanged. Log: `C:/Users/hp/AppData/Local/Temp/spec159-fix-final2-build.log`. First clean build emitted one existing unused protobuf import warning in the external kernel; final incremental compilation was clean. |
+| Actual application launch | Parent's supported Debug launch also failed: `Mang.BiliCopilot.Dev` is already installed as a non-development package. See `C:/Users/hp/AppData/Local/Temp/spec159-parent-launch.log`. Neither Dev nor Release installation was replaced. |
+| Final native host batch | **6 passed, 2 failed**; `final/native-results.json`, `ui-tests-final.ps1`. This is not full acceptance. |
+| Native mouse / selection / host label | Passed before remount. `final/dark-selected.png`, `final/selection.json`; the filenames inherit the script labels, but this particular selected screenshot is actually Light. |
+| Native names, selected, disabled | UIA tree and property reads expose SelectorBarItem names, IsSelected and IsEnabled; `final/final-tree.json`. Narrator speech itself was not tested. |
+| Theme and focus rendering | Visually inspected all final PNGs. `final/initial.png` shows Dark; `final/light-selected-hover.png` shows Light; `final/keyboard-focus.png` shows the native focus outline. Both use 150% actual display scale. |
+| Hover / pressed | Final hover visibly changes the selected fill. `interaction.mp4` and its timestamped frames show a held selected press changing foreground at ~983 ms versus hover at ~463 ms on the earlier semibold iteration. That recording predates the final accent-text change and is not final motion acceptance. `final/selected-pressed.png` was captured after the gesture lock released, so it is NOT pressed-state proof. |
+| Empty list | `final/empty.png` shows no floating selection background. |
+| Narrow/long keyboard flow | Final automated sequence timed out before selecting Long3; it reached Comments instead. On the previous iteration, separate focus/arrow/Space operations reached AI (`narrow-selected-final.png`). Keep the final failure open; do not infer complete keyboard reachability from the earlier success. |
+| Immediate remount | **Failed** after Empty ¡ú Rebuild ¡ú Remount ¡ú click Comments. The host removes and reinserts the same control in one event callback. UIA reported Comments selected while the host label remained `Content: Collection`; see `final/diagnostic.png` and `final/selection.json`. The adapter remount test does not cover the actual native event ordering. |
+
+Remaining acceptance blockers: investigate the two final native failures; verify actual
+ordinary-video section/content agreement and video replacement; verify smooth rendered
+motion/rapid interruption on the final revision, animations disabled and changed during
+transition, High Contrast, 100% and 200% display scale, and window resizing. System
+`UISettings.AnimationsEnabled` was read as True; no OS motion/theme/DPI settings were
+changed. The 10-second recording achieved about 20 fps (67% of requested 30 fps), so it
+must not be presented as timing-accurate proof of a 180-ms transition.
+
+The native testing skill's two fix-and-rerun limit was reached; the remaining failures
+are reported rather than silently marked passed. No issue/PR was closed or pushed.
