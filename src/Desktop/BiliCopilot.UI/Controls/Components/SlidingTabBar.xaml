@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="BiliCopilot.UI.Controls.Components.SlidingTabBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
+                    <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
+                    <StaticResource x:Key="SelectorBarItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+                    <StaticResource x:Key="SelectorBarItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Default">
+                    <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
+                    <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
+                    <StaticResource x:Key="SelectorBarItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+                    <StaticResource x:Key="SelectorBarItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="HighContrast">
+                    <!-- An outlined selection keeps the platform's hover/disabled text legible. -->
+                    <SolidColorBrush x:Key="SlidingTabFill" Color="{ThemeResource SystemColorWindowColor}" />
+                    <SolidColorBrush x:Key="SlidingTabStroke" Color="{ThemeResource SystemColorHighlightColor}" />
+                    <SolidColorBrush x:Key="SelectorBarItemBorderBrushPointerOver" Color="{ThemeResource SystemColorWindowTextColor}" />
+                    <SolidColorBrush x:Key="SelectorBarItemBorderBrushPressed" Color="{ThemeResource SystemColorHighlightColor}" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <!-- Preserve the platform template, focus ring, input states and automation peer. -->
+            <SolidColorBrush x:Key="SelectorBarItemPillFill" Color="Transparent" />
+            <SolidColorBrush x:Key="SelectorBarItemDisabledPillFill" Color="Transparent" />
+            <Thickness x:Key="SelectorBarPadding">0</Thickness>
+            <Thickness x:Key="SelectorBarItemFocusVisualMargin">0</Thickness>
+            <Style TargetType="SelectorBarItem" BasedOn="{StaticResource DefaultSelectorBarItemStyle}">
+                <Setter Property="Padding" Value="14,8" />
+                <Setter Property="CornerRadius" Value="6" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border
+        Padding="4"
+        Background="{ThemeResource LayerFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="10">
+        <ScrollViewer
+            AutomationProperties.AutomationId="SlidingTabScroller"
+            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollMode="Enabled"
+            IsTabStop="False"
+            VerticalScrollBarVisibility="Disabled"
+            VerticalScrollMode="Disabled">
+            <Grid x:Name="Track" HorizontalAlignment="Left">
+                <Canvas IsHitTestVisible="False">
+                    <Border
+                        x:Name="Indicator"
+                        Background="{ThemeResource SlidingTabFill}"
+                        BorderBrush="{ThemeResource SlidingTabStroke}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Visibility="Collapsed">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="IndicatorTranslation" />
+                        </Border.RenderTransform>
+                    </Border>
+                </Canvas>
+                <SelectorBar x:Name="Selector" AutomationProperties.AutomationId="SlidingTabSelector" />
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</UserControl>
