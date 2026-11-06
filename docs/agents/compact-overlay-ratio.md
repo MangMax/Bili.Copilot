@@ -45,9 +45,9 @@ this feature does not set panscan, zoom, cropping, or aspect override options.
 
 Presenter changes disable adaptation until the latest `PresenterChangeSession`
 settles. A superseded transition or closed window cannot apply geometry.
-When integrating #156, preserve its position restoration before enabling ratio
-adaptation at the end of the same presenter transition. Position persistence
-remains owned by #156.
+The integrated #156 placement session finishes position restoration before
+enabling ratio adaptation at the end of the same presenter transition. Position
+persistence remains owned by #156.
 
 ## Verification limits and Windows checklist
 

@@ -52,6 +52,11 @@ public sealed partial class PlayerWindow
 
     private Task ChangeRatioPresenterAsync(AppWindowPresenterKind kind)
         => _ratioSession.ChangePresenterAsync(
-            () => _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(kind)),
+            () => _presenterChange.ChangeAsync(kind switch
+            {
+                AppWindowPresenterKind.CompactOverlay => WindowPlacementMode.CompactOverlay,
+                AppWindowPresenterKind.FullScreen => WindowPlacementMode.FullScreen,
+                _ => WindowPlacementMode.Ordinary,
+            }, () => _rootWindow.SetPresenter(kind)),
             () => !IsClosed && !IsDisposed && !IsPresenterChanging && _rootWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay);
 }
