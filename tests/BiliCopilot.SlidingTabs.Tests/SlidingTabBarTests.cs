@@ -4,6 +4,38 @@ using Microsoft.UI.Xaml.Controls;
 public sealed class SlidingTabBarTests
 {
     [Fact]
+    public void OverflowArrowsScrollWithoutChangingSelectionAndDisappearWhenItemsFit()
+    {
+        var tabs = CreateLaidOutTabs(out var first, out _);
+        var changes = 0;
+        tabs.SelectionChanged += (_, _) => changes++;
+        tabs.ActualWidth = 228;
+        tabs.TestTrack.ActualWidth = 400;
+        tabs.TestScroller.ViewportWidth = 172;
+        tabs.TestScroller.ScrollableWidth = 228;
+        tabs.RaiseLayoutUpdated();
+        Assert.Equal(Visibility.Visible, tabs.TestScrollRight.Visibility);
+        Assert.False(tabs.TestScrollLeft.IsEnabled);
+        Assert.True(tabs.TestScrollRight.IsEnabled);
+        tabs.TestScroll(1);
+        Assert.Equal(172, tabs.TestScroller.HorizontalOffset);
+        tabs.TestScroll(1);
+        Assert.Equal(228, tabs.TestScroller.HorizontalOffset);
+        Assert.False(tabs.TestScrollRight.IsEnabled);
+        tabs.TestSettings.AnimationsEnabled = false;
+        tabs.TestScroll(-1);
+        Assert.True(tabs.TestScroller.AnimationDisabled);
+        tabs.TestScroll(-1);
+        Assert.Equal(0, tabs.TestScroller.HorizontalOffset);
+        Assert.Same(first.Tag, tabs.SelectedItem);
+        Assert.Equal(0, changes);
+        tabs.ActualWidth = 420;
+        tabs.RaiseLayoutUpdated();
+        Assert.Equal(Visibility.Collapsed, tabs.TestScrollLeft.Visibility);
+        Assert.Equal(Visibility.Collapsed, tabs.TestScrollRight.Visibility);
+    }
+
+    [Fact]
     public void RapidSelectionRetargetsOneBackgroundAndResizeSettlesToNewBounds()
     {
         var tabs = CreateLaidOutTabs(out var first, out var second);

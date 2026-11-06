@@ -145,7 +145,32 @@ public sealed partial class SlidingTabBar : UserControl
         }
     }
 
-    private void OnLayoutUpdated(object? sender, object e) => UpdateIndicator(_animateNextLayout);
+    private void OnLayoutUpdated(object? sender, object e)
+    {
+        UpdateScrollButtons();
+        UpdateIndicator(_animateNextLayout);
+    }
+
+    private void OnScrollViewChanged(object sender, ScrollViewerViewChangedEventArgs e) => UpdateScrollButtons();
+
+    private void UpdateScrollButtons()
+    {
+        var visibility = Track.ActualWidth > Math.Max(0, ActualWidth - 8) ? Visibility.Visible : Visibility.Collapsed;
+        ScrollLeftButton.Visibility = visibility;
+        ScrollRightButton.Visibility = visibility;
+        ScrollLeftButton.IsEnabled = Scroller.HorizontalOffset > 0;
+        ScrollRightButton.IsEnabled = Scroller.HorizontalOffset < Scroller.ScrollableWidth;
+    }
+
+    private void OnScrollLeftClick(object sender, RoutedEventArgs e) => Scroll(-1);
+
+    private void OnScrollRightClick(object sender, RoutedEventArgs e) => Scroll(1);
+
+    private void Scroll(int direction) => Scroller.ChangeView(
+        Math.Clamp(Scroller.HorizontalOffset + (direction * Scroller.ViewportWidth), 0, Scroller.ScrollableWidth),
+        null,
+        null,
+        !_settings.AnimationsEnabled);
 
     private void OnRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
     {

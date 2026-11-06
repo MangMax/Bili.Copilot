@@ -47,6 +47,21 @@ namespace Microsoft.UI.Xaml.Controls
     public class UserControl : FrameworkElement { }
     public class Border : FrameworkElement { }
     public class Grid : FrameworkElement { }
+    public class Button : FrameworkElement { public bool IsEnabled { get; set; } }
+    public class ScrollViewerViewChangedEventArgs : EventArgs { }
+    public class ScrollViewer : FrameworkElement
+    {
+        public double HorizontalOffset { get; set; }
+        public double ScrollableWidth { get; set; }
+        public double ViewportWidth { get; set; }
+        public bool AnimationDisabled { get; private set; }
+        public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
+        {
+            HorizontalOffset = horizontalOffset ?? HorizontalOffset;
+            AnimationDisabled = disableAnimation;
+            return true;
+        }
+    }
     public class SelectorBarSelectionChangedEventArgs : EventArgs { }
     public class SelectorBarItem : FrameworkElement
     {
@@ -87,6 +102,14 @@ namespace BiliCopilot.UI.Controls.Components
         private SelectorBar Selector = null!;
         private Border Indicator = new();
         private Grid Track = new();
+        private ScrollViewer Scroller = new();
+        private Button ScrollLeftButton = new();
+        private Button ScrollRightButton = new();
+        public Grid TestTrack => Track;
+        public ScrollViewer TestScroller => Scroller;
+        public Button TestScrollLeft => ScrollLeftButton;
+        public Button TestScrollRight => ScrollRightButton;
+        public void TestScroll(int direction) { Scroll(direction); OnScrollViewChanged(Scroller, new()); }
         private Microsoft.UI.Xaml.Media.TranslateTransform IndicatorTranslation = new();
         public Border TestIndicator => Indicator;
         public Windows.UI.ViewManagement.UISettings TestSettings => _settings;
