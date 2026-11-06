@@ -30,6 +30,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     private PublisherFollowingState? _followingState;
     private bool _hasCardMetadata;
     private readonly Action<VideoItemViewModel>? _removeAction;
+    private readonly Action<VideoItemViewModel, RecommendationFeedbackReason>? _feedbackAccepted;
     private readonly VideoFavoriteFolder? _favFolder;
     private readonly Action<VideoItemViewModel>? _playAction;
 
@@ -41,15 +42,18 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         VideoCardStyle style,
         Action<VideoItemViewModel> removeAction = default,
         VideoFavoriteFolder? favFolder = default,
-        Action<VideoItemViewModel>? playAction = default)
+        Action<VideoItemViewModel>? playAction = default,
+        Action<VideoItemViewModel, RecommendationFeedbackReason>? feedbackAccepted = default)
         : base(info)
     {
         _removeAction = removeAction;
+        _feedbackAccepted = feedbackAccepted;
         _favFolder = favFolder;
         _playAction = playAction;
         var primaryLan = ApplicationLanguages.Languages[0];
         Style = style;
         Title = HtmlText.Decode(info.Identifier.Title);
+        IsDynamicVideo = info.GetExtensionIfNotNull<bool?>(VideoExtensionDataId.IsDynamicVideo) is true;
         Cover = info.Identifier.Cover?.Uri;
         Author = info.Publisher?.User?.Name
             ?? (style == VideoCardStyle.Partition ? info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.Subtitle) : null);
@@ -57,6 +61,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         Duration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(info.Duration ?? 0));
         PublishRelativeTime = info.PublishTime is { Year: > 1970 } published
             ? published.Humanize(culture: new CultureInfo(primaryLan)) : null;
+        Description = info.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description);
         PlayCount = info.CommunityInformation?.PlayCount;
         DanmakuCount = info.CommunityInformation?.DanmakuCount;
         LikeCount = info.CommunityInformation?.LikeCount;
@@ -101,7 +106,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     /// <summary>Applies missing public card fields from the shared metadata provider.</summary>
     public async Task LoadPopularMetadataAsync(CancellationToken cancellationToken)
     {
-        if (!IsFeedCard || _hasCardMetadata) return;
+        if ((!IsFeedCard && Style != VideoCardStyle.Moment) || _hasCardMetadata) return;
         var provider = this.Get<VideoCardMetadataProvider>();
         var userId = Data.Publisher?.User?.Id;
         if (userId is not null) Avatar ??= provider.GetKnownAvatar(userId);
@@ -110,13 +115,17 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         CreatorCount = metadata.CreatorCount;
         IsCollaborativeSubmission = metadata.IsCollaborativeSubmission;
         IsChargingExclusive = metadata.IsChargingExclusive;
+        if (PlayCount is null or < 0 && metadata.PlayCount is >= 0) PlayCount = metadata.PlayCount;
+        if (DanmakuCount is null or < 0 && metadata.DanmakuCount is >= 0) DanmakuCount = metadata.DanmakuCount;
+        if (string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(metadata.Title)) Title = HtmlText.Decode(metadata.Title);
+        if (string.IsNullOrWhiteSpace(Description)) Description = metadata.Description;
         _hasCardMetadata = true;
         // The provider verifies the video identity; partition results may omit the publisher ID.
         if (string.IsNullOrWhiteSpace(userId) || metadata.PublisherId == userId) Avatar ??= metadata.Avatar;
         if (metadata.PublishTime is { Year: > 1970 } published)
             PublishRelativeTime ??= published.Humanize(culture: new CultureInfo(ApplicationLanguages.Languages[0]));
         if (string.IsNullOrWhiteSpace(TagName)) TagName = metadata.TagName;
-        if (string.IsNullOrWhiteSpace(userId) && metadata.PublisherId is { Length: > 0 } publisherId)
+        if (IsFeedCard && string.IsNullOrWhiteSpace(userId) && metadata.PublisherId is { Length: > 0 } publisherId)
         {
             _followingState ??= new(this.Get<UserRelationBatcher>(), this.Get<AccountViewModel>().MyProfile?.User.Id,
                 publisherId, null);
@@ -169,6 +178,23 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         if (user is not null)
         {
             this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), user);
+        }
+    }
+
+    [RelayCommand]
+    private async Task SubmitRecommendationFeedbackAsync(RecommendationFeedbackReason reason)
+    {
+        if (Style != VideoCardStyle.Recommend || Data.RecommendationFeedback is not { } context) return;
+        try
+        {
+            await this.Get<IVideoDiscoveryService>().SubmitRecommendationFeedbackAsync(context, reason);
+            _feedbackAccepted?.Invoke(this, reason);
+            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.RecommendationFeedbackSucceeded), InfoType.Success));
+        }
+        catch (Exception ex)
+        {
+            this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "推荐反馈提交失败");
+            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.RecommendationFeedbackFailed), InfoType.Error));
         }
     }
 

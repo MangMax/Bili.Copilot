@@ -112,9 +112,9 @@
 
             <UniformGridLayout
                 x:Key="MomentLayout"
-                ItemsStretch="Uniform"
+                ItemsStretch="Fill"
                 MinColumnSpacing="20"
-                MinItemHeight="280"
+                MinItemHeight="NaN"
                 MinItemWidth="260"
                 MinRowSpacing="20" />
 

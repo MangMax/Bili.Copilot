@@ -620,6 +620,7 @@ public sealed class PopularPageLoadingTests
 
     private sealed class DiscoveryService : IVideoDiscoveryService
     {
+        public Task SubmitRecommendationFeedbackAsync(RecommendationFeedbackContext context, RecommendationFeedbackReason reason, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public List<string> Requests { get; } = new();
         public TaskCompletionSource<IReadOnlyList<Partition>> Partitions { get; } = new();
         public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Recommend { get; set; }
