@@ -89,6 +89,8 @@ public sealed partial class PlayerViewModel
                 LoadScripts = true,
             };
             Client = await MpvClient.CreateAsync(mpvPath, options, logger: logger);
+            _mediaDisplaySource?.Dispose();
+            _mediaDisplaySource = new(Client, queue, Window!.BeginRatioMedia, Window.UpdateRatioMedia);
             Client.ErrorOccurred += OnClientErrorOccurred;
             Client.CacheStateChanged += OnClientCacheStateChanged;
             SetSubtitleDelaySecondsCommand.Execute(SubtitleDelaySeconds);
@@ -712,6 +714,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        _mediaDisplaySource?.Suspend();
         _danmakuPlaybackVersion++;
         _isDanmakuInitialized = true;
         _danmakuLoadSession?.Cancel();

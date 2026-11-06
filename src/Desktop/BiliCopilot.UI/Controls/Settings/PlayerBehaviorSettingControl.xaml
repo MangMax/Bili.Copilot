@@ -27,6 +27,14 @@
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
             <base:SettingsCard
+                Header="{ext:Locale Name=AutoCompactOverlayRatio}"
+                Description="{ext:Locale Name=AutoCompactOverlayRatioDescription}">
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="AutoCompactOverlayRatioToggle"
+                    AutomationProperties.Name="{ext:Locale Name=AutoCompactOverlayRatio}"
+                    IsOn="{x:Bind ViewModel.AutoCompactOverlayRatio, Mode=TwoWay}" />
+            </base:SettingsCard>
+            <base:SettingsCard
                 x:Name="HideMain"
                 Description="{ext:Locale Name=HideMainWindowOnPlayDescription}"
                 Header="{ext:Locale Name=HideMainWindowOnPlay}">

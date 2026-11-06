@@ -153,4 +153,7 @@
   <ItemGroup>
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/Article/ArticleReader.Content.cs" Link="Article/ArticleReader.Content.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Services/MpvMediaDisplaySource.cs" Link="Playback/MpvMediaDisplaySource.cs" />
+  </ItemGroup>
 </Project>

@@ -3339,4 +3339,10 @@
   <data name="CollaborativeAuthor" xml:space="preserve">
     <value>{0} 等 {1} 人</value>
   </data>
+  <data name="AutoCompactOverlayRatio" xml:space="preserve">
+    <value>按视频比例自动调整小窗</value>
+  </data>
+  <data name="AutoCompactOverlayRatioDescription" xml:space="preserve">
+    <value>进入小窗或视频比例变化时自动调整尺寸。关闭后保留手动尺寸，不影响小窗位置记忆。对所有播放窗口生效。</value>
+  </data>
 </root>
