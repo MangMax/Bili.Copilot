@@ -178,7 +178,7 @@ public sealed partial class PopularPageViewModel
         {
             foreach (var video in page)
             {
-                Videos.Add(new VideoItemViewModel(video, VideoCardStyle.Recommend));
+                Videos.Add(CreateVideoItem(video, VideoCardStyle.Recommend));
             }
 
             return page.Count;
@@ -195,7 +195,7 @@ public sealed partial class PopularPageViewModel
                 continue;
             }
 
-            Videos.Insert(index++, new VideoItemViewModel(video, VideoCardStyle.Recommend));
+            Videos.Insert(index++, CreateVideoItem(video, VideoCardStyle.Recommend));
             added++;
         }
 
@@ -455,11 +455,27 @@ public sealed partial class PopularPageViewModel
         {
             foreach (var item in videos)
             {
-                Videos.Add(new VideoItemViewModel(item, style)
-                {
-                    RankPosition = style == VideoCardStyle.Rank ? Videos.Count + 1 : null,
-                });
+                Videos.Add(CreateVideoItem(item, style));
             }
         }
     }
+
+    private VideoItemViewModel CreateVideoItem(VideoInformation video, VideoCardStyle style)
+        => new(video, style, feedbackAccepted: OnRecommendationFeedbackAccepted)
+        {
+            RankPosition = style == VideoCardStyle.Rank ? Videos.Count + 1 : null,
+        };
+
+    private void OnRecommendationFeedbackAccepted(VideoItemViewModel submitted, RecommendationFeedbackReason reason)
+    {
+        if (!Videos.Contains(submitted)) return;
+        var publisherId = reason.Mid ?? submitted.Data.RecommendationFeedback?.PublisherId;
+        var affected = Videos.Where(item => reason.Operation == RecommendationFeedbackOperation.AvoidPublisher
+            ? item.Data.Publisher?.User?.Id == publisherId?.ToString()
+            : item.Data.Identifier.Id == submitted.Data.Identifier.Id).ToList();
+        foreach (var item in affected) Videos.Remove(item);
+        InvalidateUndoSnapshot();
+        _videoCache.Remove(SelectedSection);
+    }
+
 }

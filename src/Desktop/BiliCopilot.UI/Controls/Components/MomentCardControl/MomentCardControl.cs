@@ -4,6 +4,8 @@ using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls.Components;
@@ -18,41 +20,124 @@ public abstract class MomentCardPresenter : LayoutUserControlBase<MomentItemView
 /// </summary>
 public sealed partial class MomentCardControl : LayoutControlBase<MomentItemViewModel>
 {
-    private CardControl _rootCard;
+    private bool _hovered;
+    private VideoCardControl? _videoCard;
+    private TranslateTransform? _lift;
+    private Storyboard? _liftAnimation;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MomentCardControl"/> class.
-    /// </summary>
-    public MomentCardControl() => DefaultStyleKey = typeof(MomentCardControl);
-
-    /// <inheritdoc/>
-    protected override void OnApplyTemplate()
+    /// <summary>Initializes a new instance of the <see cref="MomentCardControl"/> class.</summary>
+    public MomentCardControl()
     {
-        _rootCard = GetTemplateChild("RootCard") as CardControl;
-        if (ViewModel is not null)
-        {
-            if (_rootCard is not null)
-            {
-                _rootCard.Command = ViewModel.ActivateCommand;
-            }
-        }
+        DefaultStyleKey = typeof(MomentCardControl);
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => ContextRequested += OnContextRequested;
+    /// <summary>Opens the actions for the current dynamic from its header.</summary>
+    public void ShowMore(FrameworkElement target)
+    {
+        CreateContextFlyout();
+        RelocateCommands();
+        ContextFlyout.ShowAt(target);
+    }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-        => ContextRequested -= OnContextRequested;
+    private void OnLoaded(object sender, RoutedEventArgs args)
+    {
+        ContextRequested += OnContextRequested;
+        PointerEntered += OnPointerEntered;
+        PointerExited += OnPointerExited;
+        UpdateSurface();
+    }
+
+    protected override void OnApplyTemplate()
+    {
+        _liftAnimation?.Stop();
+        _lift = GetTemplateChild("MomentLift") as TranslateTransform;
+        if (_lift is not null) _lift.Y = _hovered ? -2 : 0;
+        UpdateSurface();
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs args)
+    {
+        ContextRequested -= OnContextRequested;
+        PointerEntered -= OnPointerEntered;
+        PointerExited -= OnPointerExited;
+        _videoCard?.SetMomentHovered(false);
+        _videoCard = null;
+        _hovered = false;
+        ResetLift();
+    }
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(MomentItemViewModel? oldValue, MomentItemViewModel? newValue)
     {
-        if (_rootCard is not null)
+        ContextFlyout?.Hide();
+        ContextFlyout = null;
+        _videoCard?.SetMomentHovered(false);
+        _videoCard = null;
+        _hovered = false;
+        ResetLift();
+        UpdateSurface();
+    }
+
+    private void OnPointerEntered(object sender, PointerRoutedEventArgs args) => SetHovered(true);
+
+    private void OnPointerExited(object sender, PointerRoutedEventArgs args) => SetHovered(false);
+
+    private void SetHovered(bool hovered)
+    {
+        if (_hovered == hovered) return;
+        _hovered = hovered;
+        UpdateSurface();
+        if (_lift is null) return;
+        var currentY = _lift.Y;
+        _liftAnimation?.Stop();
+        _lift.Y = currentY;
+        var animation = new DoubleAnimation
         {
-            _rootCard.Command = newValue?.ActivateCommand;
+            To = hovered ? -2 : 0,
+            Duration = TimeSpan.FromMilliseconds(160),
+            EnableDependentAnimation = true,
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+        };
+        Storyboard.SetTarget(animation, _lift);
+        Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.Y));
+        _liftAnimation = new Storyboard();
+        _liftAnimation.Children.Add(animation);
+        _liftAnimation.Begin();
+    }
+
+    private void ResetLift()
+    {
+        _liftAnimation?.Stop();
+        _liftAnimation = null;
+        if (_lift is not null) _lift.Y = 0;
+    }
+
+    private void UpdateSurface()
+    {
+        VisualStateManager.GoToState(this, _hovered ? "MomentHovered" : "MomentNormal", false);
+        if (ViewModel?.InnerContent is VideoItemViewModel video)
+        {
+            if (_videoCard?.ViewModel != video) _videoCard = FindVideo(this);
+            if (_videoCard?.ViewModel == video)
+            {
+                _videoCard.MinimumTitleHeight = ViewModel.Style == MomentCardStyle.Video ? 50 : 0;
+                _videoCard.ShowDescription = ViewModel.Style == MomentCardStyle.Comprehensive;
+                _videoCard.SetMomentHovered(_hovered);
+            }
         }
+    }
+
+    private static VideoCardControl? FindVideo(DependencyObject root)
+    {
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            if (child is VideoCardControl video) return video;
+            if (FindVideo(child) is { } nested) return nested;
+        }
+        return null;
     }
 
     private static MenuFlyoutItem CreatePrivatePlayItem()
@@ -105,46 +190,37 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         };
     }
 
-    private static MenuFlyoutItem CreatePinItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
-            Tag = nameof(ViewModel.PinCommand),
-        };
-    }
-
     private void OnContextRequested(UIElement sender, ContextRequestedEventArgs args)
     {
-        if (ContextFlyout is null)
-        {
-            CreateContextFlyout();
-            args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(this, new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point });
-        }
-
+        CreateContextFlyout();
         RelocateCommands();
+        args.TryGetPosition(this, out var point);
+        ContextFlyout.ShowAt(this, new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point });
         args.Handled = true;
     }
 
     private void CreateContextFlyout()
     {
         var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
-        if (ViewModel.Style == MomentCardStyle.Video)
+        if (ViewModel.VideoCover is not null)
         {
             menuFlyout.Items.Add(CreatePrivatePlayItem());
             menuFlyout.Items.Add(CreateOpenInBroswerItem());
             menuFlyout.Items.Add(CreateUserSpaceItem());
             menuFlyout.Items.Add(CreateAddViewLaterItem());
             menuFlyout.Items.Add(CreateCopyUriItem());
-            menuFlyout.Items.Add(CreatePinItem());
         }
         else
         {
             menuFlyout.Items.Add(CreateOpenInBroswerItem());
         }
 
+        menuFlyout.Items.Add(new MenuFlyoutItem
+        {
+            Text = ResourceToolkit.GetLocalizedString(StringNames.ShareLink),
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Share },
+            Command = ViewModel.CopyMomentLinkCommand,
+        });
         ContextFlyout = menuFlyout;
     }
 
@@ -157,7 +233,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
 
         foreach (var item in flyout.Items.OfType<MenuFlyoutItem>())
         {
-            switch (item.Tag.ToString())
+            switch (item.Tag?.ToString())
             {
                 case nameof(ViewModel.PlayInPrivateCommand):
                     item.Command = ViewModel.PlayInPrivateCommand;
@@ -173,9 +249,6 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
                     break;
                 case nameof(ViewModel.CopyUrlCommand):
                     item.Command = ViewModel.CopyUrlCommand;
-                    break;
-                case nameof(ViewModel.PinCommand):
-                    item.Command = ViewModel.PinCommand;
                     break;
                 default:
                     break;

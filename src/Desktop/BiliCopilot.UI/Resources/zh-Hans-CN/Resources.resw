@@ -3339,4 +3339,11 @@
   <data name="CollaborativeAuthor" xml:space="preserve">
     <value>{0} 等 {1} 人</value>
   </data>
+  <data name="ExpandMomentText" xml:space="preserve"><value>展开全文</value></data>
+  <data name="CollapseMomentText" xml:space="preserve"><value>收起全文</value></data>
+  <data name="DynamicVideo" xml:space="preserve"><value>动态视频</value></data>
+  <data name="NotInterestedRecommendation" xml:space="preserve"><value>不感兴趣</value></data>
+  <data name="AvoidPublisherRecommendation" xml:space="preserve"><value>不想看此 UP 主</value></data>
+  <data name="RecommendationFeedbackSucceeded" xml:space="preserve"><value>已提交推荐反馈</value></data>
+  <data name="RecommendationFeedbackFailed" xml:space="preserve"><value>推荐反馈提交失败，请稍后重试</value></data>
 </root>

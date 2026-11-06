@@ -1,6 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Richasy.BiliKernel.Models.Appearance;
@@ -15,6 +18,18 @@ namespace BiliCopilot.UI.Controls.Components;
 /// </summary>
 public sealed partial class EmoteTextBlock : LayoutUserControlBase
 {
+    private bool _expanded;
+
+    public static readonly DependencyProperty ExpandInlineProperty =
+        DependencyProperty.Register(nameof(ExpandInline), typeof(bool), typeof(EmoteTextBlock), new PropertyMetadata(false));
+
+    /// <summary>Expand long dynamic text in place instead of opening the comment overflow flyout.</summary>
+    public bool ExpandInline
+    {
+        get => (bool)GetValue(ExpandInlineProperty);
+        set => SetValue(ExpandInlineProperty, value);
+    }
+
     /// <summary>
     /// <see cref="MaxLines"/> 的依赖属性.
     /// </summary>
@@ -74,10 +89,9 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var instance = d as EmoteTextBlock;
-        if (e.NewValue != null)
-        {
-            instance.InitializeContent();
-        }
+        instance._expanded = false;
+        if (instance.RichBlock is not null) instance.RichBlock.MaxLines = instance.MaxLines;
+        instance.InitializeContent();
 
         instance.FlyoutRichBlock?.Blocks?.Clear();
     }
@@ -106,7 +120,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
             CheckTextTrim();
         }
 
-        if (Text.Pictures?.Count > 0)
+        if (Text?.Pictures?.Count > 0)
         {
             var gallery = FindName("Gallery") as ItemsRepeater;
             gallery.ItemsSource = Text.Pictures;
@@ -177,11 +191,48 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     /// <param name="para">目标段落.</param>
     /// <param name="content">文本内容.</param>
     private void AppendInlineText(Paragraph para, string content)
-        => TimestampTextPresenter.Append(para, content, SeekCommand);
+    {
+        if (!ExpandInline)
+        {
+            TimestampTextPresenter.Append(para, content, SeekCommand);
+            return;
+        }
+
+        var position = 0;
+        foreach (Match match in MomentLinkRegex().Matches(content))
+        {
+            TimestampTextPresenter.AppendLines(para, content[position..match.Index], SeekCommand);
+            var keyword = match.Value.Trim('#', '@');
+            var scope = match.Value[0] == '@' ? "upuser" : "all";
+            var link = new Hyperlink { NavigateUri = new Uri($"https://search.bilibili.com/{scope}?keyword={Uri.EscapeDataString(keyword)}") };
+            link.Inlines.Add(new Run { Text = match.Value });
+            para.Inlines.Add(link);
+            position = match.Index + match.Length;
+        }
+        TimestampTextPresenter.AppendLines(para, content[position..], SeekCommand);
+    }
+
+    [GeneratedRegex(@"#[^#\r\n]+#|@[\p{L}\p{N}_-]+")]
+    private static partial Regex MomentLinkRegex();
 
     private void CheckTextTrim()
     {
-        OverflowButton.Visibility = RichBlock.IsTextTrimmed ? Visibility.Visible : Visibility.Collapsed;
+        if (ExpandInline)
+        {
+            OverflowButton.Flyout = null;
+            var label = ResourceToolkit.GetLocalizedString(_expanded ? StringNames.CollapseMomentText : StringNames.ExpandMomentText);
+            OverflowButton.Content = label;
+            AutomationProperties.SetName(OverflowButton, label);
+        }
+        OverflowButton.Visibility = RichBlock.IsTextTrimmed || (ExpandInline && _expanded) ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void OnOverflowClick(object sender, RoutedEventArgs args)
+    {
+        if (!ExpandInline) return;
+        _expanded = !_expanded;
+        RichBlock.MaxLines = _expanded ? 0 : MaxLines;
+        CheckTextTrim();
     }
 
     private void OnImageTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
