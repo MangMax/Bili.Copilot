@@ -23,7 +23,8 @@ public sealed partial class ArticlePartitionDetailViewModel
 
     private List<ArticleItemViewModel> _recommendCache;
     private int _recommendOffset;
-    private bool _preventLoadMore;
+    private readonly HashSet<string> _stoppedPartitions = new();
+    private readonly Dictionary<string, int> _noProgressPages = new();
 
     /// <summary>
     /// 当前文章列表的代次，刷新、切换子分区或切换排序时递增.
