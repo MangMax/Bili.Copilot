@@ -22,7 +22,16 @@ public sealed partial class ViewLaterPageViewModel
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowEmpty))]
     public partial bool IsEmpty { get; set; }
+
+    /// <summary>Whether the last list request failed; distinct from a successful empty response.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowEmpty))]
+    public partial bool IsLoadFailed { get; set; }
+
+    /// <summary>Shows the empty message only when loading completed without an error.</summary>
+    public bool ShowEmpty => IsEmpty && !IsLoadFailed;
 
     [ObservableProperty]
     public partial int TotalCount { get; set; }

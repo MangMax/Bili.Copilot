@@ -15,13 +15,22 @@
     mc:Ignorable="d">
 
     <Grid>
-        <controls:IncrementVerticalScrollControl x:Name="View" LoadMoreCommand="{x:Bind ViewModel.LoadVideosCommand, Mode=OneWay}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <InfoBar Margin="0,8,0,0" IsOpen="{x:Bind ViewModel.IsLoadFailed, Mode=OneWay}" IsClosable="False"
+            Severity="Error" Message="{ext:Locale Name=ViewLaterLoadFailed}" AutomationProperties.AutomationId="ViewLaterLoadError" />
+        <controls:IncrementVerticalScrollControl Grid.Row="1" x:Name="View" LoadMoreCommand="{x:Bind ViewModel.LoadVideosCommand, Mode=OneWay}">
             <controls:IncrementVerticalScrollControl.Element>
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
                         x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
-                        Layout="{StaticResource VideoLayout}">
+                        ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}">
+                        <repeater:AppRepeater.Layout>
+                            <!-- Omit MinItemHeight: measure the complete card at the stretched column width. -->
+                            <UniformGridLayout ItemsStretch="Fill" MinItemWidth="232" MinColumnSpacing="20" MinRowSpacing="20" />
+                        </repeater:AppRepeater.Layout>
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:VideoItemViewModel">
                                 <components:VideoCardControl Style="{StaticResource ViewLaterVideoCardStyle}" ViewModel="{Binding}" />
@@ -34,10 +43,11 @@
         </controls:IncrementVerticalScrollControl>
 
         <base:EmptyHolder
+            Grid.Row="1"
             Description="{ext:Locale Name=NoViewLaterVideos}"
             Emoji="&#x1F92A;"
-            Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+            Visibility="{x:Bind ViewModel.ShowEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-        <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
+        <base:LoadingWidget Grid.Row="1" Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
     </Grid>
 </local:ViewLaterPageControlBase>

@@ -3,7 +3,7 @@ global using Microsoft.UI.Xaml;
 // Only this control's Windows presentation surface; no pagination logic is copied.
 namespace Richasy.WinUIKernel.Share.Base
 {
-    public abstract class LayoutUserControlBase
+    public abstract class LayoutUserControlBase : Microsoft.UI.Xaml.FrameworkElement
     {
         protected LayoutUserControlBase()
         {

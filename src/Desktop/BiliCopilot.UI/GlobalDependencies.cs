@@ -19,6 +19,7 @@ using Richasy.AgentKernel.Chat;
 using Richasy.BiliKernel;
 using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Bili.Media;
+using Richasy.BiliKernel.Bili.User;
 using Richasy.WinUIKernel.AI;
 using Richasy.WinUIKernel.Share;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -108,6 +109,7 @@ internal static class GlobalDependencies
             .AddSingleton<NavigationViewModel>()
             .AddSingleton<StartupPageViewModel>()
             .AddSingleton<AccountViewModel>()
+            .AddVideoCardServices()
             .AddSingleton<SearchBoxViewModel>()
             .AddSingleton<PopularPageViewModel>()
             .AddSingleton<MomentPageViewModel>()
@@ -210,6 +212,16 @@ internal static class GlobalDependencies
             sp.GetRequiredService<AIContextCollector>(),
             sp.GetRequiredService<AIChatRequestRunner>(),
             sp.GetRequiredService<IAIConversationScheduler>()));
+        return builder;
+    }
+
+    private static IKernelBuilder AddVideoCardServices(this IKernelBuilder builder)
+    {
+        builder.Services.AddSingleton(services => new UserRelationBatcher(
+            (ids, token) => services.GetRequiredService<IRelationshipService>().GetRelationshipsAsync(ids, token),
+            onError: ex => services.GetRequiredService<ILogger<UserRelationBatcher>>().LogWarning(ex, "Unable to batch publisher relationships.")));
+        builder.Services.AddSingleton(services => new VideoCardMetadataProvider((identifier, token) =>
+            services.GetRequiredService<IPlayerService>().GetVideoInformationAsync(identifier, token)));
         return builder;
     }
 

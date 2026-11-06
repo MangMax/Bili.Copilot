@@ -12,9 +12,12 @@ namespace Richasy.WinUIKernel.Share.ViewModels
 
 namespace Humanizer
 {
+    // The real non-generic Humanizer overload wins when supplied transitively.
+    // Command-only headless tests also compile without that optional dependency.
     public static class NotifyMessageTimeAdapter
     {
-        public static string Humanize(this DateTimeOffset? value, bool utcDate, System.Globalization.CultureInfo culture) => "relative time";
+        public static string Humanize<T>(this T? value, DateTimeOffset? dateToCompare, System.Globalization.CultureInfo culture)
+            where T : struct => "relative time";
     }
 }
 

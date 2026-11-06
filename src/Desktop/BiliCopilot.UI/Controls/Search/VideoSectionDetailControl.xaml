@@ -20,8 +20,11 @@
                 <Grid Margin="0,16">
                     <repeater:AppRepeater
                         x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-                        Layout="{StaticResource VideoLayout}">
+                        ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
+                        <repeater:AppRepeater.Layout>
+                            <!-- Omit MinItemHeight: measure the complete card at the stretched column width. -->
+                            <UniformGridLayout ItemsStretch="Fill" MinItemWidth="232" MinColumnSpacing="20" MinRowSpacing="20" />
+                        </repeater:AppRepeater.Layout>
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:VideoItemViewModel">
                                 <components:VideoCardControl Style="{StaticResource SearchVideoCardStyle}" ViewModel="{Binding}" />

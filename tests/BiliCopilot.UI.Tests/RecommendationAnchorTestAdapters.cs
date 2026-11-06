@@ -7,11 +7,13 @@ namespace Microsoft.UI.Xaml
     {
         public List<DependencyObject> Children { get; } = new();
         public double LayoutTop { get; set; }
+        public DependencyObject? Parent { get; set; }
     }
 
     public class FrameworkElement : DependencyObject
     {
         public bool IsLoaded { get; set; } = true;
+        public Visibility Visibility { get; set; } = Visibility.Visible;
         public double ActualHeight { get; set; }
 
         // The production code calls UpdateLayout before reading card positions.
@@ -50,6 +52,7 @@ namespace Microsoft.UI.Xaml.Media
 {
     public static class VisualTreeHelper
     {
+        public static DependencyObject? GetParent(DependencyObject element) => element.Parent;
         public static int GetChildrenCount(DependencyObject element) => element.Children.Count;
         public static DependencyObject GetChild(DependencyObject element, int index) => element.Children[index];
     }
