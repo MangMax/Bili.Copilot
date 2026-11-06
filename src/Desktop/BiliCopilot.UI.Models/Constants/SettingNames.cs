@@ -169,4 +169,5 @@ public enum SettingNames
     SponsorBlockColorUnknown,
     IncrementalRecommendRefresh,
     RecommendFeedSource,
+    AutoCompactOverlayRatio,
 }

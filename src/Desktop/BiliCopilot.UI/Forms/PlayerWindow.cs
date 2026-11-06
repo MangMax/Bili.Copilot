@@ -55,6 +55,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
 
         ResetWindowMinSize();
+        InitializeRatio();
     }
 
     /// <summary>
@@ -97,6 +98,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         SaveCurrentWindowStats();
         _presenterChange.Close();
+        _ratioSession.Dispose();
         IsDisposed = true;
 
         if (_rootWindow != null)
@@ -192,7 +194,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
             _enteringFullScreen = true;
             _enteringCompactOverlay = false;
-            _ = _presenterChange.ChangeAsync(WindowPlacementMode.FullScreen, () => _rootWindow.SetPresenter(AppWindowPresenterKind.FullScreen));
+            _ = ChangeRatioPresenterAsync(AppWindowPresenterKind.FullScreen);
         }
     }
 
@@ -206,7 +208,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen)
         {
             _enteringFullScreen = false;
-            _ = _presenterChange.ChangeAsync(WindowPlacementMode.Ordinary, () => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
+            _ = ChangeRatioPresenterAsync(AppWindowPresenterKind.Overlapped);
         }
     }
 
@@ -226,7 +228,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
             _enteringCompactOverlay = true;
             _enteringFullScreen = false;
-            _ = _presenterChange.ChangeAsync(WindowPlacementMode.CompactOverlay, () => _rootWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay));
+            _ = ChangeRatioPresenterAsync(AppWindowPresenterKind.CompactOverlay);
         }
     }
 
@@ -240,7 +242,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
         {
             _enteringCompactOverlay = false;
-            _ = _presenterChange.ChangeAsync(WindowPlacementMode.Ordinary, () => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
+            _ = ChangeRatioPresenterAsync(AppWindowPresenterKind.Overlapped);
         }
     }
 
@@ -392,6 +394,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     {
         SaveCurrentWindowStats();
         _presenterChange.Close();
+        _ratioSession.Dispose();
         IsClosed = true;
         _inputActivationListener.InputActivationChanged -= OnInputActivationChanged;
         _rootWindow.Destroying -= OnWindowDestroying;

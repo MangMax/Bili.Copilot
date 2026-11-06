@@ -46,7 +46,7 @@ namespace BiliCopilot.UI.ViewModels.View
 namespace Microsoft.UI.Dispatching
 {
     public enum DispatcherQueuePriority { Low }
-    public sealed class DispatcherQueue : SynchronizationContext
+    public sealed partial class DispatcherQueue : SynchronizationContext
     {
         private readonly Queue<Action> _pending = new();
         public bool TryEnqueue(DispatcherQueuePriority priority, Action callback)

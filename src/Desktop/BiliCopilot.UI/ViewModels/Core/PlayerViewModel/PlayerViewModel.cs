@@ -28,6 +28,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     private PlaybackSession<PlayerViewModel>? _session;
     private InputPointerSource? _pointerSource;
     private InputKeyboardSource? _keyboardSource;
+    private BiliCopilot.UI.Services.MpvMediaDisplaySource? _mediaDisplaySource;
     private bool _isApplyingSubtitlePreference;
     private string? _rememberedSubtitleId;
 
@@ -105,6 +106,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     private async Task DisposeResourcesAsync()
     {
+        _mediaDisplaySource?.Dispose();
+        _mediaDisplaySource = null;
         try
         {
             await ReleasePlaybackEventsAsync();
@@ -228,6 +231,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     private async Task InitializeCoreAsync(MediaSnapshot snapshot)
     {
+        _mediaDisplaySource?.Suspend();
         _danmakuPlaybackVersion++;
         _danmakuLoadSession?.Cancel();
         _snapshot = snapshot;
@@ -372,6 +376,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         try
         {
+            _mediaDisplaySource?.Resume();
             await Player.InitializeAsync();
         }
         catch (Exception ex)
