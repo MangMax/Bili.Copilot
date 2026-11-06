@@ -1,23 +1,27 @@
-# Video player sliding tabs (#159 / spec #158)
+# 视频播放器滑块 Tab 验收（#158 / #159）
 
-Only the ordinary video's `VideoPlayerSideHeader` uses `SlidingTabBar`. PGC is unchanged.
-The reusable control accepts `SelectorBarItem` instances with unique, non-null `Tag`
-identities through `SetItems(items, selectedIdentity)`. `Select(identity)` synchronizes
-caller state without raising a user event. `SelectionChanged` exposes the selected
-identity; the header forwards it to the existing `SelectSectionCommand` once.
+## 范围与交互
 
-The native SelectorBar, item input/selection state machine and automation peer are preserved.
-Only the item visual template is scoped to this control; system focus visuals stay enabled.
-The single background uses measured item bounds, a 180 ms cubic ease-out and semantic
-theme brushes. Layout changes settle immediately. No animation completion callback
-writes selection or geometry. Loaded/unloaded subscriptions and queued system-motion
-notifications are scoped to the current mount.
+仅普通视频播放器侧栏使用 SlidingTabBar，PGC 和其他页面不变。
 
-## Automated regression boundary
+- 条目、顺序及当前分区来自播放器模型；用户选择通过原有 SelectSectionCommand 切换内容。
+- 未选中项悬浮只改变文字/图标颜色；选中项悬浮保持强调色。悬浮不绘制背景或描边，避免遮挡滑块。
+- 选中背景按条目实际位置和宽度移动，使用 180 ms 缓出动画。首次布局、尺寸变化和关闭系统动画时直接定位。
+- 保留 SelectorBarItem 的键盘、焦点和 UI Automation 语义；局部条目模板负责视觉状态。
+- 长标题在窄侧栏中横向滚动，空列表或无选中项隐藏滑块。
 
-The focused xUnit project links the **production** control and header C# unchanged.
-Adapters provide only XAML, animation, dispatcher and model notification surfaces.
-They do **not** prove WinUI rendering, keyboard input, colors, DPI or screen-reader output.
+控件的 SetItems 接收带唯一、非空 Tag 身份的 SelectorBarItem；
+Select 同步调用方选择而不回发用户事件，SelectionChanged 只通知用户选择。
+
+## 实现约束
+
+- 原生模板无法分别控制选中项的按下反馈，因此定制局部条目模板，不替换选择或键盘逻辑。
+- 即时移除再插入可能先收到新 Loaded、再收到旧 Unloaded。卸载清理后检查 IsLoaded，必要时重新订阅；此顺序已经真实窗口跟踪和回归测试验证。
+- UISettings 通知可能排队到下次挂载，挂载代数用于丢弃旧通知。动画不使用完成回调回写选择。
+
+## 自动化验证
+
+运行：
 
 ```powershell
 dotnet test tests/BiliCopilot.SlidingTabs.Tests/BiliCopilot.SlidingTabs.Tests.csproj
@@ -25,190 +29,46 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
   -p:SolutionDir="$PWD/src/" -p:GenerateAppxPackageOnBuild=false -p:AppxPackageSigningEnabled=false
 ```
 
-| Requirement | Evidence |
-| --- | --- |
-| Initial/external selection, no command echo | `InitialSelectionAndModelChangesDoNotEchoUserCommands` |
-| First measured placement | `FirstLayoutPositionsBackgroundAtActualSelectedBoundsWithoutAnimation` |
-| Delayed item measurement | `UnmeasuredSelectionWaitsForLayoutBeforeShowingBackground` |
-| Rapid selection, width changes, resize | `RapidSelectionRetargetsOneBackgroundAndResizeSettlesToNewBounds` |
-| Rebuilt/empty list and stale selection | `RebuiltEmptyAndUnselectedItemsNeverRetainOldBackgroundOrEmitCommands` |
-| Unload cleanup and single subscription on remount | `UnloadStopsAnimationAndRemountSubscribesOnlyOnce` |
-| Motion disabled and root/scale changes | `DisabledMotionAndScaleChangesPositionImmediately` |
-| Mid-animation preference changes and stale queued events | `DisablingMotionSettlesCurrentAnimationAndIgnoresQueuedEventsFromPreviousMount` |
-| Actual header command wiring, replacement and remount | `HeaderSynchronizesContentOnceAndReattachesToCurrentModelOnly` |
+测试直接链接生产控件和侧栏代码，以轻量平台适配器验证：
 
-## Native Windows acceptance procedure
+- 初始/外部选择不回发命令，实际用户选择只触发一次内容切换。
+- 初始与延迟布局、快速重选、列表重建、空选择、尺寸和缩放通知。
+- 普通及延迟卸载后的重新挂载、旧模型解除订阅、旧系统动画通知失效。
 
-Use a packaged build of this branch and an ordinary video with multiple available
-sections. Record the video identifier, app revision, Windows scale and theme with
-each screenshot/recording. Do not infer acceptance from the adapter tests.
+当前 10 项回归测试通过；延迟卸载用例验证过修改前失败、修改后通过。
+适配器不模拟真实渲染、键盘或动画时钟，不能证明视觉和辅助技术验收。
 
-1. Open the sidebar. Verify actual titles/order and initial content match the selected
-   tab. Capture the complete sidebar, including the content below the selector.
-2. Click each available section, then rapidly alternate three sections. The final
-   background and content must match the last selection. Record a short video.
-3. Tab into the selector; use arrow keys and Space/Enter as supported by SelectorBar.
-   Verify visible focus and every overflowed tab can be reached. Inspect the UIA
-   `VideoPlayerSectionN` elements for their actual names and selection state.
-4. Switch videos with different section sets, then close/reopen the player and sidebar.
-   Confirm no old background, duplicated switching or exceptions.
-5. Repeat in light, dark and Windows contrast themes, including switching while open.
-   Check normal, hover, pressed, disabled, selected and keyboard-focus states.
-6. Repeat at Windows display scales 100%, 150% and 200%; resize the player. For long
-   title/narrow reusable-control validation, use a separate test host with long item
-   text and a 220-DIP container. Horizontal scrolling and keyboard navigation must
-   expose all items; compare the background to the selected item's actual bounds.
-7. Disable Windows animation effects while a transition is active, then change tabs.
-   Placement must be immediate. Restore the user's original setting afterwards.
+## 原生 Windows 验收步骤
 
-Native checks must be recorded separately from the automated results. In particular,
-an app launch or readable UIA tree alone does not prove selection/content agreement.
+使用当前分支的打包程序，记录提交、视频标识、主题、缩放和操作结果：
 
-## Implementation-session result (2026-11-06)
+1. 打开普通视频侧栏，检查实际标题、顺序、初始选中项与内容一致；逐项点击并快速切换，最终滑块和内容匹配最后选择。
+2. 鼠标悬浮未选中项，仅文字变色；悬浮选中项，文字保持强调色。检查点击后滑块整个移动过程无遮挡。
+3. Tab 进入后用方向键选择，检查焦点、UIA 名称和 IsSelected；在窄宽度和长标题下确认所有项目可达。UIA 程序化 focus 后应先用 Space 激活再验证方向键，这与原生 SelectorBar 一致。
+4. 切换视频、清空/重建分区、关闭再打开侧栏，确认没有旧选中背景、重复命令或内容不同步。
+5. 在 Light、Dark 和系统高对比度主题检查正常、悬浮、按下、禁用和焦点状态，并在窗口打开时切换主题。
+6. 在 100%、150%、200% 显示缩放及不同窗口宽度下检查对齐和可达性。
+7. 关闭系统动画并在过渡中切换动画偏好，确认立即定位；测试后恢复原设置。
 
-- Adapter regression suite: 9 passed, 0 failed, 0 skipped; TRX counters parsed.
-- Release/x64 normal build with the blocking analyzer: passed, 0 warnings/errors.
-- Windows Sandbox is unavailable: WinApp reports the feature must be enabled.
-- Local WinApp packaged launch was attempted. Building referenced resolver libraries
-  with the packaging flag failed because they have no application manifests. Using
-  the already built references allowed the application MSIX to build (one environment
-  warning: missing `mspdbcmf.exe`, so no symbols package).
-- Activation then failed because the release package identity is already installed.
-  The installed application was **not** removed or replaced. A second attempt using
-  a repository-external manifest with identity `Mang.BiliCopilot.Spec159` failed
-  registration with `0x80073CF0` / `0x80070003` (manifest path not found).
-- Consequently, **native UI acceptance remains unverified**: no screenshot/recording
-  of this implementation, no real input/content comparison, no UIA selection check,
-  and no light/dark/contrast, 100%/150%/200% DPI or motion-preference visual acceptance.
-  The procedure above is the remaining acceptance checklist, not a passed test report.
+## 已验证与待验证边界
 
+独立真实 WinUI 宿主直接链接生产控件 XAML/C#，内容区域为选择事件驱动的标签，
+并非真实播放器。已验证鼠标选择、Light/Dark、150% 缩放下焦点和 UIA 选择状态；
+针对性验证覆盖长标题键盘导航、五次立即重挂载后的内容同步和挂载后键盘切换。
 
-## Review repair and native host evidence (2026-11-06)
+真实播放器启动受到本机已安装的非开发模式 Dev/Release 包身份冲突阻止；
+未卸载或替换已有安装。完整播放器的内容/视频切换、最终动画呈现、
+高对比度、100%/200% DPI、调整窗口大小及系统动画偏好仍需按以上步骤验收。
 
-Base: `72d79928` (including the explicit Dark dictionary), verified as HEAD before
-editing and as an ancestor of this repair. No checkout was created.
+本机复现资料（不作为其他机器的前置依赖）：
 
-The installed `Microsoft.WindowsAppSDK.WinUI/2.6.4` generic template confirms that
-`SelectedPointerOver` and `SelectedPressed` use the same foreground and animation;
-neither consumes the proposed pointer border resources. Resource overrides therefore
-cannot distinguish them. The repair uses a small item-only visual template with the
-native `CombinedStates` and `DisabledStates` names. The SelectorBar template and C#
-input/selection code are unchanged. Hover and pressed now target the visible feedback
-border; pressed also changes text/icon foreground. High Contrast uses system
-Window/WindowText/Highlight/HighlightText brushes. Selection uses the shared moving
-background and accent text, without changing font metrics. Disabled text and native
-system focus visuals remain separate from selection.
+- 宿主工程：%TEMP%/spec159-native-host。
+- 生命周期根因、红绿测试与原生结果：%TEMP%/spec159-focused-evidence。
+- 当前审查复验：%TEMP%/spec159-review-evidence。
 
-A real packaged host also exposed a startup failure: the existing `BasedOn` lookup
-for `DefaultSelectorBarItemStyle` was unresolved at runtime. Removing the dependency
-on that internal style key allowed the linked production XAML to render. The host
-was created with `winapp new`, pinned to WindowsAppSDK 2.6.4, and links the production
-SlidingTabBar XAML/C# directly. It is NOT the ordinary video player; its content is a
-label updated from the control's public selection event.
+重新运行宿主或脚本时必须重新获取 PID/HWND，不能沿用旧进程标识。
 
-Evidence root on the implementation machine:
-`C:/Users/hp/AppData/Local/Temp/spec159-fix-evidence/`.
-Host source: `C:/Users/hp/AppData/Local/Temp/spec159-native-host/`.
-Launch: `winapp run <host-directory> --arch x64 --detach --json`.
-The batch scripts contain the captured local PID/HWND; refresh them from launch and
-`winapp ui list-windows` before replay. Do not reuse them against another process.
-
-| Check | Actual result / evidence |
-| --- | --- |
-| Adapter regression | Passed: 9, Failed: 0, Skipped: 0; `regression.trx` counters parsed. Same command above plus `--logger "trx;LogFileName=regression.trx" --results-directory <evidence-root>`. |
-| Final normal Release/x64 build | Exit 0, 0 warnings, 0 errors; default blocking analyzer unchanged. Log: `C:/Users/hp/AppData/Local/Temp/spec159-fix-final2-build.log`. First clean build emitted one existing unused protobuf import warning in the external kernel; final incremental compilation was clean. |
-| Actual application launch | Parent's supported Debug launch also failed: `Mang.BiliCopilot.Dev` is already installed as a non-development package. See `C:/Users/hp/AppData/Local/Temp/spec159-parent-launch.log`. Neither Dev nor Release installation was replaced. |
-| Final native host batch | **6 passed, 2 failed**; `final/native-results.json`, `ui-tests-final.ps1`. This is not full acceptance. |
-| Native mouse / selection / host label | Passed before remount. `final/dark-selected.png`, `final/selection.json`; the filenames inherit the script labels, but this particular selected screenshot is actually Light. |
-| Native names, selected, disabled | UIA tree and property reads expose SelectorBarItem names, IsSelected and IsEnabled; `final/final-tree.json`. Narrator speech itself was not tested. |
-| Theme and focus rendering | Visually inspected all final PNGs. `final/initial.png` shows Dark; `final/light-selected-hover.png` shows Light; `final/keyboard-focus.png` shows the native focus outline. Both use 150% actual display scale. |
-| Hover / pressed | Final hover visibly changes the selected fill. `interaction.mp4` and its timestamped frames show a held selected press changing foreground at ~983 ms versus hover at ~463 ms on the earlier semibold iteration. That recording predates the final accent-text change and is not final motion acceptance. `final/selected-pressed.png` was captured after the gesture lock released, so it is NOT pressed-state proof. |
-| Empty list | `final/empty.png` shows no floating selection background. |
-| Narrow/long keyboard flow | Final automated sequence timed out before selecting Long3; it reached Comments instead. On the previous iteration, separate focus/arrow/Space operations reached AI (`narrow-selected-final.png`). Keep the final failure open; do not infer complete keyboard reachability from the earlier success. |
-| Immediate remount | **Failed** after Empty �� Rebuild �� Remount �� click Comments. The host removes and reinserts the same control in one event callback. UIA reported Comments selected while the host label remained `Content: Collection`; see `final/diagnostic.png` and `final/selection.json`. The adapter remount test does not cover the actual native event ordering. |
-
-Remaining acceptance blockers: investigate the two final native failures; verify actual
-ordinary-video section/content agreement and video replacement; verify smooth rendered
-motion/rapid interruption on the final revision, animations disabled and changed during
-transition, High Contrast, 100% and 200% display scale, and window resizing. System
-`UISettings.AnimationsEnabled` was read as True; no OS motion/theme/DPI settings were
-changed. The 10-second recording achieved about 20 fps (67% of requested 30 fps), so it
-must not be presented as timing-accurate proof of a 180-ms transition.
-
-The native testing skill's two fix-and-rerun limit was reached; the remaining failures
-are reported rather than silently marked passed. No issue/PR was closed or pushed.
-
-## Focused native diagnosis and lifecycle repair (2026-11-06)
-
-Prepared checkout `t3-3560a7e9` started at `f073b511256503d8ec3af5f8a21296db0034bca5`,
-verified against `integration/spec-158`. The isolated host now links this checkout's
-production XAML/C#. Installed Dev/Release packages were not modified.
-
-Evidence root: `C:/Users/hp/AppData/Local/Temp/spec159-focused-evidence/`.
-`native-trace.txt` records native/public selection, focused AutomationId, lifecycle,
-IsLoaded and subscription state. Copies of `MainPage.xaml.cs`, `MainPage.xaml`, and
-`SlidingTabsAcceptance.csproj` preserve the instrumented host. Diagnostics stay
-outside production. The runnable host remains at the previous temporary host path.
-
-### Causes established before fixes
-
-- **Remount is a production defect.** At 23:10:02.674 Loaded arrived while the old
-  `_attached=true`, so attachment was skipped. At 23:10:02.685 the old Unloaded
-  arrived with `IsLoaded=true` and detached selection handling. At 23:10:03.242
-  native selection became Comments, with no public event and content still Collection.
-  Native immediate remove/insert can deliver Loaded before the previous Unloaded;
-  the original adapter only exercised Unloaded followed by Loaded.
-- **Keyboard failure is a test input assumption.** At 23:10:21.649 Right reached
-  Long0 but did not move after UIA programmatic focus. Space activated it; the two
-  remaining Rights reached Long2. An unmodified stock SelectorBar reproduced this
-  at 23:11:33.153 (Plain0). Activating with Space BEFORE three Rights reaches Long3
-  and updates host content to AI. Actual Tab entry also passed: focus Remount,
-  `tab tab left left left`, then assert Long0 focus and its host content
-  (`tab-entry.json`, trace at 23:13:43). No keyboard/template workaround was added.
-
-The lifecycle fix releases old subscriptions and animation, then reattaches if
-IsLoaded already indicates a live tree. It advances the mount generation, retaining
-protection against queued old motion-preference callbacks. Genuine unload still
-cleans up and hides the indicator.
-
-### Verification
-
-- `DeferredUnloadAfterImmediateReinsertKeepsContentSynchronizedOnce`: RED on old
-  source (9 passed / 1 failed, `red.trx`), GREEN with the fix. The public content
-  assertion caught the defect. Also checks exactly one notification, visible
-  indicator, and no notification/hidden indicator after genuine unload.
-- `dotnet test tests/BiliCopilot.SlidingTabs.Tests/BiliCopilot.SlidingTabs.Tests.csproj`
-  plus TRX output: **Passed: 10, Failed: 0, Skipped: 0**, `green.trx`. Existing
-  regressions retain ordinary remount, header command wiring and stale callbacks.
-- `ui-tests.ps1 -AppPid <fresh local host PID>`: **4 passed, 0 failed**,
-  `native-results.json`. Stock SelectorBar focus comparison; activated long-title
-  keyboard traversal with focus, selection, viewport and host content assertions;
-  five Empty/Rebuild/immediate remount/click cycles; keyboard content update after
-  remount. The script checks native exit codes and assertion timeouts.
-- Fixed trace at 23:12:55.627 and 23:12:57.442 captures delayed Unloaded with
-  `IsLoaded=true`, now `_attached=true`; each subsequent Comments selection raises
-  exactly one public event. The remaining three cycles show normal event ordering.
-- Inspected every final PNG: `long-keyboard.png`, `remount.png`,
-  `remount-keyboard.png`. AI is fully visible and focused in the narrow viewport;
-  Comments/AI agree with host content after remount. Light, actual scale 1.5.
-  The preceding long title is intentionally scrolled partially outside the viewport.
-- Normal Release/x64 build using the command above: exit 0, **0 errors**, no WinUI
-  analyzer warnings. One existing external protobuf unused-import warning in
-  `pgc/gateway/vega/v1.proto`; `build.log`. Analyzer gates unchanged. Host build has
-  four existing generated sample ViewModel warnings (MVVMTK0045/WUI3001).
-
-These results resolve the two focused failures, not full #159 acceptance. Actual
-player launch remains blocked by installed non-development Dev/Release identities.
-Real ordinary-video content and video replacement, final rendered motion/rapid
-interruption, OS animations disabled/dynamic changes, High Contrast, 100%/200% DPI,
-and resizing still require the parent verification pass. No OS preferences changed.
-The isolated host content label is not proof of real video content. No further
-visual redesign, issue closing, PR push or monitoring was performed.
-
-## Hover clarification (2026-11-06)
-
-User feedback supersedes the earlier hover-fill acceptance: selected and unselected
-pointer-over states now change text/icon foreground only. They do not fill or outline
-the item, so the shared moving selection background remains visible throughout its
-transition. Pressed and keyboard-focus feedback are unchanged. Earlier screenshots
-of hover fills describe the superseded implementation.
+本轮复验：10 项行为测试通过；3 项产品原生检查通过（长标题导航、五轮重挂载、
+挂载后键盘内容同步）。已检查 Light/Dark 下未选中及选中悬浮截图，确认无悬浮
+背景、选中项保持强调色。旧的原生控件首次聚焦诊断步骤在复用窗口时超时，
+它依赖首次激活状态，已从产品验收脚本移除；未据此修改生产键盘逻辑。
