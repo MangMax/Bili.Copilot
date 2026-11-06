@@ -10,13 +10,13 @@
                     <StaticResource x:Key="SlidingTabHoverForeground" ResourceKey="AccentTextFillColorPrimaryBrush" />
                     <StaticResource x:Key="SlidingTabPressedForeground" ResourceKey="TextFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
-                    <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
+                    <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorSecondaryBrush" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <StaticResource x:Key="SlidingTabHoverForeground" ResourceKey="AccentTextFillColorPrimaryBrush" />
                     <StaticResource x:Key="SlidingTabPressedForeground" ResourceKey="TextFillColorSecondaryBrush" />
                     <StaticResource x:Key="SlidingTabFill" ResourceKey="ControlFillColorSecondaryBrush" />
-                    <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorDefaultBrush" />
+                    <StaticResource x:Key="SlidingTabStroke" ResourceKey="ControlStrokeColorSecondaryBrush" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="HighContrast">
                     <!-- An outlined selection keeps the platform's hover/disabled text legible. -->
@@ -31,8 +31,11 @@
             <Thickness x:Key="SelectorBarItemFocusVisualMargin">0</Thickness>
             <Style TargetType="SelectorBarItem">
                 <Setter Property="UseSystemFocusVisuals" Value="True" />
-                <Setter Property="Padding" Value="14,8" />
-                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="Padding" Value="14,4" />
+                <Setter Property="MinWidth" Value="56" />
+                <Setter Property="MinHeight" Value="28" />
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Setter Property="CornerRadius" Value="4" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="SelectorBarItem">
@@ -80,7 +83,7 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}" Spacing="{ThemeResource SelectorBarItemSpacing}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" Spacing="{ThemeResource SelectorBarItemSpacing}">
                                     <ContentPresenter x:Name="PART_IconVisual" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" />
                                     <TextBlock x:Name="PART_TextVisual" Text="{TemplateBinding Text}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" />
                                 </StackPanel>
@@ -93,10 +96,10 @@
     </UserControl.Resources>
     <Border
         Padding="4"
-        Background="{ThemeResource LayerFillColorDefaultBrush}"
+        Background="{ThemeResource ControlAltFillColorSecondaryBrush}"
         BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
         BorderThickness="1"
-        CornerRadius="10">
+        CornerRadius="8">
         <ScrollViewer
             AutomationProperties.AutomationId="SlidingTabScroller"
             HorizontalScrollBarVisibility="Auto"
@@ -111,7 +114,7 @@
                         Background="{ThemeResource SlidingTabFill}"
                         BorderBrush="{ThemeResource SlidingTabStroke}"
                         BorderThickness="1"
-                        CornerRadius="6"
+                        CornerRadius="4"
                         Visibility="Collapsed">
                         <Border.RenderTransform>
                             <TranslateTransform x:Name="IndicatorTranslation" />

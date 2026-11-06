@@ -9,6 +9,7 @@
 - 选中背景按条目实际位置和宽度移动，使用 180 ms 缓出动画。首次布局、尺寸变化和关闭系统动画时直接定位。
 - 保留 SelectorBarItem 的键盘、焦点和 UI Automation 语义；局部条目模板负责视觉状态。
 - 长标题在窄侧栏中横向滚动，空列表或无选中项隐藏滑块。
+- 外框圆角 8 DIP、滑块圆角 4 DIP，条目内边距 14×4 DIP、最小尺寸 56×28 DIP；标签居中，未选中文字使用次级前景色。
 
 控件的 SetItems 接收带唯一、非空 Tag 身份的 SelectorBarItem；
 Select 同步调用方选择而不回发用户事件，SelectionChanged 只通知用户选择。
