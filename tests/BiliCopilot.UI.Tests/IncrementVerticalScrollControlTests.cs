@@ -6,6 +6,23 @@ namespace BiliCopilot.UI.Tests;
 public sealed class IncrementVerticalScrollControlTests
 {
     [Fact]
+    public void HiddenAncestorRejectsQueuedLoadAndVisibleSectionCanLoadAgain()
+    {
+        var section = new FrameworkElement();
+        var control = new IncrementVerticalScrollControl { Parent = section };
+        var loads = 0;
+        control.LoadMoreCommand = new RelayCommand(() => loads++);
+        control.Load();
+        section.Visibility = Visibility.Collapsed;
+        control.DispatcherQueue.Drain();
+        Assert.Equal(0, loads);
+        section.Visibility = Visibility.Visible;
+        control.View.ChangeView();
+        control.DispatcherQueue.Drain();
+        Assert.Equal(1, loads);
+    }
+
+    [Fact]
     public void RepeatedLoadedEventsKeepOneSubscriptionAndUnloadRemovesIt()
     {
         var control = new IncrementVerticalScrollControl();
