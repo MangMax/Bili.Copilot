@@ -95,7 +95,13 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Padding="4" ColumnDefinitions="Auto,*,Auto">
+    <Grid
+        Padding="4"
+        Background="{ThemeResource ControlAltFillColorSecondaryBrush}"
+        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        ColumnDefinitions="Auto,*,Auto"
+        CornerRadius="8">
         <Button
             x:Name="ScrollLeftButton"
             AutomationProperties.Name="{ext:Locale Name=ScrollTabsLeft}"

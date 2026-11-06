@@ -155,7 +155,7 @@ public sealed partial class SlidingTabBar : UserControl
 
     private void UpdateScrollButtons()
     {
-        var visibility = Track.ActualWidth > Math.Max(0, ActualWidth - 8) ? Visibility.Visible : Visibility.Collapsed;
+        var visibility = Track.ActualWidth > Math.Max(0, ActualWidth - 10) ? Visibility.Visible : Visibility.Collapsed;
         ScrollLeftButton.Visibility = visibility;
         ScrollRightButton.Visibility = visibility;
         ScrollLeftButton.IsEnabled = Scroller.HorizontalOffset > 0;
