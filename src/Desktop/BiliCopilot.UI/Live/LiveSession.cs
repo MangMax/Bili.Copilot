@@ -66,6 +66,7 @@ public sealed class LiveSession
 {
     private CancellationTokenSource? _pending;
     private int _generation;
+    private string? _titleOverride;
 
     /// <summary>
     /// Gets 首次进入时由卡片带来的房间信息（可能不完整）.
@@ -113,9 +114,9 @@ public sealed class LiveSession
     public string? RoomId => Page?.Information.Identifier.Id ?? Information?.Identifier.Id;
 
     /// <summary>
-    /// Gets 房间标题；详情未到时使用卡片标题.
+    /// Gets 房间标题；实时标题事件优先，其次详情，最后是卡片标题.
     /// </summary>
-    public string? Title => Page?.Information.Identifier.Title ?? Information?.Identifier.Title;
+    public string? Title => _titleOverride ?? Page?.Information.Identifier.Title ?? Information?.Identifier.Title;
 
     /// <summary>
     /// Gets 主播昵称.
@@ -188,6 +189,13 @@ public sealed class LiveSession
         Playback = playback;
         return true;
     }
+
+    /// <summary>
+    /// 写入房间标题变更事件带来的新标题（#198）；不改变房间标识与播放状态.
+    /// </summary>
+    /// <param name="title">新标题.</param>
+    public void SetTitle(string? title)
+        => _titleOverride = string.IsNullOrWhiteSpace(title) ? _titleOverride : title;
 
     /// <summary>
     /// 写入内核返回的最新播放信息（刷新/重新取址后由解析器回填）.
@@ -272,6 +280,7 @@ public sealed class LiveSession
         _pending = default;
         _generation++;
         Information = information;
+        _titleOverride = default;
         Page = default;
         Playback = default;
         Target = default;
