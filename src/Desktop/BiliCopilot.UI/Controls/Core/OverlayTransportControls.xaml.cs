@@ -167,24 +167,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private async void OnPlayPauseButtonClick(object sender, RoutedEventArgs e)
     {
-        // 关闭/换集之后到达的点击只属于旧会话。
-        if (!ViewModel.IsSessionCurrent())
-        {
-            return;
-        }
-
-        if (ViewModel.Player.PlaybackState is MpvPlayerState.Playing)
-        {
-            await ViewModel.Client!.PauseAsync();
-        }
-        else if (ViewModel.Player.PlaybackState is MpvPlayerState.Paused)
-        {
-            await ViewModel.Client!.ResumeAsync();
-        }
-        else if (ViewModel.Player.PlaybackState is MpvPlayerState.End)
-        {
-            await ViewModel.Player.ReplayAsync();
-        }
+        await ViewModel.PlayPauseCommand.ExecuteAsync(default);
     }
 
     private async void OnVolumeValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)

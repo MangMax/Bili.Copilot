@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using Richasy.MpvKernel.Player;
 using Richasy.MpvKernel.Player.Models;
@@ -10,6 +10,9 @@ internal abstract class MediaSourceResolverBase : IMpvMediaSourceResolver
     public IntPtr WindowHandle { get; set; }
 
     public abstract Task<MpvMediaSource> GetSourceAsync();
+
+    public virtual Task<MpvMediaSource> RefreshSourceAsync(CancellationToken cancellationToken)
+        => throw new NotSupportedException();
 
     public abstract IMpvMediaSourceResolver Clone();
 }

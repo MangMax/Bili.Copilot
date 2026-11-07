@@ -1,0 +1,192 @@
+{
+  "verdict": "observability gate not passed; no production recovery",
+  "cases": {
+    "fault-debug": {
+      "frames": 235,
+      "last_frame_pts": 7.8,
+      "distinct_frames": 235,
+      "max_audio_pts": 23.573616,
+      "duration": 24.0,
+      "cache_end": 7.833333,
+      "file_size": 2751298,
+      "stream_pos": 914836,
+      "global_eof": "yes",
+      "terminal_failure_prefixes": [
+        "curl"
+      ],
+      "first_native_video_eof_wall": 8.064,
+      "first_generic_error_plus_cache_match": 8.67,
+      "first_match_position": 8.454422,
+      "video_truncations": 6,
+      "audio_truncations": 0
+    },
+    "sparse": {
+      "frames": 2,
+      "last_frame_pts": 10.0,
+      "distinct_frames": 2,
+      "max_audio_pts": 23.588022,
+      "duration": 20.0,
+      "cache_end": 10.0,
+      "file_size": 18323,
+      "stream_pos": 9428,
+      "global_eof": "yes",
+      "terminal_failure_prefixes": [],
+      "first_native_video_eof_wall": null,
+      "first_generic_error_plus_cache_match": null,
+      "first_match_position": null,
+      "video_truncations": 0,
+      "audio_truncations": 0
+    },
+    "variable": {
+      "frames": 4,
+      "last_frame_pts": 13.0,
+      "distinct_frames": 4,
+      "max_audio_pts": 23.512855,
+      "duration": 14.0,
+      "cache_end": 13.0,
+      "file_size": 31541,
+      "stream_pos": 23797,
+      "global_eof": "yes",
+      "terminal_failure_prefixes": [],
+      "first_native_video_eof_wall": null,
+      "first_generic_error_plus_cache_match": null,
+      "first_match_position": null,
+      "video_truncations": 0,
+      "audio_truncations": 0
+    },
+    "short": {
+      "frames": 240,
+      "last_frame_pts": 7.966667,
+      "distinct_frames": 240,
+      "max_audio_pts": 23.569686,
+      "duration": 8.0,
+      "cache_end": 7.966667,
+      "file_size": 931091,
+      "stream_pos": 928136,
+      "global_eof": "yes",
+      "terminal_failure_prefixes": [],
+      "first_native_video_eof_wall": null,
+      "first_generic_error_plus_cache_match": null,
+      "first_match_position": null,
+      "video_truncations": 0,
+      "audio_truncations": 0
+    },
+    "natural": {
+      "frames": 720,
+      "last_frame_pts": 23.966667,
+      "distinct_frames": 720,
+      "max_audio_pts": 23.593895,
+      "duration": 24.0,
+      "cache_end": 23.966667,
+      "file_size": 2751298,
+      "stream_pos": 2748579,
+      "global_eof": "yes",
+      "terminal_failure_prefixes": [],
+      "first_native_video_eof_wall": null,
+      "first_generic_error_plus_cache_match": null,
+      "first_match_position": null,
+      "video_truncations": 0,
+      "audio_truncations": 0
+    },
+    "pause": {
+      "frames": 148,
+      "last_frame_pts": 4.9,
+      "distinct_frames": 148,
+      "max_audio_pts": 4.826978,
+      "duration": 24.0,
+      "cache_end": 7.833333,
+      "file_size": 2751298,
+      "stream_pos": 621881,
+      "global_eof": "no",
+      "terminal_failure_prefixes": [
+        "curl"
+      ],
+      "first_native_video_eof_wall": null,
+      "first_generic_error_plus_cache_match": null,
+      "first_match_position": null,
+      "video_truncations": 6,
+      "audio_truncations": 0
+    },
+    "unavailable": {
+      "frames": 235,
+      "last_frame_pts": 7.8,
+      "distinct_frames": 235,
+      "max_audio_pts": 23.619893,
+      "duration": 24.0,
+      "cache_end": 7.833333,
+      "file_size": 2751298,
+      "stream_pos": 914836,
+      "global_eof": "yes",
+      "terminal_failure_prefixes": [
+        "curl"
+      ],
+      "first_native_video_eof_wall": null,
+      "first_generic_error_plus_cache_match": 8.609,
+      "first_match_position": 8.339382,
+      "video_truncations": 6,
+      "audio_truncations": 0
+    },
+    "audio-sparse-late-debug": {
+      "frames": 2,
+      "last_frame_pts": 10.0,
+      "distinct_frames": 2,
+      "max_audio_pts": 17.434949,
+      "duration": 20.0,
+      "cache_end": 10.0,
+      "file_size": 18323,
+      "stream_pos": 9428,
+      "global_eof": "yes",
+      "terminal_failure_prefixes": [
+        "curl"
+      ],
+      "first_native_video_eof_wall": 10.276,
+      "first_generic_error_plus_cache_match": 20.756,
+      "first_match_position": 10.543275,
+      "video_truncations": 0,
+      "audio_truncations": 6
+    },
+    "padded": {
+      "frames": 2,
+      "last_frame_pts": 10.0,
+      "distinct_frames": 2,
+      "max_audio_pts": 23.560588,
+      "duration": 20.0,
+      "cache_end": 10.0,
+      "file_size": 1066907,
+      "stream_pos": 9428,
+      "global_eof": "yes",
+      "terminal_failure_prefixes": [],
+      "first_native_video_eof_wall": null,
+      "first_generic_error_plus_cache_match": null,
+      "first_match_position": null,
+      "video_truncations": 0,
+      "audio_truncations": 0
+    }
+  },
+  "without_diagnostic_filter": {
+    "native_video_eof_wall": 10.181,
+    "position_at_native_eof": 0.000223,
+    "duration": 20.0,
+    "same_complete_sparse_video": true
+  },
+  "binary": {
+    "mpv_sha256": "4752efe9982ed763f0a85ade83b55cf34442cad0c19341ad9b90769146cd2f3c",
+    "ffmpeg_sha256": "eebdf4169ea3c8e936f7840b882cf31f41d0a3913b8dea75b95bc4925877a46f",
+    "versions": {
+      "mpv-version": "mpv v0.41.0-1386-g2137d21b2",
+      "ffmpeg-version": "N-128281-ge19fadf1d"
+    }
+  },
+  "verified_sample_durations": {
+    "sparse": [
+      10,
+      10
+    ],
+    "variable": [
+      1,
+      2,
+      10,
+      1
+    ]
+  }
+}

@@ -1,0 +1,680 @@
+[
+  {
+    "case": "control",
+    "frame_count": 720,
+    "last_frame_pts": 23.966667,
+    "last_frame_wall_seconds": 24.178,
+    "late_unique_frame_checksums": 180,
+    "max_audio_pts": 23.560969,
+    "final_eof_reached": "yes",
+    "final_duration": 24.0,
+    "final_cache_end": 23.966667,
+    "final_pause": "yes",
+    "tail_time_pos_span": 18.1,
+    "video_requests": [
+      {
+        "t": 0.197,
+        "first": 0,
+        "sent": 2751298,
+        "truncated": false
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 12.012,
+        "action": "server healthy"
+      }
+    ]
+  },
+  {
+    "case": "curl-short",
+    "frame_count": 235,
+    "last_frame_pts": 7.8,
+    "last_frame_wall_seconds": 7.935,
+    "late_unique_frame_checksums": 0,
+    "max_audio_pts": 21.720928,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 7.833333,
+    "final_pause": "no",
+    "tail_time_pos_span": 15.883236,
+    "video_requests": [
+      {
+        "t": 0.186,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.188,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.188,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.189,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.189,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.19,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 3.002,
+        "action": "server healthy"
+      }
+    ]
+  },
+  {
+    "case": "exhaust",
+    "frame_count": 235,
+    "last_frame_pts": 7.8,
+    "last_frame_wall_seconds": 7.98,
+    "late_unique_frame_checksums": 0,
+    "max_audio_pts": 21.712132,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 7.833333,
+    "final_pause": "no",
+    "tail_time_pos_span": 15.843316999999999,
+    "video_requests": [
+      {
+        "t": 0.233,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.235,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.236,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.237,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.238,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.239,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 12.007,
+        "action": "server healthy"
+      }
+    ]
+  },
+  {
+    "case": "lavf",
+    "frame_count": 656,
+    "last_frame_pts": 21.833333,
+    "last_frame_wall_seconds": 21.94,
+    "late_unique_frame_checksums": 116,
+    "max_audio_pts": 21.726153,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 23.966667,
+    "final_pause": "no",
+    "tail_time_pos_span": 15.933334000000002,
+    "video_requests": [
+      {
+        "t": 0.189,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.23,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 1.242,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 4.254,
+        "first": 917116,
+        "sent": 1834182,
+        "truncated": false
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 3.006,
+        "action": "server healthy"
+      }
+    ]
+  },
+  {
+    "case": "lavf-long",
+    "frame_count": 235,
+    "last_frame_pts": 7.8,
+    "last_frame_wall_seconds": 11.664,
+    "late_unique_frame_checksums": 0,
+    "max_audio_pts": 22.022928,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 7.833333,
+    "final_pause": "no",
+    "tail_time_pos_span": 16.182035,
+    "video_requests": [
+      {
+        "t": 0.187,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.223,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 1.224,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 4.226,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 11.227,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 12.066,
+        "action": "server healthy"
+      }
+    ]
+  },
+  {
+    "case": "pause",
+    "frame_count": 148,
+    "last_frame_pts": 4.9,
+    "last_frame_wall_seconds": 5.013,
+    "late_unique_frame_checksums": 0,
+    "max_audio_pts": 4.812922,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 23.966667,
+    "final_pause": "yes",
+    "tail_time_pos_span": 0.0,
+    "video_requests": [
+      {
+        "t": 0.184,
+        "first": 0,
+        "sent": 2751298,
+        "truncated": false
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 5.013,
+        "action": "pause",
+        "target": 14
+      }
+    ]
+  },
+  {
+    "case": "reload",
+    "frame_count": 474,
+    "last_frame_pts": 21.933333,
+    "last_frame_wall_seconds": 21.937,
+    "late_unique_frame_checksums": 119,
+    "max_audio_pts": 21.834375,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 23.966667,
+    "final_pause": "no",
+    "tail_time_pos_span": 16.033334,
+    "video_requests": [
+      {
+        "t": 0.196,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.198,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.199,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.2,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.201,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.201,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 14.086,
+        "first": 0,
+        "sent": 2751298,
+        "truncated": false
+      },
+      {
+        "t": 14.098,
+        "first": 1596519,
+        "sent": 1154779,
+        "truncated": false
+      }
+    ],
+    "late_video_requests": 2,
+    "actions": [
+      {
+        "t": 12.068,
+        "action": "server healthy"
+      },
+      {
+        "t": 14.08,
+        "action": "reload",
+        "target": 14
+      }
+    ]
+  },
+  {
+    "case": "reload-repeat",
+    "frame_count": 474,
+    "last_frame_pts": 21.933333,
+    "last_frame_wall_seconds": 21.935,
+    "late_unique_frame_checksums": 119,
+    "max_audio_pts": 21.835527,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 23.966667,
+    "final_pause": "no",
+    "tail_time_pos_span": 16.033334,
+    "video_requests": [
+      {
+        "t": 0.189,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.195,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.196,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.197,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.198,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.198,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 14.082,
+        "first": 0,
+        "sent": 2751298,
+        "truncated": false
+      },
+      {
+        "t": 14.095,
+        "first": 1596519,
+        "sent": 1154779,
+        "truncated": false
+      }
+    ],
+    "late_video_requests": 2,
+    "actions": [
+      {
+        "t": 12.067,
+        "action": "server healthy"
+      },
+      {
+        "t": 14.077,
+        "action": "reload",
+        "target": 14
+      }
+    ]
+  },
+  {
+    "case": "seek",
+    "frame_count": 260,
+    "last_frame_pts": 7.8,
+    "last_frame_wall_seconds": 14.116,
+    "late_unique_frame_checksums": 0,
+    "max_audio_pts": 21.944489,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 7.833333,
+    "final_pause": "no",
+    "tail_time_pos_span": 16.07186,
+    "video_requests": [
+      {
+        "t": 0.217,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.219,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.22,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.221,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.222,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.222,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 12.098,
+        "action": "server healthy"
+      },
+      {
+        "t": 14.011,
+        "action": "seek",
+        "target": 14
+      }
+    ]
+  },
+  {
+    "case": "seek-initial-no-cache",
+    "frame_count": 474,
+    "last_frame_pts": 21.933333,
+    "last_frame_wall_seconds": 21.934,
+    "late_unique_frame_checksums": 119,
+    "max_audio_pts": 21.850859,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 23.966667,
+    "final_pause": "no",
+    "tail_time_pos_span": 16.033334,
+    "video_requests": [
+      {
+        "t": 0.19,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.191,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.192,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.193,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.194,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.194,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 14.081,
+        "first": 1596519,
+        "sent": 1154779,
+        "truncated": false
+      }
+    ],
+    "late_video_requests": 1,
+    "actions": [
+      {
+        "t": 12.062,
+        "action": "server healthy"
+      },
+      {
+        "t": 14.075,
+        "action": "seek",
+        "target": 14
+      }
+    ]
+  },
+  {
+    "case": "seek-no-cache",
+    "frame_count": 260,
+    "last_frame_pts": 7.8,
+    "last_frame_wall_seconds": 14.189,
+    "late_unique_frame_checksums": 0,
+    "max_audio_pts": 21.844645,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": null,
+    "final_pause": "no",
+    "tail_time_pos_span": 15.948521,
+    "video_requests": [
+      {
+        "t": 0.191,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.193,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.194,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.196,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.196,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      },
+      {
+        "t": 0.197,
+        "first": 917116,
+        "sent": 0,
+        "truncated": true
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 12.072,
+        "action": "server healthy"
+      },
+      {
+        "t": 14.085,
+        "action": "seek-no-cache",
+        "target": 14
+      }
+    ]
+  },
+  {
+    "case": "short-video",
+    "frame_count": 240,
+    "last_frame_pts": 7.966667,
+    "last_frame_wall_seconds": 8.132,
+    "late_unique_frame_checksums": 0,
+    "max_audio_pts": 21.725084,
+    "final_eof_reached": "no",
+    "final_duration": 8.0,
+    "final_cache_end": 7.966667,
+    "final_pause": "no",
+    "tail_time_pos_span": 15.853567000000002,
+    "video_requests": [
+      {
+        "t": 0.181,
+        "first": 0,
+        "sent": 931091,
+        "truncated": false
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 12.06,
+        "action": "server healthy"
+      }
+    ]
+  },
+  {
+    "case": "transient",
+    "frame_count": 656,
+    "last_frame_pts": 21.833333,
+    "last_frame_wall_seconds": 21.977,
+    "late_unique_frame_checksums": 116,
+    "max_audio_pts": 21.730627,
+    "final_eof_reached": "no",
+    "final_duration": 24.0,
+    "final_cache_end": 23.966667,
+    "final_pause": "no",
+    "tail_time_pos_span": 15.933334000000002,
+    "video_requests": [
+      {
+        "t": 0.227,
+        "first": 0,
+        "sent": 917116,
+        "truncated": true
+      },
+      {
+        "t": 0.229,
+        "first": 917116,
+        "sent": 1834182,
+        "truncated": false
+      }
+    ],
+    "late_video_requests": 0,
+    "actions": [
+      {
+        "t": 12.006,
+        "action": "server healthy"
+      }
+    ]
+  }
+]

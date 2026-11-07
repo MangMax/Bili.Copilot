@@ -1,6 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Extensions;
+using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -21,6 +22,15 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
     private CancellationTokenSource? _initCts;
     private Task? _loadTask;
     private DashMediaInformation? _playbackInfo;
+    private int _sourceGeneration;
+    private int? _requiredQuality;
+    private int? _selectedQuality;
+    private string? _selectedCodec;
+    private string? _codec;
+    private string? _previousVideoHost;
+    private string? _previousAudioHost;
+    private string? _videoHost;
+    private string? _audioHost;
 
     /// <summary>
     /// 上一次播放信息请求被判定为不可用的原因.
@@ -32,8 +42,15 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
     /// </summary>
     internal bool IsPreviewPlayback => _playbackInfo?.IsPreview == true;
 
+    internal bool IsDashPlayback => _videoHost is not null;
+
     public void Initialize(MediaSnapshot snapshot, EpisodeInformation episode)
     {
+        _sourceGeneration++;
+        _requiredQuality = _selectedQuality = null;
+        _selectedCodec = null;
+        _codec = null;
+        _previousVideoHost = _previousAudioHost = _videoHost = _audioHost = null;
         _snapshot = snapshot;
         _episode = episode;
         _playbackInfo = default;
@@ -45,6 +62,7 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
 
     internal void ResetSnapshot(MediaSnapshot snapshot)
     {
+        _sourceGeneration++;
         _snapshot = snapshot;
     }
 
@@ -52,7 +70,7 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
     {
         // PGC 没有作者例外：始终只看当前账号已解锁的清晰度。
         var selection = QualitySelectionAdapter.SelectFormat(
-            _playbackInfo?.Formats,
+            _requiredQuality is { } quality ? _playbackInfo?.Formats?.Where(p => p.Quality == quality).ToList() : _playbackInfo?.Formats,
             QualityEntitlement.Standard,
             _snapshot.PreferQuality,
             SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PreferQuality, PreferQualityType.Auto),
@@ -66,10 +84,49 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
         return selection.Format;
     }
 
+    public override async Task<MpvMediaSource> RefreshSourceAsync(CancellationToken cancellationToken)
+    {
+        var quality = _selectedQuality ?? GetCurrentFormat()?.Quality
+            ?? throw new InvalidOperationException("当前清晰度不可用，无法刷新播放。");
+        var generation = ++_sourceGeneration;
+        _initCts?.Cancel();
+        // A private request keeps the current playable cache intact on failure.
+        var fresh = new PgcMediaSourceResolver(playerService, cookiesResolver, logger);
+        fresh.Initialize(_snapshot, _episode);
+        fresh.WindowHandle = WindowHandle;
+        fresh._requiredQuality = quality;
+        fresh._codec = _selectedCodec ?? AppToolkit.GetPreferCodecId();
+        fresh._previousVideoHost = _videoHost;
+        fresh._previousAudioHost = _audioHost;
+        try
+        {
+            var source = await fresh.GetSourceAsync().WaitAsync(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (generation != _sourceGeneration)
+            {
+                throw new OperationCanceledException();
+            }
+
+            _playbackInfo = fresh._playbackInfo;
+            _previousVideoHost = fresh._previousVideoHost;
+            _previousAudioHost = fresh._previousAudioHost;
+            _videoHost = fresh._videoHost;
+            _audioHost = fresh._audioHost;
+            return source;
+        }
+        finally
+        {
+            fresh._sourceGeneration++;
+            fresh._initCts?.Cancel();
+            fresh._initCts?.Dispose();
+        }
+    }
+
     public override IMpvMediaSourceResolver Clone() => throw new NotImplementedException();
 
     public override async Task<MpvMediaSource> GetSourceAsync()
     {
+        var generation = _sourceGeneration;
         var volume = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerVolume, 100d);
         var speed = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerSpeed, 1d);
         var cookies = cookiesResolver.GetCookieString();
@@ -95,6 +152,11 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
         };
 
         await LoadMediaInfoAsync();
+        if (generation != _sourceGeneration)
+        {
+            throw new OperationCanceledException();
+        }
+
         var (videoUrl, audioUrl) = GetPlayUrls();
         var fileUrl = string.Empty;
         if (!string.IsNullOrEmpty(videoUrl))
@@ -160,25 +222,44 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
             return;
         }
 
+        var generation = _sourceGeneration;
         _loadTask ??= LoadPlaybackInfoAsync();
+        try
+        {
 #pragma warning disable VSTHRD003 // 请求由本实例发起，等待它不会阻塞 UI 线程.
-        await _loadTask;
+            await _loadTask;
 #pragma warning restore VSTHRD003
+        }
+        catch
+        {
+            if (generation == _sourceGeneration)
+            {
+                _loadTask = null;
+            }
+
+            throw;
+        }
     }
 
     private async Task LoadPlaybackInfoAsync()
     {
+        var generation = _sourceGeneration;
         _initCts = new CancellationTokenSource();
         try
         {
             var cid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid);
             var seasonType = _episode.GetExtensionIfNotNull<string>(EpisodeExtensionDataId.SeasonType);
             var information = await playerService.GetPgcPlayDetailAsync(cid.ToString(), _episode.Identifier.Id, seasonType, _initCts.Token);
+            if (generation != _sourceGeneration)
+            {
+                throw new OperationCanceledException();
+            }
+
             _playbackInfo = information;
             UnavailableReason = default;
 
         }
-        catch (PgcPlaybackUnavailableException ex)
+        catch (PgcPlaybackUnavailableException ex) when (generation == _sourceGeneration)
         {
             // 服务端明确判定不可用：保留原因，允许上层区分提示.
             UnavailableReason = ex.Reason;
@@ -189,7 +270,7 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
             logger.LogWarning(ex, "获取 {Title} 播放信息不可用：{Reason}", unavailableTitle, reason);
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (generation == _sourceGeneration)
         {
             _playbackInfo = default;
             _loadTask = default;
@@ -208,36 +289,42 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
         var videoSegments = _playbackInfo.Videos;
         var audioSegments = _playbackInfo.Audios;
         var selectedFormat = GetCurrentFormat();
+        if (selectedFormat is null && _requiredQuality.HasValue)
+        {
+            throw new InvalidOperationException("当前清晰度已不可用，请重新选择清晰度。");
+        }
+
         if (selectedFormat is null)
         {
             return (default, default);
         }
 
         var maxAudioQuality = audioSegments?.Max(p => Convert.ToInt32(p.Id));
-        var preferCodec = AppToolkit.GetPreferCodecId();
+        var preferCodec = _codec ?? AppToolkit.GetPreferCodecId();
         var vSeg = videoSegments?.FirstOrDefault(p => p.Id == selectedFormat.Quality.ToString() && p.Codecs.Contains(preferCodec))
             ?? videoSegments?.FirstOrDefault(p => p.Id == selectedFormat.Quality.ToString());
-        var aSeg = audioSegments?.FirstOrDefault(p => p.Id == maxAudioQuality.ToString());
-
-        var videoUrl = vSeg?.BaseUrl;
-        var audioUrl = aSeg?.BaseUrl;
-
-        if (SettingsToolkit.ReadLocalSetting(SettingNames.PlayWithoutP2P, false))
+        if (_requiredQuality.HasValue && (vSeg is null || !vSeg.Codecs.Contains(preferCodec)))
         {
-            if (vSeg?.BackupUrls is not null)
-            {
-                string[] videoUrls = [vSeg?.BaseUrl, .. vSeg?.BackupUrls];
-                videoUrl = Array.Find(videoUrls, p => !AppToolkit.IsP2PUrl(p)) ?? vSeg?.BaseUrl;
-            }
-
-            if (aSeg?.BackupUrls is not null)
-            {
-                string[] audioUrls = [aSeg?.BaseUrl, .. aSeg?.BackupUrls];
-                audioUrl = Array.Find(audioUrls, p => !AppToolkit.IsP2PUrl(p)) ?? aSeg?.BaseUrl;
-            }
+            throw new InvalidOperationException("当前清晰度或编码已不可用，请重新选择清晰度。");
         }
 
+        var aSeg = audioSegments?.FirstOrDefault(p => p.Id == maxAudioQuality.ToString());
+
+        var preference = PlaybackRouteSettings.ReadPreference();
+        var withoutP2P = SettingsToolkit.ReadLocalSetting(SettingNames.PlayWithoutP2P, false);
+        var videoUrl = PlaybackRouteSelector.Select(vSeg?.BaseUrl, vSeg?.BackupUrls, preference, withoutP2P, _previousVideoHost);
+        var audioUrl = PlaybackRouteSelector.Select(aSeg?.BaseUrl, aSeg?.BackupUrls, preference, withoutP2P, _previousAudioHost);
+
         SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedPgcQuality, selectedFormat.Quality);
+        if (_requiredQuality.HasValue && string.IsNullOrEmpty(videoUrl))
+        {
+            throw new InvalidOperationException("当前清晰度已不可用，请重新选择清晰度。");
+        }
+
+        _selectedQuality = selectedFormat.Quality;
+        _selectedCodec = vSeg?.Codecs;
+        _videoHost = videoUrl is null ? null : new Uri(videoUrl).Host;
+        _audioHost = audioUrl is null ? null : new Uri(audioUrl).Host;
         return (videoUrl, audioUrl);
     }
 }

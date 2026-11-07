@@ -1,0 +1,48 @@
+Original SHA-256: 6971b66139e3f9037ac852eecf985afba0baf652232c578d813fff58423862aa
+Original logical lines: 1718
+
+L1032: 2026-11-07 17:44:31.959 +08:00 [INF] App version: 2.2611.2.0
+L1088: 2026-11-07 17:44:39.708 +08:00 [INF] Set Mpv log level to V.
+L1093: 2026-11-07 17:44:40.640 +08:00 [INF] [MPV] Log message: v - Setting option 'start' = '0' (flags = 16)
+L1095: 2026-11-07 17:44:40.640 +08:00 [INF] [MPV] Log message: v - Setting option 'volume' = '100' (flags = 16)
+L1097: 2026-11-07 17:44:40.640 +08:00 [INF] [MPV] Log message: v - Setting option 'speed' = '1' (flags = 16)
+L1099: 2026-11-07 17:44:40.640 +08:00 [INF] [MPV] Log message: v - Setting option 'audio-files-append' = '<URL-REDACTED>' (flags = 16)
+L1111: 2026-11-07 17:44:40.640 +08:00 [INF] [MPV] Log message: v - Opening <URL-REDACTED>
+L1165: 2026-11-07 17:44:42.043 +08:00 [INF] [MPV] Log message: info - ● Video  --vid=1  (h264 3240x2160 30 fps 10786 kbps) [default]
+L1167: 2026-11-07 17:44:42.043 +08:00 [INF] [MPV] Log message: info - ● Audio  --aid=1  '<MEDIA-QUERY-REDACTED>' (aac 2ch 48000 Hz 144 kbps) [external]
+L1181: 2026-11-07 17:44:42.082 +08:00 [INF] [MPV] Log message: v - Device Name: AMD Radeon(TM) Graphics
+L1217: 2026-11-07 17:44:42.104 +08:00 [INF] [MPV] Log message: v - Initialized libplacebo v7.387.0 (v7.387.0-6-gc4de47c-dirty) (API v387)
+L1233: 2026-11-07 17:44:42.105 +08:00 [INF] [MPV] Log message: v -     Driver version: 32.0.22050.4002
+L1610: 2026-11-07 17:44:48.078 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 4194304
+L1612: 2026-11-07 17:44:52.598 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 12582912
+L1614: 2026-11-07 17:44:54.455 +08:00 [INF] [MPV] Log message: v - EOF reached.
+L1616: 2026-11-07 17:49:57.476 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 599785472
+L1618: 2026-11-07 17:49:59.617 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#2) from 599785472
+L1620: 2026-11-07 17:50:45.773 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 637534208
+L1622: 2026-11-07 17:50:45.847 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#2) from 637534208
+L1624: 2026-11-07 17:51:11.443 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 660602880
+L1626: 2026-11-07 17:51:38.303 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 704643072
+L1628: 2026-11-07 17:51:38.377 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#2) from 704643072
+L1630: 2026-11-07 17:51:40.477 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#3) from 704643072
+L1632: 2026-11-07 17:51:40.869 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#4) from 704643072
+L1634: 2026-11-07 17:52:58.740 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 788529152
+L1636: 2026-11-07 17:52:58.816 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#2) from 788529152
+L1638: 2026-11-07 17:53:25.182 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 819986432
+L1640: 2026-11-07 17:53:27.817 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#2) from 819986432
+L1642: 2026-11-07 17:54:43.092 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#1) from 870318080
+L1644: 2026-11-07 17:54:43.174 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#2) from 870318080
+L1646: 2026-11-07 17:54:44.163 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#3) from 870318080
+L1648: 2026-11-07 17:54:44.238 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#4) from 870318080
+L1650: 2026-11-07 17:54:44.314 +08:00 [INF] [MPV] Log message: warn - Stream error in the HTTP/2 framing layer, retrying (#5) from 870318080
+L1652: 2026-11-07 17:54:44.388 +08:00 [INF] [MPV] Log message: error - transfer failed: Stream error in the HTTP/2 framing layer
+L1654: 2026-11-07 17:54:48.069 +08:00 [INF] [MPV] Log message: warn - mov,mp4,m4a,3gp,3g2,mj2: Packet corrupt (stream = 0, dts = 16466133).
+L1656: 2026-11-07 17:54:48.070 +08:00 [INF] [MPV] Log message: error - NULL: Invalid NAL unit size (6926 > 6292).
+L1658: 2026-11-07 17:54:48.070 +08:00 [INF] [MPV] Log message: error - NULL: missing picture in access unit with size 6302
+L1660: 2026-11-07 17:54:48.070 +08:00 [INF] [MPV] Log message: error - mov,mp4,m4a,3gp,3g2,mj2: stream 0, offset 0x33e0027a: partial file
+L1662: 2026-11-07 17:54:48.070 +08:00 [INF] [MPV] Log message: v - EOF reached.
+L1664: 2026-11-07 18:01:54.993 +08:00 [INF] [MPV] Log message: error - h264: Invalid NAL unit size (6926 > 6292).
+L1666: 2026-11-07 18:01:54.993 +08:00 [INF] [MPV] Log message: error - h264: Error splitting the input into NAL units.
+L1668: 2026-11-07 18:01:55.093 +08:00 [INF] [MPV] Log message: warn - Error while decoding frame (hardware decoding)!
+L1670: 2026-11-07 18:01:55.163 +08:00 [INF] [MPV] Log message: v - filter input EOF
+L1672: 2026-11-07 18:01:55.163 +08:00 [INF] [MPV] Log message: v - filter output EOF
+L1717: 2026-11-07 18:02:58.446 +08:00 [INF] [MPV] Log message: v - Set property: pause=true -> 1
