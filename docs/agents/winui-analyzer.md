@@ -78,6 +78,10 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
   TeachingTip 一起删除），OverlayTransportControls 由 27 降到 26（新按钮/开关/滑杆/下拉/数字框
   都写了 `AutomationId`，旧的可视化体积被合并）。SARIF：`artifacts/winui-analyzer.sarif`，
   WUI2020 264 条、WUI1010 2 条、四类 warning 一条不剩。
+- 2026-11-07 在 #179（内核子模块升到 net11 单目标、`Microsoft.WindowsAppSDK` 2.6.5）上按同一口径复测：
+  WUI warning 仍是 0，note 合计 239（WUI2020 237、WUI1010 2）。note 级不参与阻断，本次未逐条归因
+  这 27 条漂移（#169 / #173 的 XAML 改动与 WindowsAppSDK 2.6.5 都在 2026-11-03 之后落地），
+  下次动分析器基线时再按位置核对。
 - WUI3001 分两批，均已完成：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
   批次二 #110 收掉剩下的 201 条。每批都要求“该批文件在观测构建里 WUI3001 为 0”，
   而不是整体清零后才算完成。
