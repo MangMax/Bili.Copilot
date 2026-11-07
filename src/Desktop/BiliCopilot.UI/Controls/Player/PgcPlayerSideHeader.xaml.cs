@@ -60,13 +60,10 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerControlBase
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (Selector.SelectedItem is null)
+        if (Selector.SelectedItem is IPlayerSectionDetailViewModel item)
         {
-            return;
+            ViewModel.SelectSectionCommand.Execute(item);
         }
-
-        var item = Selector.SelectedItem as IPlayerSectionDetailViewModel;
-        ViewModel.SelectSectionCommand.Execute(item);
     }
 
     private void InitializeChildPartitions()

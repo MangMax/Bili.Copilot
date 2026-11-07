@@ -52,13 +52,7 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (Selector.SelectedItem is null)
-        {
-            return;
-        }
-
-        var item = Selector.SelectedItem as IHistorySectionDetailViewModel;
-        if (item is not null)
+        if (Selector.SelectedItem is IHistorySectionDetailViewModel item)
         {
             ViewModel.SelectSectionCommand.Execute(item);
         }

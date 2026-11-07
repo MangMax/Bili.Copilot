@@ -46,13 +46,7 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (Selector.SelectedItem is null)
-        {
-            return;
-        }
-
-        var item = Selector.SelectedItem as UserMomentDetailViewModel;
-        if (item is not null && item != ViewModel.SelectedSection)
+        if (Selector.SelectedItem is UserMomentDetailViewModel item && item != ViewModel.SelectedSection)
         {
             ViewModel.SelectSectionCommand.Execute(item);
         }

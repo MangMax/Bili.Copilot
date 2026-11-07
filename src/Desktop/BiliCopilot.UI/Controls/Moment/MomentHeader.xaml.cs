@@ -50,13 +50,7 @@ public sealed partial class MomentHeader : MomentHeaderBase
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (Selector.SelectedItem is null)
-        {
-            return;
-        }
-
-        var item = Selector.SelectedItem as IMomentSectionDetailViewModel;
-        if (item is not null && item != ViewModel.SelectedSection)
+        if (Selector.SelectedItem is IMomentSectionDetailViewModel item && item != ViewModel.SelectedSection)
         {
             ViewModel.SelectSectionCommand.Execute(item);
         }

@@ -94,3 +94,6 @@ OverflowArrowsScrollWithoutChangingSelectionAndDisappearWhenItemsFit 覆盖箭�
 开发版 2.2611.7.8 已签名并原位安装，升级前记录的 304 个数据文件均保留。真实应用 150% DPI 下确认设置页应用/AI 服务切换及服务列表加载、用户空间视频/综合切换，截图中滑块与内容一致；视频和文章子分区也执行了选择操作。
 直播进入“网游”分区后进程退出，本轮验收不通过。日志包含直播接口返回无效列表及较早的封面模板异常，因果关系待定位；没有据此添加兜底代码。PGC、历史搜索、窄宽度和高对比度尚未完成。
 本机截图：.t3/artifacts/tabs-rollout-settings-settled.png、tabs-rollout-space-settled.png、tabs-rollout-article.png。
+
+扩展后代码复审：移除视频分区两项未使用 XAML 命名空间；七处选择处理合并重复判空/类型转换，PGC 仅对有效分区执行命令；设置页引用顺序整理。迁移页面中未再发现旧 SelectorBar 事件签名或直接 Items 操作。保留有回归依据的卸载、挂载代数和动画中断保护，无新增异常兜底或警告抑制。
+清理后 Debug/x64 默认阻断分析器构建为 0 warnings/errors，11 项控件回归通过。此次没有重新打包安装；原生证据仍对应 2.2611.7.8。直播退出由 #170/#171 调查修复，在问题解决前不能给出完整验收通过结论。
