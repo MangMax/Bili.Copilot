@@ -48,7 +48,7 @@ public sealed class PinItem
     public PinContentType Type { get; set; }
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is PinItem item && Id == item.Id;
+    public override bool Equals(object? obj) => obj is PinItem item && Id == item.Id;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Id);
