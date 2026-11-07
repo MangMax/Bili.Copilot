@@ -7,6 +7,7 @@
     xmlns:community="using:CommunityToolkit.WinUI.Controls"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater"
@@ -23,6 +24,14 @@
             Subtitle="{x:Bind ViewModel.PublishRelativeTime, Mode=OneWay}"
             ToggleFollowCommand="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
             UserName="{x:Bind ViewModel.UpName, Mode=OneWay}" />
+        <components:CollaboratorListControl
+            CollapseText="{ext:Locale Name=CollaboratorListCollapse}"
+            ExpandText="{ext:Locale Name=CollaboratorListExpand}"
+            Header="{ext:Locale Name=CreativeTeam}"
+            ItemsSource="{x:Bind ViewModel.Collaborators, Mode=OneWay}"
+            ScrollLeftText="{ext:Locale Name=CollaboratorListScrollLeft}"
+            ScrollRightText="{ext:Locale Name=CollaboratorListScrollRight}"
+            Visibility="{x:Bind ViewModel.HasCollaborators, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
         <local:VideoStatControl Margin="8,0,0,8" ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         <repeater:AppRepeater x:Name="TagRepeater" ItemsSource="{x:Bind ViewModel.Tags, Mode=OneWay}">
             <repeater:AppRepeater.ItemTemplate>

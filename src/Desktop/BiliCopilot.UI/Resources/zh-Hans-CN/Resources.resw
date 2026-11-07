@@ -3333,6 +3333,9 @@
   <data name="CollaborativeSubmission" xml:space="preserve">
     <value>联合投稿</value>
   </data>
+  <data name="CreativeTeam" xml:space="preserve">
+    <value>创作团队</value>
+  </data>
   <data name="ChargingExclusive" xml:space="preserve">
     <value>充电专属</value>
   </data>
@@ -3344,6 +3347,18 @@
   </data>
   <data name="AutoCompactOverlayRatioDescription" xml:space="preserve">
     <value>进入小窗或视频比例变化时自动调整尺寸。关闭后保留手动尺寸，不影响小窗位置记忆。对所有播放窗口生效。</value>
+  </data>
+  <data name="CollaboratorListExpand" xml:space="preserve">
+    <value>展开</value>
+  </data>
+  <data name="CollaboratorListCollapse" xml:space="preserve">
+    <value>收起</value>
+  </data>
+  <data name="CollaboratorListScrollLeft" xml:space="preserve">
+    <value>向左查看合作者</value>
+  </data>
+  <data name="CollaboratorListScrollRight" xml:space="preserve">
+    <value>向右查看合作者</value>
   </data>
   <data name="ExpandMomentText" xml:space="preserve"><value>展开全文</value></data>
   <data name="CollapseMomentText" xml:space="preserve"><value>收起全文</value></data>

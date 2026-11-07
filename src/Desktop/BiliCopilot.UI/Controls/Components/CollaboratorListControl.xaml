@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="BiliCopilot.UI.Controls.Components.CollaboratorListControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:community="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="CollaboratorItemTemplate" x:DataType="items:VideoCollaboratorViewModel">
+            <Button
+                Width="160"
+                Padding="4"
+                HorizontalContentAlignment="Stretch"
+                AutomationProperties.AutomationId="{x:Bind Id, Mode=OneTime}"
+                AutomationProperties.HelpText="{x:Bind Role, Mode=OneTime}"
+                AutomationProperties.Name="{x:Bind Name, Mode=OneTime}"
+                Background="Transparent"
+                BorderThickness="0"
+                Command="{x:Bind OpenUserSpaceCommand, Mode=OneWay}"
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                ToolTipService.ToolTip="{x:Bind Name, Mode=OneTime}">
+                <Grid ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <controls:BasicCoverImage
+                        Width="32"
+                        Height="32"
+                        CornerRadius="16"
+                        DecodeWidth="64"
+                        Source="{x:Bind Avatar, Mode=OneTime}" />
+                    <StackPanel
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Spacing="2">
+                        <base:TrimTextBlock
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            MaxLines="1"
+                            Text="{x:Bind Name, Mode=OneTime}" />
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            MaxLines="1"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind Role, Mode=OneTime}"
+                            TextTrimming="CharacterEllipsis"
+                            Visibility="{x:Bind Role, Mode=OneTime, Converter={StaticResource ObjectToVisibilityConverter}}" />
+                    </StackPanel>
+                </Grid>
+            </Button>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Grid Margin="4,0,0,6" ColumnSpacing="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                AutomationProperties.AutomationId="CollaboratorListHeader"
+                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="{x:Bind Header, Mode=OneWay}"
+                VerticalAlignment="Center"
+                Visibility="{x:Bind Header, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
+            <Button
+                x:Name="ExpandButton"
+                Grid.Column="1"
+                Margin="4,0,0,0"
+                Padding="4,2"
+                AutomationProperties.AutomationId="CollaboratorExpandButton"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="OnExpandClick"
+                CornerRadius="{StaticResource ControlCornerRadius}">
+                <StackPanel Orientation="Horizontal" Spacing="2">
+                    <TextBlock
+                        x:Name="ExpandLabel"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <ic:SymbolIcon
+                        x:Name="ExpandIcon"
+                        FontSize="10"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Symbol="ChevronDown" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Grid
+            x:Name="ListViewport"
+            VerticalAlignment="Top"
+            SizeChanged="OnListViewportSizeChanged">
+            <Grid
+                x:Name="HorizontalHost"
+                VerticalAlignment="Top">
+                <ScrollViewer
+                    x:Name="Scroller"
+                    HorizontalScrollBarVisibility="Hidden"
+                    HorizontalScrollMode="Enabled"
+                    SizeChanged="OnScrollerSizeChanged"
+                    VerticalScrollBarVisibility="Disabled"
+                    VerticalScrollMode="Disabled"
+                    ViewChanged="OnScrollerViewChanged">
+                    <ItemsControl ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" ItemTemplate="{StaticResource CollaboratorItemTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+                <Button
+                    x:Name="ScrollLeftButton"
+                    Width="16"
+                    Height="38"
+                    Margin="1"
+                    Padding="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="CollaboratorScrollLeft"
+                    AutomationProperties.Name="{x:Bind ScrollLeftText, Mode=OneWay}"
+                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}"
+                    Click="OnScrollLeftClick"
+                    CornerRadius="{StaticResource ControlCornerRadius}"
+                    Foreground="{ThemeResource ControlStrongFillColorDefaultBrush}"
+                    ToolTipService.ToolTip="{x:Bind ScrollLeftText, Mode=OneWay}"
+                    Visibility="Collapsed">
+                    <FontIcon
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        FontSize="8"
+                        Glyph="&#xEDD9;"
+                        MirroredWhenRightToLeft="True" />
+                </Button>
+                <Button
+                    x:Name="ScrollRightButton"
+                    Width="16"
+                    Height="38"
+                    Margin="1"
+                    Padding="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="CollaboratorScrollRight"
+                    AutomationProperties.Name="{x:Bind ScrollRightText, Mode=OneWay}"
+                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}"
+                    Click="OnScrollRightClick"
+                    CornerRadius="{StaticResource ControlCornerRadius}"
+                    Foreground="{ThemeResource ControlStrongFillColorDefaultBrush}"
+                    ToolTipService.ToolTip="{x:Bind ScrollRightText, Mode=OneWay}"
+                    Visibility="Collapsed">
+                    <FontIcon
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        FontSize="8"
+                        Glyph="&#xEDDA;"
+                        MirroredWhenRightToLeft="True" />
+                </Button>
+            </Grid>
+
+            <repeater:AppRepeater
+                x:Name="ExpandedHost"
+                VerticalAlignment="Top"
+                ItemTemplate="{StaticResource CollaboratorItemTemplate}"
+                ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
+                Visibility="Collapsed">
+                <repeater:AppRepeater.Layout>
+                    <community:WrapLayout HorizontalSpacing="8" VerticalSpacing="2" />
+                </repeater:AppRepeater.Layout>
+            </repeater:AppRepeater>
+        </Grid>
+    </StackPanel>
+</UserControl>
