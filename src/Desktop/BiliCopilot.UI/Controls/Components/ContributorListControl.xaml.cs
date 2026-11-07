@@ -185,17 +185,12 @@ public sealed partial class ContributorListControl : UserControl
         ExpandIcon.Symbol = _isExpanded ? FluentIcons.Common.Symbol.ChevronUp : FluentIcons.Common.Symbol.ChevronDown;
         RefreshExpandLabel();
 
-        // 先测出目标高度，再回到当前高度做动画，避免展开瞬间内容跳动.
-        ListViewport.Height = double.NaN;
-        ListViewport.UpdateLayout();
-        var toHeight = ListViewport.ActualHeight;
-        incoming.Opacity = 1;
-        if (!_isExpanded)
-        {
-            UpdateScrollButtons();
-        }
+        // 保持当前高度并直接测量目标高度，避免测量时出现一帧完整高度的闪烁.
+        ListViewport.Height = fromHeight;
+        incoming.Measure(new Size(ListViewport.ActualWidth, double.PositiveInfinity));
+        var toHeight = incoming.DesiredSize.Height;
 
-        if (!canAnimate || Math.Abs(toHeight - fromHeight) < 0.5)
+        if (!canAnimate || toHeight <= 0 || Math.Abs(toHeight - fromHeight) < 0.5)
         {
             ListViewport.Height = double.NaN;
             if (!_isExpanded)
@@ -205,9 +200,6 @@ public sealed partial class ContributorListControl : UserControl
 
             return;
         }
-
-        ListViewport.Height = fromHeight;
-        incoming.Opacity = 0;
 
         var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
         var storyboard = new Storyboard();
@@ -224,17 +216,6 @@ public sealed partial class ContributorListControl : UserControl
         Storyboard.SetTargetProperty(heightAnimation, "Height");
         storyboard.Children.Add(heightAnimation);
 
-        var opacityAnimation = new DoubleAnimation
-        {
-            From = 0,
-            To = 1,
-            Duration = TransitionDuration,
-            EasingFunction = ease,
-        };
-        Storyboard.SetTarget(opacityAnimation, incoming);
-        Storyboard.SetTargetProperty(opacityAnimation, "Opacity");
-        storyboard.Children.Add(opacityAnimation);
-
         storyboard.Completed += (_, _) =>
         {
             if (!ReferenceEquals(_transition, storyboard))
@@ -243,7 +224,6 @@ public sealed partial class ContributorListControl : UserControl
             }
 
             ListViewport.Height = double.NaN;
-            incoming.Opacity = 1;
             if (!_isExpanded)
             {
                 UpdateScrollButtons();
