@@ -3333,6 +3333,9 @@
   <data name="CollaborativeSubmission" xml:space="preserve">
     <value>联合投稿</value>
   </data>
+  <data name="CreativeTeam" xml:space="preserve">
+    <value>创作团队</value>
+  </data>
   <data name="ChargingExclusive" xml:space="preserve">
     <value>充电专属</value>
   </data>

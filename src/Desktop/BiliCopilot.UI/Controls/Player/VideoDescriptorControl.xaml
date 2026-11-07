@@ -27,7 +27,7 @@
         <components:ContributorListControl
             CollapseText="{ext:Locale Name=CollaboratorListCollapse}"
             ExpandText="{ext:Locale Name=CollaboratorListExpand}"
-            Header="{ext:Locale Name=CollaborativeSubmission}"
+            Header="{ext:Locale Name=CreativeTeam}"
             ItemsSource="{x:Bind ViewModel.Contributors, Mode=OneWay}"
             ScrollLeftText="{ext:Locale Name=CollaboratorListScrollLeft}"
             ScrollRightText="{ext:Locale Name=CollaboratorListScrollRight}"
