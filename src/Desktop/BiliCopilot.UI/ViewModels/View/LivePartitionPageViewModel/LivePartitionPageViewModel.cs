@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
@@ -161,8 +161,7 @@ public sealed partial class LivePartitionPageViewModel : LayoutPageViewModelBase
         if (_partitionCache.TryGetValue(vm, out var detail))
         {
             SelectedDetail = detail;
-            // 复用的详情页如果没有可用子分区（上次加载失败或该分区没有标签），
-            // 重新进入该子分区时必须重试，而不是把半初始化的状态继续交给选择器。
+            // 复用的详情页没有可用子分区时（上次失败或该分区无标签），重新进入必须重试.
             detail.EnsureInitializedOrRetry();
         }
         else

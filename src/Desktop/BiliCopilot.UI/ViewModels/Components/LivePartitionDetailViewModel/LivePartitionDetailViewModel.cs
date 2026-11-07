@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
@@ -62,13 +62,10 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
             }
 
             TryAddRooms(lives, CurrentTag);
-            IsLoadFailed = false;
         }
         catch (Exception ex)
         {
-            // 失败收尾：Children、CurrentTag、Rooms 一起回到「没有可用子分区」的状态，
-            // 选择器据此收起，而不是拿到空列表和失效选中项。
-            IsLoadFailed = true;
+            // 失败收尾：三处状态一起清空，选择器据此收起，而不是拿到空列表和失效选中项.
             Children = null;
             CurrentTag = null;
             ClearRooms();
@@ -148,8 +145,7 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
         _pendingRoomTag = target;
         if (_roomLoadInProgress)
         {
-            // 已有请求在飞行：它结束后会为最新选择再发起一次，
-            // 保证切换标签后一定有一次对应请求，而不是静默丢掉最后的选择。
+            // 已有请求在飞行：它结束后会为最新选择补发，避免静默丢掉最后的选择.
             return;
         }
 

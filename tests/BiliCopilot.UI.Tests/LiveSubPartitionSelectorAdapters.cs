@@ -41,8 +41,6 @@ namespace BiliCopilot.UI.Controls.Components
             SelectedItem = selectedItem;
         }
 
-        public void Select(object? selectedItem) => SelectedItem = selectedItem;
-
         public void RaiseSelectionChanged() => SelectionChanged?.Invoke(this, EventArgs.Empty);
     }
 }
@@ -54,9 +52,9 @@ namespace BiliCopilot.UI.Controls.LivePartition
     /// </summary>
     public abstract class LiveSubPartitionControlBase
     {
-        private LivePartitionDetailViewModel? _viewModel;
+        private LivePartitionDetailViewModel _viewModel = null!;
 
-        public LivePartitionDetailViewModel? ViewModel
+        public LivePartitionDetailViewModel ViewModel
         {
             get => _viewModel;
             set
@@ -66,8 +64,6 @@ namespace BiliCopilot.UI.Controls.LivePartition
                 OnViewModelChanged(previous, value);
             }
         }
-
-        public Visibility Visibility { get; set; } = Visibility.Visible;
 
         public void LoadForTest() => OnControlLoaded();
 

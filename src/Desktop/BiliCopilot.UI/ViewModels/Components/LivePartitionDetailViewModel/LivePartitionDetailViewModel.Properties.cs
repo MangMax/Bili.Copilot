@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -21,8 +21,7 @@ public sealed partial class LivePartitionDetailViewModel
 
     private bool _preventLoadMore;
 
-    // 分页请求的「最后一次选择」：切换子分区时旧请求可能仍在飞行，
-    // 它结束后必须再为最后选择发起一次请求。
+    // 切换子分区时旧请求可能仍在飞行，它结束后必须为最后选择补发一次请求.
     private LiveTag? _pendingRoomTag;
 
     private bool _roomLoadInProgress;
@@ -42,12 +41,6 @@ public sealed partial class LivePartitionDetailViewModel
 
     [ObservableProperty]
     public partial bool IsLiveLoading { get; set; }
-
-    /// <summary>
-    /// 分区列表加载失败，可通过 <see cref="RefreshCommand"/> 重试.
-    /// </summary>
-    [ObservableProperty]
-    public partial bool IsLoadFailed { get; set; }
 
     [ObservableProperty]
     public partial LiveTag CurrentTag { get; set; }

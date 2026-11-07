@@ -67,10 +67,9 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
 
     private void InitializeTags()
     {
-        if (ViewModel?.AvailableTags is not { } children)
+        if (ViewModel.AvailableTags is not { } children)
         {
-            // 没有子分区（首次加载失败或该分区没有标签）时收起选择器：
-            // 空列表加上失效选中项不能交给 SlidingTabBar。
+            // 没有子分区时收起选择器：空列表加失效选中项不能交给 SlidingTabBar.
             Selector.Visibility = Visibility.Collapsed;
             return;
         }

@@ -67,6 +67,30 @@ public sealed class LiveSubPartitionSelectorTests : IDisposable
         Assert.Equal("t1", ((LiveTag)delivery.Selected!).Id);
     }
 
+    [Fact]
+    public async Task SelectingATabSwitchesTheChildPartition()
+    {
+        var service = new LiveDiscoveryFake
+        {
+            List = (tag, pageNumber) => Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
+                tag is null
+                    ? ([LiveDiscoveryFake.Room("1")], [LiveDiscoveryFake.Tag("t1"), LiveDiscoveryFake.Tag("t2")], 1)
+                    : (tag.Id == "t1" ? [LiveDiscoveryFake.Room("t1-room")] : [LiveDiscoveryFake.Room("t2-room")], null, pageNumber + 1)),
+        };
+        var detail = Detail(service);
+        var selector = new LiveSubPartitionSelector { ViewModel = detail };
+        selector.LoadForTest();
+        await detail.InitializeCommand.ExecuteAsync(null);
+
+        // 用户在标签栏里选中另一个子分区：选择器只把用户选择转发给详情视图模型.
+        selector.TabBar.SelectedItem = detail.Children![1];
+        selector.TabBar.RaiseSelectionChanged();
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal("t2", detail.CurrentTag?.Id);
+        Assert.Equal("t2-room", Assert.Single(detail.Rooms).Data.Identifier.Id);
+    }
+
     private static LivePartitionDetailViewModel Detail(LiveDiscoveryFake service)
         => new(new PartitionViewModel(new Partition("9", "网游")), service);
 }
