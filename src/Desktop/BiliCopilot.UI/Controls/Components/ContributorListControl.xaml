@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:community="using:CommunityToolkit.WinUI.Controls"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
@@ -25,8 +26,8 @@
             <repeater:AppRepeater.ItemTemplate>
                 <DataTemplate x:DataType="items:VideoContributorViewModel">
                     <Button
+                        Width="160"
                         Padding="4"
-                        HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch"
                         AutomationProperties.AutomationId="{x:Bind Id, Mode=OneTime}"
                         AutomationProperties.HelpText="{x:Bind Role, Mode=OneTime}"
@@ -69,7 +70,7 @@
                 </DataTemplate>
             </repeater:AppRepeater.ItemTemplate>
             <repeater:AppRepeater.Layout>
-                <StackLayout Spacing="2" />
+                <community:WrapLayout HorizontalSpacing="8" VerticalSpacing="2" />
             </repeater:AppRepeater.Layout>
         </repeater:AppRepeater>
     </StackPanel>
