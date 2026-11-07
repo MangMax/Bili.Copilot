@@ -120,6 +120,21 @@ public sealed class LiveMediaSourceResolverTests
     }
 
     [Fact]
+    public async Task TryPrepare_ReportsFailureKindWithoutThrowing()
+    {
+        var service = CreateService();
+        ((LivePlayerService)(object)service).Fetch = () => Task.FromException<LiveMediaInformation>(
+            new HttpRequestException("403", null, HttpStatusCode.Forbidden));
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
+
+        var prepared = await resolver.TryPrepareAsync();
+
+        Assert.False(prepared);
+        Assert.Equal(LiveFailureKind.AuthenticationFailed, resolver.FailureKind);
+    }
+
+    [Fact]
     public async Task GetSource_MapsTransportErrorsToFailureKind()
     {
         var service = CreateService();

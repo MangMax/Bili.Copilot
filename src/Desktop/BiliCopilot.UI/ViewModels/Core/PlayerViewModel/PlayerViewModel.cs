@@ -352,6 +352,25 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                     var resolver = this.Get<LiveMediaSourceResolver>();
                     resolver.Initialize(_snapshot);
                     _sourceResolver = resolver;
+
+                    // 播放器内核会把取源异常吞成日志：先预取地址，才能把可读原因交给用户。
+                    if (!await resolver.TryPrepareAsync())
+                    {
+                        if (Window.IsClosed)
+                        {
+                            return;
+                        }
+
+                        ShowLivePlaybackFailure(resolver.FailureKind);
+                        IsConnecting = false;
+                        CheckBlackBackgroundVisible();
+                        return;
+                    }
+
+                    if (Window.IsClosed)
+                    {
+                        return;
+                    }
                 }
 
                 break;

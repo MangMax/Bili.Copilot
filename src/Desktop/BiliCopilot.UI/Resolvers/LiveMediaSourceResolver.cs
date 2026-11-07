@@ -42,6 +42,11 @@ internal sealed partial class LiveMediaSourceResolver(
     private int _sourceGeneration;
 
     /// <summary>
+    /// Gets 最近一次预取失败的原因。
+    /// </summary>
+    internal LiveFailureKind FailureKind { get; private set; }
+
+    /// <summary>
     /// 绑定本次观看的媒体快照，并让上一房间的进行中请求失效。
     /// </summary>
     /// <param name="snapshot">直播媒体快照.</param>
@@ -121,6 +126,30 @@ internal sealed partial class LiveMediaSourceResolver(
     public override IMpvMediaSourceResolver Clone() => throw new NotImplementedException();
 
     /// <summary>
+    /// 在创建播放器之前预取地址：播放器内核会把取源异常吞成一条日志，
+    /// 只有在这里拦住才能把可读原因交给用户。
+    /// </summary>
+    /// <returns>地址可用时为 true；失败原因见 <see cref="FailureKind"/>.</returns>
+    internal async Task<bool> TryPrepareAsync()
+    {
+        try
+        {
+            await LoadMediaInfoAsync();
+            FailureKind = LiveFailureKind.None;
+            return true;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            FailureKind = LiveFailureClassifier.Classify(ex);
+            return false;
+        }
+    }
+
+    /// <summary>
     /// 读取直播间详情与播放地址；同一房间只请求一次，失败后允许重试。
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
@@ -140,9 +169,7 @@ internal sealed partial class LiveMediaSourceResolver(
         _loadTask ??= LoadPlaybackInfoAsync();
         try
         {
-#pragma warning disable VSTHRD003 // 解析器持有该地址请求，等待它不会阻塞 UI 线程。
             await _loadTask;
-#pragma warning restore VSTHRD003
         }
         catch
         {
