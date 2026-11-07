@@ -44,6 +44,8 @@ if __name__ == "__main__":
     parser.add_argument("results", nargs="+")
     parser.add_argument("--expect", choices=["progressing", "stalled", "normal-end", "paused", "short-video"])
     parser.add_argument("--output")
+    parser.add_argument("--expect-no-reopen", action="store_true", help="Normal playback must not trigger the experimental recovery")
+    parser.add_argument("--expect-exhausted", action="store_true", help="Two attempts, then exactly one bounded failure marker")
     args = parser.parse_args()
     summaries = [summarize(path) for path in args.results]
     text = json.dumps(summaries, indent=2)
@@ -51,6 +53,13 @@ if __name__ == "__main__":
     if args.output:
         Path(args.output).write_text(text + "\n", encoding="utf-8")
     for summary in summaries:
+        reopens = [a for a in summary["actions"] if a["action"] == "automatic reopen"]
+        failures = [a for a in summary["actions"] if a["action"] == "automatic recovery exhausted"]
+        if args.expect_no_reopen:
+            assert not reopens and not failures, "FAIL: normal playback triggered automatic recovery"
+        if args.expect_exhausted:
+            assert len(reopens) == 2 and len(failures) == 1, "FAIL: recovery was not bounded to two attempts"
+            assert failures[0]["t"] > reopens[-1]["t"], "FAIL: failure marker preceded final attempt"
         if args.expect == "progressing":
             assert summary["late_unique_frame_checksums"] >= 30, "FAIL: video did not produce 30 distinct late frames"
             assert summary["max_audio_pts"] >= 20, "FAIL: audio did not progress"

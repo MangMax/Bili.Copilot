@@ -94,9 +94,9 @@ class Mpv:
         self.lib.mpv_terminate_destroy(self.handle)
 
 
-def generate(ffmpeg, directory, video_seconds):
+def generate(ffmpeg, directory, video_seconds, video_rate=30):
     for name, source, codec in [
-        ("video.mp4", "testsrc2=size=320x180:rate=30", ["-an", "-c:v", "libx264", "-preset", "ultrafast", "-crf", "20", "-g", "30", "-bf", "0"]),
+        ("video.mp4", f"testsrc2=size=320x180:rate={video_rate}", ["-an", "-c:v", "libx264", "-preset", "ultrafast", "-crf", "20", "-g", "30", "-bf", "0"]),
         ("audio.m4a", "sine=frequency=440:sample_rate=48000", ["-vn", "-c:a", "aac", "-b:a", "128k"]),
     ]:
         path = directory / name
@@ -108,7 +108,7 @@ def generate(ffmpeg, directory, video_seconds):
 def run(args):
     out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
-    generate(args.ffmpeg, out, args.video_seconds)
+    generate(args.ffmpeg, out, args.video_seconds, args.video_rate)
     media = {"/video.mp4": (out / "video.mp4").read_bytes(), "/audio.m4a": (out / "audio.m4a").read_bytes()}
     cutoff = len(media["/video.mp4"]) // 3 + 17  # deliberately inside a packet
     started = time.monotonic()
@@ -176,6 +176,10 @@ def run(args):
                 "effective": {key: player.get("options/" + key) for key in ["curl-enabled", "curl-max-retries", "curl-http-version", "demuxer-seekable-cache", "demuxer-max-bytes", "demuxer-readahead-secs", "stream-lavf-o"]}}
     samples, events, actions = [], [], []
     did_action = False
+    attempts = 0
+    next_attempt = None
+    recovery_position = None
+    failed = False
     try:
         player.command("loadfile", base + "/video.mp4")
         while time.monotonic() - started < args.seconds:
@@ -197,8 +201,35 @@ def run(args):
                 did_action = True
             for event in player.events():
                 events.append({"t": round(now, 3), **event})
-            samples.append({"t": round(now, 3), **{key: player.get(key) for key in
-                ["time-pos", "video-pts", "audio-pts", "eof-reached", "pause", "paused-for-cache", "duration", "demuxer-cache-state"]}})
+            sample = {"t": round(now, 3), **{key: player.get(key) for key in
+                ["time-pos", "video-pts", "audio-pts", "eof-reached", "pause", "paused-for-cache", "duration", "demuxer-cache-state", "estimated-vf-fps"]}}
+            samples.append(sample)
+            if args.auto_reopen and not failed:
+                cache = sample.get("demuxer-cache-state") or {}
+                ranges = cache.get("seekable-ranges") or []
+                end = max((r["end"] for r in ranges), default=None)
+                position, duration = sample["time-pos"], sample["duration"]
+                playing = sample["pause"] == "no" and sample["paused-for-cache"] == "no" and sample["eof-reached"] == "no"
+                premature = (playing and end is not None and position is not None and duration is not None
+                             and cache.get("eof-cached") and cache.get("fw-bytes") == 0
+                             and duration - end > 2 and position > end + 0.5 and position < duration - 2)
+                healthy = end is not None and duration is not None and end >= duration - 2
+                if healthy:
+                    next_attempt = None
+                # A failed reopen can have no ranges at all. A deadline belongs only
+                # to an already admitted recovery, never to ordinary playback.
+                due = next_attempt is not None and now >= next_attempt and sample["pause"] == "no"
+                if (premature and next_attempt is None) or due:
+                    if attempts == 2:
+                        failed = True
+                        actions.append({"t": round(now, 3), "action": "automatic recovery exhausted"})
+                    else:
+                        recovery_position = position if position is not None else recovery_position
+                        attempts += 1
+                        actions.append({"t": round(now, 3), "action": "automatic reopen", "attempt": attempts,
+                                        "target": recovery_position, "cache_end": end, "duration": duration})
+                        player.command("loadfile", base + "/video.mp4", "replace", "-1", f"start={recovery_position}")
+                        next_attempt = now + 5
             time.sleep(0.1)
     finally:
         player.close()
@@ -218,6 +249,8 @@ if __name__ == "__main__":
     parser.add_argument("--scenario", choices=["control", "transient", "exhaust"], default="exhaust")
     parser.add_argument("--seconds", type=float, default=22)
     parser.add_argument("--video-seconds", type=float, default=24, help="Use a fresh output directory when changing media duration")
+    parser.add_argument("--video-rate", default="30", help="Generated video rate; use a fresh output directory")
+    parser.add_argument("--auto-reopen", action="store_true", help="Experimental duration/cache predicate, not production policy")
     parser.add_argument("--release-at", type=float, default=12)
     parser.add_argument("--action-at", type=float, default=14)
     parser.add_argument("--action", choices=["none", "seek", "seek-no-cache", "reload", "pause"], default="none")
