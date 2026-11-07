@@ -3386,6 +3386,11 @@
   <data name="LiveRoomNotLiving" xml:space="preserve"><value>未开播</value></data>
   <data name="LiveQualityPlaceholder" xml:space="preserve"><value>画质切换将在后续版本提供</value></data>
   <data name="LiveLinePlaceholder" xml:space="preserve"><value>线路切换将在后续版本提供</value></data>
+  <data name="LiveDanmakuConnecting" xml:space="preserve"><value>弹幕连接中</value></data>
+  <data name="LiveDanmakuConnected" xml:space="preserve"><value>弹幕已连接</value></data>
+  <data name="LiveDanmakuReconnecting" xml:space="preserve"><value>弹幕重连中</value></data>
+  <data name="LiveDanmakuClosed" xml:space="preserve"><value>弹幕已断开</value></data>
+  <data name="LiveDanmakuCountersTemplate" xml:space="preserve"><value>弹幕 收 {0} · 上屏 {1} · 合并 {2} · 屏蔽 {3} · 限速丢 {4} · 队满丢 {5} · 超时丢 {6}</value></data>
   <data name="PlaybackUnavailableTitle" xml:space="preserve"><value>无法播放该集</value></data>
   <data name="PlaybackLoginRequired" xml:space="preserve"><value>需要登录后才能观看这一集</value></data>
   <data name="PlaybackNeedVip" xml:space="preserve"><value>该集需要大会员或购买后才能观看</value></data>

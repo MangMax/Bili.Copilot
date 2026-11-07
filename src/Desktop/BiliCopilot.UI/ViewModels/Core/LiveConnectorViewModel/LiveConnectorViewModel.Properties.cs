@@ -85,6 +85,18 @@ public sealed partial class LiveConnectorViewModel
     [ObservableProperty]
     public partial string? LineText { get; set; }
 
+    /// <summary>
+    /// 弹幕连接状态文案（连接中 / 已连接 / 重连中 / 已断开）.
+    /// </summary>
+    [ObservableProperty]
+    public partial string? DanmakuConnectionText { get; set; }
+
+    /// <summary>
+    /// 弹幕准入计数（收到 / 上屏 / 合并 / 屏蔽 / 限速丢 / 队满丢 / 超时丢）.
+    /// </summary>
+    [ObservableProperty]
+    public partial string? DanmakuCountersText { get; set; }
+
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
 
