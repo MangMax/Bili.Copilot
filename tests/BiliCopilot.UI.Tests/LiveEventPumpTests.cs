@@ -18,11 +18,14 @@ public sealed class LiveEventPumpTests
     public async Task Start_ConnectsOnceAndReportsConnected()
     {
         var session = new FakeLiveDanmakuSession("123");
+        // 连接必须被闸门挡住再放行：否则在核数较少的 CI 上，续体可能在断言前就跑完，
+        // "连接中"这一瞬时状态会变成竞态。
+        var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var service = new FakeLiveDanmakuService
         {
             ConnectOverride = async (_, _) =>
             {
-                await Task.Yield();
+                await gate.Task;
                 return session;
             },
         };
@@ -30,6 +33,7 @@ public sealed class LiveEventPumpTests
 
         var start = pump.StartAsync("123");
         Assert.Equal(LiveDanmakuConnectionState.Connecting, pump.State);
+        gate.SetResult();
         Assert.True(await start);
         Assert.Equal(1, service.ConnectCount);
         Assert.Equal("123", service.LastRoomId);
