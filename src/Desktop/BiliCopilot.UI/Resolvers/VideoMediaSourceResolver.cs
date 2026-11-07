@@ -1,6 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Extensions;
+using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -193,23 +194,10 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
             ?? videoSegments?.FirstOrDefault(p => p.Id == selectedFormat.Quality.ToString());
         var aSeg = audioSegments?.FirstOrDefault(p => p.Id == maxAudioQuality.ToString());
 
-        var videoUrl = vSeg?.BaseUrl;
-        var audioUrl = aSeg?.BaseUrl;
-
-        if (SettingsToolkit.ReadLocalSetting(SettingNames.PlayWithoutP2P, false))
-        {
-            if (vSeg?.BackupUrls is not null)
-            {
-                string[] videoUrls = [vSeg?.BaseUrl, .. vSeg?.BackupUrls];
-                videoUrl = Array.Find(videoUrls, p => !AppToolkit.IsP2PUrl(p)) ?? vSeg?.BaseUrl;
-            }
-
-            if (aSeg?.BackupUrls is not null)
-            {
-                string[] audioUrls = [aSeg?.BaseUrl, .. aSeg?.BackupUrls];
-                audioUrl = Array.Find(audioUrls, p => !AppToolkit.IsP2PUrl(p)) ?? aSeg?.BaseUrl;
-            }
-        }
+        var preference = PlaybackRouteSettings.ReadPreference();
+        var withoutP2P = SettingsToolkit.ReadLocalSetting(SettingNames.PlayWithoutP2P, false);
+        var videoUrl = PlaybackRouteSelector.Select(vSeg?.BaseUrl, vSeg?.BackupUrls, preference, withoutP2P);
+        var audioUrl = PlaybackRouteSelector.Select(aSeg?.BaseUrl, aSeg?.BackupUrls, preference, withoutP2P);
 
         SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedVideoQuality, selectedFormat.Quality);
         return (videoUrl, audioUrl);

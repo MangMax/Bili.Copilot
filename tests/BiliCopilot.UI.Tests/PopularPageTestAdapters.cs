@@ -150,6 +150,9 @@ namespace BiliCopilot.UI.Models
     public sealed class MediaSnapshot(VideoInformation video)
     {
         public VideoInformation Video { get; } = video;
+        public EpisodeInformation? Episode { get; set; }
+        public SeasonInformation? Season { get; set; }
+        public int? PreferQuality { get; set; }
         public List<MediaSnapshot> Playlist { get; set; } = new();
     }
 }
