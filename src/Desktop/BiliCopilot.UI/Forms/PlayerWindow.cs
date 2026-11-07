@@ -492,6 +492,18 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             return;
         }
 
+        RestoreOrdinaryGeometry();
+    }
+
+    private void RestoreOrdinaryGeometry()
+    {
+        // Restores the remembered ordinary geometry without the presenter-settle guard, so
+        // leaving compact overlay lands directly on the remembered size and position.
+        if (IsClosed || IsDisposed || _rootWindow.Presenter.Kind != AppWindowPresenterKind.Overlapped)
+        {
+            return;
+        }
+
         var lastPoint = GetSavedWindowPosition();
         var displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
             ?? DisplayArea.Primary;

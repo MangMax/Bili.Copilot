@@ -51,6 +51,37 @@ public sealed class CompactOverlayRatioTests
     }
 
     [Fact]
+    public void ImmediateFitAppliesTheKnownRatioBeforeTheCompactFlagIsSet()
+    {
+        var bounds = new RatioWindowBounds(100, 80, 640, 400);
+        using var session = CreateSession(() => bounds, value => bounds = value);
+        session.UpdateMedia(session.BeginMedia(), 9, 16);
+        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
+
+        // The presenter switch calls this in the same batch, before compact state settles.
+        session.ApplyNow();
+        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
+    }
+
+    [Fact]
+    public void ImmediateFitHonorsTheDisabledPreferenceAndAnUnknownRatio()
+    {
+        var bounds = new RatioWindowBounds(100, 80, 640, 400);
+        var disabled = new CompactOverlayRatioPreference(() => false, _ => { });
+        using var optedOut = new CompactOverlayRatioSession(disabled, () => bounds,
+            () => new(0, 0, 1920, 1080), value => bounds = value);
+        optedOut.UpdateMedia(optedOut.BeginMedia(), 9, 16);
+        optedOut.ApplyNow();
+        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
+
+        var enabled = new CompactOverlayRatioPreference(() => true, _ => { });
+        using var unknownRatio = new CompactOverlayRatioSession(enabled, () => bounds,
+            () => new(0, 0, 1920, 1080), value => bounds = value);
+        unknownRatio.ApplyNow();
+        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
+    }
+
+    [Fact]
     public void FittingKeepsAHalfOffscreenAnchorInsteadOfPullingTheWindowInside()
     {
         var bounds = new RatioWindowBounds(1900, 1000, 640, 400);

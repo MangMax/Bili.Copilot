@@ -100,11 +100,20 @@ internal sealed class CompactOverlayRatioSession : IDisposable
         _preference.Changed -= OnPreferenceChanged;
     }
 
+    /// <summary>
+    /// Applies the known ratio immediately, before the compact flag is set and while the
+    /// presenter is still settling. The presenter switch uses this so a portrait window
+    /// never shows the presenter's default landscape size first.
+    /// </summary>
+    public void ApplyNow() => AdaptCore(force: true);
+
     private void OnPreferenceChanged(object? sender, EventArgs args) => Adapt();
 
-    private void Adapt()
+    private void Adapt() => AdaptCore(force: false);
+
+    private void AdaptCore(bool force)
     {
-        if (_closed || !_compact || !_preference.Enabled || _ratio <= 0)
+        if (_closed || (!force && !_compact) || !_preference.Enabled || _ratio <= 0)
         {
             return;
         }

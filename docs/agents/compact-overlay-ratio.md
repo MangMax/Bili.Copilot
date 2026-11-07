@@ -93,9 +93,20 @@ pre-fitting landscape width used to leave a gap as wide as the size difference.
 
 Entering compact overlay repositions the window in the same synchronous batch as
 the presenter switch, so the compact window never appears at the ordinary window's
-location and then jumps to the remembered one. The placement session re-checks the
-position after the presenter settles, since crossing monitors can change the
-OS-constrained size.
+location and then jumps to the remembered one. In that same batch, once the
+presenter reports compact, the known ratio is fitted immediately
+(`CompactOverlayRatioSession.ApplyNow`) instead of waiting for the 500 ms settle;
+otherwise a portrait video would first show the presenter's default landscape
+mini size and then snap to portrait. The placement session re-checks the position
+after the presenter settles, since crossing monitors can change the OS-constrained
+size.
+
+Leaving compact overlay restores the remembered ordinary window geometry in the
+same batch as the presenter switch, using the existing #156 ordinary settings
+(`PlayerWindowPositionLeft/Top`, `PlayerWindowWidth/Height`, maximized state).
+A compact toggle therefore returns to exactly the size and place the ordinary
+window had before, instead of keeping the mini size or position. Ordinary settings
+are never written while compact, so the compact geometry cannot overwrite them.
 
 Presenter changes disable adaptation until the latest `PresenterChangeSession`
 settles. A superseded transition or closed window cannot apply geometry.

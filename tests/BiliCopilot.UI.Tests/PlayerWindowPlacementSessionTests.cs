@@ -128,6 +128,22 @@ public class PlayerWindowPlacementSessionTests
     }
 
     [Fact]
+    public async Task PresenterBatchRunsThePostSwitchHookBeforeTheSettleDelay()
+    {
+        var desktop = new Desktop { Saved = new(1800, 1000) };
+        var events = new List<string>();
+        var session = new PlayerWindowPlacementSession(desktop, () =>
+        {
+            events.Add("settle");
+            return Task.CompletedTask;
+        });
+        await session.ChangeAsync(WindowPlacementMode.CompactOverlay,
+            () => events.Add("presenter"),
+            () => events.Add("after"));
+        Assert.Equal(new[] { "presenter", "after", "settle" }, events);
+    }
+
+    [Fact]
     public async Task FullyHiddenPositionIsRecoveredWithCurrentSize()
     {
         var desktop = new Desktop { Saved = new(2300, 1400) };

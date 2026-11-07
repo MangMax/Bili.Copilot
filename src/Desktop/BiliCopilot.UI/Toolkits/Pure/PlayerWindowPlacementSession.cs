@@ -57,7 +57,17 @@ internal sealed class PlayerWindowPlacementSession(IPlayerWindowPlacement window
 
     public bool CanSaveOrdinaryWindow => !_closed && !IsChanging && _mode == WindowPlacementMode.Ordinary;
 
-    public async Task ChangeAsync(WindowPlacementMode mode, Action applyPresenter)
+    /// <summary>
+    /// Changes the window presenter and coordinates compact position with it.
+    /// </summary>
+    /// <param name="mode">The presenter mode being entered.</param>
+    /// <param name="applyPresenter">The presenter switch itself.</param>
+    /// <param name="afterPresenter">
+    /// Runs in the same synchronous batch as the presenter switch, before the settle delay.
+    /// Used to fit the video ratio or restore ordinary geometry while the switch is still
+    /// in flight, so nothing is briefly shown at the wrong size or place.
+    /// </param>
+    public async Task ChangeAsync(WindowPlacementMode mode, Action applyPresenter, Action? afterPresenter = null)
     {
         if (_closed)
         {
@@ -81,6 +91,7 @@ internal sealed class PlayerWindowPlacementSession(IPlayerWindowPlacement window
                 }
 
                 applyPresenter();
+                afterPresenter?.Invoke();
             });
 
             if (_closed || generation != _generation)
