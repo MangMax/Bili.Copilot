@@ -20,11 +20,14 @@
             Style="{StaticResource CaptionTextBlockStyle}"
             Text="{x:Bind Header, Mode=OneWay}"
             Visibility="{x:Bind Header, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
-        <repeater:AppRepeater ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
+        <repeater:AppRepeater
+            AutomationProperties.AutomationId="ContributorAvatarList"
+            ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
             <repeater:AppRepeater.ItemTemplate>
                 <DataTemplate x:DataType="items:VideoContributorViewModel">
                     <Button
                         Padding="4,2"
+                        AutomationProperties.AutomationId="{x:Bind Id, Mode=OneTime}"
                         AutomationProperties.Name="{x:Bind Name, Mode=OneTime}"
                         Background="Transparent"
                         BorderThickness="0"

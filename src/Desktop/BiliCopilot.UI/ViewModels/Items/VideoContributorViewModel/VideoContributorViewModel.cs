@@ -22,10 +22,16 @@ public sealed partial class VideoContributorViewModel : ViewModelBase<PublisherP
     public VideoContributorViewModel(PublisherProfile data)
         : base(data)
     {
+        Id = data.User.Id;
         Name = data.User.Name?.Trim() ?? string.Empty;
         Avatar = data.User.Avatar?.Uri;
         Role = string.IsNullOrWhiteSpace(data.Role) ? null : data.Role.Trim();
     }
+
+    /// <summary>
+    /// 用户 Id，用作列表条目的自动化标识.
+    /// </summary>
+    public string Id { get; }
 
     /// <summary>
     /// 用户名.
