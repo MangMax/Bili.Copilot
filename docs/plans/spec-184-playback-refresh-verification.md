@@ -118,3 +118,29 @@ package with the same identity. The installed app/data were left intact; no unin
 or package replacement was performed. Thus the actual refreshed button, accessibility,
 layout and full-app playback remain **not verified in a running application**.
 The XAML binding and analyzer/build succeeded; those do not substitute for UI acceptance.
+
+## Integration review follow-up
+
+Standards review found no documented hard violations. The suggested shared resolver
+refresh transaction is a P3 maintainability heuristic; the focused implementation
+keeps video/PGC request and entitlement paths separate rather than introducing a
+new abstraction in this repair.
+
+Spec review found a P1 missing UI integration: touch seek/volume still wrote directly
+to the client, bypassing refresh cancellation and ordering. The touch handlers now
+use ChangePositionAsync/ChangeVolumeAsync; touch preview pause joins the refresh
+queue, and double-tap/transport playback buttons use PlayPauseCommand. The post-seek
+resume checks the captured session and joins any admitted native refresh.
+
+Parent reran the refresh/routing/seek/speed/session selection after this wiring fix:
+125 passed, 0 failed, 0 skipped. TRX is retained outside the repo under
+spec-184-refresh/integration-verification/review-fix-regression.trx. These tests
+exercise production state/queue logic, not actual touch dispatch; the UI acceptance
+limitation above still applies. No new source-text assertion masquerades as a UI test.
+
+The parent Release/x64 observation build after the UI entry-point correction
+completed with exit 0, 0 errors and 115 existing warnings (114 CS9264 plus the
+unused protobuf import). SARIF contains 239 WUI notes and no WUI warning/error.
+Completed implementer worktrees were verified clean and merged, then removed;
+committed evidence is available on the integration branch and private artifacts
+remain under the research directory.
