@@ -164,6 +164,26 @@ public sealed class LiveRoomStatusTests
     }
 
     [Fact]
+    public void MappedReloadEvent_DrivesSingleReloadAndStopsInTerminalState()
+    {
+        var tracker = new LiveRoomStatusTracker(TimeSpan.FromSeconds(5));
+        tracker.SetRoom("123");
+        tracker.ApplyRoomDetail(isLiving: true);
+        var now = DateTimeOffset.UnixEpoch;
+
+        // 同一事件的重复投递（事件泵重连后补发）只触发一次刷新。
+        var reload = LiveRoomEventMapper.Map(new LivePlayUrlReloadEvent("{}", "PLAYURL_RELOAD", now));
+        Assert.Equal(LiveRoomStatusSignal.PlayUrlReload, reload.Signal);
+        Assert.True(tracker.TryBeginReload("123", now));
+        Assert.False(tracker.TryBeginReload("123", now.AddMilliseconds(200)));
+
+        // 下播后不再接受刷新请求：房间事件是权威状态。
+        Assert.True(tracker.ApplyNotStarted("123"));
+        Assert.False(tracker.TryBeginReload("123", now.AddMinutes(5)));
+        Assert.Equal(1, tracker.ReloadCount);
+    }
+
+    [Fact]
     public void RoomDetail_DecidesInitialPhase()
     {
         var tracker = new LiveRoomStatusTracker();

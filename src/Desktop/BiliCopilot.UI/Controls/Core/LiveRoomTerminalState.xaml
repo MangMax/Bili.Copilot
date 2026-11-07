@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:PlayerControlBase
+    x:Class="BiliCopilot.UI.Controls.Core.LiveRoomTerminalState"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animations="using:CommunityToolkit.WinUI.Animations"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:local="using:BiliCopilot.UI.Controls.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!--
+        主播已下播 / 直播被切断：房间事件是权威状态，
+        这里给出明确说明与"返回 / 在浏览器打开"两个出口，不显示黑屏或"播放已结束"。
+    -->
+    <Grid
+        x:Name="RootPanel"
+        Padding="24"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
+        CornerRadius="{StaticResource OverlayCornerRadius}"
+        Visibility="{x:Bind ViewModel.IsLiveRoomTerminal, Mode=OneWay}">
+        <StackPanel
+            MaxWidth="420"
+            Spacing="12">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="20"
+                FontWeight="SemiBold"
+                Text="{x:Bind ViewModel.LiveRoomTerminalTitle, Mode=OneWay, FallbackValue=''}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="{x:Bind ViewModel.LiveRoomTerminalDescription, Mode=OneWay, FallbackValue=''}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <StackPanel
+                Margin="0,4,0,0"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="12">
+                <Button
+                    MinWidth="96"
+                    Command="{x:Bind ViewModel.BackFromLiveRoomCommand, Mode=OneWay}"
+                    Content="{ext:Locale Name=LiveRoomStatusBack}"
+                    Style="{StaticResource AccentButtonStyle}" />
+                <Button
+                    MinWidth="96"
+                    Command="{x:Bind ViewModel.OpenLiveRoomInBrowserCommand, Mode=OneWay}"
+                    Content="{ext:Locale Name=OpenInBrowser}" />
+            </StackPanel>
+        </StackPanel>
+        <animations:Implicit.ShowAnimations>
+            <animations:OpacityAnimation
+                From="0.0"
+                To="1.0"
+                Duration="0:0:0.2" />
+        </animations:Implicit.ShowAnimations>
+    </Grid>
+</local:PlayerControlBase>

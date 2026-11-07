@@ -239,6 +239,12 @@
                         Duration="0:0:0.25" />
                 </animations:Implicit.HideAnimations>
             </Grid>
+            <!--  直播终态（已下播 / 被切断）：房间事件是权威状态，给返回与浏览器兜底。  -->
+            <local:LiveRoomTerminalState
+                x:Name="LiveRoomTerminalOverlay"
+                Grid.RowSpan="2"
+                x:Load="{x:Bind ViewModel.IsLive, Mode=OneWay}"
+                ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
             <base:EmptyHolder
                 Title="{ext:Locale Name=MpvError}"
                 Grid.RowSpan="2"
