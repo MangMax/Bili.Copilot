@@ -19,8 +19,9 @@ public sealed partial class PlayerViewModel
     private async Task InitializeDanmakuAsync()
     {
         _danmakuLoadSession?.Cancel();
-        if (_isDanmakuClosed || Window is null || Window.IsClosed)
+        if (_isDanmakuClosed || IsLive || Window is null || Window.IsClosed)
         {
+            // 直播弹幕走实时准入（#196），不进入视频/PGC 的时间轴加载。
             return;
         }
 

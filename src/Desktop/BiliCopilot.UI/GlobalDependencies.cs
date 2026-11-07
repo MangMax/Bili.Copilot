@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.AI.Chat;
 using BiliCopilot.UI.AI.Conversation;
@@ -140,6 +140,8 @@ internal static class GlobalDependencies
             .AddTransient<VideoMediaHistoryResolver>()
             .AddTransient<PgcMediaSourceResolver>()
             .AddTransient<PgcMediaHistoryResolver>()
+            .AddTransient<LiveMediaSourceResolver>()
+            .AddTransient<LiveMediaHistoryResolver>()
             .AddTransient<PlayerViewModel>()
             .AddTransient<DanmakuSendViewModel>()
             .AddNotificationViewModel()

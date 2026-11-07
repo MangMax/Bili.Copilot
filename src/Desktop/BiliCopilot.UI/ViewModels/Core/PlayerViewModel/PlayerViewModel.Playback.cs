@@ -44,7 +44,7 @@ public sealed partial class PlayerViewModel
     /// <returns><see cref="Task"/>.</returns>
     public async Task ChangePositionAsync(double position)
     {
-        if (Player is null || Client is null || _isDanmakuClosed
+        if (IsLive || Player is null || Client is null || _isDanmakuClosed
             || !double.IsFinite(position) || position < 0 || (Player.Duration > 0 && position > Player.Duration))
         {
             return;

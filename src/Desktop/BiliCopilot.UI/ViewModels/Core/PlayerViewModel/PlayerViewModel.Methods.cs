@@ -382,6 +382,22 @@ public sealed partial class PlayerViewModel
         }
         // 关闭或换集之后到达的错误只属于旧会话：既不重播，也不写旧会话的界面状态。
         var isCurrent = CapturePlaybackValidity();
+        if (IsLive)
+        {
+            // 直播 Duration 恒小于 1：不能走"坏源重播一次"的分支，
+            // 该分支会拿同一个失效地址重播并把 _isBroken 永久置位。
+            queue.TryEnqueue(() =>
+            {
+                if (!isCurrent())
+                {
+                    return;
+                }
+
+                ShowLivePlaybackFailure(LiveFailureText.FromMpvError(e));
+            });
+            return;
+        }
+
         if (isCurrent() && Player.Duration < 1 && !_isBroken)
         {
             _isBroken = true;
@@ -528,6 +544,13 @@ public sealed partial class PlayerViewModel
 
         if (e.PropertyName == nameof(Player.Position))
         {
+            if (IsLive)
+            {
+                // 直播没有时间轴：不更新进度文案、不判结束、不跑空降与章节。
+                _prevPosition = Player.Position;
+                return;
+            }
+
             IsPreviewProgressChanging = false;
             PositionText = TimeSpan.FromSeconds(Player.Position).ToString(@"hh\:mm\:ss");
             ProgressChanged?.Invoke(this, Player.Position);
@@ -613,6 +636,11 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.Duration))
         {
+            if (IsLive)
+            {
+                return;
+            }
+
             DurationText = TimeSpan.FromSeconds(Player.Duration).ToString(@"hh\:mm\:ss");
             ChapterInitialized?.Invoke(this, EventArgs.Empty);
         }
@@ -659,6 +687,12 @@ public sealed partial class PlayerViewModel
             {
                 ApplySubtitlesAsync = async () =>
                 {
+                    if (IsLive)
+                    {
+                        // 直播没有字幕：不改字体，也不挂字幕轨。
+                        return;
+                    }
+
                     await ChangeSubtitleFontFamilyCommand.ExecuteAsync(SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontFamily, "Segoe UI"));
                     var subtitleFontSize = SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontSize, 32d);
                     ChangeSubtitleFontSizeCommand.Execute(Math.Max(1, subtitleFontSize));
@@ -780,6 +814,12 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        if (IsLive)
+        {
+            // 直播没有倍速/长按加速。
+            return;
+        }
+
         if (args.VirtualKey == Windows.System.VirtualKey.Right && !_isRightKeyDown && AppToolkit.NotModifierKeyPressed())
         {
             _isRightKeyDown = true;
@@ -806,6 +846,12 @@ public sealed partial class PlayerViewModel
         var isCurrent = CapturePlaybackValidity();
         if (!isCurrent())
         {
+            return;
+        }
+
+        if (IsLive && args.VirtualKey is Windows.System.VirtualKey.Left or Windows.System.VirtualKey.Right)
+        {
+            // 直播没有时间轴：左右键既不跳转也不倍速；音量/全屏/画中画仍然可用。
             return;
         }
 
