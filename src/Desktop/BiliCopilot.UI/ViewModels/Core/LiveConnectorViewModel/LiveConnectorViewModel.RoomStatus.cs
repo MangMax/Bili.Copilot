@@ -89,6 +89,7 @@ public sealed partial class LiveConnectorViewModel
         }
 
         _roomStatus.ApplyRoomDetail(Session.IsLiving);
+        IsLiving = Session.IsLiving;
         SeedOnlineCount();
         RefreshUptime();
         if (!Session.IsLiving)
@@ -293,7 +294,7 @@ public sealed partial class LiveConnectorViewModel
         }
 
         var startTime = Session.Page?.Information.GetExtensionIfNotNull<DateTimeOffset?>(LiveExtensionDataId.StartTime);
-        if (startTime is null || !Session.IsLiving)
+        if (startTime is null || !IsLiving)
         {
             UptimeText = default;
             return;
