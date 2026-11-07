@@ -30,19 +30,12 @@
             FontWeight="Bold"
             ViewModel="{x:Bind ViewModel.Data, Mode=OneWay}" />
 
-        <ScrollViewer
+        <components:SlidingTabBar x:Name="Selector" AutomationProperties.AutomationId="ArticlePartitionMainHeaderTabs"
             Grid.Column="1"
             Margin="0,5,0,0"
-            Padding="8,0"
             HorizontalAlignment="Center"
-            VerticalAlignment="Stretch"
-            HorizontalScrollBarVisibility="Hidden"
-            HorizontalScrollMode="Enabled"
-            VerticalScrollBarVisibility="Hidden"
-            VerticalScrollMode="Disabled"
-            Visibility="{x:Bind ViewModel.Children, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
-            <SelectorBar x:Name="Selector" />
-        </ScrollViewer>
+            VerticalAlignment="Center"
+            Visibility="{x:Bind ViewModel.Children, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
 
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
