@@ -3,6 +3,8 @@
 using System.Collections;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Windows.UI.ViewManagement;
 
 namespace BiliCopilot.UI.Controls.Components;
@@ -16,7 +18,10 @@ namespace BiliCopilot.UI.Controls.Components;
 /// </remarks>
 public sealed partial class ContributorListControl : UserControl
 {
+    private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(200);
+
     private readonly UISettings _uiSettings = new();
+    private Storyboard? _transition;
     private bool _isExpanded;
     private bool _attached;
 
@@ -129,19 +134,26 @@ public sealed partial class ContributorListControl : UserControl
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _attached = true;
+        HorizontalHost.Opacity = 1;
+        ExpandedHost.Opacity = 1;
         RefreshExpandLabel();
         UpdateExpandAvailability();
         UpdateScrollButtons();
     }
 
-    private void OnUnloaded(object sender, RoutedEventArgs e) => _attached = false;
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        _attached = false;
+        _transition?.Stop();
+        _transition = null;
+    }
 
     private void ResetToListState()
     {
         _isExpanded = false;
-        ApplyExpandedState();
+        ApplyExpandedState(false);
         UpdateExpandAvailability();
-        Scroller?.ChangeView(0, null, null, true);
+        Scroller.ChangeView(0, null, null, true);
         UpdateScrollButtons();
     }
 
@@ -151,22 +163,97 @@ public sealed partial class ContributorListControl : UserControl
         ExpandButton.Visibility = count > 2 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void ApplyExpandedState()
+    private void ApplyExpandedState(bool animate)
     {
-        HorizontalHost.Visibility = _isExpanded ? Visibility.Collapsed : Visibility.Visible;
-        ExpandedHost.Visibility = _isExpanded ? Visibility.Visible : Visibility.Collapsed;
+        var previous = _transition;
+        _transition = null;
+        previous?.Stop();
+
+        var fromHeight = ListViewport.ActualHeight;
+        var canAnimate = animate && _attached && _uiSettings.AnimationsEnabled && fromHeight > 1;
+
+        ScrollLeftButton.Visibility = Visibility.Collapsed;
+        ScrollRightButton.Visibility = Visibility.Collapsed;
+
+        var incoming = _isExpanded ? (FrameworkElement)ExpandedHost : HorizontalHost;
+        var outgoing = _isExpanded ? (FrameworkElement)HorizontalHost : ExpandedHost;
+
+        outgoing.Visibility = Visibility.Collapsed;
+        incoming.Visibility = Visibility.Visible;
+        Scroller.ChangeView(0, null, null, true);
+
         ExpandIcon.Symbol = _isExpanded ? FluentIcons.Common.Symbol.ChevronUp : FluentIcons.Common.Symbol.ChevronDown;
-        if (_isExpanded)
+        RefreshExpandLabel();
+
+        // 先测出目标高度，再回到当前高度做动画，避免展开瞬间内容跳动.
+        ListViewport.Height = double.NaN;
+        ListViewport.UpdateLayout();
+        var toHeight = ListViewport.ActualHeight;
+        incoming.Opacity = 1;
+        if (!_isExpanded)
         {
-            ScrollLeftButton.Visibility = Visibility.Collapsed;
-            ScrollRightButton.Visibility = Visibility.Collapsed;
-        }
-        else
-        {
-            DispatcherQueue.TryEnqueue(UpdateScrollButtons);
+            UpdateScrollButtons();
         }
 
-        RefreshExpandLabel();
+        if (!canAnimate || Math.Abs(toHeight - fromHeight) < 0.5)
+        {
+            ListViewport.Height = double.NaN;
+            if (!_isExpanded)
+            {
+                UpdateScrollButtons();
+            }
+
+            return;
+        }
+
+        ListViewport.Height = fromHeight;
+        incoming.Opacity = 0;
+
+        var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
+        var storyboard = new Storyboard();
+
+        var heightAnimation = new DoubleAnimation
+        {
+            From = fromHeight,
+            To = toHeight,
+            Duration = TransitionDuration,
+            EasingFunction = ease,
+            EnableDependentAnimation = true,
+        };
+        Storyboard.SetTarget(heightAnimation, ListViewport);
+        Storyboard.SetTargetProperty(heightAnimation, "Height");
+        storyboard.Children.Add(heightAnimation);
+
+        var opacityAnimation = new DoubleAnimation
+        {
+            From = 0,
+            To = 1,
+            Duration = TransitionDuration,
+            EasingFunction = ease,
+        };
+        Storyboard.SetTarget(opacityAnimation, incoming);
+        Storyboard.SetTargetProperty(opacityAnimation, "Opacity");
+        storyboard.Children.Add(opacityAnimation);
+
+        storyboard.Completed += (_, _) =>
+        {
+            if (!ReferenceEquals(_transition, storyboard))
+            {
+                return;
+            }
+
+            ListViewport.Height = double.NaN;
+            incoming.Opacity = 1;
+            if (!_isExpanded)
+            {
+                UpdateScrollButtons();
+            }
+
+            _transition = null;
+        };
+
+        _transition = storyboard;
+        storyboard.Begin();
     }
 
     private void RefreshExpandLabel()
@@ -194,14 +281,13 @@ public sealed partial class ContributorListControl : UserControl
 
     private void OnScrollerSizeChanged(object sender, SizeChangedEventArgs e) => UpdateScrollButtons();
 
+    private void OnListViewportSizeChanged(object sender, SizeChangedEventArgs e)
+        => ListViewport.Clip = new RectangleGeometry { Rect = new Rect(0, 0, e.NewSize.Width, e.NewSize.Height) };
+
     private void OnExpandClick(object sender, RoutedEventArgs e)
     {
         _isExpanded = !_isExpanded;
-        ApplyExpandedState();
-        if (!_isExpanded)
-        {
-            UpdateScrollButtons();
-        }
+        ApplyExpandedState(true);
     }
 
     private void OnScrollLeftClick(object sender, RoutedEventArgs e) => Scroll(-1);

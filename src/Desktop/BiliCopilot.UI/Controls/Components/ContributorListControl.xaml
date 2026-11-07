@@ -135,33 +135,38 @@
             </Button>
         </Grid>
 
-        <Grid x:Name="HorizontalHost">
-            <ScrollViewer
-                x:Name="Scroller"
-                HorizontalScrollBarVisibility="Hidden"
-                HorizontalScrollMode="Enabled"
-                SizeChanged="OnScrollerSizeChanged"
-                VerticalScrollBarVisibility="Disabled"
-                VerticalScrollMode="Disabled"
-                ViewChanged="OnScrollerViewChanged">
-                <ItemsControl ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" ItemTemplate="{StaticResource ContributorItemTemplate}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="8" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </ScrollViewer>
-        </Grid>
+        <Grid
+            x:Name="ListViewport"
+            VerticalAlignment="Top"
+            SizeChanged="OnListViewportSizeChanged">
+            <Grid x:Name="HorizontalHost">
+                <ScrollViewer
+                    x:Name="Scroller"
+                    HorizontalScrollBarVisibility="Hidden"
+                    HorizontalScrollMode="Enabled"
+                    SizeChanged="OnScrollerSizeChanged"
+                    VerticalScrollBarVisibility="Disabled"
+                    VerticalScrollMode="Disabled"
+                    ViewChanged="OnScrollerViewChanged">
+                    <ItemsControl ItemsSource="{x:Bind ItemsSource, Mode=OneWay}" ItemTemplate="{StaticResource ContributorItemTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
 
-        <repeater:AppRepeater
-            x:Name="ExpandedHost"
-            ItemTemplate="{StaticResource ContributorItemTemplate}"
-            ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
-            Visibility="Collapsed">
-            <repeater:AppRepeater.Layout>
-                <community:WrapLayout HorizontalSpacing="8" VerticalSpacing="2" />
-            </repeater:AppRepeater.Layout>
-        </repeater:AppRepeater>
+            <repeater:AppRepeater
+                x:Name="ExpandedHost"
+                ItemTemplate="{StaticResource ContributorItemTemplate}"
+                ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
+                Visibility="Collapsed">
+                <repeater:AppRepeater.Layout>
+                    <community:WrapLayout HorizontalSpacing="8" VerticalSpacing="2" />
+                </repeater:AppRepeater.Layout>
+            </repeater:AppRepeater>
+        </Grid>
     </StackPanel>
 </UserControl>
