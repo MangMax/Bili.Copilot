@@ -16,6 +16,10 @@ x:Bind 与布局陷阱、MVVM 旧写法、互操作问题。本文件记录它�
   例外是 CS9264 的"不升级为错误"，理由见下面「CS9264」一节。
 - 分析器只在 UI 工程引用，`BiliCopilot.UI.Models` 等工程不加载它；不改任何 `NoWarn`
   （`MVVMTK0046` 除外，见口径）、不写 `#pragma warning disable`、不降级任何规则。
+  原先两处 `NU1507` 抑制（`src/Directory.Build.props` 与
+  `src/Desktop/BiliCopilot.UI.Models/BiliCopilot.UI.Models.csproj`）已删除：根
+  `nuget.config` 的 `packageSourceMapping` 已覆盖全部 6 个包源，干净重建不再出现该告警，
+  抑制自然不再需要 —— 口径仍是"不新增抑制"。
 
 ## 跑一次带 SARIF 的构建
 
@@ -83,7 +87,7 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
   （跟踪：#117）。
 - WUI1001 的 1 条在 #113 一次清零：`GalleryPageViewModel.SaveImageAsync` 换成
   `Microsoft.Windows.Storage.Pickers.FileSavePicker`（构造时传 `WindowId`，取消返回
-  `null`，落盘走 `FileStream`）。该 API 由 `Microsoft.WindowsAppSDK.Foundation 2.6.4`
+  `null`，落盘走 `FileStream`）。该 API 由 `Microsoft.WindowsAppSDK.Foundation 2.6.5`
   提供，已用 `winapp find-api` 核对成员；规则留在表里作为回归项，不再是待清存量。
 
 ### CS9264：只在写 SARIF 的构建里出现
