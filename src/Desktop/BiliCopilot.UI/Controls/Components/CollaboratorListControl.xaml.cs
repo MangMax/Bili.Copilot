@@ -14,9 +14,9 @@ namespace BiliCopilot.UI.Controls.Components;
 /// </summary>
 /// <remarks>
 /// 联合投稿场景下替代原来拼接成一段文字的投稿人姓名列表；
-/// 条目类型固定为 <see cref="VideoContributorViewModel"/>，展开/滚动文案由调用方传入.
+/// 条目类型固定为 <see cref="VideoCollaboratorViewModel"/>，展开/滚动文案由调用方传入.
 /// </remarks>
-public sealed partial class ContributorListControl : UserControl
+public sealed partial class CollaboratorListControl : UserControl
 {
     private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(200);
 
@@ -29,42 +29,42 @@ public sealed partial class ContributorListControl : UserControl
     /// <see cref="ItemsSource"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty ItemsSourceProperty =
-        DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(ContributorListControl), new PropertyMetadata(default, OnItemsSourceChanged));
+        DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(CollaboratorListControl), new PropertyMetadata(default, OnItemsSourceChanged));
 
     /// <summary>
     /// <see cref="Header"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty HeaderProperty =
-        DependencyProperty.Register(nameof(Header), typeof(string), typeof(ContributorListControl), new PropertyMetadata(default));
+        DependencyProperty.Register(nameof(Header), typeof(string), typeof(CollaboratorListControl), new PropertyMetadata(default));
 
     /// <summary>
     /// <see cref="ExpandText"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty ExpandTextProperty =
-        DependencyProperty.Register(nameof(ExpandText), typeof(string), typeof(ContributorListControl), new PropertyMetadata(string.Empty, OnExpandTextChanged));
+        DependencyProperty.Register(nameof(ExpandText), typeof(string), typeof(CollaboratorListControl), new PropertyMetadata(string.Empty, OnExpandTextChanged));
 
     /// <summary>
     /// <see cref="CollapseText"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty CollapseTextProperty =
-        DependencyProperty.Register(nameof(CollapseText), typeof(string), typeof(ContributorListControl), new PropertyMetadata(string.Empty, OnExpandTextChanged));
+        DependencyProperty.Register(nameof(CollapseText), typeof(string), typeof(CollaboratorListControl), new PropertyMetadata(string.Empty, OnExpandTextChanged));
 
     /// <summary>
     /// <see cref="ScrollLeftText"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty ScrollLeftTextProperty =
-        DependencyProperty.Register(nameof(ScrollLeftText), typeof(string), typeof(ContributorListControl), new PropertyMetadata(string.Empty));
+        DependencyProperty.Register(nameof(ScrollLeftText), typeof(string), typeof(CollaboratorListControl), new PropertyMetadata(string.Empty));
 
     /// <summary>
     /// <see cref="ScrollRightText"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty ScrollRightTextProperty =
-        DependencyProperty.Register(nameof(ScrollRightText), typeof(string), typeof(ContributorListControl), new PropertyMetadata(string.Empty));
+        DependencyProperty.Register(nameof(ScrollRightText), typeof(string), typeof(CollaboratorListControl), new PropertyMetadata(string.Empty));
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ContributorListControl"/> class.
+    /// Initializes a new instance of the <see cref="CollaboratorListControl"/> class.
     /// </summary>
-    public ContributorListControl()
+    public CollaboratorListControl()
     {
         InitializeComponent();
         Loaded += OnLoaded;
@@ -72,7 +72,7 @@ public sealed partial class ContributorListControl : UserControl
     }
 
     /// <summary>
-    /// 条目集合，元素类型为 <see cref="VideoContributorViewModel"/>.
+    /// 条目集合，元素类型为 <see cref="VideoCollaboratorViewModel"/>.
     /// </summary>
     public object? ItemsSource
     {
@@ -126,16 +126,14 @@ public sealed partial class ContributorListControl : UserControl
     }
 
     private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        => ((ContributorListControl)d).ResetToListState();
+        => ((CollaboratorListControl)d).ResetToListState();
 
     private static void OnExpandTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        => ((ContributorListControl)d).RefreshExpandLabel();
+        => ((CollaboratorListControl)d).RefreshExpandLabel();
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _attached = true;
-        HorizontalHost.Opacity = 1;
-        ExpandedHost.Opacity = 1;
         RefreshExpandLabel();
         UpdateExpandAvailability();
         UpdateScrollButtons();
@@ -146,6 +144,7 @@ public sealed partial class ContributorListControl : UserControl
         _attached = false;
         _transition?.Stop();
         _transition = null;
+        ListViewport.Height = double.NaN;
     }
 
     private void ResetToListState()
@@ -153,8 +152,6 @@ public sealed partial class ContributorListControl : UserControl
         _isExpanded = false;
         ApplyExpandedState(false);
         UpdateExpandAvailability();
-        Scroller.ChangeView(0, null, null, true);
-        UpdateScrollButtons();
     }
 
     private void UpdateExpandAvailability()
@@ -223,7 +220,7 @@ public sealed partial class ContributorListControl : UserControl
                 return;
             }
 
-                ListViewport.Height = double.NaN;
+            ListViewport.Height = double.NaN;
             if (!_isExpanded)
             {
                 UpdateScrollButtons();
@@ -246,7 +243,7 @@ public sealed partial class ContributorListControl : UserControl
 
     private void UpdateScrollButtons()
     {
-        if (!_attached || Scroller is null || _isExpanded)
+        if (!_attached || _isExpanded)
         {
             return;
         }
@@ -276,11 +273,6 @@ public sealed partial class ContributorListControl : UserControl
 
     private void Scroll(int direction)
     {
-        if (Scroller is null)
-        {
-            return;
-        }
-
         var step = Math.Max(176, Scroller.ViewportWidth * 0.9);
         var target = Math.Clamp(Scroller.HorizontalOffset + (direction * step), 0, Scroller.ScrollableWidth);
         Scroller.ChangeView(target, null, null, !_uiSettings.AnimationsEnabled);

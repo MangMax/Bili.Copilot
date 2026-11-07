@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.ViewModels.Components;
@@ -59,13 +59,13 @@ public sealed partial class VideoConnectorViewModel
     /// 联合投稿时除主投稿人以外的合作者，用于头像名称列表.
     /// </summary>
     [ObservableProperty]
-    public partial List<VideoContributorViewModel>? Contributors { get; set; }
+    public partial List<VideoCollaboratorViewModel>? Collaborators { get; set; }
 
     /// <summary>
     /// 是否需要在信息区展示合作投稿人列表.
     /// </summary>
     [ObservableProperty]
-    public partial bool HasContributors { get; set; }
+    public partial bool HasCollaborators { get; set; }
 
     [ObservableProperty]
     public partial string? PublishRelativeTime { get; set; }

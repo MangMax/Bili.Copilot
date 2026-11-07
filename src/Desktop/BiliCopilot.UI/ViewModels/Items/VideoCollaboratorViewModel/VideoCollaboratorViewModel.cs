@@ -13,13 +13,13 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// 视频合作投稿人视图模型.
 /// </summary>
 [GeneratedBindableCustomProperty]
-public sealed partial class VideoContributorViewModel : ViewModelBase<PublisherProfile>
+public sealed partial class VideoCollaboratorViewModel : ViewModelBase<PublisherProfile>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="VideoContributorViewModel"/> class.
+    /// Initializes a new instance of the <see cref="VideoCollaboratorViewModel"/> class.
     /// </summary>
     /// <param name="data">合作者资料.</param>
-    public VideoContributorViewModel(PublisherProfile data)
+    public VideoCollaboratorViewModel(PublisherProfile data)
         : base(data)
     {
         Id = data.User.Id;

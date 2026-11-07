@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -28,8 +28,8 @@ public sealed partial class VideoConnectorViewModel
         UpAvatar = view.Information.Publisher.User.Avatar.Uri;
         var primaryUser = view.Information.Publisher?.User;
         var collaborators = CollaboratorListBuilder.Build(primaryUser, view.Information.Collaborators);
-        Contributors = [.. collaborators.Select(profile => new VideoContributorViewModel(profile))];
-        HasContributors = Contributors.Count > 0;
+        Collaborators = [.. collaborators.Select(profile => new VideoCollaboratorViewModel(profile))];
+        HasCollaborators = Collaborators.Count > 0;
 
         // 合作者改用头像名称列表展示，上方只保留主投稿人；主投稿人资料缺失时退回姓名拼接.
         UpName = primaryUser?.Name;
@@ -111,8 +111,8 @@ public sealed partial class VideoConnectorViewModel
         _part = default;
         Tags = default;
         UpAvatar = default;
-        Contributors = default;
-        HasContributors = false;
+        Collaborators = default;
+        HasCollaborators = false;
         IsFollow = false;
         PlayCount = 0;
         DanmakuCount = 0;
