@@ -120,37 +120,45 @@
                 </ScrollViewer>
                 <Button
                     x:Name="ScrollLeftButton"
-                    Width="32"
+                    Width="16"
+                    Height="38"
+                    Margin="1"
                     Padding="0"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Stretch"
+                    VerticalAlignment="Center"
                     Canvas.ZIndex="1"
                     AutomationProperties.AutomationId="CollaboratorScrollLeft"
                     AutomationProperties.Name="{x:Bind ScrollLeftText, Mode=OneWay}"
-                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                     BorderThickness="0"
                     Click="OnScrollLeftClick"
-                    CornerRadius="0"
+                    CornerRadius="{StaticResource ControlCornerRadius}"
+                    Foreground="{ThemeResource ControlStrongFillColorDefaultBrush}"
                     ToolTipService.ToolTip="{x:Bind ScrollLeftText, Mode=OneWay}"
                     Visibility="Collapsed">
-                    <FontIcon FontSize="12" Glyph="&#xE0E2;" />
+                    <FontIcon FontSize="8" Glyph="&#xEDDB;" />
                 </Button>
                 <Button
                     x:Name="ScrollRightButton"
-                    Width="32"
+                    Width="16"
+                    Height="38"
+                    Margin="1"
                     Padding="0"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Stretch"
+                    VerticalAlignment="Center"
                     Canvas.ZIndex="1"
                     AutomationProperties.AutomationId="CollaboratorScrollRight"
                     AutomationProperties.Name="{x:Bind ScrollRightText, Mode=OneWay}"
-                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                     BorderThickness="0"
                     Click="OnScrollRightClick"
-                    CornerRadius="0"
+                    CornerRadius="{StaticResource ControlCornerRadius}"
+                    Foreground="{ThemeResource ControlStrongFillColorDefaultBrush}"
                     ToolTipService.ToolTip="{x:Bind ScrollRightText, Mode=OneWay}"
                     Visibility="Collapsed">
-                    <FontIcon FontSize="12" Glyph="&#xE0E3;" />
+                    <FontIcon FontSize="8" Glyph="&#xEDDA;" />
                 </Button>
             </Grid>
 
