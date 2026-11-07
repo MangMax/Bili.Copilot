@@ -32,9 +32,9 @@ public sealed class LivePartitionLoadFailureTests : IDisposable
     [Fact]
     public async Task FailedPartitionListRecoversThroughRefreshInsteadOfThrowing()
     {
-        var service = new LiveDiscovery
+        var service = new LiveDiscoveryFake
         {
-            List = (_, _) => Task.FromException<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
+            List = (_, _) => Task.FromException<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
                 new InvalidOperationException("无法获取到有效的直播间列表")),
         };
         var detail = Detail(service);
@@ -43,7 +43,7 @@ public sealed class LivePartitionLoadFailureTests : IDisposable
         Assert.False(detail.IsLiveLoading);
         Assert.Empty(detail.Rooms);
 
-        service.List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
+        service.List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
             ([Room("1")], [Tag("t1")], 2));
         await RefreshAsync(detail);
 
@@ -54,9 +54,9 @@ public sealed class LivePartitionLoadFailureTests : IDisposable
     [Fact]
     public async Task EmptyTagListShowsRoomsWithoutSelectableTagAndRecoversOnRefresh()
     {
-        var service = new LiveDiscovery
+        var service = new LiveDiscoveryFake
         {
-            List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
+            List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
                 ([Room("1")], [], 0)),
         };
         var detail = Detail(service);
@@ -67,19 +67,20 @@ public sealed class LivePartitionLoadFailureTests : IDisposable
         Assert.Null(detail.CurrentTag);
         // 选择器的输入必须保持为空：空列表会让它把「空列表 + 失效选中项」交给 SlidingTabBar。
         Assert.Null(detail.Children);
+        Assert.Null(detail.AvailableTags);
 
         var requests = 0;
         service.List = (_, _) =>
         {
             requests++;
-            return Task.FromResult<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
+            return Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
                 ([Room("1")], [], 0));
         };
         await detail.LoadRoomsCommand.ExecuteAsync(null);
         Assert.Equal(0, requests);
         Assert.Single(detail.Rooms);
 
-        service.List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
+        service.List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
             ([Room("2")], [Tag("t1"), Tag("t2")], 5));
         await RefreshAsync(detail);
 
@@ -89,44 +90,88 @@ public sealed class LivePartitionLoadFailureTests : IDisposable
     }
 
     [Fact]
-    public async Task FailedLoadExposesRetryableStateAndReinitializesOnNextEntry()
+    public async Task FailedRoomsLoadLeavesConsistentEmptyStateAndRecoversOnRefresh()
     {
-        var service = new LiveDiscovery
+        var failNext = false;
+        var service = new LiveDiscoveryFake();
+        service.List = (tag, pageNumber) =>
         {
-            List = (_, _) => Task.FromException<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
-                new IOException("offline")),
+            if (failNext)
+            {
+                return Task.FromException<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
+                    new IOException("offline"));
+            }
+
+            return Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
+                tag is null
+                    ? ([Room("1")], [Tag("t1")], 4)
+                    : ([Room("t1-room")], null, pageNumber + 1));
         };
         var detail = Detail(service);
         var initialized = 0;
         detail.Initialized += (_, _) => initialized++;
 
         await detail.InitializeCommand.ExecuteAsync(null);
+        await detail.LoadRoomsCommand.ExecuteAsync(null);
+        Assert.Equal(new[] { "1", "t1-room" }, detail.Rooms.Select(r => r.Data.Identifier.Id));
 
-        Assert.True(detail.IsLoadFailed);
-        Assert.False(detail.IsLiveLoading);
-        Assert.Equal(1, initialized);
-        Assert.Null(detail.Children);
-        Assert.Null(detail.CurrentTag);
+        // 加载下一页失败：失败收尾必须清空可见列表，且保留可重试的子分区状态。
+        failNext = true;
+        await detail.LoadRoomsCommand.ExecuteAsync(null);
+
         Assert.Empty(detail.Rooms);
-
-        // 重新进入该分区时页面会再次初始化：失败状态必须允许重试并恢复。
-        service.List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
-            ([Room("1")], [Tag("t1")], 1));
-        await detail.InitializeCommand.ExecuteAsync(null);
-
-        Assert.False(detail.IsLoadFailed);
+        Assert.False(detail.IsLiveLoading);
         Assert.Equal("t1", detail.CurrentTag?.Id);
-        Assert.Equal(1, detail.Children?.Count);
-        Assert.Equal("1", Assert.Single(detail.Rooms).Data.Identifier.Id);
-        Assert.Equal(2, initialized);
+        Assert.Equal(new[] { "t1" }, detail.Children!.Select(t => t.Id));
+        Assert.Equal(1, initialized);
+
+        // 重试后恢复。
+        failNext = false;
+        await RefreshAsync(detail);
+
+        Assert.Equal("t1-room", Assert.Single(detail.Rooms).Data.Identifier.Id);
+    }
+
+    [Fact]
+    public async Task SwitchingChildPartitionDuringRoomsLoadKeepsLastSelectionAndRequestsIt()
+    {
+        var t1Response = new TaskCompletionSource<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>();
+        var service = new LiveDiscoveryFake();
+        service.List = (tag, pageNumber) => tag?.Id switch
+        {
+            "t1" when pageNumber > 0 => t1Response.Task,
+            "t2" => Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
+                ([Room("t2-room")], null, 0)),
+            _ => Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
+                ([Room("1")], [Tag("t1"), Tag("t2")], 1)),
+        };
+        var detail = Detail(service);
+
+        await detail.InitializeCommand.ExecuteAsync(null);
+        Assert.Equal("t1", detail.CurrentTag?.Id);
+
+        // t1 的分页请求在飞行中，用户切到 t2。
+        var inFlight = detail.LoadRoomsCommand.ExecuteAsync(null);
+        Assert.Equal(("t1", 1), service.Calls[^1]);
+        detail.ChangeChildPartitionCommand.Execute(Tag("t2"));
+        PageTestServices.Dispatcher.Drain();
+
+        // 旧请求随后返回：不得写进已切换的视图，且必须为最后选择补发一次请求。
+        t1Response.SetResult(([Room("t1-late")], null, 9));
+        await inFlight;
+        PageTestServices.Dispatcher.Drain();
+
+        Assert.Equal("t2", detail.CurrentTag?.Id);
+        Assert.Equal("t2-room", Assert.Single(detail.Rooms).Data.Identifier.Id);
+        Assert.Contains(("t2", 0), service.Calls);
     }
 
     [Fact]
     public async Task LoadedTagsSelectTheFirstTagAndPagingFollowsTheReturnedCursor()
     {
-        var service = new LiveDiscovery
+        var service = new LiveDiscoveryFake
         {
-            List = (tag, pageNumber) => Task.FromResult<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
+            List = (tag, pageNumber) => Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
                 tag is null
                     ? ([Room("1")], [Tag("t1"), Tag("t2")], 4)
                     : (tag.Id == "t1" ? [Room("t1-room")] : [Room("t2-room")], null, pageNumber + 1)),
@@ -157,9 +202,9 @@ public sealed class LivePartitionLoadFailureTests : IDisposable
     [Fact]
     public async Task ReenteringAFailedSubPartitionRetriesInsteadOfKeepingTheEmptyDetail()
     {
-        var service = new LiveDiscovery
+        var service = new LiveDiscoveryFake
         {
-            List = (_, _) => Task.FromException<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
+            List = (_, _) => Task.FromException<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
                 new InvalidOperationException("无法获取到有效的直播间列表")),
             Partitions = () => Task.FromResult<IReadOnlyList<Partition>>(
                 [new Partition("9", "网游", children: [new Partition("90", "全部网游")])]),
@@ -173,10 +218,9 @@ public sealed class LivePartitionLoadFailureTests : IDisposable
         PageTestServices.Dispatcher.Drain();
         var failed = page.SelectedDetail;
         await failed.InitializeCommand.ExecutionTask!;
-        Assert.True(failed.IsLoadFailed);
         Assert.Empty(failed.Rooms);
 
-        service.List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
+        service.List = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)>(
             ([Room("1")], [Tag("t1")], 1));
 
         // 离开该主分区再回来：复用的详情页必须重试，而不是停留在失败残留的空状态。
@@ -187,50 +231,23 @@ public sealed class LivePartitionLoadFailureTests : IDisposable
 
         Assert.Same(failed, page.SelectedDetail);
         await failed.InitializeCommand.ExecutionTask!;
-        Assert.False(failed.IsLoadFailed);
         Assert.Equal("t1", failed.CurrentTag?.Id);
         Assert.Equal("1", Assert.Single(failed.Rooms).Data.Identifier.Id);
     }
 
     private static async Task RefreshAsync(LivePartitionDetailViewModel detail)
     {
-        var refresh = detail.RefreshCommand;
+        // RefreshCommand 必须是异步命令：否则测试会静默地不等待刷新完成。
+        var refresh = Assert.IsAssignableFrom<IAsyncRelayCommand>(detail.RefreshCommand);
         Assert.Null(Record.Exception(() => refresh.Execute(null)));
-        if (refresh is IAsyncRelayCommand asyncRefresh)
-        {
-            await asyncRefresh.ExecutionTask!;
-        }
-
+        await refresh.ExecutionTask!;
         PageTestServices.Dispatcher.Drain();
     }
 
-    private static LivePartitionDetailViewModel Detail(LiveDiscovery service)
+    private static LivePartitionDetailViewModel Detail(LiveDiscoveryFake service)
         => new(new PartitionViewModel(new Partition("9", "网游")), service);
 
-    private static LiveTag Tag(string id) => new(id, id, "default");
+    private static LiveTag Tag(string id) => LiveDiscoveryFake.Tag(id);
 
-    private static LiveInformation Room(string id) => new(new MediaIdentifier(id, id, null));
-
-    private sealed class LiveDiscovery : ILiveDiscoveryService
-    {
-        public Func<LiveTag?, int, Task<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>> List { get; set; }
-            = (_, _) => Task.FromResult<(IReadOnlyList<LiveInformation>, IReadOnlyList<LiveTag>?, int)>(
-                ([Room("1")], [Tag("t1")], 1));
-
-        public List<(string? Tag, int PageNumber)> Calls { get; } = new();
-
-        public Func<Task<IReadOnlyList<Partition>>>? Partitions { get; set; }
-
-        public Task<(IReadOnlyList<LiveInformation>? Follows, IReadOnlyList<LiveInformation>? Recommend, int NextPageNumber)> GetFeedAsync(int pageNumber = 0, CancellationToken cancellationToken = default)
-            => Task.FromResult<(IReadOnlyList<LiveInformation>?, IReadOnlyList<LiveInformation>?, int)>((null, null, 0));
-
-        public Task<IReadOnlyList<Partition>> GetLivePartitionsAsync(CancellationToken cancellationToken = default)
-            => Partitions?.Invoke() ?? Task.FromResult<IReadOnlyList<Partition>>([]);
-
-        public Task<(IReadOnlyList<LiveInformation> Lives, IReadOnlyList<LiveTag>? Tags, int NextPageNumber)> GetPartitionLiveListAsync(Partition partion, LiveTag? tag = default, int pageNumber = 0, CancellationToken cancellationToken = default)
-        {
-            Calls.Add((tag?.Id, pageNumber));
-            return List(tag, pageNumber);
-        }
-    }
+    private static LiveInformation Room(string id) => LiveDiscoveryFake.Room(id);
 }

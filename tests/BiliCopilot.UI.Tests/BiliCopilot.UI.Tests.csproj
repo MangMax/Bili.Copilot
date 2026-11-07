@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
@@ -161,6 +161,7 @@
   <ItemGroup>
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/LivePartitionDetailViewModel/*.cs" Link="LivePartition/%(Filename)%(Extension)" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/LivePartitionPageViewModel/*.cs" Link="LivePartition/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/LivePartition/LiveSubPartitionSelector.xaml.cs" Link="LivePartition/LiveSubPartitionSelector.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/LiveCardStyle.cs" Link="LivePartition/LiveCardStyle.cs" />
   </ItemGroup>
 </Project>

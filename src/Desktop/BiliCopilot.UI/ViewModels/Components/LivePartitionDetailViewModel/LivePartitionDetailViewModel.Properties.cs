@@ -21,8 +21,24 @@ public sealed partial class LivePartitionDetailViewModel
 
     private bool _preventLoadMore;
 
+    // 分页请求的「最后一次选择」：切换子分区时旧请求可能仍在飞行，
+    // 它结束后必须再为最后选择发起一次请求。
+    private LiveTag? _pendingRoomTag;
+
+    private bool _roomLoadInProgress;
+
     [ObservableProperty]
     public partial List<LiveTag>? Children { get; set; }
+
+    /// <summary>
+    /// 可供选择的子分区；没有可用标签（首次加载失败或该分区没有标签）时为 null.
+    /// </summary>
+    public List<LiveTag>? AvailableTags => Children is { Count: > 0 } children ? children : null;
+
+    /// <summary>
+    /// 当前没有可用的子分区（加载失败或该分区没有标签）.
+    /// </summary>
+    public bool HasNoChildPartitions => AvailableTags is null;
 
     [ObservableProperty]
     public partial bool IsLiveLoading { get; set; }
