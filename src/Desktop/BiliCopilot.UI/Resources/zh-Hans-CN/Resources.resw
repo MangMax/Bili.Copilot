@@ -3397,4 +3397,7 @@
   <data name="PlaybackRouteOverseas" xml:space="preserve">
     <value>海外优先</value>
   </data>
+  <data name="RefreshPlayback" xml:space="preserve">
+    <value>刷新播放</value>
+  </data>
 </root>

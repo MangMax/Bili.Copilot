@@ -6,6 +6,7 @@ namespace Richasy.MpvKernel.Core.Models
     public sealed class MpvPlayOptions
     {
         public IntPtr WindowHandle { get; set; }
+        public double? StartPosition { get; set; }
         public double InitialVolume { get; set; }
         public double InitialSpeed { get; set; }
         public string? UserAgent { get; set; }
@@ -57,3 +58,18 @@ namespace BiliCopilot.UI.ViewModels.View
 {
     public sealed partial class SettingsPageViewModel : CommunityToolkit.Mvvm.ComponentModel.ObservableObject { }
 }
+
+namespace BiliCopilot.UI.ViewModels.Core
+{
+    public sealed partial class PlayerViewModel
+    {
+        public bool IsConnecting { get; set; }
+        private double? _continuePosition;
+        internal List<Exception> RefreshErrors { get; } = [];
+        partial void ReportPlaybackRefreshFailure(Exception exception) => RefreshErrors.Add(exception);
+        private BiliCopilot.UI.Resolvers.MediaSourceResolverBase? _sourceResolver;
+        internal void SetRefreshResolver(BiliCopilot.UI.Resolvers.MediaSourceResolverBase resolver) => _sourceResolver = resolver;
+    }
+}
+
+namespace Richasy.MpvKernel { public enum MpvError { LoadingFailed } }

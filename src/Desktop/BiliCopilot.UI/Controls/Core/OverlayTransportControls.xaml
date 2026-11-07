@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PlayerControlBase
     x:Class="BiliCopilot.UI.Controls.Core.OverlayTransportControls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -142,6 +142,17 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
                 SizeChanged="OnRightPanelSizeChanged">
+                <Button
+                    x:Name="RefreshPlaybackButton"
+                    Margin="0,0,8,0"
+                    AutomationProperties.AutomationId="RefreshPlaybackButton"
+                    AutomationProperties.Name="{ext:Locale Name=RefreshPlayback}"
+                    Command="{x:Bind ViewModel.RefreshPlaybackCommand, Mode=OneWay}"
+                    Style="{StaticResource BasicPlayerIconButtonStyle}"
+                    ToolTipService.ToolTip="{ext:Locale Name=RefreshPlayback}"
+                    Visibility="{x:Bind ViewModel.IsPlaybackRefreshAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <FontIcon Glyph="&#xE72C;" FontSize="16" />
+                </Button>
                 <Button
                     x:Name="ChapterListButton"
                     Margin="0,0,8,0"

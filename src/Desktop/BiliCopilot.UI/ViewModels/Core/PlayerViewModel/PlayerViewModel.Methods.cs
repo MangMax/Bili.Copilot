@@ -17,6 +17,7 @@ using Richasy.MpvKernel;
 using Richasy.MpvKernel.Core;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.MpvKernel.Core.Models;
+using Richasy.WinUIKernel.Share.Base;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -30,6 +31,12 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class PlayerViewModel
 {
+    partial void ReportPlaybackRefreshFailure(Exception exception)
+    {
+        logger.LogWarning(exception, "刷新播放失败");
+        Window?.ShowTip(exception.Message, InfoType.Error);
+    }
+
     /// <summary>
     /// 初始化播放器.
     /// </summary>
@@ -513,6 +520,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        RefreshPlaybackCommand.NotifyCanExecuteChanged();
         if (e.PropertyName == nameof(Player.Position))
         {
             IsPreviewProgressChanging = false;
@@ -667,7 +675,7 @@ public sealed partial class PlayerViewModel
                 ResumeIfNeededAsync = async () =>
                 {
                     // Make sure playing.
-                    if (Player.PlaybackState != MpvPlayerState.Playing)
+                    if (!_isPlaybackRefreshReload && Player.PlaybackState != MpvPlayerState.Playing)
                     {
                         await Client!.ResumeAsync();
                     }

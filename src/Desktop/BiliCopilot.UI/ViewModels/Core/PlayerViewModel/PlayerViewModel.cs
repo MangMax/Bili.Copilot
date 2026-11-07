@@ -228,6 +228,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     private async Task InitializeCoreAsync(MediaSnapshot snapshot)
     {
+        CancelPlaybackRefresh();
+        _isPlaybackRefreshReload = false;
         _danmakuPlaybackVersion++;
         _danmakuLoadSession?.Cancel();
         _snapshot = snapshot;
@@ -324,6 +326,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                     {
                         ShowPlaybackUnavailable(resolver.UnavailableReason);
                         IsConnecting = false;
+                        RefreshPlaybackCommand.NotifyCanExecuteChanged();
                         CheckBlackBackgroundVisible();
                         return;
                     }
@@ -337,6 +340,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                 break;
         }
 
+        OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));
+        RefreshPlaybackCommand.NotifyCanExecuteChanged();
         _sourceResolver.WindowHandle = Window!.Handle;
 
         if (_historyResolver != null && Player != null)
@@ -417,6 +422,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
 
         IsConnecting = false;
+        RefreshPlaybackCommand.NotifyCanExecuteChanged();
     }
 
     public void UpdateTheme(ElementTheme theme)
@@ -513,7 +519,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     private async Task SelectSourceAsync(SourceItemViewModel source)
     {
-        if (source is null)
+        if (source is null || !await PreparePlaybackIntentAsync())
         {
             return;
         }
@@ -532,6 +538,12 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         {
             _snapshot.PreferQuality = selected.Data.Quality;
             videoResolver.ResetSnapshot(_snapshot);
+            await ReplayCurrentPositionAsync(isCurrent);
+        }
+        else if (_sourceResolver is PgcMediaSourceResolver pgcResolver)
+        {
+            _snapshot.PreferQuality = selected.Data.Quality;
+            pgcResolver.ResetSnapshot(_snapshot);
             await ReplayCurrentPositionAsync(isCurrent);
         }
 

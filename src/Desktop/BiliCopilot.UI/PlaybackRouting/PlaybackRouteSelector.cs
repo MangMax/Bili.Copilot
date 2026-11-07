@@ -5,7 +5,7 @@ namespace BiliCopilot.UI.PlaybackRouting;
 internal static class PlaybackRouteSelector
 {
     public static string? Select(string? baseUrl, IEnumerable<string>? backupUrls,
-        PlaybackRoutePreference preference = PlaybackRoutePreference.Auto, bool withoutP2P = false)
+        PlaybackRoutePreference preference = PlaybackRoutePreference.Auto, bool withoutP2P = false, string? previousHost = null)
     {
         var candidates = new[] { baseUrl }.Concat(backupUrls ?? [])
             .Where(url => Uri.TryCreate(url, UriKind.Absolute, out var uri)
@@ -27,6 +27,8 @@ internal static class PlaybackRouteSelector
         }).ToList();
         return (preferred.Count > 0 ? preferred : candidates)
             .OrderBy(candidate => IsRiskyHost(candidate.Host))
+            .ThenBy(candidate => preference is not (PlaybackRoutePreference.Primary or PlaybackRoutePreference.Backup)
+                && candidate.Host.Equals(previousHost?.TrimEnd('.'), StringComparison.OrdinalIgnoreCase))
             .FirstOrDefault()?.Url;
     }
 
