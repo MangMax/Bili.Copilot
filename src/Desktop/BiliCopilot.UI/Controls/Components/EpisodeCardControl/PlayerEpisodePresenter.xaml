@@ -88,7 +88,8 @@
                     VerticalAlignment="Center"
                     Orientation="Horizontal"
                     Spacing="4"
-                    ToolTipService.ToolTip="{ext:Locale Name=LikeCount}">
+                    ToolTipService.ToolTip="{ext:Locale Name=LikeCount}"
+                    Visibility="{x:Bind ViewModel.LikeCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
                     <ic:SymbolIcon
                         VerticalAlignment="Center"
                         FontSize="10"
