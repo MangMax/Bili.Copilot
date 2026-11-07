@@ -64,8 +64,6 @@
         <Grid Margin="4,0,0,6" ColumnSpacing="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="24" />
-                <ColumnDefinition Width="24" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
@@ -76,44 +74,8 @@
                 VerticalAlignment="Center"
                 Visibility="{x:Bind Header, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
             <Button
-                x:Name="ScrollLeftButton"
-                Grid.Column="1"
-                Width="24"
-                Height="24"
-                Padding="0"
-                VerticalAlignment="Center"
-                AutomationProperties.AutomationId="CollaboratorScrollLeft"
-                AutomationProperties.Name="{x:Bind ScrollLeftText, Mode=OneWay}"
-                Background="{ThemeResource ControlFillColorSecondaryBrush}"
-                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                BorderThickness="1"
-                Click="OnScrollLeftClick"
-                CornerRadius="12"
-                ToolTipService.ToolTip="{x:Bind ScrollLeftText, Mode=OneWay}"
-                Visibility="Collapsed">
-                <FontIcon FontSize="9" Glyph="&#xE0E2;" />
-            </Button>
-            <Button
-                x:Name="ScrollRightButton"
-                Grid.Column="2"
-                Width="24"
-                Height="24"
-                Padding="0"
-                VerticalAlignment="Center"
-                AutomationProperties.AutomationId="CollaboratorScrollRight"
-                AutomationProperties.Name="{x:Bind ScrollRightText, Mode=OneWay}"
-                Background="{ThemeResource ControlFillColorSecondaryBrush}"
-                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                BorderThickness="1"
-                Click="OnScrollRightClick"
-                CornerRadius="12"
-                ToolTipService.ToolTip="{x:Bind ScrollRightText, Mode=OneWay}"
-                Visibility="Collapsed">
-                <FontIcon FontSize="9" Glyph="&#xE0E3;" />
-            </Button>
-            <Button
                 x:Name="ExpandButton"
-                Grid.Column="3"
+                Grid.Column="1"
                 Margin="4,0,0,0"
                 Padding="4,2"
                 AutomationProperties.AutomationId="CollaboratorExpandButton"
@@ -156,6 +118,40 @@
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
                 </ScrollViewer>
+                <Button
+                    x:Name="ScrollLeftButton"
+                    Width="32"
+                    Padding="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Stretch"
+                    Canvas.ZIndex="1"
+                    AutomationProperties.AutomationId="CollaboratorScrollLeft"
+                    AutomationProperties.Name="{x:Bind ScrollLeftText, Mode=OneWay}"
+                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                    BorderThickness="0"
+                    Click="OnScrollLeftClick"
+                    CornerRadius="0"
+                    ToolTipService.ToolTip="{x:Bind ScrollLeftText, Mode=OneWay}"
+                    Visibility="Collapsed">
+                    <FontIcon FontSize="12" Glyph="&#xE0E2;" />
+                </Button>
+                <Button
+                    x:Name="ScrollRightButton"
+                    Width="32"
+                    Padding="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Stretch"
+                    Canvas.ZIndex="1"
+                    AutomationProperties.AutomationId="CollaboratorScrollRight"
+                    AutomationProperties.Name="{x:Bind ScrollRightText, Mode=OneWay}"
+                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                    BorderThickness="0"
+                    Click="OnScrollRightClick"
+                    CornerRadius="0"
+                    ToolTipService.ToolTip="{x:Bind ScrollRightText, Mode=OneWay}"
+                    Visibility="Collapsed">
+                    <FontIcon FontSize="12" Glyph="&#xE0E3;" />
+                </Button>
             </Grid>
 
             <repeater:AppRepeater
