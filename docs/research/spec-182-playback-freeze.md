@@ -1,5 +1,10 @@
 # Investigation #183: split-track playback freeze
 
+Follow-up: [existing transport options and actual app seek](spec-184-transport-seek.md)
+qualifies the seek conclusion below. A seek before an evicted cache start can
+fetch new bytes and recover; the original retained-cache target-14 experiment
+does not generalize to all manual seeks. The later report also tests real TLS h2.
+
 Investigation date: 2026-11-07. Parent: [#182](https://github.com/MangMax/Bili.Copilot/issues/182). Base and integration tip inspected: `0d9ee8724090917a5ba8fdb52c12a539221528f3`. No production changes, dependency changes, issue mutations, or PR. Investigation completed within one working day.
 
 ## Finding and decision
