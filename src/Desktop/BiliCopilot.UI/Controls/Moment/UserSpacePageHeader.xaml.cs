@@ -44,14 +44,14 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
     private void OnViewModelInitialized(object? sender, EventArgs e)
         => InitializeChildPartitions();
 
-    private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (sender.SelectedItem is null)
+        if (Selector.SelectedItem is null)
         {
             return;
         }
 
-        var item = sender.SelectedItem.Tag as UserMomentDetailViewModel;
+        var item = Selector.SelectedItem as UserMomentDetailViewModel;
         if (item is not null && item != ViewModel.SelectedSection)
         {
             ViewModel.SelectSectionCommand.Execute(item);
@@ -60,12 +60,12 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
 
     private void InitializeChildPartitions()
     {
-        Selector.Items.Clear();
+        var items = new List<SelectorBarItem>();
         if (ViewModel.Sections is not null)
         {
             foreach (var item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem()
+                items.Add(new SelectorBarItem()
                 {
                     Text = item.Title,
                     Tag = item,
@@ -73,6 +73,6 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
             }
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.SelectedSection);
+        Selector.SetItems(items, ViewModel.SelectedSection);
     }
 }
