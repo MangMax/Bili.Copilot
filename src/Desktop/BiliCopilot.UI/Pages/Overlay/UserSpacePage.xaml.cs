@@ -1,13 +1,15 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls;
+using BiliCopilot.UI.Controls.Moment;
 using BiliCopilot.UI.ViewModels.View;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Richasy.BiliKernel.Models.User;
 using Richasy.WinUIKernel.Share.Base;
 using System.ComponentModel;
+using System.Numerics;
+using Windows.UI.ViewManagement;
 
 namespace BiliCopilot.UI.Pages.Overlay;
 
@@ -16,11 +18,10 @@ namespace BiliCopilot.UI.Pages.Overlay;
 /// </summary>
 public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, ICancelPageViewModel
 {
+    private readonly UISettings _uiSettings = new();
     private int _loadGeneration = -1;
     private ScrollView? _activeScroll;
-    private FrameworkElement? _scrollContent;
-    private ScrollBar? _verticalScrollBar;
-    private Thickness _scrollBarMargin;
+    private UserSpacePageHeader? _activeHeader;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePage"/> class.
@@ -34,6 +35,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
     private void OnSpaceLoaded(object sender, RoutedEventArgs e)
     {
+        UpdateBackdropColor();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         QueueScrollHostUpdate();
     }
@@ -42,10 +44,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     {
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         LayoutUpdated -= OnSpaceLayoutUpdated;
-        DisconnectScrollBar();
-        SpaceHeader.ConnectScroll(null);
+        DisconnectHeader();
         _activeScroll = null;
-        _scrollContent = null;
+        ConnectBackdrop();
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -58,7 +59,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
     private void QueueScrollHostUpdate()
     {
-        // 等待分区模板完成布局后绑定一次，避免滚动时反复遍历视觉树。
+        // 分区模板完成布局后只绑定一次，滚动本身完全交给原生容器。
         LayoutUpdated -= OnSpaceLayoutUpdated;
         LayoutUpdated += OnSpaceLayoutUpdated;
     }
@@ -79,105 +80,98 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             return;
         }
 
-        DisconnectScrollBar();
+        DisconnectHeader();
         _activeScroll = scroll;
-        _scrollContent = host?.Element as FrameworkElement;
-        scroll.ApplyTemplate();
-        ConnectScrollBar();
-        UpdateScrollInset();
+        _activeHeader = FindChild<UserSpacePageHeader>(scroll);
+        if (_activeHeader is not null)
+        {
+            _activeHeader.SizeChanged += OnHeaderSizeChanged;
+        }
+
+        UpdateBackdropSize();
+        ConnectBackdrop();
     }
 
-    private void ConnectScrollBar()
+    private void DisconnectHeader()
     {
-        if (_activeScroll is null || _verticalScrollBar is not null)
+        if (_activeHeader is not null)
+        {
+            _activeHeader.SizeChanged -= OnHeaderSizeChanged;
+            _activeHeader = null;
+        }
+    }
+
+    private void OnHeaderSizeChanged(object sender, SizeChangedEventArgs e) => UpdateBackdropSize();
+
+    private void UpdateBackdropSize()
+    {
+        // 背景延伸到首排内容之后，渐变不在页头或导航边缘终止。
+        Backdrop.Height = (_activeHeader?.ActualHeight ?? 420) + 240;
+    }
+
+    private void ConnectBackdrop()
+    {
+        var surface = ElementCompositionPreview.GetElementVisual(Backdrop);
+        var image = ElementCompositionPreview.GetElementVisual(BackdropImage);
+        var fade = ElementCompositionPreview.GetElementVisual(BackdropFade);
+        ElementCompositionPreview.SetIsTranslationEnabled(BackdropImage, true);
+        ElementCompositionPreview.SetIsTranslationEnabled(BackdropFade, true);
+        image.StopAnimation("Translation.Y");
+        fade.StopAnimation("Translation.Y");
+        image.Properties.InsertVector3("Translation", Vector3.Zero);
+        fade.Properties.InsertVector3("Translation", Vector3.Zero);
+        surface.Clip?.Dispose();
+        surface.Clip = null;
+        if (_activeScroll is null)
         {
             return;
         }
 
-        _verticalScrollBar = FindChild<ScrollBar>(_activeScroll, "PART_VerticalScrollBar");
-        if (_verticalScrollBar is not null)
-        {
-            _scrollBarMargin = _verticalScrollBar.Margin;
-            _activeScroll.ViewChanged += OnScrollViewChanged;
-            UpdateScrollBarInset();
-        }
-    }
+        using var parallax = surface.Compositor.CreateExpressionAnimation("-Max(0, source.Position.Y - source.MinPosition.Y) * speed");
+        parallax.SetReferenceParameter("source", _activeScroll.ExpressionAnimationSources);
+        parallax.SetScalarParameter("speed", _uiSettings.AnimationsEnabled ? 0.45f : 1f);
+        image.StartAnimation("Translation.Y", parallax);
+        parallax.SetScalarParameter("speed", 1f);
+        fade.StartAnimation("Translation.Y", parallax);
 
-    private void DisconnectScrollBar()
-    {
-        if (_activeScroll is not null)
-        {
-            _activeScroll.ViewChanged -= OnScrollViewChanged;
-        }
-
-        if (_verticalScrollBar is not null)
-        {
-            _verticalScrollBar.Margin = _scrollBarMargin;
-            _verticalScrollBar = null;
-        }
-    }
-
-    private void OnScrollViewChanged(ScrollView sender, object e) => UpdateScrollBarInset();
-
-    private void UpdateScrollBarInset()
-    {
-        if (_verticalScrollBar is null || _activeScroll is null)
-        {
-            return;
-        }
-
-        // 仅缩短滚动条轨道，避免改变内容视口导致锚点跳动。
-        var collapsed = Math.Clamp(_activeScroll.VerticalOffset, 0, SpaceHeader.CollapseHeight);
-        var inset = Math.Max(0, SpaceHeader.ActualHeight - collapsed);
-        var margin = new Thickness(_scrollBarMargin.Left, _scrollBarMargin.Top + inset,
-            _scrollBarMargin.Right, _scrollBarMargin.Bottom);
-        if (_verticalScrollBar.Margin != margin)
-        {
-            _verticalScrollBar.Margin = margin;
-        }
-    }
-
-    private void OnSpaceHeaderSizeChanged(object sender, SizeChangedEventArgs e) => UpdateScrollInset();
-
-    private void UpdateScrollInset()
-    {
-        if (_scrollContent is not null)
-        {
-            _scrollContent.Margin = new Thickness(0, SpaceHeader.ActualHeight + 16, 0, 16);
-            _scrollContent.MinHeight = Math.Max(160, PageLayout.ActualHeight - SpaceHeader.ActualHeight - 32);
-        }
-
-        SpaceHeader.ConnectScroll(_activeScroll);
-        UpdateScrollBarInset();
+        // 底色遮罩随内容上移，裁掉遮罩下方的图片，避免视差露出封面底边。
+        var clip = surface.Compositor.CreateInsetClip();
+        using var crop = surface.Compositor.CreateExpressionAnimation("Min(surface.Size.Y, Max(0, source.Position.Y - source.MinPosition.Y))");
+        crop.SetReferenceParameter("source", _activeScroll.ExpressionAnimationSources);
+        crop.SetReferenceParameter("surface", surface);
+        clip.StartAnimation("BottomInset", crop);
+        surface.Clip = clip;
     }
 
     private void OnPageSizeChanged(object sender, SizeChangedEventArgs e)
     {
+        Backdrop.Width = e.NewSize.Width;
         PageLayout.Clip = new RectangleGeometry { Rect = new Windows.Foundation.Rect(0, 0, e.NewSize.Width, e.NewSize.Height) };
-        UpdateScrollInset();
     }
 
-    private void OnHeaderPointerWheelChanged(object sender, PointerRoutedEventArgs e)
+    private void OnPageThemeChanged(FrameworkElement sender, object args) => UpdateBackdropColor();
+
+    private void UpdateBackdropColor()
     {
-        if (_activeScroll is not null)
-        {
-            _activeScroll.ScrollBy(0, -e.GetCurrentPoint(this).Properties.MouseWheelDelta,
-                new ScrollingScrollOptions(ScrollingAnimationMode.Auto, ScrollingSnapPointsMode.Ignore));
-            e.Handled = true;
-        }
+        // 透明端保留底色的 RGB，避免 Transparent 的白色分量产生灰雾。
+        var color = ((SolidColorBrush)PageLayout.Background).Color;
+        color.A = 0;
+        BackdropFadeStart.Color = color;
+        color.A = 204;
+        BackdropFadeMiddle.Color = color;
     }
 
-    private static T? FindChild<T>(DependencyObject root, string? name = null)
+    private static T? FindChild<T>(DependencyObject root)
         where T : DependencyObject
     {
-        if (root is T match && (name is null || (root is FrameworkElement element && element.Name == name)))
+        if (root is T match)
         {
             return match;
         }
 
         for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
         {
-            if (FindChild<T>(VisualTreeHelper.GetChild(root, i), name) is { } child)
+            if (FindChild<T>(VisualTreeHelper.GetChild(root, i)) is { } child)
             {
                 return child;
             }

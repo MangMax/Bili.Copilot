@@ -55,45 +55,13 @@
             <RowDefinition
                 Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid
-            x:Name="HeroLayout"
-            SizeChanged="OnHeroSizeChanged"
-            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto" />
                 <RowDefinition
                     Height="Auto" />
             </Grid.RowDefinitions>
-            <Canvas
-                Grid.RowSpan="2"
-                IsHitTestVisible="False">
-                <controls:RecommendationCoverImage
-                    x:Name="HeroImage"
-                    Source="{x:Bind ViewModel.Card.Banner.SourceUri, Mode=OneWay, FallbackValue={x:Null}}" />
-            </Canvas>
-            <Border
-                Grid.RowSpan="2"
-                IsHitTestVisible="False">
-                <Border.Background>
-                    <LinearGradientBrush
-                        StartPoint="0,0"
-                        EndPoint="0,1">
-                        <GradientStop
-                            Offset="0.30"
-                            Color="Transparent" />
-                        <GradientStop
-                            Offset="0.48"
-                            Color="{ThemeResource LayerFillColorDefault}" />
-                        <GradientStop
-                            Offset="0.80"
-                            Color="{ThemeResource SolidBackgroundFillColorBase}" />
-                        <GradientStop
-                            Offset="1"
-                            Color="{ThemeResource SolidBackgroundFillColorBase}" />
-                    </LinearGradientBrush>
-                </Border.Background>
-            </Border>
             <Grid
                 x:Name="SpaceBanner"
                 Height="240"
@@ -169,7 +137,7 @@
                                 Source="{x:Bind ViewModel.Card.Profile.Level, Mode=OneWay, Converter={StaticResource LevelImageConverter}, FallbackValue={x:Null}}" />
                         </StackPanel>
                         <TextBlock
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                             TextWrapping="Wrap"
                             MaxLines="2"
                             TextTrimming="CharacterEllipsis"
@@ -177,7 +145,7 @@
                             ToolTipService.ToolTip="{x:Bind ViewModel.Card.Profile.Introduce, Mode=OneWay, FallbackValue=''}" />
                         <TextBlock
                             Style="{StaticResource CaptionTextBlockStyle}"
-                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                             IsTextSelectionEnabled="True"
                             Visibility="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
                             <Run Text="UID " /><Run Text="{x:Bind ViewModel.Card.Profile.User.Id, Mode=OneWay, FallbackValue=''}" />
@@ -259,12 +227,10 @@
             </InfoBar>
         </StackPanel>
         <Grid
-            x:Name="NavigationBar"
             Grid.Row="2"
             Padding="24,0"
             MinHeight="52"
-            ColumnSpacing="12"
-            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+            ColumnSpacing="12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition
                     Width="*" />
