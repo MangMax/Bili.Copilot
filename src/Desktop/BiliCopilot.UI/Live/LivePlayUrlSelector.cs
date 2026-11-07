@@ -91,8 +91,8 @@ public sealed record LivePlaybackCandidate(
 /// <para>排序规则（#194）：http_hls 优先于 http_stream；容器 fmp4 优先于 ts 优先于 flv；
 /// avc 优先于其他编码；含 mcdn 的候选最后；同一候选内多条地址保持内核给出的顺序；
 /// 完全相同的地址只保留第一次出现。</para>
-/// <para>容器推导：内核的 <see cref="LiveLineInformation"/> 只保留 codec 名与 BaseUrl，
-/// 丢弃了接口里的 format_name（ts/fmp4）。因此这里从拼好的地址推导容器：
+/// <para>容器推导：优先使用内核 <see cref="LiveLineInformation.FormatName"/>（接口的
+/// <c>format_name</c>：ts/fmp4/flv），它比地址更可靠；为空时回退到从拼好的地址推导：
 /// 地址中出现 <c>fmp4</c> 标记、或以 <c>.m4s</c>/<c>.mp4</c> 结尾 → fmp4；
 /// 以 <c>.ts</c> 结尾 → ts；以 <c>.flv</c> 结尾 → flv；
 /// 以 <c>.m3u8</c> 结尾且没有 fmp4 标记 → 按 B 站 HLS 默认切片视为 ts；
@@ -153,7 +153,7 @@ public static class LivePlayUrlSelector
                     line.Quality,
                     url.Protocol ?? string.Empty,
                     IsMcdnHost(url.Host),
-                    DetectContainer(composed)));
+                    DetectContainer(composed, line.FormatName)));
             }
 
             if (targets.Count == 0)
@@ -183,11 +183,23 @@ public static class LivePlayUrlSelector
     }
 
     /// <summary>
+    /// 判定容器：优先使用内核返回的 <c>format_name</c>，没有时回退到地址推导。
+    /// </summary>
+    /// <param name="url">绝对播放地址.</param>
+    /// <param name="formatName">内核返回的容器格式名（如 <c>ts</c>/<c>fmp4</c>）.</param>
+    /// <returns>容器种类.</returns>
+    public static LiveContainerKind DetectContainer(string? url, string? formatName = null)
+    {
+        var declared = ParseFormatName(formatName);
+        return declared != LiveContainerKind.Unknown ? declared : DetectContainerFromUrl(url);
+    }
+
+    /// <summary>
     /// 从绝对地址推导容器；推导规则见类型说明。
     /// </summary>
     /// <param name="url">绝对播放地址.</param>
     /// <returns>容器种类.</returns>
-    public static LiveContainerKind DetectContainer(string? url)
+    public static LiveContainerKind DetectContainerFromUrl(string? url)
     {
         if (string.IsNullOrWhiteSpace(url))
         {
@@ -255,6 +267,15 @@ public static class LivePlayUrlSelector
 
         return baseUrl + route + query;
     }
+
+    private static LiveContainerKind ParseFormatName(string? formatName)
+        => formatName?.Trim().ToLowerInvariant() switch
+        {
+            "fmp4" or "m4s" or "mp4" => LiveContainerKind.Fmp4,
+            "ts" => LiveContainerKind.Ts,
+            "flv" => LiveContainerKind.Flv,
+            _ => LiveContainerKind.Unknown,
+        };
 
     private static bool IsMcdnHost(string? host)
         => !string.IsNullOrEmpty(host) && host.Contains("mcdn", StringComparison.OrdinalIgnoreCase);

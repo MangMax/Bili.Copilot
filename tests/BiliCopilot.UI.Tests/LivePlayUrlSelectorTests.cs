@@ -193,6 +193,39 @@ public sealed class LivePlayUrlSelectorTests
         Assert.Equal("a.example", candidate.Primary.Host);
     }
 
+    [Fact]
+    public void DetectContainer_PrefersDeclaredFormatNameOverUrlHeuristic()
+    {
+        // 无标记的 m3u8 从地址看只能按 ts 猜；内核给了 format_name 就以它为准。
+        Assert.Equal(LiveContainerKind.Fmp4, LivePlayUrlSelector.DetectContainer("https://a.example/live/a.m3u8", "fmp4"));
+        Assert.Equal(LiveContainerKind.Flv, LivePlayUrlSelector.DetectContainer("https://a.example/live/a.m3u8", "flv"));
+        Assert.Equal(LiveContainerKind.Ts, LivePlayUrlSelector.DetectContainer("https://a.example/live/a.flv", "ts"));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("unknown-format")]
+    public void DetectContainer_FallsBackToUrlWhenFormatNameIsMissingOrUnknown(string? formatName)
+        => Assert.Equal(
+            LiveContainerKind.Ts,
+            LivePlayUrlSelector.DetectContainer("https://a.example/live/a.m3u8", formatName));
+
+    [Fact]
+    public void OrderCandidates_UsesDeclaredFormatNameForContainerRanking()
+    {
+        // 两条都是无标记的 m3u8：只靠地址会并列，靠 format_name 才能把 fmp4 排到前面。
+        var declaredTs = new LiveLineInformation("avc", 400, [400], [Url("http_hls", "https://ts.example", "/live/a.m3u8", string.Empty)], "ts");
+        var declaredFmp4 = new LiveLineInformation("avc", 400, [400], [Url("http_hls", "https://fmp4.example", "/live/a.m3u8", string.Empty)], "fmp4");
+
+        var candidates = LivePlayUrlSelector.OrderCandidates([declaredTs, declaredFmp4]);
+
+        Assert.Equal("https://fmp4.example/live/a.m3u8", candidates[0].Primary.Url);
+        Assert.Equal(LiveContainerKind.Fmp4, candidates[0].Container);
+        Assert.Equal(LiveContainerKind.Ts, candidates[1].Container);
+    }
+
     private static LiveLineInformation Line(string codec, int quality, params LivePlayUrl[] urls)
         => new(codec, quality, [quality], urls);
 
