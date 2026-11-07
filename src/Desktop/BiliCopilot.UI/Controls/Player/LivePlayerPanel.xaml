@@ -10,7 +10,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Width="360" MinHeight="320">
+    <!--  竖屏直播与窄窗口下侧栏随可用宽度收缩，保证状态与聊天入口不被裁掉。  -->
+    <Grid
+        MinWidth="220"
+        MinHeight="320"
+        MaxWidth="360"
+        HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -45,6 +50,26 @@
                     Text="{x:Bind ViewModel.TagName, Mode=OneWay, FallbackValue=''}"
                     Visibility="{x:Bind ViewModel.TagName, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
             </StackPanel>
+            <!--  在线人数与开播时长（#198）：人数随事件更新，时长按分钟/小时展示。  -->
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, FallbackValue=''}"
+                    Visibility="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                    Text="{x:Bind ViewModel.UptimeText, Mode=OneWay, FallbackValue=''}"
+                    Visibility="{x:Bind ViewModel.UptimeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+            </StackPanel>
+            <!--  终态说明：下播/被切断时把原因留在侧栏，窗口不黑屏。  -->
+            <TextBlock
+                FontSize="12"
+                Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                Text="{x:Bind ViewModel.RoomStateDescription, Mode=OneWay, FallbackValue=''}"
+                TextWrapping="Wrap"
+                Visibility="{x:Bind ViewModel.IsRoomTerminal, Mode=OneWay, FallbackValue=Collapsed}" />
         </StackPanel>
         <Border
             Grid.Row="2"

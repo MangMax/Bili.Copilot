@@ -449,8 +449,9 @@ public sealed partial class PlayerViewModel
     /// </summary>
     private void RunLivePlaybackRecovery(LivePlaybackFailureKind kind, Func<bool> isCurrent)
     {
-        if (!isCurrent() || _sourceResolver is not LiveMediaSourceResolver resolver || _playbackRefresh.IsRefreshing)
+        if (!isCurrent() || IsLiveRoomTerminal || _sourceResolver is not LiveMediaSourceResolver resolver || _playbackRefresh.IsRefreshing)
         {
+            // 已下播/被切断：房间事件是权威状态，不再自动重连或自动刷新。
             return;
         }
 

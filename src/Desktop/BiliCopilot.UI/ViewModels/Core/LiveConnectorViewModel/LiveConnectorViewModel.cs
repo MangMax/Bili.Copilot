@@ -45,6 +45,7 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
         // 换房/重进：先停掉上一房间的弹幕连接与注入，再重置房间状态。
         await StopDanmakuAsync();
         Session.Reset(snapshot.Live);
+        ResetRoomStatus(snapshot.Live.Identifier.Id);
         ErrorText = default;
         IsLoading = true;
         SyncFromSession();
@@ -60,6 +61,7 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
             }
 
             SyncFromSession();
+            ApplyRoomDetailStatus();
             UpdateProperties();
             // 弹幕连接不阻塞播放初始化：认证与重连在后台进行，失败只影响弹幕状态。
             StartDanmakuInBackground(snapshot.Live.Identifier.Id);
@@ -98,6 +100,7 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
     public void CancelPending()
     {
         Session.CancelPending();
+        DetachRoomStatus();
         StopDanmakuInBackground();
     }
 
@@ -122,7 +125,10 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
         Cover = Session.Page?.Information.Identifier.Cover?.Uri;
         IsLiving = Session.IsLiving;
         TagName = Session.TagName;
-        RoomStatusText = ResourceToolkit.GetLocalizedString(LiveFailureText.GetRoomStatus(IsLiving, IsLoading && Session.Page is null));
+        if (!IsRoomTerminal)
+        {
+            RoomStatusText = ResourceToolkit.GetLocalizedString(LiveFailureText.GetRoomStatus(IsLiving, IsLoading && Session.Page is null));
+        }
     }
 
     private void UpdateProperties()

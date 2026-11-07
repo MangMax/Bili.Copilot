@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Globalization;
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.UI.Dispatching;
 
@@ -18,14 +19,13 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
 {
     private const int RetryIntervalMilliseconds = 40;
     private const int MaxScrollTicks = 75;
-    private const double BottomThreshold = 24d;
 
     private readonly DispatcherQueueTimer _scrollTimer;
+    private readonly LiveChatScrollOwnership _ownership = new();
 
     private int _scrollTicks;
     private double _lastScrollExtent = double.NaN;
     private double _lastScrollOffset = double.NaN;
-    private bool _isAutoScrolling;
     private int _lastCount;
 
     /// <summary>
@@ -75,7 +75,7 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         }
 
         _scrollTimer.Stop();
-        _isAutoScrolling = false;
+        _ownership.Reset();
         _lastCount = 0;
     }
 
@@ -114,7 +114,7 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         _lastCount = count;
 
         // 只有"追加一条且仍在跟随"才自动滚到底；整表重置与用户回看都不抢滚动位置。
-        if (isAppend && _isAutoScrolling)
+        if (isAppend && _ownership.ReportAppend())
         {
             StartScrollToBottom();
         }
@@ -122,17 +122,20 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
 
     private void OnChatViewChanged(ScrollView sender, object args)
     {
-        if (_isAutoScrolling)
+        if (ChatView is null)
         {
             return;
         }
 
-        var atBottom = IsAtBottom();
-        UpdateBackToBottomVisibility(!atBottom);
-        if (atBottom && ViewModel?.ChatMessages.Count > 0)
+        if (_scrollTimer.IsRunning)
         {
-            _isAutoScrolling = true;
+            // 自动跟随自己产生的位置变化不算用户回看。
+            _ownership.ReportProgrammaticScroll(ChatView.VerticalOffset, ChatView.ExtentHeight, ChatView.ViewportHeight);
+            return;
         }
+
+        _ownership.ReportUserScroll(ChatView.VerticalOffset, ChatView.ExtentHeight, ChatView.ViewportHeight);
+        UpdateBackToBottomVisibility(_ownership.ShouldShowBackToBottom);
     }
 
     private void OnBackToBottomClick(object sender, RoutedEventArgs e)
@@ -173,17 +176,6 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
             ? []
             : text.Split([',', '，', ';', '；', '\n', '\r', ' ', '\t'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-    private bool IsAtBottom()
-    {
-        if (ChatView is null)
-        {
-            return true;
-        }
-
-        var target = Math.Max(0d, ChatView.ExtentHeight - ChatView.ViewportHeight);
-        return Math.Abs(ChatView.VerticalOffset - target) < BottomThreshold;
-    }
-
     private void StartScrollToBottom()
     {
         if (ChatView is null)
@@ -194,7 +186,7 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         _scrollTicks = 0;
         _lastScrollExtent = double.NaN;
         _lastScrollOffset = double.NaN;
-        _isAutoScrolling = true;
+        _ownership.RequestBackToBottom();
         _scrollTimer.Stop();
         _scrollTimer.Start();
     }
@@ -232,11 +224,7 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         }
     }
 
-    private void StopScrollToBottom()
-    {
-        _scrollTimer.Stop();
-        _isAutoScrolling = false;
-    }
+    private void StopScrollToBottom() => _scrollTimer.Stop();
 
     private void UpdateBackToBottomVisibility(bool visible)
     {
