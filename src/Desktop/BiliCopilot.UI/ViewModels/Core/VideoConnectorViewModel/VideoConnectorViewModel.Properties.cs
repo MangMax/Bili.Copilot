@@ -55,6 +55,18 @@ public sealed partial class VideoConnectorViewModel
     [ObservableProperty]
     public partial Uri? UpAvatar { get; set; }
 
+    /// <summary>
+    /// 联合投稿时除主投稿人以外的合作者，用于头像名称列表.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<VideoContributorViewModel>? Contributors { get; set; }
+
+    /// <summary>
+    /// 是否需要在信息区展示合作投稿人列表.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool HasContributors { get; set; }
+
     [ObservableProperty]
     public partial string? PublishRelativeTime { get; set; }
 

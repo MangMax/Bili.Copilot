@@ -27,14 +27,16 @@ public sealed partial class VideoConnectorViewModel
         IsMyVideo = _view.Information.Publisher.User.Id == this.Get<IBiliTokenResolver>().GetToken().UserId.ToString();
         UpAvatar = view.Information.Publisher.User.Avatar.Uri;
         var primaryUser = view.Information.Publisher?.User;
-        var collaboratorUsers = view.Information.Collaborators?
-            .Where(collaborator => collaborator?.User is not null)
-            .Where(collaborator => primaryUser is null || collaborator.User.Id != primaryUser.Id)
-            .DistinctBy(collaborator => collaborator.User.Id)
-            .Select(collaborator => collaborator.User);
-        UpName = PublisherNameMerger.Merge(
-            primaryUser?.Name,
-            collaboratorUsers?.Select(user => user.Name));
+        var collaborators = CollaboratorListBuilder.Build(primaryUser, view.Information.Collaborators);
+        Contributors = [.. collaborators.Select(profile => new VideoContributorViewModel(profile))];
+        HasContributors = Contributors.Count > 0;
+
+        // 合作者改用头像名称列表展示，上方只保留主投稿人；主投稿人资料缺失时退回姓名拼接.
+        UpName = primaryUser?.Name;
+        if (string.IsNullOrWhiteSpace(UpName))
+        {
+            UpName = PublisherNameMerger.Merge(null, collaborators.Select(profile => profile.User.Name));
+        }
         var relativeTime = DateTimeOffset.Now - view.Information.PublishTime > TimeSpan.FromDays(90) ? view.Information.PublishTime!.Value.ToString("yyyy-MM-dd HH:mm:ss") : view.Information.PublishTime.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
         PublishRelativeTime = string.Format(ResourceToolkit.GetLocalizedString(StringNames.AuthorPublishTime), relativeTime);
         Description = view.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description);
@@ -109,6 +111,8 @@ public sealed partial class VideoConnectorViewModel
         _part = default;
         Tags = default;
         UpAvatar = default;
+        Contributors = default;
+        HasContributors = false;
         IsFollow = false;
         PlayCount = 0;
         DanmakuCount = 0;

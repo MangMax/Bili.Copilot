@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="BiliCopilot.UI.Controls.Components.ContributorListControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:community="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater"
+    mc:Ignorable="d">
+
+    <StackPanel Spacing="6">
+        <TextBlock
+            Margin="4,0,0,0"
+            AutomationProperties.AutomationId="ContributorListHeader"
+            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+            Style="{StaticResource CaptionTextBlockStyle}"
+            Text="{x:Bind Header, Mode=OneWay}"
+            Visibility="{x:Bind Header, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
+        <repeater:AppRepeater ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
+            <repeater:AppRepeater.ItemTemplate>
+                <DataTemplate x:DataType="items:VideoContributorViewModel">
+                    <Button
+                        Padding="4,2"
+                        AutomationProperties.Name="{x:Bind Name, Mode=OneTime}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{x:Bind OpenUserSpaceCommand, Mode=OneWay}"
+                        CornerRadius="4"
+                        ToolTipService.ToolTip="{x:Bind Role, Mode=OneTime}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <controls:BasicCoverImage
+                                Width="22"
+                                Height="22"
+                                CornerRadius="11"
+                                DecodeWidth="44"
+                                Source="{x:Bind Avatar, Mode=OneTime}" />
+                            <base:TrimTextBlock
+                                MaxLines="1"
+                                MaxWidth="132"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Text="{x:Bind Name, Mode=OneTime}" />
+                        </StackPanel>
+                    </Button>
+                </DataTemplate>
+            </repeater:AppRepeater.ItemTemplate>
+            <repeater:AppRepeater.Layout>
+                <community:WrapLayout HorizontalSpacing="2" VerticalSpacing="2" />
+            </repeater:AppRepeater.Layout>
+        </repeater:AppRepeater>
+    </StackPanel>
+</UserControl>
