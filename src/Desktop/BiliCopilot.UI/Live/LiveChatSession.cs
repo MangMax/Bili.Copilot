@@ -58,7 +58,7 @@ public sealed class LiveChatSession
 {
     private readonly object _gate = new();
     private readonly LiveChatWindow _window;
-    private LiveChatBlockRules _blockRules;
+    private readonly LiveChatBlockRules _blockRules;
     private long _sequence;
     private LiveDanmakuConnectionState? _lastState;
     private int _received;
