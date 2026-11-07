@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Resolvers\QualitySelectionStrategy.cs" Link="Resolvers\QualitySelectionStrategy.cs" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\PreferQualityType.cs" Link="Resolvers\PreferQualityType.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\EpisodeAccessTag.cs" Link="Episodes\EpisodeAccessTag.cs" />
   </ItemGroup>
 
   <!-- Real navigation/cache logic; adapters provide only the Windows presentation surface. -->

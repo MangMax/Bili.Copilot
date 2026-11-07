@@ -24,6 +24,27 @@
             DecodeWidth="600"
             Source="{x:Bind ViewModel.Cover, Mode=OneWay}" />
         <Border
+            MinHeight="18"
+            Margin="10,10,0,0"
+            Padding="7,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            AutomationProperties.Name="{x:Bind ViewModel.AccessTagAutomationName, Mode=OneWay}"
+            CornerRadius="4"
+            Visibility="{x:Bind ViewModel.HasAccessTag, Mode=OneWay}">
+            <Border.Background>
+                <SolidColorBrush Color="{x:Bind ViewModel.AccessTagColor, Mode=OneWay}" />
+            </Border.Background>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="10"
+                FontWeight="SemiBold"
+                Foreground="White"
+                Text="{x:Bind ViewModel.AccessTagText, Mode=OneWay}"
+                TextAlignment="Center" />
+        </Border>
+        <Border
             Margin="8"
             Padding="4"
             HorizontalAlignment="Right"
@@ -51,7 +72,7 @@
                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                 Style="{StaticResource CaptionTextBlockStyle}"
                 Text="{x:Bind ViewModel.HighlightText, Mode=OneWay}"
-                Visibility="{x:Bind ViewModel.HighlightText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
+                Visibility="{x:Bind ViewModel.IsHighlightTextVisible, Mode=OneWay}" />
             <base:TrimTextBlock
                 Grid.Row="1"
                 HorizontalAlignment="Left"
@@ -67,7 +88,8 @@
                     VerticalAlignment="Center"
                     Orientation="Horizontal"
                     Spacing="4"
-                    ToolTipService.ToolTip="{ext:Locale Name=LikeCount}">
+                    ToolTipService.ToolTip="{ext:Locale Name=LikeCount}"
+                    Visibility="{x:Bind ViewModel.LikeCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
                     <ic:SymbolIcon
                         VerticalAlignment="Center"
                         FontSize="10"
