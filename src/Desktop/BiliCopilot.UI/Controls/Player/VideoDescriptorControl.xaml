@@ -25,7 +25,6 @@
             ToggleFollowCommand="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
             UserName="{x:Bind ViewModel.UpName, Mode=OneWay}" />
         <components:ContributorListControl
-            Margin="8,0,0,0"
             Header="{ext:Locale Name=CollaborativeSubmission}"
             ItemsSource="{x:Bind ViewModel.Contributors, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.HasContributors, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
