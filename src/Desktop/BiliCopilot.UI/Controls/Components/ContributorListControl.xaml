@@ -137,7 +137,11 @@
                     Foreground="{ThemeResource ControlStrongFillColorDefaultBrush}"
                     ToolTipService.ToolTip="{x:Bind ScrollLeftText, Mode=OneWay}"
                     Visibility="Collapsed">
-                    <FontIcon FontSize="8" Glyph="&#xEDDB;" />
+                    <FontIcon
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        FontSize="8"
+                        Glyph="&#xEDD9;"
+                        MirroredWhenRightToLeft="True" />
                 </Button>
                 <Button
                     x:Name="ScrollRightButton"
@@ -158,7 +162,11 @@
                     Foreground="{ThemeResource ControlStrongFillColorDefaultBrush}"
                     ToolTipService.ToolTip="{x:Bind ScrollRightText, Mode=OneWay}"
                     Visibility="Collapsed">
-                    <FontIcon FontSize="8" Glyph="&#xEDDA;" />
+                    <FontIcon
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        FontSize="8"
+                        Glyph="&#xEDDA;"
+                        MirroredWhenRightToLeft="True" />
                 </Button>
             </Grid>
 
