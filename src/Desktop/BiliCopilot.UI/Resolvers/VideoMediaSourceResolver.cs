@@ -114,6 +114,7 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
 
     public override async Task<MpvMediaSource> GetSourceAsync()
     {
+        var publishDimensions = PublishDisplayDimensionsAsync;
         var generation = _sourceGeneration;
         var volume = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerVolume, 100d);
         var speed = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerSpeed, 1d);
@@ -142,7 +143,7 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
             throw new OperationCanceledException();
         }
 
-        var (videoUrl, audioUrl) = GetPlayUrls();
+        var (videoUrl, audioUrl, selectedVideo) = GetPlayUrls();
         var fileUrl = string.Empty;
         if (!string.IsNullOrEmpty(videoUrl))
         {
@@ -156,6 +157,13 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
         else if (!string.IsNullOrEmpty(audioUrl))
         {
             fileUrl = audioUrl;
+        }
+
+        // Use the exact selected stream for this part/episode, never the first part
+        // of the overall video or a coarse aspect-ratio category.
+        if (publishDimensions is not null && selectedVideo is not null && !string.IsNullOrEmpty(videoUrl))
+        {
+            await publishDimensions(selectedVideo.Width, selectedVideo.Height);
         }
 
         return new MpvMediaSource(fileUrl, _snapshot.Video.Identifier.Id, _snapshot.Video.Identifier.Title, options);
@@ -240,7 +248,7 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
         _playbackInfo = information;
     }
 
-    private (string? video, string? audio) GetPlayUrls()
+    private (string? video, string? audio, DashSegmentInformation? selectedVideo) GetPlayUrls()
     {
         var videoSegments = _playbackInfo.Videos;
         var audioSegments = _playbackInfo.Audios;
@@ -276,6 +284,6 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
         _selectedCodec = vSeg?.Codecs;
         _videoHost = videoUrl is null ? null : new Uri(videoUrl).Host;
         _audioHost = audioUrl is null ? null : new Uri(audioUrl).Host;
-        return (videoUrl, audioUrl);
+        return (videoUrl, audioUrl, vSeg);
     }
 }
