@@ -93,6 +93,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         // 关注态与用户卡片都属于当前目标：新目标开始时先同步清空，
         // 避免上一目标的值一直显示到本次关系请求返回。
         Card = default;
+        IsUserInformationLoading = false;
+        HasUserInformationError = false;
         IsFollowed = false;
         UserName = profile.Name;
         if (IsSearchMode)
@@ -249,10 +251,17 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task InitializeUserInformationAsync()
     {
+        if (_profile is null || IsUserInformationLoading)
+        {
+            return;
+        }
+
         // 卡片属于当前目标：记录代次与用户 Id，迟到的响应直接丢弃。
         var generation = CurrentLoadGeneration;
         var userId = _profile.Id;
         var cancellationToken = CurrentLoadToken;
+        IsUserInformationLoading = true;
+        HasUserInformationError = false;
         try
         {
             var card = await _userService.GetUserInformationAsync(userId, cancellationToken);
@@ -275,7 +284,14 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             }
 
             _logger.LogError(ex, "获取用户信息时失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserInformation), InfoType.Error));
+            HasUserInformationError = true;
+        }
+        finally
+        {
+            if (IsCurrentLoad(generation))
+            {
+                IsUserInformationLoading = false;
+            }
         }
     }
 
