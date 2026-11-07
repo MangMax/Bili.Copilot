@@ -17,30 +17,37 @@
     <Grid>
         <controls:IncrementVerticalScrollControl x:Name="View">
             <controls:IncrementVerticalScrollControl.Element>
-                <Grid Margin="0,16">
-                    <repeater:AppRepeater
-                        x:Name="VideoRepeater"
-                        ItemsSource="{x:Bind ViewModel.SearchVideos, Mode=OneWay}">
-                        <repeater:AppRepeater.Layout>
-                            <!-- Omit MinItemHeight: measure the complete card at the stretched column width. -->
-                            <UniformGridLayout ItemsStretch="Fill" MinItemWidth="232" MinColumnSpacing="20" MinRowSpacing="20" />
-                        </repeater:AppRepeater.Layout>
-                        <repeater:AppRepeater.ItemTemplate>
-                            <DataTemplate x:DataType="items:VideoItemViewModel">
-                                <components:VideoCardControl Style="{StaticResource SearchVideoCardStyle}" ViewModel="{Binding}" />
-                            </DataTemplate>
-                        </repeater:AppRepeater.ItemTemplate>
-                    </repeater:AppRepeater>
+                <Grid Margin="0,0,0,16" RowSpacing="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <local:UserSpacePageHeader Margin="-20,0" />
+                    <Grid Grid.Row="1" MinHeight="160">
+                        <repeater:AppRepeater
+                            x:Name="VideoRepeater"
+                            ItemsSource="{x:Bind ViewModel.SearchVideos, Mode=OneWay}">
+                            <repeater:AppRepeater.Layout>
+                                <!-- Omit MinItemHeight: measure the complete card at the stretched column width. -->
+                                <UniformGridLayout ItemsStretch="Fill" MinItemWidth="232" MinColumnSpacing="20" MinRowSpacing="20" />
+                            </repeater:AppRepeater.Layout>
+                            <repeater:AppRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="items:VideoItemViewModel">
+                                    <components:VideoCardControl Style="{StaticResource SearchVideoCardStyle}" ViewModel="{Binding}" />
+                                </DataTemplate>
+                            </repeater:AppRepeater.ItemTemplate>
+                        </repeater:AppRepeater>
+                        <base:EmptyHolder
+                            Description="{ext:Locale Name=NoSpecificData}"
+                            Emoji="&#x1F39E;"
+                            Visibility="{x:Bind ViewModel.IsSearchEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                        <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsSearching, Mode=OneWay}" />
+                    </Grid>
                 </Grid>
             </controls:IncrementVerticalScrollControl.Element>
 
         </controls:IncrementVerticalScrollControl>
 
-        <base:EmptyHolder
-            Description="{ext:Locale Name=NoSpecificData}"
-            Emoji="&#x1F39E;"
-            Visibility="{x:Bind ViewModel.IsSearchEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-
-        <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsSearching, Mode=OneWay}" />
     </Grid>
 </local:UserSpacePageControlBase>

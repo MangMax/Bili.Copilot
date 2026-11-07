@@ -76,6 +76,12 @@ public sealed partial class UserSpacePageViewModel
     [ObservableProperty]
     public partial UserCard Card { get; set; }
 
+    [ObservableProperty]
+    public partial bool IsUserInformationLoading { get; set; }
+
+    [ObservableProperty]
+    public partial bool HasUserInformationError { get; set; }
+
     /// <summary>
     /// 区块初始化完成.
     /// </summary>

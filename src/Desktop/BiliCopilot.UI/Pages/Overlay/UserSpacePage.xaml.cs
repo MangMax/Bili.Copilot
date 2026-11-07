@@ -1,8 +1,15 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Controls;
+using BiliCopilot.UI.Controls.Moment;
 using BiliCopilot.UI.ViewModels.View;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media;
 using Richasy.BiliKernel.Models.User;
 using Richasy.WinUIKernel.Share.Base;
+using System.ComponentModel;
+using System.Numerics;
+using Windows.UI.ViewManagement;
 
 namespace BiliCopilot.UI.Pages.Overlay;
 
@@ -11,12 +18,167 @@ namespace BiliCopilot.UI.Pages.Overlay;
 /// </summary>
 public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, ICancelPageViewModel
 {
+    private readonly UISettings _uiSettings = new();
     private int _loadGeneration = -1;
+    private ScrollView? _activeScroll;
+    private UserSpacePageHeader? _activeHeader;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePage"/> class.
     /// </summary>
-    public UserSpacePage() => InitializeComponent();
+    public UserSpacePage()
+    {
+        InitializeComponent();
+        Loaded += OnSpaceLoaded;
+        Unloaded += OnSpaceUnloaded;
+    }
+
+    private void OnSpaceLoaded(object sender, RoutedEventArgs e)
+    {
+        UpdateBackdropColor();
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        QueueScrollHostUpdate();
+    }
+
+    private void OnSpaceUnloaded(object sender, RoutedEventArgs e)
+    {
+        ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        LayoutUpdated -= OnSpaceLayoutUpdated;
+        DisconnectHeader();
+        _activeScroll = null;
+        ConnectBackdrop();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(UserSpacePageViewModel.SelectedSection) or nameof(UserSpacePageViewModel.IsSearchMode))
+        {
+            QueueScrollHostUpdate();
+        }
+    }
+
+    private void QueueScrollHostUpdate()
+    {
+        // 分区模板完成布局后只绑定一次，滚动本身完全交给原生容器。
+        LayoutUpdated -= OnSpaceLayoutUpdated;
+        LayoutUpdated += OnSpaceLayoutUpdated;
+    }
+
+    private void OnSpaceLayoutUpdated(object? sender, object e)
+    {
+        var root = ViewModel.IsSearchMode ? (DependencyObject)SearchSection : SpaceBody;
+        var host = FindChild<IncrementVerticalScrollControl>(root);
+        var scroll = host is null ? null : FindChild<ScrollView>(host);
+        if (scroll is null)
+        {
+            return;
+        }
+
+        LayoutUpdated -= OnSpaceLayoutUpdated;
+        if (scroll == _activeScroll)
+        {
+            return;
+        }
+
+        DisconnectHeader();
+        _activeScroll = scroll;
+        _activeHeader = FindChild<UserSpacePageHeader>(scroll);
+        if (_activeHeader is not null)
+        {
+            _activeHeader.SizeChanged += OnHeaderSizeChanged;
+        }
+
+        UpdateBackdropSize();
+        ConnectBackdrop();
+    }
+
+    private void DisconnectHeader()
+    {
+        if (_activeHeader is not null)
+        {
+            _activeHeader.SizeChanged -= OnHeaderSizeChanged;
+            _activeHeader = null;
+        }
+    }
+
+    private void OnHeaderSizeChanged(object sender, SizeChangedEventArgs e) => UpdateBackdropSize();
+
+    private void UpdateBackdropSize()
+    {
+        // 背景延伸到首排内容之后，渐变不在页头或导航边缘终止。
+        Backdrop.Height = (_activeHeader?.ActualHeight ?? 420) + 240;
+    }
+
+    private void ConnectBackdrop()
+    {
+        var surface = ElementCompositionPreview.GetElementVisual(Backdrop);
+        var image = ElementCompositionPreview.GetElementVisual(BackdropImage);
+        var fade = ElementCompositionPreview.GetElementVisual(BackdropFade);
+        ElementCompositionPreview.SetIsTranslationEnabled(BackdropImage, true);
+        ElementCompositionPreview.SetIsTranslationEnabled(BackdropFade, true);
+        image.StopAnimation("Translation.Y");
+        fade.StopAnimation("Translation.Y");
+        image.Properties.InsertVector3("Translation", Vector3.Zero);
+        fade.Properties.InsertVector3("Translation", Vector3.Zero);
+        surface.Clip?.Dispose();
+        surface.Clip = null;
+        if (_activeScroll is null)
+        {
+            return;
+        }
+
+        using var parallax = surface.Compositor.CreateExpressionAnimation("-Max(0, source.Position.Y - source.MinPosition.Y) * speed");
+        parallax.SetReferenceParameter("source", _activeScroll.ExpressionAnimationSources);
+        parallax.SetScalarParameter("speed", _uiSettings.AnimationsEnabled ? 0.45f : 1f);
+        image.StartAnimation("Translation.Y", parallax);
+        parallax.SetScalarParameter("speed", 1f);
+        fade.StartAnimation("Translation.Y", parallax);
+
+        // 底色遮罩随内容上移，裁掉遮罩下方的图片，避免视差露出封面底边。
+        var clip = surface.Compositor.CreateInsetClip();
+        using var crop = surface.Compositor.CreateExpressionAnimation("Min(surface.Size.Y, Max(0, source.Position.Y - source.MinPosition.Y))");
+        crop.SetReferenceParameter("source", _activeScroll.ExpressionAnimationSources);
+        crop.SetReferenceParameter("surface", surface);
+        clip.StartAnimation("BottomInset", crop);
+        surface.Clip = clip;
+    }
+
+    private void OnPageSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        Backdrop.Width = e.NewSize.Width;
+        PageLayout.Clip = new RectangleGeometry { Rect = new Windows.Foundation.Rect(0, 0, e.NewSize.Width, e.NewSize.Height) };
+    }
+
+    private void OnPageThemeChanged(FrameworkElement sender, object args) => UpdateBackdropColor();
+
+    private void UpdateBackdropColor()
+    {
+        // 透明端保留底色的 RGB，避免 Transparent 的白色分量产生灰雾。
+        var color = ((SolidColorBrush)PageLayout.Background).Color;
+        color.A = 0;
+        BackdropFadeStart.Color = color;
+        color.A = 204;
+        BackdropFadeMiddle.Color = color;
+    }
+
+    private static T? FindChild<T>(DependencyObject root)
+        where T : DependencyObject
+    {
+        if (root is T match)
+        {
+            return match;
+        }
+
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            if (FindChild<T>(VisualTreeHelper.GetChild(root, i)) is { } child)
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
 
     public void SetParameter(object? parameter)
     {
@@ -27,6 +189,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
             // 记录本次页面发起的加载代次，卸载时只取消这一代，不影响新页面。
             _loadGeneration = ViewModel.CurrentLoadGeneration;
+            ViewModel.InitializeUserInformationCommand.Execute(default);
         }
     }
 
