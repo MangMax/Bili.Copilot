@@ -232,6 +232,9 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         _danmakuLoadSession?.Cancel();
         _snapshot = snapshot;
         ErrorMessage = default;
+        ErrorActionText = default;
+        HasErrorAction = false;
+        IsPreviewPlayback = false;
         CacheSpeedText = default;
         ShowPlayerWindow();
         IsConnecting = true;
@@ -314,6 +317,18 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                     var connector = Connector as PgcConnectorViewModel;
                     resolver.Initialize(_snapshot, connector._episode);
                     _sourceResolver = resolver;
+
+                    // 先在界面上拿到判定结果：播放器内核会把取源异常吞成一条日志，
+                    // 只有在这里拦住才能把"需要大会员/仅可试看"的原因交给用户。
+                    if (!await resolver.TryPrepareAsync())
+                    {
+                        ShowPlaybackUnavailable(resolver.UnavailableReason);
+                        IsConnecting = false;
+                        CheckBlackBackgroundVisible();
+                        return;
+                    }
+
+                    IsPreviewPlayback = resolver.IsPreviewPlayback;
                 }
                 break;
             case BiliMediaType.Live:

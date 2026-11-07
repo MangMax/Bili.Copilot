@@ -18,17 +18,29 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
 {
     private MediaSnapshot _snapshot;
     private EpisodeInformation _episode;
-    private TaskCompletionSource<bool>? _initTask;
     private CancellationTokenSource? _initCts;
+    private Task? _loadTask;
     private DashMediaInformation? _playbackInfo;
+
+    /// <summary>
+    /// 上一次播放信息请求被判定为不可用的原因.
+    /// </summary>
+    internal PgcPlaybackUnavailableReason? UnavailableReason { get; private set; }
+
+    /// <summary>
+    /// 当前拿到的是否只能是试看结果.
+    /// </summary>
+    internal bool IsPreviewPlayback => _playbackInfo?.IsPreview == true;
 
     public void Initialize(MediaSnapshot snapshot, EpisodeInformation episode)
     {
         _snapshot = snapshot;
         _episode = episode;
         _playbackInfo = default;
-        _initTask?.TrySetCanceled();
+        _loadTask = default;
+        UnavailableReason = default;
         _initCts?.Cancel();
+        _initCts = default;
     }
 
     internal void ResetSnapshot(MediaSnapshot snapshot)
@@ -99,13 +111,41 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
             fileUrl = audioUrl;
         }
 
+        if (string.IsNullOrEmpty(fileUrl))
+        {
+            // 仅可试看时服务端只给 durl，没有 DASH 分轨。
+            fileUrl = _playbackInfo?.PreviewUrls?.FirstOrDefault(p => !string.IsNullOrEmpty(p)) ?? string.Empty;
+        }
+
         return new MpvMediaSource(fileUrl, id, title, options);
     }
 
-    public async Task<List<PlayerFormatInformation>?> GetSourcesAsync()
+    /// <summary>
+    /// 预取播放信息，把“不可用”的原因留给调用方决定如何提示.
+    /// </summary>
+    /// <returns>是否拿到了可播放的信息.</returns>
+    internal async Task<bool> TryPrepareAsync()
+    {
+        try
+        {
+            await LoadMediaInfoAsync();
+            return true;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "准备 {Title} 的播放信息失败", _episode?.Identifier.Title);
+            return false;
+        }
+    }
+
+    internal async Task<List<PlayerFormatInformation>> GetSourcesAsync()
     {
         await LoadMediaInfoAsync();
-        return [.. _playbackInfo?.Formats];
+        return _playbackInfo?.Formats is { Count: > 0 } formats ? [.. formats] : [];
     }
 
     internal async Task LoadMediaInfoAsync()
@@ -120,45 +160,57 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
             return;
         }
 
-        if (_initTask?.Task.IsCompleted == true)
-        {
-            return;
-        }
+        _loadTask ??= LoadPlaybackInfoAsync();
+#pragma warning disable VSTHRD003 // 请求由本实例发起，等待它不会阻塞 UI 线程.
+        await _loadTask;
+#pragma warning restore VSTHRD003
+    }
 
-        if (_initTask is not null)
-        {
-#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-            await _initTask.Task;
-#pragma warning restore VSTHRD003 // Avoid awaiting foreign Tasks
-            return;
-        }
-
-        _initTask = new TaskCompletionSource<bool>();
+    private async Task LoadPlaybackInfoAsync()
+    {
         _initCts = new CancellationTokenSource();
         try
         {
             var cid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid);
             var seasonType = _episode.GetExtensionIfNotNull<string>(EpisodeExtensionDataId.SeasonType);
-            _playbackInfo = await playerService.GetPgcPlayDetailAsync(cid.ToString(), _episode.Identifier.Id, seasonType);
+            var information = await playerService.GetPgcPlayDetailAsync(cid.ToString(), _episode.Identifier.Id, seasonType, _initCts.Token);
+            _playbackInfo = information;
+            UnavailableReason = default;
+
+        }
+        catch (PgcPlaybackUnavailableException ex)
+        {
+            // 服务端明确判定不可用：保留原因，允许上层区分提示.
+            UnavailableReason = ex.Reason;
+            _playbackInfo = default;
+            _loadTask = default;
+            var unavailableTitle = _episode.Identifier.Title;
+            var reason = ex.Reason;
+            logger.LogWarning(ex, "获取 {Title} 播放信息不可用：{Reason}", unavailableTitle, reason);
+            throw;
         }
         catch (Exception ex)
         {
+            _playbackInfo = default;
+            _loadTask = default;
             logger.LogError(ex, $"获取 {_episode.Identifier.Title} 播放信息失败");
-            _initTask.TrySetException(new InvalidOperationException("获取 Dash 播放信息失败."));
-            return;
+            throw;
         }
-
-        _initTask.TrySetResult(true);
     }
 
     private (string? video, string? audio) GetPlayUrls()
     {
+        if (_playbackInfo is null)
+        {
+            return (default, default);
+        }
+
         var videoSegments = _playbackInfo.Videos;
         var audioSegments = _playbackInfo.Audios;
         var selectedFormat = GetCurrentFormat();
         if (selectedFormat is null)
         {
-            throw new InvalidCastException("无法获取到有效的播放地址");
+            return (default, default);
         }
 
         var maxAudioQuality = audioSegments?.Max(p => Convert.ToInt32(p.Id));

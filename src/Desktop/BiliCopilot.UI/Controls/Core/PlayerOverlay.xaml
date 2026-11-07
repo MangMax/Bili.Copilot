@@ -87,6 +87,33 @@
             Fill="Black"
             Visibility="{x:Bind ViewModel.IsBlackBackgroundVisible, Mode=OneWay}" />
         <local:PlayerInteractivePanel ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+        <StackPanel
+            Margin="0,14,18,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Orientation="Horizontal"
+            Spacing="6"
+            Visibility="{x:Bind ViewModel.IsPreviewPlayback, Mode=OneWay}">
+            <Border
+                Padding="8,2"
+                VerticalAlignment="Center"
+                AutomationProperties.Name="{ext:Locale Name=PreviewPlaybackAutomation}"
+                CornerRadius="4">
+                <Border.Background>
+                    <SolidColorBrush Opacity="0.72" Color="Black" />
+                </Border.Background>
+                <TextBlock
+                    FontSize="12"
+                    Foreground="White"
+                    Text="{ext:Locale Name=PreviewPlayback}" />
+            </Border>
+            <HyperlinkButton
+                Padding="8,2"
+                AutomationProperties.Name="{ext:Locale Name=OpenVipPage}"
+                Command="{x:Bind ViewModel.OpenVipPageCommand, Mode=OneWay}"
+                Content="{ext:Locale Name=OpenVipPage}"
+                Foreground="White" />
+        </StackPanel>
         <Rectangle
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -206,12 +233,13 @@
                 Description="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
                 Emoji="&#x1F494;"
                 Visibility="{x:Bind ViewModel.ErrorMessage, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
-                <!--<base:EmptyHolder.ActionElement>
+                <base:EmptyHolder.ActionElement>
                     <HyperlinkButton
                         HorizontalAlignment="Stretch"
-                        Command="{x:Bind ViewModel.ReloadCurrentSourceCommand, Mode=OneWay}"
-                        Content="{ext:Locale Name=Reload}" />
-                </base:EmptyHolder.ActionElement>-->
+                        Command="{x:Bind ViewModel.RunPlaybackErrorActionCommand, Mode=OneWay}"
+                        Content="{x:Bind ViewModel.ErrorActionText, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.HasErrorAction, Mode=OneWay}" />
+                </base:EmptyHolder.ActionElement>
             </base:EmptyHolder>
             <controls:OverlayPanel
                 Grid.RowSpan="2"
