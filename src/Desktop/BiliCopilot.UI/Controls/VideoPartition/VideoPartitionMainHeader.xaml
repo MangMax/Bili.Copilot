@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:VideoPartitionDetailControlBase
     x:Class="BiliCopilot.UI.Controls.VideoPartition.VideoPartitionMainHeader"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -32,18 +32,12 @@
             FontWeight="Bold"
             ViewModel="{x:Bind ViewModel.Data, Mode=OneWay}" />
 
-        <ScrollViewer
+        <components:SlidingTabBar x:Name="Selector" AutomationProperties.AutomationId="VideoPartitionMainHeaderTabs"
             Grid.Column="1"
             Margin="0,5,0,0"
-            Padding="8,0"
             HorizontalAlignment="Center"
-            VerticalAlignment="Stretch"
-            HorizontalScrollBarVisibility="Hidden"
-            HorizontalScrollMode="Enabled"
-            VerticalScrollBarVisibility="Hidden"
-            VerticalScrollMode="Disabled">
-            <SelectorBar x:Name="Selector" />
-        </ScrollViewer>
+            VerticalAlignment="Center"
+ />
 
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>

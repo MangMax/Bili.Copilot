@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
@@ -69,14 +69,14 @@ public sealed partial class ArticlePartitionMainHeader : ArticlePartitionDetailC
         }
     }
 
-    private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (sender.SelectedItem is null)
+        if (Selector.SelectedItem is null)
         {
             return;
         }
 
-        var item = sender.SelectedItem.Tag as PartitionViewModel;
+        var item = Selector.SelectedItem as PartitionViewModel;
         if (item is not null && item != ViewModel.CurrentPartition)
         {
             ViewModel.ChangeChildPartitionCommand.Execute(item);
@@ -85,12 +85,12 @@ public sealed partial class ArticlePartitionMainHeader : ArticlePartitionDetailC
 
     private void InitializeChildPartitions()
     {
-        Selector.Items.Clear();
+        var items = new List<SelectorBarItem>();
         if (ViewModel.Children is not null)
         {
             foreach (var item in ViewModel.Children)
             {
-                Selector.Items.Add(new SelectorBarItem()
+                items.Add(new SelectorBarItem()
                 {
                     Text = item.Title ?? default,
                     Tag = item,
@@ -98,8 +98,9 @@ public sealed partial class ArticlePartitionMainHeader : ArticlePartitionDetailC
             }
         }
 
-        Selector.SelectedItem = ViewModel.IsRecommend
-            ? Selector.Items.FirstOrDefault()
-            : Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.CurrentPartition);
+        var selected = ViewModel.IsRecommend
+            ? items.FirstOrDefault()
+            : items.FirstOrDefault(p => p.Tag == ViewModel.CurrentPartition);
+        Selector.SetItems(items, selected?.Tag);
     }
 }

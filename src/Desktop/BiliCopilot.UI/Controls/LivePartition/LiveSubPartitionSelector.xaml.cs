@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models.Media;
@@ -57,14 +57,14 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
     private void OnViewModelInitialized(object? sender, EventArgs e)
         => InitializeTags();
 
-    private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (sender.SelectedItem is null)
+        if (Selector.SelectedItem is null)
         {
             return;
         }
 
-        var item = sender.SelectedItem.Tag as LiveTag;
+        var item = Selector.SelectedItem as LiveTag;
         if (item is not null && item != ViewModel.CurrentTag)
         {
             ViewModel.ChangeChildPartitionCommand.Execute(item);
@@ -73,12 +73,12 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
 
     private void InitializeTags()
     {
-        Selector.Items.Clear();
+        var items = new List<SelectorBarItem>();
         if (ViewModel.Children is not null)
         {
             foreach (var item in ViewModel.Children)
             {
-                Selector.Items.Add(new SelectorBarItem()
+                items.Add(new SelectorBarItem()
                 {
                     Text = item.Name ?? default,
                     Tag = item,
@@ -86,6 +86,7 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
             }
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.CurrentTag);
+        var selected = items.FirstOrDefault(p => p.Tag == ViewModel.CurrentTag);
+        Selector.SetItems(items, selected?.Tag);
     }
 }
