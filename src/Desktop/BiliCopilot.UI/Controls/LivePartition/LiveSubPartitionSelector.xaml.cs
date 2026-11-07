@@ -59,13 +59,7 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (Selector.SelectedItem is null)
-        {
-            return;
-        }
-
-        var item = Selector.SelectedItem as LiveTag;
-        if (item is not null && item != ViewModel.CurrentTag)
+        if (Selector.SelectedItem is LiveTag item && item != ViewModel.CurrentTag)
         {
             ViewModel.ChangeChildPartitionCommand.Execute(item);
         }

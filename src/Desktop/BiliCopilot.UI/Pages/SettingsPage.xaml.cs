@@ -1,8 +1,8 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.ViewModels.View;
-using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
+using BiliCopilot.UI.ViewModels.View;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
 using Richasy.WinUIKernel.Share.Base;
