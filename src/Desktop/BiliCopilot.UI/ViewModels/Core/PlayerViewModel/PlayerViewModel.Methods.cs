@@ -189,32 +189,7 @@ public sealed partial class PlayerViewModel
                     }
                 }
 
-                var cacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSize, 300d);
-                var cacheSeconds = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSeconds, 360d);
-                var backCacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxBackCacheSize, 0d);
-                await Client.SetDemuxerMaxBytesAsync($"{Convert.ToInt32(cacheSize)}MiB");
-                await Client.SetDemuxerReadheadSecondsAsync(Convert.ToInt32(cacheSeconds));
-                if (Convert.ToInt32(backCacheSize) > 0)
-                {
-                    await Client.SetDemuxerMaxBackBytesAsync($"{Convert.ToInt32(backCacheSize)}MiB");
-                }
-
-                var useCacheOnDisk = SettingsToolkit.ReadLocalSetting(SettingNames.CacheOnDisk, false);
-                await Client.SetCacheOnDiskAsync(useCacheOnDisk);
-                if (useCacheOnDisk)
-                {
-                    var cacheDir = SettingsToolkit.ReadLocalSetting(SettingNames.CacheDir, string.Empty);
-                    if (!string.IsNullOrEmpty(cacheDir) && Directory.Exists(cacheDir))
-                    {
-                        try
-                        {
-                            await Client.SetCacheDirAsync(cacheDir);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                }
+                await ApplyDemuxerCacheProfileAsync(Client);
 
                 var profile = SettingsToolkit.ReadLocalSetting(SettingNames.MpvBuiltInProfile, MpvBuiltInProfile.HighQuality);
                 if (profile != MpvBuiltInProfile.HighQuality)
@@ -518,17 +493,51 @@ public sealed partial class PlayerViewModel
         }
 
         _liveProfileApplied = false;
+        await ApplyDemuxerCacheProfileAsync(Client);
+    }
+
+    /// <summary>
+    /// 应用用户设置的解复用缓存档位（视频/PGC 的基线）。
+    /// </summary>
+    /// <remarks>
+    /// 首次创建客户端与从直播配置还原基线都调用这里，避免两处各写一遍缓存参数而漂移；
+    /// 直播的固定档位由 <see cref="ApplyPlaybackProfileAsync"/> 单独设置，不经过本方法。
+    /// </remarks>
+    /// <param name="client">已创建的 mpv 客户端.</param>
+    /// <returns><see cref="Task"/>.</returns>
+    private async Task ApplyDemuxerCacheProfileAsync(MpvClient client)
+    {
         var cacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSize, 300d);
         var cacheSeconds = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSeconds, 360d);
         var backCacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxBackCacheSize, 0d);
-        await Client.SetDemuxerMaxBytesAsync($"{Convert.ToInt32(cacheSize)}MiB");
-        await Client.SetDemuxerReadheadSecondsAsync(Convert.ToInt32(cacheSeconds));
+        await client.SetDemuxerMaxBytesAsync($"{Convert.ToInt32(cacheSize)}MiB");
+        await client.SetDemuxerReadheadSecondsAsync(Convert.ToInt32(cacheSeconds));
         if (Convert.ToInt32(backCacheSize) > 0)
         {
-            await Client.SetDemuxerMaxBackBytesAsync($"{Convert.ToInt32(backCacheSize)}MiB");
+            await client.SetDemuxerMaxBackBytesAsync($"{Convert.ToInt32(backCacheSize)}MiB");
         }
 
-        await Client.SetCacheOnDiskAsync(SettingsToolkit.ReadLocalSetting(SettingNames.CacheOnDisk, false));
+        var useCacheOnDisk = SettingsToolkit.ReadLocalSetting(SettingNames.CacheOnDisk, false);
+        await client.SetCacheOnDiskAsync(useCacheOnDisk);
+        if (!useCacheOnDisk)
+        {
+            return;
+        }
+
+        var cacheDir = SettingsToolkit.ReadLocalSetting(SettingNames.CacheDir, string.Empty);
+        if (string.IsNullOrEmpty(cacheDir) || !Directory.Exists(cacheDir))
+        {
+            return;
+        }
+
+        try
+        {
+            await client.SetCacheDirAsync(cacheDir);
+        }
+        catch
+        {
+            // 缓存目录不可用不应阻止播放。
+        }
     }
 
     private async Task ResetPlayerPresenterModeAsync()
@@ -637,7 +646,7 @@ public sealed partial class PlayerViewModel
 
         if (e.PropertyName == nameof(Player.Position))
         {
-            if (IsLive)
+            if (!LiveCapabilities.SupportsTimeline)
             {
                 // 直播没有时间轴：不更新进度文案、不判结束、不跑空降与章节。
                 _prevPosition = Player.Position;
@@ -729,7 +738,7 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.Duration))
         {
-            if (IsLive)
+            if (!LiveCapabilities.SupportsTimeline)
             {
                 return;
             }
@@ -780,7 +789,7 @@ public sealed partial class PlayerViewModel
             {
                 ApplySubtitlesAsync = async () =>
                 {
-                    if (IsLive)
+                    if (!LiveCapabilities.SupportsSubtitles)
                     {
                         // 直播没有字幕：不改字体，也不挂字幕轨。
                         return;
@@ -907,7 +916,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        if (IsLive)
+        if (!LiveCapabilities.SupportsSpeed)
         {
             // 直播没有倍速/长按加速。
             return;
@@ -942,7 +951,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        if (IsLive && args.VirtualKey is Windows.System.VirtualKey.Left or Windows.System.VirtualKey.Right)
+        if (!LiveCapabilities.SupportsTimeline && args.VirtualKey is Windows.System.VirtualKey.Left or Windows.System.VirtualKey.Right)
         {
             // 直播没有时间轴：左右键既不跳转也不倍速；音量/全屏/画中画仍然可用。
             return;

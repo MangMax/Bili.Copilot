@@ -518,21 +518,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         }
     }
 
-    /// <summary>
-    /// 关键词高亮设置变化：已打开的直播窗口立即按新关键词重算，不必重新进房。
-    /// 只影响之后到达的弹幕，不回溯已上屏的内容。
-    /// </summary>
-    partial void OnLiveDanmakuHighlightKeywordsChanged(string? value)
-    {
-        SettingsToolkit.WriteLocalSetting(SettingNames.LiveDanmakuHighlightKeywords, value ?? string.Empty);
-        foreach (var connector in this.Get<AppViewModel>().Players
-            .Select(player => player.Connector)
-            .OfType<LiveConnectorViewModel>())
-        {
-            connector.RefreshKeywordHighlight();
-        }
-    }
-
     partial void OnShowSearchRecommendChanged(bool value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.ShowSearchRecommend, value);
 

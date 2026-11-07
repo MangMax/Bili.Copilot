@@ -225,7 +225,24 @@ public sealed partial class LiveConnectorViewModel
     }
 
     private LiveChatMessageItem CreateChatItem(LiveChatMessage message, DateTimeOffset now)
-        => new(message, GetChatSystemText, now);
+        => new(message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText);
+
+    private string GetChatBadgeText(LiveChatBadgeKind kind)
+    {
+        var name = kind switch
+        {
+            LiveChatBadgeKind.Admin => StringNames.LiveChatBadgeAdmin,
+            LiveChatBadgeKind.Governor => StringNames.LiveChatBadgeGovernor,
+            LiveChatBadgeKind.Admiral => StringNames.LiveChatBadgeAdmiral,
+            LiveChatBadgeKind.Captain => StringNames.LiveChatBadgeCaptain,
+            _ => StringNames.LiveChatBadgeVip,
+        };
+
+        return ResourceToolkit.GetLocalizedString(name);
+    }
+
+    private static string GetChatPriceText(int price)
+        => LiveChatSuperChatTime.FormatPrice(price, ResourceToolkit.GetLocalizedString(StringNames.LiveSuperChatPriceTemplate));
 
     private string GetChatSystemText(LiveChatSystemKind kind)
     {

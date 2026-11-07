@@ -234,7 +234,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         _danmakuPlaybackVersion++;
         _danmakuLoadSession?.Cancel();
         _snapshot = snapshot;
-        IsLive = LiveModePolicy.IsLive(snapshot.Type);
+        NotifyLiveModeChanged();
         ErrorMessage = default;
         ErrorActionText = default;
         HasErrorAction = false;
@@ -296,7 +296,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             }
         }
 
-        if (!IsLive)
+        if (LiveCapabilities.RunsSponsorBlock)
         {
             StartSponsorBlockLoading();
         }
@@ -478,7 +478,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         CheckFullScreen();
         CheckCompactOverlay();
-        if (!IsLive)
+        if (LiveCapabilities.ReportsProgress)
         {
             // 直播不上报进度（LiveModePolicy.ReportsProgress = false）。
             ProgressChanged?.Invoke(this, 0);
@@ -621,12 +621,18 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     }
 
     private void CheckBottomProgressBarVisible()
-        => IsBottomProgressBarVisible = !IsLive && !IsControlsVisible && SettingsToolkit.ReadLocalSetting(SettingNames.IsBottomProgressBarVisible, true);
+        => IsBottomProgressBarVisible = LiveCapabilities.ReportsProgress && !IsControlsVisible && SettingsToolkit.ReadLocalSetting(SettingNames.IsBottomProgressBarVisible, true);
 
-    partial void OnIsLiveChanged(bool value)
+    /// <summary>
+    /// 媒体类型确定后刷新所有由 <see cref="LiveModePolicy"/> 推导的只读属性。
+    /// </summary>
+    private void NotifyLiveModeChanged()
     {
+        OnPropertyChanged(nameof(IsLive));
+        OnPropertyChanged(nameof(LiveCapabilities));
         OnPropertyChanged(nameof(IsProgressBarVisible));
         OnPropertyChanged(nameof(IsSeekAvailable));
+        CheckBottomProgressBarVisible();
     }
 
     partial void OnIsControlsVisibleChanged(bool value)

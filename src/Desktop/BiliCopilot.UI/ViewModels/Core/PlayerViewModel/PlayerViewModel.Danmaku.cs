@@ -33,7 +33,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        if (IsLive)
+        if (!LiveCapabilities.SupportsDanmakuTimeline)
         {
             // 直播弹幕走实时准入（#196）：连接、准入与注入由 LiveConnectorViewModel 持有；
             // 这里只负责把共用的弹幕样式面板显示出来，不加载时间轴分片，也不进入重放。

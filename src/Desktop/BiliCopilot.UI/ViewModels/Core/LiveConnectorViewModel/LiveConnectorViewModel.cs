@@ -116,7 +116,10 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
     /// <returns><see cref="Task"/>.</returns>
     [RelayCommand]
     private Task OpenInBrowserAsync()
-        => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
+    {
+        var url = LiveRoomUrl.Create(_snapshot?.Live?.Identifier.Id ?? Session.RoomId);
+        return url is null ? Task.CompletedTask : Launcher.LaunchUriAsync(url).AsTask();
+    }
 
     private void SyncFromSession()
     {
@@ -137,6 +140,4 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
         PropertiesUpdated?.Invoke(this, new PlayerInformationUpdatedEventArgs(Title, subtitle, Cover));
     }
 
-    private string GetWebUrl()
-        => $"https://live.bilibili.com/{_snapshot?.Live?.Identifier.Id ?? Session.RoomId}";
 }

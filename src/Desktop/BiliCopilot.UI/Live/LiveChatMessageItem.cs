@@ -5,6 +5,48 @@ using System.ComponentModel;
 namespace BiliCopilot.UI.Live;
 
 /// <summary>
+/// 聊天徽标种类；只决定展示文案，不影响准入或屏蔽。
+/// </summary>
+public enum LiveChatBadgeKind
+{
+    /// <summary>管理员.</summary>
+    Admin,
+
+    /// <summary>总督（内核 GuardLevel = 1）.</summary>
+    Governor,
+
+    /// <summary>提督（内核 GuardLevel = 2）.</summary>
+    Admiral,
+
+    /// <summary>舰长（内核 GuardLevel = 3）.</summary>
+    Captain,
+
+    /// <summary>老爷/年费老爷.</summary>
+    Vip,
+}
+
+/// <summary>
+/// 徽标的内置中文文案：纯逻辑层与单测的兜底，界面注入本地化解析器覆盖它。
+/// </summary>
+public static class LiveChatBadgeKindText
+{
+    /// <summary>
+    /// 获取内置文案。
+    /// </summary>
+    /// <param name="kind">徽标种类.</param>
+    /// <returns>展示文案.</returns>
+    public static string Get(LiveChatBadgeKind kind)
+        => kind switch
+        {
+            LiveChatBadgeKind.Admin => "管理",
+            LiveChatBadgeKind.Governor => "总督",
+            LiveChatBadgeKind.Admiral => "提督",
+            LiveChatBadgeKind.Captain => "舰长",
+            _ => "老爷",
+        };
+}
+
+/// <summary>
 /// 聊天列表里的一个条目：把不可变的 <see cref="LiveChatMessage"/> 映射成界面可直接绑定的展示字段。
 /// </summary>
 /// <remarks>
@@ -24,17 +66,23 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     /// <param name="message">原始消息.</param>
     /// <param name="systemText">系统消息文案解析器；为空时回落到枚举名.</param>
     /// <param name="now">创建时间，用于计算醒目留言剩余时间.</param>
+    /// <param name="badgeText">徽标文案解析器；为空时回落到内置中文，便于纯逻辑单测.</param>
+    /// <param name="priceFormat">金额格式解析器；为空时回落到内置 <c>¥</c>.</param>
     public LiveChatMessageItem(
         LiveChatMessage message,
         Func<LiveChatSystemKind, string>? systemText,
-        DateTimeOffset now)
+        DateTimeOffset now,
+        Func<LiveChatBadgeKind, string>? badgeText = null,
+        Func<int, string>? priceFormat = null)
     {
         Message = message ?? throw new ArgumentNullException(nameof(message));
-        PriceText = message.IsSuperChat ? LiveChatSuperChatTime.FormatPrice(message.Price) : null;
+        PriceText = message.IsSuperChat
+            ? (priceFormat ?? LiveChatSuperChatTime.FormatPrice)(message.Price)
+            : null;
         SystemText = message.Kind == LiveChatMessageKind.System
             ? systemText?.Invoke(message.SystemKind) ?? message.SystemKind.ToString()
             : null;
-        BadgeText = GetBadge(message);
+        BadgeText = GetBadge(message, badgeText ?? LiveChatBadgeKindText.Get);
         UpdateRemaining(now);
     }
 
@@ -177,17 +225,17 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
             : LiveChatSuperChatTime.FormatRemaining(LiveChatSuperChatTime.Remaining(Message.EndTime, now));
     }
 
-    private static string? GetBadge(LiveChatMessage message)
+    private static string? GetBadge(LiveChatMessage message, Func<LiveChatBadgeKind, string> text)
         => message.Kind == LiveChatMessageKind.System
             ? null
             : message.IsAdmin
-                ? "管理"
+                ? text(LiveChatBadgeKind.Admin)
                 : message.GuardLevel switch
                 {
-                    1 => "总督",
-                    2 => "提督",
-                    3 => "舰长",
-                    _ => message.IsVip ? "老爷" : null,
+                    1 => text(LiveChatBadgeKind.Governor),
+                    2 => text(LiveChatBadgeKind.Admiral),
+                    3 => text(LiveChatBadgeKind.Captain),
+                    _ => message.IsVip ? text(LiveChatBadgeKind.Vip) : null,
                 };
 
     private void Raise(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

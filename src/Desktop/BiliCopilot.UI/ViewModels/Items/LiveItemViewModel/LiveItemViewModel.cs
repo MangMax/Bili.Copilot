@@ -74,7 +74,10 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
     /// <returns><see cref="Task"/>.</returns>
     [RelayCommand]
     private Task OpenInBrowserAsync()
-        => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
+    {
+        var url = LiveRoomUrl.Create(Data.Identifier.Id);
+        return url is null ? Task.CompletedTask : Launcher.LaunchUriAsync(url).AsTask();
+    }
 
     [RelayCommand]
     private async Task RemoveHistoryAsync()
@@ -102,6 +105,4 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
-    private string GetWebUrl()
-        => $"https://live.bilibili.com/{Data.Identifier.Id}";
 }
