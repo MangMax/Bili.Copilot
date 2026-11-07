@@ -16,6 +16,43 @@ public sealed class PlaybackRefreshTests
     }
 
     [Fact]
+    public async Task PlayerRefresh_PgcPreviewWithoutDashDoesNotOfferRefresh()
+    {
+        var api = DispatchProxy.Create<IPlayerService, PlaybackRoutingResolverTests.PlaybackService>();
+        var service = (PlaybackRoutingResolverTests.PlaybackService)(object)api;
+        service.Information = new(null, null, null, isPreview: true, previewUrls: ["https://preview.example/video"]);
+        var resolver = PlaybackRoutingResolverTests.CreateResolver(true, api);
+        Assert.Equal("https://preview.example/video", (await resolver.GetSourceAsync()).Url);
+        var vm = new PlayerViewModel();
+        vm.SetRefreshResolver(resolver);
+
+        Assert.False(vm.IsPlaybackRefreshAvailable);
+        Assert.False(vm.RefreshPlaybackCommand.CanExecute(null));
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Empty(vm.Client!.Loads);
+        Assert.Empty(vm.RefreshErrors);
+        Assert.Equal(1, service.Calls);
+    }
+
+    [Fact]
+    public async Task PlayerRefresh_PgcDashOffersAndExecutesRefresh()
+    {
+        var api = DispatchProxy.Create<IPlayerService, PlaybackRoutingResolverTests.PlaybackService>();
+        var service = (PlaybackRoutingResolverTests.PlaybackService)(object)api;
+        service.Information = new([new("80", "https://video.example/v", 100, "", "avc", 0, 0, "", "", [])], null, [new(80, "1080P", false, false)]);
+        var resolver = PlaybackRoutingResolverTests.CreateResolver(true, api);
+        await resolver.GetSourceAsync();
+        var vm = new PlayerViewModel();
+        vm.SetRefreshResolver(resolver);
+
+        Assert.True(vm.IsPlaybackRefreshAvailable);
+        Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Equal("https://video.example/v", Assert.Single(vm.Client!.Loads).Url);
+        Assert.Equal(2, service.Calls);
+    }
+
+    [Fact]
     public async Task PlayerRefresh_UsesFreshSourceAndReloadsWithCurrentPositionSpeedVolume()
     {
         NavigationTestServices.Settings.Value = new();
@@ -146,7 +183,7 @@ public sealed class PlaybackRefreshTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task PlayerRefresh_NewPauseOrSwitchIntentDuringFetchPreventsReload(bool switching)
+    public async Task PlayerRefresh_NewIntentGateOrMediaSwitchDuringFetchPreventsReload(bool switching)
     {
         var (vm, api) = await CreatePlayerAsync();
         var delayed = new TaskCompletionSource<Richasy.BiliKernel.Models.Media.DashMediaInformation>();

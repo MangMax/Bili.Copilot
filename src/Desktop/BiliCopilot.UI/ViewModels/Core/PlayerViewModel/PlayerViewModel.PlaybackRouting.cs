@@ -15,7 +15,7 @@ public sealed partial class PlayerViewModel
     private bool _isPlaybackRefreshReload;
 
     /// <summary>Gets whether this media supports an explicit playurl refresh.</summary>
-    public bool IsPlaybackRefreshAvailable => _sourceResolver is VideoMediaSourceResolver or PgcMediaSourceResolver;
+    public bool IsPlaybackRefreshAvailable => _sourceResolver is VideoMediaSourceResolver or PgcMediaSourceResolver { IsDashPlayback: true };
 
     private bool CanRefreshPlayback() => IsPlaybackRefreshAvailable && IsSessionCurrent()
         && Player?.IsPlaybackInitialized == true && !IsConnecting && !_playbackRefresh.IsRefreshing;

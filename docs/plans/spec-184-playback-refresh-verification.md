@@ -54,7 +54,7 @@ All tests use the approved source-linked UI.Tests seams. Representative tests:
 | Actual production command calls load with state | PlayerRefresh_UsesFreshSourceAndReloadsWithCurrentPositionSpeedVolume |
 | Native state instead of lagging UI | PlayerRefresh_CapturesNativeStateAfterQueuedChangesInsteadOfStaleUiPolling |
 | New seek/speed win; native teardown waits | PlayerRefresh_NewerSeekDuringFetchCancelsReload; PlayerRefresh_NewerSeekAndSpeedWaitForNativeLoad; PlayerRefresh_CloseWaitsForAdmittedLoadAndRejectsLateFetch |
-| Pause/mute/volume admission and switch/close | PlayerRefresh_NewPauseOrSwitchIntentDuringFetchPreventsReload; PlayerRefresh_CloseDuringFetchDiscardsLateSource (the shared gate is exercised, not the whole WinUI commands file) |
+| Pause/mute/volume admission and switch/close | PlayerRefresh_NewIntentGateOrMediaSwitchDuringFetchPreventsReload; PlayerRefresh_CloseDuringFetchDiscardsLateSource (the shared gate is exercised, not the whole WinUI commands file) |
 | Failure re-enables command | PlayerRefresh_LoadFailureIsReportedAndButtonCanRetry |
 | Preference/risk/primary/backup boundaries | Refresh_HostAvoidanceIsOnlyATieBreakInsidePreferenceAndRisk (8 cases) |
 
@@ -224,3 +224,36 @@ retained. The test video was then paused. This is a placement and refresh smoke
 check, not a fresh long-outage or touch acceptance. An initial query ran while
 controls were hidden; revealing the header and rediscovering UIA confirmed the
 requested order. No new unit tests for this XAML relocation.
+## Final WinUI and simplicity review (2026-11-07)
+
+Reviewed the production diff from master `fbe0e50d` using winui-code-review and
+separate standards/spec passes. Repo conventions take precedence over generic
+style suggestions. No hard MVVM, binding, accessibility, AOT or analyzer-policy
+violation was found; no new production dead code was identified.
+
+Corrected the concrete findings:
+
+- Durl-only PGC previews no longer offer refresh. Availability reflects an actual
+  selected DASH video route, and notifies the view when playback initialization
+  changes. A preview result with no DASH format reproduced the old incorrect
+  availability before the fix; normal PGC DASH still refreshes.
+- Refresh command availability is no longer invalidated on every position,
+  speed or volume update; operation/session notifications are retained.
+- Renamed the intent-gate test to describe the seam it actually exercises, and
+  removed the transport XAML's encoding-only difference from master.
+
+No generic resolver framework was introduced to remove similar typed setup in
+video/PGC resolvers. They retain separate request/entitlement responsibilities
+and reuse the shared routing policy. Cancellation/generation checks and native
+load queue comments were retained because they protect concrete races. The
+refresh pause-preservation flag remains media-scoped: resetting it immediately
+after file-loaded could let delayed initialization resume a paused player.
+
+Validation: the preview regression failed before the fix (1 failed / 1 passed);
+all 70 refresh/routing cases pass afterwards. New cases are
+`PlayerRefresh_PgcPreviewWithoutDashDoesNotOfferRefresh` and
+`PlayerRefresh_PgcDashOffersAndExecutesRefresh`.
+Release/x64 build exited 0 with 0 errors and 115 existing warnings including the
+protobuf import warning; fresh WUI SARIF has 0 warnings/errors and 239 notes.
+The installed Native AOT package remains .22; this review's source corrections
+have not been repackaged or exercised in installed PGC playback.

@@ -42,6 +42,8 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
     /// </summary>
     internal bool IsPreviewPlayback => _playbackInfo?.IsPreview == true;
 
+    internal bool IsDashPlayback => _videoHost is not null;
+
     public void Initialize(MediaSnapshot snapshot, EpisodeInformation episode)
     {
         _sourceGeneration++;

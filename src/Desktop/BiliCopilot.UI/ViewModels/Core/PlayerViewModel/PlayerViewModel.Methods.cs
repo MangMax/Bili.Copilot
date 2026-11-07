@@ -520,7 +520,12 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        RefreshPlaybackCommand.NotifyCanExecuteChanged();
+        if (e.PropertyName == nameof(Player.IsPlaybackInitialized))
+        {
+            OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));
+            RefreshPlaybackCommand.NotifyCanExecuteChanged();
+        }
+
         if (e.PropertyName == nameof(Player.Position))
         {
             IsPreviewProgressChanging = false;
