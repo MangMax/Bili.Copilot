@@ -409,7 +409,7 @@
     <value>色域</value>
   </data>
   <data name="Comments" xml:space="preserve">
-    <value>评论列表</value>
+    <value>评论</value>
   </data>
   <data name="CompactOverlayMode" xml:space="preserve">
     <value>小窗模式</value>
@@ -1591,7 +1591,7 @@
     <value>阅读数</value>
   </data>
   <data name="Recommend" xml:space="preserve">
-    <value>推荐视频</value>
+    <value>推荐</value>
   </data>
   <data name="RecommendArticle" xml:space="preserve">
     <value>推荐文章</value>
@@ -2077,7 +2077,7 @@
     <value>两个币</value>
   </data>
   <data name="UgcSeason" xml:space="preserve">
-    <value>视频合集</value>
+    <value>合集</value>
   </data>
   <data name="UHDFirst" xml:space="preserve">
     <value>超高清（4K）优先</value>
@@ -3346,4 +3346,10 @@
   <data name="AvoidPublisherRecommendation" xml:space="preserve"><value>不想看此 UP 主</value></data>
   <data name="RecommendationFeedbackSucceeded" xml:space="preserve"><value>已提交推荐反馈</value></data>
   <data name="RecommendationFeedbackFailed" xml:space="preserve"><value>推荐反馈提交失败，请稍后重试</value></data>
+  <data name="ScrollTabsLeft" xml:space="preserve">
+    <value>向左滚动标签</value>
+  </data>
+  <data name="ScrollTabsRight" xml:space="preserve">
+    <value>向右滚动标签</value>
+  </data>
 </root>
