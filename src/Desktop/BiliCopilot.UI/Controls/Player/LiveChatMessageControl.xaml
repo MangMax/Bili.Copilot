@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="BiliCopilot.UI.Controls.Player.LiveChatMessageControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:local="using:BiliCopilot.UI.Controls.Player"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <!--  普通弹幕与系统消息：徽标 + 昵称 + 正文，单段富文本。  -->
+        <Grid
+            Padding="0,1"
+            ColumnSpacing="6"
+            Visibility="{x:Bind ViewModel.IsSuperChat, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Border
+                Padding="4,0"
+                VerticalAlignment="Top"
+                Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                CornerRadius="3"
+                Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                <TextBlock
+                    FontSize="9"
+                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                    Text="{x:Bind ViewModel.BadgeText, Mode=OneWay, FallbackValue=''}" />
+            </Border>
+            <TextBlock
+                Grid.Column="1"
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                TextWrapping="Wrap">
+                <Run Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" Text="{x:Bind ViewModel.SystemText, Mode=OneWay, FallbackValue=''}" />
+                <Run Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}" />
+                <Run Text="{x:Bind ViewModel.Text, Mode=OneWay, FallbackValue=''}" />
+                <Run Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind ViewModel.SystemDetail, Mode=OneWay, FallbackValue=''}" />
+            </TextBlock>
+        </Grid>
+
+        <!--  醒目留言卡片：金额与剩余时间，删除/到期后由列表移除。  -->
+        <Border
+            Padding="8,6"
+            Background="{ThemeResource AccentFillColorSecondaryBrush}"
+            CornerRadius="6"
+            Visibility="{x:Bind ViewModel.IsSuperChat, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+            <StackPanel Spacing="4">
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                        Text="{x:Bind ViewModel.PriceText, Mode=OneWay, FallbackValue=''}" />
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                        Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        Grid.Column="2"
+                        FontSize="11"
+                        Foreground="{ThemeResource TextOnAccentFillColorSecondaryBrush}"
+                        Text="{x:Bind ViewModel.RemainingText, Mode=OneWay, FallbackValue=''}"
+                        Visibility="{x:Bind ViewModel.IsRemainingVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                </Grid>
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                    Text="{x:Bind ViewModel.Text, Mode=OneWay, FallbackValue=''}"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

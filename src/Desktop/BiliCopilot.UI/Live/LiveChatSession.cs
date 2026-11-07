@@ -282,7 +282,7 @@ public sealed class LiveChatSession
             }
 
             _superChatsRemoved += change.Removed;
-            return new LiveChatApplyResult([], change.Removed, change.Trimmed);
+            return new LiveChatApplyResult(Array.Empty<LiveChatMessage>(), change.Removed, change.Trimmed);
         }
     }
 
@@ -318,7 +318,7 @@ public sealed class LiveChatSession
         if (change.RequiresReset)
         {
             _trimmed += change.Trimmed;
-            return new LiveChatApplyResult([], 0, change.Trimmed);
+            return new LiveChatApplyResult(Array.Empty<LiveChatMessage>(), 0, change.Trimmed);
         }
 
         _displayed++;
@@ -327,7 +327,7 @@ public sealed class LiveChatSession
             _systemMessages++;
         }
 
-        return new LiveChatApplyResult([message]);
+        return new LiveChatApplyResult(new[] { message });
     }
 
     private long NextSequence() => ++_sequence;
