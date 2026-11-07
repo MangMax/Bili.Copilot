@@ -55,12 +55,36 @@ public sealed class LiveFailureRecoveryTests
     [Theory]
     [InlineData(LivePlayerError.Http403)]
     [InlineData(LivePlayerError.Http404)]
+    [InlineData(LivePlayerError.Http412)]
     [InlineData(LivePlayerError.HttpServerError)]
     [InlineData(LivePlayerError.Tls)]
     [InlineData(LivePlayerError.LoadingFailed)]
     public void FromPlayerError_MapsTransportErrorsToTransport(LivePlayerError error)
     {
         Assert.Equal(LivePlaybackFailureKind.Transport, LivePlaybackFailureClassifier.FromPlayerError(error));
+    }
+
+    [Fact]
+    public void FromPlayerError_Http412AdvancesToNextCandidateInsteadOfStalling()
+    {
+        // 回归：412 以前落到 Unknown，界面只能手动重试；现在按传输失败换候选。
+        var sequencer = new LiveRecoverySequencer();
+
+        Assert.Equal(
+            LiveRecoveryAction.AdvanceCandidate,
+            sequencer.Report(LivePlaybackFailureClassifier.FromPlayerError(LivePlayerError.Http412), hasNextCandidate: true));
+    }
+
+    [Theory]
+    [InlineData(HttpStatusCode.Unauthorized)]
+    [InlineData(HttpStatusCode.Forbidden)]
+    [InlineData((HttpStatusCode)412)]
+    public void Classify_MapsPreconditionAndAuthStatusesToAuthenticationFailed(HttpStatusCode status)
+    {
+        // 取址阶段：412 与 401/403 一样代表登录态/清晰度权限被拒绝。
+        var exception = new HttpRequestException("failed", null, status);
+
+        Assert.Equal(LiveFailureKind.AuthenticationFailed, LiveFailureClassifier.Classify(exception));
     }
 
     [Fact]

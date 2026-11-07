@@ -78,7 +78,10 @@ namespace BiliCopilot.UI.ViewModels.Core
     public sealed partial class PlayerViewModel
     {
         public bool IsConnecting { get; set; }
+
+        /// <summary>测试替身：生产实现由 <c>LiveModePolicy</c> 从媒体快照推导。</summary>
         public bool IsLive { get; set; }
+
         public LiveConnectorViewModel? Connector { get; set; }
         private double? _continuePosition;
         internal List<Exception> RefreshErrors { get; } = [];

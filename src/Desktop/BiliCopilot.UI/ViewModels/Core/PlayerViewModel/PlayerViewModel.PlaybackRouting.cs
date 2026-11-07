@@ -154,15 +154,15 @@ public sealed partial class PlayerViewModel
     /// </summary>
     private async Task ReopenLivePlaybackAsync(MpvMediaSource source, CancellationToken cancellationToken, Func<bool> isCurrent)
     {
-        var previousPosition = _positionChangesDrained;
+        // Capture the queue before replacing it: the helper owns the (already suppressed)
+        // await of this instance's UI-owned seek queue.
+        var previousPosition = WaitForPositionChangesAsync();
         var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         _positionChangesDrained = completion.Task;
         _nativeRefreshDrained = completion.Task;
         try
         {
-#pragma warning disable VSTHRD003 // UI-owned queue; no synchronous dispatcher wait.
             await previousPosition;
-#pragma warning restore VSTHRD003
             cancellationToken.ThrowIfCancellationRequested();
             if (!isCurrent())
             {

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
@@ -106,6 +106,11 @@ public partial class App : Application
         }
     }
 
+    /// <summary>
+    /// 调试探针的存活引用；应用退出时据此停止并释放，避免后台连接悬空。
+    /// </summary>
+    private static LiveDanmakuProbeService? _liveDanmakuProbe;
+
     private static void StartLiveDanmakuProbeIfRequested()
     {
         // 调试入口：设置 BILI_LIVE_DANMAKU_PROBE_ROOM=<roomId> 后启动应用，
@@ -118,6 +123,7 @@ public partial class App : Application
 
         var probe = GlobalDependencies.Kernel.GetRequiredService<LiveDanmakuProbeService>();
         var logger = GlobalDependencies.Kernel.GetRequiredService<ILogger<App>>();
+        _liveDanmakuProbe = probe;
         _ = Task.Run(async () =>
         {
             try
@@ -129,6 +135,29 @@ public partial class App : Application
                 logger.LogError(ex, "Live danmaku probe failed to start for room {RoomId}.", roomId);
             }
         });
+    }
+
+    /// <summary>
+    /// 停止并释放调试探针；退出流程调用，可重复调用。
+    /// </summary>
+    /// <returns>停止任务.</returns>
+    internal static async Task StopLiveDanmakuProbeAsync()
+    {
+        if (_liveDanmakuProbe is not { } probe)
+        {
+            return;
+        }
+
+        _liveDanmakuProbe = null;
+        try
+        {
+            await probe.StopAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            GlobalDependencies.Kernel.GetRequiredService<ILogger<App>>()
+                .LogError(ex, "停止直播弹幕调试探针失败");
+        }
     }
 
     private static MainWindow? GetMainWindow()

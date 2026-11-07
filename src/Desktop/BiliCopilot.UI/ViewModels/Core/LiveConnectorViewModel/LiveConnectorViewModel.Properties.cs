@@ -43,6 +43,15 @@ public sealed partial class LiveConnectorViewModel
     public LiveSession Session { get; } = new();
 
     /// <summary>
+    /// Gets or sets 直播会话使用的时间来源；测试注入假时钟，生产默认系统时钟.
+    /// </summary>
+    /// <remarks>
+    /// 系统消息、醒目留言倒计时与"重新取址"节流都必须读这里，不能各自调用
+    /// <c>DateTimeOffset.UtcNow</c>，否则假时钟无法覆盖这些路径。
+    /// </remarks>
+    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
+
+    /// <summary>
     /// 请求播放另一个直播间（#198 房间切换的接缝；本票不触发）.
     /// </summary>
     /// <param name="snapshot">新的直播快照.</param>

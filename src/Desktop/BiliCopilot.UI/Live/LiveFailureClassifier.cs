@@ -45,6 +45,9 @@ public enum LiveFailureKind
 /// </summary>
 /// <remarks>
 /// 解码失败来自播放器内核的错误事件，不走这里；这里只区分请求地址与鉴权。
+/// 取址阶段返回 412（PreconditionFailed）通常意味着登录态/清晰度权限被拒绝，
+/// 因此归为鉴权失败；播放阶段看到 412 时地址已经发出去，按传输失败换候选即可
+/// （见 <see cref="LivePlaybackFailureClassifier"/>）。
 /// </remarks>
 public static class LiveFailureClassifier
 {
@@ -112,6 +115,9 @@ public enum LivePlayerError
     /// <summary>HTTP 404.</summary>
     Http404,
 
+    /// <summary>HTTP 412（签名地址被拒绝，取址阶段的同名状态归为鉴权失败）.</summary>
+    Http412,
+
     /// <summary>HTTP 5xx.</summary>
     HttpServerError,
 
@@ -160,6 +166,7 @@ public static class LivePlaybackFailureClassifier
             LivePlayerError.None => LivePlaybackFailureKind.None,
             LivePlayerError.Http403
                 or LivePlayerError.Http404
+                or LivePlayerError.Http412
                 or LivePlayerError.HttpServerError
                 or LivePlayerError.Tls
                 or LivePlayerError.LoadingFailed => LivePlaybackFailureKind.Transport,

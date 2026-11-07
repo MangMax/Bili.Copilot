@@ -38,9 +38,25 @@ public sealed partial class LiveConnectorViewModel
     internal LiveEventPump? DanmakuPump => _danmakuPump;
 
     /// <summary>
-    /// Gets 关键词高亮判定；#197 的屏蔽/高亮规则可在此接入，为空表示不高亮。
+    /// Gets 关键词高亮判定；由 <see cref="RefreshKeywordHighlight"/> 按设置回填，
+    /// 为空表示没有配置关键词（#196 的高亮层由此生效）。
     /// </summary>
-    internal Func<string, bool>? DanmakuKeywordHighlight { get; set; }
+    internal Func<string, bool>? DanmakuKeywordHighlight { get; private set; }
+
+    /// <summary>
+    /// Gets 当前生效的关键词匹配器；未配置时为空匹配器.
+    /// </summary>
+    internal LiveDanmakuKeywordMatcher KeywordHighlight { get; private set; } = LiveDanmakuKeywordMatcher.Empty;
+
+    /// <summary>
+    /// 按设置重新读取关键词；进入房间时与设置变化时调用，只影响之后到达的弹幕。
+    /// </summary>
+    internal void RefreshKeywordHighlight()
+    {
+        var keywords = SettingsToolkit.ReadLocalSetting(SettingNames.LiveDanmakuHighlightKeywords, string.Empty);
+        KeywordHighlight = LiveDanmakuKeywordMatcher.Parse(keywords);
+        DanmakuKeywordHighlight = KeywordHighlight.Count == 0 ? null : KeywordHighlight.IsMatch;
+    }
 
     /// <summary>
     /// Gets 当前弹幕连接状态；未连接时为已关闭。
@@ -63,6 +79,8 @@ public sealed partial class LiveConnectorViewModel
     private async Task StartDanmakuAsync(string roomId)
     {
         await StopDanmakuAsync();
+        // 关键词高亮只在进入房间时读一次设置，避免每条弹幕都读本地设置。
+        RefreshKeywordHighlight();
 
         var generation = Interlocked.Increment(ref _danmakuGeneration);
         var admission = new LiveDanmakuAdmission(LiveDanmakuAdmissionOptions.Default);
@@ -90,6 +108,12 @@ public sealed partial class LiveConnectorViewModel
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "直播间 {RoomId} 弹幕连接失败", roomId);
+            if (LiveDanmakuAuthFailure.IsAuthenticationFailure(ex))
+            {
+                // 认证失败不会重试（#192）：必须成为一条聊天系统消息 + 连接文案，而不是静默断开。
+                ReportDanmakuAuthenticationFailure(LiveDanmakuAuthFailure.GetDetail(ex));
+            }
+
             return;
         }
 
@@ -209,6 +233,20 @@ public sealed partial class LiveConnectorViewModel
         }
     }
 
+    /// <summary>
+    /// 把认证失败写进聊天系统消息与连接文案（UI 线程）。
+    /// </summary>
+    private void ReportDanmakuAuthenticationFailure(string? detail)
+    {
+        var dispatcher = this.Get<DispatcherQueue>();
+        dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            var text = ResourceToolkit.GetLocalizedString(StringNames.LiveChatSystemAuthenticationFailed);
+            DanmakuConnectionText = string.IsNullOrEmpty(detail) ? text : $"{text}（{detail}）";
+            EnqueueChatAuthenticationFailure(detail);
+        });
+    }
+
     private void OnDanmakuPumpEventReceived(object? sender, LiveDanmakuEvent liveEvent)
         => DanmakuEventReceived?.Invoke(this, liveEvent);
 
@@ -217,11 +255,18 @@ public sealed partial class LiveConnectorViewModel
         DanmakuStateChanged?.Invoke(this, state);
         var detail = _danmakuPump?.StateDetail;
         var connectionName = GetConnectionName(state);
+        var isAuthFailure = state == LiveDanmakuConnectionState.Closed && LiveDanmakuAuthFailure.IsAuthenticationDetail(detail);
         var dispatcher = this.Get<DispatcherQueue>();
         dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
-            var text = ResourceToolkit.GetLocalizedString(connectionName);
+            var text = ResourceToolkit.GetLocalizedString(isAuthFailure ? StringNames.LiveChatSystemAuthenticationFailed : connectionName);
             DanmakuConnectionText = string.IsNullOrEmpty(detail) ? text : $"{text}（{detail}）";
+            if (isAuthFailure)
+            {
+                // 连接以认证说明关闭：同样补一条聊天系统消息，避免只留下"已断开"。
+                EnqueueChatAuthenticationFailure(detail);
+            }
+
             UpdateDanmakuCounters();
         });
     }

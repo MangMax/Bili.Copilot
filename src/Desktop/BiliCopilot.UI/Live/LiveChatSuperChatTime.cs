@@ -46,6 +46,19 @@ public static class LiveChatSuperChatTime
     /// </summary>
     /// <param name="price">金额（元）.</param>
     /// <returns>格式化文本，例如 <c>¥30</c>.</returns>
-    public static string FormatPrice(int price)
-        => string.Format(CultureInfo.InvariantCulture, "¥{0}", price);
+    public static string FormatPrice(int price) => FormatPrice(price, DefaultPriceTemplate);
+
+    /// <summary>
+    /// 用指定的模板格式化金额；界面传入本地化模板，纯逻辑层使用默认模板。
+    /// </summary>
+    /// <param name="price">金额（元）.</param>
+    /// <param name="template">带 <c>{0}</c> 占位符的模板.</param>
+    /// <returns>格式化文本.</returns>
+    public static string FormatPrice(int price, string template)
+        => string.Format(CultureInfo.InvariantCulture, template, price);
+
+    /// <summary>
+    /// Gets 默认金额模板（中文界面的 <c>¥</c> 前缀）.
+    /// </summary>
+    public static string DefaultPriceTemplate => "¥{0}";
 }

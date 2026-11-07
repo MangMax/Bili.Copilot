@@ -127,8 +127,28 @@ public sealed partial class LiveConnectorViewModel
         // 状态消息由事件流里的 LiveConnectionStateChangedEvent 承载，这里只兜底认证失败。
         if (state == LiveDanmakuConnectionState.Closed && DanmakuPump is null)
         {
-            _chatQueue.Enqueue(new LiveConnectionStateChangedEvent(state, null, DateTimeOffset.UtcNow));
+            _chatQueue.Enqueue(new LiveConnectionStateChangedEvent(state, null, TimeProvider.GetUtcNow()));
         }
+    }
+
+    /// <summary>
+    /// 把一次认证失败作为系统消息排进聊天（调用方已在 UI 线程）。
+    /// </summary>
+    private void EnqueueChatAuthenticationFailure(string? detail)
+    {
+        var now = TimeProvider.GetUtcNow();
+        var result = GetOrCreateChatSession().ApplyAuthenticationFailure(detail, now);
+        foreach (var message in result.Added)
+        {
+            ChatMessages.Append(CreateChatItem(message, now));
+        }
+
+        if (result.RequiresReset)
+        {
+            ReplaceChatItems(GetOrCreateChatSession(), now);
+        }
+
+        IsChatEmpty = ChatMessages.Count == 0;
     }
 
     private void OnChatTimerTick(DispatcherQueueTimer sender, object args)
@@ -136,7 +156,7 @@ public sealed partial class LiveConnectorViewModel
         SyncChatGeneration();
 
         var session = GetOrCreateChatSession();
-        var now = DateTimeOffset.UtcNow;
+        var now = TimeProvider.GetUtcNow();
         var added = new List<LiveChatMessage>(MaxChatEventsPerTick);
         var requiresReset = false;
 
@@ -205,7 +225,24 @@ public sealed partial class LiveConnectorViewModel
     }
 
     private LiveChatMessageItem CreateChatItem(LiveChatMessage message, DateTimeOffset now)
-        => new(message, GetChatSystemText, now);
+        => new(message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText);
+
+    private string GetChatBadgeText(LiveChatBadgeKind kind)
+    {
+        var name = kind switch
+        {
+            LiveChatBadgeKind.Admin => StringNames.LiveChatBadgeAdmin,
+            LiveChatBadgeKind.Governor => StringNames.LiveChatBadgeGovernor,
+            LiveChatBadgeKind.Admiral => StringNames.LiveChatBadgeAdmiral,
+            LiveChatBadgeKind.Captain => StringNames.LiveChatBadgeCaptain,
+            _ => StringNames.LiveChatBadgeVip,
+        };
+
+        return ResourceToolkit.GetLocalizedString(name);
+    }
+
+    private static string GetChatPriceText(int price)
+        => LiveChatSuperChatTime.FormatPrice(price, ResourceToolkit.GetLocalizedString(StringNames.LiveSuperChatPriceTemplate));
 
     private string GetChatSystemText(LiveChatSystemKind kind)
     {
@@ -276,13 +313,13 @@ public sealed partial class LiveConnectorViewModel
             var dispatcher = this.Get<DispatcherQueue>();
             dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () =>
             {
-                if (generation != _chatGeneration && generation != Session.Generation)
+                if (!LiveChatBackfillGuard.IsCurrent(generation, _chatGeneration, Session.Generation))
                 {
                     return;
                 }
 
                 var session = GetOrCreateChatSession();
-                var now = DateTimeOffset.UtcNow;
+                var now = TimeProvider.GetUtcNow();
                 foreach (var danmaku in messages)
                 {
                     var result = session.Apply(new LiveDanmakuReceivedEvent(danmaku, "BACKFILL", now), now);

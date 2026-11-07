@@ -1,7 +1,9 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Live;
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Resolvers;
+using BiliCopilot.UI.Toolkits;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -82,10 +84,13 @@ public sealed partial class LiveConnectorViewModel
     private static string DescribeLine(LivePlaybackCandidate candidate)
     {
         var host = candidate.Primary.Host;
+        var fallbackName = ResourceToolkit.GetLocalizedString(StringNames.LiveLineFallbackName);
         var label = string.IsNullOrEmpty(host)
-            ? candidate.CodecName ?? "line"
+            ? candidate.CodecName ?? fallbackName
             : string.IsNullOrEmpty(candidate.CodecName) ? host : candidate.CodecName + " · " + host;
-        return candidate.IsMcdn ? label + " (mcdn)" : label;
+        return candidate.IsMcdn
+            ? label + ResourceToolkit.GetLocalizedString(StringNames.LiveLineMcdnSuffix)
+            : label;
     }
 }
 

@@ -136,7 +136,7 @@ public sealed class LiveChatSession
     /// 应用一个内核事件。
     /// </summary>
     /// <param name="liveEvent">内核事件.</param>
-    /// <param name="now">当前时间.</param>
+    /// <param name="now">当前时间；系统消息一律使用它，弹幕/醒目留言保留事件自身的接收时间.</param>
     /// <returns>本次变更.</returns>
     public LiveChatApplyResult Apply(LiveDanmakuEvent? liveEvent, DateTimeOffset now)
     {
@@ -154,9 +154,10 @@ public sealed class LiveChatSession
             case LiveSuperChatDeletedEvent deleted:
                 return RemoveSuperChats(deleted.MessageIds);
             case LiveConnectionStateChangedEvent stateChanged:
-                return AppendSystem(stateChanged.State, stateChanged.Detail, stateChanged.ReceivedAt);
+                // 系统消息用调用方给的时间：假时钟必须能覆盖连接状态与房间事件的落点。
+                return AppendSystem(stateChanged.State, stateChanged.Detail, now);
             default:
-                var system = LiveChatSystemMessage.FromEvent(liveEvent, NextSequence(), liveEvent.ReceivedAt);
+                var system = LiveChatSystemMessage.FromEvent(liveEvent, NextSequence(), now);
                 return system is null ? default : Append(system);
         }
     }

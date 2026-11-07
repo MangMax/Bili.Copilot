@@ -115,7 +115,9 @@ public sealed partial class PlayerViewModel
             return Task.CompletedTask;
         }
 
-        return Launcher.LaunchUriAsync(new Uri($"https://live.bilibili.com/{roomId}")).AsTask();
+        return LiveRoomUrl.Create(roomId) is { } url
+            ? Launcher.LaunchUriAsync(url).AsTask()
+            : Task.CompletedTask;
     }
 
     [RelayCommand]

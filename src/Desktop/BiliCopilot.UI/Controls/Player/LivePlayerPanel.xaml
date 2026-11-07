@@ -10,7 +10,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <!--  竖屏直播与窄窗口下侧栏随可用宽度收缩，保证状态与聊天入口不被裁掉。  -->
+    <!--
+        竖屏直播与窄窗口下侧栏随可用宽度收缩，保证状态与聊天入口不被裁掉。
+        竖屏（#198）：聊天列表默认收起为状态行，只留"展开聊天"入口，把宽度让给画面；
+        面板宿主仍是播放器的覆盖层，因此这里靠"收起内容"而不是改窗口布局来让位。
+        竖屏判定用窗口宽高比作代理——流级竖屏标记需要内核 API，当前内核没有该字段，
+        也不在此改动 mpv 的画面缩放（mpv 自己保持宽高比，不拉伸）。
+    -->
     <Grid
         MinWidth="220"
         MinHeight="320"
@@ -63,6 +69,13 @@
                     Text="{x:Bind ViewModel.UptimeText, Mode=OneWay, FallbackValue=''}"
                     Visibility="{x:Bind ViewModel.UptimeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
             </StackPanel>
+            <!--  竖屏/窄窗口的折叠入口（#198）：收起后画面获得全部宽度。  -->
+            <HyperlinkButton
+                Padding="0"
+                HorizontalAlignment="Left"
+                Command="{x:Bind ViewModel.TogglePortraitChatCommand, Mode=OneWay}"
+                Content="{ext:Locale Name=LivePortraitChatExpand}"
+                Visibility="{x:Bind ViewModel.IsChatPanelCollapsed, Mode=OneWay, FallbackValue=Collapsed}" />
             <!--  终态说明：下播/被切断时把原因留在侧栏，窗口不黑屏。  -->
             <TextBlock
                 FontSize="12"
@@ -89,7 +102,7 @@
             <local:LiveChatSidebar
                 x:Name="ChatSidebar"
                 ViewModel="{x:Bind ViewModel, Mode=OneWay}"
-                Visibility="{x:Bind ViewModel.IsChatCollapsed, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}" />
+                Visibility="{x:Bind ViewModel.IsChatPanelCollapsed, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}" />
         <StackPanel
             Grid.Row="1"
             Padding="16,8,16,12"
