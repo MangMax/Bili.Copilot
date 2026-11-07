@@ -3438,4 +3438,64 @@
   <data name="RefreshPlayback" xml:space="preserve">
     <value>刷新播放</value>
   </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>聊天</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>还没有消息，先看会儿直播吧</value>
+  </data>
+  <data name="LiveChatBackToBottom" xml:space="preserve">
+    <value>回到底部</value>
+  </data>
+  <data name="LiveChatCollapse" xml:space="preserve">
+    <value>收起聊天</value>
+  </data>
+  <data name="LiveChatExpand" xml:space="preserve">
+    <value>展开聊天</value>
+  </data>
+  <data name="LiveChatBlockTitle" xml:space="preserve">
+    <value>屏蔽</value>
+  </data>
+  <data name="LiveChatBlockUserIdPlaceholder" xml:space="preserve">
+    <value>用户 ID，用逗号或换行分隔</value>
+  </data>
+  <data name="LiveChatBlockUserNamePlaceholder" xml:space="preserve">
+    <value>昵称，用逗号或换行分隔</value>
+  </data>
+  <data name="LiveChatBlockKeywordPlaceholder" xml:space="preserve">
+    <value>关键词，用逗号或换行分隔</value>
+  </data>
+  <data name="LiveChatBlockApply" xml:space="preserve">
+    <value>应用屏蔽</value>
+  </data>
+  <data name="LiveChatBlockCountersTemplate" xml:space="preserve">
+    <value>已屏蔽 {3} 条（ID {0} · 昵称 {1} · 关键词 {2}）</value>
+  </data>
+  <data name="LiveChatSystemConnecting" xml:space="preserve">
+    <value>正在连接弹幕服务器…</value>
+  </data>
+  <data name="LiveChatSystemConnected" xml:space="preserve">
+    <value>弹幕已连接</value>
+  </data>
+  <data name="LiveChatSystemReconnecting" xml:space="preserve">
+    <value>连接中断，正在重连…</value>
+  </data>
+  <data name="LiveChatSystemDisconnected" xml:space="preserve">
+    <value>弹幕已断开</value>
+  </data>
+  <data name="LiveChatSystemAuthenticationFailed" xml:space="preserve">
+    <value>弹幕认证失败，请重新登录后再试</value>
+  </data>
+  <data name="LiveChatSystemRoomNotStarted" xml:space="preserve">
+    <value>主播尚未开播或已下播</value>
+  </data>
+  <data name="LiveChatSystemRoomStarted" xml:space="preserve">
+    <value>主播开播了</value>
+  </data>
+  <data name="LiveChatSystemRoomCutOff" xml:space="preserve">
+    <value>直播已被切断</value>
+  </data>
+  <data name="LiveChatBackfilling" xml:space="preserve">
+    <value>正在补屏…</value>
+  </data>
 </root>

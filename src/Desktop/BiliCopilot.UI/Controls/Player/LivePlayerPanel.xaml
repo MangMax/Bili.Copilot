@@ -13,6 +13,7 @@
     <!--  竖屏直播与窄窗口下侧栏随可用宽度收缩，保证状态与聊天入口不被裁掉。  -->
     <Grid
         MinWidth="220"
+        MinHeight="320"
         MaxWidth="360"
         HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -75,9 +76,23 @@
             Height="1"
             HorizontalAlignment="Stretch"
             Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
+        <!--
+            聊天侧栏（#197）占满剩余高度，房间信息与画质/线路收在其下方。
+            侧栏折叠后聊天区让出空间，但画质/线路/兜底入口仍然可用；
+            侧栏只在自己的行里伸缩，不触碰全屏与画中画的窗口级布局。
+        -->
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <local:LiveChatSidebar
+                x:Name="ChatSidebar"
+                ViewModel="{x:Bind ViewModel, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.IsChatCollapsed, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}" />
         <StackPanel
-            Grid.Row="3"
-            Padding="16,12"
+            Grid.Row="1"
+            Padding="16,8,16,12"
             Spacing="10">
             <!--  画质来自内核返回的格式；选择后重新取地址并原位重开，只持久化清晰度标识。  -->
             <StackPanel Spacing="4">
@@ -124,5 +139,6 @@
                 Command="{x:Bind ViewModel.OpenInBrowserCommand, Mode=OneWay}"
                 Content="{ext:Locale Name=OpenInBrowser}" />
         </StackPanel>
+        </Grid>
     </Grid>
 </local:LivePlayerControlBase>
