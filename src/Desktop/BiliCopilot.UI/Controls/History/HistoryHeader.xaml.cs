@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -50,15 +50,9 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
     private void OnViewModelSectionInitialized(object? sender, EventArgs e)
         => InitializeChildPartitions();
 
-    private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (sender.SelectedItem is null)
-        {
-            return;
-        }
-
-        var item = sender.SelectedItem.Tag as IHistorySectionDetailViewModel;
-        if (item is not null)
+        if (Selector.SelectedItem is IHistorySectionDetailViewModel item)
         {
             ViewModel.SelectSectionCommand.Execute(item);
         }
@@ -66,12 +60,12 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
 
     private void InitializeChildPartitions()
     {
-        Selector.Items.Clear();
+        var items = new List<SelectorBarItem>();
         if (ViewModel.Sections is not null)
         {
             foreach (var item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem()
+                items.Add(new SelectorBarItem()
                 {
                     Text = GetSectionName(item.Type),
                     Tag = item,
@@ -79,7 +73,7 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
             }
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.SelectedSection);
+        Selector.SetItems(items, ViewModel.SelectedSection);
     }
 
     private void OnCleanButtonClick(object sender, RoutedEventArgs e)

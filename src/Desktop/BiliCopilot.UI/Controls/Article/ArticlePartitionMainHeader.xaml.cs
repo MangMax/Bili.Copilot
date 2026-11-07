@@ -71,13 +71,7 @@ public sealed partial class ArticlePartitionMainHeader : ArticlePartitionDetailC
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (Selector.SelectedItem is null)
-        {
-            return;
-        }
-
-        var item = Selector.SelectedItem as PartitionViewModel;
-        if (item is not null && item != ViewModel.CurrentPartition)
+        if (Selector.SelectedItem is PartitionViewModel item && item != ViewModel.CurrentPartition)
         {
             ViewModel.ChangeChildPartitionCommand.Execute(item);
         }
