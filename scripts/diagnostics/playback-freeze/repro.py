@@ -109,8 +109,20 @@ def run(args):
     out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
     generate(args.ffmpeg, out, args.video_seconds, args.video_rate)
+    if args.variable_video:
+        # Four valid samples with unequal durations; no cadence-based oracle.
+        subprocess.run([args.ffmpeg, "-hide_banner", "-loglevel", "error", "-f", "lavfi",
+                        "-i", "testsrc2=size=320x180:rate=1", "-frames:v", "4",
+                        "-vf", "setpts='if(eq(N,0),0,if(eq(N,1),1,if(eq(N,2),3,13)))/TB'",
+                        "-fps_mode", "vfr", "-an", "-c:v", "libx264", "-preset", "ultrafast",
+                        "-bf", "0", "-movflags", "+faststart", "-y", str(out / "video.mp4")], check=True)
     media = {"/video.mp4": (out / "video.mp4").read_bytes(), "/audio.m4a": (out / "audio.m4a").read_bytes()}
-    cutoff = len(media["/video.mp4"]) // 3 + 17  # deliberately inside a packet
+    if args.trailing_free_bytes:
+        # Legal MP4 padding is not missing media. Keep generated source reusable.
+        size = args.trailing_free_bytes + 8
+        media["/video.mp4"] += size.to_bytes(4, "big") + b"free" + bytes(args.trailing_free_bytes)
+    fault_path = "/audio.m4a" if args.fault_track == "audio" else "/video.mp4"
+    cutoff = int(len(media[fault_path]) * args.fault_fraction) + 17  # inside a packet
     started = time.monotonic()
     requests = []
     state = {"released": False, "failures": 0}
@@ -132,7 +144,7 @@ def run(args):
             if first >= len(data):
                 self.send_error(416)
                 return
-            broken = (self.path == "/video.mp4" and args.scenario != "control" and
+            broken = (self.path == fault_path and args.scenario != "control" and
                       not state["released"] and (args.scenario != "transient" or state["failures"] < 1))
             stop = max(first, min(last + 1, cutoff)) if broken else last + 1
             if broken:
@@ -168,12 +180,20 @@ def run(args):
         key, value = option.split("=", 1)
         options[key] = value
     player = Mpv(args.mpv, options)
+    if args.inspect_boundary:
+        player.check(player.lib.mpv_request_log_messages(player.handle, b"debug"), "boundary logging")
     metadata = {"mpv_sha256": hashlib.sha256(Path(args.mpv).read_bytes()).hexdigest(),
                 "ffmpeg_sha256": hashlib.sha256(Path(args.ffmpeg).read_bytes()).hexdigest(),
                 "media": {key: {"bytes": len(value), "sha256": hashlib.sha256(value).hexdigest()} for key, value in media.items()},
                 "cutoff": cutoff, "options": options,
                 "versions": {key: player.get(key) for key in ["mpv-version", "ffmpeg-version"]},
                 "effective": {key: player.get("options/" + key) for key in ["curl-enabled", "curl-max-retries", "curl-http-version", "demuxer-seekable-cache", "demuxer-max-bytes", "demuxer-readahead-secs", "stream-lavf-o"]}}
+    if args.inspect_boundary:
+        metadata["property-list"] = player.get("property-list").split(",")
+        metadata["fault-track"] = args.fault_track
+        metadata["fault-fraction"] = args.fault_fraction
+        metadata["variable-video"] = args.variable_video
+        metadata["trailing-free-bytes"] = args.trailing_free_bytes
     samples, events, actions = [], [], []
     did_action = False
     attempts = 0
@@ -204,6 +224,12 @@ def run(args):
             sample = {"t": round(now, 3), **{key: player.get(key) for key in
                 ["time-pos", "video-pts", "audio-pts", "eof-reached", "pause", "paused-for-cache", "duration", "demuxer-cache-state", "estimated-vf-fps"]}}
             samples.append(sample)
+            if args.inspect_boundary:
+                sample.update({key: player.get(key) for key in [
+                    "file-size", "stream-pos", "stream-end", "track-list", "current-tracks/video",
+                    "video-frame-info", "decoder-frame-drop-count", "frame-drop-count",
+                    "estimated-frame-count", "estimated-frame-number", "video-status", "video-eof",
+                    "video-frame-info/duration", "current-tracks/video/eof"]})
             if args.auto_reopen and not failed:
                 cache = sample.get("demuxer-cache-state") or {}
                 ranges = cache.get("seekable-ranges") or []
@@ -251,6 +277,11 @@ if __name__ == "__main__":
     parser.add_argument("--video-seconds", type=float, default=24, help="Use a fresh output directory when changing media duration")
     parser.add_argument("--video-rate", default="30", help="Generated video rate; use a fresh output directory")
     parser.add_argument("--auto-reopen", action="store_true", help="Experimental duration/cache predicate, not production policy")
+    parser.add_argument("--inspect-boundary", action="store_true", help="Record native property inventory and completeness/termination candidates")
+    parser.add_argument("--fault-track", choices=["video", "audio"], default="video")
+    parser.add_argument("--fault-fraction", type=float, default=1 / 3, help="Fraction of selected input delivered before truncation")
+    parser.add_argument("--variable-video", action="store_true", help="Generate four frames at PTS 0,1,3,13 with variable durations")
+    parser.add_argument("--trailing-free-bytes", type=int, default=0, help="Append valid MP4 free-box padding to HTTP video body")
     parser.add_argument("--release-at", type=float, default=12)
     parser.add_argument("--action-at", type=float, default=14)
     parser.add_argument("--action", choices=["none", "seek", "seek-no-cache", "reload", "pause"], default="none")

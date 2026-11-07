@@ -1,5 +1,9 @@
 # #184: automatic recovery detector gate failed
 
+Follow-up: [native API, source and attribution assessment](spec-184-native-boundary.md)
+tests richer properties, native video EOF, and audio-only failure with healthy
+sparse video. It identifies the native error-propagation boundary needed next.
+
 Status: **production repair not implemented**. The pre-implementation gate in
 [#184's approved contract](https://github.com/MangMax/Bili.Copilot/issues/184#issuecomment-6705762561)
 requires returning concrete evidence instead of shipping a speculative detector.
