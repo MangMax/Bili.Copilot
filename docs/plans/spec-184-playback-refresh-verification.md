@@ -144,3 +144,57 @@ unused protobuf import). SARIF contains 239 WUI notes and no WUI warning/error.
 Completed implementer worktrees were verified clean and merged, then removed;
 committed evidence is available on the integration branch and private artifacts
 remain under the research directory.
+
+## Installed development package acceptance — 2026-11-07
+
+Merged origin/master fbe0e50d (automatic merge, no textual conflicts) and updated
+bili-kernel to fc9a964. Raised Package.Dev.appxmanifest from 2.2611.7.19 to
+2.2611.7.20, retaining Mang.BiliCopilot.Dev / CN=BiliCopilotDev.
+
+Packaged the Debug/x64 Native AOT project with winapp 0.7.1:
+
+```powershell
+winapp package src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Debug --arch x64 `
+  -p Platform=x64 -p SolutionDir="$PWD/src/" -p WinUIAnalyzerObservation=true `
+  --output "$PWD/.scratch/playback-freeze/dev-20/BiliCopilot.Dev_2.2611.7.20_x64.msix"
+```
+
+Packaging exited 0; signature Valid, expected developer publisher. Installed via
+Add-AppxPackage -ForceApplicationShutdown as an in-place upgrade. No uninstall,
+identity replacement, data reset or certificate-store change. Package status is Ok.
+SHA256: F58BC9499E9C05418F39DFB2766D94FA7747B956E1B05C28FA7C8040AF55B9BC.
+Runtime libmpv/ffmpeg assets were copied from the already installed .19 development
+package, without upgrading those dependencies.
+
+Full UI.Tests after merging the current kernel: 1058 passed, 0 failed/skipped.
+WUI observation SARIF: 239 notes, 0 warnings/errors. Private TRX and UI evidence:
+`%USERPROFILE%/.t3/research/spec-184-refresh/dev-20-validation/`.
+
+LocalState/LocalCache were backed up before upgrade. All 4113 original files were
+still present; 4112 matched the recorded hash, while the active logger file could
+not be hashed. Windows held settings.dat open, so it is not claimed as a successful
+backup. The installed app retained the existing account and prior settings.
+
+Actual installed-app checks (local desktop, dark theme):
+
+- All seven routing choices selected and read back. Backup preference survived an
+  app process restart; Auto was restored afterwards.
+- Ordinary video opened with visible frames and 1080P 60fps retained.
+- Paused refresh: 04:08 before / 04:09 after, consistent with existing whole-second
+  load position rounding; the play glyph and stationary frame confirmed pause.
+- The 1.5x speed choice remained selected after refresh. Volume was set to 37 and
+  the slider visually retained its position; exact post-refresh native volume and
+  audible output were not independently measured in this UI run.
+- Playing refresh: enabled button returned; UI timestamps advanced 04:10 to 04:17,
+  and screenshots 10/11 show distinct video frames. This is a real installed-app
+  smoke check, not the earlier null-sink harness.
+- Test speed/volume were restored to 1.0x/100, matching the initial controls;
+  routing returned to Auto. The test player was left paused.
+
+The earlier package-identity UI blocker is resolved by using the signed, higher
+version development MSIX. Remaining boundaries: no long-outage/freeze reproduction
+in the full app, no PGC entitlement playback, no mute/audio measurement, and no
+claim that synthetic touch injection established refresh-versus-seek concurrency.
+UIA selectors for hidden controls/popups required rediscovery; unavailable locators
+were not counted as feature passes. Screenshots were visually inspected, and raw
+UI trees (which can contain signed media URLs) stay outside committed evidence.
