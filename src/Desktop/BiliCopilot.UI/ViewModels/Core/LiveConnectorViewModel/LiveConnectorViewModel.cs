@@ -41,6 +41,8 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
         }
 
         _snapshot = snapshot;
+        // 换房/重进：先停掉上一房间的弹幕连接与注入，再重置房间状态。
+        await StopDanmakuAsync();
         Session.Reset(snapshot.Live);
         ErrorText = default;
         IsLoading = true;
@@ -58,6 +60,8 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
 
             SyncFromSession();
             UpdateProperties();
+            // 弹幕连接不阻塞播放初始化：认证与重连在后台进行，失败只影响弹幕状态。
+            StartDanmakuInBackground(snapshot.Live.Identifier.Id);
         }
         catch (OperationCanceledException)
         {
@@ -88,9 +92,13 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
     public Task PlayPreviousAsync() => Task.CompletedTask;
 
     /// <summary>
-    /// 取消仍在进行的房间详情请求；关闭播放器时调用。
+    /// 取消仍在进行的房间详情请求并停止弹幕连接；关闭播放器时调用。
     /// </summary>
-    public void CancelPending() => Session.CancelPending();
+    public void CancelPending()
+    {
+        Session.CancelPending();
+        StopDanmakuInBackground();
+    }
 
     /// <summary>
     /// 打开播放器侧栏（#197 聊天侧栏的容器）。
