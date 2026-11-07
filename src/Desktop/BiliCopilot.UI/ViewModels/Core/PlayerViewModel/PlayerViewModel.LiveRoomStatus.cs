@@ -5,6 +5,7 @@ using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -53,6 +54,26 @@ public sealed partial class PlayerViewModel
         HasErrorAction = false;
         IsEnd = false;
         CheckBlackBackgroundVisible();
+        // 终态下不再保留播放器重连循环：暂停当前流，避免无限缓冲。
+        _ = PauseLivePlaybackAsync();
+    }
+
+    private async Task PauseLivePlaybackAsync()
+    {
+        try
+        {
+            if (Client?.IsDisposed == false)
+            {
+                await Client.PauseAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug(ex, "暂停直播画面失败");
+            }
+        }
     }
 
     /// <summary>

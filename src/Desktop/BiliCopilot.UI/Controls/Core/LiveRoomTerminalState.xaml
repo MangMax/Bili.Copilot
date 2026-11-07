@@ -16,14 +16,18 @@
     -->
     <Grid
         x:Name="RootPanel"
-        Padding="24"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
-        CornerRadius="{StaticResource OverlayCornerRadius}"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
         Visibility="{x:Bind ViewModel.IsLiveRoomTerminal, Mode=OneWay}">
+        <!--  遮住已停止的画面，避免把终态看成"黑屏"或"播放已结束"。  -->
+        <Rectangle Fill="Black" Opacity="0.72" />
         <StackPanel
             MaxWidth="420"
+            Padding="24"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
+            CornerRadius="{StaticResource OverlayCornerRadius}"
             Spacing="12">
             <TextBlock
                 HorizontalAlignment="Center"
