@@ -1,0 +1,337 @@
+{
+ "dump": {
+  "dump": "BiliCopilot.UI.exe.36504.dmp",
+  "sha256": "1e0aa4f7859a16b88c7c9d075fa22c355284b3321d2d9aff95439635c80e46a8",
+  "bytes": 18482016,
+  "pid": 36504,
+  "timestampUtc": "2026-11-07T02:40:16+00:00",
+  "flags": "0x200121",
+  "threadsTotal": 112,
+  "memoryRanges": 9503,
+  "memorySpan": [
+   "0x73d46000",
+   "0x7ffff44bb180"
+  ],
+  "moduleCount": 176
+ },
+ "exception": {
+  "thread": 41636,
+  "code": "0xc000027b",
+  "flags": "0x1",
+  "address": "0x7ff86dd0df5e",
+  "location": "CoreMessagingXP.dll+0xadf5e",
+  "parameters": [
+   "0x200498f6030",
+   "0x1"
+  ],
+  "count": 2
+ },
+ "stowed": [],
+ "stowedGap": "stowed array not captured: not captured 0x200498f6030 remaining 8 of 8",
+ "modules": {
+  "BiliCopilot.UI.exe": {
+   "version": "1.0.0.0",
+   "timestamp": "0x6aee8e5e",
+   "size": 201777152,
+   "pdb": "BiliCopilot.UI.pdb",
+   "guid": "857DE865E95D49F3B62CCDED7A2069F4",
+   "age": 9
+  },
+  "KERNELBASE.dll": {
+   "version": "10.0.26100.9711",
+   "timestamp": "0xfb9071fb",
+   "size": 4198400,
+   "pdb": "kernelbase.pdb",
+   "guid": "79B505276F140450EB83DF0440BF06C6",
+   "age": 1
+  },
+  "user32.dll": {
+   "version": "10.0.26100.9549",
+   "timestamp": "0x1d1c21a9",
+   "size": 1929216,
+   "pdb": "user32.pdb",
+   "guid": "F0BF56EE0A784974D49A58173A7CBC7E",
+   "age": 1
+  },
+  "combase.dll": {
+   "version": "10.0.26100.9711",
+   "timestamp": "0x15b851a4",
+   "size": 3715072,
+   "pdb": "combase.pdb",
+   "guid": "4AC91D91223808F3AE6A3164A1B8B404",
+   "age": 1
+  },
+  "Microsoft.UI.Xaml.dll": {
+   "version": "3.3.0.0",
+   "timestamp": "0x870df769",
+   "size": 15216640,
+   "pdb": "Microsoft.ui.xaml.pdb",
+   "guid": "C1689B464BD2CADF99559893CD94970C",
+   "age": 2
+  },
+  "CoreMessagingXP.dll": {
+   "version": "12.6.5.0",
+   "timestamp": "0x6ae54998",
+   "size": 1314816,
+   "pdb": "CoreMessagingXP.pdb",
+   "guid": "8DF33B796A9B47A0AF690590F044A8ED",
+   "age": 1
+  },
+  "Microsoft.UI.Xaml.Controls.dll": {
+   "version": "3.3.0.0",
+   "timestamp": "0x25dcff43",
+   "size": 7495680,
+   "pdb": "Microsoft.UI.Xaml.Controls.pdb",
+   "guid": "082E0045D11D99C13745155BD20BC5D0",
+   "age": 2
+  }
+ },
+ "walk": {
+  "method": "DbgHelp StackWalk64, dump memory + timestamp/SizeOfImage-matched PE fallback, symbols from public server",
+  "frames": [
+   {
+    "location": "KERNELBASE.dll+0x10a708",
+    "pc": "0x7ff8c8f5a708",
+    "symbol": "RaiseFailFastException",
+    "displacement": 392
+   },
+   {
+    "location": "combase.dll+0xc3c99",
+    "pc": "0x7ff8ca513c99",
+    "symbol": "RoFailFastWithErrorContextInternal2",
+    "displacement": 1193
+   },
+   {
+    "location": "CoreMessagingXP.dll+0xadf5e",
+    "pc": "0x7ff86dd0df5e",
+    "symbol": "WinUICreateDispatcherQueueController",
+    "displacement": 24910
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x38ba2",
+    "pc": "0x7ff86dc98ba2",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 193666
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x3873b",
+    "pc": "0x7ff86dc9873b",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 192539
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x228fc",
+    "pc": "0x7ff86dc828fc",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 102876
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x1785b",
+    "pc": "0x7ff86dc7785b",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 57659
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x65330",
+    "pc": "0x7ff86dcc5330",
+    "symbol": "CoreUIRouteToTestRegistrar",
+    "displacement": 7136
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x199d0",
+    "pc": "0x7ff86dc799d0",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 66224
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x191f4",
+    "pc": "0x7ff86dc791f4",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 64212
+   },
+   {
+    "location": "CoreMessagingXP.dll+0xc1bc",
+    "pc": "0x7ff86dc6c1bc",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 10908
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x11f0b",
+    "pc": "0x7ff86dc71f0b",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 34795
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x121f1",
+    "pc": "0x7ff86dc721f1",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 35537
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x60197",
+    "pc": "0x7ff86dcc0197",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 354935
+   },
+   {
+    "location": "CoreMessagingXP.dll+0x5ff52",
+    "pc": "0x7ff86dcbff52",
+    "symbol": "CoreUIUninitializeTestService",
+    "displacement": 354354
+   },
+   {
+    "location": "user32.dll+0x152e6",
+    "pc": "0x7ff8cb2c52e6",
+    "symbol": "CallWindowProcW",
+    "displacement": 1702
+   },
+   {
+    "location": "user32.dll+0x14b6c",
+    "pc": "0x7ff8cb2c4b6c",
+    "symbol": "GetFocus",
+    "displacement": 7740
+   },
+   {
+    "location": "user32.dll+0x3f593",
+    "pc": "0x7ff8cb2ef593",
+    "symbol": "GetWindowDpiAwarenessContext",
+    "displacement": 1235
+   },
+   {
+    "location": "ntdll.dll+0x165d94",
+    "pc": "0x7ff8cb8a5d94",
+    "symbol": "KiUserCallbackDispatcher",
+    "displacement": 36
+   },
+   {
+    "location": "win32u.dll+0x1364",
+    "pc": "0x7ff8c8e21364",
+    "symbol": "NtUserGetMessage",
+    "displacement": 20
+   },
+   {
+    "location": "user32.dll+0x2aea2",
+    "pc": "0x7ff8cb2daea2",
+    "symbol": "GetMessageW",
+    "displacement": 34
+   },
+   {
+    "location": "Microsoft.UI.Xaml.dll+0x7950b8",
+    "pc": "0x7ffff3e750b8",
+    "symbol": "XamlCheckProcessRequirements",
+    "displacement": 3949544
+   },
+   {
+    "location": "Microsoft.UI.Xaml.dll+0x79565d",
+    "pc": "0x7ffff3e7565d",
+    "symbol": "XamlCheckProcessRequirements",
+    "displacement": 3950989
+   },
+   {
+    "location": "Microsoft.UI.Xaml.dll+0x5be83b",
+    "pc": "0x7ffff3c9e83b",
+    "symbol": "XamlCheckProcessRequirements",
+    "displacement": 2022251
+   },
+   {
+    "location": "BiliCopilot.UI.exe+0xdce219",
+    "pc": "0x7ff62348e219",
+    "symbol": null,
+    "displacement": null
+   },
+   {
+    "location": "BiliCopilot.UI.exe+0xf0a9db",
+    "pc": "0x7ff6235ca9db",
+    "symbol": null,
+    "displacement": null
+   },
+   {
+    "location": "BiliCopilot.UI.exe+0x6367a1",
+    "pc": "0x7ff622cf67a1",
+    "symbol": null,
+    "displacement": null
+   },
+   {
+    "location": "BiliCopilot.UI.exe+0x52ef222",
+    "pc": "0x7ff6279af222",
+    "symbol": null,
+    "displacement": null
+   },
+   {
+    "location": "BiliCopilot.UI.exe+0x605e23f",
+    "pc": "0x7ff62871e23f",
+    "symbol": "BrotliDecoderVersion",
+    "displacement": 151487
+   },
+   {
+    "location": "kernel32.dll+0x2dda7",
+    "pc": "0x7ff8ca25dda7",
+    "symbol": "BaseThreadInitThunk",
+    "displacement": 23
+   },
+   {
+    "location": "ntdll.dll+0x7ee4c",
+    "pc": "0x7ff8cb7bee4c",
+    "symbol": "RtlUserThreadStart",
+    "displacement": 44
+   }
+  ]
+ },
+ "wer": {
+  "report": "AppCrash_Mang.BiliCopilot_104957cbb55d8d926741dbb9da76d6f9b70315b_6f0e1a2d_bc99342d-4e27-4cb5-8be7-9a12ab9b27c2",
+  "eventType": "MoAppCrash",
+  "isFatal": 1,
+  "integratorReportId": "17a2f87d-3015-47a5-a6d0-1a5745c6b94c",
+  "faultModule": "combase.dll",
+  "faultModuleVersion": "10.0.26100.9711",
+  "exceptionCode": "0x80004003",
+  "exceptionOffset": "0xc4063",
+  "bucketId": "783bfb263944e27d699a93e8b912c34e",
+  "targetAppVer": "2.2611.7.8_x64_!2026//11//07:02:35:10"
+ },
+ "applicationError": {
+  "eventId": 1000,
+  "module": "CoreMessagingXP.dll",
+  "moduleVersion": "12.6.5.0",
+  "code": "0xc000027b",
+  "offset": "0xadf5e",
+  "pid": "0x8E98"
+ },
+ "repro": [
+  {
+   "run": "restart-1",
+   "path": "直播 -> 网游 (from recommend feed, fresh process)",
+   "result": "process exit",
+   "crashTime": "2026-11-07T11:18:29+08:00",
+   "lastLog": "log-2026-11-07.txt:146135 尝试加载 全部网游 分区视频时出错"
+  },
+  {
+   "run": "restart-2",
+   "path": "视频 -> 动画 -> MAD·AMV -> 直播 -> 网游",
+   "result": "process exit",
+   "crashTime": "2026-11-07T11:21:15+08:00",
+   "lastLog": "同一条 KernelException"
+  },
+  {
+   "run": "restart-3",
+   "path": "直播 -> 网游 (minimal, fresh process)",
+   "result": "process exit",
+   "crashTime": "2026-11-07T11:21:49+08:00",
+   "lastLog": "log-2026-11-07.txt:146502 尝试加载 全部网游 分区视频时出错"
+  },
+  {
+   "run": "restart-4",
+   "path": "直播 -> 单机游戏 (success path)",
+   "result": "alive",
+   "crashTime": null,
+   "lastLog": "no error"
+  },
+  {
+   "run": "restart-5",
+   "path": "直播 -> 单机游戏 -> 网游 (detail page already mounted)",
+   "result": "alive",
+   "crashTime": null,
+   "lastLog": "同一条 KernelException，无退出"
+  }
+ ]
+}
