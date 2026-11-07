@@ -19,6 +19,13 @@ public sealed partial class PlayerViewModel
 
         if (e.PropertyName == nameof(Player.Position))
         {
+            if (IsLive)
+            {
+                // 直播没有时间轴（LiveModePolicy.SupportsDanmakuTimeline = false）：
+                // 位置变化只代表直播流的推进，不能驱动时间轴弹幕。
+                return;
+            }
+
             Danmaku.UpdatePosition(Convert.ToInt32(Player.Position));
         }
         else if (e.PropertyName == nameof(Player.PlaybackRate))

@@ -276,7 +276,7 @@ public sealed partial class LiveConnectorViewModel
             var dispatcher = this.Get<DispatcherQueue>();
             dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () =>
             {
-                if (generation != _chatGeneration && generation != Session.Generation)
+                if (!LiveChatBackfillGuard.IsCurrent(generation, _chatGeneration, Session.Generation))
                 {
                     return;
                 }

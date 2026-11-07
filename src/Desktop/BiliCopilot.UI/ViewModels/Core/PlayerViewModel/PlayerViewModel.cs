@@ -478,7 +478,12 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         CheckFullScreen();
         CheckCompactOverlay();
-        ProgressChanged?.Invoke(this, 0);
+        if (!IsLive)
+        {
+            // 直播不上报进度（LiveModePolicy.ReportsProgress = false）。
+            ProgressChanged?.Invoke(this, 0);
+        }
+
         await LoadSourcesAsync();
         await LoadSubtitlesAsync();
         if (Window.IsClosed)
