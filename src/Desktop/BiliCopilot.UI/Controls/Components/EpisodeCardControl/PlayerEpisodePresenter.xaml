@@ -24,8 +24,9 @@
             DecodeWidth="600"
             Source="{x:Bind ViewModel.Cover, Mode=OneWay}" />
         <Border
+            MinHeight="18"
             Margin="10,10,0,0"
-            Padding="6,1"
+            Padding="7,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             AutomationProperties.Name="{x:Bind ViewModel.AccessTagAutomationName, Mode=OneWay}"
@@ -35,10 +36,13 @@
                 <SolidColorBrush Color="{x:Bind ViewModel.AccessTagColor, Mode=OneWay}" />
             </Border.Background>
             <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 FontSize="10"
                 FontWeight="SemiBold"
                 Foreground="White"
-                Text="{x:Bind ViewModel.AccessTagText, Mode=OneWay}" />
+                Text="{x:Bind ViewModel.AccessTagText, Mode=OneWay}"
+                TextAlignment="Center" />
         </Border>
         <Border
             Margin="8"
