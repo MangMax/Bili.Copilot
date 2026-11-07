@@ -40,14 +40,34 @@ public sealed class CompactOverlayRatioTests
     }
 
     [Fact]
-    public void PortraitShrinksProportionallyAndClampsToNegativeWorkArea()
+    public void PortraitShrinksProportionallyAndKeepsTheAnchorOnANegativeWorkArea()
     {
         var bounds = new RatioWindowBounds(-200, 500, 1000, 600);
         using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
             () => new(-1280, 0, 1280, 720), value => bounds = value);
         session.UpdateMedia(session.BeginMedia(), 9, 16);
         session.SetCompact(true);
-        Assert.Equal(new RatioWindowBounds(-405, 0, 405, 720), bounds);
+        Assert.Equal(new RatioWindowBounds(-200, 500, 405, 720), bounds);
+    }
+
+    [Fact]
+    public void FittingKeepsAHalfOffscreenAnchorInsteadOfPullingTheWindowInside()
+    {
+        var bounds = new RatioWindowBounds(1900, 1000, 640, 400);
+        using var session = CreateSession(() => bounds, value => bounds = value);
+        session.UpdateMedia(session.BeginMedia(), 9, 16);
+        session.SetCompact(true);
+        Assert.Equal(new RatioWindowBounds(1900, 1000, 360, 640), bounds);
+    }
+
+    [Fact]
+    public void FullyHiddenAnchorIsRecoveredWithTheFittedSize()
+    {
+        var bounds = new RatioWindowBounds(4000, 3000, 640, 400);
+        using var session = CreateSession(() => bounds, value => bounds = value);
+        session.UpdateMedia(session.BeginMedia(), 9, 16);
+        session.SetCompact(true);
+        Assert.Equal(new RatioWindowBounds(1560, 440, 360, 640), bounds);
     }
 
     [Fact]

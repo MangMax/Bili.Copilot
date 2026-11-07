@@ -122,8 +122,10 @@ internal sealed class CompactOverlayRatioSession : IDisposable
         var scale = Math.Min(1, Math.Min(area.Width / width, area.Height / height));
         var targetWidth = Math.Clamp((int)Math.Round(width * scale), 1, area.Width);
         var targetHeight = Math.Clamp((int)Math.Round(height * scale), 1, area.Height);
-        var x = (int)Math.Clamp((long)bounds.X, area.X, (long)area.X + area.Width - targetWidth);
-        var y = (int)Math.Clamp((long)bounds.Y, area.Y, (long)area.Y + area.Height - targetHeight);
+        // Keep the top-left anchor even when the user tucked the compact window over an
+        // edge; only a fully hidden window is recovered into the work area.
+        var x = CompactOverlayPlacement.RecoverAxis(bounds.X, targetWidth, area.X, area.Width);
+        var y = CompactOverlayPlacement.RecoverAxis(bounds.Y, targetHeight, area.Y, area.Height);
         _apply(new(x, y, targetWidth, targetHeight));
     }
 }

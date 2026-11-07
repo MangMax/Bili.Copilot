@@ -25,10 +25,12 @@ public class PlayerWindowPlacementSessionTests
     [Theory]
     [InlineData(-1800, 200, 400, 250, false, -1800, 200)]
     [InlineData(-1800, 200, 400, 250, true, 0, 200)]
-    [InlineData(1800, 1000, 600, 375, false, 1320, 665)]
+    // Partially overhanging a corner is a deliberate compact position and survives.
+    [InlineData(1800, 1000, 600, 375, false, 1800, 1000)]
     [InlineData(0, 0, 400, 250, false, 0, 0)]
+    // A fully hidden window is recovered with its current physical size.
     [InlineData(int.MaxValue, int.MaxValue, 400, 250, false, 1520, 790)]
-    public async Task RestoreUsesCurrentPhysicalSizeAndAvailableWorkArea(
+    public async Task RestoreKeepsVisiblePositionAndRecoversOnlyFullyHiddenOne(
         int x, int y, int width, int height, bool removed, int expectedX, int expectedY)
     {
         var desktop = new Desktop { Saved = new(x, y), SecondaryRemoved = removed };
@@ -102,13 +104,36 @@ public class PlayerWindowPlacementSessionTests
     }
 
     [Fact]
-    public async Task CrossMonitorDpiResizeIsClampedAgainUsingDestinationPixelSize()
+    public async Task PresenterRelocatedWindowIsMovedBackToTheRememberedPosition()
     {
         var desktop = new Desktop { Saved = new(1800, 1000) };
         var session = new PlayerWindowPlacementSession(desktop, () => Task.CompletedTask);
+        // The presenter constrains the window to another size at another location.
         desktop.Moved = () => desktop.Bounds = desktop.Bounds with { Width = 600, Height = 375 };
+        await session.ChangeAsync(WindowPlacementMode.CompactOverlay,
+            () => desktop.Bounds = new(5000, 5000, 600, 375));
+        Assert.Equal(new PlacementBounds(1800, 1000, 600, 375), desktop.Bounds);
+    }
+
+    [Fact]
+    public async Task CompactEntryRepositionsBeforeThePresenterSwitchSoNothingJumps()
+    {
+        var desktop = new Desktop { Saved = new(1800, 1000) };
+        var session = new PlayerWindowPlacementSession(desktop, () => Task.CompletedTask);
+        PlacementBounds? atPresenter = null;
+        await session.ChangeAsync(WindowPlacementMode.CompactOverlay,
+            () => atPresenter = desktop.Bounds);
+        Assert.Equal(new PlacementPoint(1800, 1000), new PlacementPoint(atPresenter!.Value.X, atPresenter.Value.Y));
+        Assert.Equal(new PlacementBounds(1800, 1000, 400, 250), desktop.Bounds);
+    }
+
+    [Fact]
+    public async Task FullyHiddenPositionIsRecoveredWithCurrentSize()
+    {
+        var desktop = new Desktop { Saved = new(2300, 1400) };
+        var session = new PlayerWindowPlacementSession(desktop, () => Task.CompletedTask);
         await session.ChangeAsync(WindowPlacementMode.CompactOverlay, () => { });
-        Assert.Equal(new PlacementBounds(1320, 665, 600, 375), desktop.Bounds);
+        Assert.Equal(new PlacementBounds(1520, 790, 400, 250), desktop.Bounds);
     }
 
     [Fact]

@@ -66,15 +66,28 @@ internal sealed class PlayerWindowPlacementSession(IPlayerWindowPlacement window
 
         GeometryChanged();
         var generation = ++_generation;
-        await _presenter.ChangeAsync(applyPresenter);
-        if (_closed || generation != _generation)
-        {
-            return;
-        }
-
         _restoring = true;
         try
         {
+            await _presenter.ChangeAsync(() =>
+            {
+                // Reposition in the same synchronous batch as the presenter switch: the
+                // compact window must never show up at the ordinary window's location
+                // first and then jump to the remembered one.
+                if (mode == WindowPlacementMode.CompactOverlay && window.ReadPosition() is { } hint)
+                {
+                    var hintArea = window.GetWorkArea(hint);
+                    window.Move(Clamp(hint, window.Bounds, hintArea));
+                }
+
+                applyPresenter();
+            });
+
+            if (_closed || generation != _generation)
+            {
+                return;
+            }
+
             if (mode == WindowPlacementMode.CompactOverlay && window.ReadPosition() is { } position)
             {
                 var area = window.GetWorkArea(position);
@@ -126,12 +139,10 @@ internal sealed class PlayerWindowPlacementSession(IPlayerWindowPlacement window
     private static PlacementPoint Clamp(PlacementPoint position, PlacementBounds bounds, PlacementBounds area)
     {
         // Both APIs use physical pixels; never multiply a work area by DPI again.
-        // If OS constraints make the window larger than the area, keep its controls
-        // at the top-left visible instead of moving them beyond the screen edge.
-        var right = Math.Max((long)area.X, (long)area.X + area.Width - bounds.Width);
-        var bottom = Math.Max((long)area.Y, (long)area.Y + area.Height - bounds.Height);
+        // A compact window may hang over an edge by design, so the remembered position
+        // survives unless the whole window is hidden (removed monitor, stale coordinates).
         return new(
-            (int)Math.Clamp((long)position.X, area.X, right),
-            (int)Math.Clamp((long)position.Y, area.Y, bottom));
+            CompactOverlayPlacement.RecoverAxis(position.X, bounds.Width, area.X, area.Width),
+            CompactOverlayPlacement.RecoverAxis(position.Y, bounds.Height, area.Y, area.Height));
     }
 }

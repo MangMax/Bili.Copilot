@@ -78,15 +78,28 @@ The ratio coordinator uses physical-pixel client bounds and available work area.
 The adapter accounts for the actual non-client frame, preserves the top-left
 anchor and current longer client edge where possible, and scales down to fit.
 After `MoveAndResize`, it accepts the presenter's size constraints and only
-corrects off-screen position; there is no resize correction loop. The existing
+corrects a fully hidden position; there is no resize correction loop. The existing
 video renderer remains responsible for aspect-preserving rendering/letterboxing;
 this feature does not set panscan, zoom, cropping, or aspect override options.
 
+Position policy (also used by the #156 placement session): a remembered compact
+position is restored as-is while any part of the window is visible, including a
+deliberate overhang past a screen edge. Only a window that would be entirely
+outside its work area (monitor removed, stale coordinates, or a size the OS
+constrained to another display) is pulled back inside, and that recovery uses the
+window's final physical size rather than the size captured before ratio fitting.
+This is what keeps a portrait mini window flush against an edge: clamping with the
+pre-fitting landscape width used to leave a gap as wide as the size difference.
+
+Entering compact overlay repositions the window in the same synchronous batch as
+the presenter switch, so the compact window never appears at the ordinary window's
+location and then jumps to the remembered one. The placement session re-checks the
+position after the presenter settles, since crossing monitors can change the
+OS-constrained size.
+
 Presenter changes disable adaptation until the latest `PresenterChangeSession`
 settles. A superseded transition or closed window cannot apply geometry.
-The integrated #156 placement session finishes position restoration before
-enabling ratio adaptation at the end of the same presenter transition. Position
-persistence remains owned by #156.
+Position persistence remains owned by #156.
 
 ## Verification limits and Windows checklist
 

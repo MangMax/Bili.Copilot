@@ -42,8 +42,8 @@ public sealed partial class PlayerWindow
         var area = DisplayArea.GetFromWindowId(_rootWindow.Id, DisplayAreaFallback.Nearest).WorkArea;
         var position = _rootWindow.Position;
         var size = _rootWindow.Size;
-        var x = Math.Clamp(position.X, area.X, area.X + Math.Max(0, area.Width - size.Width));
-        var y = Math.Clamp(position.Y, area.Y, area.Y + Math.Max(0, area.Height - size.Height));
+        var x = CompactOverlayPlacement.RecoverAxis(position.X, size.Width, area.X, area.Width);
+        var y = CompactOverlayPlacement.RecoverAxis(position.Y, size.Height, area.Y, area.Height);
         if (x != position.X || y != position.Y)
         {
             _rootWindow.Move(new PointInt32(x, y));
