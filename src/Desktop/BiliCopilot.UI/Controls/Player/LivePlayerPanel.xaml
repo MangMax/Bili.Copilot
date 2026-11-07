@@ -55,15 +55,30 @@
             Grid.Row="3"
             Padding="16,12"
             Spacing="10">
-            <!--  画质/线路占位：#194 接入真实切换后替换这两行。  -->
-            <TextBlock
-                FontSize="12"
-                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                Text="{x:Bind ViewModel.QualityText, Mode=OneWay, FallbackValue=''}" />
-            <TextBlock
-                FontSize="12"
-                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                Text="{x:Bind ViewModel.LineText, Mode=OneWay, FallbackValue=''}" />
+            <!--  画质来自内核返回的格式；选择后重新取地址并原位重开，只持久化清晰度标识。  -->
+            <StackPanel Spacing="4">
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{ext:Locale Name=Quality}" />
+                <ComboBox
+                    HorizontalAlignment="Stretch"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{x:Bind ViewModel.Qualities, Mode=OneWay}"
+                    SelectedItem="{x:Bind ViewModel.SelectedQuality, Mode=TwoWay}" />
+            </StackPanel>
+            <!--  线路来自排序后的候选；线路偏好跨刷新保留，但不落盘签名地址。  -->
+            <StackPanel Spacing="4">
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{ext:Locale Name=PlayLine}" />
+                <ComboBox
+                    HorizontalAlignment="Stretch"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{x:Bind ViewModel.Lines, Mode=OneWay}"
+                    SelectedItem="{x:Bind ViewModel.SelectedLine, Mode=TwoWay}" />
+            </StackPanel>
             <!--  地址/鉴权/解码失败时给出可读原因与兜底入口。  -->
             <TextBlock
                 Foreground="{ThemeResource SystemFillColorCriticalBrush}"

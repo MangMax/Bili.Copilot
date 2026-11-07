@@ -92,7 +92,8 @@ public sealed partial class PlayerViewModel
     /// 展示直播的失败原因，并把"在浏览器打开"作为可执行操作。
     /// </summary>
     /// <param name="kind">失败分类.</param>
-    internal void ShowLivePlaybackFailure(LiveFailureKind kind)
+    /// <param name="canRetry">候选与重新取址都失败时为 true，提示从哪里手动重试.</param>
+    internal void ShowLivePlaybackFailure(LiveFailureKind kind, bool canRetry = false)
     {
         if (kind == LiveFailureKind.Cancelled)
         {
@@ -100,7 +101,7 @@ public sealed partial class PlayerViewModel
         }
 
         _playbackUnavailableAction = PlaybackUnavailableAction.OpenInBrowser;
-        ErrorMessage = ResourceToolkit.GetLocalizedString(LiveFailureText.GetMessage(kind));
+        ErrorMessage = ResourceToolkit.GetLocalizedString(canRetry ? StringNames.LivePlaybackRetry : LiveFailureText.GetMessage(kind));
         ErrorActionText = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser);
         HasErrorAction = true;
         IsConnecting = false;

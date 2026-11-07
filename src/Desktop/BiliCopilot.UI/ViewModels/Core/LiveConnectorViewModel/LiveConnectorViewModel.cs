@@ -2,7 +2,6 @@
 
 using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
-using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -30,8 +29,6 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
     {
         Parent = parent;
         _logger = this.Get<ILogger<LiveConnectorViewModel>>();
-        QualityText = ResourceToolkit.GetLocalizedString(StringNames.LiveQualityPlaceholder);
-        LineText = ResourceToolkit.GetLocalizedString(StringNames.LiveLinePlaceholder);
     }
 
     /// <inheritdoc/>

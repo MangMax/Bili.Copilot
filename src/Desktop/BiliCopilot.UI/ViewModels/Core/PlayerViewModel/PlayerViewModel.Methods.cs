@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Resolvers;
@@ -33,6 +34,16 @@ public sealed partial class PlayerViewModel
 {
     partial void ReportPlaybackRefreshFailure(Exception exception)
     {
+        if (IsLive)
+        {
+            var kind = exception is LivePlaybackUnavailableException unavailable
+                ? unavailable.Kind
+                : LivePlaybackFailureClassifier.ClassifyPlayback(exception);
+            logger.LogWarning(exception, "直播刷新播放失败：{Kind}", kind);
+            ShowLivePlaybackFailure(LivePlaybackFailureClassifier.ToLiveFailureKind(kind), canRetry: true);
+            return;
+        }
+
         logger.LogWarning(exception, "刷新播放失败");
         Window?.ShowTip(exception.Message, InfoType.Error);
     }
@@ -387,15 +398,8 @@ public sealed partial class PlayerViewModel
         {
             // 直播 Duration 恒小于 1：不能走"坏源重播一次"的分支，
             // 该分支会拿同一个失效地址重播并把 _isBroken 永久置位。
-            queue.TryEnqueue(() =>
-            {
-                if (!isCurrent())
-                {
-                    return;
-                }
-
-                ShowLivePlaybackFailure(LiveFailureText.FromMpvError(e));
-            });
+            var playbackFailure = LivePlaybackFailureClassifier.FromPlayerError(LiveFailureText.FromPlayerError(e));
+            queue.TryEnqueue(() => RunLivePlaybackRecovery(playbackFailure, isCurrent));
             return;
         }
 
@@ -437,6 +441,93 @@ public sealed partial class PlayerViewModel
 
             CheckBlackBackgroundVisible();
         });
+    }
+
+    /// <summary>
+    /// 直播错误恢复：先换候选，候选耗尽重新取址，仍失败才交给用户手动重试。
+    /// 与手动刷新共用 <c>PlaybackRefreshController</c> 的单飞准入，不新建播放器。
+    /// </summary>
+    private void RunLivePlaybackRecovery(LivePlaybackFailureKind kind, Func<bool> isCurrent)
+    {
+        if (!isCurrent() || _sourceResolver is not LiveMediaSourceResolver resolver || _playbackRefresh.IsRefreshing)
+        {
+            return;
+        }
+
+        var action = resolver.NotifyPlaybackFailure(kind);
+        if (action is LiveRecoveryAction.AdvanceCandidate or LiveRecoveryAction.ReRequestPlayUrl)
+        {
+            _ = ObserveLivePlaybackRecoveryAsync(resolver, isCurrent);
+        }
+        else if (action == LiveRecoveryAction.ManualRetry)
+        {
+            ShowLivePlaybackFailure(LivePlaybackFailureClassifier.ToLiveFailureKind(kind), canRetry: true);
+        }
+    }
+
+    private async Task ObserveLivePlaybackRecoveryAsync(LiveMediaSourceResolver resolver, Func<bool> isCurrent)
+    {
+        try
+        {
+            await RefreshLivePlaybackAsync(resolver, automatic: true, isCurrent);
+        }
+        catch (Exception ex)
+        {
+            ReportPlaybackRefreshFailure(ex);
+        }
+    }
+
+    /// <summary>
+    /// 按媒体类型应用播放器参数：直播加载 app 自有的 mpv 配置与缓冲档位，
+    /// 回到视频/PGC 时加载基线还原。MpvClient 跨媒体复用，所以每次进入媒体都重跑。
+    /// </summary>
+    private async Task ApplyPlaybackProfileAsync(BiliMediaType type)
+    {
+        if (Client?.IsDisposed != false)
+        {
+            return;
+        }
+
+        if (type == BiliMediaType.Live)
+        {
+            var path = await AppToolkit.EnsureLiveMpvConfigExistAsync();
+            var result = await Client.SetConfigFileAsync(path);
+            if (!result.IsSuccess)
+            {
+                logger.LogWarning("加载直播 mpv 配置失败，继续使用默认参数");
+            }
+
+            _liveProfileApplied = true;
+            await Client.SetDemuxerMaxBytesAsync(LiveMpvConfig.DemuxerMaxBytes);
+            await Client.SetDemuxerMaxBackBytesAsync(LiveMpvConfig.DemuxerMaxBackBytes);
+            await Client.SetCacheOnDiskAsync(LiveMpvConfig.CacheOnDisk);
+            return;
+        }
+
+        if (!_liveProfileApplied)
+        {
+            return;
+        }
+
+        var baselinePath = await AppToolkit.EnsureLiveMpvConfigExistAsync(baseline: true);
+        var baselineResult = await Client.SetConfigFileAsync(baselinePath);
+        if (!baselineResult.IsSuccess)
+        {
+            logger.LogWarning("还原播放器基线 mpv 配置失败");
+        }
+
+        _liveProfileApplied = false;
+        var cacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSize, 300d);
+        var cacheSeconds = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSeconds, 360d);
+        var backCacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxBackCacheSize, 0d);
+        await Client.SetDemuxerMaxBytesAsync($"{Convert.ToInt32(cacheSize)}MiB");
+        await Client.SetDemuxerReadheadSecondsAsync(Convert.ToInt32(cacheSeconds));
+        if (Convert.ToInt32(backCacheSize) > 0)
+        {
+            await Client.SetDemuxerMaxBackBytesAsync($"{Convert.ToInt32(backCacheSize)}MiB");
+        }
+
+        await Client.SetCacheOnDiskAsync(SettingsToolkit.ReadLocalSetting(SettingNames.CacheOnDisk, false));
     }
 
     private async Task ResetPlayerPresenterModeAsync()

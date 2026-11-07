@@ -35,14 +35,23 @@ internal static class LiveFailureText
         => isLoading ? StringNames.Connecting : isLiving ? StringNames.LiveRoomLiving : StringNames.LiveRoomNotLiving;
 
     /// <summary>
-    /// 把播放器内核错误翻译成失败分类。
+    /// 把播放器内核错误翻译成纯逻辑层的错误替身。
     /// </summary>
     /// <param name="error">播放器错误.</param>
-    /// <returns>失败分类.</returns>
-    public static LiveFailureKind FromMpvError(MpvError error)
+    /// <returns>错误替身.</returns>
+    public static LivePlayerError FromPlayerError(MpvError error)
         => error switch
         {
-            MpvError.VoInitFailed or MpvError.Unsupported or MpvError.UnknownFormat => LiveFailureKind.DecodeFailed,
-            _ => LiveFailureKind.AddressUnavailable,
+            MpvError.Http403 => LivePlayerError.Http403,
+            MpvError.Http404 => LivePlayerError.Http404,
+            MpvError.Http500 => LivePlayerError.HttpServerError,
+            MpvError.TlsError => LivePlayerError.Tls,
+            MpvError.LoadingFailed => LivePlayerError.LoadingFailed,
+            MpvError.VoInitFailed => LivePlayerError.VideoInitFailed,
+            MpvError.AoInitFailed => LivePlayerError.AudioInitFailed,
+            MpvError.Unsupported => LivePlayerError.Unsupported,
+            MpvError.UnknownFormat => LivePlayerError.UnknownFormat,
+            MpvError.NothingToPlay => LivePlayerError.NothingToPlay,
+            _ => LivePlayerError.Other,
         };
 }

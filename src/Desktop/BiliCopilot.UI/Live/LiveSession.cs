@@ -190,6 +190,12 @@ public sealed class LiveSession
     }
 
     /// <summary>
+    /// 写入内核返回的最新播放信息（刷新/重新取址后由解析器回填）.
+    /// </summary>
+    /// <param name="playback">播放信息.</param>
+    public void SetPlayback(LiveMediaInformation? playback) => Playback = playback;
+
+    /// <summary>
     /// 写入选中的播放地址。
     /// </summary>
     /// <param name="generation">请求代际.</param>

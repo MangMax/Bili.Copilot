@@ -3,6 +3,7 @@ using System.Reflection;
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -148,6 +149,164 @@ public sealed class LiveMediaSourceResolverTests
         Assert.Equal(LiveFailureKind.AuthenticationFailed, LiveFailureClassifier.Classify(exception));
     }
 
+
+    [Fact]
+    public async Task Initialize_ReadsPersistedLiveQuality()
+    {
+        NavigationTestServices.Settings.Value![SettingNames.LastSelectedLiveQuality] = 250;
+        var service = CreateService();
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
+
+        await resolver.GetSourceAsync();
+
+        Assert.Equal(250, resolver.SelectedQuality);
+        Assert.Equal(250, ((LivePlayerService)(object)service).RequestedQuality);
+    }
+
+    [Fact]
+    public async Task SelectQuality_PersistsOnlyTheQualityIdAndRefreshesWithIt()
+    {
+        var service = CreateService();
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))) { PreferQuality = 400 });
+        await resolver.GetSourceAsync();
+
+        resolver.SelectQuality(150);
+        await resolver.RefreshSourceAsync(CancellationToken.None);
+
+        Assert.Equal(150, (int)NavigationTestServices.Settings.Value![SettingNames.LastSelectedLiveQuality]!);
+        Assert.DoesNotContain(
+            NavigationTestServices.Settings.Value.Values,
+            value => value is string text && (text.Contains("sign=", StringComparison.Ordinal) || text.Contains("https://", StringComparison.Ordinal)));
+        Assert.Equal(150, ((LivePlayerService)(object)service).RequestedQuality);
+    }
+
+    [Fact]
+    public async Task RefreshSource_RequestsFreshSignedUrlWithoutPositionOrSpeedInheritance()
+    {
+        var service = CreateService();
+        var calls = 0;
+        ((LivePlayerService)(object)service).Fetch = () => Task.FromResult(Playback(
+            [Line("avc", 400, Url("http_hls", "https://hls.example", "/live/a.m3u8", "?sign=" + (++calls)))]));
+        var snapshot = new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null)))
+        {
+            StartPosition = 42,
+            PreferQuality = 400,
+        };
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(snapshot);
+        var first = await resolver.GetSourceAsync();
+
+        var refreshed = await resolver.RefreshSourceAsync(CancellationToken.None);
+
+        Assert.Equal("https://hls.example/live/a.m3u8?sign=1", first.Url);
+        Assert.Equal("https://hls.example/live/a.m3u8?sign=2", refreshed.Url);
+        Assert.Null(refreshed.Options.StartPosition);
+        Assert.Equal(1d, refreshed.Options.InitialSpeed);
+        Assert.Equal(2, ((LivePlayerService)(object)service).PageCalls);
+        Assert.Equal(2, ((LivePlayerService)(object)service).PlayCalls);
+    }
+
+    [Fact]
+    public async Task Recovery_AdvancesWithinTheSameCandidateBeforeReRequestingPlayUrl()
+    {
+        var service = CreateService(
+            [Line("avc", 400,
+                Url("http_hls", "https://first.example", "/live/a.m3u8", "?sign=1"),
+                Url("http_hls", "https://second.example", "/live/a.m3u8", "?sign=1"))]);
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
+        var first = await resolver.GetSourceAsync();
+
+        Assert.Equal(LiveRecoveryAction.AdvanceCandidate, resolver.NotifyPlaybackFailure(LivePlaybackFailureKind.Transport));
+        var next = await resolver.GetRecoverySourceAsync(CancellationToken.None);
+
+        Assert.Equal("https://first.example/live/a.m3u8?sign=1", first.Url);
+        Assert.Equal("https://second.example/live/a.m3u8?sign=1", next.Url);
+        Assert.Equal(1, ((LivePlayerService)(object)service).PlayCalls);
+
+        Assert.Equal(LiveRecoveryAction.ReRequestPlayUrl, resolver.NotifyPlaybackFailure(LivePlaybackFailureKind.Transport));
+    }
+
+    [Fact]
+    public async Task Recovery_ReRequestsPlayUrlWhenCandidatesAreExhaustedAndThenGivesManualRetry()
+    {
+        var service = CreateService();
+        var calls = 0;
+        ((LivePlayerService)(object)service).Fetch = () => Task.FromResult(Playback(
+            [Line("avc", 400, Url("http_hls", "https://hls.example", "/live/a.m3u8", "?sign=" + (++calls)))]));
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
+        await resolver.GetSourceAsync();
+
+        Assert.Equal(LiveRecoveryAction.ReRequestPlayUrl, resolver.NotifyPlaybackFailure(LivePlaybackFailureKind.DecoderInit));
+        var next = await resolver.GetRecoverySourceAsync(CancellationToken.None);
+
+        Assert.Equal("https://hls.example/live/a.m3u8?sign=2", next.Url);
+        Assert.Equal(2, ((LivePlayerService)(object)service).PlayCalls);
+        Assert.Equal(LiveRecoveryAction.ManualRetry, resolver.NotifyPlaybackFailure(LivePlaybackFailureKind.Transport));
+        await Assert.ThrowsAsync<LivePlaybackUnavailableException>(() => resolver.GetRecoverySourceAsync(CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Recovery_IgnoresEchoedDecoderFailureWithinOneAttempt()
+    {
+        var service = CreateService(
+            [Line("avc", 400,
+                Url("http_hls", "https://first.example", "/live/a.m3u8", string.Empty),
+                Url("http_hls", "https://second.example", "/live/a.m3u8", string.Empty))]);
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
+        await resolver.GetSourceAsync();
+
+        Assert.Equal(LiveRecoveryAction.AdvanceCandidate, resolver.NotifyPlaybackFailure(LivePlaybackFailureKind.Transport));
+        Assert.Equal(LiveRecoveryAction.None, resolver.NotifyPlaybackFailure(LivePlaybackFailureKind.DecoderInit));
+    }
+
+    [Fact]
+    public async Task Refresh_KeepsLinePreferenceAcrossNewSignedUrls()
+    {
+        var service = CreateService(
+            [Line("avc", 400, Url("http_hls", "https://first.example", "/live/a.m3u8", "?sign=1")),
+             Line("avc", 400, Url("http_hls", "https://second.example", "/live/a.m3u8", "?sign=1"))]);
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
+        await resolver.GetSourceAsync();
+        var preferred = resolver.Candidates.Single(candidate => candidate.Primary.Host == "second.example");
+        resolver.SelectLine(preferred.Key);
+
+        var calls = 0;
+        ((LivePlayerService)(object)service).Fetch = () => Task.FromResult(Playback(
+            [Line("avc", 400, Url("http_hls", "https://first.example", "/live/a.m3u8", "?sign=" + (++calls))),
+             Line("avc", 400, Url("http_hls", "https://second.example", "/live/a.m3u8", "?sign=" + calls))]));
+        var refreshed = await resolver.RefreshSourceAsync(CancellationToken.None);
+
+        Assert.Equal("second.example", new Uri(refreshed.Url).Host);
+        Assert.Equal("second.example", resolver.CurrentCandidate!.Primary.Host);
+    }
+
+    [Fact]
+    public async Task Cancel_CancelsInFlightRefreshAndRejectsLateResult()
+    {
+        var service = CreateService();
+        var pending = new TaskCompletionSource<LiveMediaInformation>();
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
+        ((LivePlayerService)(object)service).Fetch = () => Task.FromResult(Playback(
+            [Line("avc", 400, Url("http_hls", "https://hls.example", "/live/a.m3u8", "?sign=1"))]));
+        await resolver.GetSourceAsync();
+        ((LivePlayerService)(object)service).Fetch = () => pending.Task;
+
+        var refresh = resolver.RefreshSourceAsync(CancellationToken.None);
+        resolver.Cancel();
+        pending.SetResult(Playback([Line("avc", 400, Url("http_hls", "https://late.example", "/live/a.m3u8", "?sign=9"))]));
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => refresh);
+        ((LivePlayerService)(object)service).Fetch = null;
+        Assert.Equal("https://hls.example/live/a.m3u8?sign=1", (await resolver.GetSourceAsync()).Url);
+    }
+
     private static IPlayerService CreateService(IList<LiveLineInformation>? lines = null)
     {
         var service = DispatchProxy.Create<IPlayerService, LivePlayerService>();
@@ -196,6 +355,8 @@ public sealed class LiveMediaSourceResolverTests
 
         public int RequestedQuality { get; private set; }
 
+        public List<int> RequestedQualities { get; } = [];
+
         protected override object? Invoke(MethodInfo? method, object?[]? args)
         {
             switch (method?.Name)
@@ -206,6 +367,7 @@ public sealed class LiveMediaSourceResolverTests
                 case "GetLivePlayDetailAsync":
                     PlayCalls++;
                     RequestedQuality = args is { Length: > 1 } ? (int)args[1]! : 0;
+                    RequestedQualities.Add(RequestedQuality);
                     return Fetch?.Invoke() ?? Task.FromResult(Information);
                 default:
                     throw new NotSupportedException(method?.Name);

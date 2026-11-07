@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -74,16 +75,38 @@ public sealed partial class LiveConnectorViewModel
     public partial string? RoomStatusText { get; set; }
 
     /// <summary>
-    /// 画质占位文案（#194 接线）.
+    /// 当前画质文案.
     /// </summary>
     [ObservableProperty]
     public partial string? QualityText { get; set; }
 
     /// <summary>
-    /// 线路占位文案（#194 接线）.
+    /// 当前线路文案.
     /// </summary>
     [ObservableProperty]
     public partial string? LineText { get; set; }
+
+    /// <summary>
+    /// 内核返回的可选画质.
+    /// </summary>
+    public ObservableCollection<LiveQualityOption> Qualities { get; } = [];
+
+    /// <summary>
+    /// 排序后的线路候选（含同一候选内的多条地址）.
+    /// </summary>
+    public ObservableCollection<LiveLineOption> Lines { get; } = [];
+
+    /// <summary>
+    /// 当前选中的画质；修改会重新取址并原位重开.
+    /// </summary>
+    [ObservableProperty]
+    public partial LiveQualityOption? SelectedQuality { get; set; }
+
+    /// <summary>
+    /// 当前选中的线路；只影响首选地址，不改播放器实例.
+    /// </summary>
+    [ObservableProperty]
+    public partial LiveLineOption? SelectedLine { get; set; }
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }

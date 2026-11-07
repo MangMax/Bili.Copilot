@@ -167,6 +167,7 @@ namespace BiliCopilot.UI.Models
         public EpisodeInformation? Episode { get; set; }
         public SeasonInformation? Season { get; set; }
         public int? PreferQuality { get; set; }
+        public double? StartPosition { get; set; }
         public List<MediaSnapshot> Playlist { get; set; } = new();
     }
 }

@@ -352,6 +352,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                     var resolver = this.Get<LiveMediaSourceResolver>();
                     resolver.Initialize(_snapshot);
                     _sourceResolver = resolver;
+                    _sourceResolver.WindowHandle = Window!.Handle;
 
                     // 播放器内核会把取源异常吞成日志：先预取地址，才能把可读原因交给用户。
                     if (!await resolver.TryPrepareAsync())
@@ -363,8 +364,15 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
                         ShowLivePlaybackFailure(resolver.FailureKind);
                         IsConnecting = false;
+                        OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));
+                        RefreshPlaybackCommand.NotifyCanExecuteChanged();
                         CheckBlackBackgroundVisible();
                         return;
+                    }
+
+                    if (Connector is LiveConnectorViewModel liveConnector)
+                    {
+                        liveConnector.ApplyPlaybackInfo(resolver);
                     }
 
                     if (Window.IsClosed)
@@ -431,6 +439,12 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         else
         {
             Player.UpdateResolvers(_sourceResolver, _historyResolver);
+        }
+
+        await ApplyPlaybackProfileAsync(_snapshot.Type);
+        if (Window.IsClosed)
+        {
+            return;
         }
 
         try

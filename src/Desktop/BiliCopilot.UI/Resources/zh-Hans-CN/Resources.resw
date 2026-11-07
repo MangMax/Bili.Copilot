@@ -3379,13 +3379,12 @@
   <data name="PreviewPlaybackAutomation" xml:space="preserve"><value>正在播放试看片段</value></data>
   <data name="OpenVipPage" xml:space="preserve"><value>开通大会员</value></data>
   <data name="LivePlaybackFailed" xml:space="preserve"><value>直播播放失败，请稍后重试或在浏览器打开</value></data>
+  <data name="LivePlaybackRetry" xml:space="preserve"><value>直播地址多次重试仍不可用，请点击标题栏刷新重试，或在浏览器打开</value></data>
   <data name="LivePlaybackAddressFailed" xml:space="preserve"><value>无法获取直播地址，可能已下播或地址已失效</value></data>
   <data name="LivePlaybackAuthenticationFailed" xml:space="preserve"><value>直播鉴权失败，请重新登录后再试</value></data>
   <data name="LivePlaybackDecodeFailed" xml:space="preserve"><value>直播流解码失败，请在浏览器打开或稍后重试</value></data>
   <data name="LiveRoomLiving" xml:space="preserve"><value>正在直播</value></data>
   <data name="LiveRoomNotLiving" xml:space="preserve"><value>未开播</value></data>
-  <data name="LiveQualityPlaceholder" xml:space="preserve"><value>画质切换将在后续版本提供</value></data>
-  <data name="LiveLinePlaceholder" xml:space="preserve"><value>线路切换将在后续版本提供</value></data>
   <data name="PlaybackUnavailableTitle" xml:space="preserve"><value>无法播放该集</value></data>
   <data name="PlaybackLoginRequired" xml:space="preserve"><value>需要登录后才能观看这一集</value></data>
   <data name="PlaybackNeedVip" xml:space="preserve"><value>该集需要大会员或购买后才能观看</value></data>
