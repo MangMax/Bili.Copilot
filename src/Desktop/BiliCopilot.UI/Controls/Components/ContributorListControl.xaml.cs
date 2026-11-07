@@ -223,7 +223,7 @@ public sealed partial class ContributorListControl : UserControl
                 return;
             }
 
-            ListViewport.Height = double.NaN;
+                ListViewport.Height = double.NaN;
             if (!_isExpanded)
             {
                 UpdateScrollButtons();
