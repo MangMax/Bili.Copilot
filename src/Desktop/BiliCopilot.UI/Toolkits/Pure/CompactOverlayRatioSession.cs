@@ -28,6 +28,12 @@ internal sealed class CompactOverlayRatioPreference(Func<bool?> read, Action<boo
 /// <summary>Coordinates media and setting changes at the window behavior boundary.</summary>
 internal sealed class CompactOverlayRatioSession : IDisposable
 {
+    /// <summary>The only landscape compact form.</summary>
+    public const double LandscapeRatio = 16d / 9d;
+
+    /// <summary>The only portrait compact form.</summary>
+    public const double PortraitRatio = 9d / 16d;
+
     private readonly CompactOverlayRatioPreference _preference;
     private readonly Func<RatioWindowBounds> _bounds;
     private readonly Func<RatioWindowBounds> _workArea;
@@ -57,15 +63,33 @@ internal sealed class CompactOverlayRatioSession : IDisposable
     public void UpdateMedia(long generation, double width, double height)
     {
         if (generation != _generation || !double.IsFinite(width) || !double.IsFinite(height)
-            || width <= 0 || height <= 0 || !double.IsFinite(width / height) || width / height <= 0
-            || _ratio == width / height)
+            || width <= 0 || height <= 0 || !double.IsFinite(width / height) || width / height <= 0)
         {
             return;
         }
 
-        _ratio = width / height;
+        // A compact window only offers a landscape (16:9) and a portrait (9:16) form.
+        // Square, 4:3 or any other source ratio must never produce a near-square or
+        // arbitrary window, because the overlay controls are laid out for these two
+        // forms; the renderer letterboxes whatever the source aspect is.
+        var ratio = SelectForm(width / height);
+        if (_ratio == ratio)
+        {
+            return;
+        }
+
+        _ratio = ratio;
         Adapt();
     }
+
+    /// <summary>
+    /// Selects the compact form for a source ratio: square or wider content uses the
+    /// landscape form, anything taller uses the portrait form.
+    /// </summary>
+    /// <param name="sourceRatio">Source width divided by height.</param>
+    /// <returns><see cref="LandscapeRatio"/> or <see cref="PortraitRatio"/>.</returns>
+    public static double SelectForm(double sourceRatio)
+        => sourceRatio >= 1 ? LandscapeRatio : PortraitRatio;
 
     public void SetCompact(bool compact)
     {

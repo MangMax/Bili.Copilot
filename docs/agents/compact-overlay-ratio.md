@@ -82,6 +82,14 @@ corrects a fully hidden position; there is no resize correction loop. The existi
 video renderer remains responsible for aspect-preserving rendering/letterboxing;
 this feature does not set panscan, zoom, cropping, or aspect override options.
 
+Compact windows only have two forms: landscape 16:9 and portrait 9:16. Every source
+ratio is mapped onto one of them — square or wider content uses the landscape form,
+anything taller uses the portrait form — while the current longer client edge is
+kept. Square, 4:3 and other arbitrary ratios therefore never produce a near-square
+window, which keeps the overlay controls in a layout that was actually designed;
+the renderer letterboxes the remaining difference. A source that maps to the same
+form as the current one does not resize again, so a manual size survives it.
+
 Position policy (also used by the #156 placement session): a remembered compact
 position is restored as-is while any part of the window is visible, including a
 deliberate overhang past a screen edge. Only a window that would be entirely

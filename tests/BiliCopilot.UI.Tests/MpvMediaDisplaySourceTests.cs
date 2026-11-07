@@ -37,11 +37,13 @@ public sealed class MpvMediaDisplaySourceTests
         Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
         client.SetOutput(1, 1440, 1080);
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 375), bounds);
+        // 4:3 output belongs to the landscape form (16:9), not its own ratio.
+        Assert.Equal(new RatioWindowBounds(100, 80, 500, 281), bounds);
         pending = publish(1080, 1920);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 375), bounds);
+        // The runtime output already owns the window, so this later hint must be ignored.
+        Assert.Equal(new RatioWindowBounds(100, 80, 500, 281), bounds);
     }
 
     [Fact]
@@ -132,7 +134,7 @@ public sealed class MpvMediaDisplaySourceTests
         pending = publish(1440, 1080); // invalid runtime output must not suppress usable hints
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 375), bounds);
+        Assert.Equal(new RatioWindowBounds(100, 80, 500, 281), bounds);
     }
 
     [Theory]
@@ -175,7 +177,8 @@ public sealed class MpvMediaDisplaySourceTests
         client.SetOutput(41, 1920, 1080, position: 0);
         client.SetOutput(42, 1440, 1080, position: 2);
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 480), bounds);
+        // 4:3 is still the landscape form, so the 16:9 bounds do not change again.
+        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
     }
 
     [Theory]
@@ -253,14 +256,14 @@ public sealed class MpvMediaDisplaySourceTests
         Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
         client.SetOutput(1, 1440, 1080);
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 480), bounds);
+        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
         var reads = 0;
         client.Handle.Reading = name =>
         {
             if (name == "video-out-params/dh" && ++reads == 1) client.SetOutput(1, 1080, 1920);
         };
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 480), bounds);
+        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
         client.Handle.Reading = null;
         queue.MediaTimer.Fire();
         Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);

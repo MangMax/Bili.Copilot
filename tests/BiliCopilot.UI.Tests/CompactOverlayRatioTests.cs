@@ -50,6 +50,36 @@ public sealed class CompactOverlayRatioTests
         Assert.Equal(new RatioWindowBounds(-200, 500, 405, 720), bounds);
     }
 
+    [Theory]
+    [InlineData(1920, Landscape)]
+    [InlineData(1000, Landscape)]
+    [InlineData(4, Landscape)]
+    [InlineData(1, Landscape)]
+    [InlineData(0.99, Portrait)]
+    [InlineData(0.75, Portrait)]
+    [InlineData(0.5625, Portrait)]
+    public void SourceOrientationSelectsOneOfTwoForms(double sourceRatio, double expected)
+    {
+        Assert.Equal(expected, CompactOverlayRatioSession.SelectForm(sourceRatio));
+    }
+
+    private const double Landscape = 16d / 9d;
+    private const double Portrait = 9d / 16d;
+
+    [Fact]
+    public void SameFormSourceKeepsAWindowThatWasResizedByHand()
+    {
+        var bounds = new RatioWindowBounds(100, 80, 640, 400);
+        using var session = CreateSession(() => bounds, value => bounds = value);
+        var generation = session.BeginMedia();
+        session.UpdateMedia(generation, 1920, 1080);
+        session.SetCompact(true);
+        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
+        bounds = new(100, 80, 500, 281);
+        session.UpdateMedia(generation, 1440, 1080);
+        Assert.Equal(new RatioWindowBounds(100, 80, 500, 281), bounds);
+    }
+
     [Fact]
     public void ImmediateFitAppliesTheKnownRatioBeforeTheCompactFlagIsSet()
     {
@@ -188,9 +218,13 @@ public sealed class CompactOverlayRatioTests
     [Theory]
     [InlineData(1920, 1080, 640, 360)]
     [InlineData(1080, 1920, 360, 640)]
-    [InlineData(1000, 1000, 640, 640)]
-    [InlineData(2100, 900, 640, 274)]
-    public void EnterCompactUsesActualRatioAndPreservesAnchorAndLongEdge(double width, double height, int expectedWidth, int expectedHeight)
+    // Square and ultra-wide sources still use one of the two forms, never a near-square window.
+    [InlineData(1000, 1000, 640, 360)]
+    [InlineData(2100, 900, 640, 360)]
+    [InlineData(1440, 1080, 640, 360)]
+    [InlineData(720, 1080, 360, 640)]
+    [InlineData(600, 900, 360, 640)]
+    public void EnterCompactUsesOneOfTwoFormsAndPreservesAnchorAndLongEdge(double width, double height, int expectedWidth, int expectedHeight)
     {
         var bounds = new RatioWindowBounds(100, 80, 640, 400);
         var preference = new CompactOverlayRatioPreference(() => null, _ => { });
