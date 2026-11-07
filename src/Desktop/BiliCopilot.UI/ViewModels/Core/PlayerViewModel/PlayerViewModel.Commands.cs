@@ -85,7 +85,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task IncreaseSpeedAsync()
     {
-        if (Player is null)
+        if (IsLive || Player is null)
         {
             return;
         }
@@ -102,7 +102,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task DecreaseSpeedAsync()
     {
-        if (Player is null)
+        if (IsLive || Player is null)
         {
             return;
         }
@@ -300,7 +300,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task TripleSpeedAsync()
     {
-        if (Player is null || !Player.IsPlaying)
+        if (IsLive || Player is null || !Player.IsPlaying)
         {
             return;
         }
@@ -319,7 +319,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task RestoreSpeedAsync()
     {
-        if (Player is null)
+        if (IsLive || Player is null)
         {
             return;
         }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
@@ -47,6 +47,7 @@ public sealed partial class PlayerViewModel
     private bool _isTlsFailed;
     private double _prevPosition;
     private bool _isBroken;
+    private bool _liveProfileApplied;
 
     public event EventHandler<string> WarningOccurred;
     public event EventHandler ChapterInitialized;
@@ -253,6 +254,22 @@ public sealed partial class PlayerViewModel
 
     [ObservableProperty]
     public partial bool IsClearShaderEnabled { get; set; }
+
+    /// <summary>
+    /// 当前媒体是否为直播；直播不进入任何依赖时长/终点的播放路径。
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsLive { get; set; }
+
+    /// <summary>
+    /// Gets 是否显示进度条（直播没有时间轴）.
+    /// </summary>
+    public bool IsProgressBarVisible => !IsLive;
+
+    /// <summary>
+    /// Gets 是否允许跳转/倍速（直播没有时间轴）.
+    /// </summary>
+    public bool IsSeekAvailable => !IsLive;
 
     public bool IsTouching { get; set; }
 

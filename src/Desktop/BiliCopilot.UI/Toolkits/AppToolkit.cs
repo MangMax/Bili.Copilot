@@ -1,5 +1,6 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models.Constants;
 using Microsoft.Extensions.Logging;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -42,23 +43,10 @@ internal sealed partial class AppToolkit : SharedAppToolkit
     /// <returns>数量文本，如 233万.</returns>
     public static string FormatCount(long count)
     {
-        if (count < 0)
-        {
-            return string.Empty;
-        }
-
-        if (count >= 100_000_000)
-        {
-            var unit = ResourceToolkit.GetLocalizedString(StringNames.Billion);
-            return Math.Round(count / 100_000_000d, 2) + unit;
-        }
-        else if (count >= 10_000)
-        {
-            var unit = ResourceToolkit.GetLocalizedString(StringNames.TenThousands);
-            return Math.Round(count / 10_000d, 2) + unit;
-        }
-
-        return count.ToString();
+        return LiveRoomStatusText.FormatCount(
+            count,
+            ResourceToolkit.GetLocalizedString(StringNames.TenThousands),
+            ResourceToolkit.GetLocalizedString(StringNames.Billion));
     }
 
     /// <summary>
@@ -166,6 +154,17 @@ internal sealed partial class AppToolkit : SharedAppToolkit
 
     public static bool NotModifierKeyPressed()
         => ModifierKeys.NotModifierKeyPressed(IsCtrlPressed(), IsShiftPressed(), IsAltPressed(), IsWinPressed());
+
+    /// <summary>
+    /// 确保 app 自有的直播 mpv 配置（或离开直播时用的基线配置）存在。
+    /// </summary>
+    /// <param name="baseline">是否使用还原默认值的基线配置.</param>
+    /// <returns>配置文件路径.</returns>
+    public static Task<string> EnsureLiveMpvConfigExistAsync(bool baseline = false)
+    {
+        var localFolder = Microsoft.Windows.Storage.ApplicationData.GetDefault().LocalFolder;
+        return LiveMpvConfig.EnsureFileAsync(localFolder.Path, baseline);
+    }
 
     public static async Task<string> EnsureMpvConfigExistAsync()
     {

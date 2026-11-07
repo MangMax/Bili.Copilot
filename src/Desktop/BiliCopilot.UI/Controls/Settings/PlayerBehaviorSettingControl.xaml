@@ -116,6 +116,12 @@
             <base:SettingsCard Description="{ext:Locale Name=NoP2PDescription}" Header="{ext:Locale Name=NoP2P}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.NoP2P, Mode=TwoWay}" />
             </base:SettingsCard>
+            <base:SettingsCard Description="{ext:Locale Name=UseWebPlayerWhenLiveDescription}" Header="{ext:Locale Name=UseWebPlayerWhenLive}">
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="UseWebPlayerWhenLive"
+                    AutomationProperties.Name="{ext:Locale Name=UseWebPlayerWhenLive}"
+                    IsOn="{x:Bind ViewModel.UseWebPlayerWhenLive, Mode=TwoWay}" />
+            </base:SettingsCard>
         </base:SettingsExpander.Items>
     </base:SettingsExpander>
 </local:SettingsPageControlBase>

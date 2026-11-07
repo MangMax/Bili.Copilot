@@ -3,6 +3,7 @@
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Services.Live;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using H.NotifyIcon;
@@ -92,6 +93,7 @@ public partial class App : Application
             instance.Activated += OnInstanceActivated;
             Richasy.WinUIKernel.Share.Base.ImageExBase.EnableBackgroundDecoding = false;
             GlobalDependencies.Initialize();
+            StartLiveDanmakuProbeIfRequested();
             GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
         }
         else
@@ -102,6 +104,31 @@ public partial class App : Application
             _ = instance.RedirectActivationToAsync(activatedArgs).AsTask()
                 .ContinueWith(_ => _dispatcherQueue.TryEnqueue(() => Current.Exit()));
         }
+    }
+
+    private static void StartLiveDanmakuProbeIfRequested()
+    {
+        // 调试入口：设置 BILI_LIVE_DANMAKU_PROBE_ROOM=<roomId> 后启动应用，
+        // 内核事件计数会写入日志；不写设置、不进入历史/进度路径.
+        var roomId = Environment.GetEnvironmentVariable("BILI_LIVE_DANMAKU_PROBE_ROOM");
+        if (string.IsNullOrWhiteSpace(roomId))
+        {
+            return;
+        }
+
+        var probe = GlobalDependencies.Kernel.GetRequiredService<LiveDanmakuProbeService>();
+        var logger = GlobalDependencies.Kernel.GetRequiredService<ILogger<App>>();
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await probe.StartAsync(roomId).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Live danmaku probe failed to start for room {RoomId}.", roomId);
+            }
+        });
     }
 
     private static MainWindow? GetMainWindow()

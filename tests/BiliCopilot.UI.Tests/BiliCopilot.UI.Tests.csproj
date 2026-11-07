@@ -172,4 +172,14 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/LivePartition/LiveSubPartitionSelector.xaml.cs" Link="LivePartition/LiveSubPartitionSelector.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/LiveCardStyle.cs" Link="LivePartition/LiveCardStyle.cs" />
   </ItemGroup>
+
+  <!--
+    直播模式策略、地址选择与会话状态是与 WinUI 无关的纯逻辑（#193）；
+    LiveMediaSourceResolver 只做内核取址与头部/选项的粘合，用 DispatchProxy 假服务驱动。
+  -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Live/*.cs" Link="Live/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/BiliMediaType.cs" Link="Live/BiliMediaType.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Resolvers/LiveMediaSourceResolver.cs" Link="Live/LiveMediaSourceResolver.cs" />
+  </ItemGroup>
 </Project>
