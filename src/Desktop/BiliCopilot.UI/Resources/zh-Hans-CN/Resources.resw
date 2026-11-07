@@ -3339,6 +3339,18 @@
   <data name="CollaborativeAuthor" xml:space="preserve">
     <value>{0} 等 {1} 人</value>
   </data>
+  <data name="CollaboratorListExpand" xml:space="preserve">
+    <value>展开</value>
+  </data>
+  <data name="CollaboratorListCollapse" xml:space="preserve">
+    <value>收起</value>
+  </data>
+  <data name="CollaboratorListScrollLeft" xml:space="preserve">
+    <value>向左查看合作者</value>
+  </data>
+  <data name="CollaboratorListScrollRight" xml:space="preserve">
+    <value>向右查看合作者</value>
+  </data>
   <data name="ExpandMomentText" xml:space="preserve"><value>展开全文</value></data>
   <data name="CollapseMomentText" xml:space="preserve"><value>收起全文</value></data>
   <data name="DynamicVideo" xml:space="preserve"><value>动态视频</value></data>

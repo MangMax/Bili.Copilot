@@ -25,8 +25,12 @@
             ToggleFollowCommand="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
             UserName="{x:Bind ViewModel.UpName, Mode=OneWay}" />
         <components:ContributorListControl
+            CollapseText="{ext:Locale Name=CollaboratorListCollapse}"
+            ExpandText="{ext:Locale Name=CollaboratorListExpand}"
             Header="{ext:Locale Name=CollaborativeSubmission}"
             ItemsSource="{x:Bind ViewModel.Contributors, Mode=OneWay}"
+            ScrollLeftText="{ext:Locale Name=CollaboratorListScrollLeft}"
+            ScrollRightText="{ext:Locale Name=CollaboratorListScrollRight}"
             Visibility="{x:Bind ViewModel.HasContributors, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
         <local:VideoStatControl Margin="8,0,0,8" ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         <repeater:AppRepeater x:Name="TagRepeater" ItemsSource="{x:Bind ViewModel.Tags, Mode=OneWay}">
