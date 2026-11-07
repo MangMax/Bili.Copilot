@@ -69,6 +69,10 @@ namespace BiliCopilot.UI.ViewModels.Core
         public bool IsCancelPendingCalled { get; private set; }
 
         public void CancelPending() => IsCancelPendingCalled = true;
+
+        internal void ApplyPlaybackInfo(BiliCopilot.UI.Resolvers.LiveMediaSourceResolver resolver)
+        {
+        }
     }
 
     public sealed partial class PlayerViewModel

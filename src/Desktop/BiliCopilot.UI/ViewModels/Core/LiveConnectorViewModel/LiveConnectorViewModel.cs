@@ -2,7 +2,6 @@
 
 using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
-using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -17,8 +16,9 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// 直播连接器：拉取直播间详情，维护房间标题/主播/状态，并给播放器提供面板入口。
 /// </summary>
 /// <remarks>
-/// 直播没有上一集/下一集，也没有清晰度选择（#194），因此这里只做"进入房间"这一件事。
-/// 关闭窗口时 <see cref="CancelPending"/> 会取消仍在进行的详情请求。
+/// 直播没有上一集/下一集；清晰度与线路选择在 <see cref="ApplyPlaybackInfo"/> 中从解析器回填，
+/// 选择后统一走播放器的刷新准入重新取址。关闭窗口时 <see cref="CancelPending"/> 会取消
+/// 仍在进行的详情请求与弹幕连接。
 /// </remarks>
 public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConnectorViewModel
 {
@@ -30,8 +30,6 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
     {
         Parent = parent;
         _logger = this.Get<ILogger<LiveConnectorViewModel>>();
-        QualityText = ResourceToolkit.GetLocalizedString(StringNames.LiveQualityPlaceholder);
-        LineText = ResourceToolkit.GetLocalizedString(StringNames.LiveLinePlaceholder);
     }
 
     /// <inheritdoc/>
