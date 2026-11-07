@@ -23,6 +23,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     private readonly CursorGrid _rootGrid;
     private readonly PlayerWindowPlacementSession _presenterChange;
     private InputActivationListener _inputActivationListener;
+    private bool _xamlSourceDisposed;
     private bool _isFirstActivated = true;
     private bool _enteringFullScreen;
     private bool _enteringCompactOverlay;
@@ -86,7 +87,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// <summary>
     /// XAML 根元素.
     /// </summary>
-    public XamlRoot? XamlRoot => _xamlSource?.Content?.XamlRoot;
+    public XamlRoot? XamlRoot => _xamlSourceDisposed ? null : _xamlSource?.Content?.XamlRoot;
 
     /// <inheritdoc/>
     public ValueTask DisposeAsync()
@@ -101,6 +102,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _ratioSession.Dispose();
         IsDisposed = true;
 
+        // Close the island while its HWND still exists: destroying the window first and
+        // disposing the island afterwards faults inside CoreMessagingXP (stowed E_POINTER
+        // 0x80004003 reported as 0xc000027b).
+        DisposeXamlSource();
+
         if (_rootWindow != null)
         {
             _rootWindow.Changed -= OnWindowChanged;
@@ -110,8 +116,21 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             }
         }
 
-        _xamlSource?.Dispose();
         return ValueTask.CompletedTask;
+    }
+
+    private void DisposeXamlSource()
+    {
+        if (_xamlSourceDisposed)
+        {
+            return;
+        }
+
+        _xamlSourceDisposed = true;
+        // Detach the XAML tree before closing the island so no dispatcher callback reaches
+        // content that is already being torn down.
+        _xamlSource.Content = null;
+        _xamlSource.Dispose();
     }
 
     /// <summary>
@@ -400,10 +419,19 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _rootWindow.Destroying -= OnWindowDestroying;
         _rootWindow.Changed -= OnWindowChanged;
         _inputActivationListener = default;
+
+        // An OS-initiated close reaches here before the HWND is gone; the island must not
+        // outlive it or the next input dispatch faults in CoreMessagingXP.
+        DisposeXamlSource();
     }
 
     internal void UpdateXamlSourcePosition()
     {
+        if (_xamlSourceDisposed)
+        {
+            return;
+        }
+
         var size = _rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen
             ? _rootWindow.Size
             : _rootWindow.ClientSize;
@@ -435,7 +463,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     {
         DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
-            if (IsClosed || IsDisposed || _xamlSource is null || _xamlSource.SiteBridge is null || _rootGrid is null)
+            if (IsClosed || IsDisposed || _xamlSourceDisposed || _xamlSource is null || _xamlSource.SiteBridge is null || _rootGrid is null)
             {
                 return;
             }
@@ -538,7 +566,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             var top = _rootWindow.Position.Y;
             SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowPositionLeft, left);
             SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowPositionTop, top);
-            var scaleFactor = _xamlSource.Content.XamlRoot.RasterizationScale;
+            var scaleFactor = _xamlSourceDisposed ? 1d : _xamlSource.Content.XamlRoot?.RasterizationScale ?? 1d;
             var actualWidth = _rootWindow.Size.Width / scaleFactor;
             var actualHeight = _rootWindow.Size.Height / scaleFactor;
             if (actualHeight >= WindowMinHeight && actualWidth >= WindowMinWidth)
