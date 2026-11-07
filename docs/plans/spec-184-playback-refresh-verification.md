@@ -198,3 +198,29 @@ claim that synthetic touch injection established refresh-versus-seek concurrency
 UIA selectors for hidden controls/popups required rediscovery; unavailable locators
 were not counted as feature passes. Screenshots were visually inspected, and raw
 UI trees (which can contain signed media URLs) stay outside committed evidence.
+
+## Top-bar refresh placement (2026-11-07, development .22)
+
+Moved the existing refresh command from the bottom transport controls to the
+player title-bar footer, immediately after quality selection and before pin.
+The narrow state hides the existing quality/actions containers separately while
+keeping refresh available. Command, availability and localization bindings are
+unchanged. Narrow-window rendering was reviewed in source, not exercised here.
+
+`winapp package` Debug/x64 Native AOT completed successfully. Fresh analyzer SARIF
+contains 239 WUI notes and no WUI warning/error. The signed package SHA-256 is
+`48C5DFD83965FB851F34E8E9281639691530F2797D6362E6F6E79335D2C2F001`.
+Verified the same name/publisher and higher version before upgrading the installed
+development package to `2.2611.7.22` with Add-AppxPackage; no uninstall or data
+reset. Existing authenticated feed loaded after activation.
+
+Installed-app UIA found quality at X=2356, width=192, refresh at X=2561, and pin
+at X=2621, all at Y=519 inside the player header (window Y=507). The bottom
+transport no longer has a refresh button. Visually inspected top-refresh.png and
+after-refresh-paused.png under the ignored `.scratch/playback-freeze/dev-22/`
+evidence directory. Invoking refresh returned to enabled state; playback advanced
+from 00:27 before refresh to 00:36 afterwards, with changed subtitles and 4K
+retained. The test video was then paused. This is a placement and refresh smoke
+check, not a fresh long-outage or touch acceptance. An initial query ran while
+controls were hidden; revealing the header and rediscovering UIA confirmed the
+requested order. No new unit tests for this XAML relocation.
