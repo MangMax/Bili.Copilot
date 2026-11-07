@@ -39,17 +39,19 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
         try
         {
             var (lives, tags, nextPageNumber) = await _service.GetPartitionLiveListAsync(Data.Data);
-            if (tags is not null)
+            if (tags is { Count: > 0 })
             {
                 Children = [.. tags];
+                CurrentTag = Children[0];
+                _childPartitionOffsetCache[CurrentTag] = nextPageNumber;
             }
 
             TryAddRooms(lives);
-            CurrentTag = tags.First();
-            _childPartitionOffsetCache[tags.First()] = nextPageNumber;
+            IsLoadFailed = false;
         }
         catch (Exception ex)
         {
+            IsLoadFailed = true;
             _logger.LogError(ex, $"尝试加载 {Data.Data.Name} 分区视频时出错.");
         }
 
@@ -58,8 +60,18 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
     }
 
     [RelayCommand]
-    private void Refresh()
+    private async Task RefreshAsync()
     {
+        if (CurrentTag is null)
+        {
+            // 没有可用的子分区（首次加载失败，或该分区没有标签）：重试分区列表，
+            // 而不是在空标签上分页。
+            Rooms.Clear();
+            _preventLoadMore = false;
+            await InitializeAsync();
+            return;
+        }
+
         _childPartitionRoomCache.Remove(CurrentTag);
         _childPartitionOffsetCache.Remove(CurrentTag);
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
@@ -110,7 +122,7 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
     [RelayCommand]
     private async Task LoadRoomsAsync()
     {
-        if (IsLiveLoading)
+        if (IsLiveLoading || CurrentTag is null)
         {
             return;
         }

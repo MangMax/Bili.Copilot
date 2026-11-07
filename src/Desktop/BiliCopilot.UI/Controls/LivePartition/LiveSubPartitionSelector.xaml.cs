@@ -67,17 +67,23 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
 
     private void InitializeTags()
     {
-        var items = new List<SelectorBarItem>();
-        if (ViewModel.Children is not null)
+        if (ViewModel?.Children is not { Count: > 0 } children)
         {
-            foreach (var item in ViewModel.Children)
+            // 没有子分区（首次加载失败或该分区没有标签）时收起选择器：
+            // 空列表加上失效选中项不能交给 SlidingTabBar。
+            Selector.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        Selector.Visibility = Visibility.Visible;
+        var items = new List<SelectorBarItem>(children.Count);
+        foreach (var item in children)
+        {
+            items.Add(new SelectorBarItem()
             {
-                items.Add(new SelectorBarItem()
-                {
-                    Text = item.Name ?? default,
-                    Tag = item,
-                });
-            }
+                Text = item.Name ?? default,
+                Tag = item,
+            });
         }
 
         var selected = items.FirstOrDefault(p => p.Tag == ViewModel.CurrentTag);

@@ -27,6 +27,12 @@ public sealed partial class LivePartitionDetailViewModel
     [ObservableProperty]
     public partial bool IsLiveLoading { get; set; }
 
+    /// <summary>
+    /// 分区列表加载失败，可通过 <see cref="RefreshCommand"/> 重试.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsLoadFailed { get; set; }
+
     [ObservableProperty]
     public partial LiveTag CurrentTag { get; set; }
 

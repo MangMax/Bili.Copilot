@@ -161,6 +161,12 @@ public sealed partial class LivePartitionPageViewModel : LayoutPageViewModelBase
         if (_partitionCache.TryGetValue(vm, out var detail))
         {
             SelectedDetail = detail;
+            if (detail.IsLoadFailed)
+            {
+                // 复用的详情页如果上次加载失败，重新进入该子分区时必须重试，
+                // 而不是把半初始化的状态继续交给选择器。
+                detail.InitializeCommand.Execute(default);
+            }
         }
         else
         {
