@@ -76,4 +76,10 @@ OverflowArrowsScrollWithoutChangingSelectionAndDisappearWhenItemsFit 覆盖箭�
 背景、选中项保持强调色。旧的原生控件首次聚焦诊断步骤在复用窗口时超时，
 它依赖首次激活状态，已从产品验收脚本移除；未据此修改生产键盘逻辑。
 
-箭头样式修改后，独立宿主编译通过，但启动返回 UnauthorizedAccess_IODenied_NoPathName；本轮箭头视觉与真实滚动尚未完成原生验收。
+最新审查已合并 origin/master（8bceaed7），无文本冲突，子模块同步到主分支固定版本。
+11 项回归测试通过；Release/x64 构建 0 错误、114 条 CS9264 初始化警告，未涉及滑块相关文件；WUI warning/error 为 0。
+补齐两侧箭头的 AutomationId。未发现需删除的冗余防御、通用抽象或补丁式分支；延迟卸载和系统事件挂载代数均有回归依据。
+
+独立宿主改用临时非打包方式运行，绕过此前开发包注册访问拒绝；150% DPI 下检查到外框随内容收缩居中、背景保留及窄区域箭头，执行了箭头调用、Light/Dark 切换和重新挂载。
+截图位于本机 .t3/artifacts/spec158-review-native.png 与 spec158-review-light.png。
+本轮没有完成完整播放器、高对比度、100%/200% DPI 及动画逐帧验收，不能将宿主结果等同于完整产品验收。

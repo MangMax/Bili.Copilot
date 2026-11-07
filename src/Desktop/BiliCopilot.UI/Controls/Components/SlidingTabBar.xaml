@@ -104,6 +104,7 @@
         CornerRadius="8">
         <Button
             x:Name="ScrollLeftButton"
+            AutomationProperties.AutomationId="SlidingTabScrollLeft"
             AutomationProperties.Name="{ext:Locale Name=ScrollTabsLeft}"
             ToolTipService.ToolTip="{ext:Locale Name=ScrollTabsLeft}"
             Width="24"
@@ -144,6 +145,7 @@
         </ScrollViewer>
         <Button
             x:Name="ScrollRightButton"
+            AutomationProperties.AutomationId="SlidingTabScrollRight"
             AutomationProperties.Name="{ext:Locale Name=ScrollTabsRight}"
             ToolTipService.ToolTip="{ext:Locale Name=ScrollTabsRight}"
             Grid.Column="2"
