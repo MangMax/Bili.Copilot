@@ -154,7 +154,7 @@ TemplateRoot 每日计数（`Select-String -Pattern 'TemplateRoot not found'`）
 
 - `TemplateRoot not found`：`ImageExBase.OnApplyTemplate` 在模板未就绪时被
   `ReloadableCoverImage.OnControlLoaded` 无条件调用。跨 5 天、跨多个版本存在，且不导致退出。
-  建议单开票据（封面控件生命周期），不要并入 #171。
+  已单开 **#177**（封面控件生命周期），不要并入 #171。
 - 同签名（`combase+0xc4063` / `0x80004003`）在 11-01、11-04 的其他构建上也出现过（例如
   `Mang.BiliCopilot.AotDev_2.2611.1.5`、`Mang.BiliCopilot.Search125`），说明「stowed E_POINTER →
   CoreMessagingXP fail-fast」这一失败**模式**在本仓库早已存在；本次只是找到了稳定的触发路径。
@@ -258,7 +258,7 @@ git diff --stat 8bceaed7 d6fcd68d -- `
    新的 `Application Error 1000`，且能正常切到其它可加载分区。
 
 断言必须落在外部可观察行为（进程存活、日志、选择器可见性、`Rooms` 内容），不要断言私有字段或
-「捕获了某个异常类型」。TemplateRoot 生命周期断言留给独立票据。
+「捕获了某个异常类型」。TemplateRoot 生命周期断言留给 #177。
 
 ## 证据缺口
 

@@ -300,38 +300,38 @@
  "repro": [
   {
    "run": "restart-1",
-   "path": "Ö±²¥ -> ÍøÓÎ (from recommend feed, fresh process)",
+   "path": "ç›´æ’­ -> ç½‘æ¸¸ (from recommend feed, fresh process)",
    "result": "process exit",
    "crashTime": "2026-11-07T11:18:29+08:00",
-   "lastLog": "log-2026-11-07.txt:146135 ³¢ÊÔ¼ÓÔØ È«²¿ÍøÓÎ ·ÖÇøÊÓÆµÊ±³ö´í"
+   "lastLog": "log-2026-11-07.txt:146135 å°è¯•åŠ è½½ å…¨éƒ¨ç½‘æ¸¸ åˆ†åŒºè§†é¢‘æ—¶å‡ºé”™"
   },
   {
    "run": "restart-2",
-   "path": "ÊÓÆµ -> ¶¯»­ -> MAD¡¤AMV -> Ö±²¥ -> ÍøÓÎ",
+   "path": "è§†é¢‘ -> åŠ¨ç”» -> MADÂ·AMV -> ç›´æ’­ -> ç½‘æ¸¸",
    "result": "process exit",
    "crashTime": "2026-11-07T11:21:15+08:00",
-   "lastLog": "Í¬Ò»Ìõ KernelException"
+   "lastLog": "åŒä¸€æ¡ KernelException"
   },
   {
    "run": "restart-3",
-   "path": "Ö±²¥ -> ÍøÓÎ (minimal, fresh process)",
+   "path": "ç›´æ’­ -> ç½‘æ¸¸ (minimal, fresh process)",
    "result": "process exit",
    "crashTime": "2026-11-07T11:21:49+08:00",
-   "lastLog": "log-2026-11-07.txt:146502 ³¢ÊÔ¼ÓÔØ È«²¿ÍøÓÎ ·ÖÇøÊÓÆµÊ±³ö´í"
+   "lastLog": "log-2026-11-07.txt:146502 å°è¯•åŠ è½½ å…¨éƒ¨ç½‘æ¸¸ åˆ†åŒºè§†é¢‘æ—¶å‡ºé”™"
   },
   {
    "run": "restart-4",
-   "path": "Ö±²¥ -> µ¥»úÓÎÏ· (success path)",
+   "path": "ç›´æ’­ -> å•æœºæ¸¸æˆ (success path)",
    "result": "alive",
    "crashTime": null,
    "lastLog": "no error"
   },
   {
    "run": "restart-5",
-   "path": "Ö±²¥ -> µ¥»úÓÎÏ· -> ÍøÓÎ (detail page already mounted)",
+   "path": "ç›´æ’­ -> å•æœºæ¸¸æˆ -> ç½‘æ¸¸ (detail page already mounted)",
    "result": "alive",
    "crashTime": null,
-   "lastLog": "Í¬Ò»Ìõ KernelException£¬ÎŞÍË³ö"
+   "lastLog": "åŒä¸€æ¡ KernelExceptionï¼Œæ— é€€å‡º"
   }
  ]
 }
