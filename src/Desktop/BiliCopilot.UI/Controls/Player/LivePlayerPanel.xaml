@@ -64,6 +64,16 @@
                 FontSize="12"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 Text="{x:Bind ViewModel.LineText, Mode=OneWay, FallbackValue=''}" />
+            <!--  弹幕连接状态与准入计数（#196）：紧凑调试行，便于用户反馈时取证。  -->
+            <TextBlock
+                FontSize="11"
+                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                Text="{x:Bind ViewModel.DanmakuConnectionText, Mode=OneWay, FallbackValue=''}" />
+            <TextBlock
+                FontSize="11"
+                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                Text="{x:Bind ViewModel.DanmakuCountersText, Mode=OneWay, FallbackValue=''}"
+                TextWrapping="Wrap" />
             <!--  地址/鉴权/解码失败时给出可读原因与兜底入口。  -->
             <TextBlock
                 Foreground="{ThemeResource SystemFillColorCriticalBrush}"

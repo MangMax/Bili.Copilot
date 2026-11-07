@@ -19,9 +19,8 @@ public sealed partial class PlayerViewModel
     private async Task InitializeDanmakuAsync()
     {
         _danmakuLoadSession?.Cancel();
-        if (_isDanmakuClosed || IsLive || Window is null || Window.IsClosed)
+        if (_isDanmakuClosed || Window is null || Window.IsClosed)
         {
-            // 直播弹幕走实时准入（#196），不进入视频/PGC 的时间轴加载。
             return;
         }
 
@@ -30,6 +29,14 @@ public sealed partial class PlayerViewModel
         IsDanmakuControlVisible = IsDanmakuEnabled;
         if (!IsDanmakuEnabled)
         {
+            IsDanmakuLoading = false;
+            return;
+        }
+
+        if (IsLive)
+        {
+            // 直播弹幕走实时准入（#196）：连接、准入与注入由 LiveConnectorViewModel 持有；
+            // 这里只负责把共用的弹幕样式面板显示出来，不加载时间轴分片，也不进入重放。
             IsDanmakuLoading = false;
             return;
         }
