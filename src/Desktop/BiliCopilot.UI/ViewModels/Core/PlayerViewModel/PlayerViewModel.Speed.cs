@@ -32,6 +32,13 @@ public sealed partial class PlayerViewModel
 
         var client = Client;
         var isCurrent = CapturePlaybackValidity();
+        CancelPlaybackRefresh();
+        await WaitForNativeRefreshAsync();
+        if (!isCurrent())
+        {
+            return false;
+        }
+
         if (_pendingSpeedChanges++ == 0)
         {
             _speedChangesDrained = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

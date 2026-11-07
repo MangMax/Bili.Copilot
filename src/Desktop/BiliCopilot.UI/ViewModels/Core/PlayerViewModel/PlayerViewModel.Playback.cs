@@ -50,6 +50,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        CancelPlaybackRefresh();
         var player = Player;
         var client = Client;
         var isCurrent = CapturePlaybackValidity();

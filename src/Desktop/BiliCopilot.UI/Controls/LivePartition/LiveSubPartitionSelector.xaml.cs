@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models.Media;
@@ -57,15 +57,9 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
     private void OnViewModelInitialized(object? sender, EventArgs e)
         => InitializeTags();
 
-    private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (sender.SelectedItem is null)
-        {
-            return;
-        }
-
-        var item = sender.SelectedItem.Tag as LiveTag;
-        if (item is not null && item != ViewModel.CurrentTag)
+        if (Selector.SelectedItem is LiveTag item && item != ViewModel.CurrentTag)
         {
             ViewModel.ChangeChildPartitionCommand.Execute(item);
         }
@@ -73,19 +67,25 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
 
     private void InitializeTags()
     {
-        Selector.Items.Clear();
-        if (ViewModel.Children is not null)
+        if (ViewModel.AvailableTags is not { } children)
         {
-            foreach (var item in ViewModel.Children)
-            {
-                Selector.Items.Add(new SelectorBarItem()
-                {
-                    Text = item.Name ?? default,
-                    Tag = item,
-                });
-            }
+            // 没有子分区时收起选择器：空列表加失效选中项不能交给 SlidingTabBar.
+            Selector.Visibility = Visibility.Collapsed;
+            return;
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.CurrentTag);
+        Selector.Visibility = Visibility.Visible;
+        var items = new List<SelectorBarItem>(children.Count);
+        foreach (var item in children)
+        {
+            items.Add(new SelectorBarItem()
+            {
+                Text = item.Name ?? default,
+                Tag = item,
+            });
+        }
+
+        var selected = items.FirstOrDefault(p => p.Tag == ViewModel.CurrentTag);
+        Selector.SetItems(items, selected?.Tag);
     }
 }

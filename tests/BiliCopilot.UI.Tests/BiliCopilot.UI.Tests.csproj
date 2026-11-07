@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
@@ -22,7 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Resolvers/VideoMediaSourceResolver.cs" Link="Routing/VideoMediaSourceResolver.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Resolvers/PgcMediaSourceResolver.cs" Link="Routing/PgcMediaSourceResolver.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Resolvers/MediaSourceResolverBase.cs" Link="Routing/MediaSourceResolverBase.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Resolvers/QualitySelectionAdapter.cs" Link="Routing/QualitySelectionAdapter.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/SettingsPageViewModel/SettingsPageViewModel.PlaybackRouting.cs" Link="Routing/SettingsPageViewModel.PlaybackRouting.cs" />
     <Using Include="Xunit" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.PlaybackRouting.cs" Link="Playback/PlayerViewModel.PlaybackRouting.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/PlaybackRouting/*.cs" Link="PlaybackRouting/%(Filename)%(Extension)" />
     <!-- 与 UI 工程的 GlobalUsing.cs 对齐：链接的 AI 源文件直接使用 StringBuilder 等类型。 -->
     <Using Include="System.Text" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\Markdown\MarkdownImageLoader.cs" Link="Markdown\MarkdownImageLoader.cs" />
@@ -89,6 +96,7 @@
   <ItemGroup>
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Resolvers\QualitySelectionStrategy.cs" Link="Resolvers\QualitySelectionStrategy.cs" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\PreferQualityType.cs" Link="Resolvers\PreferQualityType.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\EpisodeAccessTag.cs" Link="Episodes\EpisodeAccessTag.cs" />
   </ItemGroup>
 
   <!-- Real navigation/cache logic; adapters provide only the Windows presentation surface. -->
@@ -155,5 +163,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Services/MpvMediaDisplaySource.cs" Link="Playback/MpvMediaDisplaySource.cs" />
+  </ItemGroup>
+
+  <!--
+    直播分区详情/页面视图模型是生产代码；适配器只补 WinUI 展示层与直播卡片条目。
+    覆盖「分区列表加载失败或返回空标签」的收尾路径（#171）。
+  -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/LivePartitionDetailViewModel/*.cs" Link="LivePartition/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/LivePartitionPageViewModel/*.cs" Link="LivePartition/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/LivePartition/LiveSubPartitionSelector.xaml.cs" Link="LivePartition/LiveSubPartitionSelector.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/LiveCardStyle.cs" Link="LivePartition/LiveCardStyle.cs" />
   </ItemGroup>
 </Project>

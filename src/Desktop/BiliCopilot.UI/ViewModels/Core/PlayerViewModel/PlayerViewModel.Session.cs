@@ -12,6 +12,7 @@ public sealed partial class PlayerViewModel
     {
         // 先拒绝迟到回调，再取消弹幕加载；之后的回调都会被 CapturePlaybackValidity 拦下。
         _isDanmakuClosed = true;
+        CancelPlaybackRefresh();
         _danmakuLoadSession?.Dispose();
     }
 

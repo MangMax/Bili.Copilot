@@ -40,7 +40,13 @@ namespace BiliCopilot.UI.ViewModels.View
 {
     public abstract class LayoutPageViewModelBase : ObservableObject
     {
+        public bool IsNavColumnManualHide { get; set; }
+
+        public double NavColumnWidth { get; set; }
+
         protected abstract string GetPageKey();
+
+        protected virtual void IsNavManualHideChanged(bool value) { }
     }
 }
 namespace Microsoft.UI.Dispatching
@@ -113,7 +119,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { SearchVerificationRequired, SearchFailed, Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, User, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { SearchVerificationRequired, SearchFailed, Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, RecommendLive, RecommendLivePartition, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, User, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
@@ -127,10 +133,11 @@ namespace BiliCopilot.UI.ViewModels.Items
     {
         public Partition Data { get; } = data;
     }
-    public sealed class VideoItemViewModel(VideoInformation data, VideoCardStyle style, Action<VideoItemViewModel>? removeAction = null)
+    public sealed class VideoItemViewModel(VideoInformation data, VideoCardStyle style, Action<VideoItemViewModel>? removeAction = null, Action<VideoItemViewModel, RecommendationFeedbackReason>? feedbackAccepted = null)
     {
         public VideoInformation Data { get; } = data;
         public Action<VideoItemViewModel>? RemoveAction { get; } = removeAction;
+        public Action<VideoItemViewModel, RecommendationFeedbackReason>? FeedbackAccepted { get; } = feedbackAccepted;
 #if SEARCH_RECOVERY_INVESTIGATION
         public RelayCommand PlayCommand { get; } = new(() => throw new NotSupportedException());
 #endif
@@ -143,6 +150,9 @@ namespace BiliCopilot.UI.Models
     public sealed class MediaSnapshot(VideoInformation video)
     {
         public VideoInformation Video { get; } = video;
+        public EpisodeInformation? Episode { get; set; }
+        public SeasonInformation? Season { get; set; }
+        public int? PreferQuality { get; set; }
         public List<MediaSnapshot> Playlist { get; set; } = new();
     }
 }

@@ -29,7 +29,12 @@ namespace BiliCopilot.UI.Forms
 }
 namespace Richasy.WinUIKernel.Share.Toolkits
 {
-    public interface ISettingsToolkit { T ReadLocalSetting<T>(string key, T fallback); }
+    public interface ISettingsToolkit
+    {
+        T ReadLocalSetting<T>(string key, T fallback);
+
+        void WriteLocalSetting<T>(string key, T value);
+    }
 }
 namespace Richasy.WinUIKernel.Share.ViewModels
 {

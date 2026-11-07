@@ -170,4 +170,5 @@ public enum SettingNames
     IncrementalRecommendRefresh,
     RecommendFeedSource,
     AutoCompactOverlayRatio,
+    PlaybackRoutePreference,
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:MomentCardPresenter x:Class="BiliCopilot.UI.Controls.Components.MomentAuthorHeader"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:local="using:BiliCopilot.UI.Controls.Components">
+    <Grid ColumnSpacing="10">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+        <Button Width="38" Height="38" Padding="0" CornerRadius="19" Style="{StaticResource AvatarButtonStyle}"
+            AutomationProperties.AutomationId="MomentAuthorAvatar" AutomationProperties.Name="{x:Bind ViewModel.Author, Mode=OneWay, FallbackValue=''}"
+            Command="{x:Bind ViewModel.ShowUserSpaceCommand, Mode=OneWay}">
+            <controls:RecommendationCoverImage Width="38" Height="38" CornerRadius="19" Source="{x:Bind ViewModel.Avatar, Mode=OneWay}" />
+        </Button>
+        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+            <controls:InlineTextButton AutomationProperties.AutomationId="MomentAuthorName" Command="{x:Bind ViewModel.ShowUserSpaceCommand, Mode=OneWay}">
+                <TextBlock MaxLines="1" TextTrimming="CharacterEllipsis" FontSize="14" FontWeight="SemiBold" Text="{x:Bind ViewModel.Author, Mode=OneWay}" />
+            </controls:InlineTextButton>
+            <TextBlock FontSize="12" MaxLines="1" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind ViewModel.Tip, Mode=OneWay}" />
+        </StackPanel>
+        <Button Grid.Column="2" Width="28" Height="28" Padding="0" VerticalAlignment="Center" Style="{StaticResource SubtleButtonStyle}"
+            AutomationProperties.AutomationId="MomentDescription" AutomationProperties.Name="{ext:Locale Name=Description}" ToolTipService.ToolTip="{ext:Locale Name=Description}"
+            Visibility="{x:Bind ViewModel.HasDescriptionPreview, Mode=OneWay, FallbackValue=Collapsed, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ic:SymbolIcon FontSize="12" Symbol="Feed" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Button.Flyout>
+                <Flyout>
+                    <local:EmoteTextBlock MaxWidth="400" MaxLines="5" ExpandInline="True" Text="{x:Bind ViewModel.Description, Mode=OneWay}" />
+                </Flyout>
+            </Button.Flyout>
+        </Button>
+        <Button Grid.Column="3" Width="28" Height="28" Padding="0" VerticalAlignment="Center" Style="{StaticResource SubtleButtonStyle}"
+            Visibility="{x:Bind ShowMoreButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+            AutomationProperties.AutomationId="MomentMore" AutomationProperties.Name="{ext:Locale Name=MoreOptions}" ToolTipService.ToolTip="{ext:Locale Name=MoreOptions}" Click="OnMoreClick">
+            <ic:SymbolIcon FontSize="12" Symbol="MoreVertical" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        </Button>
+    </Grid>
+</local:MomentCardPresenter>

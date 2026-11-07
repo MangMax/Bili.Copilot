@@ -104,6 +104,23 @@
             <base:SettingsCard Description="{ext:Locale Name=StopWhenEndOfPlaylistDescription}" Header="{ext:Locale Name=StopWhenEndOfPlaylist}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.EndWithPlaylist, Mode=TwoWay}" />
             </base:SettingsCard>
+            <base:SettingsCard
+                Header="{ext:Locale Name=PlaybackRoute}"
+                Description="{ext:Locale Name=PlaybackRouteDescription}">
+                <ComboBox
+                    MinWidth="160"
+                    AutomationProperties.AutomationId="PlaybackRoutePreference"
+                    AutomationProperties.Name="{ext:Locale Name=PlaybackRoute}"
+                    SelectedIndex="{x:Bind ViewModel.PlaybackRouteIndex, Mode=TwoWay}">
+                    <ComboBoxItem Content="{ext:Locale Name=PlaybackRouteAuto}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlaybackRoutePrimary}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlaybackRouteBackup}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlaybackRouteAli}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlaybackRouteTencent}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlaybackRouteHuawei}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlaybackRouteOverseas}" />
+                </ComboBox>
+            </base:SettingsCard>
             <base:SettingsCard Description="{ext:Locale Name=NoP2PDescription}" Header="{ext:Locale Name=NoP2P}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.NoP2P, Mode=TwoWay}" />
             </base:SettingsCard>

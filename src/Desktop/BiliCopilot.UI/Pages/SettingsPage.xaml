@@ -3,6 +3,7 @@
     x:Class="BiliCopilot.UI.Pages.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
@@ -24,13 +25,12 @@
             Style="{StaticResource BodyStrongTextBlockStyle}"
             Text="{ext:Locale Name=Settings}" />
 
-        <SelectorBar
+        <components:SlidingTabBar
             x:Name="SectionSelector"
             HorizontalAlignment="Center"
-            SelectionChanged="OnSectionSelectorChangedAsync">
-            <SelectorBarItem Tag="0" Text="{ext:Locale Name=App}" />
-            <SelectorBarItem Tag="1" Text="{ext:Locale Name=AIService}" />
-        </SelectorBar>
+            VerticalAlignment="Center"
+            AutomationProperties.AutomationId="SettingsSectionTabs"
+            SelectionChanged="OnSectionSelectorChangedAsync" />
 
         <Border
             Grid.Row="1"

@@ -36,6 +36,19 @@
                         FontSize="14"
                         FontWeight="Bold"
                         Text="{x:Bind Index, Mode=OneTime}" />
+                    <Border
+                        Width="8"
+                        Height="8"
+                        Margin="0,4,4,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        AutomationProperties.Name="{x:Bind AccessTagAutomationName, Mode=OneWay}"
+                        CornerRadius="4"
+                        Visibility="{x:Bind IsAccessTagHighlighted, Mode=OneWay}">
+                        <Border.Background>
+                            <SolidColorBrush Color="{x:Bind AccessTagColor, Mode=OneWay}" />
+                        </Border.Background>
+                    </Border>
                 </Grid>
             </base:AppToggleCard>
         </DataTemplate>

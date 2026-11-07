@@ -722,7 +722,12 @@ public sealed class SearchRecoveryInvestigationTests : IDisposable
     }
 
     public void Dispose() { NavigationTestServices.Current.Value = null; NavigationTestServices.Settings.Value = null; }
-    private sealed class Settings : ISettingsToolkit { public T ReadLocalSetting<T>(string key, T fallback) => fallback; }
+    private sealed class Settings : ISettingsToolkit
+    {
+        public T ReadLocalSetting<T>(string key, T fallback) => fallback;
+
+        public void WriteLocalSetting<T>(string key, T value) { }
+    }
     public sealed record Request(string Keyword, CancellationToken Token, int? Page)
     {
         public TaskCompletionSource<(IReadOnlyList<VideoInformation>, int?)> Completion { get; } = new();

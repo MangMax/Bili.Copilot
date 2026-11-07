@@ -5,29 +5,31 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:moment="using:BiliCopilot.UI.Controls.Moment"
     mc:Ignorable="d">
 
     <Grid
-        Padding="12,4,12,12"
+        Padding="12"
         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-        CornerRadius="{StaticResource ControlCornerRadius}">
+        CornerRadius="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <HyperlinkButton
-            x:Name="UserButton"
-            HorizontalAlignment="Left"
-            Command="{x:Bind ViewModel.ShowUserSpaceCommand, Mode=OneWay}"
-            Content="{x:Bind ViewModel.Author, Mode=OneWay}" />
+        <local:MomentAuthorHeader
+            Margin="0,0,0,12"
+            ShowMoreButton="False"
+            ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         <local:EmoteTextBlock
             Grid.Row="1"
             Margin="0,0,0,12"
-            MaxLines="8"
+            MaxLines="5"
+            ExpandInline="True"
+            FontSize="14"
             Text="{x:Bind ViewModel.Description, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.Description, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
         <moment:MomentPresenter

@@ -1,5 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
@@ -21,7 +23,14 @@ public sealed partial class SettingsPage : SettingsPageBase
     protected override void OnPageLoaded()
     {
         ViewModel.InitializeCommand.Execute(default);
-        SectionSelector.SelectedItem = SectionSelector.Items[0];
+        SectionSelector.SetItems(
+            new SelectorBarItem[]
+            {
+                new SelectorBarItem { Tag = "0", Text = ResourceToolkit.GetLocalizedString(StringNames.App) },
+                new SelectorBarItem { Tag = "1", Text = ResourceToolkit.GetLocalizedString(StringNames.AIService) },
+            }, "0");
+        GenericContainer.Visibility = Visibility.Visible;
+        AIContainer.Visibility = Visibility.Collapsed;
     }
 
     /// <inheritdoc/>
@@ -31,9 +40,9 @@ public sealed partial class SettingsPage : SettingsPageBase
     private void OnJoinGroupButtonClick(object sender, RoutedEventArgs e)
         => FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
 
-    private async void OnSectionSelectorChangedAsync(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private async void OnSectionSelectorChangedAsync(object? sender, EventArgs args)
     {
-        var index = Convert.ToInt32(sender.SelectedItem.Tag);
+        var index = Convert.ToInt32(SectionSelector.SelectedItem);
         if (index == 0)
         {
             GenericContainer.Visibility = Visibility.Visible;

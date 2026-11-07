@@ -10,6 +10,21 @@ namespace BiliCopilot.UI.Tests;
 public sealed class VideoCardMetadataProviderTests
 {
     [Fact]
+    public void MetadataPreservesVideoCountsAndIntroduction()
+    {
+        var info = Video("123");
+        info.CommunityInformation = new("123", 12345, 678);
+        info.AddExtensionIfNotNull(VideoExtensionDataId.Description, "An introduction distinct from dynamic text.");
+
+        var metadata = VideoCardMetadata.FromVideo(info);
+
+        Assert.Equal("Video", metadata.Title);
+        Assert.Equal(12345, metadata.PlayCount);
+        Assert.Equal(678, metadata.DanmakuCount);
+        Assert.Equal("An introduction distinct from dynamic text.", metadata.Description);
+    }
+
+    [Fact]
     public async Task SharedMetadataIncludesClassificationAndSurvivesConsumerCancellation()
     {
         var source = new TaskCompletionSource<VideoInformation>(TaskCreationOptions.RunContinuationsAsynchronously);

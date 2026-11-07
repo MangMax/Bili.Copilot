@@ -1,0 +1,261 @@
+{
+  "status": "rejected candidate; no production repair",
+  "cases": [
+    {
+      "case": "auto-exhaust",
+      "frame_count": 565,
+      "last_frame_pts": 23.966667,
+      "last_frame_wall_seconds": 24.152,
+      "late_unique_frame_checksums": 180,
+      "max_audio_pts": 23.579807,
+      "final_eof_reached": "yes",
+      "final_duration": 24.0,
+      "final_cache_end": 23.966667,
+      "final_pause": "yes",
+      "tail_time_pos_span": 18.166667,
+      "late_video_requests": 2,
+      "actions": [
+        {
+          "t": 8.647,
+          "action": "automatic reopen",
+          "attempt": 1,
+          "target": 8.41986,
+          "cache_end": 7.833333,
+          "duration": 24.0
+        },
+        {
+          "t": 12.068,
+          "action": "server healthy"
+        },
+        {
+          "t": 13.678,
+          "action": "automatic reopen",
+          "attempt": 2,
+          "target": 13.411777,
+          "cache_end": null,
+          "duration": 24.0
+        }
+      ],
+      "truncated_video_requests": 18,
+      "video_request_count": 20
+    },
+    {
+      "case": "auto-unavailable",
+      "frame_count": 235,
+      "last_frame_pts": 7.8,
+      "last_frame_wall_seconds": 7.945,
+      "late_unique_frame_checksums": 0,
+      "max_audio_pts": 23.516256,
+      "final_eof_reached": "yes",
+      "final_duration": 24.0,
+      "final_cache_end": null,
+      "final_pause": "yes",
+      "tail_time_pos_span": 17.682756,
+      "late_video_requests": 12,
+      "actions": [
+        {
+          "t": 8.65,
+          "action": "automatic reopen",
+          "attempt": 1,
+          "target": 8.420409,
+          "cache_end": 7.833333,
+          "duration": 24.0
+        },
+        {
+          "t": 13.681,
+          "action": "automatic reopen",
+          "attempt": 2,
+          "target": 13.377371,
+          "cache_end": null,
+          "duration": 24.0
+        },
+        {
+          "t": 18.71,
+          "action": "automatic recovery exhausted"
+        }
+      ],
+      "truncated_video_requests": 30,
+      "video_request_count": 30
+    },
+    {
+      "case": "auto-control",
+      "frame_count": 720,
+      "last_frame_pts": 23.966667,
+      "last_frame_wall_seconds": 24.163,
+      "late_unique_frame_checksums": 180,
+      "max_audio_pts": 23.642749,
+      "final_eof_reached": "yes",
+      "final_duration": 24.0,
+      "final_cache_end": 23.966667,
+      "final_pause": "yes",
+      "tail_time_pos_span": 18.166667,
+      "late_video_requests": 0,
+      "actions": [
+        {
+          "t": 12.082,
+          "action": "server healthy"
+        }
+      ],
+      "truncated_video_requests": 0,
+      "video_request_count": 1
+    },
+    {
+      "case": "auto-normal-pause",
+      "frame_count": 148,
+      "last_frame_pts": 4.9,
+      "last_frame_wall_seconds": 5.022,
+      "late_unique_frame_checksums": 0,
+      "max_audio_pts": 4.802779,
+      "final_eof_reached": "no",
+      "final_duration": 24.0,
+      "final_cache_end": 23.966667,
+      "final_pause": "yes",
+      "tail_time_pos_span": 0.0,
+      "late_video_requests": 0,
+      "actions": [
+        {
+          "t": 5.022,
+          "action": "pause",
+          "target": 14
+        }
+      ],
+      "truncated_video_requests": 0,
+      "video_request_count": 1
+    },
+    {
+      "case": "auto-pause",
+      "frame_count": 148,
+      "last_frame_pts": 4.9,
+      "last_frame_wall_seconds": 5.034,
+      "late_unique_frame_checksums": 0,
+      "max_audio_pts": 4.813668,
+      "final_eof_reached": "no",
+      "final_duration": 24.0,
+      "final_cache_end": 7.833333,
+      "final_pause": "yes",
+      "tail_time_pos_span": 0.0,
+      "late_video_requests": 0,
+      "actions": [
+        {
+          "t": 5.034,
+          "action": "pause",
+          "target": 14
+        },
+        {
+          "t": 12.079,
+          "action": "server healthy"
+        }
+      ],
+      "truncated_video_requests": 6,
+      "video_request_count": 6
+    },
+    {
+      "case": "auto-short",
+      "frame_count": 240,
+      "last_frame_pts": 7.966667,
+      "last_frame_wall_seconds": 8.137,
+      "late_unique_frame_checksums": 0,
+      "max_audio_pts": 23.534153,
+      "final_eof_reached": "yes",
+      "final_duration": 8.0,
+      "final_cache_end": 7.966667,
+      "final_pause": "yes",
+      "tail_time_pos_span": 18.166667,
+      "late_video_requests": 0,
+      "actions": [
+        {
+          "t": 12.062,
+          "action": "server healthy"
+        }
+      ],
+      "truncated_video_requests": 0,
+      "video_request_count": 1
+    },
+    {
+      "case": "sparse-control",
+      "frame_count": 2,
+      "last_frame_pts": 10.0,
+      "last_frame_wall_seconds": 0.288,
+      "late_unique_frame_checksums": 0,
+      "max_audio_pts": 23.537063,
+      "final_eof_reached": "yes",
+      "final_duration": 20.0,
+      "final_cache_end": 10.0,
+      "final_pause": "yes",
+      "tail_time_pos_span": 24.0,
+      "late_video_requests": 0,
+      "actions": [
+        {
+          "t": 12.057,
+          "action": "server healthy"
+        }
+      ],
+      "truncated_video_requests": 0,
+      "video_request_count": 1
+    },
+    {
+      "case": "auto-sparse-control",
+      "frame_count": 6,
+      "last_frame_pts": 10.0,
+      "last_frame_wall_seconds": 25.841,
+      "late_unique_frame_checksums": 0,
+      "max_audio_pts": 16.688754,
+      "final_eof_reached": "no",
+      "final_duration": 20.0,
+      "final_cache_end": 10.0,
+      "final_pause": "no",
+      "tail_time_pos_span": 16.64098,
+      "late_video_requests": 2,
+      "actions": [
+        {
+          "t": 12.055,
+          "action": "server healthy"
+        },
+        {
+          "t": 20.709,
+          "action": "automatic reopen",
+          "attempt": 1,
+          "target": 10.50071,
+          "cache_end": 10.0,
+          "duration": 20.0
+        },
+        {
+          "t": 25.741,
+          "action": "automatic reopen",
+          "attempt": 2,
+          "target": 15.501875,
+          "cache_end": 10.0,
+          "duration": 20.0
+        }
+      ],
+      "truncated_video_requests": 0,
+      "video_request_count": 3
+    }
+  ],
+  "environment": {
+    "mpv-version": "mpv v0.41.0-1386-g2137d21b2",
+    "ffmpeg-version": "N-128281-ge19fadf1d"
+  },
+  "mpv_sha256": "4752efe9982ed763f0a85ade83b55cf34442cad0c19341ad9b90769146cd2f3c",
+  "ffmpeg_sha256": "eebdf4169ea3c8e936f7840b882cf31f41d0a3913b8dea75b95bc4925877a46f",
+  "sparse_media": {
+    "/video.mp4": {
+      "bytes": 18323,
+      "sha256": "89bf778a1dbf9e725d6323afe65c3241b1d5d49fa3134b7ea1ac45b7f3a50844"
+    },
+    "/audio.m4a": {
+      "bytes": 388997,
+      "sha256": "aba1755d4718882d72d205b58179c8b809d22f76530a7db6e3a042cd7723fad7"
+    }
+  },
+  "sparse_sample_timing": {
+    "timescale": 16384,
+    "duration_ticks": 327680,
+    "stts_entries": [
+      {
+        "sample_count": 2,
+        "sample_duration_ticks": 163840
+      }
+    ]
+  }
+}

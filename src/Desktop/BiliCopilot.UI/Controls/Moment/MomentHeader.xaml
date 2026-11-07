@@ -3,6 +3,7 @@
     x:Class="BiliCopilot.UI.Controls.Moment.MomentHeader"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
@@ -23,8 +24,9 @@
             VerticalAlignment="Center"
             Style="{StaticResource BodyStrongTextBlockStyle}"
             Text="{ext:Locale Name=DynamicFeed}" />
-        <SelectorBar
+        <components:SlidingTabBar
             x:Name="Selector"
+            AutomationProperties.AutomationId="MomentSectionTabs"
             Grid.Column="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center" />

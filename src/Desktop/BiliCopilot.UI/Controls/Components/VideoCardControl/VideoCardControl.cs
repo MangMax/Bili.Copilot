@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using Microsoft.Extensions.Logging;
@@ -10,6 +10,7 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
 
@@ -20,6 +21,26 @@ namespace BiliCopilot.UI.Controls.Components;
 /// </summary>
 public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewModel>
 {
+    public static readonly DependencyProperty ShowDescriptionProperty = DependencyProperty.Register(
+        nameof(ShowDescription), typeof(bool), typeof(VideoCardControl), new PropertyMetadata(false));
+
+    /// <summary>Shows the video introduction in comprehensive dynamics.</summary>
+    public bool ShowDescription
+    {
+        get => (bool)GetValue(ShowDescriptionProperty);
+        set => SetValue(ShowDescriptionProperty, value);
+    }
+
+    public static readonly DependencyProperty MinimumTitleHeightProperty = DependencyProperty.Register(
+        nameof(MinimumTitleHeight), typeof(double), typeof(VideoCardControl), new PropertyMetadata(50d));
+
+    /// <summary>Reserves title space when the video is arranged in a uniform grid.</summary>
+    public double MinimumTitleHeight
+    {
+        get => (double)GetValue(MinimumTitleHeightProperty);
+        set => SetValue(MinimumTitleHeightProperty, value);
+    }
+
     private CompositeTransform? _popularCoverZoom;
     private Storyboard? _coverAnimation;
     private ButtonBase _rootCard;
@@ -52,7 +73,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         }
         _coverAnimation?.Stop();
         _rootCard = GetTemplateChild("RootCard") as ButtonBase;
-        _popularCoverZoom = GetTemplateChild("PopularCoverZoom") as CompositeTransform;
+        _popularCoverZoom = (GetTemplateChild("VideoMedia") as VideoMediaPresenter)?.CoverZoom;
         if (_rootCard is not null && _popularCoverZoom is not null)
         {
             _rootCard.PointerEntered += OnPopularPointerEntered;
@@ -82,9 +103,18 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         }
     }
 
-    private void OnPopularPointerEntered(object sender, PointerRoutedEventArgs args) => AnimatePopularCover(true);
+    /// <summary>Lets the containing dynamic own the entire hover surface.</summary>
+    public void SetMomentHovered(bool hovered) => AnimatePopularCover(hovered);
 
-    private void OnPopularPointerExited(object sender, PointerRoutedEventArgs args) => AnimatePopularCover(false);
+    private void OnPopularPointerEntered(object sender, PointerRoutedEventArgs args)
+    {
+        if (ViewModel?.Style != VideoCardStyle.Moment) AnimatePopularCover(true);
+    }
+
+    private void OnPopularPointerExited(object sender, PointerRoutedEventArgs args)
+    {
+        if (ViewModel?.Style != VideoCardStyle.Moment) AnimatePopularCover(false);
+    }
 
     private void AnimatePopularCover(bool hovered)
     {
@@ -342,6 +372,25 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             menuFlyout.Items.Add(CreateRemoveFavoriteItem());
         }
 
+        var options = ViewModel.RecommendationFeedbackOptions;
+        if (options.Count > 0)
+        {
+            menuFlyout.Items.Add(new MenuFlyoutSeparator());
+            foreach (var reason in options)
+            {
+                var item = new MenuFlyoutItem
+                {
+                    Text = ResourceToolkit.GetLocalizedString(reason.Operation == RecommendationFeedbackOperation.AvoidPublisher
+                        ? StringNames.AvoidPublisherRecommendation : StringNames.NotInterestedRecommendation),
+                    Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
+                    Tag = nameof(ViewModel.SubmitRecommendationFeedbackCommand),
+                    CommandParameter = reason,
+                };
+                Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(item, $"RecommendationFeedback{reason.Operation}");
+                menuFlyout.Items.Add(item);
+            }
+        }
+
         ContextFlyout = menuFlyout;
     }
 
@@ -356,6 +405,9 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         {
             switch (item.Tag.ToString())
             {
+                case nameof(ViewModel.SubmitRecommendationFeedbackCommand):
+                    item.Command = ViewModel.SubmitRecommendationFeedbackCommand;
+                    break;
                 case nameof(ViewModel.PlayInPrivateCommand):
                     item.Command = ViewModel.PlayInPrivateCommand;
                     break;

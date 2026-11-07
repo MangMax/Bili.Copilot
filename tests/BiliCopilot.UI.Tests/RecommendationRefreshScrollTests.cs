@@ -390,6 +390,7 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
 
     private sealed class DiscoveryService : IVideoDiscoveryService
     {
+        public Task SubmitRecommendationFeedbackAsync(RecommendationFeedbackContext context, RecommendationFeedbackReason reason, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public TaskCompletionSource<IReadOnlyList<Partition>> Partitions { get; } = new();
         public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Recommend { get; set; }
             = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([], 0));
@@ -406,6 +407,7 @@ public sealed class RecommendationRefreshScrollTests : IDisposable
 
     private sealed class PartitionDiscoveryService : IVideoDiscoveryService
     {
+        public Task SubmitRecommendationFeedbackAsync(RecommendationFeedbackContext context, RecommendationFeedbackReason reason, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Func<long, Task<(IReadOnlyList<VideoInformation>, long)>> Fetch { get; set; }
             = _ => Task.FromResult<(IReadOnlyList<VideoInformation>, long)>(([], 0));
         public Task<IReadOnlyList<Partition>> GetVideoPartitionsAsync(CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Partition>>([Parent()]);

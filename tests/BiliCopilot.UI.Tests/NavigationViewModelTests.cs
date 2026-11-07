@@ -199,6 +199,8 @@ public sealed class NavigationViewModelTests : IDisposable
     {
         public string? HiddenPage { get; set; }
         public T ReadLocalSetting<T>(string key, T fallback) => key == HiddenPage ? (T)(object)false : fallback;
+
+        public void WriteLocalSetting<T>(string key, T value) { }
     }
     public class NoNetwork : DispatchProxy
     {

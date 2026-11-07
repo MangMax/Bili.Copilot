@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -78,4 +78,7 @@ public sealed partial class MomentItemViewModel
     /// 卡片样式.
     /// </summary>
     public MomentCardStyle Style { get; init; }
+
+    /// <summary>Pure-video cards expose their dynamic text without changing the grid height.</summary>
+    public bool HasDescriptionPreview => Style == MomentCardStyle.Video && !string.IsNullOrWhiteSpace(Description?.Text);
 }

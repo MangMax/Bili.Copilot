@@ -21,7 +21,8 @@ namespace Microsoft.UI.Dispatching
 namespace Richasy.MpvKernel
 {
     public enum MpvFormat { Int64 }
-    public enum MpvError { Success, Unavailable }
+    // Success/Unavailable 供小窗比例适配器读取播放属性；LoadingFailed 供播放失败路径使用。
+    public enum MpvError { Success, Unavailable, LoadingFailed }
     public struct MpvNode { public long IntegerValue; }
     public sealed class MpvInteropHandle
     {

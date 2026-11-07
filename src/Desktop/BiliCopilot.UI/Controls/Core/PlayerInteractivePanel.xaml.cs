@@ -265,13 +265,9 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
             if (_isTouch)
             {
                 var state = ViewModel.Player.PlaybackState;
-                if (state == Richasy.MpvKernel.Core.Enums.MpvPlayerState.Playing)
+                if (state is Richasy.MpvKernel.Core.Enums.MpvPlayerState.Playing or Richasy.MpvKernel.Core.Enums.MpvPlayerState.Paused)
                 {
-                    await ViewModel.Client.PauseAsync();
-                }
-                else if (state == Richasy.MpvKernel.Core.Enums.MpvPlayerState.Paused)
-                {
-                    await ViewModel.Client.ResumeAsync();
+                    await ViewModel.PlayPauseCommand.ExecuteAsync(default);
                 }
             }
             else if (_isLeftButton)
@@ -297,15 +293,27 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
 
     private async void HandleManipulationUpdate(double deltaX, double deltaY)
     {
+        var viewModel = ViewModel;
+        var isCurrent = viewModel.CapturePlaybackValidity();
         switch (_interactiveArea)
         {
             case InteractiveArea.Main:
                 {
                     if (Math.Abs(deltaX) > 2 && Math.Abs(deltaX) > Math.Abs(deltaY))
                     {
-                        if (ViewModel.Player.PlaybackState == Richasy.MpvKernel.Core.Enums.MpvPlayerState.Playing)
+                        if (!await viewModel.PreparePlaybackIntentAsync() || !_isManipulating)
                         {
-                            await ViewModel.Client!.PauseAsync();
+                            return;
+                        }
+
+                        if (viewModel.Player.PlaybackState == Richasy.MpvKernel.Core.Enums.MpvPlayerState.Playing)
+                        {
+                            await viewModel.Client!.PauseAsync();
+                        }
+
+                        if (!isCurrent() || !_isManipulating)
+                        {
+                            return;
                         }
 
                         var newPos = GetNewPosition();
@@ -313,9 +321,12 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
                         {
                             DispatcherQueue.TryEnqueue(() =>
                             {
-                                ViewModel.IsPreviewProgressChanging = true;
-                                ViewModel.IsControlsVisible = true;
-                                ViewModel.PreviewPosition = newPos.Value;
+                                if (isCurrent() && _isManipulating)
+                                {
+                                    viewModel.IsPreviewProgressChanging = true;
+                                    viewModel.IsControlsVisible = true;
+                                    viewModel.PreviewPosition = newPos.Value;
+                                }
                             });
                         }
                     }
@@ -327,14 +338,9 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
                     if (Math.Abs(deltaY) > 5 && Math.Abs(deltaY) > Math.Abs(deltaX))
                     {
                         var volumeChange = -deltaY / 10;
-                        DispatcherQueue.TryEnqueue(async () =>
-                        {
-                            var currentVolume = ViewModel.Player.Volume;
-                            var newVolume = Math.Max(0, Math.Min(ViewModel.MaxVolume, currentVolume + volumeChange));
-                            ViewModel.LastVolumeChangingTime = DateTimeOffset.Now;
-                            ViewModel.IsVolumeChanging = true;
-                            await ViewModel.Client!.SetVolumeAsync(newVolume);
-                        });
+                        var currentVolume = viewModel.Player.Volume;
+                        var newVolume = Math.Max(0, Math.Min(viewModel.MaxVolume, currentVolume + volumeChange));
+                        await viewModel.ChangeVolumeAsync(newVolume);
                     }
                 }
 
@@ -351,8 +357,13 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
             var newPos = GetNewPosition();
             if (newPos.HasValue)
             {
-                await ViewModel.Client!.SetCurrentPositionAsync(newPos.Value);
-                await ViewModel.Client.ResumeAsync();
+                var viewModel = ViewModel;
+                var isCurrent = viewModel.CapturePlaybackValidity();
+                await viewModel.ChangePositionAsync(newPos.Value);
+                if (isCurrent() && await viewModel.PreparePlaybackIntentAsync())
+                {
+                    await viewModel.Client!.ResumeAsync();
+                }
             }
         }
 

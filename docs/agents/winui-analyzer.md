@@ -14,8 +14,10 @@ x:Bind 与布局陷阱、MVVM 旧写法、互操作问题。本文件记录它�
 - `WinUIAnalyzerObservation=true` 只剩两个职责：把编译器 `ErrorLog` 指向 SARIF（CI 与人工
   比对用），以及给它建好父目录。它**不再**关掉 warnings-as-errors，本工程与全仓一致；唯一
   例外是 CS9264 的"不升级为错误"，理由见下面「CS9264」一节。
-- 分析器只在 UI 工程引用，`BiliCopilot.UI.Models` 等工程不加载它；不改任何 `NoWarn`
-  （`MVVMTK0046` 除外，见口径）、不写 `#pragma warning disable`、不降级任何规则。
+- 分析器只在 UI 工程引用，`BiliCopilot.UI.Models` 等工程不加载它；不新增任何 `NoWarn`
+  抑制（`MVVMTK0046` 除外，见口径）、不写 `#pragma warning disable`、不降级任何规则；
+  已无必要的抑制该删就删（#179 删掉了两处 `NU1507`：根 `nuget.config` 的
+  `packageSourceMapping` 已覆盖全部 6 个包源，干净重建不再出现该告警）。
 
 ## 跑一次带 SARIF 的构建
 
@@ -74,6 +76,10 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
   TeachingTip 一起删除），OverlayTransportControls 由 27 降到 26（新按钮/开关/滑杆/下拉/数字框
   都写了 `AutomationId`，旧的可视化体积被合并）。SARIF：`artifacts/winui-analyzer.sarif`，
   WUI2020 264 条、WUI1010 2 条、四类 warning 一条不剩。
+- 2026-11-07 在 #179（内核子模块升到 net11 单目标、`Microsoft.WindowsAppSDK` 2.6.5）上按同一口径复测：
+  WUI warning 仍是 0，note 合计 239（WUI2020 237、WUI1010 2）。note 级不参与阻断，本次未逐条归因
+  这 27 条漂移（#169 / #173 的 XAML 改动与 WindowsAppSDK 2.6.5 都在 2026-11-03 之后落地），
+  下次动分析器基线时再按位置核对。
 - WUI3001 分两批，均已完成：批次一 #109 迁移了警告最密集的 5 个 ViewModel（100 条），
   批次二 #110 收掉剩下的 201 条。每批都要求“该批文件在观测构建里 WUI3001 为 0”，
   而不是整体清零后才算完成。
@@ -83,7 +89,7 @@ dotnet build src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj -c Release -p:Plat
   （跟踪：#117）。
 - WUI1001 的 1 条在 #113 一次清零：`GalleryPageViewModel.SaveImageAsync` 换成
   `Microsoft.Windows.Storage.Pickers.FileSavePicker`（构造时传 `WindowId`，取消返回
-  `null`，落盘走 `FileStream`）。该 API 由 `Microsoft.WindowsAppSDK.Foundation 2.6.4`
+  `null`，落盘走 `FileStream`）。该 API 由 `Microsoft.WindowsAppSDK.Foundation 2.6.5`
   提供，已用 `winapp find-api` 核对成员；规则留在表里作为回归项，不再是待清存量。
 
 ### CS9264：只在写 SARIF 的构建里出现

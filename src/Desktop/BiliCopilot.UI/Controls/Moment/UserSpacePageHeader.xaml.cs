@@ -1,5 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 
 namespace BiliCopilot.UI.Controls.Moment;
@@ -13,6 +15,12 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
     /// Initializes a new instance of the <see cref="UserSpacePageHeader"/> class.
     /// </summary>
     public UserSpacePageHeader() => InitializeComponent();
+
+    public static string GetFollowLabel(bool isFollowed)
+        => ResourceToolkit.GetLocalizedString(isFollowed ? StringNames.Followed : StringNames.Follow);
+
+    private void OnHeaderSizeChanged(object sender, SizeChangedEventArgs e)
+        => VisualStateManager.GoToState(this, e.NewSize.Width < 760 ? "Compact" : "Wide", false);
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -36,15 +44,9 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
     private void OnViewModelInitialized(object? sender, EventArgs e)
         => InitializeChildPartitions();
 
-    private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (sender.SelectedItem is null)
-        {
-            return;
-        }
-
-        var item = sender.SelectedItem.Tag as UserMomentDetailViewModel;
-        if (item is not null && item != ViewModel.SelectedSection)
+        if (Selector.SelectedItem is UserMomentDetailViewModel item && item != ViewModel.SelectedSection)
         {
             ViewModel.SelectSectionCommand.Execute(item);
         }
@@ -52,12 +54,12 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
 
     private void InitializeChildPartitions()
     {
-        Selector.Items.Clear();
+        var items = new List<SelectorBarItem>();
         if (ViewModel.Sections is not null)
         {
             foreach (var item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem()
+                items.Add(new SelectorBarItem()
                 {
                     Text = item.Title,
                     Tag = item,
@@ -65,6 +67,6 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
             }
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.SelectedSection);
+        Selector.SetItems(items, ViewModel.SelectedSection);
     }
 }
