@@ -50,12 +50,20 @@
         <DataTemplate x:Key="PgcPanelTemplate" x:DataType="core:PgcConnectorViewModel">
             <player:PgcPlayerPanel ViewModel="{x:Bind}" />
         </DataTemplate>
+        <DataTemplate x:Key="LiveWidgetTemplate" x:DataType="core:LiveConnectorViewModel">
+            <player:LivePlayerWidget ViewModel="{x:Bind}" />
+        </DataTemplate>
+        <DataTemplate x:Key="LivePanelTemplate" x:DataType="core:LiveConnectorViewModel">
+            <player:LivePlayerPanel ViewModel="{x:Bind}" />
+        </DataTemplate>
         <ext:PlayerComponentTemplateSelector
             x:Key="WidgetSelector"
+            LiveTemplate="{StaticResource LiveWidgetTemplate}"
             PgcTemplate="{StaticResource PgcWidgetTemplate}"
             VideoTemplate="{StaticResource VideoWidgetTemplate}" />
         <ext:PlayerComponentTemplateSelector
             x:Key="PanelSelector"
+            LiveTemplate="{StaticResource LivePanelTemplate}"
             PgcTemplate="{StaticResource PgcPanelTemplate}"
             VideoTemplate="{StaticResource VideoPanelTemplate}" />
         <Style
@@ -145,6 +153,8 @@
                     x:Name="TransportControls"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Bottom"
+                    IsSkipButtonsVisible="{x:Bind ViewModel.IsSeekAvailable, Mode=OneWay}"
+                    ProgressBarVisible="{x:Bind ViewModel.IsProgressBarVisible, Mode=OneWay}"
                     ViewModel="{x:Bind ViewModel, Mode=OneWay}"
                     Visibility="{x:Bind ViewModel.IsControlsVisible, Mode=OneWay}">
                     <local:OverlayTransportControls.LeftElement>

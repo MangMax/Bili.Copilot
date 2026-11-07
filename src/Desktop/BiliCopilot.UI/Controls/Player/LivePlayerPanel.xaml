@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:LivePlayerControlBase
+    x:Class="BiliCopilot.UI.Controls.Player.LivePlayerPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:local="using:BiliCopilot.UI.Controls.Player"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Width="360">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Rectangle
+            Height="12"
+            HorizontalAlignment="Stretch"
+            Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+        <StackPanel
+            Grid.Row="1"
+            Padding="16,4,16,12"
+            Spacing="6">
+            <base:TrimTextBlock
+                FontSize="18"
+                FontWeight="SemiBold"
+                MaxLines="2"
+                Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue=''}" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{x:Bind ViewModel.UpName, Mode=OneWay, FallbackValue=''}" />
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                    Text="{x:Bind ViewModel.RoomStatusText, Mode=OneWay, FallbackValue=''}" />
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                    Text="{x:Bind ViewModel.TagName, Mode=OneWay, FallbackValue=''}"
+                    Visibility="{x:Bind ViewModel.TagName, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+            </StackPanel>
+        </StackPanel>
+        <Border
+            Grid.Row="2"
+            Height="1"
+            HorizontalAlignment="Stretch"
+            Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
+        <StackPanel
+            Grid.Row="3"
+            Padding="16,12"
+            Spacing="10">
+            <!--  画质/线路占位：#194 接入真实切换后替换这两行。  -->
+            <TextBlock
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="{x:Bind ViewModel.QualityText, Mode=OneWay, FallbackValue=''}" />
+            <TextBlock
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="{x:Bind ViewModel.LineText, Mode=OneWay, FallbackValue=''}" />
+            <!--  地址/鉴权/解码失败时给出可读原因与兜底入口。  -->
+            <TextBlock
+                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                Text="{x:Bind ViewModel.ErrorText, Mode=OneWay, FallbackValue=''}"
+                TextWrapping="Wrap"
+                Visibility="{x:Bind ViewModel.ErrorText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+            <HyperlinkButton
+                HorizontalAlignment="Left"
+                Command="{x:Bind ViewModel.OpenInBrowserCommand, Mode=OneWay}"
+                Content="{ext:Locale Name=OpenInBrowser}" />
+        </StackPanel>
+    </Grid>
+</local:LivePlayerControlBase>
