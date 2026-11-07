@@ -6,6 +6,10 @@ namespace BiliCopilot.UI.Live;
 /// 应用自有的直播 mpv 配置与缓冲档位（#199 结论，落在 #194）。
 /// </summary>
 /// <remarks>
+/// #199 的调查结论已作为 #194 的行动项落地，因此这组直播参数保留在应用侧；
+/// 不再另开一次 spike，也不再引入低延迟 profile 的额外参数。
+/// </remarks>
+/// <remarks>
 /// 播放器启动时使用 <c>UseConfig=false</c>，用户 mpv.conf 不会生效；因此直播参数必须写成
 /// 独立文件，在 <c>MpvPlayer.InitializeAsync</c> 之前用 <c>MpvClient.SetConfigFileAsync</c> 加载，
 /// 并在返回其他媒体时加载基线文件还原，避免配置在复用的 <c>MpvClient</c> 上粘滞。

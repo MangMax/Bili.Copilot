@@ -208,6 +208,8 @@ public readonly record struct LiveDanmakuAdmissionResult(LiveDanmakuAdmissionAct
 /// <see cref="Submit"/> 与 <see cref="Drain"/> 必须由同一个消费线程调用；<see cref="Snapshot"/> 可从任意线程读取。
 /// 合并分两层：仍在队列中的同文案直接累加计数（上屏时显示为 <c>文本 ×N</c>）；
 /// 已上屏且仍在合并窗口内的同文案只计入合并数，不重复上屏，从而把刷屏压到每个窗口一次。
+/// 已知缺口（#192，不臆造协议）：置顶弹幕在当前内核版本没有可用的协议信号，
+/// 因此没有独立的优先级层；置顶内容由大航海/管理员/关键词高亮三层覆盖，不单独排序。
 /// </remarks>
 public sealed class LiveDanmakuAdmission
 {
