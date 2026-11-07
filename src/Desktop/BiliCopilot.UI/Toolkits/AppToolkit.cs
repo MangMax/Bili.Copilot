@@ -43,23 +43,10 @@ internal sealed partial class AppToolkit : SharedAppToolkit
     /// <returns>数量文本，如 233万.</returns>
     public static string FormatCount(long count)
     {
-        if (count < 0)
-        {
-            return string.Empty;
-        }
-
-        if (count >= 100_000_000)
-        {
-            var unit = ResourceToolkit.GetLocalizedString(StringNames.Billion);
-            return Math.Round(count / 100_000_000d, 2) + unit;
-        }
-        else if (count >= 10_000)
-        {
-            var unit = ResourceToolkit.GetLocalizedString(StringNames.TenThousands);
-            return Math.Round(count / 10_000d, 2) + unit;
-        }
-
-        return count.ToString();
+        return LiveRoomStatusText.FormatCount(
+            count,
+            ResourceToolkit.GetLocalizedString(StringNames.TenThousands),
+            ResourceToolkit.GetLocalizedString(StringNames.Billion));
     }
 
     /// <summary>
