@@ -44,6 +44,9 @@ internal static class LiveFailureText
         {
             MpvError.Http403 => LivePlayerError.Http403,
             MpvError.Http404 => LivePlayerError.Http404,
+            // 内核的 MpvError 目前没有 412 成员（只有 Http403/Http404/Http500），
+            // 所以 LivePlayerError.Http412 只能由取址阶段的异常分类产生；
+            // 内核补上成员后在这里加一行即可。
             MpvError.Http500 => LivePlayerError.HttpServerError,
             MpvError.TlsError => LivePlayerError.Tls,
             MpvError.LoadingFailed => LivePlayerError.LoadingFailed,

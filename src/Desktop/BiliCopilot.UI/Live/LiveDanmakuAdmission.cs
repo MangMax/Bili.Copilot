@@ -6,7 +6,12 @@ namespace BiliCopilot.UI.Live;
 /// 直播弹幕优先级，数值越大越优先。
 /// </summary>
 /// <remarks>
-/// 舰长/提督/总督按票面约定 3 &gt; 2 &gt; 1；醒目留言最高，管理员、老爷与关键词高亮高于普通弹幕。
+/// <para>内核的 <c>GuardLevel</c> 编码是 1 = 总督、2 = 提督、3 = 舰长，数值越小等级越高；
+/// 准入优先级则相反（数值越大越优先），因此必须按语义映射而不是直接比较内核数值：
+/// 总督 &gt; 提督 &gt; 舰长。</para>
+/// <para>任何大航海都高于管理员/老爷/关键词高亮，高亮高于普通弹幕；醒目留言最高。</para>
+/// <para>已知缺口（#192，不臆造协议）：置顶弹幕没有可用的协议信号，因此没有独立的优先级层，
+/// 它由大航海/管理员/关键词高亮三层覆盖。</para>
 /// </remarks>
 public enum LiveDanmakuPriority
 {
@@ -21,19 +26,19 @@ public enum LiveDanmakuPriority
     Highlighted = 10,
 
     /// <summary>
-    /// 总督（GuardLevel = 1）.
+    /// 舰长（内核 GuardLevel = 3，大航海中最末一档）.
     /// </summary>
-    GuardLevel1 = 21,
+    Captain = 21,
 
     /// <summary>
-    /// 提督（GuardLevel = 2）.
+    /// 提督（内核 GuardLevel = 2）.
     /// </summary>
-    GuardLevel2 = 22,
+    Admiral = 22,
 
     /// <summary>
-    /// 舰长（GuardLevel = 3）.
+    /// 总督（内核 GuardLevel = 1，大航海中的最高档）.
     /// </summary>
-    GuardLevel3 = 23,
+    Governor = 23,
 
     /// <summary>
     /// 醒目留言.
@@ -84,14 +89,18 @@ public readonly record struct LiveDanmakuCandidate
     /// <summary>
     /// Gets 该候选的准入优先级.
     /// </summary>
+    /// <remarks>
+    /// 内核编码 1 = 总督、2 = 提督、3 = 舰长，所以这里按"等级越高优先级越大"重新映射；
+    /// 任何大航海都排在管理员/老爷/关键词之前。
+    /// </remarks>
     public LiveDanmakuPriority Priority
         => IsSuperChat
             ? LiveDanmakuPriority.SuperChat
             : GuardLevel switch
             {
-                >= 3 => LiveDanmakuPriority.GuardLevel3,
-                2 => LiveDanmakuPriority.GuardLevel2,
-                1 => LiveDanmakuPriority.GuardLevel1,
+                1 => LiveDanmakuPriority.Governor,
+                2 => LiveDanmakuPriority.Admiral,
+                >= 3 => LiveDanmakuPriority.Captain,
                 _ => IsAdmin || IsVip || IsKeywordHighlighted
                     ? LiveDanmakuPriority.Highlighted
                     : LiveDanmakuPriority.Normal,

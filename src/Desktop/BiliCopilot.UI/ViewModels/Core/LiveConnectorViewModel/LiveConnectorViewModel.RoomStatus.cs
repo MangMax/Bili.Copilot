@@ -164,7 +164,7 @@ public sealed partial class LiveConnectorViewModel
 
                 break;
             case LiveRoomStatusSignal.PlayUrlReload:
-                if (_roomStatus.TryBeginReload(roomId, DateTimeOffset.Now))
+                if (_roomStatus.TryBeginReload(roomId, TimeProvider.GetLocalNow()))
                 {
                     RequestControlledReload();
                 }
@@ -300,7 +300,7 @@ public sealed partial class LiveConnectorViewModel
             return;
         }
 
-        var elapsed = DateTimeOffset.Now - startTime.Value;
+        var elapsed = TimeProvider.GetLocalNow() - startTime.Value;
         if (elapsed < TimeSpan.Zero)
         {
             elapsed = TimeSpan.Zero;

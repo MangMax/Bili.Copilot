@@ -19,24 +19,51 @@ public sealed class LiveDanmakuAdmissionTests
         var highlightedByAdmin = Candidate("管理员", isAdmin: true);
         var highlightedByVip = Candidate("老爷", isVip: true);
         var highlightedByKeyword = Candidate("关键词", isKeywordHighlighted: true);
-        var guard1 = Candidate("总督", guardLevel: 1);
-        var guard2 = Candidate("提督", guardLevel: 2);
-        var guard3 = Candidate("舰长", guardLevel: 3);
+        // 内核编码：1 = 总督，2 = 提督，3 = 舰长（数值越小等级越高）。
+        var governor = Candidate("总督", guardLevel: 1);
+        var admiral = Candidate("提督", guardLevel: 2);
+        var captain = Candidate("舰长", guardLevel: 3);
         var superChat = Candidate("醒目留言", isSuperChat: true);
 
         Assert.Equal(LiveDanmakuPriority.Normal, normal.Priority);
         Assert.Equal(LiveDanmakuPriority.Highlighted, highlightedByAdmin.Priority);
         Assert.Equal(LiveDanmakuPriority.Highlighted, highlightedByVip.Priority);
         Assert.Equal(LiveDanmakuPriority.Highlighted, highlightedByKeyword.Priority);
-        Assert.Equal(LiveDanmakuPriority.GuardLevel1, guard1.Priority);
-        Assert.Equal(LiveDanmakuPriority.GuardLevel2, guard2.Priority);
-        Assert.Equal(LiveDanmakuPriority.GuardLevel3, guard3.Priority);
+        Assert.Equal(LiveDanmakuPriority.Governor, governor.Priority);
+        Assert.Equal(LiveDanmakuPriority.Admiral, admiral.Priority);
+        Assert.Equal(LiveDanmakuPriority.Captain, captain.Priority);
         Assert.Equal(LiveDanmakuPriority.SuperChat, superChat.Priority);
-        Assert.True(superChat.Priority > guard3.Priority);
-        Assert.True(guard3.Priority > guard2.Priority);
-        Assert.True(guard2.Priority > guard1.Priority);
-        Assert.True(guard1.Priority > highlightedByKeyword.Priority);
+        Assert.True(superChat.Priority > governor.Priority);
+        // 社交顺序：总督 > 提督 > 舰长。
+        Assert.True(governor.Priority > admiral.Priority);
+        Assert.True(admiral.Priority > captain.Priority);
+        // 任何大航海都高于管理员/老爷/关键词。
+        Assert.True(captain.Priority > highlightedByKeyword.Priority);
+        Assert.True(captain.Priority > highlightedByAdmin.Priority);
+        Assert.True(captain.Priority > highlightedByVip.Priority);
         Assert.True(highlightedByKeyword.Priority > normal.Priority);
+    }
+
+    [Fact]
+    public void Priority_GovernorOutranksAdminAndKeyword()
+    {
+        // 回归：旧实现把内核编码 1（总督）映射成最低的大航海优先级，
+        // 结果总督弹幕排在管理员/关键词之后。
+        var governor = Candidate("总督", guardLevel: 1);
+        var admin = Candidate("管理员", isAdmin: true);
+
+        Assert.True(governor.Priority > admin.Priority);
+    }
+
+    [Fact]
+    public void Drain_OrdersGovernorThenAdmiralThenCaptain()
+    {
+        var admission = Create(ratePerSecond: 100, mergeWindow: TimeSpan.Zero);
+        admission.Submit(Candidate("captain", guardLevel: 3), T0);
+        admission.Submit(Candidate("admiral", guardLevel: 2), T0.AddMilliseconds(1));
+        admission.Submit(Candidate("governor", guardLevel: 1), T0.AddMilliseconds(2));
+
+        Assert.Equal(["governor", "admiral", "captain"], admission.Drain(T0.AddMilliseconds(3), 10));
     }
 
     [Fact]
@@ -191,11 +218,11 @@ public sealed class LiveDanmakuAdmissionTests
     {
         var admission = Create(ratePerSecond: 100, mergeWindow: TimeSpan.FromSeconds(2));
         admission.Submit(Candidate("normal"), T0);
-        admission.Submit(Candidate("guard1", guardLevel: 1), T0.AddMilliseconds(1));
+        admission.Submit(Candidate("governor", guardLevel: 1), T0.AddMilliseconds(1));
         admission.Submit(Candidate("super-chat", isSuperChat: true), T0.AddMilliseconds(2));
         admission.Submit(Candidate("keyword", isKeywordHighlighted: true), T0.AddMilliseconds(3));
 
-        Assert.Equal(["super-chat", "guard1", "keyword", "normal"], admission.Drain(T0.AddMilliseconds(4), 10));
+        Assert.Equal(["super-chat", "governor", "keyword", "normal"], admission.Drain(T0.AddMilliseconds(4), 10));
     }
 
     [Fact]
