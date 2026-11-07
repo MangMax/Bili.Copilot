@@ -49,6 +49,7 @@ public sealed partial class PlayerViewModel
             {
                 BiliMediaType.Video => new VideoConnectorViewModel(this),
                 BiliMediaType.Pgc => new PgcConnectorViewModel(this),
+                BiliMediaType.Live => new LiveConnectorViewModel(this),
                 _ => default,
             };
 
