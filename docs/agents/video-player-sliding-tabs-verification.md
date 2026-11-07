@@ -90,3 +90,7 @@ OverflowArrowsScrollWithoutChangingSelectionAndDisappearWhenItemsFit 覆盖箭�
 按播放器与设置、浏览分区、历史与动态三个 PR 分层接入。各调用方将模型对象保留在 Tag 中，SetItems 同步初始选择，SelectionChanged 只调用既有用户选择命令。
 设置页使用固定字符串身份，显式恢复默认内容可见性；AI 服务仍在用户切换时懒加载。浏览分区保留原推荐项默认选择，历史/个人空间保留搜索模式可见性。
 既有 11 项控件回归通过；它们不覆盖新增页面的业务接线。各页面的实际内容切换、搜索返回、PGC 切集、AI 懒加载和窄宽度布局仍需原生产品验收。
+
+开发版 2.2611.7.8 已签名并原位安装，升级前记录的 304 个数据文件均保留。真实应用 150% DPI 下确认设置页应用/AI 服务切换及服务列表加载、用户空间视频/综合切换，截图中滑块与内容一致；视频和文章子分区也执行了选择操作。
+直播进入“网游”分区后进程退出，本轮验收不通过。日志包含直播接口返回无效列表及较早的封面模板异常，因果关系待定位；没有据此添加兜底代码。PGC、历史搜索、窄宽度和高对比度尚未完成。
+本机截图：.t3/artifacts/tabs-rollout-settings-settled.png、tabs-rollout-space-settled.png、tabs-rollout-article.png。
