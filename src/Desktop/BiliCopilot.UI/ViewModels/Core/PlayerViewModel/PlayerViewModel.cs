@@ -228,10 +228,15 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     private async Task InitializeCoreAsync(MediaSnapshot snapshot)
     {
+        CancelPlaybackRefresh();
+        _isPlaybackRefreshReload = false;
         _danmakuPlaybackVersion++;
         _danmakuLoadSession?.Cancel();
         _snapshot = snapshot;
         ErrorMessage = default;
+        ErrorActionText = default;
+        HasErrorAction = false;
+        IsPreviewPlayback = false;
         CacheSpeedText = default;
         ShowPlayerWindow();
         IsConnecting = true;
@@ -314,6 +319,19 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                     var connector = Connector as PgcConnectorViewModel;
                     resolver.Initialize(_snapshot, connector._episode);
                     _sourceResolver = resolver;
+
+                    // 先在界面上拿到判定结果：播放器内核会把取源异常吞成一条日志，
+                    // 只有在这里拦住才能把"需要大会员/仅可试看"的原因交给用户。
+                    if (!await resolver.TryPrepareAsync())
+                    {
+                        ShowPlaybackUnavailable(resolver.UnavailableReason);
+                        IsConnecting = false;
+                        RefreshPlaybackCommand.NotifyCanExecuteChanged();
+                        CheckBlackBackgroundVisible();
+                        return;
+                    }
+
+                    IsPreviewPlayback = resolver.IsPreviewPlayback;
                 }
                 break;
             case BiliMediaType.Live:
@@ -322,6 +340,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                 break;
         }
 
+        OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));
+        RefreshPlaybackCommand.NotifyCanExecuteChanged();
         _sourceResolver.WindowHandle = Window!.Handle;
 
         if (_historyResolver != null && Player != null)
@@ -402,6 +422,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
 
         IsConnecting = false;
+        RefreshPlaybackCommand.NotifyCanExecuteChanged();
     }
 
     public void UpdateTheme(ElementTheme theme)
@@ -498,7 +519,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     private async Task SelectSourceAsync(SourceItemViewModel source)
     {
-        if (source is null)
+        if (source is null || !await PreparePlaybackIntentAsync())
         {
             return;
         }
@@ -517,6 +538,12 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         {
             _snapshot.PreferQuality = selected.Data.Quality;
             videoResolver.ResetSnapshot(_snapshot);
+            await ReplayCurrentPositionAsync(isCurrent);
+        }
+        else if (_sourceResolver is PgcMediaSourceResolver pgcResolver)
+        {
+            _snapshot.PreferQuality = selected.Data.Quality;
+            pgcResolver.ResetSnapshot(_snapshot);
             await ReplayCurrentPositionAsync(isCurrent);
         }
 

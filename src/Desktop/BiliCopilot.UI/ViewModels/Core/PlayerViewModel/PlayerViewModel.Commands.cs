@@ -37,6 +37,11 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task IncreaseVolumeAsync()
     {
+        if (!await PreparePlaybackIntentAsync())
+        {
+            return;
+        }
+
         if (Player is null)
         {
             return;
@@ -56,6 +61,11 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task DecreaseVolumeAsync()
     {
+        if (!await PreparePlaybackIntentAsync())
+        {
+            return;
+        }
+
         if (Player is null)
         {
             return;
@@ -176,6 +186,11 @@ public sealed partial class PlayerViewModel
     /// <returns><see cref="Task"/>.</returns>
     public async Task ChangeVolumeAsync(double volume)
     {
+        if (!await PreparePlaybackIntentAsync())
+        {
+            return;
+        }
+
         if (Player is null || volume < 0)
         {
             return;
@@ -194,6 +209,11 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task PlayPauseAsync()
     {
+        if (!await PreparePlaybackIntentAsync())
+        {
+            return;
+        }
+
         if (Player is null || Player.PlaybackState == MpvPlayerState.Idle)
         {
             return;
@@ -240,6 +260,11 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task PlayNextAsync()
     {
+        if (!await PreparePlaybackIntentAsync())
+        {
+            return;
+        }
+
         await Client!.PauseAsync();
         await Client!.StopAsync();
         await Task.Delay(500);
@@ -255,6 +280,11 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task PlayPreviousAsync()
     {
+        if (!await PreparePlaybackIntentAsync())
+        {
+            return;
+        }
+
         await Client!.PauseAsync();
         await Client!.StopAsync();
         await Task.Delay(500);
@@ -395,7 +425,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        await Client!.SetCurrentPositionAsync(lastSelectedChapter.Position);
+        await ChangePositionAsync(lastSelectedChapter.Position);
     }
 
     [RelayCommand]
@@ -412,7 +442,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        await Client!.SetCurrentPositionAsync(nextSelectedChapter.Position);
+        await ChangePositionAsync(nextSelectedChapter.Position);
     }
 
     [RelayCommand]
@@ -519,6 +549,11 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ToggleMuteStateAsync()
     {
+        if (!await PreparePlaybackIntentAsync())
+        {
+            return;
+        }
+
         if (Player is null || Client is null)
         {
             return;
@@ -605,6 +640,11 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task SendDanmakuAsync()
     {
+        if (!await PreparePlaybackIntentAsync())
+        {
+            return;
+        }
+
         if (Player is null || IsConnecting || IsDanmakuLoading)
         {
             return;

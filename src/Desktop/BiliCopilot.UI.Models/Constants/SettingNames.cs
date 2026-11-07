@@ -168,4 +168,5 @@ public enum SettingNames
     SponsorBlockColorUnknown,
     IncrementalRecommendRefresh,
     RecommendFeedSource,
+    PlaybackRoutePreference,
 }

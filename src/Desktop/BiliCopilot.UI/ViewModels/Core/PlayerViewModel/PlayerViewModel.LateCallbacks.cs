@@ -147,6 +147,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        CancelPlaybackRefresh();
         // 先让已接纳的跳转落定，避免暂停/停止与旧写入交叉。
         await WaitForPositionChangesAsync();
         if (!isCurrent())

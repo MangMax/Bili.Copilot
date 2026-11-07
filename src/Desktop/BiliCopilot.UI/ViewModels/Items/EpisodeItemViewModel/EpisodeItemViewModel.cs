@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -37,6 +37,10 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
         Duration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(data.Duration ?? 0));
         IsPreview = data.GetExtensionIfNotNull<bool>(EpisodeExtensionDataId.IsPreview);
         HighlightText = data.GetExtensionIfNotNull<string>(EpisodeExtensionDataId.RecommendReason);
+        var extensionData = data.ExtensionData;
+        var isPgc = extensionData?.ContainsKey(EpisodeExtensionDataId.IsVip) == true;
+        var isVip = extensionData?.TryGetValue(EpisodeExtensionDataId.IsVip, out var vipValue) == true && vipValue is true;
+        AccessTag = EpisodeAccessTagClassifier.Classify(isPgc, IsPreview, isVip, HighlightText);
         Index = data.Index;
         _playAction = playAction;
     }
