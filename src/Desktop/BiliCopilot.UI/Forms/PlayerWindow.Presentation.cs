@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
 using Windows.Win32.Graphics.Dwm;
@@ -15,11 +16,15 @@ public sealed partial class PlayerWindow
     /// The only place that touches player-window presentation, geometry and the DWM
     /// composition boundary. The coordinator above it never calls a Win32/WinRT API.
     /// </summary>
-    private sealed class PlayerWindowSurface(PlayerWindow owner) : IPlayerWindowSurface
+    private sealed class PlayerWindowSurface(PlayerWindow owner, ILogger logger) : IPlayerWindowSurface
     {
-        private bool _cloaked;
-        private bool _fallbackHidden;
-        private bool _fallbackForeground;
+        /// <summary>DWM_CLOAKED_APP: the window is cloaked by its owning application.</summary>
+        private const uint AppCloakReason = 0x00000001;
+
+        private static readonly TimeSpan FrameInterval = TimeSpan.FromMilliseconds(16);
+
+        private WindowProtection _protection;
+        private bool _restoreForeground;
 
         public WindowRect Bounds
         {
@@ -88,49 +93,16 @@ public sealed partial class PlayerWindow
             }
         }
 
-        public unsafe void SetOccluded(bool occluded)
+        public WindowProtectionResult SetOccluded(bool occluded)
         {
             if (owner.IsClosed || owner.IsDisposed)
             {
-                return;
+                // Nothing is left to protect or reveal; do not touch a destroyed window.
+                _protection = WindowProtection.None;
+                return WindowProtectionResult.Ok;
             }
 
-            if (occluded)
-            {
-                var value = 1;
-                var result = PInvoke.DwmSetWindowAttribute(new(owner.Handle), DWMWINDOWATTRIBUTE.DWMWA_CLOAK,
-                    &value, (uint)sizeof(int));
-                if (result.Succeeded)
-                {
-                    _cloaked = true;
-                    return;
-                }
-
-                // Cloaking is the intended protection; hiding is the fallback if DWM
-                // rejects it. Restore the foreground state on reveal.
-                _fallbackHidden = true;
-                _fallbackForeground = PInvoke.GetForegroundWindow() == new HWND(owner.Handle);
-                owner._rootWindow.Hide();
-                return;
-            }
-
-            if (_cloaked)
-            {
-                var value = 0;
-                _ = PInvoke.DwmSetWindowAttribute(new(owner.Handle), DWMWINDOWATTRIBUTE.DWMWA_CLOAK,
-                    &value, (uint)sizeof(int));
-                _cloaked = false;
-            }
-            else if (_fallbackHidden)
-            {
-                _fallbackHidden = false;
-                owner._rootWindow.Show(_fallbackForeground);
-                if (_fallbackForeground)
-                {
-                    PInvoke.SetForegroundWindow(new(owner.Handle));
-                    PInvoke.SetFocus(new(owner.Handle));
-                }
-            }
+            return occluded ? Protect() : Reveal();
         }
 
         public void Show(bool activate)
@@ -148,82 +120,143 @@ public sealed partial class PlayerWindow
             }
         }
 
-        public async Task<WindowRect> WaitForPresenterAsync(WindowPresentationMode mode, CancellationToken token)
-        {
-            var last = Bounds;
-            var stable = 0;
-            for (var frame = 0; frame < 8; frame++)
-            {
-                if (owner.IsClosed || owner.IsDisposed || token.IsCancellationRequested)
-                {
-                    return Bounds;
-                }
-
-                await WaitForCompositionAsync(token);
-                var current = Bounds;
-                if (PresenterMode == mode && current == last)
-                {
-                    if (++stable >= 2)
-                    {
-                        return current;
-                    }
-                }
-                else
-                {
-                    stable = 0;
-                }
-
-                last = current;
-            }
-
-            return Bounds;
-        }
-
-        public async Task<WindowRect> WaitForBoundsAsync(WindowRect target, WindowPresentationMode mode,
+        public Task<WindowLayoutResult> WaitForLayoutAsync(WindowLayoutTarget target, TimeSpan budget,
             CancellationToken token)
         {
-            var stable = 0;
-            for (var frame = 0; frame < 10; frame++)
+            var degraded = false;
+            return WindowLayoutSettler.WaitAsync(
+                target,
+                budget,
+                () => owner.IsClosed || owner.IsDisposed,
+                () => new WindowLayoutSample(PresenterMode, Bounds, IsMaximized),
+                TickAsync,
+                token);
+
+            async Task TickAsync(TimeSpan _, CancellationToken cancellation)
             {
-                if (owner.IsClosed || owner.IsDisposed || token.IsCancellationRequested)
+                // Off the UI thread so a stalled composition boundary cannot deadlock the
+                // thread that has to process the next window message. The settle loop owns
+                // the budget: it stops observing even if this tick never returns.
+                var result = await Task.Run(static () => PInvoke.DwmFlush(), CancellationToken.None);
+                if (result.Succeeded)
                 {
-                    return Bounds;
+                    return;
                 }
 
-                await WaitForCompositionAsync(token);
-                var current = Bounds;
-                if (PresenterMode == mode && CloseEnough(current, target))
+                if (!degraded)
                 {
-                    if (++stable >= 2)
-                    {
-                        return current;
-                    }
+                    degraded = true;
+                    logger.LogWarning(
+                        "DwmFlush failed ({Result}); the layout is observed without a composition boundary.",
+                        result);
                 }
-                else
+
+                // Pacing only. A failed composition query is never evidence that a frame
+                // is ready, so the next observation still has to prove the state.
+                await Task.Delay(FrameInterval, cancellation);
+            }
+        }
+
+        private WindowProtectionResult Protect()
+        {
+            if (TrySetCloak(true))
+            {
+                _protection = WindowProtection.Cloaked;
+                return WindowProtectionResult.Ok;
+            }
+
+            // Cloaking is the intended protection; hiding is the fallback if DWM
+            // rejects it. Restore the foreground state on reveal.
+            var foreground = PInvoke.GetForegroundWindow() == new HWND(owner.Handle);
+            owner._rootWindow.Hide();
+            if (owner._rootWindow.IsVisible)
+            {
+                _protection = WindowProtection.None;
+                return WindowProtectionResult.Failed(
+                    "neither DWMWA_CLOAK nor Hide kept the player window off screen.");
+            }
+
+            _protection = WindowProtection.Hidden;
+            _restoreForeground = foreground;
+            logger.LogWarning("DWM rejected DWMWA_CLOAK; the player window is hidden for the transition instead.");
+            return WindowProtectionResult.Degraded("DWM rejected DWMWA_CLOAK; the window was hidden instead.");
+        }
+
+        private WindowProtectionResult Reveal()
+        {
+            // Hide/Show does not clear an application cloak: the documented way is the
+            // same DWMWA_CLOAK attribute with a zero value, verified by reading
+            // DWMWA_CLOAKED. Never assume Show made the window visible again.
+            var cloaked = ReadAppCloak();
+            if (cloaked == true || (cloaked is null && _protection == WindowProtection.Cloaked))
+            {
+                if (!TrySetCloak(false))
                 {
-                    stable = 0;
+                    return WindowProtectionResult.Failed(
+                        "DWMWA_CLOAK is still set after clearing it; the player window stays invisible.");
                 }
             }
 
-            return Bounds;
+            if (_protection == WindowProtection.Hidden)
+            {
+                owner._rootWindow.Show(_restoreForeground);
+                if (!owner._rootWindow.IsVisible)
+                {
+                    return WindowProtectionResult.Failed(
+                        "the hidden player window did not become visible again.");
+                }
+
+                if (_restoreForeground)
+                {
+                    PInvoke.SetForegroundWindow(new(owner.Handle));
+                    PInvoke.SetFocus(new(owner.Handle));
+                }
+            }
+
+            _protection = WindowProtection.None;
+            return WindowProtectionResult.Ok;
         }
 
-        private static Task WaitForCompositionAsync(CancellationToken token)
-            => Task.Run(() =>
+        private unsafe bool TrySetCloak(bool cloaked)
+        {
+            for (var attempt = 0; attempt < 3; attempt++)
             {
-                // A composition frame confirms the window manager has accepted the
-                // presenter/geometry change. This is a frame boundary, not a 500 ms guess.
-                if (PInvoke.DwmFlush().Failed)
+                var value = cloaked ? 1 : 0;
+                var result = PInvoke.DwmSetWindowAttribute(new(owner.Handle), DWMWINDOWATTRIBUTE.DWMWA_CLOAK,
+                    &value, (uint)sizeof(int));
+                if (result.Failed)
                 {
-                    Thread.Sleep(16);
+                    continue;
                 }
-            }, token);
 
-        private static bool CloseEnough(WindowRect left, WindowRect right)
-            => Math.Abs(left.X - right.X) <= 1
-                && Math.Abs(left.Y - right.Y) <= 1
-                && Math.Abs(left.Width - right.Width) <= 1
-                && Math.Abs(left.Height - right.Height) <= 1;
+                var observed = ReadAppCloak();
+                if (observed is null || observed == cloaked)
+                {
+                    return true;
+                }
+
+                // The call succeeded but DWM still reports the old state; give composition
+                // a boundary and retry instead of assuming the attribute applied.
+                PInvoke.DwmFlush();
+            }
+
+            return false;
+        }
+
+        private unsafe bool? ReadAppCloak()
+        {
+            var value = 0u;
+            var result = PInvoke.DwmGetWindowAttribute(new(owner.Handle), DWMWINDOWATTRIBUTE.DWMWA_CLOAKED,
+                &value, (uint)sizeof(uint));
+            return result.Failed ? null : (value & AppCloakReason) != 0;
+        }
+
+        private enum WindowProtection
+        {
+            None,
+            Cloaked,
+            Hidden,
+        }
     }
 
     /// <summary>Persisted ordinary geometry and compact origin for one player window.</summary>

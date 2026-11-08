@@ -1,30 +1,35 @@
 using BiliCopilot.UI.Toolkits;
+using Microsoft.Extensions.Logging;
 
 namespace BiliCopilot.UI.Tests;
 
 public sealed class PlayerWindowPresentationTests
 {
+    private const WindowPresentationMode Compact = WindowPresentationMode.CompactOverlay;
+    private const WindowPresentationMode Ordinary = WindowPresentationMode.Ordinary;
+
     [Fact]
     public async Task EnteringCompactNeverMovesTheVisibleOrdinaryWindowAndOnlyExposesTheFinalFrame()
     {
         var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
         using var _ = ratio;
         state.Compact = new(300, 600);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
         ratio.UpdateMedia(ratio.BeginMedia(), 1920, 1080);
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
 
-        Assert.Equal(WindowPresentationMode.CompactOverlay, surface.Presenter);
+        Assert.Equal(Compact, surface.Presenter);
         Assert.Equal(new WindowRect(300, 600, 640, 360), surface.Bounds);
         Assert.Empty(surface.VisibleGeometry);
         Assert.False(surface.Occluded);
         Assert.True(CallIndex(surface, "occlude:True") < CallIndex(surface, "presenter:CompactOverlay"));
         Assert.True(CallIndex(surface, "presenter:CompactOverlay") < IndexOfPrefix(surface, "bounds:"));
         Assert.True(IndexOfPrefix(surface, "bounds:") < CallIndex(surface, "occlude:False"));
-        Assert.DoesNotContain(surface.Calls.Skip(CallIndex(surface, "occlude:False")), call => call.StartsWith("bounds:", StringComparison.Ordinal));
+        Assert.DoesNotContain(surface.Calls.Skip(CallIndex(surface, "occlude:False")),
+            call => call.StartsWith("bounds:", StringComparison.Ordinal));
         Assert.Equal(new WindowPoint(300, 600), state.Compact);
     }
 
@@ -36,18 +41,18 @@ public sealed class PlayerWindowPresentationTests
         state.Compact = new(300, 600);
         surface.PresenterBounds = mode => mode switch
         {
-            WindowPresentationMode.CompactOverlay => new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360),
-            WindowPresentationMode.Ordinary => new WindowRect(100, 100, 1100, 700),
+            Compact => new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360),
+            Ordinary => new WindowRect(100, 100, 1100, 700),
             _ => null,
         };
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
         surface.Bounds = new(500, 500, 640, 360);
         presentation.GeometryChanged();
-        await presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
+        await presentation.RequestModeAsync(Ordinary);
 
         Assert.Equal(new WindowRect(100, 100, 1100, 700), surface.Bounds);
-        Assert.Equal(WindowPresentationMode.Ordinary, surface.Presenter);
+        Assert.Equal(Ordinary, surface.Presenter);
         Assert.Equal(new WindowPoint(500, 500), state.Compact);
         Assert.Empty(surface.VisibleGeometry);
         Assert.DoesNotContain(state.Writes, write => write.StartsWith("ordinary:", StringComparison.Ordinal)
@@ -61,11 +66,11 @@ public sealed class PlayerWindowPresentationTests
         using var _ = ratio;
         surface.WorkArea = new(-1920, 0, 1920, 1080);
         state.Compact = new(-900, 120);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
         Assert.Equal(new WindowRect(-900, 120, 640, 360), surface.Bounds);
 
         surface.Bounds = new(-1000, 200, 640, 360);
@@ -73,14 +78,14 @@ public sealed class PlayerWindowPresentationTests
         presentation.Close();
 
         var reopenedSurface = new FakeWindowSurface { Visible = false, WorkArea = new(-1920, 0, 1920, 1080) };
-        reopenedSurface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        reopenedSurface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(reopenedSurface.Bounds.X, reopenedSurface.Bounds.Y, 640, 360)
             : null;
         var reopenedState = new FakeWindowStateStore { Compact = state.Compact };
         using var reopenedRatio = new CompactOverlayRatio(new(() => true, _ => { }));
         var reopened = new PlayerWindowPresentation(reopenedSurface, reopenedState, reopenedRatio);
 
-        await reopened.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await reopened.RequestModeAsync(Compact);
 
         Assert.Equal(new WindowRect(-1000, 200, 640, 360), reopenedSurface.Bounds);
     }
@@ -93,30 +98,32 @@ public sealed class PlayerWindowPresentationTests
         state.Compact = new(300, 600);
         surface.PresenterBounds = mode => mode switch
         {
-            WindowPresentationMode.CompactOverlay => new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360),
-            WindowPresentationMode.Ordinary => new WindowRect(100, 100, 1100, 700),
+            Compact => new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360),
+            Ordinary => new WindowRect(100, 100, 1100, 700),
             _ => null,
         };
-        var blocked = new TaskCompletionSource<WindowRect>();
-        var firstCompactWait = true;
-        surface.WaitForBounds = (_, mode) =>
+        var blocked = new TaskCompletionSource<WindowLayoutResult>();
+        var firstCompactFrame = true;
+        surface.WaitForLayout = (target, _, _) =>
         {
-            if (mode == WindowPresentationMode.CompactOverlay && firstCompactWait)
+            if (target.Mode == Compact && target.Bounds is not null && firstCompactFrame)
             {
-                firstCompactWait = false;
+                firstCompactFrame = false;
                 return blocked.Task;
             }
 
-            return Task.FromResult(surface.Bounds);
+            return Task.FromResult(surface.Settle(target));
         };
 
-        var entering = presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
-        var leaving = presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
+        var entering = presentation.RequestModeAsync(Compact);
+        var leaving = presentation.RequestModeAsync(Ordinary);
         await leaving;
-        blocked.SetResult(new WindowRect(300, 600, 640, 360));
-        await entering;
+        blocked.SetResult(new WindowLayoutResult(WindowLayoutOutcome.Confirmed,
+            new WindowLayoutSample(Compact, new WindowRect(300, 600, 640, 360), false)));
+        var superseded = await entering;
 
-        Assert.Equal(WindowPresentationMode.Ordinary, surface.Presenter);
+        Assert.Equal(WindowTransitionOutcome.Cancelled, superseded.Outcome);
+        Assert.Equal(Ordinary, surface.Presenter);
         Assert.Equal(new WindowRect(100, 100, 1100, 700), surface.Bounds);
         Assert.Empty(surface.VisibleGeometry);
         Assert.Equal(1, surface.Calls.Count(call => call == "occlude:True"));
@@ -130,16 +137,17 @@ public sealed class PlayerWindowPresentationTests
         var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
         using var _ = ratio;
         state.Compact = new(300, 600);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
-        var blocked = new TaskCompletionSource<WindowRect>();
-        surface.WaitForBounds = (_, _) => blocked.Task;
+        var blocked = new TaskCompletionSource<WindowLayoutResult>();
+        surface.WaitForLayout = (_, _, _) => blocked.Task;
 
-        var entering = presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        var entering = presentation.RequestModeAsync(Compact);
         var callsAtClose = surface.Calls.Count;
         presentation.Close();
-        blocked.SetResult(new WindowRect(300, 600, 640, 360));
+        blocked.SetResult(new WindowLayoutResult(WindowLayoutOutcome.Confirmed,
+            new WindowLayoutSample(Compact, new WindowRect(300, 600, 640, 360), false)));
         await entering;
 
         Assert.Equal(callsAtClose, surface.Calls.Count);
@@ -154,11 +162,11 @@ public sealed class PlayerWindowPresentationTests
         using var _ = ratio;
         surface.Visible = false;
         state.Compact = new(300, 600);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
 
         Assert.DoesNotContain("show:True", surface.Calls);
         Assert.DoesNotContain("occlude:True", surface.Calls);
@@ -171,28 +179,242 @@ public sealed class PlayerWindowPresentationTests
     }
 
     [Fact]
-    public async Task MaximizedOrdinaryWindowRestoresItsRestoreBoundsAndMaximizedState()
+    public async Task MaximizedRestoreOnlyRevealsAfterTheMaximizedFrameIsComposed()
     {
         var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
         using var _ = ratio;
         state.Ordinary = new(100, 100, 1100, 700);
+        state.Maximized = true;
         surface.Bounds = new(0, 0, 1920, 1040);
         surface.Maximized = true;
+        surface.DeferredMaximizedBounds = new(0, 0, 1920, 1040);
         state.Compact = new(300, 600);
         surface.PresenterBounds = mode => mode switch
         {
-            WindowPresentationMode.CompactOverlay => new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360),
-            WindowPresentationMode.Ordinary => new WindowRect(0, 0, 1920, 1040),
+            Compact => new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360),
+            Ordinary => new WindowRect(0, 0, 1920, 1040),
             _ => null,
         };
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
-        await presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
+        await presentation.RequestModeAsync(Compact);
+        var result = await presentation.RequestModeAsync(Ordinary);
 
+        Assert.Equal(WindowTransitionOutcome.Completed, result.Outcome);
         Assert.True(surface.Maximized);
-        Assert.Equal(new WindowRect(100, 100, 1100, 700), surface.Bounds);
-        Assert.Contains("max:True", surface.Calls);
+        Assert.Equal(new WindowRect(0, 0, 1920, 1040), surface.Bounds);
+        Assert.Equal(new WindowRect(100, 100, 1100, 700), state.Ordinary);
         Assert.Empty(surface.VisibleGeometry);
+        var restore = CallIndex(surface, "bounds:100,100,1100,700");
+        var maximize = CallIndex(surface, "max:True");
+        var maximizedFrame = surface.Calls.FindIndex(call => call.StartsWith("wait:Ordinary:any:True", StringComparison.Ordinal));
+        Assert.True(restore < maximize);
+        Assert.True(maximize < maximizedFrame);
+        Assert.True(maximizedFrame < surface.Calls.FindLastIndex(call => call == "occlude:False"));
+    }
+
+    [Fact]
+    public async Task SettlingTimeoutRevealsReportsFailureAndAllowsTheSameTargetAgain()
+    {
+        var logger = new RecordingLogger();
+        var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create(logger: logger);
+        using var _ = ratio;
+        state.Compact = new(300, 600);
+        surface.PresenterBounds = mode => mode == Compact
+            ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
+            : null;
+        var timedOut = false;
+        surface.WaitForLayout = (target, _, _) =>
+        {
+            if (!timedOut && target.Bounds is not null)
+            {
+                timedOut = true;
+                return Task.FromResult(new WindowLayoutResult(WindowLayoutOutcome.TimedOut, surface.Sample,
+                    "the compact frame never settled"));
+            }
+
+            return Task.FromResult(surface.Settle(target));
+        };
+
+        var failed = await presentation.RequestModeAsync(Compact);
+
+        Assert.Equal(WindowTransitionOutcome.Failed, failed.Outcome);
+        Assert.Contains("never settled", failed.Diagnostic);
+        Assert.False(surface.Occluded);
+        Assert.False(presentation.IsChanging);
+        Assert.Contains(logger.Entries, entry => entry.Level == LogLevel.Error);
+        Assert.DoesNotContain(state.Writes, write => write.StartsWith("compact:", StringComparison.Ordinal));
+
+        state.Writes.Clear();
+        surface.Bounds = new(500, 500, 640, 360);
+        presentation.GeometryChanged();
+        Assert.Empty(state.Writes);
+
+        var retry = await presentation.RequestModeAsync(Compact);
+
+        Assert.Equal(WindowTransitionOutcome.Completed, retry.Outcome);
+        Assert.Equal(Compact, surface.Presenter);
+        Assert.False(surface.Occluded);
+        // The retry really ran the compact path instead of being coalesced as a no-op.
+        Assert.Contains("compact:300,600", state.Writes);
+    }
+
+    [Fact]
+    public async Task SystemConstrainedFrameIsAcceptedAsTheRealGeometryWithADiagnostic()
+    {
+        var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
+        using var _ = ratio;
+        state.Compact = new(300, 600);
+        surface.PresenterBounds = mode => mode == Compact
+            ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
+            : null;
+        var constrained = false;
+        surface.WaitForLayout = (target, _, _) =>
+        {
+            if (target.Bounds is not null && !constrained)
+            {
+                constrained = true;
+                surface.Bounds = new WindowRect(300, 600, 400, 400);
+                return Task.FromResult(new WindowLayoutResult(WindowLayoutOutcome.Constrained, surface.Sample,
+                    "the window manager kept 400x400"));
+            }
+
+            return Task.FromResult(surface.Settle(target));
+        };
+
+        var result = await presentation.RequestModeAsync(Compact);
+
+        Assert.Equal(WindowTransitionOutcome.Completed, result.Outcome);
+        Assert.Contains("400x400", result.Diagnostic);
+        Assert.Equal(new WindowRect(300, 600, 400, 400), surface.Bounds);
+        Assert.Equal(new WindowPoint(300, 600), state.Compact);
+        Assert.False(surface.Occluded);
+        Assert.Equal(1, surface.Calls.Count(call => call.StartsWith("bounds:", StringComparison.Ordinal)));
+        var reveal = surface.Calls.FindLastIndex(call => call == "occlude:False");
+        Assert.DoesNotContain(surface.Calls.Skip(reveal + 1), call => call.StartsWith("bounds:", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task RevealFailureIsReportedKeepsProtectionAndTheSameRequestRetries()
+    {
+        var logger = new RecordingLogger();
+        var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create(logger: logger);
+        using var _ = ratio;
+        state.Compact = new(300, 600);
+        surface.PresenterBounds = mode => mode == Compact
+            ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
+            : null;
+        surface.Protection = occluded => occluded
+            ? WindowProtectionResult.Ok
+            : WindowProtectionResult.Failed("DWMWA_CLOAK did not clear");
+
+        var failed = await presentation.RequestModeAsync(Compact);
+
+        Assert.Equal(WindowTransitionOutcome.Failed, failed.Outcome);
+        Assert.Contains("DWMWA_CLOAK", failed.Diagnostic);
+        Assert.True(surface.Occluded);
+        Assert.False(presentation.IsChanging);
+        Assert.Contains(logger.Entries, entry => entry.Level == LogLevel.Error);
+
+        surface.Protection = _ => WindowProtectionResult.Ok;
+        var retry = await presentation.RequestModeAsync(Compact);
+
+        Assert.Equal(WindowTransitionOutcome.Completed, retry.Outcome);
+        Assert.False(surface.Occluded);
+    }
+
+    [Fact]
+    public async Task InitialShowFailureIsReportedAndALaterShowPresentsTheWindow()
+    {
+        var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
+        using var _ = ratio;
+        surface.Visible = false;
+        state.Compact = new(300, 600);
+        surface.PresenterBounds = mode => mode == Compact
+            ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
+            : null;
+        var release = new TaskCompletionSource();
+        surface.WaitForLayout = async (target, _, _) =>
+        {
+            await release.Task;
+            return surface.Settle(target);
+        };
+
+        var entering = presentation.RequestModeAsync(Compact);
+        presentation.Show(restorePosition: true, activate: false);
+        surface.ThrowOnShow = true;
+        release.SetResult();
+        var failed = await entering;
+
+        Assert.Equal(WindowTransitionOutcome.Failed, failed.Outcome);
+        Assert.Contains("show", failed.Diagnostic, StringComparison.OrdinalIgnoreCase);
+        Assert.False(surface.Visible);
+        Assert.False(presentation.IsChanging);
+
+        surface.ThrowOnShow = false;
+        presentation.Show(restorePosition: false, activate: false);
+
+        Assert.True(surface.Visible);
+    }
+
+    [Fact]
+    public async Task RatioChangeDuringTheRefitConvergesToTheLatestForm()
+    {
+        var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
+        using var _ = ratio;
+        state.Compact = new(300, 600);
+        surface.PresenterBounds = mode => mode == Compact
+            ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
+            : null;
+        var media = ratio.BeginMedia();
+        ratio.UpdateMedia(media, 1920, 1080);
+        var frameWaits = 0;
+        surface.WaitForLayout = (target, _, _) =>
+        {
+            if (target.Bounds is not null)
+            {
+                frameWaits++;
+                if (frameWaits == 1)
+                {
+                    ratio.UpdateMedia(media, 1080, 1920);
+                }
+                else if (frameWaits == 2)
+                {
+                    ratio.UpdateMedia(media, 1920, 1080);
+                }
+            }
+
+            return Task.FromResult(surface.Settle(target));
+        };
+
+        var result = await presentation.RequestModeAsync(Compact);
+
+        Assert.Equal(WindowTransitionOutcome.Completed, result.Outcome);
+        Assert.Equal(new WindowRect(300, 600, 640, 360), surface.Bounds);
+        Assert.True(frameWaits >= 3);
+        var reveal = surface.Calls.FindLastIndex(call => call == "occlude:False");
+        Assert.DoesNotContain(surface.Calls.Skip(reveal + 1), call => call.StartsWith("bounds:", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task UnprotectableWindowCompletesTheModeButReportsTheDegradedProtection()
+    {
+        var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
+        using var _ = ratio;
+        state.Compact = new(300, 600);
+        surface.PresenterBounds = mode => mode == Compact
+            ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
+            : null;
+        surface.Protection = occluded => occluded
+            ? WindowProtectionResult.Failed("neither DWMWA_CLOAK nor Hide protected the window")
+            : WindowProtectionResult.Ok;
+
+        var result = await presentation.RequestModeAsync(Compact);
+
+        Assert.Equal(WindowTransitionOutcome.Completed, result.Outcome);
+        Assert.Contains("protect", result.Diagnostic!, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(Compact, surface.Presenter);
+        Assert.Equal(new WindowRect(300, 600, 640, 360), surface.Bounds);
+        Assert.False(surface.Occluded);
     }
 
     [Fact]
@@ -204,13 +426,13 @@ public sealed class PlayerWindowPresentationTests
         var preference = new CompactOverlayRatioPreference(() => enabled, value => enabled = value);
         using var ratio = new CompactOverlayRatio(preference);
         var presentation = new PlayerWindowPresentation(surface, state, ratio);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
         var generation = ratio.BeginMedia();
         ratio.UpdateMedia(generation, 1080, 1920);
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
         Assert.Equal(new WindowRect(300, 600, 640, 360), surface.Bounds);
 
         preference.SetEnabled(true);
@@ -231,12 +453,12 @@ public sealed class PlayerWindowPresentationTests
         var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
         using var _ = ratio;
         state.Compact = new(3000, 2000);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
         ratio.UpdateMedia(ratio.BeginMedia(), 1920, 1080);
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
 
         Assert.Equal(new WindowRect(1280, 680, 640, 360), surface.Bounds);
     }
@@ -247,12 +469,12 @@ public sealed class PlayerWindowPresentationTests
         var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
         using var _ = ratio;
         state.Compact = new(1800, 1000);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
         ratio.UpdateMedia(ratio.BeginMedia(), 1920, 1080);
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
 
         Assert.Equal(new WindowRect(1800, 1000, 640, 360), surface.Bounds);
     }
@@ -265,8 +487,8 @@ public sealed class PlayerWindowPresentationTests
         state.Compact = new(300, 600);
         surface.PresenterBounds = mode => mode switch
         {
-            WindowPresentationMode.Ordinary => new WindowRect(100, 100, 1100, 700),
-            WindowPresentationMode.CompactOverlay => new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360),
+            Ordinary => new WindowRect(100, 100, 1100, 700),
+            Compact => new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360),
             _ => null,
         };
 
@@ -274,7 +496,7 @@ public sealed class PlayerWindowPresentationTests
         Assert.DoesNotContain("occlude:True", surface.Calls);
         Assert.Equal(WindowPresentationMode.FullScreen, surface.Presenter);
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
         Assert.Contains("occlude:True", surface.Calls);
         Assert.Equal(new WindowRect(300, 600, 640, 360), surface.Bounds);
 
@@ -282,31 +504,35 @@ public sealed class PlayerWindowPresentationTests
         Assert.Equal(WindowPresentationMode.FullScreen, surface.Presenter);
         Assert.False(surface.Occluded);
 
-        await presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
-        Assert.Equal(WindowPresentationMode.Ordinary, surface.Presenter);
+        await presentation.RequestModeAsync(Ordinary);
+        Assert.Equal(Ordinary, surface.Presenter);
         Assert.Equal(new WindowRect(100, 100, 1100, 700), surface.Bounds);
     }
 
     [Fact]
     public async Task GeometryFailureStillUncoversTheWindowAndLaterTransitionsWork()
     {
-        var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
+        var logger = new RecordingLogger();
+        var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create(logger: logger);
         using var _ = ratio;
         state.Compact = new(300, 600);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
         surface.ThrowOnCompactApply = true;
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        var failed = await presentation.RequestModeAsync(Compact);
 
+        Assert.Equal(WindowTransitionOutcome.Failed, failed.Outcome);
+        Assert.False(string.IsNullOrWhiteSpace(failed.Diagnostic));
         Assert.False(surface.Occluded);
-        Assert.Equal(WindowPresentationMode.CompactOverlay, surface.Presenter);
+        Assert.Equal(Compact, surface.Presenter);
         Assert.False(presentation.IsChanging);
+        Assert.Contains(logger.Entries, entry => entry.Level == LogLevel.Error && entry.Exception is not null);
 
         surface.ThrowOnCompactApply = false;
-        await presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
-        Assert.Equal(WindowPresentationMode.Ordinary, surface.Presenter);
+        await presentation.RequestModeAsync(Ordinary);
+        Assert.Equal(Ordinary, surface.Presenter);
         Assert.Equal(new WindowRect(100, 100, 1100, 700), surface.Bounds);
     }
 
@@ -316,10 +542,10 @@ public sealed class PlayerWindowPresentationTests
         var (surface, state, ratio, presentation) = PlayerWindowPresentationTestFactory.Create();
         using var _ = ratio;
         state.Compact = new(300, 600);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        await presentation.RequestModeAsync(Compact);
         state.Writes.Clear();
 
         surface.Bounds = new(700, 300, 640, 360);
@@ -351,12 +577,12 @@ public sealed class PlayerWindowPresentationTests
         var state = new FakeWindowStateStore { Ordinary = new WindowRect(100, 100, 1100, 700), Maximized = true };
         using var ratio = new CompactOverlayRatio(new(() => true, _ => { }));
         var presentation = new PlayerWindowPresentation(surface, state, ratio);
-        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+        surface.PresenterBounds = mode => mode == Compact
             ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
             : null;
 
-        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
-        await presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
+        await presentation.RequestModeAsync(Compact);
+        await presentation.RequestModeAsync(Ordinary);
 
         Assert.Equal(new WindowRect(100, 100, 1100, 700), surface.Bounds);
         Assert.True(surface.Maximized);

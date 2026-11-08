@@ -1,9 +1,12 @@
 using BiliCopilot.UI.Toolkits;
+using Microsoft.Extensions.Logging;
 
 namespace BiliCopilot.UI.Tests;
 
 internal sealed class FakeWindowSurface : IPlayerWindowSurface
 {
+    private WindowRect? _pendingMaximize;
+
     public WindowRect Bounds { get; set; } = new(100, 100, 1100, 700);
 
     public int FrameWidth { get; set; }
@@ -27,19 +30,27 @@ internal sealed class FakeWindowSurface : IPlayerWindowSurface
 
     public WindowRect WorkArea { get; set; } = new(0, 0, 1920, 1040);
 
+    /// <summary>The protection the surface actually holds; a failed reveal keeps it on.</summary>
     public bool Occluded { get; private set; }
 
-    public List<string> Calls { get; } = new();
+    public List<string> Calls { get; } = [];
 
-    public List<WindowRect> VisibleGeometry { get; } = new();
+    public List<WindowRect> VisibleGeometry { get; } = [];
+
+    public WindowLayoutSample Sample => new(Presenter, Bounds, Maximized);
 
     public Func<WindowPresentationMode, WindowRect?>? PresenterBounds { get; set; }
 
-    public Func<WindowRect, WindowPresentationMode, Task<WindowRect>>? WaitForBounds { get; set; }
+    public Func<WindowLayoutTarget, TimeSpan, CancellationToken, Task<WindowLayoutResult>>? WaitForLayout { get; set; }
 
-    public Func<WindowPresentationMode, Task<WindowRect>>? WaitForPresenter { get; set; }
+    public Func<bool, WindowProtectionResult>? Protection { get; set; }
+
+    /// <summary>A maximized frame the system applies on a later composition, not in the call.</summary>
+    public WindowRect? DeferredMaximizedBounds { get; set; }
 
     public bool ThrowOnCompactApply { get; set; }
+
+    public bool ThrowOnShow { get; set; }
 
     public WindowRect GetWorkArea(WindowPoint point) => WorkArea;
 
@@ -68,25 +79,72 @@ internal sealed class FakeWindowSurface : IPlayerWindowSurface
     {
         Calls.Add("max:" + maximized);
         Maximized = maximized;
+        if (maximized && DeferredMaximizedBounds is { } bounds)
+        {
+            _pendingMaximize = bounds;
+        }
     }
 
-    public void SetOccluded(bool occluded)
+    public WindowProtectionResult SetOccluded(bool occluded)
     {
         Calls.Add("occlude:" + occluded);
-        Occluded = occluded;
+        var result = Protection?.Invoke(occluded) ?? WindowProtectionResult.Ok;
+        if (result.Verified)
+        {
+            Occluded = occluded;
+        }
+
+        if (!occluded)
+        {
+            FlushPendingMaximize();
+        }
+
+        return result;
     }
 
     public void Show(bool activate)
     {
         Calls.Add("show:" + activate);
+        if (ThrowOnShow)
+        {
+            throw new InvalidOperationException("show failed");
+        }
+
         Visible = true;
     }
 
-    public Task<WindowRect> WaitForPresenterAsync(WindowPresentationMode mode, CancellationToken token)
-        => WaitForPresenter?.Invoke(mode) ?? Task.FromResult(Bounds);
+    public Task<WindowLayoutResult> WaitForLayoutAsync(WindowLayoutTarget target, TimeSpan budget,
+        CancellationToken token)
+    {
+        Calls.Add($"wait:{target.Mode}:{target.Bounds?.ToString() ?? "any"}:{target.Maximized}");
+        FlushPendingMaximize();
+        return WaitForLayout?.Invoke(target, budget, token) ?? Task.FromResult(Settle(target));
+    }
 
-    public Task<WindowRect> WaitForBoundsAsync(WindowRect target, WindowPresentationMode mode, CancellationToken token)
-        => WaitForBounds?.Invoke(target, mode) ?? Task.FromResult(Bounds);
+    /// <summary>Simulates a window manager that applied every request synchronously.</summary>
+    public WindowLayoutResult Settle(WindowLayoutTarget target)
+    {
+        if (Presenter != target.Mode
+            || (target.Mode == WindowPresentationMode.Ordinary && Maximized != target.Maximized))
+        {
+            return new(WindowLayoutOutcome.TimedOut, Sample, "the requested presenter did not settle");
+        }
+
+        return target.Bounds is { } expected && !WindowLayoutSettler.SameFrame(Bounds, expected)
+            ? new(WindowLayoutOutcome.Constrained, Sample, "the system kept its own frame")
+            : new(WindowLayoutOutcome.Confirmed, Sample);
+    }
+
+    private void FlushPendingMaximize()
+    {
+        if (_pendingMaximize is not { } bounds)
+        {
+            return;
+        }
+
+        _pendingMaximize = null;
+        SetBounds(bounds);
+    }
 
     private void SetBounds(WindowRect bounds)
     {
@@ -106,7 +164,7 @@ internal sealed class FakeWindowStateStore : IPlayerWindowStateStore
 
     public WindowPoint? Compact { get; set; }
 
-    public List<string> Writes { get; } = new();
+    public List<string> Writes { get; } = [];
 
     public WindowRect? ReadOrdinaryBounds() => Ordinary;
 
@@ -132,19 +190,35 @@ internal sealed class FakeWindowStateStore : IPlayerWindowStateStore
     }
 }
 
+internal sealed class RecordingLogger : ILogger
+{
+    public List<(LogLevel Level, string Message, Exception? Exception)> Entries { get; } = [];
+
+    public IDisposable? BeginScope<TState>(TState state)
+        where TState : notnull
+        => null;
+
+    public bool IsEnabled(LogLevel logLevel) => true;
+
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+        Func<TState, Exception?, string> formatter)
+        => Entries.Add((logLevel, formatter(state, exception), exception));
+}
+
 internal static class PlayerWindowPresentationTestFactory
 {
     public static (FakeWindowSurface Surface, FakeWindowStateStore State, CompactOverlayRatio Ratio,
-        PlayerWindowPresentation Presentation) Create(bool enabled = true)
+        PlayerWindowPresentation Presentation) Create(bool enabled = true, RecordingLogger? logger = null)
     {
         var surface = new FakeWindowSurface();
         var state = new FakeWindowStateStore();
         var preference = new CompactOverlayRatioPreference(() => enabled, _ => { });
         var ratio = new CompactOverlayRatio(preference);
-        var presentation = new PlayerWindowPresentation(surface, state, ratio);
+        var presentation = new PlayerWindowPresentation(surface, state, ratio, logger);
         return (surface, state, ratio, presentation);
     }
 }
+
 internal sealed class RatioWindowHarness : IDisposable
 {
     public RatioWindowHarness(bool enabled = true)

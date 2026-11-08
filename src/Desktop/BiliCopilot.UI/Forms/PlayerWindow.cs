@@ -1,6 +1,7 @@
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
@@ -19,6 +20,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     private readonly DesktopWindowXamlSource _xamlSource;
     private readonly CursorGrid _rootGrid;
     private readonly PlayerWindowPresentation _presentation;
+    private readonly ILogger<PlayerWindow> _logger;
     private InputActivationListener _inputActivationListener;
     private bool _xamlSourceDisposed;
     private bool _isFirstActivated = true;
@@ -50,8 +52,10 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
 
         ResetWindowMinSize();
+        _logger = this.Get<ILogger<PlayerWindow>>();
         _ratio = new CompactOverlayRatio(SettingsToolkit.CompactOverlayRatio);
-        _presentation = new(new PlayerWindowSurface(this), new PlayerWindowState(this), _ratio);
+        _presentation = new(new PlayerWindowSurface(this, _logger), new PlayerWindowState(this),
+            _ratio, _logger);
     }
 
     /// <summary>

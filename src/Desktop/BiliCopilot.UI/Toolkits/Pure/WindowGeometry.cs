@@ -19,7 +19,11 @@ internal readonly record struct WindowPoint(int X, int Y)
 }
 
 /// <summary>A physical-pixel window rectangle.</summary>
-internal readonly record struct WindowRect(int X, int Y, int Width, int Height);
+internal readonly record struct WindowRect(int X, int Y, int Width, int Height)
+{
+    public override string ToString()
+        => FormattableString.Invariant($"{X},{Y},{Width},{Height}");
+}
 
 /// <summary>The three logical presentation modes of a player window.</summary>
 internal enum WindowPresentationMode

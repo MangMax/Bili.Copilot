@@ -104,31 +104,52 @@ The three logical modes are explicit: `Ordinary`, `CompactOverlay` and
 
 1. If the window is visible and the transition involves compact overlay, cloak it
    with `DwmSetWindowAttribute(DWMWA_CLOAK)`; this leaves `AppWindow.IsVisible`,
-   activation and the presenter untouched while DWM stops displaying it.
+   activation and the presenter untouched while DWM stops displaying it. When DWM
+   rejects the attribute the adapter falls back to `Hide` and restores the
+   foreground state on reveal.
 2. Apply the target presenter once.
 3. Compact target: read the OS compact baseline (presenter size at the current
-   origin), compute the complete target from the remembered origin, the known
-   media form and the work area, apply it, wait for two composition frames where
-   the presenter and bounds match, and recover the origin only if the final frame
-   is entirely outside the work area.
-4. Ordinary target: apply the complete ordinary rectangle (and the maximized
-   state) and wait for the same composed result.
-5. Only then set the stable mode and uncloak. No geometry, presenter or persistence
+   origin), compute the complete target from the remembered origin, the current
+   media form and the work area, apply it, wait until it settles, and repeat with
+   the latest form until the confirmed frame already is the target. A media-form
+   change that arrives during a wait is picked up by the next iteration, so the
+   newest input owns the final frame (there is no separate dirty flag).
+4. Ordinary target: apply the complete ordinary rectangle, wait until it settles,
+   then (when the ordinary state is maximized) maximize and wait for the maximized
+   frame again. Only the final maximized frame is ever exposed.
+5. Only then set the stable mode and reveal. No geometry, presenter or persistence
    write happens after the window is visible again.
 
-`WaitForPresenterAsync`/`WaitForBoundsAsync` use `DwmFlush` composition
-boundaries, not a fixed delay. They verify the presenter kind and the actual
-window rectangle for two consecutive frames; the bound is a small frame budget,
-not a 500 ms layout assumption. `SetPresenter` is synchronous in the Windows App
-SDK, but that does not mean DWM has composed the last frame, so the confirmation
-stays.
+`WaitForLayoutAsync` is one completion criterion for every phase. After each
+composition tick the surface reads the presenter, the maximized state and the
+actual rectangle; two consecutive identical samples that match the request confirm
+it. `DwmFlush` is only the sampling boundary, never proof that the layout
+finished, and when it fails the adapter paces the next observation, logs the
+degraded confirmation and still requires the observed state to prove the result.
+A stable sample that keeps a different frame (minimum size, a display clamp, the
+maximized work area) is accepted only at the end of the phase budget and reported
+as `Constrained` with the real frame; a sample that never matches the presenter or
+the maximized state is `TimedOut`, not success. A timed-out or throwing transition
+reveals the window, logs the failure, reports `Failed` with a diagnostic and
+leaves no stable mode behind, so the same target can be requested again and runs
+instead of being coalesced as a no-op. One phase is bounded by 400 ms and the whole
+transition by 1200 ms, so protection can never become permanent.
 
 A newer request increments a generation and cancels the previous transition's
 token. A superseded transition cannot uncloak, show, move or persist for the newer
 one; the newest transition inherits an existing cloak and is the only one allowed
-to remove it. Closing cancels the transition and never touches the window again.
-A failure in the latest transition still uncloaks and records the actual presenter
-as stable.
+to remove it. Closing cancels the transition and never touches the window again:
+the settle loop re-checks the window and the token after every tick before it
+reads a single property, so a destroyed window is never observed.
+
+Reveal is verified, not assumed. Show does not clear an application cloak
+(measured below), so the adapter clears `DWMWA_CLOAK` again, reads
+`DWMWA_CLOAKED` and reports success only when the application cloak bit is clear.
+It retries the attribute call a bounded number of times, and when it cannot verify
+it keeps the protection and reports the failure; the coordinator then reports
+`Failed` and the next request retries the reveal. A protection that could not be
+applied at all is reported as a degraded completion (the mode still switches, the
+result carries the diagnostic).
 
 ### Initial show
 
@@ -146,7 +167,8 @@ window is still hidden, then shows it once at the final geometry. A later
 - Ordinary geometry: written only while the ordinary presenter is stable. While
   compact or full screen the ordinary keys are untouched, so the mini geometry
   cannot overwrite them. The maximized flag is independent.
-- A transition never writes either key.
+- A transition writes only the compact origin it has just confirmed; the
+  ordinary keys are never written by a transition.
 
 ### Ratio and position are values
 
@@ -206,20 +228,59 @@ and a GDI screen frame for visible-state evidence:
   interval by pixels alone; the `AppWindow.Changed` timeline and the cloak state
   at every change are the complementary evidence.
 
+A second Win32 probe (a plain `CreateWindowEx` window, per-monitor DPI aware,
+3840×2160 display at 150%, work area 3840×2088) measured the protection and
+maximization contract used by the new sequence:
+
+- `DwmSetWindowAttribute(DWMWA_CLOAK, 1)` returned `S_OK`, `DWMWA_CLOAKED` read
+  `0x1` (the application bit) on the same frame, and `IsWindowVisible` stayed 1.
+- `ShowWindow(SW_HIDE)` followed by `ShowWindow(SW_SHOW)` left
+  `DWMWA_CLOAKED = 0x1`: Show does not clear the cloak. Only another
+  `DwmSetWindowAttribute(DWMWA_CLOAK, 0)` returned `S_OK` and cleared the
+  application bit (`0x0`), with the rectangle unchanged.
+- Maximizing the cloaked window reported `zoom = 1` and the maximized frame
+  `-11,-11,3862×2110` at the first `DwmFlush` already. The maximized frame is
+  unrelated to the restore rectangle, and restoring returned the saved
+  `300,300,640×360` frame. That is why the ordinary path confirms the restore
+  frame first and the maximized state/frame separately, and why the maximized
+  rectangle is never persisted as the ordinary snapshot.
+- `MoveWindow` while cloaked reported the requested rectangle on the first frame;
+  the geometry did not animate, so two equal samples describe the composed state
+  rather than waiting out an animation.
+
 This probe is not the packaged media app. It does not prove playback, real
 decoder timing, multi-monitor removal, mixed DPI, focus restoration or maximized
 transitions. Those remain part of the Windows acceptance checklist.
 
 ## Verification
 
-Automated coverage (this change): 1114 UI tests, 25 popular-card tests, 291
-bili-kernel tests and 42 search-recovery tests passed; the default Release/x64
-WinUI build has 0 warnings and 0 errors, and the blocking WinUI analyzer build has
-0 WUI warnings (239 note-level entries, the repository baseline). Tests cover both
-directions, rapid reverse transitions, a superseded completion, close during a
-transition, initially hidden windows, partial/full off-screen recovery, negative
-coordinates, maximized ordinary restore, disabled/enabled ratio, old media
-callbacks, and the absence of geometry writes while visible.
+Automated coverage (this change): the full UI suite passes (1134 tests, 0 failed,
+0 skipped; 13 of them are new for the completion contract), and the default
+Release/x64 WinUI build has 0 warnings and 0 errors with the blocking WinUI
+analyzer enabled.
+
+New coverage for the completion contract:
+
+- `WindowLayoutSettlerTests`: a stable but different frame is `Constrained` only at
+  the deadline; two equal matching frames confirm; changing frames time out; a
+  stable frame that never matches the presenter times out; the maximized
+  requirement applies only to the ordinary presenter; cancellation before the
+  first frame and cancellation/close during a tick never read the window; a
+  composition boundary that never arrives still ends at the deadline.
+- `PlayerWindowPresentationTests`: the maximized restore reveals only after the
+  maximize wait; a settlement timeout reveals, logs, reports `Failed`, does not
+  persist, and the same target retries; a constrained frame is accepted as the real
+  geometry with a diagnostic and is not re-applied; a failed reveal keeps
+  protection, reports `Failed` and retries; an initial show failure is reported and
+  a later show presents the window; a media-form change during the refit converges
+  to the latest form; an unprotectable window still switches mode but reports the
+  degraded protection.
+
+Earlier runs also covered both directions, rapid reverse transitions, a superseded
+completion, close during a transition, initially hidden windows, partial/full
+off-screen recovery, negative coordinates, maximized ordinary restore,
+disabled/enabled ratio, old media callbacks, and the absence of geometry writes
+while visible.
 
 Real-app checks still required with the packaged app and real media:
 
