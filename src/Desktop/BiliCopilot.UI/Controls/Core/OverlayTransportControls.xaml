@@ -16,6 +16,49 @@
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     x:Class="BiliCopilot.UI.Controls.Core.OverlayTransportControls"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style
+            x:Key="PlayerSettingsPresenter"
+            TargetType="FlyoutPresenter"
+            BasedOn="{StaticResource DefaultFlyoutPresenterStyle}">
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Background" Value="{ThemeResource SolidBackgroundFillColorBaseBrush}" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="Transitions">
+                <Setter.Value>
+                    <TransitionCollection>
+                        <EntranceThemeTransition
+                            FromHorizontalOffset="0"
+                            FromVerticalOffset="12"
+                            IsStaggeringEnabled="False" />
+                    </TransitionCollection>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style
+            x:Key="PlayerMenuPresenter"
+            TargetType="MenuFlyoutPresenter"
+            BasedOn="{StaticResource DefaultMenuFlyoutPresenterStyle}">
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Background" Value="{ThemeResource SolidBackgroundFillColorBaseBrush}" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="SystemBackdrop" Value="{x:Null}" />
+            <Setter Property="Transitions">
+                <Setter.Value>
+                    <TransitionCollection>
+                        <EntranceThemeTransition
+                            FromHorizontalOffset="0"
+                            FromVerticalOffset="12"
+                            IsStaggeringEnabled="False" />
+                    </TransitionCollection>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid
         x:Name="RootGrid"
         Height="160"
@@ -106,23 +149,24 @@
                         <Setter Target="ProgressPanel.Margin" Value="12,0,12,12" />
                         <Setter Target="AccessoriesEnter.From" Value="60,0,0" />
                         <Setter Target="AccessoriesExit.To" Value="60,0,0" />
-                        <Setter Target="VolumeContent.Width" Value="88" />
+                        <Setter Target="VolumeContent.Width" Value="64" />
                         <Setter Target="VolumeHeader.Visibility" Value="Collapsed" />
                         <Setter Target="PortraitVolumeTitle.Visibility" Value="Visible" />
                         <Setter Target="PortraitMuteButton.Visibility" Value="Visible" />
                         <Setter Target="VolumeSlider.Orientation" Value="Vertical" />
-                        <Setter Target="VolumeSlider.Height" Value="180" />
-                        <Setter Target="VolumeSlider.Width" Value="40" />
+                        <Setter Target="VolumeSlider.Height" Value="140" />
+                        <Setter Target="VolumeSlider.Width" Value="32" />
                         <Setter Target="VolumeSlider.HorizontalAlignment" Value="Center" />
-                        <Setter Target="SpeedContent.Width" Value="132" />
-                        <Setter Target="SpeedPresets.Width" Value="72" />
+                        <Setter Target="SpeedContent.Width" Value="104" />
+                        <Setter Target="SpeedContent.RowSpacing" Value="0" />
+                        <Setter Target="SpeedPresets.Width" Value="64" />
                         <Setter Target="SpeedPresets.(Grid.ColumnSpan)" Value="1" />
                         <Setter Target="SpeedSlider.(Grid.Column)" Value="1" />
                         <Setter Target="SpeedSlider.(Grid.Row)" Value="0" />
                         <Setter Target="SpeedSlider.(Grid.ColumnSpan)" Value="1" />
                         <Setter Target="SpeedSlider.Orientation" Value="Vertical" />
-                        <Setter Target="SpeedSlider.Height" Value="204" />
-                        <Setter Target="SpeedSlider.Width" Value="40" />
+                        <Setter Target="SpeedSlider.Height" Value="192" />
+                        <Setter Target="SpeedSlider.Width" Value="32" />
                         <Setter Target="SpeedSlider.Margin" Value="0" />
                         <Setter Target="SpeedSlider.VerticalAlignment" Value="Stretch" />
                         <Setter Target="HalfSpeedButton.(Grid.Row)" Value="0" />
@@ -398,7 +442,10 @@
                                 Placement="Top"
                                 x:Name="ChapterFlyout"
                                 Opened="OnDisplayFlyoutOpened"
-                                Closed="OnFlyoutClosed">
+                                Closed="OnFlyoutClosed"
+                                AreOpenCloseAnimationsEnabled="False"
+                                ShouldConstrainToRootBounds="True"
+                                FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
                                 <ScrollViewer
                                     x:Name="ChapterPopup"
                                     HorizontalScrollMode="Disabled"
@@ -514,7 +561,10 @@
                                 Closed="OnFlyoutClosed"
                                 Opened="OnDisplayFlyoutOpened"
                                 Placement="Top"
-                                x:Name="VolumeFlyout">
+                                x:Name="VolumeFlyout"
+                                AreOpenCloseAnimationsEnabled="False"
+                                ShouldConstrainToRootBounds="True"
+                                FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
                                 <ScrollViewer
                                     x:Name="VolumePopup"
                                     HorizontalScrollMode="Disabled"
@@ -522,7 +572,7 @@
                                     VerticalScrollBarVisibility="Auto">
                                     <StackPanel
                                         Width="200"
-                                        Spacing="8"
+                                        Spacing="4"
                                         x:Name="VolumeContent">
                                         <TextBlock
                                             x:Name="PortraitVolumeTitle"
@@ -625,7 +675,10 @@
                                 Closed="OnFlyoutClosed"
                                 Opened="OnDisplayFlyoutOpened"
                                 Placement="Top"
-                                x:Name="SpeedFlyout">
+                                x:Name="SpeedFlyout"
+                                AreOpenCloseAnimationsEnabled="False"
+                                ShouldConstrainToRootBounds="True"
+                                FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
                                 <ScrollViewer
                                     x:Name="SpeedPopup"
                                     HorizontalScrollMode="Disabled"
@@ -634,8 +687,8 @@
                                     <Grid
                                         x:Name="SpeedContent"
                                         Width="350"
-                                        RowSpacing="12"
-                                        ColumnSpacing="12">
+                                        RowSpacing="8"
+                                        ColumnSpacing="8">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -646,9 +699,9 @@
                                         </Grid.ColumnDefinitions>
                                         <Grid
                                             MinHeight="28"
-                                            Padding="4,0,4,4"
+                                            Padding="0"
                                             BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                            BorderThickness="1"
+                                            BorderThickness="0"
                                             CornerRadius="{StaticResource ControlCornerRadius}"
                                             x:Name="SpeedPresets"
                                             Grid.ColumnSpan="2">
@@ -677,7 +730,10 @@
                                                 BorderThickness="0"
                                                 Click="OnQuickSpeedButtonClick"
                                                 Content="0.5x"
-                                                Tag="0.5" />
+                                                Tag="0.5"
+                                                VerticalContentAlignment="Center"
+                                                Padding="8,0"
+                                                Height="32" />
                                             <ToggleButton
                                                 x:Name="DefaultSpeedButton"
                                                 Grid.Column="1"
@@ -688,7 +744,10 @@
                                                 BorderThickness="0"
                                                 Click="OnQuickSpeedButtonClick"
                                                 Content="1.0x"
-                                                Tag="1.0" />
+                                                Tag="1.0"
+                                                VerticalContentAlignment="Center"
+                                                Padding="8,0"
+                                                Height="32" />
                                             <ToggleButton
                                                 x:Name="OneTwoFiveSpeedButton"
                                                 Grid.Column="2"
@@ -699,7 +758,10 @@
                                                 BorderThickness="0"
                                                 Click="OnQuickSpeedButtonClick"
                                                 Content="1.25x"
-                                                Tag="1.25" />
+                                                Tag="1.25"
+                                                VerticalContentAlignment="Center"
+                                                Padding="8,0"
+                                                Height="32" />
                                             <ToggleButton
                                                 x:Name="OneHalfSpeedButton"
                                                 Grid.Column="3"
@@ -710,7 +772,10 @@
                                                 BorderThickness="0"
                                                 Click="OnQuickSpeedButtonClick"
                                                 Content="1.5x"
-                                                Tag="1.5" />
+                                                Tag="1.5"
+                                                VerticalContentAlignment="Center"
+                                                Padding="8,0"
+                                                Height="32" />
                                             <ToggleButton
                                                 x:Name="DoubleSpeedButton"
                                                 Grid.Column="4"
@@ -721,7 +786,10 @@
                                                 BorderThickness="0"
                                                 Click="OnQuickSpeedButtonClick"
                                                 Content="2.0x"
-                                                Tag="2.0" />
+                                                Tag="2.0"
+                                                VerticalContentAlignment="Center"
+                                                Padding="8,0"
+                                                Height="32" />
                                             <ToggleButton
                                                 x:Name="TripleSpeedButton"
                                                 Grid.Column="5"
@@ -732,10 +800,13 @@
                                                 BorderThickness="0"
                                                 Click="OnQuickSpeedButtonClick"
                                                 Content="3.0x"
-                                                Tag="3.0" />
+                                                Tag="3.0"
+                                                VerticalContentAlignment="Center"
+                                                Padding="8,0"
+                                                Height="32" />
                                         </Grid>
                                         <Slider
-                                            Margin="0,0,0,-6"
+                                            Margin="0"
                                             VerticalAlignment="Center"
                                             LargeChange="0.5"
                                             Maximum="3"
@@ -766,13 +837,11 @@
                             <Flyout
                                 Closed="OnSubtitleFlyoutClosed"
                                 Opened="OnSubtitleFlyoutOpened"
-                                ShouldConstrainToRootBounds="False"
-                                x:Name="SubtitleFlyout">
-                                <Flyout.FlyoutPresenterStyle>
-                                    <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
-                                        <Setter Property="Padding" Value="0" />
-                                    </Style>
-                                </Flyout.FlyoutPresenterStyle>
+                                ShouldConstrainToRootBounds="True"
+                                x:Name="SubtitleFlyout"
+                                AreOpenCloseAnimationsEnabled="False"
+                                Placement="Top"
+                                FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
                                 <!--
                                 字幕菜单在同一弹出层内分两级：第一层是字幕总开关与当前视频的字幕轨列表，
                                 第二层承载位置、字号、字体、延迟等参数；返回只切换层级，不关闭菜单。
@@ -846,7 +915,7 @@
                                             <ScrollView
                                                 Grid.Row="2"
                                                 MaxHeight="400"
-                                                Padding="16,0"
+                                                Padding="0"
                                                 HorizontalScrollMode="Disabled"
                                                 VerticalScrollBarVisibility="Auto">
                                                 <Grid Margin="0,0,0,12" RowSpacing="8">
@@ -924,7 +993,7 @@
                                             <ScrollViewer
                                                 Grid.Row="1"
                                                 MaxHeight="400"
-                                                Padding="16,8,16,12"
+                                                Padding="0"
                                                 HorizontalScrollMode="Disabled"
                                                 VerticalScrollBarVisibility="Auto">
                                                 <StackPanel Spacing="8">
@@ -1079,10 +1148,30 @@
                             x:Name="DanmakuOptionButton"
                             Margin="0,0,8,0"
                             AutomationProperties.Name="{ext:Locale Name=DanmakuDisplaySettings}"
-                            Click="OnDanmakuOptionsButtonClick"
                             IsEnabled="{x:Bind ViewModel.IsDanmakuLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
                             Style="{StaticResource BasicPlayerIconButtonStyle}"
                             ToolTipService.ToolTip="{ext:Locale Name=DanmakuDisplaySettings}">
+                            <Button.Flyout>
+                                <Flyout
+                                    x:Name="DanmakuFlyout"
+                                    Placement="Top"
+                                    Opened="OnDisplayFlyoutOpened"
+                                    Closed="OnDanmakuOptionsClosed"
+                                    AreOpenCloseAnimationsEnabled="False"
+                                    ShouldConstrainToRootBounds="True"
+                                    FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
+                                    <ScrollViewer
+                                        x:Name="DanmakuPopup"
+                                        HorizontalScrollMode="Disabled"
+                                        HorizontalScrollBarVisibility="Disabled"
+                                        VerticalScrollBarVisibility="Auto">
+                                        <danmaku:DanmakuDisplayOptions
+                                            x:Name="DanmakuContent"
+                                            Width="280"
+                                            ViewModel="{x:Bind ViewModel.Danmaku, Mode=OneWay}" />
+                                    </ScrollViewer>
+                                </Flyout>
+                            </Button.Flyout>
                             <ic:SymbolIcon FontSize="14" Symbol="ContentSettings" />
                         </Button>
                     </StackPanel>
@@ -1115,8 +1204,11 @@
                             <MenuFlyout
                                 Closed="OnFlyoutClosed"
                                 Opened="OnDisplayFlyoutOpened"
-                                ShouldConstrainToRootBounds="False"
-                                x:Name="OverflowFlyout">
+                                ShouldConstrainToRootBounds="True"
+                                x:Name="OverflowFlyout"
+                                AreOpenCloseAnimationsEnabled="False"
+                                Placement="Top"
+                                MenuFlyoutPresenterStyle="{StaticResource PlayerMenuPresenter}">
                                 <MenuFlyoutItem Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}" Text="{x:Bind GetCompactOverlayTip(ViewModel.Player.IsCompactOverlay), Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <ic:SymbolIcon FontSize="14" Symbol="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
@@ -1221,13 +1313,5 @@
                     Text="{x:Bind GetTimeText(ViewModel.Player.Duration), Mode=OneWay}" />
             </Grid>
         </Grid>
-        <TeachingTip
-            Closed="OnDanmakuOptionsClosed"
-            IsLightDismissEnabled="True"
-            IsOpen="{x:Bind ViewModel.IsDanmakuOptionsVisible, Mode=TwoWay}"
-            PreferredPlacement="TopLeft"
-            Target="{x:Bind DanmakuOptionButton, Mode=OneTime}">
-            <danmaku:DanmakuDisplayOptions ViewModel="{x:Bind ViewModel.Danmaku, Mode=OneWay}" />
-        </TeachingTip>
     </Grid>
 </local:PlayerControlBase>

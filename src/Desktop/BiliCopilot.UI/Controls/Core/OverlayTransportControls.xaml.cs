@@ -276,11 +276,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         VisualStateManager.GoToState(this, state, false);
         // Constrain content, not merely popup placement. The visual state owns
         // preferred dimensions and orientation; these limits only reflect the viewport.
-        var maxWidth = Math.Max(1, width - 32);
-        var maxHeight = Math.Max(1, (XamlRoot?.Size.Height ?? ActualHeight) - 32);
-        foreach (var content in new FrameworkElement[] { VolumeContent, SpeedContent, ChapterContent, SubtitleContent })
+        var maxWidth = Math.Max(1, width - 16);
+        var maxHeight = Math.Max(1, (XamlRoot?.Size.Height ?? ActualHeight) - 16);
+        foreach (var content in new FrameworkElement[] { VolumeContent, SpeedContent, ChapterContent, SubtitleContent, DanmakuContent })
             content.MaxWidth = maxWidth;
-        foreach (var popup in new ScrollViewer[] { VolumePopup, SpeedPopup, ChapterPopup, SubtitlePopup })
+        foreach (var popup in new ScrollViewer[] { VolumePopup, SpeedPopup, ChapterPopup, SubtitlePopup, DanmakuPopup })
             popup.MaxHeight = maxHeight;
         if (CurrentMode != OverlayControlMode.CompactPortrait) BalanceLeftRightWidth();
     }
@@ -531,13 +531,9 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         ViewModel.IsPopupVisible = true;
     }
 
-    private void OnDanmakuOptionsButtonClick(object sender, RoutedEventArgs e)
+    private void OnDanmakuOptionsClosed(object sender, object args)
     {
-        ViewModel.IsDanmakuOptionsVisible = !ViewModel.IsDanmakuOptionsVisible;
-    }
-
-    private void OnDanmakuOptionsClosed(TeachingTip sender, TeachingTipClosedEventArgs args)
-    {
+        ViewModel.IsPopupVisible = false;
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
         {
             if (ViewModel.Window?.IsClosed != false)

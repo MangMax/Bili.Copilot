@@ -214,6 +214,17 @@ The custom Composition batch/visibility controller and `OverlayFlyoutLayout` wer
 removed. `XamlRoot.Changed` and player mode notifications update the visual state
 even when the controls are hidden. Pointer wake-up checks use the current mode.
 
+Settings popups share `PlayerSettingsPresenter`: an opaque themed background,
+8 DIP padding, and a platform entrance transition with no horizontal offset.
+Native placement-dependent open/close animations are disabled consistently.
+Danmaku settings use the same Flyout lifecycle as speed/subtitles, rather than a
+TeachingTip. The overflow menu has the same solid surface and explicitly clears
+its system backdrop, so the XAML island does not rely on backdrop composition.
+Portrait volume uses the slider template's 32 DIP width to align the track with
+the title and mute icon. Speed presets use symmetric padding, fixed 32 DIP rows,
+and explicit centered vertical content alignment; the portrait slider matches
+the six preset rows without spare space below them.
+
 Pure tests cover mode selection, returning to normal width profiles and pointer
 regions. They do not establish actual XAML rendering or animation correctness;
 packaged UI evidence belongs in `artifacts/portrait-rewrite/report.md`.
