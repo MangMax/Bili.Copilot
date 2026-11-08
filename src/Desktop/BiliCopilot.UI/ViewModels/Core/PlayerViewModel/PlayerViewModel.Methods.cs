@@ -895,6 +895,18 @@ public sealed partial class PlayerViewModel
         IsExtraPanelVisible = true;
     }
 
+    /// <summary>
+    /// 鼠标在视频画面上移动时恢复控制栏。mpv 子窗口会吞掉 XAML 的 PointerMoved，
+    /// 只靠 Overlay 的 OnPointerMoved 会导致铺满后控制栏隐藏后再也出不来。
+    /// </summary>
+    private void OnWindowPointerMoved(InputPointerSource sender, PointerEventArgs args)
+    {
+        if (!IsControlsVisible)
+        {
+            IsControlsVisible = true;
+        }
+    }
+
     private void OnWindowPointerReleased(InputPointerSource sender, PointerEventArgs args)
     {
         if ((args.CurrentPoint.Properties.PointerUpdateKind is PointerUpdateKind.XButton1Released or PointerUpdateKind.XButton2Released) && UseIntegrationOperation)

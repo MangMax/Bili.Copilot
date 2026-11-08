@@ -174,6 +174,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         if (_pointerSource is not null)
         {
+            _pointerSource.PointerMoved -= OnWindowPointerMoved;
             _pointerSource.PointerReleased -= OnWindowPointerReleased;
             _pointerSource = null;
         }
@@ -524,6 +525,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             Window.GetWindow().Destroying += OnWindowDestroying;
             Window.SizeChanged += OnWindowSizeChanged;
             _pointerSource = InputPointerSource.GetForIsland(Window.XamlRoot?.ContentIsland);
+            _pointerSource.PointerMoved += OnWindowPointerMoved;
             _pointerSource.PointerReleased += OnWindowPointerReleased;
             _keyboardSource = InputKeyboardSource.GetForIsland(Window.XamlRoot?.ContentIsland);
             _keyboardSource.KeyDown += OnWindowKeyDown;
