@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -247,12 +247,6 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
     private void OnHoldTimerTick(object sender, object e)
     {
         _holdTimer.Stop();
-        if (ViewModel.IsLive)
-        {
-            // 直播没有倍速。
-            return;
-        }
-
         _isHolding = true;
         ViewModel.IsTouching = _isTouch;
         ViewModel?.TripleSpeedCommand?.Execute(default);
@@ -300,12 +294,6 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
     private async void HandleManipulationUpdate(double deltaX, double deltaY)
     {
         var viewModel = ViewModel;
-        if (viewModel.IsLive && _interactiveArea == InteractiveArea.Main)
-        {
-            // 直播没有时间轴：主区域横拖不 seek；右侧音量手势仍保留。
-            return;
-        }
-
         var isCurrent = viewModel.CapturePlaybackValidity();
         switch (_interactiveArea)
         {
@@ -364,15 +352,6 @@ public sealed partial class PlayerInteractivePanel : PlayerControlBase
 
     private async void HandleManipulationCompleted()
     {
-        if (ViewModel.IsLive && _interactiveArea == InteractiveArea.Main)
-        {
-            _startPoint = new(0, 0);
-            _totalDeltaX = 0;
-            _interactiveArea = InteractiveArea.None;
-            _isManipulating = false;
-            return;
-        }
-
         if (_interactiveArea == InteractiveArea.Main && Math.Abs(_totalDeltaX) > 10)
         {
             var newPos = GetNewPosition();

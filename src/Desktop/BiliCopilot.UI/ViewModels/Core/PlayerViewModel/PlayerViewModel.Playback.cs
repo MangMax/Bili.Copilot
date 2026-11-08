@@ -19,13 +19,6 @@ public sealed partial class PlayerViewModel
 
         if (e.PropertyName == nameof(Player.Position))
         {
-            if (!LiveCapabilities.SupportsDanmakuTimeline)
-            {
-                // 直播没有时间轴（LiveModePolicy.SupportsDanmakuTimeline = false）：
-                // 位置变化只代表直播流的推进，不能驱动时间轴弹幕。
-                return;
-            }
-
             Danmaku.UpdatePosition(Convert.ToInt32(Player.Position));
         }
         else if (e.PropertyName == nameof(Player.PlaybackRate))
@@ -51,7 +44,7 @@ public sealed partial class PlayerViewModel
     /// <returns><see cref="Task"/>.</returns>
     public async Task ChangePositionAsync(double position)
     {
-        if (!LiveCapabilities.SupportsTimeline || Player is null || Client is null || _isDanmakuClosed
+        if (Player is null || Client is null || _isDanmakuClosed
             || !double.IsFinite(position) || position < 0 || (Player.Duration > 0 && position > Player.Duration))
         {
             return;

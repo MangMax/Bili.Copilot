@@ -24,14 +24,6 @@ public sealed partial class PlayerViewModel : CommunityToolkit.Mvvm.ComponentMod
 
     public DanmakuRenderViewModel Danmaku { get; } = new();
 
-    /// <summary>
-    /// 测试替身：生产实现由 <c>LiveModePolicy</c> 从媒体快照推导；
-    /// 这里让能力集合跟随可写的 <c>IsLive</c>，守卫读到的仍是同一份策略。
-    /// </summary>
-    public BiliCopilot.UI.Live.LiveModeCapabilities LiveCapabilities
-        => BiliCopilot.UI.Live.LiveModePolicy.For(
-            IsLive ? BiliCopilot.UI.Models.Constants.BiliMediaType.Live : BiliCopilot.UI.Models.Constants.BiliMediaType.Video);
-
     public SeekTestPlayer Player { get; set; } = new();
 
     public SeekTestClient? Client { get; set; } = new();

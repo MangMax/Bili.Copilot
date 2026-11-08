@@ -102,7 +102,6 @@ public enum SettingNames
     MTCBehavior,
     IsAIStreamingResponse,
     UseWebPlayerWhenLive,
-    LiveDanmakuHighlightKeywords,
     ShowSearchRecommend,
     ScrollAccelerate,
     DanmakuOutlineSize,
