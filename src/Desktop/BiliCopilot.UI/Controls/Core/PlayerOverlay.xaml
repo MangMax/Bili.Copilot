@@ -430,7 +430,7 @@
                             TextWrapping="NoWrap"
                             Text="{x:Bind ViewModel.Title, Mode=OneWay}" />
                         <StackPanel x:Name="HeaderActions" Grid.Column="2" Orientation="Horizontal">
-                            <StackPanel x:Name="FooterContainer" Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     FontSize="12"
@@ -498,14 +498,7 @@
                                                                             <RowDefinition Height="Auto" />
                                                                         </Grid.RowDefinitions>
                                                                         <base:TrimTextBlock MaxLines="2" Text="{x:Bind Name, Mode=OneWay}" />
-                                                                        <!--<base:TrimTextBlock
-                                                                            Grid.Row="1"
-                                                                            Margin="0,4,0,0"
-                                                                            FontSize="12"
-                                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                                            MaxLines="1"
-                                                                            Text="{x:Bind Subtitle, Mode=OneWay}"
-                                                                            Visibility="{x:Bind Subtitle, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />-->
+
                                                                     </Grid>
                                                                 </Grid>
                                                             </Grid>
@@ -520,7 +513,7 @@
                                     </DropDownButton.Flyout>
                                 </DropDownButton>
                             </StackPanel>
-                            <StackPanel x:Name="FooterActionsContainer" Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
                                 <Button
                                     x:Name="RefreshPlaybackButton"
                                     Width="32"

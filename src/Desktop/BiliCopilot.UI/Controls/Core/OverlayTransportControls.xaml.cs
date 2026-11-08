@@ -20,11 +20,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     public static readonly DependencyProperty IsSkipButtonsVisibleProperty =
         DependencyProperty.Register(nameof(IsSkipButtonsVisible), typeof(bool), typeof(OverlayTransportControls), new PropertyMetadata(true));
 
-    private readonly List<double> _speedChangeList = [];
+    private const double PlaybackRateTolerance = 0.01;
+
+    private double? _pendingSpeed;
     private Func<bool>? _speedPlaybackValidity;
-    private readonly List<double> _progressChangeList = [];
     private readonly DispatcherTimer _speedChangeTimer;
-    private readonly DispatcherTimer _progressChangeTimer;
     private bool _isFirstChangeVolume = true;
     private bool _isOverlayActive;
     private XamlRoot? _observedRoot;
@@ -34,7 +34,6 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     {
         InitializeComponent();
         _speedChangeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.5) };
-        _progressChangeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.5) };
         // The base removes its lifecycle handlers after the first unload.
         Loaded += OnOverlayLoaded;
         Unloaded += OnOverlayUnloaded;
@@ -68,10 +67,8 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         _isOverlayActive = true;
         _appliedLayout = null;
         _speedChangeTimer.Tick += OnSpeedChangeTick;
-        _progressChangeTimer.Tick += OnProgressChangeTick;
         if (ViewModel is not null)
         {
-            ViewModel.ProgressChanged += OnViewModelProgressChanged;
             if (SubtitleRepeater is not null)
             {
                 SubtitleRepeater.ItemsSource = ViewModel.Subtitles;
@@ -95,17 +92,15 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     {
         _appliedLayout = null;
         _speedChangeTimer.Stop();
-        _speedChangeList.Clear();
+        _pendingSpeed = null;
         _speedPlaybackValidity = null;
         if (oldValue != null)
         {
-            oldValue.ProgressChanged -= OnViewModelProgressChanged;
             oldValue.Player.PropertyChanged -= OnPlayerPropertyChanged;
         }
 
         if (_isOverlayActive && newValue != null)
         {
-            newValue.ProgressChanged += OnViewModelProgressChanged;
             newValue.Player.PropertyChanged += OnPlayerPropertyChanged;
             UpdateLayoutState();
         }
@@ -126,26 +121,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         ViewModel.Player.PropertyChanged -= OnPlayerPropertyChanged;
         _isOverlayActive = false;
         _appliedLayout = null;
-        _speedChangeList.Clear();
-        _progressChangeList.Clear();
+        _pendingSpeed = null;
         _speedPlaybackValidity = null;
-        _speedChangeTimer?.Stop();
-        _progressChangeTimer?.Stop();
+        _speedChangeTimer.Stop();
+        _speedChangeTimer.Tick -= OnSpeedChangeTick;
 
-        if (_speedChangeTimer != null)
-        {
-            _speedChangeTimer.Tick -= OnSpeedChangeTick;
-        }
-
-        if (_progressChangeTimer != null)
-        {
-            _progressChangeTimer.Tick -= OnProgressChangeTick;
-        }
-
-        if (ViewModel is not null)
-        {
-            ViewModel.ProgressChanged -= OnViewModelProgressChanged;
-        }
         SubtitleRepeater?.ItemsSource = null;
     }
 
@@ -179,12 +159,6 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private string GetFullScreenTip(bool isFullScreen)
         => isFullScreen ? ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.ExitFullScreen) : ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.EnterFullScreen);
-
-    // 进度由自绘的 ChapterSegmentBar 通过 Player.Position 直接驱动，
-    // 此处不再需要同步 Slider，保留空实现以免改动订阅关系.
-    private void OnViewModelProgressChanged(object? sender, double e)
-    {
-    }
 
     private async void OnPlayPauseButtonClick(object sender, RoutedEventArgs e)
     {
@@ -236,12 +210,12 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             return;
         }
 
-        if (Math.Abs(newValue - ViewModel.Player.PlaybackRate) < 0.03)
+        if (Math.Abs(newValue - ViewModel.Player.PlaybackRate) < PlaybackRateTolerance)
         {
             return;
         }
 
-        _speedChangeList.Add(newValue);
+        _pendingSpeed = newValue;
         _speedPlaybackValidity = ViewModel.CapturePlaybackValidity();
         _speedChangeTimer.Stop();
         _speedChangeTimer.Start();
@@ -319,45 +293,16 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         _speedChangeTimer.Stop();
         var isCurrent = _speedPlaybackValidity;
         _speedPlaybackValidity = null;
-        var lastSpeed = _speedChangeList.LastOrDefault();
-        _speedChangeList.Clear();
-        if (_isOverlayActive && isCurrent?.Invoke() == true && Math.Abs(lastSpeed - ViewModel.Player.PlaybackRate) > 0.1)
+        var lastSpeed = _pendingSpeed;
+        _pendingSpeed = null;
+        if (_isOverlayActive && isCurrent?.Invoke() == true && lastSpeed is { } speed
+            && Math.Abs(speed - ViewModel.Player.PlaybackRate) >= PlaybackRateTolerance)
         {
-            if (await ViewModel.ChangeSpeedAsync(lastSpeed) && isCurrent?.Invoke() == true)
+            if (await ViewModel.ChangeSpeedAsync(speed) && isCurrent?.Invoke() == true)
             {
                 CheckSpeedButtonState();
             }
         }
-    }
-
-    private async void OnProgressChangeTick(object? sender, object e)
-    {
-        var isCurrent = ViewModel.CapturePlaybackValidity();
-        var lastProgress = _progressChangeList.LastOrDefault();
-        _progressChangeList.Clear();
-        if (!isCurrent())
-        {
-            _progressChangeTimer.Stop();
-            return;
-        }
-
-        if (lastProgress != ViewModel.Player.Position)
-        {
-            if (ViewModel.IsNextTipShown)
-            {
-                ViewModel.HideNextTipCommand.Execute(default);
-            }
-
-            await ViewModel.ChangePositionAsync(lastProgress);
-        }
-
-        _progressChangeList.Clear();
-        _progressChangeTimer.Stop();
-    }
-
-    private void OnSubtitleFlyoutOpened(object sender, object e)
-    {
-        ViewModel.IsPopupVisible = true;
     }
 
     private void OnSubtitleFlyoutClosed(object sender, object e)
@@ -382,12 +327,12 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void ApplySpeedSelection(double speed)
     {
-        HalfSpeedButton.IsChecked = Math.Abs(speed - 0.5) < 0.01;
-        DefaultSpeedButton.IsChecked = Math.Abs(speed - 1) < 0.01;
-        OneTwoFiveSpeedButton.IsChecked = Math.Abs(speed - 1.25) < 0.01;
-        OneHalfSpeedButton.IsChecked = Math.Abs(speed - 1.5) < 0.01;
-        DoubleSpeedButton.IsChecked = Math.Abs(speed - 2) < 0.01;
-        TripleSpeedButton.IsChecked = Math.Abs(speed - 3) < 0.01;
+        HalfSpeedButton.IsChecked = Math.Abs(speed - 0.5) < PlaybackRateTolerance;
+        DefaultSpeedButton.IsChecked = Math.Abs(speed - 1) < PlaybackRateTolerance;
+        OneTwoFiveSpeedButton.IsChecked = Math.Abs(speed - 1.25) < PlaybackRateTolerance;
+        OneHalfSpeedButton.IsChecked = Math.Abs(speed - 1.5) < PlaybackRateTolerance;
+        DoubleSpeedButton.IsChecked = Math.Abs(speed - 2) < PlaybackRateTolerance;
+        TripleSpeedButton.IsChecked = Math.Abs(speed - 3) < PlaybackRateTolerance;
     }
 
     private async void OnQuickSpeedButtonClick(object sender, RoutedEventArgs e)
@@ -399,13 +344,13 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
         var isCurrent = ViewModel.CapturePlaybackValidity();
         var speed = Convert.ToDouble((sender as FrameworkElement)?.Tag);
-        _speedChangeList.Clear();
+        _pendingSpeed = null;
         _speedPlaybackValidity = null;
         _speedChangeTimer.Stop();
         // A preset click selects exactly one item immediately. The player's
         // property notification remains authoritative; a rejected request rolls back.
         ApplySpeedSelection(speed);
-        if (Math.Abs(speed - ViewModel.Player.PlaybackRate) > 0.1)
+        if (Math.Abs(speed - ViewModel.Player.PlaybackRate) >= PlaybackRateTolerance)
         {
             if (!await ViewModel.ChangeSpeedAsync(speed) && isCurrent())
             {

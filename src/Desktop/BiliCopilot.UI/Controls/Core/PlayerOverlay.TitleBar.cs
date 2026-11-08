@@ -14,6 +14,7 @@ public sealed partial class PlayerOverlay
     private XamlRoot? _titleRoot;
     private PlayerTitleBarLayout _titleLayout;
     private RectInt32[] _titleRegions = [];
+    private readonly List<RectInt32> _nextTitleRegions = new(2);
 
     private void AttachTitleBar()
     {
@@ -110,7 +111,8 @@ public sealed partial class PlayerOverlay
             return;
         }
 
-        var regions = new List<RectInt32>();
+        var regions = _nextTitleRegions;
+        regions.Clear();
         if (!ViewModel.IsControlsVisible)
         {
             // Let moving into the hidden header reveal controls, but never pass

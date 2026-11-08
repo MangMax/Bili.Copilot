@@ -861,7 +861,7 @@
                         <Button.Flyout>
                             <Flyout
                                 Closed="OnSubtitleFlyoutClosed"
-                                Opened="OnSubtitleFlyoutOpened"
+                                Opened="OnDisplayFlyoutOpened"
                                 ShouldConstrainToRootBounds="True"
                                 x:Name="SubtitleFlyout"
                                 AreOpenCloseAnimationsEnabled="False"

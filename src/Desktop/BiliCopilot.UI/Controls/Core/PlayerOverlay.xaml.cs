@@ -56,7 +56,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         ViewModel.RequestHideNextTip += OnRequestHideNextTip;
         ViewModel.RequestShowSponsorBlockTip += OnRequestShowSponsorBlockTip;
         ViewModel.RequestHideSponsorBlockTip += OnRequestHideSponsorBlockTip;
-        // 控制区自己拥有显隐动画；首次加载直接对齐当前状态，不播放入场动画.
     }
 
     protected override void OnControlUnloaded()
@@ -93,10 +92,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     private void OnWarningOccurred(object? sender, string e)
     {
         System.Diagnostics.Debug.WriteLine($"Warning: {e}");
-        //var popup = new TipPopup() { Text = e };
-        //RootGrid.Children.Add(popup);
-        //await popup.ShowAsync(InfoType.Warning);
-        //RootGrid.Children.Remove(popup);
     }
 
     protected override void OnPointerMoved(PointerRoutedEventArgs e)
