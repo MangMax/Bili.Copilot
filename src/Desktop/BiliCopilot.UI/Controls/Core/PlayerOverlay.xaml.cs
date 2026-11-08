@@ -11,7 +11,6 @@ namespace BiliCopilot.UI.Controls.Core;
 
 public sealed partial class PlayerOverlay : PlayerControlBase
 {
-    private const int MediaTransportControlsHeight = 160;
     private const int HeaderBarHeight = 70;
     private readonly DispatcherQueueTimer _controlTimer;
     private readonly DispatcherQueueTimer _cursorTimer;
@@ -50,6 +49,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     protected override void OnControlLoaded()
     {
+        AttachTitleBar();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         ViewModel.WarningOccurred += OnWarningOccurred;
         ViewModel.RequestShowNextTip += OnRequestShowNextTip;
@@ -60,6 +60,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     protected override void OnControlUnloaded()
     {
+        DetachTitleBar();
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         ViewModel.WarningOccurred -= OnWarningOccurred;
         ViewModel.RequestShowNextTip -= OnRequestShowNextTip;
@@ -91,10 +92,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     private void OnWarningOccurred(object? sender, string e)
     {
         System.Diagnostics.Debug.WriteLine($"Warning: {e}");
-        //var popup = new TipPopup() { Text = e };
-        //RootGrid.Children.Add(popup);
-        //await popup.ShowAsync(InfoType.Warning);
-        //RootGrid.Children.Remove(popup);
     }
 
     protected override void OnPointerMoved(PointerRoutedEventArgs e)
@@ -112,10 +109,12 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         _cursorTimer.Stop();
         _controlTimer.Stop();
         TestRect.Visibility = Visibility.Visible;
-        if (!_isTouch && !ViewModel.IsExtraPanelVisible)
+        // 弹层（倍速/字幕/章节/音量/弹幕设置）打开期间指针离开控制区也不能把控件收起：
+        // 控件一旦 Collapsed，挂在它上面的 Flyout 会跟着关闭，正在操作的面板就被抢走了.
+        if (!_isTouch && !ViewModel.IsExtraPanelVisible && !ViewModel.IsPopupVisible)
         {
             _isInTitleBar = position.Y <= HeaderBarHeight && position.Y >= 0;
-            _isInTransportControls = position.Y >= ActualHeight - MediaTransportControlsHeight;
+            _isInTransportControls = TransportControls?.ContainsInteractivePoint(position) == true;
             if (_isInTitleBar || _isInTransportControls)
             {
                 // If the pointer is in the title bar or transport controls, show controls immediately.
@@ -137,6 +136,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     {
         if (e.PropertyName == nameof(ViewModel.IsControlsVisible))
         {
+            UpdateTitleBarRegions();
             if (!ViewModel.IsControlsVisible && !_controlTimer.IsRunning)
             {
                 _controlTimer.Start();
@@ -167,7 +167,9 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     private void OnCursorTimerTick(DispatcherQueueTimer sender, object args)
     {
-        if (!IsCursorInWindow() && !_isTouch)
+        // 弹出面板本身是独立 popup，指针进入它时已不在主窗口矩形内，
+        // 但此时不能把控件收起，否则面板会跟着关闭.
+        if (!IsCursorInWindow() && !_isTouch && !ViewModel.IsPopupVisible)
         {
             ViewModel.IsControlsVisible = false;
             _cursorTimer.Stop();
@@ -179,38 +181,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     private void OnCloseTipButtonClick(object sender, RoutedEventArgs e)
         => ViewModel.ErrorMessage = default;
-
-    private void OnBackRequested(object sender, EventArgs e)
-        => ViewModel.BackCommand.Execute(default);
-
-    private void OnHeaderBarSizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        if (e.NewSize.Width == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-            {
-                if (e.NewSize.Width < 700)
-                {
-                    VisualStateManager.GoToState(this, nameof(NarrowState), false);
-                    HeaderBar.TitleMaxWidth = e.NewSize.Width > 200 ? e.NewSize.Width - 200 : 120;
-                }
-                else
-                {
-                    VisualStateManager.GoToState(this, nameof(DefaultState), false);
-                    HeaderBar.TitleMaxWidth = e.NewSize.Width - 520;
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error in OnHeaderBarSizeChanged: {ex.Message}");
-        }
-    }
 
     private bool IsCursorInWindow()
     {

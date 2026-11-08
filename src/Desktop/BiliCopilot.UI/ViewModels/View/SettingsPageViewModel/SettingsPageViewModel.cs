@@ -59,6 +59,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         PreferQualityCollection = Enum.GetValues<PreferQualityType>().ToList();
         PreferDecodeCollection = Enum.GetValues<PreferDecodeType>().ToList();
         MTCBehaviorCollection = Enum.GetValues<MTCBehavior>().ToList();
+        AutoCompactOverlayRatio = SettingsToolkit.CompactOverlayRatio.Enabled;
         DefaultPlayerDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
         PreferCodec = SettingsToolkit.ReadLocalSetting(SettingNames.PreferCodec, PreferCodecType.H264);
         PreferQuality = SettingsToolkit.ReadLocalSetting(SettingNames.PreferQuality, PreferQualityType.Auto);
@@ -404,6 +405,9 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 
     partial void OnPreferAudioChannelLayoutChanged(AudioChannelLayoutType value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.PreferAudioChannelLayout, value);
+
+    partial void OnAutoCompactOverlayRatioChanged(bool value)
+        => SettingsToolkit.CompactOverlayRatio.SetEnabled(value);
 
     partial void OnDefaultPlayerDisplayModeChanged(PlayerDisplayMode value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.DefaultPlayerDisplayMode, value);

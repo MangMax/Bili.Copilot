@@ -126,6 +126,7 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
 
     public override async Task<MpvMediaSource> GetSourceAsync()
     {
+        var publishDimensions = PublishDisplayDimensionsAsync;
         var generation = _sourceGeneration;
         var volume = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerVolume, 100d);
         var speed = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerSpeed, 1d);
@@ -157,7 +158,7 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
             throw new OperationCanceledException();
         }
 
-        var (videoUrl, audioUrl) = GetPlayUrls();
+        var (videoUrl, audioUrl, selectedVideo) = GetPlayUrls();
         var fileUrl = string.Empty;
         if (!string.IsNullOrEmpty(videoUrl))
         {
@@ -171,6 +172,13 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
         else if (!string.IsNullOrEmpty(audioUrl))
         {
             fileUrl = audioUrl;
+        }
+
+        // Use the exact selected stream for this part/episode, never the first part
+        // of the overall video or a coarse aspect-ratio category.
+        if (publishDimensions is not null && selectedVideo is not null && !string.IsNullOrEmpty(videoUrl))
+        {
+            await publishDimensions(selectedVideo.Width, selectedVideo.Height);
         }
 
         if (string.IsNullOrEmpty(fileUrl))
@@ -279,11 +287,11 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
         }
     }
 
-    private (string? video, string? audio) GetPlayUrls()
+    private (string? video, string? audio, DashSegmentInformation? selectedVideo) GetPlayUrls()
     {
         if (_playbackInfo is null)
         {
-            return (default, default);
+            return (default, default, default);
         }
 
         var videoSegments = _playbackInfo.Videos;
@@ -296,7 +304,7 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
 
         if (selectedFormat is null)
         {
-            return (default, default);
+            return (default, default, default);
         }
 
         var maxAudioQuality = audioSegments?.Max(p => Convert.ToInt32(p.Id));
@@ -325,6 +333,6 @@ internal sealed partial class PgcMediaSourceResolver(IPlayerService playerServic
         _selectedCodec = vSeg?.Codecs;
         _videoHost = videoUrl is null ? null : new Uri(videoUrl).Host;
         _audioHost = audioUrl is null ? null : new Uri(audioUrl).Host;
-        return (videoUrl, audioUrl);
+        return (videoUrl, audioUrl, vSeg);
     }
 }

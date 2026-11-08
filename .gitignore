@@ -60,6 +60,9 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+/.scratch/
+/_build/
+/docs/performance-acceptance/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -370,7 +373,7 @@ src/Desktop/BiliCopilot.UI/Assets/WheelScrollService.exe
 src/Desktop/BiliCopilot.UI/Assets/WheelScrollService.dll
 src/Desktop/BiliCopilot.UI/Assets/WheelScrollService.runtimeconfig.json
 
-# Local performance/acceptance run output (reports and recovery packages stay tracked).
+# Local performance/acceptance run output.
 docs/**/evidence*/
 docs/**/*-evidence/
 docs/**/*evidence*.zip
@@ -382,7 +385,6 @@ docs/**/*.bin
 docs/**/*.etl
 docs/**/*.nettrace
 docs/**/*.dmp
-docs/performance-acceptance/**/*.png
 docs/engine-61-design-draft/**/*.png
 docs/list-resize/**/*.png
 docs/seek-*/**/*.png

@@ -1,16 +1,14 @@
-﻿using BiliCopilot.UI.Controls.Core;
-using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Richasy.WinUIKernel.Share.Base;
-using Windows.Graphics;
 using Windows.Win32.UI.WindowsAndMessaging;
-using WinUIEx;
 
 namespace BiliCopilot.UI.Forms;
 
@@ -21,11 +19,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     private readonly AppWindow _rootWindow;
     private readonly DesktopWindowXamlSource _xamlSource;
     private readonly CursorGrid _rootGrid;
-    private readonly PresenterChangeSession _presenterChange = new(() => Task.Delay(500));
+    private readonly PlayerWindowPresentation _presentation;
+    private readonly ILogger<PlayerWindow> _logger;
     private InputActivationListener _inputActivationListener;
+    private bool _xamlSourceDisposed;
     private bool _isFirstActivated = true;
-    private bool _enteringFullScreen;
-    private bool _enteringCompactOverlay;
     private Action<bool> _activeChangedAction;
 
     public PlayerWindow()
@@ -54,6 +52,10 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
 
         ResetWindowMinSize();
+        _logger = this.Get<ILogger<PlayerWindow>>();
+        _ratio = new CompactOverlayRatio(SettingsToolkit.CompactOverlayRatio);
+        _presentation = new(new PlayerWindowSurface(this, _logger), new PlayerWindowState(this),
+            _ratio, _logger);
     }
 
     /// <summary>
@@ -65,11 +67,6 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// 窗口是否已关闭.
     /// </summary>
     public bool IsClosed { get; private set; }
-
-    /// <summary>
-    /// 窗口展示模式是否正在改变.
-    /// </summary>
-    public bool IsPresenterChanging => _presenterChange.IsChanging;
 
     /// <summary>
     /// 窗口大小改变事件.
@@ -84,7 +81,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// <summary>
     /// XAML 根元素.
     /// </summary>
-    public XamlRoot? XamlRoot => _xamlSource?.Content?.XamlRoot;
+    public XamlRoot? XamlRoot => _xamlSourceDisposed ? null : _xamlSource?.Content?.XamlRoot;
 
     /// <inheritdoc/>
     public ValueTask DisposeAsync()
@@ -94,8 +91,14 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             return ValueTask.CompletedTask;
         }
 
+        _presentation.Close();
+        _ratio.Dispose();
         IsDisposed = true;
-        _presenterChange.Close();
+
+        // Close the island while its HWND still exists: destroying the window first and
+        // disposing the island afterwards faults inside CoreMessagingXP (stowed E_POINTER
+        // 0x80004003 reported as 0xc000027b).
+        DisposeXamlSource();
 
         if (_rootWindow != null)
         {
@@ -106,8 +109,21 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             }
         }
 
-        _xamlSource?.Dispose();
         return ValueTask.CompletedTask;
+    }
+
+    private void DisposeXamlSource()
+    {
+        if (_xamlSourceDisposed)
+        {
+            return;
+        }
+
+        _xamlSourceDisposed = true;
+        // Detach the XAML tree before closing the island so no dispatcher callback reaches
+        // content that is already being torn down.
+        _xamlSource.Content = null;
+        _xamlSource.Dispose();
     }
 
     /// <summary>
@@ -115,13 +131,9 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// </summary>
     public void Show(bool restorePosition = true)
     {
-        _rootWindow.Show();
+        _presentation.Show(restorePosition, activate: true);
         PInvoke.SetForegroundWindow(new(Handle));
         PInvoke.SetFocus(new(Handle));
-        if (restorePosition)
-        {
-            MoveAndResize();
-        }
 
         if (_isFirstActivated)
         {
@@ -188,9 +200,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
                 SetTopMost(false);
             }
 
-            _enteringFullScreen = true;
-            _enteringCompactOverlay = false;
-            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.FullScreen));
+            _ = _presentation.RequestModeAsync(WindowPresentationMode.FullScreen);
         }
     }
 
@@ -203,8 +213,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen)
         {
-            _enteringFullScreen = false;
-            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
+            _ = _presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
         }
     }
 
@@ -222,9 +231,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
                 SetTopMost(false);
             }
 
-            _enteringCompactOverlay = true;
-            _enteringFullScreen = false;
-            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay));
+            _ = _presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
         }
     }
 
@@ -237,8 +244,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
         {
-            _enteringCompactOverlay = false;
-            _ = _presenterChange.ChangeAsync(() => _rootWindow.SetPresenter(AppWindowPresenterKind.Overlapped));
+            _ = _presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
         }
     }
 
@@ -268,48 +274,8 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         }
     }
 
-    /// <summary>
-    /// 获取窗口对象.
-    /// </summary>
-    /// <returns><see cref="AppWindow"/>.</returns>
-    public AppWindow GetWindow()
-        => _rootWindow;
-
-    public void DelayUpdateTitleBarPadding(bool delaySec = false)
-    {
-        if (_rootGrid?.Children.FirstOrDefault() is PlayerOverlay overlay)
-        {
-            this.Get<DispatcherQueue>().TryEnqueue(async () =>
-            {
-                if (IsClosed || IsDisposed)
-                {
-                    return;
-                }
-
-                if (delaySec)
-                {
-                    overlay?.HeaderBar.HorizontalAlignment = HorizontalAlignment.Left;
-                    await Task.Delay(800);
-                    if (IsClosed || IsDisposed)
-                    {
-                        return;
-                    }
-
-                    overlay?.HeaderBar.HorizontalAlignment = HorizontalAlignment.Stretch;
-                    await Task.Delay(800);
-                    if (IsClosed || IsDisposed)
-                    {
-                        return;
-                    }
-                }
-
-                if (overlay?.HeaderBar?.ActualWidth > 0 && _rootWindow.IsVisible && !PInvoke.IsIconic(new(Handle)))
-                {
-                    overlay.HeaderBar.UpdatePadding();
-                }
-            });
-        }
-    }
+    /// <summary>获取窗口对象.</summary>
+    public AppWindow GetWindow() => _rootWindow;
 
     private async void OnInputActivationChanged(InputActivationListener sender, InputActivationListenerActivationChangedEventArgs args)
     {
@@ -327,14 +293,16 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         _activeChangedAction?.Invoke(sender.State == InputActivationState.Activated);
 
-        if (_rootWindow.Position.X < -10000 || _rootWindow.Position.Y < -10000)
-        {
-            MoveAndResize();
-        }
+        _presentation.RecoverOffscreenOrdinary();
     }
 
     private void OnWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
     {
+        if (IsClosed || IsDisposed)
+        {
+            return;
+        }
+
         if (args.DidSizeChange)
         {
             var size = _rootWindow.Presenter.Kind is AppWindowPresenterKind.FullScreen or AppWindowPresenterKind.CompactOverlay
@@ -346,10 +314,10 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (args.DidSizeChange || args.DidVisibilityChange || args.DidPresenterChange)
         {
             UpdateXamlSourcePosition();
-            SaveCurrentWindowStats();
+            _presentation.GeometryChanged();
         }
 
-        if ((args.DidVisibilityChange || args.DidPresenterChange) && sender.IsVisible)
+        if ((args.DidVisibilityChange || args.DidPresenterChange) && sender.IsVisible && !_presentation.IsChanging)
         {
             ResetFocus();
         }
@@ -358,12 +326,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         {
             ResetWindowMinSize();
             UpdateXamlSourcePosition();
-            DelayUpdateTitleBarPadding(true);
         }
 
         if (args.DidPositionChange)
         {
-            SaveCurrentWindowStats();
+            _presentation.GeometryChanged();
         }
     }
 
@@ -375,25 +342,29 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             (_rootWindow.Presenter as OverlappedPresenter)?.PreferredMinimumHeight = Convert.ToInt32(WindowMinHeight * scale);
             (_rootWindow.Presenter as OverlappedPresenter)?.PreferredMinimumWidth = Convert.ToInt32(WindowMinWidth * scale);
         }
-        else if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
-        {
-            (_rootWindow.Presenter as CompactOverlayPresenter)?.InitialSize = CompactOverlaySize.Medium;
-        }
     }
 
     private void OnWindowDestroying(AppWindow sender, object args)
     {
+        _presentation.Close();
         IsClosed = true;
-        _presenterChange.Close();
         _inputActivationListener.InputActivationChanged -= OnInputActivationChanged;
         _rootWindow.Destroying -= OnWindowDestroying;
         _rootWindow.Changed -= OnWindowChanged;
-        SaveCurrentWindowStats();
         _inputActivationListener = default;
+
+        // An OS-initiated close reaches here before the HWND is gone; the island must not
+        // outlive it or the next input dispatch faults in CoreMessagingXP.
+        DisposeXamlSource();
     }
 
     internal void UpdateXamlSourcePosition()
     {
+        if (_xamlSourceDisposed)
+        {
+            return;
+        }
+
         var size = _rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen
             ? _rootWindow.Size
             : _rootWindow.ClientSize;
@@ -425,7 +396,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     {
         DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
-            if (IsClosed || IsDisposed || _xamlSource is null || _xamlSource.SiteBridge is null || _rootGrid is null)
+            if (IsClosed || IsDisposed || _xamlSourceDisposed || _xamlSource is null || _xamlSource.SiteBridge is null || _rootGrid is null)
             {
                 return;
             }
@@ -439,76 +410,4 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             }
         });
     }
-
-    private static PointInt32 GetSavedWindowPosition()
-    {
-        var left = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowPositionLeft, 0);
-        var top = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowPositionTop, 0);
-        return new PointInt32(left, top);
-    }
-
-    private RectInt32 GetRenderRect(DisplayArea area)
-    {
-        var workArea = area.WorkArea;
-        var scaleFactor = HwndExtensions.GetDpiForWindow(Handle) / 96d;
-        var previousWidth = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowWidth, 1120d);
-        var previousHeight = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowHeight, 740d);
-        var width = Convert.ToInt32(previousWidth * scaleFactor);
-        var height = Convert.ToInt32(previousHeight * scaleFactor);
-        var workAreaHeight = Convert.ToInt32(workArea.Height * scaleFactor);
-        // Ensure the window is not larger than the work area.
-        if (height > workAreaHeight - 20)
-        {
-            height = workAreaHeight - 20;
-        }
-
-        var lastPoint = GetSavedWindowPosition();
-        var isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
-        var isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y && lastPoint.X + width <= workArea.X + workArea.Width && lastPoint.Y + height <= workArea.Y + workArea.Height;
-        // 下面的 workArea.Width 和 workArea.Height 别动，不然初始窗口位置会出问题.
-        var left = isZeroPoint || !isValidPosition
-            ? (workArea.Width - width) / 2d
-            : lastPoint.X;
-        var top = isZeroPoint || !isValidPosition
-            ? (workArea.Height - height) / 2d
-            : lastPoint.Y;
-        return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
-    }
-
-    private void MoveAndResize()
-    {
-        var lastPoint = GetSavedWindowPosition();
-        var displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
-            ?? DisplayArea.Primary;
-        var rect = GetRenderRect(displayArea);
-        _rootWindow.MoveAndResize(rect);
-        var isMaximized = SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerWindowMaximized, false);
-        if (isMaximized)
-        {
-            (_rootWindow.Presenter as OverlappedPresenter)?.Maximize();
-        }
-    }
-
-    private void SaveCurrentWindowStats()
-    {
-        var isMaximized = PInvoke.IsZoomed(new HWND(Handle));
-        SettingsToolkit.WriteLocalSetting(SettingNames.IsPlayerWindowMaximized, (bool)isMaximized);
-
-        if (!isMaximized && !_enteringFullScreen && !_enteringCompactOverlay && _rootWindow.Presenter.Kind == AppWindowPresenterKind.Overlapped)
-        {
-            var left = _rootWindow.Position.X;
-            var top = _rootWindow.Position.Y;
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowPositionLeft, left);
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowPositionTop, top);
-            var scaleFactor = _xamlSource.Content.XamlRoot.RasterizationScale;
-            var actualWidth = _rootWindow.Size.Width / scaleFactor;
-            var actualHeight = _rootWindow.Size.Height / scaleFactor;
-            if (actualHeight >= WindowMinHeight && actualWidth >= WindowMinWidth)
-            {
-                SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowHeight, actualHeight);
-                SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowWidth, actualWidth);
-            }
-        }
-    }
 }
-

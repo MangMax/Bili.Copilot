@@ -28,6 +28,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     private PlaybackSession<PlayerViewModel>? _session;
     private InputPointerSource? _pointerSource;
     private InputKeyboardSource? _keyboardSource;
+    private BiliCopilot.UI.Services.MpvMediaDisplaySource? _mediaDisplaySource;
     private bool _isApplyingSubtitlePreference;
     private string? _rememberedSubtitleId;
 
@@ -105,6 +106,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     private async Task DisposeResourcesAsync()
     {
+        _mediaDisplaySource?.Dispose();
+        _mediaDisplaySource = null;
         try
         {
             await ReleasePlaybackEventsAsync();
@@ -228,6 +231,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
     private async Task InitializeCoreAsync(MediaSnapshot snapshot)
     {
+        _mediaDisplaySource?.Suspend();
         CancelPlaybackRefresh();
         _isPlaybackRefreshReload = false;
         _danmakuPlaybackVersion++;
@@ -343,6 +347,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));
         RefreshPlaybackCommand.NotifyCanExecuteChanged();
         _sourceResolver.WindowHandle = Window!.Handle;
+        _sourceResolver.PublishDisplayDimensionsAsync = _mediaDisplaySource?.CreateMetadataPublisher();
 
         if (_historyResolver != null && Player != null)
         {
@@ -392,6 +397,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         try
         {
+            _mediaDisplaySource?.Resume();
             await Player.InitializeAsync();
         }
         catch (Exception ex)
@@ -461,13 +467,10 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
 
         var hideMainWindowOnPlay = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true);
-
-        if (!Window.GetWindow().IsVisible)
-        {
-            Window!.Show(Player == null && !hideMainWindowOnPlay);
-        }
-
         var isFirstLoad = !_uiElementSetted;
+
+        // Prepare content and the initial presenter while the window is still hidden, so
+        // the first visible frame is already the requested mode and geometry.
         if (!_uiElementSetted)
         {
             var overlay = new PlayerOverlay { ViewModel = this };
@@ -509,6 +512,11 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             {
                 Window.EnterCompactOverlay();
             }
+        }
+
+        if (!Window.GetWindow().IsVisible)
+        {
+            Window!.Show(Player == null && !hideMainWindowOnPlay);
         }
 
         IsVerticalScreen = Window!.GetWindow().Presenter.Kind is Microsoft.UI.Windowing.AppWindowPresenterKind.FullScreen or Microsoft.UI.Windowing.AppWindowPresenterKind.CompactOverlay

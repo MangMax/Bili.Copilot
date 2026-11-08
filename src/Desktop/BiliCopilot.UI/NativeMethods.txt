@@ -1,4 +1,7 @@
 ﻿IsZoomed
+DwmSetWindowAttribute
+DwmFlush
+DwmGetWindowAttribute
 SetWindowsHookEx
 UnhookWindowsHookEx
 GetModuleHandle
