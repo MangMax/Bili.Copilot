@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="BiliCopilot.UI.Forms.LivePreviewWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="using:BiliCopilot.UI.Controls.Core">
+    <Grid Background="Black">
+        <Image Source="ms-appx:///Assets/logo.png" Stretch="UniformToFill" Opacity="0.35" />
+        <core:OverlayTransportControls x:Name="Transport" VerticalAlignment="Bottom" />
+    </Grid>
+</Window>

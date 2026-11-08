@@ -94,7 +94,14 @@ public partial class App : Application
             Richasy.WinUIKernel.Share.Base.ImageExBase.EnableBackgroundDecoding = false;
             GlobalDependencies.Initialize();
             StartLiveDanmakuProbeIfRequested();
-            GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
+            if (File.Exists(Path.Combine(Package.Current.InstalledPath, "live-preview.flag")))
+            {
+                new Forms.LivePreviewWindow().Activate();
+            }
+            else
+            {
+                GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
+            }
         }
         else
         {
