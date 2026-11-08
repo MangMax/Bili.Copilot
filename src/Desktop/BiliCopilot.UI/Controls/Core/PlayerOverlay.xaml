@@ -144,7 +144,7 @@
                 <local:OverlayTransportControls
                     x:Name="TransportControls"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Bottom"
+                    VerticalAlignment="Stretch"
                     ViewModel="{x:Bind ViewModel, Mode=OneWay}"
                     Visibility="{x:Bind ViewModel.IsControlsVisible, Mode=OneWay}">
                     <local:OverlayTransportControls.LeftElement>

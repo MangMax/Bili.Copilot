@@ -11,7 +11,6 @@ namespace BiliCopilot.UI.Controls.Core;
 
 public sealed partial class PlayerOverlay : PlayerControlBase
 {
-    private const int MediaTransportControlsHeight = 160;
     private const int HeaderBarHeight = 70;
     private readonly DispatcherQueueTimer _controlTimer;
     private readonly DispatcherQueueTimer _cursorTimer;
@@ -115,7 +114,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         if (!_isTouch && !ViewModel.IsExtraPanelVisible)
         {
             _isInTitleBar = position.Y <= HeaderBarHeight && position.Y >= 0;
-            _isInTransportControls = position.Y >= ActualHeight - MediaTransportControlsHeight;
+            _isInTransportControls = TransportControls?.ContainsInteractivePoint(position) == true;
             if (_isInTitleBar || _isInTransportControls)
             {
                 // If the pointer is in the title bar or transport controls, show controls immediately.

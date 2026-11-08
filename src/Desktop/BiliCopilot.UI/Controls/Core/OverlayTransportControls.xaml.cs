@@ -3,6 +3,9 @@
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.WinUIKernel.Share.Toolkits;
 
@@ -24,8 +27,10 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private readonly List<double> _progressChangeList = [];
     private readonly DispatcherTimer _speedChangeTimer;
     private readonly DispatcherTimer _progressChangeTimer;
+    private readonly Dictionary<FlyoutBase, (FlyoutPlacementMode Placement, bool ConstrainToRootBounds)> _flyoutDefaults = [];
     private bool _isFirstChangeVolume = true;
     private bool _isOverlayActive;
+    private OverlayControlLayoutMode _layoutMode;
 
     public OverlayTransportControls()
     {
@@ -74,7 +79,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             }
         }
 
-        BalanceLeftRightWidth();
+        UpdateLayoutState();
     }
 
     private void OnOverlayLoaded(object sender, RoutedEventArgs e) => OnControlLoaded();
@@ -227,27 +232,146 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     }
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        => UpdateLayoutState();
+
+    /// <summary>
+    /// 指针是否落在会唤出 / 保留控件的区域（底部带，或竖屏轨道）。
+    /// 轨道铺满播放区高度，因此不能再用固定高度判断，否则鼠标移到轨道上会把控件判成已离开.
+    /// </summary>
+    internal bool ContainsInteractivePoint(Point point)
     {
-        var width = e.NewSize.Width;
-        var miniWidth = ViewModel.IsDanmakuControlVisible ? 900 : 760;
-        if (width < miniWidth)
+        var (width, height) = ResolveAvailableSize();
+        return OverlayControlLayout.IsInsideInteractiveArea(_layoutMode, width, height, point.X, point.Y);
+    }
+
+    /// <summary>
+    /// 只依据真实窗口模式与实际可用区域决定排布：竖屏小窗用右侧轨道，其余保持底部带。
+    /// 媒体切换、手动缩放、进入/退出小窗都会改变尺寸，从而重新走这里恢复状态.
+    /// </summary>
+    private void UpdateLayoutState()
+    {
+        var (width, height) = ResolveAvailableSize();
+        var mode = OverlayControlLayout.SelectMode(IsCompactOverlayWindow(), width, height);
+        var changed = mode != _layoutMode;
+        _layoutMode = mode;
+
+        var bandState = OverlayControlLayout.SelectBandState(width, ViewModel?.IsDanmakuControlVisible == true);
+        ApplyRootGeometry(mode, bandState == OverlayBandState.Narrow);
+
+        VisualStateManager.GoToState(
+            this,
+            mode == OverlayControlLayoutMode.PortraitRail ? nameof(PortraitState) : ToStateName(bandState),
+            false);
+
+        if (changed)
         {
-            VisualStateManager.GoToState(this, nameof(NarrowState), false);
-        }
-        else if (width < 1100)
-        {
-            VisualStateManager.GoToState(this, nameof(MediumState), false);
-        }
-        else if (width < 1280)
-        {
-            VisualStateManager.GoToState(this, nameof(BelowWideState), false);
-        }
-        else
-        {
-            VisualStateManager.GoToState(this, nameof(WideState), false);
+            ConfigureRailFlyouts(mode == OverlayControlLayoutMode.PortraitRail);
         }
 
-        BalanceLeftRightWidth();
+        if (mode == OverlayControlLayoutMode.Band)
+        {
+            BalanceLeftRightWidth();
+        }
+    }
+
+    private (double Width, double Height) ResolveAvailableSize()
+    {
+        // 可用区域取 XAML 岛（即播放窗口客户区）的尺寸：控件被折叠时它仍然有效，
+        // 而控件自身在隐藏后会被测量成 0.
+        var size = XamlRoot?.Size;
+        if (size is { Width: > 0, Height: > 0 })
+        {
+            return (size.Value.Width, size.Value.Height);
+        }
+
+        return (ActualWidth, ActualHeight);
+    }
+
+    private bool IsCompactOverlayWindow()
+    {
+        var window = ViewModel?.Window;
+        if (window is null || window.IsClosed)
+        {
+            return false;
+        }
+
+        return window.GetWindow().Presenter.Kind == AppWindowPresenterKind.CompactOverlay;
+    }
+
+    private static string ToStateName(OverlayBandState state)
+        => state switch
+        {
+            OverlayBandState.Narrow => nameof(NarrowState),
+            OverlayBandState.Medium => nameof(MediumState),
+            OverlayBandState.BelowWide => nameof(BelowWideState),
+            _ => nameof(WideState),
+        };
+
+    /// <summary>
+    /// 底部带保持固定高度（窄宽度 120），竖屏轨道则撑满播放区，由 ScrollViewer 负责滚动。
+    /// 高度只有一个拥有者：这里。
+    /// </summary>
+    private void ApplyRootGeometry(OverlayControlLayoutMode mode, bool isNarrow)
+    {
+        if (mode == OverlayControlLayoutMode.PortraitRail)
+        {
+            RootGrid.Height = double.NaN;
+            RootGrid.VerticalAlignment = VerticalAlignment.Stretch;
+            return;
+        }
+
+        RootGrid.Height = isNarrow ? 120d : 160d;
+        RootGrid.VerticalAlignment = VerticalAlignment.Bottom;
+    }
+
+    /// <summary>
+    /// 竖屏轨道里弹出面板向左展开，并且不越出小窗；
+    /// 退出轨道时恢复各面板原本的展开方向与约束设置.
+    /// </summary>
+    private void ConfigureRailFlyouts(bool isRail)
+    {
+        ConfigureRailFlyout(ChapterListButton?.Flyout, isRail);
+        ConfigureRailFlyout(SlimVolumeButton?.Flyout, isRail);
+        ConfigureRailFlyout(SpeedButton?.Flyout, isRail);
+        ConfigureRailFlyout(SubtitleButton?.Flyout, isRail);
+
+        if (DanmakuOptionsTip is not null)
+        {
+            DanmakuOptionsTip.PreferredPlacement = isRail
+                ? TeachingTipPlacementMode.Left
+                : TeachingTipPlacementMode.TopLeft;
+        }
+    }
+
+    private void ConfigureRailFlyout(FlyoutBase? flyout, bool isRail)
+    {
+        if (flyout is null)
+        {
+            return;
+        }
+
+        if (!_flyoutDefaults.TryGetValue(flyout, out var defaults))
+        {
+            defaults = (flyout.Placement, flyout is Flyout flyoutPresenter && flyoutPresenter.ShouldConstrainToRootBounds);
+            _flyoutDefaults[flyout] = defaults;
+        }
+
+        flyout.Placement = isRail ? FlyoutPlacementMode.Left : defaults.Placement;
+        if (flyout is Flyout target)
+        {
+            target.ShouldConstrainToRootBounds = isRail || defaults.ConstrainToRootBounds;
+        }
+    }
+
+    /// <summary>
+    /// 轨道区域的滚轮只用于滚动控件；不可滚动时也不能冒泡去触发播放器的音量快捷键.
+    /// </summary>
+    private void OnControlsWheel(object sender, PointerRoutedEventArgs e)
+    {
+        if (_layoutMode == OverlayControlLayoutMode.PortraitRail)
+        {
+            e.Handled = true;
+        }
     }
 
     private void BalanceLeftRightWidth()

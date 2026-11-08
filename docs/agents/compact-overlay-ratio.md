@@ -187,6 +187,46 @@ The old `PlayerWindowPlacementSession`, `PresenterChangeSession`,
 `IsPresenterChanging`, the 500 ms delay and the `_entering*` flags are gone. A
 repository scan for those symbols returns no hits.
 
+### Portrait control layout
+
+A 9:16 compact window is narrower than the horizontal control band needs, so the
+band clipped buttons and the narrow-width state hid the rest. `OverlayControlLayout`
+(pure, in `Toolkits/Pure`) now selects between two arrangements:
+
+- `Band` — every ordinary window, full screen and the landscape compact form; the
+  existing width states and their hide rules are unchanged.
+- `PortraitRail` — only when the window is really a `CompactOverlayPresenter`
+  **and** the actual client area is taller than wide. A portrait ordinary window, a
+  landscape compact window with the ratio preference off, and a square window are
+  all still `Band`.
+
+`OverlayTransportControls` wraps its control area in a scroll viewer. Vertical and
+horizontal scrolling are disabled for `Band`, so the content is measured with the
+window height and the band layout is unchanged; the `PortraitState` visual state
+enables vertical scrolling, moves the transport and the extra controls into one
+right-hand column (the play controls first), turns both panels vertical, hides the
+left info card, keeps the full volume slider replaced by the slim volume button with
+its slider flyout, and leaves only the progress bar at the bottom. Every applicable
+button keeps its own entry — nothing moves into the "more" menu. Height is owned by
+the code-behind: 160 (120 in the narrow band) or, for the rail, the full player
+area.
+
+The state is recomputed from the presenter and `XamlRoot.Size` whenever the control
+area resizes or reloads, so switching media, resizing the compact window by hand and
+leaving the compact overlay all restore the right layout. Flyouts of the rail open
+to the left and are constrained to the window; leaving the rail restores their
+declared placement. Wheel input over the rail stays in the scroll area and never
+reaches the player's volume shortcut. `PlayerOverlay` stretches the transport
+control over the player area (the band still anchors itself to the bottom) and asks
+it whether a pointer is inside the interactive band or rail, so hovering the rail no
+longer hides the controls while the pointer is on a button.
+
+Known limits: the rail is a normal scroll region, so a very short compact window (or
+a large text scale) needs scrolling to reach the last buttons; the left cover/title
+card stays hidden as before because it is an information card, not an operation; and
+the danmaku options teaching tip is only re-anchored, its own panel width still has
+to fit the window.
+
 ## Native evidence
 
 Official API shape (Windows App SDK 2.6.5, this machine):
@@ -282,8 +322,20 @@ off-screen recovery, negative coordinates, maximized ordinary restore,
 disabled/enabled ratio, old media callbacks, and the absence of geometry writes
 while visible.
 
+Portrait control layout coverage (this change): `OverlayControlLayoutTests`
+checks the band/rail decision (portrait compact, ordinary portrait, landscape and
+square compact, zero/invalid sizes), the unchanged width thresholds, the interactive
+areas, and the fitted 9:16 / 16:9 frames produced by `CompactOverlayLayout`; the
+full UI suite passes (1160 tests, 0 failed) and the default Release/x64 WinUI build
+has 0 warnings and 0 errors. The real XAML layout inside the packaged app was not
+run for this change, so the visual result and the scroll behaviour are still part of
+the checks below.
+
 Real-app checks still required with the packaged app and real media:
 
+- Portrait compact overlay: every rail button reachable, scrolling when the height
+  is short, flyouts opening to the left, progress drag and auto-hide while over the
+  rail, and the restored band after leaving the compact overlay or resizing.
 - Landscape, portrait (including rotation metadata), square, non-square pixels and
   non-standard aspect ratios on each internal decode mode.
 - Output changes and delayed dimensions while playing and paused; switch videos,
