@@ -122,6 +122,8 @@
                     <VisualState.Setters>
                         <Setter Target="RootGrid.Height" Value="Auto" />
                         <Setter Target="RootGrid.VerticalAlignment" Value="Stretch" />
+                        <Setter Target="ControlsBackdrop.Height" Value="160" />
+                        <Setter Target="ControlsBackdrop.VerticalAlignment" Value="Bottom" />
                         <Setter Target="ControlsGrid.Padding" Value="0" />
                         <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
                         <Setter Target="LeftColumn.Width" Value="*" />
@@ -213,8 +215,8 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Border
-            Height="160"
-            VerticalAlignment="Bottom"
+            x:Name="ControlsBackdrop"
+            VerticalAlignment="Stretch"
             IsHitTestVisible="False"
             Grid.RowSpan="2"
             Visibility="{x:Bind ViewModel.IsControlsVisible, Mode=OneWay}">
@@ -705,7 +707,7 @@
                                         <Grid
                                             MinHeight="28"
                                             Padding="4"
-                                            BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}"
+                                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                             BorderThickness="1"
                                             CornerRadius="{StaticResource ControlCornerRadius}"
                                             x:Name="SpeedPresets"
