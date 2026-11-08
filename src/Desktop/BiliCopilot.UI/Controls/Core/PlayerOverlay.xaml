@@ -426,7 +426,9 @@
                         <ImageIcon Source="ms-appx:///Assets/logo.png" />
                     </base:AppTitleBar.IconElement>
                     <base:AppTitleBar.Footer>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Collapsed}">
                             <StackPanel x:Name="FooterContainer" Orientation="Horizontal">
                                 <TextBlock
                                     VerticalAlignment="Center"

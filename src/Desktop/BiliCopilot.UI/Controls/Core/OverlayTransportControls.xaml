@@ -135,6 +135,7 @@
                         <Setter Target="TransportHost.Margin" Value="0,8,0,16" />
                         <Setter Target="AccessoriesHost.VerticalAlignment" Value="Bottom" />
                         <Setter Target="AccessoriesHost.Margin" Value="0,0,8,0" />
+                        <Setter Target="CompactRefreshHost.Margin" Value="0" />
                         <Setter Target="AccessoriesHost.VerticalScrollMode" Value="Auto" />
                         <Setter Target="AccessoriesHost.VerticalScrollBarVisibility" Value="Auto" />
                         <Setter Target="RightPanel.Orientation" Value="Vertical" />
@@ -435,6 +436,20 @@
                     VerticalAlignment="Center"
                     Orientation="Horizontal"
                     SizeChanged="OnRightPanelSizeChanged">
+                    <Grid
+                        x:Name="CompactRefreshHost"
+                        Margin="0,0,8,0"
+                        Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, FallbackValue=Collapsed}">
+                        <Button
+                            Style="{StaticResource BasicPlayerIconButtonStyle}"
+                            AutomationProperties.AutomationId="CompactRefreshPlaybackButton"
+                            AutomationProperties.Name="{ext:Locale Name=RefreshPlayback}"
+                            Command="{x:Bind ViewModel.RefreshPlaybackCommand, Mode=OneWay}"
+                            ToolTipService.ToolTip="{ext:Locale Name=RefreshPlayback}"
+                            Visibility="{x:Bind ViewModel.IsPlaybackRefreshAvailable, Mode=OneWay}">
+                            <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                        </Button>
+                    </Grid>
                     <Button
                         x:Name="ChapterListButton"
                         Margin="0,0,8,0"
