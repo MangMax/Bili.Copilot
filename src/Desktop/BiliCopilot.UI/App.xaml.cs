@@ -79,6 +79,17 @@ public partial class App : Application
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
+        UnhandledException += (_, e) =>
+        {
+            try
+            {
+                var folder = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+                System.IO.File.WriteAllText(System.IO.Path.Combine(folder, "crash.log"), e.Exception?.ToString() ?? e.Message);
+            }
+            catch
+            {
+            }
+        };
         var instance = Microsoft.Windows.AppLifecycle.AppInstance.FindOrRegisterForKey(Id);
         if (instance.IsCurrent)
         {
@@ -97,6 +108,10 @@ public partial class App : Application
             if (File.Exists(Path.Combine(Package.Current.InstalledPath, "live-preview.flag")))
             {
                 new Forms.LivePreviewWindow().Activate();
+            }
+            else if (File.Exists(Path.Combine(Package.Current.InstalledPath, "open-main.flag")))
+            {
+                new Forms.MainWindow().Activate();
             }
             else
             {
