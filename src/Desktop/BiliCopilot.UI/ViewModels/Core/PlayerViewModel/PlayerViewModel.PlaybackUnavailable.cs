@@ -113,7 +113,7 @@ public sealed partial class PlayerViewModel
     {
         try
         {
-            await Task.Delay(TimeSpan.FromSeconds(1.5), token);
+            await Task.Delay(TimeSpan.FromSeconds(2.5), token);
         }
         catch (OperationCanceledException)
         {
