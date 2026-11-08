@@ -214,16 +214,26 @@ The custom Composition batch/visibility controller and `OverlayFlyoutLayout` wer
 removed. `XamlRoot.Changed` and player mode notifications update the visual state
 even when the controls are hidden. Pointer wake-up checks use the current mode.
 
-Settings popups share `PlayerSettingsPresenter`: an opaque themed background,
-8 DIP padding, and a platform entrance transition with no horizontal offset.
-Native placement-dependent open/close animations are disabled consistently.
-Danmaku settings use the same Flyout lifecycle as speed/subtitles, rather than a
-TeachingTip. The overflow menu has the same solid surface and explicitly clears
-its system backdrop, so the XAML island does not rely on backdrop composition.
-Portrait volume uses the slider template's 32 DIP width to align the track with
-the title and mute icon. Speed presets use symmetric padding, fixed 32 DIP rows,
-and explicit centered vertical content alignment; the portrait slider matches
-the six preset rows without spare space below them.
+Settings popups share an opaque themed surface and 8 DIP padding. Motion is
+selected separately by the mode's presenter style: the normal/compact landscape
+styles enter from below; `PortraitSettingsPresenter` and `PortraitMenuPresenter`
+enter from the right. `PlayerFlyoutMotion` only animates the presenter's loaded
+visual, without managing popup visibility, timers or window geometry. It uses
+WinUI `ControlFastAnimationDuration` (167 ms) and `ControlFasterAnimationDuration`
+(83 ms), the Fluent direct-entrance curve `(0,0,0,1)`, and linear opacity. System
+animation preference is respected; unloading stops/reset animations. Native
+placement animations and the older EntranceThemeTransition are not layered on top.
+Reference: https://learn.microsoft.com/en-us/windows/apps/design/motion/timing-and-easing
+
+Danmaku settings use the same Flyout lifecycle as speed/subtitles. The overflow
+menu clears its system backdrop and uses a solid surface. Portrait volume uses
+the slider template's 32 DIP width to center its track. Speed presets retain a
+border and 4 DIP inset, with 4 DIP column gaps in landscape and row gaps in portrait;
+unused rows/columns have no gaps. The portrait slider matches the complete six-row
+frame (222 DIP). Preset clicks update exactly one selection immediately, without
+the former 300 ms delay or deselect-all/reselect sequence; a rejected playback
+request restores actual player state. The stock ToggleButton's brief brush feedback
+is retained, without a custom moving selection indicator.
 
 Pure tests cover mode selection, returning to normal width profiles and pointer
 regions. They do not establish actual XAML rendering or animation correctness;

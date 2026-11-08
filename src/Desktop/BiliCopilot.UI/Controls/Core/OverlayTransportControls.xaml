@@ -26,16 +26,9 @@
             <Setter Property="MinWidth" Value="0" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Stretch" />
-            <Setter Property="Transitions">
-                <Setter.Value>
-                    <TransitionCollection>
-                        <EntranceThemeTransition
-                            FromHorizontalOffset="0"
-                            FromVerticalOffset="12"
-                            IsStaggeringEnabled="False" />
-                    </TransitionCollection>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="local:PlayerFlyoutMotion.MoveDuration" Value="{StaticResource ControlFastAnimationDuration}" />
+            <Setter Property="local:PlayerFlyoutMotion.FadeDuration" Value="{StaticResource ControlFasterAnimationDuration}" />
+            <Setter Property="local:PlayerFlyoutMotion.Origin" Value="Bottom" />
         </Style>
         <Style
             x:Key="PlayerMenuPresenter"
@@ -47,16 +40,21 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Stretch" />
             <Setter Property="SystemBackdrop" Value="{x:Null}" />
-            <Setter Property="Transitions">
-                <Setter.Value>
-                    <TransitionCollection>
-                        <EntranceThemeTransition
-                            FromHorizontalOffset="0"
-                            FromVerticalOffset="12"
-                            IsStaggeringEnabled="False" />
-                    </TransitionCollection>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="local:PlayerFlyoutMotion.MoveDuration" Value="{StaticResource ControlFastAnimationDuration}" />
+            <Setter Property="local:PlayerFlyoutMotion.FadeDuration" Value="{StaticResource ControlFasterAnimationDuration}" />
+            <Setter Property="local:PlayerFlyoutMotion.Origin" Value="Bottom" />
+        </Style>
+        <Style
+            x:Key="PortraitSettingsPresenter"
+            TargetType="FlyoutPresenter"
+            BasedOn="{StaticResource PlayerSettingsPresenter}">
+            <Setter Property="local:PlayerFlyoutMotion.Origin" Value="Right" />
+        </Style>
+        <Style
+            x:Key="PortraitMenuPresenter"
+            TargetType="MenuFlyoutPresenter"
+            BasedOn="{StaticResource PlayerMenuPresenter}">
+            <Setter Property="local:PlayerFlyoutMotion.Origin" Value="Right" />
         </Style>
     </UserControl.Resources>
     <Grid
@@ -157,15 +155,15 @@
                         <Setter Target="VolumeSlider.Height" Value="140" />
                         <Setter Target="VolumeSlider.Width" Value="32" />
                         <Setter Target="VolumeSlider.HorizontalAlignment" Value="Center" />
-                        <Setter Target="SpeedContent.Width" Value="104" />
+                        <Setter Target="SpeedContent.Width" Value="114" />
                         <Setter Target="SpeedContent.RowSpacing" Value="0" />
-                        <Setter Target="SpeedPresets.Width" Value="64" />
+                        <Setter Target="SpeedPresets.Width" Value="74" />
                         <Setter Target="SpeedPresets.(Grid.ColumnSpan)" Value="1" />
                         <Setter Target="SpeedSlider.(Grid.Column)" Value="1" />
                         <Setter Target="SpeedSlider.(Grid.Row)" Value="0" />
                         <Setter Target="SpeedSlider.(Grid.ColumnSpan)" Value="1" />
                         <Setter Target="SpeedSlider.Orientation" Value="Vertical" />
-                        <Setter Target="SpeedSlider.Height" Value="192" />
+                        <Setter Target="SpeedSlider.Height" Value="222" />
                         <Setter Target="SpeedSlider.Width" Value="32" />
                         <Setter Target="SpeedSlider.Margin" Value="0" />
                         <Setter Target="SpeedSlider.VerticalAlignment" Value="Stretch" />
@@ -203,6 +201,13 @@
                         <Setter Target="SubtitleFlyout.ShouldConstrainToRootBounds" Value="True" />
                         <Setter Target="OverflowFlyout.Placement" Value="Left" />
                         <Setter Target="OverflowFlyout.ShouldConstrainToRootBounds" Value="True" />
+                        <Setter Target="ChapterFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
+                        <Setter Target="VolumeFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
+                        <Setter Target="SpeedFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
+                        <Setter Target="SubtitleFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
+                        <Setter Target="OverflowFlyout.MenuFlyoutPresenterStyle" Value="{StaticResource PortraitMenuPresenter}" />
+                        <Setter Target="SpeedPresets.ColumnSpacing" Value="0" />
+                        <Setter Target="SpeedPresets.RowSpacing" Value="4" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -699,12 +704,14 @@
                                         </Grid.ColumnDefinitions>
                                         <Grid
                                             MinHeight="28"
-                                            Padding="0"
-                                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                            BorderThickness="0"
+                                            Padding="4"
+                                            BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
                                             CornerRadius="{StaticResource ControlCornerRadius}"
                                             x:Name="SpeedPresets"
-                                            Grid.ColumnSpan="2">
+                                            Grid.ColumnSpan="2"
+                                            ColumnSpacing="4"
+                                            RowSpacing="0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />

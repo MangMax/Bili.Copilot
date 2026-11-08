@@ -357,51 +357,24 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private void OnRightPanelSizeChanged(object sender, SizeChangedEventArgs e)
         => BalanceLeftRightWidth();
 
-    private async void CheckSpeedButtonState()
+    private void CheckSpeedButtonState()
     {
         if (ViewModel is null)
         {
             return;
         }
 
-        var isCurrent = ViewModel.CapturePlaybackValidity();
-        await Task.Delay(300);
-        if (!isCurrent())
-        {
-            return;
-        }
+        ApplySpeedSelection(ViewModel.Player.PlaybackRate);
+    }
 
-        var speed = ViewModel.Player?.PlaybackRate ?? 0;
-        HalfSpeedButton.IsChecked = false;
-        DefaultSpeedButton.IsChecked = false;
-        OneTwoFiveSpeedButton.IsChecked = false;
-        OneHalfSpeedButton.IsChecked = false;
-        DoubleSpeedButton.IsChecked = false;
-        TripleSpeedButton.IsChecked = false;
-        if (Math.Abs(speed - 0.5) < 0.01)
-        {
-            HalfSpeedButton.IsChecked = true;
-        }
-        else if (Math.Abs(speed - 1) < 0.01)
-        {
-            DefaultSpeedButton.IsChecked = true;
-        }
-        else if (Math.Abs(speed - 1.25) < 0.01)
-        {
-            OneTwoFiveSpeedButton.IsChecked = true;
-        }
-        else if (Math.Abs(speed - 1.5) < 0.01)
-        {
-            OneHalfSpeedButton.IsChecked = true;
-        }
-        else if (Math.Abs(speed - 2) < 0.01)
-        {
-            DoubleSpeedButton.IsChecked = true;
-        }
-        else if (Math.Abs(speed - 3) < 0.01)
-        {
-            TripleSpeedButton.IsChecked = true;
-        }
+    private void ApplySpeedSelection(double speed)
+    {
+        HalfSpeedButton.IsChecked = Math.Abs(speed - 0.5) < 0.01;
+        DefaultSpeedButton.IsChecked = Math.Abs(speed - 1) < 0.01;
+        OneTwoFiveSpeedButton.IsChecked = Math.Abs(speed - 1.25) < 0.01;
+        OneHalfSpeedButton.IsChecked = Math.Abs(speed - 1.5) < 0.01;
+        DoubleSpeedButton.IsChecked = Math.Abs(speed - 2) < 0.01;
+        TripleSpeedButton.IsChecked = Math.Abs(speed - 3) < 0.01;
     }
 
     private async void OnQuickSpeedButtonClick(object sender, RoutedEventArgs e)
@@ -411,17 +384,20 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             return;
         }
 
+        var isCurrent = ViewModel.CapturePlaybackValidity();
         var speed = Convert.ToDouble((sender as FrameworkElement)?.Tag);
         _speedChangeList.Clear();
         _speedPlaybackValidity = null;
         _speedChangeTimer.Stop();
+        // A preset click selects exactly one item immediately. The player's
+        // property notification remains authoritative; a rejected request rolls back.
+        ApplySpeedSelection(speed);
         if (Math.Abs(speed - ViewModel.Player.PlaybackRate) > 0.1)
         {
-            await ViewModel.ChangeSpeedAsync(speed);
-        }
-        else
-        {
-            CheckSpeedButtonState();
+            if (!await ViewModel.ChangeSpeedAsync(speed) && isCurrent())
+            {
+                CheckSpeedButtonState();
+            }
         }
     }
 
