@@ -235,9 +235,9 @@ public sealed partial class PlayerWindow
                     return true;
                 }
 
-                // The call succeeded but DWM still reports the old state; give composition
-                // a boundary and retry instead of assuming the attribute applied.
-                PInvoke.DwmFlush();
+                // Reissue the attribute if DWM still reports the old state. Do not wait
+                // for composition on the UI thread: DwmFlush has no timeout and would
+                // bypass the transition budget. Layout confirmation owns frame waits.
             }
 
             return false;
