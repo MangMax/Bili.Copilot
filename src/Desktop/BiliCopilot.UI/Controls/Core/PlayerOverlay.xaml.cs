@@ -49,6 +49,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     protected override void OnControlLoaded()
     {
+        AttachTitleBar();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         ViewModel.WarningOccurred += OnWarningOccurred;
         ViewModel.RequestShowNextTip += OnRequestShowNextTip;
@@ -60,6 +61,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     protected override void OnControlUnloaded()
     {
+        DetachTitleBar();
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         ViewModel.WarningOccurred -= OnWarningOccurred;
         ViewModel.RequestShowNextTip -= OnRequestShowNextTip;
@@ -139,6 +141,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     {
         if (e.PropertyName == nameof(ViewModel.IsControlsVisible))
         {
+            UpdateTitleBarRegions();
             if (!ViewModel.IsControlsVisible && !_controlTimer.IsRunning)
             {
                 _controlTimer.Start();
@@ -183,38 +186,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     private void OnCloseTipButtonClick(object sender, RoutedEventArgs e)
         => ViewModel.ErrorMessage = default;
-
-    private void OnBackRequested(object sender, EventArgs e)
-        => ViewModel.BackCommand.Execute(default);
-
-    private void OnHeaderBarSizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        if (e.NewSize.Width == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-            {
-                if (e.NewSize.Width < 700)
-                {
-                    VisualStateManager.GoToState(this, nameof(NarrowState), false);
-                    HeaderBar.TitleMaxWidth = e.NewSize.Width > 200 ? e.NewSize.Width - 200 : 120;
-                }
-                else
-                {
-                    VisualStateManager.GoToState(this, nameof(DefaultState), false);
-                    HeaderBar.TitleMaxWidth = e.NewSize.Width - 520;
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error in OnHeaderBarSizeChanged: {ex.Message}");
-        }
-    }
 
     private bool IsCursorInWindow()
     {

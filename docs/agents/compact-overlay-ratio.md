@@ -352,3 +352,27 @@ Real-app checks still required with the packaged app and real media:
 - Toggle off, resize manually, toggle on; two player windows; normal restart.
 - Negative monitor coordinates, monitor removal, mixed DPI, focus/activation,
   maximized ordinary restore, and visible controls/letterboxing in compact mode.
+
+### Player title-bar input ownership
+
+The player now owns one header layout and one native passthrough-region writer in
+`PlayerOverlay.TitleBar.cs`. The shared `AppTitleBar` was removed from this overlay:
+its size callback could publish interaction rectangles before our queued narrow-state
+layout, and did not observe the resulting child layout. Removing an individual button
+from the footer did not address that ordering problem.
+
+- Native left/right caption insets are reserved before the application header is laid out.
+- Ordinary widths below 700 DIP and all compact windows collapse the whole action group.
+  The title uses the remaining star column and ellipsis, not a guessed maximum width.
+- Window size/presenter changes and XAML DPI changes invalidate old input geometry.
+  `LayoutUpdated` publishes arranged application regions, clipped to the reserved area.
+  Physical bounds round inward; hidden controls use only the safe header area to wake
+  the overlay, never the minimize/maximize/close area.
+- The ordinary-window path and both compact shapes use the same calculation.
+- The old low-priority size snapshots, per-footer hiding setters and two 800 ms
+  padding-refresh delays are removed. Native caption buttons remain system-owned.
+
+Reference: [Microsoft title-bar customization](https://learn.microsoft.com/en-us/windows/apps/develop/title-bar).
+Focused geometry coverage: `PlayerTitleBarLayoutTests` (native insets, stale wide bounds,
+DPI, grouped action visibility and hidden-header reveal area). These tests do not replace
+real resize/hover/click acceptance of the Windows title bar.

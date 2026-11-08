@@ -274,48 +274,8 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         }
     }
 
-    /// <summary>
-    /// 获取窗口对象.
-    /// </summary>
-    /// <returns><see cref="AppWindow"/>.</returns>
-    public AppWindow GetWindow()
-        => _rootWindow;
-
-    public void DelayUpdateTitleBarPadding(bool delaySec = false)
-    {
-        if (_rootGrid?.Children.FirstOrDefault() is PlayerOverlay overlay)
-        {
-            this.Get<DispatcherQueue>().TryEnqueue(async () =>
-            {
-                if (IsClosed || IsDisposed)
-                {
-                    return;
-                }
-
-                if (delaySec)
-                {
-                    overlay?.HeaderBar.HorizontalAlignment = HorizontalAlignment.Left;
-                    await Task.Delay(800);
-                    if (IsClosed || IsDisposed)
-                    {
-                        return;
-                    }
-
-                    overlay?.HeaderBar.HorizontalAlignment = HorizontalAlignment.Stretch;
-                    await Task.Delay(800);
-                    if (IsClosed || IsDisposed)
-                    {
-                        return;
-                    }
-                }
-
-                if (overlay?.HeaderBar?.ActualWidth > 0 && _rootWindow.IsVisible && !PInvoke.IsIconic(new(Handle)))
-                {
-                    overlay.HeaderBar.UpdatePadding();
-                }
-            });
-        }
-    }
+    /// <summary>获取窗口对象.</summary>
+    public AppWindow GetWindow() => _rootWindow;
 
     private async void OnInputActivationChanged(InputActivationListener sender, InputActivationListenerActivationChangedEventArgs args)
     {
@@ -366,7 +326,6 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         {
             ResetWindowMinSize();
             UpdateXamlSourcePosition();
-            DelayUpdateTitleBarPadding(true);
         }
 
         if (args.DidPositionChange)
