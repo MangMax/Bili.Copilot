@@ -376,3 +376,13 @@ Reference: [Microsoft title-bar customization](https://learn.microsoft.com/en-us
 Focused geometry coverage: `PlayerTitleBarLayoutTests` (native insets, stale wide bounds,
 DPI, grouped action visibility and hidden-header reveal area). These tests do not replace
 real resize/hover/click acceptance of the Windows title bar.
+
+### Restored-size transport layout
+
+`OverlayTransportControls` reconciles visual state from the arranged `RootGrid.ActualWidth`
+after loading, including `LayoutUpdated`. Initial native-window restoration can precede
+control loading and bindings; relying solely on the earlier resize notification left the
+cover and centered wide controls visible until the first manual resize. Successful layout
+inputs are cached, so unchanged layout passes do not reapply state or allocate popup lists.
+The cache resets on load, unload and ViewModel replacement; failed state application is
+not cached. Reopening at minimum size is verified without resizing the reopened window.

@@ -28,6 +28,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private bool _isFirstChangeVolume = true;
     private bool _isOverlayActive;
     private XamlRoot? _observedRoot;
+    private (OverlayControlMode Mode, double Width, double Height, bool Danmaku)? _appliedLayout;
 
     public OverlayTransportControls()
     {
@@ -65,6 +66,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         }
 
         _isOverlayActive = true;
+        _appliedLayout = null;
         _speedChangeTimer.Tick += OnSpeedChangeTick;
         _progressChangeTimer.Tick += OnProgressChangeTick;
         if (ViewModel is not null)
@@ -91,6 +93,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     protected override void OnViewModelChanged(PlayerViewModel? oldValue, PlayerViewModel? newValue)
     {
+        _appliedLayout = null;
         _speedChangeTimer.Stop();
         _speedChangeList.Clear();
         _speedPlaybackValidity = null;
@@ -122,6 +125,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         }
         ViewModel.Player.PropertyChanged -= OnPlayerPropertyChanged;
         _isOverlayActive = false;
+        _appliedLayout = null;
         _speedChangeList.Clear();
         _progressChangeList.Clear();
         _speedPlaybackValidity = null;
@@ -245,6 +249,8 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e) => UpdateLayoutState();
 
+    private void OnLayoutUpdated(object? sender, object e) => UpdateLayoutState();
+
     private void OnRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => UpdateLayoutState();
 
     private void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs args)
@@ -270,19 +276,26 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void UpdateLayoutState()
     {
-        if (ViewModel is null || RootGrid is null) return;
-        var width = XamlRoot?.Size.Width ?? ActualWidth;
-        var state = OverlayControlLayout.StateName(CurrentMode, width, ViewModel.IsDanmakuControlVisible);
-        VisualStateManager.GoToState(this, state, false);
+        if (!_isOverlayActive || ViewModel is null || RootGrid is not { IsLoaded: true, ActualWidth: > 0 }) return;
+        // A restored window can finish its initial resize before Loaded/bindings.
+        // Reconcile from arranged geometry, both on first layout and later resizes.
+        var width = RootGrid.ActualWidth;
+        var height = XamlRoot?.Size.Height ?? ActualHeight;
+        var mode = OverlayControlLayout.SelectMode(ViewModel.Player.IsCompactOverlay, width, height);
+        var layout = (Mode: mode, Width: width, Height: height, Danmaku: ViewModel.IsDanmakuControlVisible);
+        if (_appliedLayout == layout) return;
+        var state = OverlayControlLayout.StateName(mode, width, layout.Danmaku);
+        if (!VisualStateManager.GoToState(this, state, false)) return;
+        _appliedLayout = layout;
         // Constrain content, not merely popup placement. The visual state owns
         // preferred dimensions and orientation; these limits only reflect the viewport.
         var maxWidth = Math.Max(1, width - 16);
-        var maxHeight = Math.Max(1, (XamlRoot?.Size.Height ?? ActualHeight) - 16);
+        var maxHeight = Math.Max(1, height - 16);
         foreach (var content in new FrameworkElement[] { VolumeContent, SpeedContent, ChapterContent, SubtitleContent, DanmakuContent })
             content.MaxWidth = maxWidth;
         foreach (var popup in new ScrollViewer[] { VolumePopup, SpeedPopup, ChapterPopup, SubtitlePopup, DanmakuPopup })
             popup.MaxHeight = maxHeight;
-        if (CurrentMode != OverlayControlMode.CompactPortrait) BalanceLeftRightWidth();
+        if (mode != OverlayControlMode.CompactPortrait) BalanceLeftRightWidth();
     }
 
     private void BalanceLeftRightWidth()
