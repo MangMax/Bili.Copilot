@@ -13,6 +13,9 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class SettingsPageViewModel
 {
+    [ObservableProperty]
+    public partial bool AutoCompactOverlayRatio { get; set; }
+
     private bool _isInitialized;
     private string? _initialCustomLibMpvPath;
 

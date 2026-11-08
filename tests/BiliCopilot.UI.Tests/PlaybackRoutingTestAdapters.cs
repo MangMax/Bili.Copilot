@@ -91,4 +91,4 @@ namespace BiliCopilot.UI.ViewModels.Core
     }
 }
 
-namespace Richasy.MpvKernel { public enum MpvError { LoadingFailed } }
+// MpvError 统一由 MpvMediaDisplayTestAdapters.cs 声明（含 LoadingFailed），此处不再重复定义。

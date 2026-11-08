@@ -12,6 +12,12 @@ internal sealed class SettingsToolkit : SharedSettingsToolkit
 {
     private Microsoft.Windows.Storage.ApplicationDataContainer _settingContainer;
 
+    private static readonly Lazy<CompactOverlayRatioPreference> _compactOverlayRatio = new(() => new(
+        () => ReadLocalSetting(SettingNames.AutoCompactOverlayRatio, true),
+        value => WriteLocalSetting(SettingNames.AutoCompactOverlayRatio, value)));
+
+    internal static CompactOverlayRatioPreference CompactOverlayRatio => _compactOverlayRatio.Value;
+
     /// <summary>
     /// Read local setting.
     /// </summary>

@@ -86,6 +86,7 @@ public enum SettingNames
     IsPlayerWindowMaximized,
     PlayerWindowHeight,
     PlayerWindowWidth,
+    CompactOverlayPosition,
     IsWebDavEnabled,
     SelectedWebDavConfigId,
     LastMomentSectionIsVideo,
@@ -169,5 +170,6 @@ public enum SettingNames
     SponsorBlockColorUnknown,
     IncrementalRecommendRefresh,
     RecommendFeedSource,
+    AutoCompactOverlayRatio,
     PlaybackRoutePreference,
 }

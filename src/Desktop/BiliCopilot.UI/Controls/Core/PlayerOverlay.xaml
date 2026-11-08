@@ -179,11 +179,8 @@
                 <local:OverlayTransportControls
                     x:Name="TransportControls"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Bottom"
-                    IsSkipButtonsVisible="{x:Bind ViewModel.IsSeekAvailable, Mode=OneWay}"
-                    ProgressBarVisible="{x:Bind ViewModel.IsProgressBarVisible, Mode=OneWay}"
-                    ViewModel="{x:Bind ViewModel, Mode=OneWay}"
-                    Visibility="{x:Bind ViewModel.IsControlsVisible, Mode=OneWay}">
+                    VerticalAlignment="Stretch"
+                    ViewModel="{x:Bind ViewModel, Mode=OneWay}">
                     <local:OverlayTransportControls.LeftElement>
                         <ContentControl
                             HorizontalAlignment="Stretch"
@@ -194,26 +191,6 @@
                             ContentTemplateSelector="{StaticResource WidgetSelector}"
                             IsTabStop="False" />
                     </local:OverlayTransportControls.LeftElement>
-                    <animations:Implicit.ShowAnimations>
-                        <animations:OpacityAnimation
-                            From="0.0"
-                            To="1.0"
-                            Duration="0:0:0.2" />
-                        <animations:TranslationAnimation
-                            From="0,80,0"
-                            To="0,0,0"
-                            Duration="0:0:0.25" />
-                    </animations:Implicit.ShowAnimations>
-                    <animations:Implicit.HideAnimations>
-                        <animations:OpacityAnimation
-                            From="1.0"
-                            To="0.0"
-                            Duration="0:0:0.2" />
-                        <animations:TranslationAnimation
-                            From="0,0,0"
-                            To="0,80,0"
-                            Duration="0:0:0.25" />
-                    </animations:Implicit.HideAnimations>
                 </local:OverlayTransportControls>
                 <!--
                     两张提示卡片同为 320 宽，纵向排在同一列：NextTip 固定占顶部槽位，
@@ -455,19 +432,19 @@
                         </LinearGradientBrush.GradientStops>
                     </LinearGradientBrush>
                 </Grid.Background>
-                <base:AppTitleBar
-                    x:Name="HeaderBar"
-                    Title="{x:Bind ViewModel.Title, Mode=OneWay}"
-                    Height="44"
-                    VerticalAlignment="Top"
-                    x:FieldModifier="public"
-                    AutoUpdateTitleBarButtonColor="False"
-                    IsBackButtonVisible="False"
-                    SizeChanged="OnHeaderBarSizeChanged"
-                    TitleForeground="White"
-                    TitleMaxWidth="480">
-                    <base:AppTitleBar.LeftEdgeElement>
-                        <Grid>
+                <Grid x:Name="HeaderBar" Height="44" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="HeaderLeftInset" Width="0" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition x:Name="HeaderRightInset" Width="0" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid x:Name="HeaderNavigation">
                             <Grid Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Collapsed}">
                                 <Button
                                     Command="{x:Bind ViewModel.BackCommand, Mode=OneWay}"
@@ -485,13 +462,16 @@
                                 <ic:SymbolIcon FontSize="14" Symbol="ContractDownLeft" />
                             </Button>
                         </Grid>
-                    </base:AppTitleBar.LeftEdgeElement>
-                    <base:AppTitleBar.IconElement>
-                        <ImageIcon Source="ms-appx:///Assets/logo.png" />
-                    </base:AppTitleBar.IconElement>
-                    <base:AppTitleBar.Footer>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel x:Name="FooterContainer" Orientation="Horizontal">
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="24,0,8,0"
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"
+                            Text="{x:Bind ViewModel.Title, Mode=OneWay}" />
+                        <StackPanel x:Name="HeaderActions" Grid.Column="2" Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     FontSize="12"
@@ -565,14 +545,7 @@
                                                                             <RowDefinition Height="Auto" />
                                                                         </Grid.RowDefinitions>
                                                                         <base:TrimTextBlock MaxLines="2" Text="{x:Bind Name, Mode=OneWay}" />
-                                                                        <!--<base:TrimTextBlock
-                                                                            Grid.Row="1"
-                                                                            Margin="0,4,0,0"
-                                                                            FontSize="12"
-                                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                                            MaxLines="1"
-                                                                            Text="{x:Bind Subtitle, Mode=OneWay}"
-                                                                            Visibility="{x:Bind Subtitle, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />-->
+
                                                                     </Grid>
                                                                 </Grid>
                                                             </Grid>
@@ -587,21 +560,21 @@
                                     </DropDownButton.Flyout>
                                 </DropDownButton>
                             </StackPanel>
-                            <Button
-                                x:Name="RefreshPlaybackButton"
-                                Width="32"
-                                Height="32"
-                                Margin="8,0,0,0"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                AutomationProperties.AutomationId="RefreshPlaybackButton"
-                                AutomationProperties.Name="{ext:Locale Name=RefreshPlayback}"
-                                Command="{x:Bind ViewModel.RefreshPlaybackCommand, Mode=OneWay}"
-                                ToolTipService.ToolTip="{ext:Locale Name=RefreshPlayback}"
-                                Visibility="{x:Bind ViewModel.IsPlaybackRefreshAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <FontIcon Glyph="&#xE72C;" FontSize="14" />
-                            </Button>
-                            <StackPanel x:Name="FooterActionsContainer" Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    x:Name="RefreshPlaybackButton"
+                                    Width="32"
+                                    Height="32"
+                                    Margin="8,0,0,0"
+                                    Padding="0"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.AutomationId="RefreshPlaybackButton"
+                                    AutomationProperties.Name="{ext:Locale Name=RefreshPlayback}"
+                                    Command="{x:Bind ViewModel.RefreshPlaybackCommand, Mode=OneWay}"
+                                    ToolTipService.ToolTip="{ext:Locale Name=RefreshPlayback}"
+                                    Visibility="{x:Bind ViewModel.IsPlaybackRefreshAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                </Button>
                                 <Button
                                     Width="32"
                                     Height="32"
@@ -638,8 +611,8 @@
                                 </Button>
                             </StackPanel>
                         </StackPanel>
-                    </base:AppTitleBar.Footer>
-                </base:AppTitleBar>
+                    </Grid>
+                </Grid>
                 <animations:Implicit.ShowAnimations>
                     <animations:OpacityAnimation
                         From="0.0"
@@ -667,16 +640,5 @@
                 Grid.RowSpan="2"
                 Visibility="Collapsed" />
         </Grid>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="DefaultState" />
-                <VisualState x:Name="NarrowState">
-                    <VisualState.Setters>
-                        <Setter Target="FooterContainer.Visibility" Value="Collapsed" />
-                        <Setter Target="FooterActionsContainer.Visibility" Value="Collapsed" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
     </Grid>
 </local:PlayerControlBase>
