@@ -291,6 +291,11 @@ public sealed partial class PlayerViewModel
     public bool IsTimelineProgressVisible => !IsLive && IsProgressBarVisible;
 
     /// <summary>
+    /// Gets 是否显示进度区域：点播按原规则，直播始终显示静态时间轴。
+    /// </summary>
+    public bool IsProgressPanelVisible => IsLive || IsProgressBarVisible;
+
+    /// <summary>
     /// Gets a value indicating whether 是否允许跳转/倍速（直播没有时间轴）.
     /// </summary>
     public bool IsSeekAvailable => LiveCapabilities.SupportsTimeline;

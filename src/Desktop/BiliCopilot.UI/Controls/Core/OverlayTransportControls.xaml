@@ -1279,7 +1279,7 @@
             <Grid
                 Margin="16,-32,16,12"
                 ColumnSpacing="12"
-                Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.IsProgressPanelVisible, Mode=OneWay}"
                 x:Name="ProgressPanel">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60" />
@@ -1296,7 +1296,20 @@
                         RequestedTheme="Dark"
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="{x:Bind GetTimeText(ViewModel.Player.Position), Mode=OneWay}"
-                        Visibility="{x:Bind ViewModel.IsPreviewProgressChanging, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+                        Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay, FallbackValue=Visible}" />
+                    <Border
+                        Padding="6,1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                        CornerRadius="4"
+                        Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}">
+                        <TextBlock
+                            FontSize="10"
+                            FontWeight="SemiBold"
+                            Foreground="White"
+                            Text="LIVE" />
+                    </Border>
                     <TextBlock
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                         IsTextScaleFactorEnabled="False"
@@ -1326,7 +1339,8 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     IsEnabled="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}, FallbackValue=False}"
-                    ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                    ViewModel="{x:Bind ViewModel, Mode=OneWay}"
+                    Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay, FallbackValue=Collapsed}" />
                 <TextBlock
                     Grid.Column="2"
                     HorizontalAlignment="Left"
@@ -1335,40 +1349,16 @@
                     IsTextScaleFactorEnabled="False"
                     RequestedTheme="Dark"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind GetTimeText(ViewModel.Player.Duration), Mode=OneWay}" />
-            </Grid>
-
-            <!--  直播态：没有可跳转的时间轴，只保留一条静态轨道与已播时长，不出现圆点。  -->
-            <Grid
-                x:Name="LiveProgressPanel"
-                Margin="16,-32,16,12"
-                ColumnSpacing="12"
-                Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="60" />
-                </Grid.ColumnDefinitions>
+                    Text="{x:Bind GetTimeText(ViewModel.Player.Duration), Mode=OneWay}"
+                    Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay, FallbackValue=Visible}" />
+                <!--  直播态：强调色静态轨道，无圆点、无填充追赶；右侧是开播时长.  -->
                 <Border
-                    Padding="6,1"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Background="{ThemeResource AccentFillColorDefaultBrush}"
-                    CornerRadius="4">
-                    <TextBlock
-                        FontSize="10"
-                        FontWeight="SemiBold"
-                        Foreground="White"
-                        Text="LIVE" />
-                </Border>
-                <Grid
                     Grid.Column="1"
                     Height="4"
-                    VerticalAlignment="Center">
-                    <Border
-                        Background="{ThemeResource ControlStrokeColorDefaultBrush}"
-                        CornerRadius="2" />
-                </Grid>
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource AccentFillColorDefaultBrush}"
+                    CornerRadius="2"
+                    Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
                 <TextBlock
                     Grid.Column="2"
                     HorizontalAlignment="Left"
@@ -1377,8 +1367,11 @@
                     IsTextScaleFactorEnabled="False"
                     RequestedTheme="Dark"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind ViewModel.LiveConnector.UptimeText, Mode=OneWay, FallbackValue=''}" />
+                    Text="{x:Bind GetTimeText(ViewModel.Player.Position), Mode=OneWay}"
+                    Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
             </Grid>
+
+
         </Grid>
     </Grid>
 </local:PlayerControlBase>

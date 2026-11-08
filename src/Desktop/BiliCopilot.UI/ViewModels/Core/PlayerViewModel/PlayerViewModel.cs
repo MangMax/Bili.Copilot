@@ -640,6 +640,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         OnPropertyChanged(nameof(LiveCapabilities));
         OnPropertyChanged(nameof(IsProgressBarVisible));
         OnPropertyChanged(nameof(IsTimelineProgressVisible));
+        OnPropertyChanged(nameof(IsProgressPanelVisible));
         OnPropertyChanged(nameof(IsSeekAvailable));
         CheckBottomProgressBarVisible();
     }

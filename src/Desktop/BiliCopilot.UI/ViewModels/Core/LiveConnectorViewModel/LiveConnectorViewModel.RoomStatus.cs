@@ -283,7 +283,7 @@ public sealed partial class LiveConnectorViewModel
         if (_uptimeTimer is null)
         {
             _uptimeTimer = this.Get<DispatcherQueue>().CreateTimer();
-            _uptimeTimer.Interval = TimeSpan.FromSeconds(30);
+            _uptimeTimer.Interval = TimeSpan.FromSeconds(1);
             _uptimeTimer.Tick += OnUptimeTimerTick;
         }
 
@@ -313,6 +313,7 @@ public sealed partial class LiveConnectorViewModel
             elapsed = TimeSpan.Zero;
         }
 
+        LiveElapsedTime = elapsed;
         UptimeText = LiveRoomStatusText.FormatDuration(
             elapsed,
             ResourceToolkit.GetLocalizedString(StringNames.LiveUptimeMinutesTemplate),

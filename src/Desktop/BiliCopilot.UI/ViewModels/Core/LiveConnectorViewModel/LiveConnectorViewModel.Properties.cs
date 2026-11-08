@@ -112,6 +112,12 @@ public sealed partial class LiveConnectorViewModel
     public partial LiveQualityOption? SelectedQuality { get; set; }
 
     /// <summary>
+    /// Gets 已开播时长；直播时间轴用它显示时分秒，房间结束后停止更新。
+    /// </summary>
+    [ObservableProperty]
+    public partial TimeSpan LiveElapsedTime { get; set; }
+
+    /// <summary>
     /// 当前选中的线路；只影响首选地址，不改播放器实例.
     /// </summary>
     [ObservableProperty]
