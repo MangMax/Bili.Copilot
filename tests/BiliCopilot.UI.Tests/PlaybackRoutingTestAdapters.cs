@@ -61,9 +61,28 @@ namespace BiliCopilot.UI.ViewModels.View
 
 namespace BiliCopilot.UI.ViewModels.Core
 {
+    /// <summary>
+    /// 直播连接器的无 WinUI 替身：只验证关闭时会取消进行中的直播请求。
+    /// </summary>
+    public sealed class LiveConnectorViewModel
+    {
+        public bool IsCancelPendingCalled { get; private set; }
+
+        public void CancelPending() => IsCancelPendingCalled = true;
+
+        internal void ApplyPlaybackInfo(BiliCopilot.UI.Resolvers.LiveMediaSourceResolver resolver)
+        {
+        }
+    }
+
     public sealed partial class PlayerViewModel
     {
         public bool IsConnecting { get; set; }
+
+        /// <summary>测试替身：生产实现由 <c>LiveModePolicy</c> 从媒体快照推导。</summary>
+        public bool IsLive { get; set; }
+
+        public LiveConnectorViewModel? Connector { get; set; }
         private double? _continuePosition;
         internal List<Exception> RefreshErrors { get; } = [];
         partial void ReportPlaybackRefreshFailure(Exception exception) => RefreshErrors.Add(exception);

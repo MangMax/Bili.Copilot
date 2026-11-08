@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PlayerControlBase
     x:Class="BiliCopilot.UI.Controls.Core.OverlayTransportControls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -319,7 +319,8 @@
                     Margin="0,0,8,0"
                     VerticalAlignment="Center"
                     Style="{StaticResource BasicPlayerIconButtonStyle}"
-                    ToolTipService.ToolTip="{x:Bind GetSpeedText(ViewModel.Player.PlaybackRate), Mode=OneWay}">
+                    ToolTipService.ToolTip="{x:Bind GetSpeedText(ViewModel.Player.PlaybackRate), Mode=OneWay}"
+                    Visibility="{x:Bind ViewModel.IsSeekAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ic:SymbolIcon FontSize="14" Symbol="TopSpeed" />
                     <Button.Flyout>
                         <Flyout
@@ -756,6 +757,19 @@
                         <ic:SymbolIcon FontSize="14" Symbol="ContentSettings" />
                     </Button>
                 </StackPanel>
+                <!--  直播房间状态/聊天侧栏入口：窄窗口下 Widget 被收起，仍需要能打开侧栏。  -->
+                <Button
+                    x:Name="LiveInfoButton"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="LiveInfoButton"
+                    AutomationProperties.Name="{ext:Locale Name=LiveRoomInfo}"
+                    Command="{x:Bind ViewModel.OpenLivePanelCommand, Mode=OneWay}"
+                    Style="{StaticResource BasicPlayerIconButtonStyle}"
+                    ToolTipService.ToolTip="{ext:Locale Name=LiveRoomInfo}"
+                    Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay}">
+                    <ic:SymbolIcon FontSize="14" Symbol="Info" />
+                </Button>
                 <Button
                     x:Name="CompactOverlayButton"
                     Margin="0,0,8,0"

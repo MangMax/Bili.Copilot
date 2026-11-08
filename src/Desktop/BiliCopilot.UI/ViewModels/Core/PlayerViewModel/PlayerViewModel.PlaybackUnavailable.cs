@@ -1,6 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -79,9 +80,44 @@ public sealed partial class PlayerViewModel
             case PlaybackUnavailableAction.OpenVipPage:
                 _ = OpenVipPageAsync();
                 break;
+            case PlaybackUnavailableAction.OpenInBrowser:
+                _ = OpenLiveInBrowserAsync();
+                break;
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// 展示直播的失败原因，并把"在浏览器打开"作为可执行操作。
+    /// </summary>
+    /// <param name="kind">失败分类.</param>
+    /// <param name="canRetry">候选与重新取址都失败时为 true，提示从哪里手动重试.</param>
+    internal void ShowLivePlaybackFailure(LiveFailureKind kind, bool canRetry = false)
+    {
+        if (kind == LiveFailureKind.Cancelled)
+        {
+            return;
+        }
+
+        _playbackUnavailableAction = PlaybackUnavailableAction.OpenInBrowser;
+        ErrorMessage = ResourceToolkit.GetLocalizedString(canRetry ? StringNames.LivePlaybackRetry : LiveFailureText.GetMessage(kind));
+        ErrorActionText = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser);
+        HasErrorAction = true;
+        IsConnecting = false;
+        CheckBlackBackgroundVisible();
+    }
+
+    private Task OpenLiveInBrowserAsync()
+    {
+        if (_snapshot?.Live?.Identifier.Id is not { Length: > 0 } roomId)
+        {
+            return Task.CompletedTask;
+        }
+
+        return LiveRoomUrl.Create(roomId) is { } url
+            ? Launcher.LaunchUriAsync(url).AsTask()
+            : Task.CompletedTask;
     }
 
     [RelayCommand]

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using Richasy.BiliKernel.Bili.Media;
 
@@ -59,6 +59,11 @@ public enum PlaybackUnavailableAction
     /// 前往大会员页面.
     /// </summary>
     OpenVipPage,
+
+    /// <summary>
+    /// 在系统浏览器打开（直播兜底）.
+    /// </summary>
+    OpenInBrowser,
 }
 
 /// <summary>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -115,6 +115,8 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
             {
                 // CloseAsync includes an already running native-close cleanup.
                 await Task.WhenAll(appVM.Players.ToArray().Select(player => player.CloseAsync()));
+                // 调试探针是后台单例连接：退出前停止并释放，避免悬空连接。
+                await App.StopLiveDanmakuProbeAsync();
             }, () =>
             {
                 app.ReleaseTrayResources();

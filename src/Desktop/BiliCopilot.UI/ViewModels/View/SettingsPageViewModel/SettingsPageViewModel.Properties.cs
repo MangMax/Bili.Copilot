@@ -151,6 +151,12 @@ public sealed partial class SettingsPageViewModel
     [ObservableProperty]
     public partial bool UseWebPlayerWhenLive { get; set; }
 
+    /// <summary>
+    /// Gets 直播弹幕关键词高亮（逗号/分号/换行分隔）；只影响上屏优先级，不发送弹幕.
+    /// </summary>
+    [ObservableProperty]
+    public partial string? LiveDanmakuHighlightKeywords { get; set; }
+
     [ObservableProperty]
     public partial bool ShowSearchRecommend { get; set; }
 
