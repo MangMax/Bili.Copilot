@@ -757,19 +757,6 @@
                         <ic:SymbolIcon FontSize="14" Symbol="ContentSettings" />
                     </Button>
                 </StackPanel>
-                <!--  直播房间状态/聊天侧栏入口：窄窗口下 Widget 被收起，仍需要能打开侧栏。  -->
-                <Button
-                    x:Name="LiveInfoButton"
-                    Margin="0,0,8,0"
-                    VerticalAlignment="Center"
-                    AutomationProperties.AutomationId="LiveInfoButton"
-                    AutomationProperties.Name="{ext:Locale Name=LiveRoomInfo}"
-                    Command="{x:Bind ViewModel.OpenLivePanelCommand, Mode=OneWay}"
-                    Style="{StaticResource BasicPlayerIconButtonStyle}"
-                    ToolTipService.ToolTip="{ext:Locale Name=LiveRoomInfo}"
-                    Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay}">
-                    <ic:SymbolIcon FontSize="14" Symbol="Info" />
-                </Button>
                 <Button
                     x:Name="CompactOverlayButton"
                     Margin="0,0,8,0"

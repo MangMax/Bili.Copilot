@@ -118,6 +118,7 @@ public partial class App : Application
                 GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
             }
 
+
         }
         else
         {

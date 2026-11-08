@@ -14,6 +14,7 @@
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:BiliCopilot.UI.ViewModels.Core"
     xmlns:player="using:BiliCopilot.UI.Controls.Player"
     mc:Ignorable="d">
 
@@ -60,16 +61,26 @@
             <StackPanel Orientation="Horizontal" RequestedTheme="Dark" Spacing="8">
                 <ComboBox
                     Width="112"
-                    DisplayMemberPath="Name"
                     ItemsSource="{x:Bind Qualities, Mode=OneWay}"
                     PlaceholderText="{ext:Locale Name=Quality}"
-                    SelectedItem="{x:Bind SelectedQuality, Mode=TwoWay}" />
+                    SelectedItem="{x:Bind SelectedQuality, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LiveQualityOption">
+                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <ComboBox
                     Width="112"
-                    DisplayMemberPath="Name"
                     ItemsSource="{x:Bind Lines, Mode=OneWay}"
                     PlaceholderText="{ext:Locale Name=PlayLine}"
-                    SelectedItem="{x:Bind SelectedLine, Mode=TwoWay}" />
+                    SelectedItem="{x:Bind SelectedLine, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LiveLineOption">
+                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
         </DataTemplate>
         <ext:PlayerComponentTemplateSelector
