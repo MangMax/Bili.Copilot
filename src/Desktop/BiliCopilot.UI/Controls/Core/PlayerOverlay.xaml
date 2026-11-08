@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <local:PlayerControlBase
     x:Class="BiliCopilot.UI.Controls.Core.PlayerOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -145,8 +145,7 @@
                     x:Name="TransportControls"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    ViewModel="{x:Bind ViewModel, Mode=OneWay}"
-                    Visibility="{x:Bind ViewModel.IsControlsVisible, Mode=OneWay}">
+                    ViewModel="{x:Bind ViewModel, Mode=OneWay}">
                     <local:OverlayTransportControls.LeftElement>
                         <ContentControl
                             HorizontalAlignment="Stretch"
@@ -157,26 +156,6 @@
                             ContentTemplateSelector="{StaticResource WidgetSelector}"
                             IsTabStop="False" />
                     </local:OverlayTransportControls.LeftElement>
-                    <animations:Implicit.ShowAnimations>
-                        <animations:OpacityAnimation
-                            From="0.0"
-                            To="1.0"
-                            Duration="0:0:0.2" />
-                        <animations:TranslationAnimation
-                            From="0,80,0"
-                            To="0,0,0"
-                            Duration="0:0:0.25" />
-                    </animations:Implicit.ShowAnimations>
-                    <animations:Implicit.HideAnimations>
-                        <animations:OpacityAnimation
-                            From="1.0"
-                            To="0.0"
-                            Duration="0:0:0.2" />
-                        <animations:TranslationAnimation
-                            From="0,0,0"
-                            To="0,80,0"
-                            Duration="0:0:0.25" />
-                    </animations:Implicit.HideAnimations>
                 </local:OverlayTransportControls>
                 <!--
                     两张提示卡片同为 320 宽，纵向排在同一列：NextTip 固定占顶部槽位，

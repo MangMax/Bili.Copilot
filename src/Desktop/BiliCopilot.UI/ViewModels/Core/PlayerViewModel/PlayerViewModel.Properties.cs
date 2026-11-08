@@ -231,9 +231,6 @@ public sealed partial class PlayerViewModel
     public partial string? SponsorBlockTipText { get; set; }
 
     [ObservableProperty]
-    public partial bool IsDanmakuOptionsVisible { get; set; }
-
-    [ObservableProperty]
     public partial Anime4KMode Anime4KMode { get; set; }
 
     [ObservableProperty]

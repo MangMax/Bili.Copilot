@@ -206,8 +206,10 @@ window height and the band layout is unchanged; the `PortraitState` visual state
 enables vertical scrolling, moves the transport and the extra controls into one
 right-hand column (the play controls first), turns both panels vertical, hides the
 left info card, keeps the full volume slider replaced by the slim volume button with
-its slider flyout, and leaves only the progress bar at the bottom. Every applicable
-button keeps its own entry — nothing moves into the "more" menu. Height is owned by
+its slider flyout, and leaves only the progress bar at the bottom. Full screen and exit-compact commands share the three-dot menu; the information
+card stays hidden. Volume and speed use vertical sliders in portrait mode, with
+speed presets arranged vertically. Flyout content is sized against the available
+client area and scrolls vertically when necessary. Height is owned by
 the code-behind: 160 (120 in the narrow band) or, for the rail, the full player
 area.
 
@@ -221,11 +223,14 @@ control over the player area (the band still anchors itself to the bottom) and a
 it whether a pointer is inside the interactive band or rail, so hovering the rail no
 longer hides the controls while the pointer is on a button.
 
-Known limits: the rail is a normal scroll region, so a very short compact window (or
-a large text scale) needs scrolling to reach the last buttons; the left cover/title
-card stays hidden as before because it is an information card, not an operation; and
-the danmaku options teaching tip is only re-anchored, its own panel width still has
-to fit the window.
+The rail and progress bar have separate animation targets: the rail enters from
+the right and the progress bar from below. Band mode retains its bottom entrance.
+Composition completion settles visibility, with generation checks for reversals
+and a direct final state when system animations are disabled. Hidden controls
+remain measured but are disabled and do not receive pointer input.
+
+Very short windows or enlarged text can require scrolling to reach the last item.
+Pure layout tests do not verify the actual XAML rendering or popup behaviour.
 
 ## Native evidence
 
@@ -326,10 +331,13 @@ Portrait control layout coverage (this change): `OverlayControlLayoutTests`
 checks the band/rail decision (portrait compact, ordinary portrait, landscape and
 square compact, zero/invalid sizes), the unchanged width thresholds, the interactive
 areas, and the fitted 9:16 / 16:9 frames produced by `CompactOverlayLayout`; the
-full UI suite passes (1160 tests, 0 failed) and the default Release/x64 WinUI build
-has 0 warnings and 0 errors. The real XAML layout inside the packaged app was not
-run for this change, so the visual result and the scroll behaviour are still part of
-the checks below.
+full UI suite passes (1177 tests, 0 failed). The parent also exercised the packaged
+Dev app at approximately 352 and 269 DIP client widths: volume, speed, subtitle
+settings, rail scrolling, the overflow menu and restoring the ordinary band.
+Screen recordings cover separate right/bottom motion and rapid reversal. Evidence
+and remaining limitations are recorded in artifacts/portrait-parent/report.md.
+Danmaku settings use a regular Flyout instead of a TeachingTip so narrow windows
+can present the scrollable settings surface.
 
 Real-app checks still required with the packaged app and real media:
 

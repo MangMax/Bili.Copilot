@@ -115,6 +115,31 @@ public sealed class OverlayControlLayoutTests
             OverlayControlLayoutMode.PortraitRail, 360, 640, x, y));
 
     [Fact]
+    public void RailWidthMatchesTheRenderedButtonsAndGutter()
+    {
+        // PortraitState 把两个面板贴右、Margin 0,0,8,8：普通按钮 40，播放键 52；
+        // 轨道宽度由最宽的播放键决定，命中区必须覆盖播放键左缘，不能只按 40 计算.
+        Assert.Equal(40d, OverlayControlLayout.RailButtonSize);
+        Assert.Equal(52d, OverlayControlLayout.RailPrimaryButtonSize);
+        Assert.Equal(8d, OverlayControlLayout.RailGutter);
+        Assert.Equal(60d, OverlayControlLayout.RailWidth);
+        Assert.Equal(
+            OverlayControlLayout.RailPrimaryButtonSize + OverlayControlLayout.RailGutter,
+            OverlayControlLayout.RailWidth);
+    }
+
+    [Fact]
+    public void EnterOffsetsFollowTheEdgeEachTargetComesFrom()
+    {
+        // 底部带整体从下缘进出；竖屏右栏从右缘进出，宽度覆盖播放键和右侧留白；
+        // 进度条另用 BottomEnterOffset 从下缘进出（见 OverlayTransportControls.StartMotion）.
+        Assert.Equal((0d, OverlayControlLayout.BottomEnterOffset), OverlayControlLayout.EnterOffset(OverlayControlLayoutMode.Band));
+        Assert.Equal((OverlayControlLayout.RailWidth, 0d), OverlayControlLayout.EnterOffset(OverlayControlLayoutMode.PortraitRail));
+        Assert.True(OverlayControlLayout.BottomEnterOffset > 0d);
+        Assert.True(OverlayControlLayout.RailWidth > 0d);
+    }
+
+    [Fact]
     public void HitAreasStaySmallerThanThePortraitFormTheyApplyTo()
     {
         // 640 高的竖屏小窗宽约 360：轨道交互宽度必须明显小于窗口宽度，

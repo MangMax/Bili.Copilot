@@ -55,6 +55,8 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         ViewModel.RequestHideNextTip += OnRequestHideNextTip;
         ViewModel.RequestShowSponsorBlockTip += OnRequestShowSponsorBlockTip;
         ViewModel.RequestHideSponsorBlockTip += OnRequestHideSponsorBlockTip;
+        // 控制区自己拥有显隐动画；首次加载直接对齐当前状态，不播放入场动画.
+        TransportControls?.SetShown(ViewModel.IsControlsVisible, animate: false);
     }
 
     protected override void OnControlUnloaded()
@@ -65,6 +67,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         ViewModel.RequestHideNextTip -= OnRequestHideNextTip;
         ViewModel.RequestShowSponsorBlockTip -= OnRequestShowSponsorBlockTip;
         ViewModel.RequestHideSponsorBlockTip -= OnRequestHideSponsorBlockTip;
+        TransportControls?.SetShown(false, animate: false);
 
         // 卸载后不再有事件驱动提示，主动收起以停掉它的计时器.
         SponsorBlockTip?.Hide();
@@ -111,7 +114,9 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         _cursorTimer.Stop();
         _controlTimer.Stop();
         TestRect.Visibility = Visibility.Visible;
-        if (!_isTouch && !ViewModel.IsExtraPanelVisible)
+        // 弹层（倍速/字幕/章节/音量/弹幕设置）打开期间指针离开控制区也不能把控件收起：
+        // 控件一旦 Collapsed，挂在它上面的 Flyout 会跟着关闭，正在操作的面板就被抢走了.
+        if (!_isTouch && !ViewModel.IsExtraPanelVisible && !ViewModel.IsPopupVisible)
         {
             _isInTitleBar = position.Y <= HeaderBarHeight && position.Y >= 0;
             _isInTransportControls = TransportControls?.ContainsInteractivePoint(position) == true;
@@ -136,6 +141,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     {
         if (e.PropertyName == nameof(ViewModel.IsControlsVisible))
         {
+            TransportControls?.SetShown(ViewModel.IsControlsVisible);
             if (!ViewModel.IsControlsVisible && !_controlTimer.IsRunning)
             {
                 _controlTimer.Start();
@@ -166,7 +172,9 @@ public sealed partial class PlayerOverlay : PlayerControlBase
 
     private void OnCursorTimerTick(DispatcherQueueTimer sender, object args)
     {
-        if (!IsCursorInWindow() && !_isTouch)
+        // 弹出面板本身是独立 popup，指针进入它时已不在主窗口矩形内，
+        // 但此时不能把控件收起，否则面板会跟着关闭.
+        if (!IsCursorInWindow() && !_isTouch && !ViewModel.IsPopupVisible)
         {
             ViewModel.IsControlsVisible = false;
             _cursorTimer.Stop();
