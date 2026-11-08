@@ -1,7 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
-using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Resolvers;
@@ -34,16 +33,6 @@ public sealed partial class PlayerViewModel
 {
     partial void ReportPlaybackRefreshFailure(Exception exception)
     {
-        if (IsLive)
-        {
-            var kind = exception is LivePlaybackUnavailableException unavailable
-                ? unavailable.Kind
-                : LivePlaybackFailureClassifier.ClassifyPlayback(exception);
-            logger.LogWarning(exception, "直播刷新播放失败：{Kind}", kind);
-            ShowLivePlaybackFailure(LivePlaybackFailureClassifier.ToLiveFailureKind(kind), canRetry: true);
-            return;
-        }
-
         logger.LogWarning(exception, "刷新播放失败");
         Window?.ShowTip(exception.Message, InfoType.Error);
     }
@@ -60,7 +49,6 @@ public sealed partial class PlayerViewModel
             {
                 BiliMediaType.Video => new VideoConnectorViewModel(this),
                 BiliMediaType.Pgc => new PgcConnectorViewModel(this),
-                BiliMediaType.Live => new LiveConnectorViewModel(this),
                 _ => default,
             };
 
@@ -189,7 +177,32 @@ public sealed partial class PlayerViewModel
                     }
                 }
 
-                await ApplyDemuxerCacheProfileAsync(Client);
+                var cacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSize, 300d);
+                var cacheSeconds = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSeconds, 360d);
+                var backCacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxBackCacheSize, 0d);
+                await Client.SetDemuxerMaxBytesAsync($"{Convert.ToInt32(cacheSize)}MiB");
+                await Client.SetDemuxerReadheadSecondsAsync(Convert.ToInt32(cacheSeconds));
+                if (Convert.ToInt32(backCacheSize) > 0)
+                {
+                    await Client.SetDemuxerMaxBackBytesAsync($"{Convert.ToInt32(backCacheSize)}MiB");
+                }
+
+                var useCacheOnDisk = SettingsToolkit.ReadLocalSetting(SettingNames.CacheOnDisk, false);
+                await Client.SetCacheOnDiskAsync(useCacheOnDisk);
+                if (useCacheOnDisk)
+                {
+                    var cacheDir = SettingsToolkit.ReadLocalSetting(SettingNames.CacheDir, string.Empty);
+                    if (!string.IsNullOrEmpty(cacheDir) && Directory.Exists(cacheDir))
+                    {
+                        try
+                        {
+                            await Client.SetCacheDirAsync(cacheDir);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
 
                 var profile = SettingsToolkit.ReadLocalSetting(SettingNames.MpvBuiltInProfile, MpvBuiltInProfile.HighQuality);
                 if (profile != MpvBuiltInProfile.HighQuality)
@@ -369,15 +382,6 @@ public sealed partial class PlayerViewModel
         }
         // 关闭或换集之后到达的错误只属于旧会话：既不重播，也不写旧会话的界面状态。
         var isCurrent = CapturePlaybackValidity();
-        if (IsLive)
-        {
-            // 直播 Duration 恒小于 1：不能走"坏源重播一次"的分支，
-            // 该分支会拿同一个失效地址重播并把 _isBroken 永久置位。
-            var playbackFailure = LivePlaybackFailureClassifier.FromPlayerError(LiveFailureText.FromPlayerError(e));
-            queue.TryEnqueue(() => RunLivePlaybackRecovery(playbackFailure, isCurrent));
-            return;
-        }
-
         if (isCurrent() && Player.Duration < 1 && !_isBroken)
         {
             _isBroken = true;
@@ -416,128 +420,6 @@ public sealed partial class PlayerViewModel
 
             CheckBlackBackgroundVisible();
         });
-    }
-
-    /// <summary>
-    /// 直播错误恢复：先换候选，候选耗尽重新取址，仍失败才交给用户手动重试。
-    /// 与手动刷新共用 <c>PlaybackRefreshController</c> 的单飞准入，不新建播放器。
-    /// </summary>
-    private void RunLivePlaybackRecovery(LivePlaybackFailureKind kind, Func<bool> isCurrent)
-    {
-        if (!isCurrent() || IsLiveRoomTerminal || _sourceResolver is not LiveMediaSourceResolver resolver || _playbackRefresh.IsRefreshing)
-        {
-            // 已下播/被切断：房间事件是权威状态，不再自动重连或自动刷新。
-            return;
-        }
-
-        var action = resolver.NotifyPlaybackFailure(kind);
-        if (action is LiveRecoveryAction.AdvanceCandidate or LiveRecoveryAction.ReRequestPlayUrl)
-        {
-            _ = ObserveLivePlaybackRecoveryAsync(resolver, isCurrent);
-        }
-        else if (action == LiveRecoveryAction.ManualRetry)
-        {
-            ShowLivePlaybackFailure(LivePlaybackFailureClassifier.ToLiveFailureKind(kind), canRetry: true);
-        }
-    }
-
-    private async Task ObserveLivePlaybackRecoveryAsync(LiveMediaSourceResolver resolver, Func<bool> isCurrent)
-    {
-        try
-        {
-            await RefreshLivePlaybackAsync(resolver, automatic: true, isCurrent);
-        }
-        catch (Exception ex)
-        {
-            ReportPlaybackRefreshFailure(ex);
-        }
-    }
-
-    /// <summary>
-    /// 按媒体类型应用播放器参数：直播加载 app 自有的 mpv 配置与缓冲档位，
-    /// 回到视频/PGC 时加载基线还原。MpvClient 跨媒体复用，所以每次进入媒体都重跑。
-    /// </summary>
-    private async Task ApplyPlaybackProfileAsync(BiliMediaType type)
-    {
-        if (Client?.IsDisposed != false)
-        {
-            return;
-        }
-
-        if (type == BiliMediaType.Live)
-        {
-            var path = await AppToolkit.EnsureLiveMpvConfigExistAsync();
-            var result = await Client.SetConfigFileAsync(path);
-            if (!result.IsSuccess)
-            {
-                logger.LogWarning("加载直播 mpv 配置失败，继续使用默认参数");
-            }
-
-            _liveProfileApplied = true;
-            await Client.SetDemuxerMaxBytesAsync(LiveMpvConfig.DemuxerMaxBytes);
-            await Client.SetDemuxerMaxBackBytesAsync(LiveMpvConfig.DemuxerMaxBackBytes);
-            await Client.SetCacheOnDiskAsync(LiveMpvConfig.CacheOnDisk);
-            return;
-        }
-
-        if (!_liveProfileApplied)
-        {
-            return;
-        }
-
-        var baselinePath = await AppToolkit.EnsureLiveMpvConfigExistAsync(baseline: true);
-        var baselineResult = await Client.SetConfigFileAsync(baselinePath);
-        if (!baselineResult.IsSuccess)
-        {
-            logger.LogWarning("还原播放器基线 mpv 配置失败");
-        }
-
-        _liveProfileApplied = false;
-        await ApplyDemuxerCacheProfileAsync(Client);
-    }
-
-    /// <summary>
-    /// 应用用户设置的解复用缓存档位（视频/PGC 的基线）。
-    /// </summary>
-    /// <remarks>
-    /// 首次创建客户端与从直播配置还原基线都调用这里，避免两处各写一遍缓存参数而漂移；
-    /// 直播的固定档位由 <see cref="ApplyPlaybackProfileAsync"/> 单独设置，不经过本方法。
-    /// </remarks>
-    /// <param name="client">已创建的 mpv 客户端.</param>
-    /// <returns><see cref="Task"/>.</returns>
-    private async Task ApplyDemuxerCacheProfileAsync(MpvClient client)
-    {
-        var cacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSize, 300d);
-        var cacheSeconds = SettingsToolkit.ReadLocalSetting(SettingNames.MaxCacheSeconds, 360d);
-        var backCacheSize = SettingsToolkit.ReadLocalSetting(SettingNames.MaxBackCacheSize, 0d);
-        await client.SetDemuxerMaxBytesAsync($"{Convert.ToInt32(cacheSize)}MiB");
-        await client.SetDemuxerReadheadSecondsAsync(Convert.ToInt32(cacheSeconds));
-        if (Convert.ToInt32(backCacheSize) > 0)
-        {
-            await client.SetDemuxerMaxBackBytesAsync($"{Convert.ToInt32(backCacheSize)}MiB");
-        }
-
-        var useCacheOnDisk = SettingsToolkit.ReadLocalSetting(SettingNames.CacheOnDisk, false);
-        await client.SetCacheOnDiskAsync(useCacheOnDisk);
-        if (!useCacheOnDisk)
-        {
-            return;
-        }
-
-        var cacheDir = SettingsToolkit.ReadLocalSetting(SettingNames.CacheDir, string.Empty);
-        if (string.IsNullOrEmpty(cacheDir) || !Directory.Exists(cacheDir))
-        {
-            return;
-        }
-
-        try
-        {
-            await client.SetCacheDirAsync(cacheDir);
-        }
-        catch
-        {
-            // 缓存目录不可用不应阻止播放。
-        }
     }
 
     private async Task ResetPlayerPresenterModeAsync()
@@ -646,13 +528,6 @@ public sealed partial class PlayerViewModel
 
         if (e.PropertyName == nameof(Player.Position))
         {
-            if (!LiveCapabilities.SupportsTimeline)
-            {
-                // 直播没有时间轴：不更新进度文案、不判结束、不跑空降与章节。
-                _prevPosition = Player.Position;
-                return;
-            }
-
             IsPreviewProgressChanging = false;
             PositionText = TimeSpan.FromSeconds(Player.Position).ToString(@"hh\:mm\:ss");
             ProgressChanged?.Invoke(this, Player.Position);
@@ -738,11 +613,6 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.Duration))
         {
-            if (!LiveCapabilities.SupportsTimeline)
-            {
-                return;
-            }
-
             DurationText = TimeSpan.FromSeconds(Player.Duration).ToString(@"hh\:mm\:ss");
             ChapterInitialized?.Invoke(this, EventArgs.Empty);
         }
@@ -789,12 +659,6 @@ public sealed partial class PlayerViewModel
             {
                 ApplySubtitlesAsync = async () =>
                 {
-                    if (!LiveCapabilities.SupportsSubtitles)
-                    {
-                        // 直播没有字幕：不改字体，也不挂字幕轨。
-                        return;
-                    }
-
                     await ChangeSubtitleFontFamilyCommand.ExecuteAsync(SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontFamily, "Segoe UI"));
                     var subtitleFontSize = SettingsToolkit.ReadLocalSetting(SettingNames.SubtitleFontSize, 32d);
                     ChangeSubtitleFontSizeCommand.Execute(Math.Max(1, subtitleFontSize));
@@ -916,12 +780,6 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        if (!LiveCapabilities.SupportsSpeed)
-        {
-            // 直播没有倍速/长按加速。
-            return;
-        }
-
         if (args.VirtualKey == Windows.System.VirtualKey.Right && !_isRightKeyDown && AppToolkit.NotModifierKeyPressed())
         {
             _isRightKeyDown = true;
@@ -948,12 +806,6 @@ public sealed partial class PlayerViewModel
         var isCurrent = CapturePlaybackValidity();
         if (!isCurrent())
         {
-            return;
-        }
-
-        if (!LiveCapabilities.SupportsTimeline && args.VirtualKey is Windows.System.VirtualKey.Left or Windows.System.VirtualKey.Right)
-        {
-            // 直播没有时间轴：左右键既不跳转也不倍速；音量/全屏/画中画仍然可用。
             return;
         }
 

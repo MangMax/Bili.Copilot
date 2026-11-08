@@ -1,7 +1,5 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.Resolvers;
-
 namespace BiliCopilot.UI.ViewModels.Core;
 
 public sealed partial class PlayerViewModel
@@ -16,16 +14,6 @@ public sealed partial class PlayerViewModel
         _isDanmakuClosed = true;
         CancelPlaybackRefresh();
         _danmakuLoadSession?.Dispose();
-        // 关闭窗口时取消仍在进行的直播地址请求与房间详情请求。
-        if (_sourceResolver is LiveMediaSourceResolver liveResolver)
-        {
-            liveResolver.Cancel();
-        }
-
-        if (Connector is LiveConnectorViewModel liveConnector)
-        {
-            liveConnector.CancelPending();
-        }
     }
 
     /// <summary>

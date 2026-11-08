@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Core;
 
@@ -21,10 +21,6 @@ internal sealed partial class PlayerComponentTemplateSelector : DataTemplateSele
         else if (item is PgcConnectorViewModel)
         {
             return PgcTemplate;
-        }
-        else if (item is LiveConnectorViewModel)
-        {
-            return LiveTemplate;
         }
 
         return default;

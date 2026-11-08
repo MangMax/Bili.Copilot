@@ -1,16 +1,8 @@
-using BiliCopilot.UI.Live;
-using BiliCopilot.UI.Models;
-using BiliCopilot.UI.Models.Constants;
-using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Toolkits;
-using Microsoft.Extensions.Logging.Abstractions;
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.Components;
-using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Media;
 using System.Reflection;
 
 namespace BiliCopilot.UI.Tests;
@@ -142,87 +134,6 @@ public sealed class PlaybackRefreshTests
         await refresh;
         Assert.Single(vm.RefreshErrors);
         Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
-    }
-
-
-    [Fact]
-    public async Task PlayerRefresh_LiveOffersRefreshAndReopensWithoutPositionOrSpeed()
-    {
-        var (resolver, service) = await CreateLiveResolverAsync();
-        var vm = new PlayerViewModel { IsLive = true };
-        vm.SetRefreshResolver(resolver);
-        Assert.True(vm.IsPlaybackRefreshAvailable);
-        Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
-
-        vm.Player.Position = 24;
-        vm.Player.PlaybackRate = 1.75;
-        vm.Player.Volume = 37;
-        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
-
-        var load = Assert.Single(vm.Client!.Loads);
-        Assert.Equal(2, service.PlayCalls);
-        Assert.Null(load.Options.StartPosition);
-        Assert.Equal(1d, load.Options.InitialSpeed);
-        Assert.Equal(37d, load.Options.InitialVolume);
-        Assert.Empty(vm.RefreshErrors);
-    }
-
-    [Fact]
-    public async Task PlayerRefresh_LiveRefreshIsSingleFlightAndLateFetchIsDiscardedAfterClose()
-    {
-        var (resolver, service) = await CreateLiveResolverAsync();
-        var vm = new PlayerViewModel { IsLive = true };
-        vm.SetRefreshResolver(resolver);
-        var pending = new TaskCompletionSource<LiveMediaInformation>();
-        service.Fetch = () => pending.Task;
-
-        var refresh = vm.RefreshPlaybackCommand.ExecuteAsync(null);
-        Assert.False(vm.RefreshPlaybackCommand.CanExecute(null));
-        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
-        await vm.ReleaseSessionCoreAsync(() => Task.CompletedTask);
-        pending.SetResult(service.Information);
-        await refresh;
-
-        Assert.Empty(vm.Client!.Loads);
-        Assert.Empty(vm.RefreshErrors);
-        Assert.False(resolver.IsRefreshPending);
-    }
-
-    [Fact]
-    public async Task PlayerRefresh_LiveFetchFailureIsReportedAndButtonCanRetry()
-    {
-        var (resolver, service) = await CreateLiveResolverAsync();
-        var vm = new PlayerViewModel { IsLive = true };
-        vm.SetRefreshResolver(resolver);
-        service.Fetch = () => Task.FromException<LiveMediaInformation>(
-            new HttpRequestException("403", null, System.Net.HttpStatusCode.Forbidden));
-
-        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
-
-        Assert.Single(vm.RefreshErrors);
-        Assert.Empty(vm.Client!.Loads);
-        Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
-    }
-
-    private static async Task<(LiveMediaSourceResolver Resolver, LiveMediaSourceResolverTests.LivePlayerService Service)> CreateLiveResolverAsync()
-    {
-        NavigationTestServices.Settings.Value = new();
-        NavigationTestServices.Current.Value = new() { [typeof(AccountViewModel)] = new AccountViewModel() };
-        var api = DispatchProxy.Create<IPlayerService, LiveMediaSourceResolverTests.LivePlayerService>();
-        var service = (LiveMediaSourceResolverTests.LivePlayerService)(object)api;
-        var page = new LivePlayerView(
-            new LiveInformation(new MediaIdentifier("123", "房间标题", null)),
-            new LiveTag("area", "分区", "default"));
-        service.View = page;
-        service.Information = new LiveMediaInformation(
-            "123",
-            [new PlayerFormatInformation(400, "蓝光", false, false)],
-            [new LiveLineInformation("avc", 400, [400], [new LivePlayUrl("http_hls", "https://hls.example", "/live/a.m3u8", "?sign=1")])]);
-        var cookies = DispatchProxy.Create<IBiliCookiesResolver, LiveMediaSourceResolverTests.CookieService>();
-        var resolver = new LiveMediaSourceResolver(api, cookies, NullLogger<LiveMediaSourceResolver>.Instance);
-        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "房间标题", null))));
-        await resolver.GetSourceAsync();
-        return (resolver, service);
     }
 
     private static async Task<(PlayerViewModel Player, PlaybackRoutingResolverTests.PlaybackService Api)> CreatePlayerAsync()

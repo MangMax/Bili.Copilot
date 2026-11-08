@@ -147,27 +147,12 @@ namespace BiliCopilot.UI.ViewModels.Items
 }
 namespace BiliCopilot.UI.Models
 {
-    public sealed class MediaSnapshot
+    public sealed class MediaSnapshot(VideoInformation video)
     {
-        public MediaSnapshot(VideoInformation video)
-            => Video = video;
-
-        public MediaSnapshot(LiveInformation live)
-        {
-            Live = live;
-            Type = BiliCopilot.UI.Models.Constants.BiliMediaType.Live;
-        }
-
-        public VideoInformation? Video { get; }
-
-        public LiveInformation? Live { get; }
-
-        public BiliCopilot.UI.Models.Constants.BiliMediaType Type { get; set; }
-
+        public VideoInformation Video { get; } = video;
         public EpisodeInformation? Episode { get; set; }
         public SeasonInformation? Season { get; set; }
         public int? PreferQuality { get; set; }
-        public double? StartPosition { get; set; }
         public List<MediaSnapshot> Playlist { get; set; } = new();
     }
 }

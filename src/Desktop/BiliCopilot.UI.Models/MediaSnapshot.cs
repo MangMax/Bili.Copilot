@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using Richasy.BiliKernel.Models.Media;
@@ -31,28 +31,9 @@ public sealed class MediaSnapshot
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MediaSnapshot"/> class.
-    /// </summary>
-    /// <param name="live">直播间信息.</param>
-    /// <remarks>
-    /// 直播没有时长与终点，因此天然按"无痕播放"处理：不写观看历史，也不续播。
-    /// </remarks>
-    public MediaSnapshot(LiveInformation live)
-    {
-        Live = live;
-        Type = BiliMediaType.Live;
-        IsPrivate = true;
-    }
-
-    /// <summary>
     /// 视频信息.
     /// </summary>
     public VideoInformation? Video { get; }
-
-    /// <summary>
-    /// 直播间信息.
-    /// </summary>
-    public LiveInformation? Live { get; }
 
     /// <summary>
     /// 电视剧.
