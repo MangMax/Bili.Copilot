@@ -125,6 +125,14 @@ public sealed partial class PlayerViewModel
     [ObservableProperty]
     public partial IPlayerConnectorViewModel? Connector { get; set; }
 
+    /// <summary>
+    /// Gets 当前直播连接器；视频/PGC 时为 <c>null</c>，供标题栏的画质/线路选择绑定。
+    /// </summary>
+    public LiveConnectorViewModel? LiveConnector => Connector as LiveConnectorViewModel;
+
+    partial void OnConnectorChanged(IPlayerConnectorViewModel? value)
+        => OnPropertyChanged(nameof(LiveConnector));
+
     [ObservableProperty]
     public partial bool IsPrevButtonEnabled { get; set; }
 

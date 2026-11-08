@@ -259,10 +259,17 @@ public sealed partial class LiveConnectorViewModel
 
     private void SeedOnlineCount()
     {
-        var viewerCount = Session.Page?.Information.GetExtensionIfNotNull<double>(LiveExtensionDataId.ViewerCount);
-        if (viewerCount is { } count && count >= 0)
+        var rawViewerCount = Session.Page?.Information.GetExtensionIfNotNull<object>(LiveExtensionDataId.ViewerCount);
+        var viewerCount = rawViewerCount switch
         {
-            _roomStatus.ApplyOnlineCount(_roomStatus.RoomId, (int)count, LiveOnlineCountSource.Popularity);
+            int i => i,
+            long l => (int)Math.Min(l, int.MaxValue),
+            double d => (int)d,
+            _ => -1,
+        };
+        if (viewerCount >= 0)
+        {
+            _roomStatus.ApplyOnlineCount(_roomStatus.RoomId, viewerCount, LiveOnlineCountSource.Popularity);
         }
 
         RefreshOnlineCount();

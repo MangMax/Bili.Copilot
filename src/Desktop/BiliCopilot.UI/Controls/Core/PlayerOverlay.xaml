@@ -56,6 +56,22 @@
         <DataTemplate x:Key="LivePanelTemplate" x:DataType="core:LiveConnectorViewModel">
             <player:LivePlayerPanel ViewModel="{x:Bind}" />
         </DataTemplate>
+        <DataTemplate x:Key="LiveHeaderSelectorTemplate" x:DataType="core:LiveConnectorViewModel">
+            <StackPanel Orientation="Horizontal" RequestedTheme="Dark" Spacing="8">
+                <ComboBox
+                    Width="112"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{x:Bind Qualities, Mode=OneWay}"
+                    PlaceholderText="{ext:Locale Name=Quality}"
+                    SelectedItem="{x:Bind SelectedQuality, Mode=TwoWay}" />
+                <ComboBox
+                    Width="112"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{x:Bind Lines, Mode=OneWay}"
+                    PlaceholderText="{ext:Locale Name=PlayLine}"
+                    SelectedItem="{x:Bind SelectedLine, Mode=TwoWay}" />
+            </StackPanel>
+        </DataTemplate>
         <ext:PlayerComponentTemplateSelector
             x:Key="WidgetSelector"
             LiveTemplate="{StaticResource LiveWidgetTemplate}"
@@ -471,6 +487,12 @@
                                     Foreground="White"
                                     Text="{x:Bind ViewModel.CacheSpeedText, Mode=OneWay}"
                                     Visibility="{x:Bind ViewModel.CacheSpeedText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
+                                <ContentControl
+                                    Margin="12,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Content="{x:Bind ViewModel.Connector, Mode=OneWay}"
+                                    ContentTemplate="{StaticResource LiveHeaderSelectorTemplate}"
+                                    Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
                                 <DropDownButton
                                     x:Name="SourceSelector"
                                     Margin="12,0,0,0"
