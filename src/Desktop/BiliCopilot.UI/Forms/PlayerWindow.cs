@@ -1,5 +1,4 @@
-﻿using BiliCopilot.UI.Controls.Core;
-using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.UI;
@@ -8,9 +7,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Richasy.WinUIKernel.Share.Base;
-using Windows.Graphics;
 using Windows.Win32.UI.WindowsAndMessaging;
-using WinUIEx;
 
 namespace BiliCopilot.UI.Forms;
 
@@ -21,18 +18,15 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     private readonly AppWindow _rootWindow;
     private readonly DesktopWindowXamlSource _xamlSource;
     private readonly CursorGrid _rootGrid;
-    private readonly PlayerWindowPlacementSession _presenterChange;
+    private readonly PlayerWindowPresentation _presentation;
     private InputActivationListener _inputActivationListener;
     private bool _xamlSourceDisposed;
     private bool _isFirstActivated = true;
-    private bool _enteringFullScreen;
-    private bool _enteringCompactOverlay;
     private Action<bool> _activeChangedAction;
 
     public PlayerWindow()
     {
         _rootWindow = AppWindow.Create();
-        _presenterChange = new(new CompactPositionAdapter(_rootWindow), () => Task.Delay(500));
         _rootWindow.AssociateWithDispatcherQueue(DispatcherQueue.GetForCurrentThread());
         _rootWindow.Destroying += OnWindowDestroying;
 
@@ -56,7 +50,8 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
 
         ResetWindowMinSize();
-        InitializeRatio();
+        _ratio = new CompactOverlayRatio(SettingsToolkit.CompactOverlayRatio);
+        _presentation = new(new PlayerWindowSurface(this), new PlayerWindowState(this), _ratio);
     }
 
     /// <summary>
@@ -68,11 +63,6 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// 窗口是否已关闭.
     /// </summary>
     public bool IsClosed { get; private set; }
-
-    /// <summary>
-    /// 窗口展示模式是否正在改变.
-    /// </summary>
-    public bool IsPresenterChanging => _presenterChange.IsChanging;
 
     /// <summary>
     /// 窗口大小改变事件.
@@ -97,9 +87,8 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             return ValueTask.CompletedTask;
         }
 
-        SaveCurrentWindowStats();
-        _presenterChange.Close();
-        _ratioSession.Dispose();
+        _presentation.Close();
+        _ratio.Dispose();
         IsDisposed = true;
 
         // Close the island while its HWND still exists: destroying the window first and
@@ -138,13 +127,9 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// </summary>
     public void Show(bool restorePosition = true)
     {
-        _rootWindow.Show();
+        _presentation.Show(restorePosition, activate: true);
         PInvoke.SetForegroundWindow(new(Handle));
         PInvoke.SetFocus(new(Handle));
-        if (restorePosition)
-        {
-            MoveAndResize();
-        }
 
         if (_isFirstActivated)
         {
@@ -211,9 +196,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
                 SetTopMost(false);
             }
 
-            _enteringFullScreen = true;
-            _enteringCompactOverlay = false;
-            _ = ChangeRatioPresenterAsync(AppWindowPresenterKind.FullScreen);
+            _ = _presentation.RequestModeAsync(WindowPresentationMode.FullScreen);
         }
     }
 
@@ -226,8 +209,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen)
         {
-            _enteringFullScreen = false;
-            _ = ChangeRatioPresenterAsync(AppWindowPresenterKind.Overlapped);
+            _ = _presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
         }
     }
 
@@ -245,9 +227,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
                 SetTopMost(false);
             }
 
-            _enteringCompactOverlay = true;
-            _enteringFullScreen = false;
-            _ = ChangeRatioPresenterAsync(AppWindowPresenterKind.CompactOverlay);
+            _ = _presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
         }
     }
 
@@ -260,8 +240,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
         {
-            _enteringCompactOverlay = false;
-            _ = ChangeRatioPresenterAsync(AppWindowPresenterKind.Overlapped);
+            _ = _presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
         }
     }
 
@@ -350,10 +329,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         _activeChangedAction?.Invoke(sender.State == InputActivationState.Activated);
 
-        if (_presenterChange.CanSaveOrdinaryWindow && (_rootWindow.Position.X < -10000 || _rootWindow.Position.Y < -10000))
-        {
-            MoveAndResize();
-        }
+        _presentation.RecoverOffscreenOrdinary();
     }
 
     private void OnWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
@@ -374,10 +350,10 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (args.DidSizeChange || args.DidVisibilityChange || args.DidPresenterChange)
         {
             UpdateXamlSourcePosition();
-            SaveCurrentWindowStats();
+            _presentation.GeometryChanged();
         }
 
-        if ((args.DidVisibilityChange || args.DidPresenterChange) && sender.IsVisible)
+        if ((args.DidVisibilityChange || args.DidPresenterChange) && sender.IsVisible && !_presentation.IsChanging)
         {
             ResetFocus();
         }
@@ -391,7 +367,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         if (args.DidPositionChange)
         {
-            SaveCurrentWindowStats();
+            _presentation.GeometryChanged();
         }
     }
 
@@ -403,17 +379,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             (_rootWindow.Presenter as OverlappedPresenter)?.PreferredMinimumHeight = Convert.ToInt32(WindowMinHeight * scale);
             (_rootWindow.Presenter as OverlappedPresenter)?.PreferredMinimumWidth = Convert.ToInt32(WindowMinWidth * scale);
         }
-        else if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
-        {
-            (_rootWindow.Presenter as CompactOverlayPresenter)?.InitialSize = CompactOverlaySize.Medium;
-        }
     }
 
     private void OnWindowDestroying(AppWindow sender, object args)
     {
-        SaveCurrentWindowStats();
-        _presenterChange.Close();
-        _ratioSession.Dispose();
+        _presentation.Close();
         IsClosed = true;
         _inputActivationListener.InputActivationChanged -= OnInputActivationChanged;
         _rootWindow.Destroying -= OnWindowDestroying;
@@ -477,104 +447,4 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             }
         });
     }
-
-    private static PointInt32 GetSavedWindowPosition()
-    {
-        var left = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowPositionLeft, 0);
-        var top = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowPositionTop, 0);
-        return new PointInt32(left, top);
-    }
-
-    private RectInt32 GetRenderRect(DisplayArea area)
-    {
-        var workArea = area.WorkArea;
-        var scaleFactor = HwndExtensions.GetDpiForWindow(Handle) / 96d;
-        var previousWidth = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowWidth, 1120d);
-        var previousHeight = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowHeight, 740d);
-        var width = Convert.ToInt32(previousWidth * scaleFactor);
-        var height = Convert.ToInt32(previousHeight * scaleFactor);
-        var workAreaHeight = Convert.ToInt32(workArea.Height * scaleFactor);
-        // Ensure the window is not larger than the work area.
-        if (height > workAreaHeight - 20)
-        {
-            height = workAreaHeight - 20;
-        }
-
-        var lastPoint = GetSavedWindowPosition();
-        var isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
-        var isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y && lastPoint.X + width <= workArea.X + workArea.Width && lastPoint.Y + height <= workArea.Y + workArea.Height;
-        // 下面的 workArea.Width 和 workArea.Height 别动，不然初始窗口位置会出问题.
-        var left = isZeroPoint || !isValidPosition
-            ? (workArea.Width - width) / 2d
-            : lastPoint.X;
-        var top = isZeroPoint || !isValidPosition
-            ? (workArea.Height - height) / 2d
-            : lastPoint.Y;
-        return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
-    }
-
-    private void MoveAndResize()
-    {
-        if (!_presenterChange.CanSaveOrdinaryWindow || _rootWindow.Presenter.Kind != AppWindowPresenterKind.Overlapped)
-        {
-            return;
-        }
-
-        RestoreOrdinaryGeometry();
-    }
-
-    private void RestoreOrdinaryGeometry()
-    {
-        // Restores the remembered ordinary geometry without the presenter-settle guard, so
-        // leaving compact overlay lands directly on the remembered size and position.
-        if (IsClosed || IsDisposed || _rootWindow.Presenter.Kind != AppWindowPresenterKind.Overlapped)
-        {
-            return;
-        }
-
-        var lastPoint = GetSavedWindowPosition();
-        var displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
-            ?? DisplayArea.Primary;
-        var rect = GetRenderRect(displayArea);
-        _rootWindow.MoveAndResize(rect);
-        var isMaximized = SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerWindowMaximized, false);
-        if (isMaximized)
-        {
-            (_rootWindow.Presenter as OverlappedPresenter)?.Maximize();
-        }
-    }
-
-    private void SaveCurrentWindowStats()
-    {
-        if (IsClosed || IsDisposed)
-        {
-            return;
-        }
-
-        _presenterChange.GeometryChanged();
-        if (!_presenterChange.CanSaveOrdinaryWindow || _rootWindow.Presenter.Kind != AppWindowPresenterKind.Overlapped)
-        {
-            return;
-        }
-
-        var isMaximized = PInvoke.IsZoomed(new HWND(Handle));
-        SettingsToolkit.WriteLocalSetting(SettingNames.IsPlayerWindowMaximized, (bool)isMaximized);
-
-        if (!isMaximized && !_enteringFullScreen && !_enteringCompactOverlay)
-        {
-            var left = _rootWindow.Position.X;
-            var top = _rootWindow.Position.Y;
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowPositionLeft, left);
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowPositionTop, top);
-            var scaleFactor = _xamlSourceDisposed ? 1d : _xamlSource.Content.XamlRoot?.RasterizationScale ?? 1d;
-            var actualWidth = _rootWindow.Size.Width / scaleFactor;
-            var actualHeight = _rootWindow.Size.Height / scaleFactor;
-            if (actualHeight >= WindowMinHeight && actualWidth >= WindowMinWidth)
-            {
-                SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowHeight, actualHeight);
-                SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowWidth, actualWidth);
-            }
-        }
-    }
 }
-

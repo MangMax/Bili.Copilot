@@ -5,51 +5,30 @@ namespace BiliCopilot.UI.Tests;
 public sealed class CompactOverlayIntegrationTests
 {
     [Theory]
-    [InlineData(true, 360, 640)]
-    [InlineData(false, 640, 400)]
-    public async Task PositionRestoresBeforeRatioAndPersistsWithEitherSetting(bool enabled, int width, int height)
+    [InlineData(1920, 1080, 640, 360)]
+    [InlineData(1080, 1920, 360, 640)]
+    public async Task OneCoordinatorRestoresPositionFitsTheKnownFormAndPersistsTheFinalOrigin(
+        double mediaWidth, double mediaHeight, int expectedWidth, int expectedHeight)
     {
-        var desktop = new Desktop();
-        var placement = new PlayerWindowPlacementSession(desktop, () => Task.CompletedTask);
-        using var ratio = new CompactOverlayRatioSession(new(() => enabled, _ => { }),
-            () => new(desktop.Bounds.X, desktop.Bounds.Y, desktop.Bounds.Width, desktop.Bounds.Height),
-            () => new(-1920, 0, 1920, 1080),
-            bounds =>
-            {
-                desktop.Bounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height);
-                placement.GeometryChanged();
-            });
-        ratio.UpdateMedia(ratio.BeginMedia(), 9, 16);
-        await ratio.ChangePresenterAsync(
-            () => placement.ChangeAsync(WindowPlacementMode.CompactOverlay, () => { }), () => true);
-        Assert.Equal(new PlacementBounds(-1000, 100, width, height), desktop.Bounds);
-        placement.Close();
-        Assert.Equal(new PlacementPoint(-1000, 100), desktop.Saved);
-    }
+        var surface = new FakeWindowSurface();
+        var state = new FakeWindowStateStore { Compact = new(600, 200) };
+        using var ratio = new CompactOverlayRatio(new(() => true, _ => { }));
+        var presentation = new PlayerWindowPresentation(surface, state, ratio);
+        surface.PresenterBounds = mode => mode == WindowPresentationMode.CompactOverlay
+            ? new WindowRect(surface.Bounds.X, surface.Bounds.Y, 640, 360)
+            : null;
+        ratio.UpdateMedia(ratio.BeginMedia(), mediaWidth, mediaHeight);
 
-    [Fact]
-    public async Task PortraitEntryRestoresTheFlushEdgePositionWithTheFittedSize()
-    {
-        // 9:16 portrait is 360 wide; the remembered position hugs the right edge (-1920..0).
-        var desktop = new Desktop { Bounds = new(100, 100, 640, 400), Saved = new(-360, 400) };
-        var placement = new PlayerWindowPlacementSession(desktop, () => Task.CompletedTask);
-        using var ratio = new CompactOverlayRatioSession(new(() => true, _ => { }),
-            () => new(desktop.Bounds.X, desktop.Bounds.Y, desktop.Bounds.Width, desktop.Bounds.Height),
-            () => new(-1920, 0, 1920, 1080),
-            bounds => desktop.Bounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height));
-        ratio.UpdateMedia(ratio.BeginMedia(), 9, 16);
-        await ratio.ChangePresenterAsync(
-            () => placement.ChangeAsync(WindowPlacementMode.CompactOverlay, () => { }), () => true);
-        Assert.Equal(new PlacementBounds(-360, 400, 360, 640), desktop.Bounds);
-    }
+        await presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
 
-    private sealed class Desktop : IPlayerWindowPlacement
-    {
-        public PlacementBounds Bounds { get; set; } = new(100, 100, 640, 400);
-        public PlacementPoint Saved { get; set; } = new(-1000, 100);
-        public PlacementPoint? ReadPosition() => Saved;
-        public void WritePosition(PlacementPoint point) => Saved = point;
-        public PlacementBounds GetWorkArea(PlacementPoint point) => new(-1920, 0, 1920, 1080);
-        public void Move(PlacementPoint point) => Bounds = Bounds with { X = point.X, Y = point.Y };
+        Assert.Equal(new WindowRect(600, 200, expectedWidth, expectedHeight), surface.Bounds);
+        Assert.Empty(surface.VisibleGeometry);
+        Assert.Equal(new WindowPoint(600, 200), state.Compact);
+
+        await presentation.RequestModeAsync(WindowPresentationMode.Ordinary);
+
+        Assert.Equal(new WindowRect(100, 100, 1100, 700), surface.Bounds);
+        Assert.Equal(new WindowPoint(600, 200), state.Compact);
+        Assert.Empty(surface.VisibleGeometry);
     }
 }

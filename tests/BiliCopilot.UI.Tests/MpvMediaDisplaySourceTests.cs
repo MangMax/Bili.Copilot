@@ -12,38 +12,35 @@ public sealed class MpvMediaDisplaySourceTests
     {
         var client = new MpvClient();
         var queue = new DispatcherQueue();
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        using var source = new MpvMediaDisplaySource(client, queue, session.BeginMedia, session.UpdateMedia);
-        session.SetCompact(true);
+        using var window = await RatioWindowHarness.CreateCompactAsync();
+        using var source = new MpvMediaDisplaySource(client, queue, window.Ratio.BeginMedia, window.Ratio.UpdateMedia);
         source.Suspend();
         var publish = source.CreateMetadataPublisher();
         source.Resume();
         var pending = publish(1080, 1920);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
+        Assert.Equal(new WindowRect(100, 80, 360, 640), window.Bounds);
         client.Loading();
         queue.Drain();
-        bounds = new(100, 80, 500, 500); // a manual resize during load
+        window.Bounds = new(100, 80, 500, 500); // a manual resize during load
         client.SetOutput(1, 1080, 1920);
         client.Loaded();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 500), window.Bounds);
         pending = publish(1920, 1080); // equal-ratio runtime output still owns priority
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 500), window.Bounds);
         client.SetOutput(1, 1440, 1080);
         queue.MediaTimer.Fire();
         // 4:3 output belongs to the landscape form (16:9), not its own ratio.
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 281), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 281), window.Bounds);
         pending = publish(1080, 1920);
         queue.Drain();
         await pending;
         // The runtime output already owns the window, so this later hint must be ignored.
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 281), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 281), window.Bounds);
     }
 
     [Fact]
@@ -51,11 +48,8 @@ public sealed class MpvMediaDisplaySourceTests
     {
         var client = new MpvClient();
         var queue = new DispatcherQueue();
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        using var source = new MpvMediaDisplaySource(client, queue, session.BeginMedia, session.UpdateMedia);
-        session.SetCompact(true);
+        using var window = await RatioWindowHarness.CreateCompactAsync();
+        using var source = new MpvMediaDisplaySource(client, queue, window.Ratio.BeginMedia, window.Ratio.UpdateMedia);
         var old = source.CreateMetadataPublisher();
         source.Resume();
         client.SetOutput(1, 1920, 1080);
@@ -64,32 +58,30 @@ public sealed class MpvMediaDisplaySourceTests
         queue.MediaTimer.Fire();
         var queued = old(1000, 1000);
         source.Suspend();
-        bounds = new(100, 80, 500, 500);
+        window.Bounds = new(100, 80, 500, 500);
         source.Resume();
         var current = source.CreateMetadataPublisher();
         queue.Drain();
         await queued;
-        session.SetCompact(false);
-        session.SetCompact(true); // old runtime ratio must also have been cleared
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 500), window.Bounds);
         var pending = current(1080, 1920);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 281, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 281, 500), window.Bounds);
         pending = old(1920, 1080);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 281, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 281, 500), window.Bounds);
         client.End();
         pending = current(1000, 1000);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 281, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 281, 500), window.Bounds);
         source.Dispose();
         pending = current(1920, 1080);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 281, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 281, 500), window.Bounds);
     }
 
     [Theory]
@@ -102,31 +94,28 @@ public sealed class MpvMediaDisplaySourceTests
     {
         var client = new MpvClient();
         var queue = new DispatcherQueue();
-        var preference = new CompactOverlayRatioPreference(() => false, _ => { });
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = new CompactOverlayRatioSession(preference, () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        using var source = new MpvMediaDisplaySource(client, queue, session.BeginMedia, session.UpdateMedia);
-        session.SetCompact(true);
+        using var window = new RatioWindowHarness(enabled: false);
+        await window.Presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+        using var source = new MpvMediaDisplaySource(client, queue, window.Ratio.BeginMedia, window.Ratio.UpdateMedia);
         source.Resume();
         var publish = source.CreateMetadataPublisher();
-        preference.SetEnabled(true);
+        window.Preference.SetEnabled(true);
         var pending = publish(width, height);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
-        preference.SetEnabled(false);
+        Assert.Equal(new WindowRect(100, 80, 640, 400), window.Bounds);
+        window.Preference.SetEnabled(false);
         pending = publish(1080, 1920);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
-        preference.SetEnabled(true);
-        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
-        bounds = new(100, 80, 500, 500);
+        Assert.Equal(new WindowRect(100, 80, 640, 400), window.Bounds);
+        window.Preference.SetEnabled(true);
+        Assert.Equal(new WindowRect(100, 80, 360, 640), window.Bounds);
+        window.Bounds = new(100, 80, 500, 500);
         pending = publish(2160, 3840);
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 500), window.Bounds);
         client.Loading();
         client.SetOutput(1, 0, 0);
         client.Loaded();
@@ -134,27 +123,24 @@ public sealed class MpvMediaDisplaySourceTests
         pending = publish(1440, 1080); // invalid runtime output must not suppress usable hints
         queue.Drain();
         await pending;
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 281), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 281), window.Bounds);
     }
 
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void ReusedPlaylistSlotCannotPublishUntilNewEntryLoads(bool switchDuringSample)
+    public async Task ReusedPlaylistSlotCannotPublishUntilNewEntryLoads(bool switchDuringSample)
     {
         var client = new MpvClient();
         var queue = new DispatcherQueue();
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        using var source = new MpvMediaDisplaySource(client, queue, session.BeginMedia, session.UpdateMedia);
-        session.SetCompact(true);
+        using var window = await RatioWindowHarness.CreateCompactAsync();
+        using var source = new MpvMediaDisplaySource(client, queue, window.Ratio.BeginMedia, window.Ratio.UpdateMedia);
         source.Resume();
         client.SetOutput(41, 1920, 1080, position: 3);
         client.Loading();
         client.Loaded();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 360), window.Bounds);
 
         if (switchDuringSample)
             client.Handle.Reading = name =>
@@ -164,12 +150,12 @@ public sealed class MpvMediaDisplaySourceTests
         else
             client.SetOutput(42, 1080, 1920, position: 3);
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 360), window.Bounds);
         client.Handle.Reading = null;
         client.Loading();
         client.Loaded();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
+        Assert.Equal(new WindowRect(100, 80, 360, 640), window.Bounds);
 
         // Reordering the same entry must preserve its identity, even if "current" differs.
         client.Handle.Properties.Remove("playlist/3/id");
@@ -178,46 +164,40 @@ public sealed class MpvMediaDisplaySourceTests
         client.SetOutput(42, 1440, 1080, position: 2);
         queue.MediaTimer.Fire();
         // 4:3 is still the landscape form, so the 16:9 bounds do not change again.
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 360), window.Bounds);
     }
 
     [Theory]
     [InlineData("playlist-playing-pos")]
     [InlineData("playlist/3/id")]
-    public void MissingPlayingIdentityWaitsForValidLoadedEntry(string missingProperty)
+    public async Task MissingPlayingIdentityWaitsForValidLoadedEntry(string missingProperty)
     {
         var client = new MpvClient();
         var queue = new DispatcherQueue();
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        using var source = new MpvMediaDisplaySource(client, queue, session.BeginMedia, session.UpdateMedia);
-        session.SetCompact(true);
+        using var window = await RatioWindowHarness.CreateCompactAsync();
+        using var source = new MpvMediaDisplaySource(client, queue, window.Ratio.BeginMedia, window.Ratio.UpdateMedia);
         source.Resume();
         client.SetOutput(41, 1920, 1080, position: 3);
         client.Handle.Properties.Remove(missingProperty);
         client.Loading();
         client.Loaded();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 400), window.Bounds);
         client.SetOutput(41, 1920, 1080, position: 3);
         client.Loaded();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 360), window.Bounds);
     }
 
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void IdentityChangingDuringLoadedEventRequiresFreshStableLoad(bool replaceEntry)
+    public async Task IdentityChangingDuringLoadedEventRequiresFreshStableLoad(bool replaceEntry)
     {
         var client = new MpvClient();
         var queue = new DispatcherQueue();
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        using var source = new MpvMediaDisplaySource(client, queue, session.BeginMedia, session.UpdateMedia);
-        session.SetCompact(true);
+        using var window = await RatioWindowHarness.CreateCompactAsync();
+        using var source = new MpvMediaDisplaySource(client, queue, window.Ratio.BeginMedia, window.Ratio.UpdateMedia);
         source.Resume();
         client.SetOutput(41, 1920, 1080, position: 3);
         client.Loading();
@@ -232,87 +212,81 @@ public sealed class MpvMediaDisplaySourceTests
         client.Handle.Reading = null;
         client.SetOutput(41, 1920, 1080, position: 3);
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 400), window.Bounds);
         client.Loaded();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 360), window.Bounds);
     }
 
     [Fact]
-    public void OutputAvailabilityAndReconfigurationAdaptWhilePausedAndIgnoreTornSamples()
+    public async Task OutputAvailabilityAndReconfigurationAdaptWhilePausedAndIgnoreTornSamples()
     {
         var client = new MpvClient();
         var queue = new DispatcherQueue();
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        using var source = new MpvMediaDisplaySource(client, queue, session.BeginMedia, session.UpdateMedia);
-        session.SetCompact(true);
+        using var window = await RatioWindowHarness.CreateCompactAsync();
+        using var source = new MpvMediaDisplaySource(client, queue, window.Ratio.BeginMedia, window.Ratio.UpdateMedia);
         source.Resume();
         client.SetOutput(1, 0, 0);
         client.Loading();
         client.Loaded();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 400), window.Bounds);
         client.SetOutput(1, 1440, 1080);
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 360), window.Bounds);
         var reads = 0;
         client.Handle.Reading = name =>
         {
             if (name == "video-out-params/dh" && ++reads == 1) client.SetOutput(1, 1080, 1920);
         };
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
+        Assert.Equal(new WindowRect(100, 80, 640, 360), window.Bounds);
         client.Handle.Reading = null;
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
-        bounds = new(100, 80, 500, 500);
+        Assert.Equal(new WindowRect(100, 80, 360, 640), window.Bounds);
+        window.Bounds = new(100, 80, 500, 500);
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 500), window.Bounds);
         client.Loading();
         source.Dispose();
         queue.Drain();
         client.SetOutput(2, 1920, 1080);
         client.Loaded();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 500), window.Bounds);
     }
 
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void OldLoadedEventAfterSwitchCannotResizeNewMediaWindow(bool identityUnavailableAtSuspend)
+    public async Task OldLoadedEventAfterSwitchCannotResizeNewMediaWindow(bool identityUnavailableAtSuspend)
     {
         var client = new MpvClient();
         var queue = new DispatcherQueue();
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        using var source = new MpvMediaDisplaySource(client, queue, session.BeginMedia, session.UpdateMedia);
-        session.SetCompact(true);
+        using var window = await RatioWindowHarness.CreateCompactAsync();
+        using var source = new MpvMediaDisplaySource(client, queue, window.Ratio.BeginMedia, window.Ratio.UpdateMedia);
         source.Resume();
         client.SetOutput(1, 1920, 1080);
         client.Loading();
         client.Loaded();
         queue.Drain();
         queue.MediaTimer.Fire();
-        Assert.Equal(360, bounds.Height);
+        Assert.Equal(360, window.Bounds.Height);
         if (identityUnavailableAtSuspend) client.Handle.Properties["playlist-playing-pos"] = -1;
         source.Suspend();
         client.Handle.Properties["playlist-playing-pos"] = -1; // stop has completed before InitializeCore suspends again
         source.Suspend();
         client.SetOutput(1, 1920, 1080);
-        bounds = new(100, 80, 500, 500);
+        window.Bounds = new(100, 80, 500, 500);
         source.Resume();
         client.Loaded(); // old file notification delivered after the application changed media
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 500, 500), window.Bounds);
         client.SetOutput(2, 1920, 1080, 90);
         client.Loading();
         client.Loaded();
         queue.Drain();
         queue.MediaTimer.Fire();
-        Assert.Equal(new RatioWindowBounds(100, 80, 281, 500), bounds);
+        Assert.Equal(new WindowRect(100, 80, 281, 500), window.Bounds);
     }
 }

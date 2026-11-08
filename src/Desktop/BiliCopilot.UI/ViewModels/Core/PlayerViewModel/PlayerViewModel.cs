@@ -467,13 +467,10 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
 
         var hideMainWindowOnPlay = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true);
-
-        if (!Window.GetWindow().IsVisible)
-        {
-            Window!.Show(Player == null && !hideMainWindowOnPlay);
-        }
-
         var isFirstLoad = !_uiElementSetted;
+
+        // Prepare content and the initial presenter while the window is still hidden, so
+        // the first visible frame is already the requested mode and geometry.
         if (!_uiElementSetted)
         {
             var overlay = new PlayerOverlay { ViewModel = this };
@@ -515,6 +512,11 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             {
                 Window.EnterCompactOverlay();
             }
+        }
+
+        if (!Window.GetWindow().IsVisible)
+        {
+            Window!.Show(Player == null && !hideMainWindowOnPlay);
         }
 
         IsVerticalScreen = Window!.GetWindow().Presenter.Kind is Microsoft.UI.Windowing.AppWindowPresenterKind.FullScreen or Microsoft.UI.Windowing.AppWindowPresenterKind.CompactOverlay

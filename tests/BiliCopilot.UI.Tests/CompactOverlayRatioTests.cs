@@ -16,223 +16,99 @@ public sealed class CompactOverlayRatioTests
         }
     }
 
-    [Fact]
-    public async Task OlderPresenterCompletionCannotAdaptDuringNewTransitionOrAfterClose()
+    [Theory]
+    [InlineData(1920, 1080, 16d / 9d)]
+    [InlineData(4, 3, 16d / 9d)]
+    [InlineData(1, 1, 16d / 9d)]
+    [InlineData(1080, 1920, 9d / 16d)]
+    [InlineData(9, 16, 9d / 16d)]
+    public void SourceOrientationSelectsOneOfTwoForms(double width, double height, double expected)
+        => Assert.Equal(expected, CompactOverlayLayout.SelectForm(width / height));
+
+    [Theory]
+    [InlineData(640, 360, 16d / 9d, 640, 360)]
+    [InlineData(640, 360, 9d / 16d, 360, 640)]
+    [InlineData(500, 500, 16d / 9d, 500, 281)]
+    [InlineData(500, 500, 9d / 16d, 281, 500)]
+    public void FitKeepsTheLongerClientEdgeAndOneOfTwoForms(
+        int width, int height, double form, int expectedWidth, int expectedHeight)
     {
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = CreateSession(() => bounds, value => bounds = value);
-        session.UpdateMedia(session.BeginMedia(), 9, 16);
-        var first = new TaskCompletionSource();
-        var second = new TaskCompletionSource();
-        var entering = session.ChangePresenterAsync(() => first.Task, () => true);
-        var leaving = session.ChangePresenterAsync(() => second.Task, () => false);
-        first.SetResult();
-        await entering;
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
-        second.SetResult();
-        await leaving;
-        var last = new TaskCompletionSource();
-        var closing = session.ChangePresenterAsync(() => last.Task, () => true);
-        session.Dispose();
-        last.SetResult();
-        await closing;
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
+        var area = new WindowRect(0, 0, 1920, 1040);
+        var result = CompactOverlayLayout.Fit(new WindowPoint(100, 80), new WindowRect(100, 80, width, height),
+            0, 0, area, form);
+        Assert.Equal(new WindowRect(100, 80, expectedWidth, expectedHeight), result);
     }
 
     [Fact]
-    public void PortraitShrinksProportionallyAndKeepsTheAnchorOnANegativeWorkArea()
+    public void FitScalesDownToTheWorkAreaAndRecoversAFullyHiddenOrigin()
     {
-        var bounds = new RatioWindowBounds(-200, 500, 1000, 600);
-        using var session = new CompactOverlayRatioSession(new(() => null, _ => { }), () => bounds,
-            () => new(-1280, 0, 1280, 720), value => bounds = value);
-        session.UpdateMedia(session.BeginMedia(), 9, 16);
-        session.SetCompact(true);
-        Assert.Equal(new RatioWindowBounds(-200, 500, 405, 720), bounds);
+        var area = new WindowRect(0, 0, 500, 400);
+        var result = CompactOverlayLayout.Fit(new WindowPoint(4000, 3000), new WindowRect(4000, 3000, 640, 360),
+            0, 0, area, 16d / 9d);
+        Assert.Equal(new WindowRect(0, 119, 500, 281), result);
     }
 
     [Theory]
-    [InlineData(1920, Landscape)]
-    [InlineData(1000, Landscape)]
-    [InlineData(4, Landscape)]
-    [InlineData(1, Landscape)]
-    [InlineData(0.99, Portrait)]
-    [InlineData(0.75, Portrait)]
-    [InlineData(0.5625, Portrait)]
-    public void SourceOrientationSelectsOneOfTwoForms(double sourceRatio, double expected)
-    {
-        Assert.Equal(expected, CompactOverlayRatioSession.SelectForm(sourceRatio));
-    }
-
-    private const double Landscape = 16d / 9d;
-    private const double Portrait = 9d / 16d;
+    [InlineData(-1800, 400, -1920, 1920, -1800)]
+    [InlineData(-100, 400, -1920, 1920, -100)]
+    [InlineData(3000, 400, 0, 1920, 1520)]
+    [InlineData(0, 400, 0, 1920, 0)]
+    public void RecoverAxisKeepsAnyVisiblePartAndOnlyRecoversAFullyHiddenAxis(
+        int position, int size, int areaStart, int areaSize, int expected)
+        => Assert.Equal(expected, CompactOverlayLayout.RecoverAxis(position, size, areaStart, areaSize));
 
     [Fact]
-    public void SameFormSourceKeepsAWindowThatWasResizedByHand()
+    public void OlderMediaAndInvalidDimensionsCannotChangeTheKnownForm()
     {
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = CreateSession(() => bounds, value => bounds = value);
-        var generation = session.BeginMedia();
-        session.UpdateMedia(generation, 1920, 1080);
-        session.SetCompact(true);
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
-        bounds = new(100, 80, 500, 281);
-        session.UpdateMedia(generation, 1440, 1080);
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 281), bounds);
+        using var ratio = CreateRatio();
+        var first = ratio.BeginMedia();
+        ratio.UpdateMedia(first, 1920, 1080);
+        Assert.Equal(CompactOverlayLayout.LandscapeRatio, ratio.Form);
+
+        var second = ratio.BeginMedia();
+        ratio.UpdateMedia(second, 1080, 1920);
+        ratio.UpdateMedia(first, 1920, 1080);
+        ratio.UpdateMedia(second, double.NaN, 1080);
+        ratio.UpdateMedia(second, 1080, 0);
+        ratio.UpdateMedia(second, 1080, double.PositiveInfinity);
+        Assert.Equal(CompactOverlayLayout.PortraitRatio, ratio.Form);
     }
 
     [Fact]
-    public void ImmediateFitAppliesTheKnownRatioBeforeTheCompactFlagIsSet()
+    public void SameFormDoesNotRaiseButANewMediaGenerationDoes()
     {
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = CreateSession(() => bounds, value => bounds = value);
-        session.UpdateMedia(session.BeginMedia(), 9, 16);
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
+        using var ratio = CreateRatio();
+        var generation = ratio.BeginMedia();
+        var changes = 0;
+        ratio.Changed += (_, _) => changes++;
+        ratio.UpdateMedia(generation, 1920, 1080);
+        ratio.UpdateMedia(generation, 2560, 1440);
+        Assert.Equal(1, changes);
 
-        // The presenter switch calls this in the same batch, before compact state settles.
-        session.ApplyNow();
-        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
+        generation = ratio.BeginMedia();
+        ratio.UpdateMedia(generation, 1920, 1080);
+        Assert.Equal(2, changes);
     }
 
     [Fact]
-    public void ImmediateFitHonorsTheDisabledPreferenceAndAnUnknownRatio()
-    {
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        var disabled = new CompactOverlayRatioPreference(() => false, _ => { });
-        using var optedOut = new CompactOverlayRatioSession(disabled, () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        optedOut.UpdateMedia(optedOut.BeginMedia(), 9, 16);
-        optedOut.ApplyNow();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
-
-        var enabled = new CompactOverlayRatioPreference(() => true, _ => { });
-        using var unknownRatio = new CompactOverlayRatioSession(enabled, () => bounds,
-            () => new(0, 0, 1920, 1080), value => bounds = value);
-        unknownRatio.ApplyNow();
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
-    }
-
-    [Fact]
-    public void FittingKeepsAHalfOffscreenAnchorInsteadOfPullingTheWindowInside()
-    {
-        var bounds = new RatioWindowBounds(1900, 1000, 640, 400);
-        using var session = CreateSession(() => bounds, value => bounds = value);
-        session.UpdateMedia(session.BeginMedia(), 9, 16);
-        session.SetCompact(true);
-        Assert.Equal(new RatioWindowBounds(1900, 1000, 360, 640), bounds);
-    }
-
-    [Fact]
-    public void FullyHiddenAnchorIsRecoveredWithTheFittedSize()
-    {
-        var bounds = new RatioWindowBounds(4000, 3000, 640, 400);
-        using var session = CreateSession(() => bounds, value => bounds = value);
-        session.UpdateMedia(session.BeginMedia(), 9, 16);
-        session.SetCompact(true);
-        Assert.Equal(new RatioWindowBounds(1560, 440, 360, 640), bounds);
-    }
-
-    [Fact]
-    public void LeavingAndClosingRejectMediaAndSettingsUntilNextStableEntry()
-    {
-        var preference = new CompactOverlayRatioPreference(() => null, _ => { });
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        var session = new CompactOverlayRatioSession(preference, () => bounds, () => new(0, 0, 1920, 1080), value => bounds = value);
-        var generation = session.BeginMedia();
-        session.SetCompact(true);
-        session.SetCompact(false);
-        session.UpdateMedia(generation, 9, 16);
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 400), bounds);
-        session.SetCompact(true);
-        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
-        session.Dispose();
-        session.UpdateMedia(generation, 1, 1);
-        session.SetCompact(true);
-        preference.SetEnabled(false);
-        preference.SetEnabled(true);
-        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
-    }
-
-    [Fact]
-    public void GlobalPreferencePersistsAndReenableAdaptsAllWindowsButRepeatedEnableDoesNot()
+    public void GlobalPreferencePersistsAndRepeatedEnableDoesNotRaise()
     {
         bool? stored = null;
         var preference = new CompactOverlayRatioPreference(() => stored, value => stored = value);
-        var first = new RatioWindowBounds(10, 20, 640, 400);
-        var second = new RatioWindowBounds(30, 40, 320, 200);
-        using var a = new CompactOverlayRatioSession(preference, () => first, () => new(0, 0, 1920, 1080), value => first = value);
-        using var b = new CompactOverlayRatioSession(preference, () => second, () => new(0, 0, 1920, 1080), value => second = value);
-        a.SetCompact(true);
-        b.SetCompact(true);
+        var changes = 0;
+        preference.Changed += (_, _) => changes++;
+        Assert.True(preference.Enabled);
+
         preference.SetEnabled(false);
-        a.UpdateMedia(a.BeginMedia(), 9, 16);
-        b.UpdateMedia(b.BeginMedia(), 9, 16);
-        Assert.Equal(640, first.Width);
-        Assert.Equal(320, second.Width);
         Assert.False(new CompactOverlayRatioPreference(() => stored, _ => { }).Enabled);
+        preference.SetEnabled(false);
+        Assert.Equal(1, changes);
+
         preference.SetEnabled(true);
-        Assert.Equal(new RatioWindowBounds(10, 20, 360, 640), first);
-        Assert.Equal(new RatioWindowBounds(30, 40, 180, 320), second);
-        first = new(10, 20, 500, 500);
-        preference.SetEnabled(true);
-        Assert.Equal(new RatioWindowBounds(10, 20, 500, 500), first);
+        Assert.Equal(2, changes);
+        Assert.True(stored);
     }
 
-    [Theory]
-    [InlineData(0, 1080)]
-    [InlineData(-1, 1080)]
-    [InlineData(1920, 0)]
-    [InlineData(double.NaN, 1080)]
-    [InlineData(double.PositiveInfinity, 1080)]
-    [InlineData(1920, double.PositiveInfinity)]
-    public void InvalidDimensionsWaitWithoutLosingLastValidRatio(double width, double height)
-    {
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = CreateSession(() => bounds, value => bounds = value);
-        var generation = session.BeginMedia();
-        session.UpdateMedia(generation, 1920, 1080);
-        session.UpdateMedia(generation, width, height);
-        session.SetCompact(true);
-        Assert.Equal(new RatioWindowBounds(100, 80, 640, 360), bounds);
-    }
-
-    [Fact]
-    public void SwitchingMediaRejectsOldCallbacksAndDuplicateRatioPreservesManualResize()
-    {
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        using var session = CreateSession(() => bounds, value => bounds = value);
-        session.SetCompact(true);
-        var old = session.BeginMedia();
-        session.UpdateMedia(old, 1920, 1080);
-        var current = session.BeginMedia();
-        session.UpdateMedia(current, 1080, 1920);
-        session.UpdateMedia(old, 1920, 1080);
-        Assert.Equal(new RatioWindowBounds(100, 80, 360, 640), bounds);
-        bounds = new(100, 80, 500, 500);
-        session.UpdateMedia(current, 2160, 3840);
-        Assert.Equal(new RatioWindowBounds(100, 80, 500, 500), bounds);
-    }
-
-    private static CompactOverlayRatioSession CreateSession(Func<RatioWindowBounds> read, Action<RatioWindowBounds> apply)
-        => new(new(() => null, _ => { }), read, () => new(0, 0, 1920, 1080), apply);
-
-    [Theory]
-    [InlineData(1920, 1080, 640, 360)]
-    [InlineData(1080, 1920, 360, 640)]
-    // Square and ultra-wide sources still use one of the two forms, never a near-square window.
-    [InlineData(1000, 1000, 640, 360)]
-    [InlineData(2100, 900, 640, 360)]
-    [InlineData(1440, 1080, 640, 360)]
-    [InlineData(720, 1080, 360, 640)]
-    [InlineData(600, 900, 360, 640)]
-    public void EnterCompactUsesOneOfTwoFormsAndPreservesAnchorAndLongEdge(double width, double height, int expectedWidth, int expectedHeight)
-    {
-        var bounds = new RatioWindowBounds(100, 80, 640, 400);
-        var preference = new CompactOverlayRatioPreference(() => null, _ => { });
-        using var session = new CompactOverlayRatioSession(preference, () => bounds,
-            () => new RatioWindowBounds(0, 0, 1920, 1080), value => bounds = value);
-        var generation = session.BeginMedia();
-        session.UpdateMedia(generation, width, height);
-        session.SetCompact(true);
-        Assert.Equal(new RatioWindowBounds(100, 80, expectedWidth, expectedHeight), bounds);
-    }
+    private static CompactOverlayRatio CreateRatio()
+        => new(new CompactOverlayRatioPreference(() => null, _ => { }));
 }
