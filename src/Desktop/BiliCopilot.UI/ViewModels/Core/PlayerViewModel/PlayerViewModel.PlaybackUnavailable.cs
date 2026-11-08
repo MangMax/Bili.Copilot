@@ -8,6 +8,7 @@ using BiliCopilot.UI.ViewModels.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Bili.Media;
+using Richasy.MpvKernel.Core.Enums;
 using Windows.System;
 
 namespace BiliCopilot.UI.ViewModels.Core;
@@ -18,6 +19,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 public sealed partial class PlayerViewModel
 {
     private const string VipPageUrl = "https://account.bilibili.com/big";
+    private CancellationTokenSource? _failureTipCts;
 
     private PlaybackUnavailableAction _playbackUnavailableAction;
 
@@ -96,6 +98,31 @@ public sealed partial class PlayerViewModel
     internal void ShowLivePlaybackFailure(LiveFailureKind kind, bool canRetry = false)
     {
         if (kind == LiveFailureKind.Cancelled)
+        {
+            return;
+        }
+
+        // 直播取流/切线路会有短暂失败，恢复通常在一两秒内完成；
+        // 先保持加载态，确认仍未恢复再显示错误，避免一闪而过的打断。
+        _failureTipCts?.Cancel();
+        _failureTipCts = new CancellationTokenSource();
+        _ = ShowLivePlaybackFailureAsync(kind, canRetry, _failureTipCts.Token);
+    }
+
+    private async Task ShowLivePlaybackFailureAsync(LiveFailureKind kind, bool canRetry, CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(1.5), token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        if (token.IsCancellationRequested
+            || Player?.PlaybackState == MpvPlayerState.Playing
+            || IsLiveRoomTerminal)
         {
             return;
         }

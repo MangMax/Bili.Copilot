@@ -50,21 +50,21 @@ public sealed partial class LiveConnectorViewModel
                 ?? Qualities.FirstOrDefault();
 
             Lines.Clear();
-            // 候选是“格式 × 线路”的笛卡尔积；界面按主机名去重，避免出现十几条同源线路。
-            var seenLines = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var candidate in resolver.Candidates)
+            // 候选是“格式 × 线路”的笛卡尔积；按原始主机名去重并排序，显示为“线路一/二/三”。
+            var orderedLines = resolver.Candidates
+                .Where(candidate => !string.IsNullOrEmpty(candidate.Primary.Host))
+                .GroupBy(candidate => candidate.Primary.Host, StringComparer.OrdinalIgnoreCase)
+                .Select(group => group.First())
+                .OrderBy(candidate => candidate.Primary.Host, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            for (var i = 0; i < orderedLines.Count; i++)
             {
-                var lineKey = candidate.Primary.Host;
-                if (string.IsNullOrEmpty(lineKey) || !seenLines.Add(lineKey))
-                {
-                    continue;
-                }
-
-                Lines.Add(new LiveLineOption(candidate.Key, DescribeLine(candidate)));
+                Lines.Add(new LiveLineOption(orderedLines[i].Key, $"线路{ToLineNumber(i + 1)}"));
             }
 
-            SelectedLine = Lines.FirstOrDefault(option => string.Equals(option.Key, resolver.CurrentCandidate?.Key, StringComparison.OrdinalIgnoreCase))
-                ?? Lines.FirstOrDefault(option => string.Equals(option.Key, resolver.PreferredLineKey, StringComparison.OrdinalIgnoreCase))
+            // 用户刚选的线路优先于解析器当前仍在使用的候选，否则刷新后会被旧值拉回第一条。
+            SelectedLine = Lines.FirstOrDefault(option => string.Equals(option.Key, resolver.PreferredLineKey, StringComparison.OrdinalIgnoreCase))
+                ?? Lines.FirstOrDefault(option => string.Equals(option.Key, resolver.CurrentCandidate?.Key, StringComparison.OrdinalIgnoreCase))
                 ?? Lines.FirstOrDefault();
 
             QualityText = SelectedQuality?.Name;
@@ -95,6 +95,22 @@ public sealed partial class LiveConnectorViewModel
 
         _ = Parent.ChangeLiveLineAsync(value.Key);
     }
+
+    private static string ToLineNumber(int index)
+        => index switch
+        {
+            1 => "一",
+            2 => "二",
+            3 => "三",
+            4 => "四",
+            5 => "五",
+            6 => "六",
+            7 => "七",
+            8 => "八",
+            9 => "九",
+            10 => "十",
+            _ => index.ToString(System.Globalization.CultureInfo.InvariantCulture),
+        };
 
     private static string DescribeLine(LivePlaybackCandidate candidate)
     {
