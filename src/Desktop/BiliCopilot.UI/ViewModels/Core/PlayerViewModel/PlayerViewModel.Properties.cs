@@ -66,6 +66,9 @@ public sealed partial class PlayerViewModel
     public bool IsNextTipShownInThisMedia { get; set; }
 
     [ObservableProperty]
+    public partial bool IsDanmakuOptionsVisible { get; set; }
+
+    [ObservableProperty]
     public partial MpvPlayer Player { get; set; }
 
     [ObservableProperty]

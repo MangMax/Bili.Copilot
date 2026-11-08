@@ -56,7 +56,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         ViewModel.RequestShowSponsorBlockTip += OnRequestShowSponsorBlockTip;
         ViewModel.RequestHideSponsorBlockTip += OnRequestHideSponsorBlockTip;
         // 控制区自己拥有显隐动画；首次加载直接对齐当前状态，不播放入场动画.
-        TransportControls?.SetShown(ViewModel.IsControlsVisible, animate: false);
     }
 
     protected override void OnControlUnloaded()
@@ -67,7 +66,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         ViewModel.RequestHideNextTip -= OnRequestHideNextTip;
         ViewModel.RequestShowSponsorBlockTip -= OnRequestShowSponsorBlockTip;
         ViewModel.RequestHideSponsorBlockTip -= OnRequestHideSponsorBlockTip;
-        TransportControls?.SetShown(false, animate: false);
 
         // 卸载后不再有事件驱动提示，主动收起以停掉它的计时器.
         SponsorBlockTip?.Hide();
@@ -141,7 +139,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     {
         if (e.PropertyName == nameof(ViewModel.IsControlsVisible))
         {
-            TransportControls?.SetShown(ViewModel.IsControlsVisible);
             if (!ViewModel.IsControlsVisible && !_controlTimer.IsRunning)
             {
                 _controlTimer.Start();

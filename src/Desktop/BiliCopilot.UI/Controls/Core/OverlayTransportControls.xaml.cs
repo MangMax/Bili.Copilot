@@ -3,15 +3,9 @@
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.WinUIKernel.Share.Toolkits;
-using System.Numerics;
-using Windows.UI.ViewManagement;
+using System.ComponentModel;
 
 namespace BiliCopilot.UI.Controls.Core;
 
@@ -31,16 +25,9 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private readonly List<double> _progressChangeList = [];
     private readonly DispatcherTimer _speedChangeTimer;
     private readonly DispatcherTimer _progressChangeTimer;
-    private const int MotionDurationMs = 250;
-    private readonly Dictionary<FlyoutBase, (FlyoutPlacementMode Placement, bool ConstrainToRootBounds)> _flyoutDefaults = [];
-    private readonly UISettings _uiSettings = new();
     private bool _isFirstChangeVolume = true;
     private bool _isOverlayActive;
-    private bool _isShown;
-    private bool _motionActive;
-    private int _motionVersion;
-    private string? _appliedStateName;
-    private OverlayControlLayoutMode _layoutMode;
+    private XamlRoot? _observedRoot;
 
     public OverlayTransportControls()
     {
@@ -78,7 +65,6 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         }
 
         _isOverlayActive = true;
-        _uiSettings.AnimationsEnabledChanged += OnAnimationsEnabledChanged;
         _speedChangeTimer.Tick += OnSpeedChangeTick;
         _progressChangeTimer.Tick += OnProgressChangeTick;
         if (ViewModel is not null)
@@ -90,8 +76,13 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             }
         }
 
+        _observedRoot = XamlRoot;
+        if (_observedRoot is not null)
+        {
+            _observedRoot.Changed += OnRootChanged;
+        }
+        ViewModel.Player.PropertyChanged += OnPlayerPropertyChanged;
         UpdateLayoutState();
-        ApplyFinal(_isShown);
     }
 
     private void OnOverlayLoaded(object sender, RoutedEventArgs e) => OnControlLoaded();
@@ -106,11 +97,14 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         if (oldValue != null)
         {
             oldValue.ProgressChanged -= OnViewModelProgressChanged;
+            oldValue.Player.PropertyChanged -= OnPlayerPropertyChanged;
         }
 
         if (_isOverlayActive && newValue != null)
         {
             newValue.ProgressChanged += OnViewModelProgressChanged;
+            newValue.Player.PropertyChanged += OnPlayerPropertyChanged;
+            UpdateLayoutState();
         }
     }
 
@@ -121,10 +115,13 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             return;
         }
 
+        if (_observedRoot is not null)
+        {
+            _observedRoot.Changed -= OnRootChanged;
+            _observedRoot = null;
+        }
+        ViewModel.Player.PropertyChanged -= OnPlayerPropertyChanged;
         _isOverlayActive = false;
-        _uiSettings.AnimationsEnabledChanged -= OnAnimationsEnabledChanged;
-        _motionVersion++;
-        _motionActive = false;
         _speedChangeList.Clear();
         _progressChangeList.Clear();
         _speedPlaybackValidity = null;
@@ -246,365 +243,46 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         _speedChangeTimer.Start();
     }
 
-    private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-        => UpdateLayoutState();
+    private void OnSizeChanged(object sender, SizeChangedEventArgs e) => UpdateLayoutState();
 
-    /// <summary>
-    /// 指针是否落在会唤出 / 保留控件的区域（底部带，或竖屏轨道）。
-    /// 轨道铺满播放区高度，因此不能再用固定高度判断，否则鼠标移到轨道上会把控件判成已离开.
-    /// </summary>
-    internal bool ContainsInteractivePoint(Point point)
+    private void OnRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => UpdateLayoutState();
+
+    private void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs args)
     {
-        var (width, height) = ResolveAvailableSize();
-        // Hidden controls do not receive layout events. Use the current window
-        // shape here so the right rail can wake them after a hidden transition.
-        var mode = OverlayControlLayout.SelectMode(IsCompactOverlayWindow(), width, height);
-        return OverlayControlLayout.IsInsideInteractiveArea(mode, width, height, point.X, point.Y);
-    }
-
-    // Keep the layout measured while hidden; animate only the visible command
-    // surface(s). Completion comes from Composition, not an estimated delay.
-    internal void SetShown(bool isShown, bool animate = true)
-    {
-        if (_isShown == isShown && animate)
+        if (args.PropertyName == nameof(ViewModel.Player.IsCompactOverlay))
         {
-            return;
-        }
-
-        _isShown = isShown;
-        UpdateLayoutState();
-        if (!IsLoaded || !animate || !_uiSettings.AnimationsEnabled)
-        {
-            ApplyFinal(isShown);
-            return;
-        }
-
-        var continuing = _motionActive;
-        var version = ++_motionVersion;
-        _motionActive = true;
-        IsEnabled = isShown;
-        IsHitTestVisible = isShown;
-        Opacity = 1d;
-        var compositor = ElementCompositionPreview.GetElementVisual(RootGrid).Compositor;
-        var batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
-        if (_layoutMode == OverlayControlLayoutMode.PortraitRail)
-        {
-            AnimateVisual(ControlsScroller, isShown, new Vector3((float)OverlayControlLayout.RailWidth, 0, 0), continuing);
-            AnimateVisual(ProgressHost, isShown, new Vector3(0, (float)OverlayControlLayout.BottomEnterOffset, 0), continuing);
-        }
-        else
-        {
-            AnimateVisual(RootGrid, isShown, new Vector3(0, (float)OverlayControlLayout.BottomEnterOffset, 0), continuing);
-        }
-
-        batch.Completed += (_, _) =>
-        {
-            if (version == _motionVersion && _isOverlayActive)
+            DispatcherQueue.TryEnqueue(() =>
             {
-                ApplyFinal(_isShown);
-            }
-
-            batch.Dispose();
-        };
-        batch.End();
-    }
-
-    private void ApplyFinal(bool visible)
-    {
-        SettleMotion();
-        IsEnabled = visible;
-        IsHitTestVisible = visible;
-        Opacity = visible ? 1d : 0d;
-    }
-
-    private void SettleMotion()
-    {
-        ++_motionVersion;
-        _motionActive = false;
-        if (!IsLoaded)
-        {
-            return;
-        }
-
-        foreach (var element in new FrameworkElement[] { RootGrid, ControlsScroller, ProgressHost })
-        {
-            var visual = ElementCompositionPreview.GetElementVisual(element);
-            visual.StopAnimation("Translation");
-            visual.StopAnimation("Opacity");
-            visual.Properties.InsertVector3("Translation", Vector3.Zero);
-            visual.Opacity = 1f;
+                if (_isOverlayActive)
+                {
+                    UpdateLayoutState();
+                }
+            });
         }
     }
 
-    private static void AnimateVisual(FrameworkElement element, bool showing, Vector3 offset, bool continuing)
-    {
-        ElementCompositionPreview.SetIsTranslationEnabled(element, true);
-        var visual = ElementCompositionPreview.GetElementVisual(element);
-        var compositor = visual.Compositor;
-        var easing = compositor.CreateCubicBezierEasingFunction(new Vector2(0.2f, 0f), new Vector2(0f, 1f));
-        var translation = compositor.CreateVector3KeyFrameAnimation();
-        translation.Duration = TimeSpan.FromMilliseconds(MotionDurationMs);
-        if (continuing)
-        {
-            translation.InsertExpressionKeyFrame(0f, "this.StartingValue");
-        }
-        else
-        {
-            translation.InsertKeyFrame(0f, showing ? offset : Vector3.Zero);
-        }
+    private OverlayControlMode CurrentMode => OverlayControlLayout.SelectMode(
+        ViewModel?.Player.IsCompactOverlay == true, XamlRoot?.Size.Width ?? ActualWidth, XamlRoot?.Size.Height ?? ActualHeight);
 
-        translation.InsertKeyFrame(1f, showing ? Vector3.Zero : offset, easing);
-        visual.StartAnimation("Translation", translation);
-        var opacity = compositor.CreateScalarKeyFrameAnimation();
-        opacity.Duration = translation.Duration;
-        if (continuing)
-        {
-            opacity.InsertExpressionKeyFrame(0f, "this.StartingValue");
-        }
-        else
-        {
-            opacity.InsertKeyFrame(0f, showing ? 0f : 1f);
-        }
+    public bool ContainsInteractivePoint(Windows.Foundation.Point point)
+        => OverlayControlLayout.Contains(CurrentMode, XamlRoot?.Size.Width ?? ActualWidth,
+            XamlRoot?.Size.Height ?? ActualHeight, point.X, point.Y);
 
-        opacity.InsertKeyFrame(1f, showing ? 1f : 0f);
-        visual.StartAnimation("Opacity", opacity);
-    }
-
-    private void OnAnimationsEnabledChanged(UISettings sender, UISettingsAnimationsEnabledChangedEventArgs args)
-        => DispatcherQueue.TryEnqueue(() =>
-        {
-            if (_isOverlayActive && !_uiSettings.AnimationsEnabled)
-            {
-                ApplyFinal(_isShown);
-            }
-        });
-
-    private void OnControlsWheel(object sender, PointerRoutedEventArgs e)
-    {
-        if (_layoutMode == OverlayControlLayoutMode.PortraitRail)
-        {
-            // Keep wheel input within the scrollable command rail, including its edges.
-            e.Handled = true;
-        }
-    }
-
-    /// <summary>
-    /// 只依据真实窗口模式与实际可用区域决定排布：竖屏小窗用右侧轨道，其余保持底部带。
-    /// 媒体切换、手动缩放、进入/退出小窗都会改变尺寸，从而重新走这里恢复状态.
-    /// </summary>
     private void UpdateLayoutState()
     {
-        var (width, height) = ResolveAvailableSize();
-        var mode = OverlayControlLayout.SelectMode(IsCompactOverlayWindow(), width, height);
-        var changed = mode != _layoutMode;
-        _layoutMode = mode;
-
-        var bandState = OverlayControlLayout.SelectBandState(width, ViewModel?.IsDanmakuControlVisible == true);
-        ApplyRootGeometry(mode, bandState == OverlayBandState.Narrow);
-
-        var stateName = mode == OverlayControlLayoutMode.PortraitRail ? nameof(PortraitState) : ToStateName(bandState);
-        if (stateName != _appliedStateName)
-        {
-            VisualStateManager.GoToState(this, stateName, false);
-            _appliedStateName = stateName;
-        }
-
-        ApplyFlyoutConstraints(mode);
-
-        if (changed)
-        {
-            ConfigureRailFlyouts(mode == OverlayControlLayoutMode.PortraitRail);
-            // 横竖切换时先停掉旧方向的动画并落到最终位置，避免右栏带着横向位移
-            // 或底部带带着纵向位移跨越新布局；隐藏状态则直接收起，等待下次唤出重新判定.
-            SettleMotion();
-            if (!_isShown)
-            {
-                IsHitTestVisible = false;
-                Opacity = 0d;
-            }
-        }
-
-        if (mode == OverlayControlLayoutMode.Band)
-        {
-            BalanceLeftRightWidth();
-        }
-    }
-
-    private (double Width, double Height) ResolveAvailableSize()
-    {
-        // 可用区域取 XAML 岛（即播放窗口客户区）的尺寸：控件被折叠时它仍然有效，
-        // 而控件自身在隐藏后会被测量成 0.
-        var size = XamlRoot?.Size;
-        if (size is { Width: > 0, Height: > 0 })
-        {
-            return (size.Value.Width, size.Value.Height);
-        }
-
-        return (ActualWidth, ActualHeight);
-    }
-
-    private bool IsCompactOverlayWindow()
-    {
-        var window = ViewModel?.Window;
-        if (window is null || window.IsClosed)
-        {
-            return false;
-        }
-
-        return window.GetWindow().Presenter.Kind == AppWindowPresenterKind.CompactOverlay;
-    }
-
-    private static string ToStateName(OverlayBandState state)
-        => state switch
-        {
-            OverlayBandState.Narrow => nameof(NarrowState),
-            OverlayBandState.Medium => nameof(MediumState),
-            OverlayBandState.BelowWide => nameof(BelowWideState),
-            _ => nameof(WideState),
-        };
-
-    /// <summary>
-    /// 底部带保持固定高度（窄宽度 120），竖屏轨道则撑满播放区，由 ScrollViewer 负责滚动。
-    /// 高度只有一个拥有者：这里。
-    /// </summary>
-    private void ApplyRootGeometry(OverlayControlLayoutMode mode, bool isNarrow)
-    {
-        if (mode == OverlayControlLayoutMode.PortraitRail)
-        {
-            RootGrid.Height = double.NaN;
-            RootGrid.VerticalAlignment = VerticalAlignment.Stretch;
-            return;
-        }
-
-        RootGrid.Height = isNarrow ? 120d : 160d;
-        RootGrid.VerticalAlignment = VerticalAlignment.Bottom;
-    }
-
-    /// <summary>
-    /// 竖屏轨道里弹出面板向左展开，并且不越出小窗；
-    /// 退出轨道时恢复各面板原本的展开方向与约束设置.
-    /// </summary>
-    private void ConfigureRailFlyouts(bool isRail)
-    {
-        ConfigureRailFlyout(ChapterListButton?.Flyout, isRail);
-        ConfigureRailFlyout(SlimVolumeButton?.Flyout, isRail);
-        ConfigureRailFlyout(SpeedButton?.Flyout, isRail);
-        ConfigureRailFlyout(SubtitleButton?.Flyout, isRail);
-        ConfigureRailFlyout(OverflowButton?.Flyout, isRail);
-
-        ConfigureRailFlyout(DanmakuOptionButton?.Flyout, isRail);
-
-    }
-
-    private void ConfigureRailFlyout(FlyoutBase? flyout, bool isRail)
-    {
-        if (flyout is null)
-        {
-            return;
-        }
-
-        if (!_flyoutDefaults.TryGetValue(flyout, out var defaults))
-        {
-            defaults = (flyout.Placement, flyout is Flyout flyoutPresenter && flyoutPresenter.ShouldConstrainToRootBounds);
-            _flyoutDefaults[flyout] = defaults;
-        }
-
-        flyout.Placement = isRail ? FlyoutPlacementMode.Left : defaults.Placement;
-        if (flyout is Flyout target)
-        {
-            target.ShouldConstrainToRootBounds = isRail || defaults.ConstrainToRootBounds;
-        }
-    }
-
-    /// <summary>
-    /// 把各弹层内容收进实际可用宽高：设计宽度只在窗口放得下时使用，
-    /// 竖屏轨道还要给右侧轨道让位。尺寸变化会重新计算，退出轨道后自然恢复设计尺寸；
-    /// 高度同时约束滚动区，避免内容被 FlyoutPresenter 裁掉而不是滚动.
-    /// </summary>
-    private void ApplyFlyoutConstraints(OverlayControlLayoutMode mode)
-    {
-        var (width, height) = ResolveAvailableSize();
-        if (!double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0)
-        {
-            return;
-        }
-
-        var isRail = mode == OverlayControlLayoutMode.PortraitRail;
-        ConfigurePortraitFlyoutContent(isRail);
-
-        ChapterFlyoutPanel.Width = OverlayFlyoutLayout.ContentWidth(
-            OverlayFlyoutLayout.ChapterPreferredWidth, width, isRail);
-        ChapterListScroller.MaxHeight = OverlayFlyoutLayout.ScrollHeight(
-            OverlayFlyoutLayout.ChapterListPreferredHeight, height, OverlayFlyoutLayout.ChapterHeaderHeight);
-
-        // 音量：竖屏使用专为窄轨设计的宽度 + 纵向滑块；底部带保持原来的 200 宽横滑块.
-        VolumeFlyoutScroller.Width = OverlayFlyoutLayout.ContentWidth(
-            isRail ? OverlayFlyoutLayout.PortraitVolumePreferredWidth : OverlayFlyoutLayout.VolumePreferredWidth,
-            width,
-            isRail);
-        VolumeFlyoutScroller.MaxHeight = OverlayFlyoutLayout.ContentHeight(
-            isRail ? OverlayFlyoutLayout.PortraitVolumePreferredHeight : 520d,
-            height);
-
-        // 倍速：竖屏把滑块竖起、快捷项排成一列；底部带仍是 350 宽横排.
-        SpeedFlyoutScroller.Width = OverlayFlyoutLayout.ContentWidth(
-            isRail ? OverlayFlyoutLayout.PortraitSpeedPreferredWidth : OverlayFlyoutLayout.SpeedPreferredWidth,
-            width,
-            isRail);
-        SpeedFlyoutScroller.MaxHeight = OverlayFlyoutLayout.ContentHeight(
-            isRail ? OverlayFlyoutLayout.PortraitSpeedPreferredHeight : 520d,
-            height);
-
-        // 字幕弹层把 FlyoutPresenter 的 Padding 覆盖成了 0，因此这里不再扣 presenter 内边距.
-        SubtitleFlyoutScroller.Width = OverlayFlyoutLayout.ContentWidth(
-            OverlayFlyoutLayout.SubtitlePreferredWidth, width, isRail, presenterHorizontalPadding: 0d);
-        SubtitleFlyoutScroller.MaxHeight = OverlayFlyoutLayout.ContentHeight(
-            OverlayFlyoutLayout.SubtitlePreferredHeight, height);
-
-        DanmakuOptionsScroller.Width = OverlayFlyoutLayout.ContentWidth(
-            OverlayFlyoutLayout.DanmakuPreferredWidth, width, isRail);
-        DanmakuOptionsScroller.MaxHeight = OverlayFlyoutLayout.ContentHeight(
-            OverlayFlyoutLayout.DanmakuPreferredHeight, height);
-    }
-
-    /// <summary>
-    /// 竖屏的弹层不是把原横向面板缩窄：音量/倍速滑块改为纵向，
-    /// 倍速快捷项从六列横排重排成一列纵排；退出轨道时全部恢复原横向设置.
-    /// </summary>
-    private void ConfigurePortraitFlyoutContent(bool isRail)
-    {
-        VolumeSlider.Orientation = isRail ? Orientation.Vertical : Orientation.Horizontal;
-        VolumeSlider.Height = isRail ? OverlayFlyoutLayout.PortraitSliderHeight : double.NaN;
-        VolumeSlider.Width = isRail ? OverlayFlyoutLayout.PortraitSliderWidth : double.NaN;
-        VolumeSlider.HorizontalAlignment = isRail ? HorizontalAlignment.Center : HorizontalAlignment.Stretch;
-
-        SpeedSlider.Orientation = isRail ? Orientation.Vertical : Orientation.Horizontal;
-        SpeedSlider.Height = isRail ? OverlayFlyoutLayout.PortraitSliderHeight : double.NaN;
-        SpeedSlider.Width = isRail ? OverlayFlyoutLayout.PortraitSliderWidth : double.NaN;
-        SpeedSlider.HorizontalAlignment = isRail ? HorizontalAlignment.Center : HorizontalAlignment.Stretch;
-
-        var columns = OverlayFlyoutLayout.SpeedQuickColumns(isRail);
-        var buttons = new[]
-        {
-            HalfSpeedButton,
-            DefaultSpeedButton,
-            OneTwoFiveSpeedButton,
-            OneHalfSpeedButton,
-            DoubleSpeedButton,
-            TripleSpeedButton,
-        };
-        for (var i = 0; i < buttons.Length; i++)
-        {
-            Grid.SetRow(buttons[i], columns == 1 ? i : 0);
-            Grid.SetColumn(buttons[i], columns == 1 ? 0 : i);
-        }
-
-        for (var column = 0; column < SpeedQuickGrid.ColumnDefinitions.Count; column++)
-        {
-            SpeedQuickGrid.ColumnDefinitions[column].Width = column < columns
-                ? new GridLength(1, GridUnitType.Star)
-                : new GridLength(0d);
-        }
+        if (ViewModel is null || RootGrid is null) return;
+        var width = XamlRoot?.Size.Width ?? ActualWidth;
+        var state = OverlayControlLayout.StateName(CurrentMode, width, ViewModel.IsDanmakuControlVisible);
+        VisualStateManager.GoToState(this, state, false);
+        // Constrain content, not merely popup placement. The visual state owns
+        // preferred dimensions and orientation; these limits only reflect the viewport.
+        var maxWidth = Math.Max(1, width - 32);
+        var maxHeight = Math.Max(1, (XamlRoot?.Size.Height ?? ActualHeight) - 32);
+        foreach (var content in new FrameworkElement[] { VolumeContent, SpeedContent, ChapterContent, SubtitleContent })
+            content.MaxWidth = maxWidth;
+        foreach (var popup in new ScrollViewer[] { VolumePopup, SpeedPopup, ChapterPopup, SubtitlePopup })
+            popup.MaxHeight = maxHeight;
+        if (CurrentMode != OverlayControlMode.CompactPortrait) BalanceLeftRightWidth();
     }
 
     private void BalanceLeftRightWidth()
@@ -853,9 +531,13 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         ViewModel.IsPopupVisible = true;
     }
 
-    private void OnDanmakuOptionsClosed(object sender, object args)
+    private void OnDanmakuOptionsButtonClick(object sender, RoutedEventArgs e)
     {
-        ViewModel.IsPopupVisible = false;
+        ViewModel.IsDanmakuOptionsVisible = !ViewModel.IsDanmakuOptionsVisible;
+    }
+
+    private void OnDanmakuOptionsClosed(TeachingTip sender, TeachingTipClosedEventArgs args)
+    {
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
         {
             if (ViewModel.Window?.IsClosed != false)

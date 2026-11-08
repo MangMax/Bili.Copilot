@@ -187,50 +187,36 @@ The old `PlayerWindowPlacementSession`, `PresenterChangeSession`,
 `IsPresenterChanging`, the 500 ms delay and the `_entering*` flags are gone. A
 repository scan for those symbols returns no hits.
 
-### Portrait control layout
+### Adaptive playback controls
 
-A 9:16 compact window is narrower than the horizontal control band needs, so the
-band clipped buttons and the narrow-width state hid the rest. `OverlayControlLayout`
-(pure, in `Toolkits/Pure`) now selects between two arrangements:
+The control has three presentation modes, selected from the existing player mode
+and actual client size: `Normal`, `CompactLandscape`, and `CompactPortrait`.
+Normal mode retains the original width profiles; compact landscape uses the
+existing narrow band. Compact portrait uses a bottom transport row (previous,
+rewind, play/pause, forward, next), a bottom-aligned right accessory column, and
+progress below the transport row. Navigation availability remains a business rule.
+The information card and danmaku settings are omitted in portrait; fullscreen and
+exit compact remain in the overflow menu.
 
-- `Band` — every ordinary window, full screen and the landscape compact form; the
-  existing width states and their hide rules are unchanged.
-- `PortraitRail` — only when the window is really a `CompactOverlayPresenter`
-  **and** the actual client area is taller than wide. A portrait ordinary window, a
-  landscape compact window with the ratio preference off, and a square window are
-  all still `Band`.
+XAML visual states own all orientation, alignment, preferred popup dimensions and
+animation directions. Leaving a state restores its original declarations; no
+imperative per-button grid mutation or saved flyout-default dictionary remains.
+Portrait volume contains a title, the same mute command/icon behavior as the
+normal control, and a vertical slider. Portrait speed places compact presets on
+the left and its vertical slider on the right. Landscape speed restores the
+original six centered presets above a horizontal slider. Popup content has viewport
+maximums and vertical scrolling, independently of its preferred state dimensions.
 
-`OverlayTransportControls` wraps its control area in a scroll viewer. Vertical and
-horizontal scrolling are disabled for `Band`, so the content is measured with the
-window height and the band layout is unchanged; the `PortraitState` visual state
-enables vertical scrolling, moves the transport and the extra controls into one
-right-hand column (the play controls first), turns both panels vertical, hides the
-left info card, keeps the full volume slider replaced by the slim volume button with
-its slider flyout, and leaves only the progress bar at the bottom. Full screen and exit-compact commands share the three-dot menu; the information
-card stays hidden. Volume and speed use vertical sliders in portrait mode, with
-speed presets arranged vertically. Flyout content is sized against the available
-client area and scrolls vertically when necessary. Height is owned by
-the code-behind: 160 (120 in the narrow band) or, for the rail, the full player
-area.
+Visibility binds directly to the existing `IsControlsVisible`. Each surface uses
+the original Toolkit implicit show/hide animations: playback and progress enter
+from below in every state; accessories enter from the right only in portrait.
+The custom Composition batch/visibility controller and `OverlayFlyoutLayout` were
+removed. `XamlRoot.Changed` and player mode notifications update the visual state
+even when the controls are hidden. Pointer wake-up checks use the current mode.
 
-The state is recomputed from the presenter and `XamlRoot.Size` whenever the control
-area resizes or reloads, so switching media, resizing the compact window by hand and
-leaving the compact overlay all restore the right layout. Flyouts of the rail open
-to the left and are constrained to the window; leaving the rail restores their
-declared placement. Wheel input over the rail stays in the scroll area and never
-reaches the player's volume shortcut. `PlayerOverlay` stretches the transport
-control over the player area (the band still anchors itself to the bottom) and asks
-it whether a pointer is inside the interactive band or rail, so hovering the rail no
-longer hides the controls while the pointer is on a button.
-
-The rail and progress bar have separate animation targets: the rail enters from
-the right and the progress bar from below. Band mode retains its bottom entrance.
-Composition completion settles visibility, with generation checks for reversals
-and a direct final state when system animations are disabled. Hidden controls
-remain measured but are disabled and do not receive pointer input.
-
-Very short windows or enlarged text can require scrolling to reach the last item.
-Pure layout tests do not verify the actual XAML rendering or popup behaviour.
+Pure tests cover mode selection, returning to normal width profiles and pointer
+regions. They do not establish actual XAML rendering or animation correctness;
+packaged UI evidence belongs in `artifacts/portrait-rewrite/report.md`.
 
 ## Native evidence
 
@@ -327,17 +313,9 @@ off-screen recovery, negative coordinates, maximized ordinary restore,
 disabled/enabled ratio, old media callbacks, and the absence of geometry writes
 while visible.
 
-Portrait control layout coverage (this change): `OverlayControlLayoutTests`
-checks the band/rail decision (portrait compact, ordinary portrait, landscape and
-square compact, zero/invalid sizes), the unchanged width thresholds, the interactive
-areas, and the fitted 9:16 / 16:9 frames produced by `CompactOverlayLayout`; the
-full UI suite passes (1177 tests, 0 failed). The parent also exercised the packaged
-Dev app at approximately 352 and 269 DIP client widths: volume, speed, subtitle
-settings, rail scrolling, the overflow menu and restoring the ordinary band.
-Screen recordings cover separate right/bottom motion and rapid reversal. Evidence
-and remaining limitations are recorded in artifacts/portrait-parent/report.md.
-Danmaku settings use a regular Flyout instead of a TeachingTip so narrow windows
-can present the scrollable settings surface.
+Adaptive control decision coverage: `OverlayControlLayoutTests`. The revised UI
+suite passes 1150 tests (0 failed, 0 skipped). Historical rail screenshots in
+`artifacts/portrait-parent` describe the superseded layout, not this rewrite.
 
 Real-app checks still required with the packaged app and real media:
 
