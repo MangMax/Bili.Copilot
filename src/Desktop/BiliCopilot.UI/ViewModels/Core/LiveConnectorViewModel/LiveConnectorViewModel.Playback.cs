@@ -34,8 +34,15 @@ public sealed partial class LiveConnectorViewModel
         {
             Session.SetPlayback(playback);
             Qualities.Clear();
+            // 内核会把同一清晰度的多种编码都列出来；界面按 qn 去重，只留一个可选项。
+            var seenQualities = new HashSet<int>();
             foreach (var format in playback.Formats)
             {
+                if (!seenQualities.Add(format.Quality))
+                {
+                    continue;
+                }
+
                 Qualities.Add(new LiveQualityOption(format.Quality, format.Description));
             }
 
@@ -43,8 +50,16 @@ public sealed partial class LiveConnectorViewModel
                 ?? Qualities.FirstOrDefault();
 
             Lines.Clear();
+            // 候选是“格式 × 线路”的笛卡尔积；界面按主机名去重，避免出现十几条同源线路。
+            var seenLines = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var candidate in resolver.Candidates)
             {
+                var lineKey = candidate.Primary.Host;
+                if (string.IsNullOrEmpty(lineKey) || !seenLines.Add(lineKey))
+                {
+                    continue;
+                }
+
                 Lines.Add(new LiveLineOption(candidate.Key, DescribeLine(candidate)));
             }
 
