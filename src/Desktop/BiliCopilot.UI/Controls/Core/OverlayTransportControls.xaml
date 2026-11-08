@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <local:PlayerControlBase
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -1279,7 +1279,7 @@
             <Grid
                 Margin="16,-32,16,12"
                 ColumnSpacing="12"
-                Visibility="{x:Bind ProgressBarVisible, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay}"
                 x:Name="ProgressPanel">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60" />
@@ -1336,6 +1336,48 @@
                     RequestedTheme="Dark"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     Text="{x:Bind GetTimeText(ViewModel.Player.Duration), Mode=OneWay}" />
+            </Grid>
+
+            <!--  直播态：没有可跳转的时间轴，只保留一条静态轨道与已播时长，不出现圆点。  -->
+            <Grid
+                x:Name="LiveProgressPanel"
+                Margin="16,-32,16,12"
+                ColumnSpacing="12"
+                Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="60" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Padding="6,1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource AccentFillColorDefaultBrush}"
+                    CornerRadius="4">
+                    <TextBlock
+                        FontSize="10"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="LIVE" />
+                </Border>
+                <Grid
+                    Grid.Column="1"
+                    Height="4"
+                    VerticalAlignment="Center">
+                    <Border
+                        Background="{ThemeResource ControlStrokeColorDefaultBrush}"
+                        CornerRadius="2" />
+                </Grid>
+                <TextBlock
+                    Grid.Column="2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                    IsTextScaleFactorEnabled="False"
+                    RequestedTheme="Dark"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="{x:Bind ViewModel.LiveConnector.UptimeText, Mode=OneWay, FallbackValue=''}" />
             </Grid>
         </Grid>
     </Grid>

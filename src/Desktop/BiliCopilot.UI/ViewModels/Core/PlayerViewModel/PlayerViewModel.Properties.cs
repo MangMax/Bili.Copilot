@@ -286,6 +286,11 @@ public sealed partial class PlayerViewModel
     public bool IsProgressBarVisible => LiveCapabilities.ReportsProgress;
 
     /// <summary>
+    /// Gets 是否显示可跳转的时间轴。直播只有已播时长，不进入章节/进度条逻辑。
+    /// </summary>
+    public bool IsTimelineProgressVisible => !IsLive && IsProgressBarVisible;
+
+    /// <summary>
     /// Gets a value indicating whether 是否允许跳转/倍速（直播没有时间轴）.
     /// </summary>
     public bool IsSeekAvailable => LiveCapabilities.SupportsTimeline;
