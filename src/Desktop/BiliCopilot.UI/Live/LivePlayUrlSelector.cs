@@ -260,9 +260,12 @@ public static class LivePlayUrlSelector
             route = "/" + route;
         }
 
-        if (!string.IsNullOrEmpty(query) && !query.StartsWith('?') && !query.StartsWith('&'))
+        // HLS 的 route 自带结尾 '?'，extra 又可能以 '?' 开头；直接拼接会得到 "??expires"，
+        // 部分 CDN（腾讯系 smtcdns）会按错误签名返回 403.
+        query = query.TrimStart('?');
+        if (!string.IsNullOrEmpty(query))
         {
-            query = "?" + query;
+            query = route.EndsWith('?') ? query : "?" + query;
         }
 
         return baseUrl + route + query;
