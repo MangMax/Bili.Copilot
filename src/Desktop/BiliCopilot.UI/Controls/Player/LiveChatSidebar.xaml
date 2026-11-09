@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
@@ -19,18 +20,11 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <SelectorBar
-            x:Name="SectionSelector"
-            Margin="8,4,8,4"
-            SelectionChanged="OnSectionChanged">
-            <SelectorBarItem
-                x:Name="InteractionItem"
-                IsSelected="True"
-                Text="{ext:Locale Name=LiveChatInteractionTitle}" />
-            <SelectorBarItem
-                x:Name="BlockItem"
-                Text="{ext:Locale Name=LiveChatBlockTitle}" />
-        </SelectorBar>
+        <components:SlidingTabBar
+            x:Name="SectionTabs"
+            Margin="8,0"
+            HorizontalAlignment="Center"
+            AutomationProperties.AutomationId="LiveChatSectionTabs" />
 
         <Grid
             x:Name="InteractionPanel"

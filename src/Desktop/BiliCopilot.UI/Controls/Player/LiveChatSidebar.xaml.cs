@@ -2,6 +2,8 @@
 
 using System.Globalization;
 using BiliCopilot.UI.Live;
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.UI.Dispatching;
 
@@ -18,6 +20,8 @@ namespace BiliCopilot.UI.Controls.Player;
 public sealed partial class LiveChatSidebar : LiveChatControlBase
 {
     private const int RetryIntervalMilliseconds = 40;
+    private const string InteractionTag = "interaction";
+    private const string BlockTag = "block";
     private const int MaxScrollTicks = 75;
 
     private readonly DispatcherQueueTimer _scrollTimer;
@@ -39,11 +43,13 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         _scrollTimer.Interval = TimeSpan.FromMilliseconds(RetryIntervalMilliseconds);
         _scrollTimer.IsRepeating = true;
         _scrollTimer.Tick += OnScrollTimerTick;
+        SectionTabs.SelectionChanged += OnSectionChanged;
     }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
+        InitializeSections();
         if (ChatView is not null)
         {
             ChatView.ViewChanged -= OnChatViewChanged;
@@ -101,9 +107,27 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         }
     }
 
-    private void OnSectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void InitializeSections()
     {
-        var showBlock = ReferenceEquals(sender.SelectedItem, BlockItem);
+        var items = new[]
+        {
+            new SelectorBarItem
+            {
+                Text = ResourceToolkit.GetLocalizedString(StringNames.LiveChatInteractionTitle),
+                Tag = InteractionTag,
+            },
+            new SelectorBarItem
+            {
+                Text = ResourceToolkit.GetLocalizedString(StringNames.LiveChatBlockTitle),
+                Tag = BlockTag,
+            },
+        };
+        SectionTabs.SetItems(items, InteractionTag);
+    }
+
+    private void OnSectionChanged(object? sender, EventArgs args)
+    {
+        var showBlock = string.Equals(SectionTabs.SelectedItem as string, BlockTag, StringComparison.Ordinal);
         InteractionPanel.Visibility = showBlock ? Microsoft.UI.Xaml.Visibility.Collapsed : Microsoft.UI.Xaml.Visibility.Visible;
         BlockPanel.Visibility = showBlock ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
         if (!showBlock && _ownership.IsFollowing)
