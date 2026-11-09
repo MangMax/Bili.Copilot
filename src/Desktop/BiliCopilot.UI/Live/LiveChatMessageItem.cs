@@ -237,6 +237,16 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         => Uri.TryCreate(Message.Avatar, UriKind.Absolute, out var uri) ? uri : null;
 
     /// <summary>
+    /// Gets 荣耀等级.
+    /// </summary>
+    public int? WealthLevel => Message.WealthLevel;
+
+    /// <summary>
+    /// Gets 荣耀等级图标标识.
+    /// </summary>
+    public string? WealthIconKey => Message.WealthIconKey;
+
+    /// <summary>
     /// Gets 头衔图标；没有头衔或未取到头衔表时为空.
     /// </summary>
     public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? TitleIconSource { get; }

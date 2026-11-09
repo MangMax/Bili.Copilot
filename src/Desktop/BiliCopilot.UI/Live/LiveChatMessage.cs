@@ -192,6 +192,16 @@ public sealed class LiveChatMessage
     public string? MedalColor { get; private init; }
 
     /// <summary>
+    /// Gets 荣耀等级.
+    /// </summary>
+    public int? WealthLevel { get; private init; }
+
+    /// <summary>
+    /// Gets 荣耀等级图标标识.
+    /// </summary>
+    public string? WealthIconKey { get; private init; }
+
+    /// <summary>
     /// Gets 舰长船锚图标.
     /// </summary>
     public string? MedalGuardIcon { get; private init; }
@@ -269,6 +279,8 @@ public sealed class LiveChatMessage
             MedalName = danmaku.MedalName,
             MedalLevel = danmaku.MedalLevel,
             MedalColor = danmaku.MedalColor,
+            WealthLevel = danmaku.WealthLevel,
+            WealthIconKey = danmaku.WealthIconKey,
             MedalGuardIcon = danmaku.MedalGuardIcon,
             MedalColorStart = danmaku.MedalColorStart,
             MedalColorEnd = danmaku.MedalColorEnd,

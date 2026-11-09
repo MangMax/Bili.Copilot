@@ -33,6 +33,7 @@ public sealed partial class LiveConnectorViewModel
     private DateTimeOffset _lastEnterRoomAt = DateTimeOffset.MinValue;
     private IReadOnlyDictionary<string, LiveDanmakuEmote>? _emoteResources;
     private IReadOnlyDictionary<string, LiveTitleItem>? _titleResources;
+    private int _wealthLogCount;
     private bool _isChatBackfillStarted;
     private bool _isChatHooked;
 
@@ -312,6 +313,17 @@ public sealed partial class LiveConnectorViewModel
     /// </summary>
     private void AppendChatMessage(LiveChatMessage message, DateTimeOffset now)
     {
+        if (_wealthLogCount < 20 && message.WealthIconKey is { Length: > 0 } wealthKey)
+        {
+            _wealthLogCount++;
+            if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+            {
+                var wealthName = message.UserName;
+                var wealthLevel = message.WealthLevel ?? 0;
+                _logger.LogInformation("WEALTH|{Name}|{Level}|{Key}", wealthName, wealthLevel, wealthKey);
+            }
+        }
+
         if (message.IsEnterRoom)
         {
             // 大房间每秒有大量进房事件；保留提示但限制到每秒最多一条。
