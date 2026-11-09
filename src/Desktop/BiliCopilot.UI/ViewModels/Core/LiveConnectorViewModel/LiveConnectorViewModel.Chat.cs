@@ -81,11 +81,12 @@ public sealed partial class LiveConnectorViewModel
             _titleResources = items
                 .GroupBy(item => item.Id, StringComparer.Ordinal)
                 .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            _logger.LogInformation("直播头衔表已加载");
         }
         catch (Exception ex)
         {
             // 头衔图标拿不到只影响标识展示，不影响聊天。
-            _logger.LogDebug(ex, "加载直播头衔失败");
+            _logger.LogWarning(ex, "加载直播头衔失败");
         }
     }
 
@@ -123,11 +124,12 @@ public sealed partial class LiveConnectorViewModel
             }
 
             _emoteResources = map;
+            _logger.LogInformation("直播表情包已加载");
         }
         catch (Exception ex)
         {
             // 表情包拿不到只影响表情渲染，不影响聊天。
-            _logger.LogDebug(ex, "加载直播间表情包失败");
+            _logger.LogWarning(ex, "加载直播间表情包失败");
         }
     }
 
