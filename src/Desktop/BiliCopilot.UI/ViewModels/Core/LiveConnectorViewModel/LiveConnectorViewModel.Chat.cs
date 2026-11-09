@@ -153,11 +153,15 @@ public sealed partial class LiveConnectorViewModel
         var now = TimeProvider.GetUtcNow();
         var added = new List<LiveChatMessage>(MaxChatEventsPerTick);
         var requiresReset = false;
+        var trimmed = 0;
 
         for (var i = 0; i < MaxChatEventsPerTick && _chatQueue.TryDequeue(out var liveEvent); i++)
         {
             var result = session.Apply(liveEvent, now);
-            requiresReset |= result.RequiresReset;
+            // 醒目留言被删除时必须整表重建（要按标识移除）；普通裁剪只需从头部摘掉对应条数，
+            // 否则每 50 条消息就要重建 500 个条目，长时间观看会明显卡顿。
+            requiresReset |= result.Removed > 0;
+            trimmed += result.Trimmed;
             foreach (var message in result.Added)
             {
                 added.Add(message);
@@ -171,8 +175,13 @@ public sealed partial class LiveConnectorViewModel
         {
             ReplaceChatItems(session, now);
         }
-        else if (added.Count > 0)
+        else
         {
+            if (trimmed > 0)
+            {
+                ChatMessages.RemoveFromStart(trimmed);
+            }
+
             foreach (var message in added)
             {
                 ChatMessages.Append(CreateChatItem(message, now));

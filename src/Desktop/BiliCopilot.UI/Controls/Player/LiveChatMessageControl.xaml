@@ -6,25 +6,27 @@
     xmlns:comp="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Grid>
-        <!--  进房提示：和普通消息区分，不占卡片高度。  -->
+        <!--  进房提示：浅色单行，不占卡片高度。  -->
         <TextBlock
             Margin="12,2"
             FontSize="12"
             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
             Text="{x:Bind ViewModel.EnterText, Mode=OneWay, FallbackValue=''}"
+            TextWrapping="Wrap"
             Visibility="{x:Bind ViewModel.IsEnterRoom, Mode=OneWay, FallbackValue=Collapsed}" />
 
-        <!--  普通弹幕：复用点播评论的卡片、头像、姓名/等级与 EmoteTextBlock 正文。  -->
+        <!--  普通弹幕：与点播评论同构的卡片；正文复用 EmoteTextBlock。  -->
         <Grid
             Margin="0,0,0,4"
             Padding="12"
             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-            BorderBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
             BorderThickness="1"
             ColumnSpacing="12"
             CornerRadius="{StaticResource ControlCornerRadius}"
@@ -33,23 +35,26 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <controls:BasicCoverImage
+
+            <!--  头像：PersonPicture 自带空态占位，加载失败也不会留下空洞。  -->
+            <PersonPicture
                 Width="32"
                 Height="32"
                 VerticalAlignment="Top"
-                CornerRadius="16"
-                DecodeWidth="64"
-                Source="{x:Bind ViewModel.AvatarUri, Mode=OneWay}" />
+                ProfilePicture="{x:Bind ViewModel.AvatarUri, Mode=OneWay, Converter={StaticResource BitmapConverter}}" />
+
             <StackPanel Grid.Column="1" Spacing="4">
+                <!--  发言人一行：姓名、等级图、勋章、舰长、头衔。  -->
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <TextBlock
                         VerticalAlignment="Center"
+                        FontSize="13"
                         FontWeight="SemiBold"
                         Foreground="{x:Bind ViewModel.NameBrush, Mode=OneWay}"
                         Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
                         TextTrimming="CharacterEllipsis" />
                     <Image
-                        Height="8"
+                        Height="10"
                         VerticalAlignment="Center"
                         Source="{x:Bind ViewModel.UserLevelNumber, Mode=OneWay, Converter={StaticResource LevelImageConverter}}"
                         Visibility="{x:Bind ViewModel.HasUserLevel, Mode=OneWay, FallbackValue=Collapsed}" />
@@ -60,21 +65,15 @@
                         BorderThickness="1"
                         CornerRadius="3"
                         Visibility="{x:Bind ViewModel.HasMedal, Mode=OneWay, FallbackValue=Collapsed}">
-                        <StackPanel Orientation="Horizontal" Spacing="3">
-                            <TextBlock
-                                FontSize="10"
-                                Foreground="{x:Bind ViewModel.MedalBrush, Mode=OneWay}"
-                                Text="{x:Bind ViewModel.MedalName, Mode=OneWay, FallbackValue=''}" />
-                            <TextBlock
-                                FontSize="10"
-                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                Text="{x:Bind ViewModel.MedalLevel, Mode=OneWay, FallbackValue=''}" />
-                        </StackPanel>
+                        <TextBlock
+                            FontSize="10"
+                            Foreground="{x:Bind ViewModel.MedalBrush, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.MedalText, Mode=OneWay, FallbackValue=''}" />
                     </Border>
                     <TextBlock
                         VerticalAlignment="Center"
                         FontSize="10"
-                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Text="{x:Bind ViewModel.BadgeText, Mode=OneWay, FallbackValue=''}"
                         Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
                     <TextBlock
@@ -84,6 +83,7 @@
                         Text="{x:Bind ViewModel.UserTitle, Mode=OneWay, FallbackValue=''}"
                         Visibility="{x:Bind ViewModel.HasTitle, Mode=OneWay, FallbackValue=Collapsed}" />
                 </StackPanel>
+
                 <comp:EmoteTextBlock
                     FontSize="13"
                     MaxLines="10"

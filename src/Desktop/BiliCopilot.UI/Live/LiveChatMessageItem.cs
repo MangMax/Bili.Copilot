@@ -58,6 +58,9 @@ public static class LiveChatBadgeKindText
 /// </remarks>
 public sealed class LiveChatMessageItem : INotifyPropertyChanged
 {
+    private readonly Brush? _nameBrush;
+    private readonly Brush? _medalBrush;
+    private readonly Brush? _userLevelBrush;
     private string? _remainingText;
     private bool _isRemainingVisible;
     private bool _isExpired;
@@ -85,7 +88,9 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
             ? systemText?.Invoke(message.SystemKind) ?? message.SystemKind.ToString()
             : null;
         BadgeText = GetBadge(message, badgeText ?? LiveChatBadgeKindText.Get);
-        Segments = LiveChatTextSegment.Parse(message.Text, message.Emotes);
+        _nameBrush = CreateBrush(message.NameColor);
+        _medalBrush = CreateBrush(message.MedalColor);
+        _userLevelBrush = CreateBrush(message.UserLevelColor);
         Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
             message.Text ?? string.Empty,
             message.Emotes?.ToDictionary(
@@ -183,11 +188,6 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     public string? EnterText => Message.IsEnterRoom ? $"{Message.UserName} 进入直播间" : null;
 
     /// <summary>
-    /// Gets 正文分段：普通文本与表情图片.
-    /// </summary>
-    public IReadOnlyList<LiveChatTextSegment> Segments { get; } = Array.Empty<LiveChatTextSegment>();
-
-    /// <summary>
     /// Gets 供 <c>EmoteTextBlock</c> 使用的富文本：文本 + 表情索引，和点播评论同一套渲染.
     /// </summary>
     public Richasy.BiliKernel.Models.Appearance.EmoteText Content { get; }
@@ -204,19 +204,34 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
         => Uri.TryCreate(Message.Avatar, UriKind.Absolute, out var uri) ? uri : null;
 
     /// <summary>
+    /// Gets a value indicating whether 有可用头像.
+    /// </summary>
+    public bool HasAvatar => AvatarUri is not null;
+
+    /// <summary>
+    /// Gets 勋章文案（名称 + 等级），避免两个 TextBlock 之间出现空白.
+    /// </summary>
+    public string? MedalText
+        => string.IsNullOrEmpty(Message.MedalName)
+            ? null
+            : string.IsNullOrEmpty(Message.MedalLevel)
+                ? Message.MedalName
+                : $"{Message.MedalName} {Message.MedalLevel}";
+
+    /// <summary>
     /// Gets 昵称画刷（装扮颜色）；没有时回落到默认.
     /// </summary>
-    public Brush? NameBrush => CreateBrush(Message.NameColor);
+    public Brush? NameBrush => _nameBrush;
 
     /// <summary>
     /// Gets 勋章画刷.
     /// </summary>
-    public Brush? MedalBrush => CreateBrush(Message.MedalColor);
+    public Brush? MedalBrush => _medalBrush;
 
     /// <summary>
     /// Gets 等级画刷.
     /// </summary>
-    public Brush? UserLevelBrush => CreateBrush(Message.UserLevelColor);
+    public Brush? UserLevelBrush => _userLevelBrush;
 
     /// <summary>
     /// Gets a value indicating whether 有任意徽标需要显示.
@@ -366,7 +381,20 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
 
         try
         {
-            return new SolidColorBrush(AppToolkit.HexToColor(color));
+            var parsed = AppToolkit.HexToColor(color);
+            // 直播间昵称色/勋章色可能很深；在深色卡片上先按亮度提亮，保证可读。
+            var luminance = (0.299 * parsed.R) + (0.587 * parsed.G) + (0.114 * parsed.B);
+            if (luminance < 140)
+            {
+                var factor = (140 - luminance) / 140 * 0.75;
+                parsed = Windows.UI.Color.FromArgb(
+                    255,
+                    (byte)(parsed.R + ((255 - parsed.R) * factor)),
+                    (byte)(parsed.G + ((255 - parsed.G) * factor)),
+                    (byte)(parsed.B + ((255 - parsed.B) * factor)));
+            }
+
+            return new SolidColorBrush(parsed);
         }
         catch
         {

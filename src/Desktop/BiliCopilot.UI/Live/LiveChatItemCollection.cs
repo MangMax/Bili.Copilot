@@ -59,6 +59,28 @@ public sealed class LiveChatItemCollection<T> : ObservableCollection<T>
     }
 
     /// <summary>
+    /// 从头部移除若干条，只发一次 Reset 通知；保留下来的条目实例不变。
+    /// </summary>
+    /// <param name="count">移除条数.</param>
+    public void RemoveFromStart(int count)
+    {
+        if (count <= 0 || Items.Count == 0)
+        {
+            return;
+        }
+
+        count = Math.Min(count, Items.Count);
+        for (var i = 0; i < count; i++)
+        {
+            Items.RemoveAt(0);
+        }
+
+        OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Count)));
+        OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Item[]"));
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+    }
+
+    /// <summary>
     /// 清空，只发一次 Reset 通知。
     /// </summary>
     public void ClearAll()
