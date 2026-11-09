@@ -10,6 +10,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 
 public sealed partial class PlayerViewModel
 {
+    private int _liveRecoveryAttempts;
     private readonly PlaybackRefreshController _playbackRefresh = new();
     private Task _nativeRefreshDrained = Task.CompletedTask;
     private bool _isPlaybackRefreshReload;
@@ -195,6 +196,7 @@ public sealed partial class PlayerViewModel
             {
                 await client.PlayAsync(source.Url, source.Options);
                 await loaded.Task.WaitAsync(TimeSpan.FromSeconds(15));
+                _liveRecoveryAttempts = 0;
             }
             finally
             {
@@ -226,6 +228,7 @@ public sealed partial class PlayerViewModel
             return Task.CompletedTask;
         }
 
+        _liveRecoveryAttempts = 0;
         resolver.SelectQuality(quality);
         return RefreshLiveAsyncAfterPreferenceChangeAsync(resolver);
     }
@@ -240,6 +243,7 @@ public sealed partial class PlayerViewModel
             return Task.CompletedTask;
         }
 
+        _liveRecoveryAttempts = 0;
         resolver.SelectLine(key);
         return RefreshLiveAsyncAfterPreferenceChangeAsync(resolver);
     }

@@ -40,6 +40,16 @@ public sealed partial class PlayerViewModel
                 ? unavailable.Kind
                 : LivePlaybackFailureClassifier.ClassifyPlayback(exception);
             logger.LogWarning(exception, "直播刷新播放失败：{Kind}", kind);
+            _liveRecoveryAttempts++;
+            if (_liveRecoveryAttempts > 3)
+            {
+                // 连续多条候选都失败（例如整批签名 403），停止自动重试，给出可重试的提示。
+                logger.LogError("直播连续 {Attempts} 次取流失败，停止自动恢复：{Kind}", _liveRecoveryAttempts, kind);
+                _liveRecoveryAttempts = 0;
+                ShowLivePlaybackFailure(LivePlaybackFailureClassifier.ToLiveFailureKind(kind), canRetry: true);
+                return;
+            }
+
             if (kind is LivePlaybackFailureKind.Transport or LivePlaybackFailureKind.DecoderInit)
             {
                 // 403/连接失败/解码失败通常只坏了一条 CDN 线路：换候选重取，不直接打断用户。
