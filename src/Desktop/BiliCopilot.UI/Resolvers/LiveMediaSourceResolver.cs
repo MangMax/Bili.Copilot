@@ -502,7 +502,9 @@ internal sealed partial class LiveMediaSourceResolver(
         {
             for (var i = 0; i < _candidates.Count; i++)
             {
-                if (string.Equals(_candidates[i].Key, _preferredLineKey, StringComparison.OrdinalIgnoreCase))
+                // 偏好按“域名”保存：编码顺序在每次取址时都可能变化，
+                // 用 Codec|Host 做键会让同一条线路在刷新后对不上。
+                if (string.Equals(_candidates[i].Primary.Host, _preferredLineKey, StringComparison.OrdinalIgnoreCase))
                 {
                     return i;
                 }

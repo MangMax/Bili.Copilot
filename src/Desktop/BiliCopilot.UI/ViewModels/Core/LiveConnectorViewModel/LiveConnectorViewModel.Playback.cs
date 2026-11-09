@@ -16,6 +16,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 public sealed partial class LiveConnectorViewModel
 {
     private bool _isSyncingPlayback;
+    private string? _lineRoomId;
 
     /// <summary>
     /// 用解析器的最新播放信息回填画质与线路列表；刷新后调用，保证界面不回到默认值。
@@ -50,17 +51,26 @@ public sealed partial class LiveConnectorViewModel
             SelectedQuality = Qualities.FirstOrDefault(option => option.Quality == resolver.SelectedQuality)
                 ?? Qualities.FirstOrDefault();
 
-            Lines.Clear();
-            // 候选是“格式 × 线路”的笛卡尔积；按原始主机名去重并排序，显示为“线路一/二/三”。
-            var orderedLines = resolver.Candidates
-                .Where(candidate => !string.IsNullOrEmpty(candidate.Primary.Host))
-                .GroupBy(candidate => candidate.Primary.Host, StringComparer.OrdinalIgnoreCase)
-                .Select(group => group.First())
-                .OrderBy(candidate => candidate.Primary.Host, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-            for (var i = 0; i < orderedLines.Count; i++)
+            // 候选是“格式 × 线路”的笛卡尔积；界面按域名去重。
+            // 线路列表按会话保持稳定：刷新取址只补新域名，不重建已有项，
+            // 否则切一次线路编号和条目都会变（首页的取址结果每次都可能不同）。
+            if (!string.Equals(_lineRoomId, Session.RoomId, StringComparison.Ordinal))
             {
-                Lines.Add(new LiveLineOption(orderedLines[i].Key, $"线路{ToLineNumber(i + 1)}"));
+                _lineRoomId = Session.RoomId;
+                Lines.Clear();
+            }
+
+            var orderedHosts = resolver.Candidates
+                .Where(candidate => !string.IsNullOrEmpty(candidate.Primary.Host))
+                .Select(candidate => candidate.Primary.Host)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            foreach (var host in orderedHosts)
+            {
+                if (!Lines.Any(option => string.Equals(option.Key, host, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Lines.Add(new LiveLineOption(host, $"线路{ToLineNumber(Lines.Count + 1)}"));
+                }
             }
 
             // 用户刚选的线路优先于解析器当前仍在使用的候选，否则刷新后会被旧值拉回第一条。
