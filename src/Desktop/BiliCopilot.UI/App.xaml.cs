@@ -38,9 +38,27 @@ public partial class App : Application
         InitializeComponent();
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         UnhandledException += OnUnhandledException;
+        // 存根异常（0xc000027b）常常绕开 XAML 的 UnhandledException；
+        // 这两个钩子把托管侧的最后机会异常也落盘，便于定位闪退。
+        AppDomain.CurrentDomain.UnhandledException += (_, e) => DumpCrash("AppDomain", e.ExceptionObject as Exception);
+        TaskScheduler.UnobservedTaskException += (_, e) => DumpCrash("Task", e.Exception);
         _notificationManager = AppNotificationManager.Default;
         _notificationManager.NotificationInvoked += OnAppNotificationInvoked;
         _notificationManager.Register();
+    }
+
+    private static void DumpCrash(string source, Exception? exception)
+    {
+        try
+        {
+            var folder = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+            var path = System.IO.Path.Combine(folder, "crash.log");
+            var text = $"[{DateTimeOffset.Now:O}] {source}{Environment.NewLine}{exception}{Environment.NewLine}";
+            System.IO.File.AppendAllText(path, text);
+        }
+        catch
+        {
+        }
     }
 
     /// <summary>
