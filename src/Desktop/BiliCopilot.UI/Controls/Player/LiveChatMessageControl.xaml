@@ -75,7 +75,6 @@
                 <!--  发言人一行：姓名、等级图、勋章、舰长、头衔。  -->
                 <Grid ColumnSpacing="6">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -83,6 +82,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock
+                        MaxWidth="140"
                         VerticalAlignment="Center"
                         FontSize="13"
                         FontWeight="SemiBold"
@@ -98,11 +98,12 @@
                         Visibility="{x:Bind ViewModel.HasUserLevel, Mode=OneWay, FallbackValue=Collapsed}" />
                     <Border
                         Grid.Column="2"
-                        Padding="4,0"
+                        Padding="5,1"
                         VerticalAlignment="Center"
+                        Background="{x:Bind ViewModel.MedalBackgroundBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=ControlFillColorSecondaryBrush}"
                         BorderBrush="{x:Bind ViewModel.MedalBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorSecondaryBrush}"
                         BorderThickness="1"
-                        CornerRadius="3"
+                        CornerRadius="4"
                         Visibility="{x:Bind ViewModel.HasMedal, Mode=OneWay, FallbackValue=Collapsed}">
                         <TextBlock
                             FontSize="10"
@@ -115,20 +116,20 @@
                         VerticalAlignment="Center"
                         Source="{x:Bind ViewModel.TitleIconSource, Mode=OneWay}"
                         Visibility="{x:Bind ViewModel.HasTitleIcon, Mode=OneWay, FallbackValue=Collapsed}" />
-                    <TextBlock
+                    <Border
                         Grid.Column="4"
+                        Padding="5,1"
                         VerticalAlignment="Center"
-                        FontSize="10"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="{x:Bind ViewModel.BadgeText, Mode=OneWay, FallbackValue=''}"
-                        Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
-                    <TextBlock
-                        Grid.Column="5"
-                        VerticalAlignment="Center"
-                        FontSize="10"
-                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Text="{x:Bind ViewModel.UserTitle, Mode=OneWay, FallbackValue=''}"
-                        Visibility="{x:Bind ViewModel.HasTitle, Mode=OneWay, FallbackValue=Collapsed}" />
+                        Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                        <TextBlock
+                            FontSize="10"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind ViewModel.BadgeText, Mode=OneWay, FallbackValue=''}" />
+                    </Border>
                 </Grid>
 
                 <StackPanel Orientation="Horizontal" Spacing="6">

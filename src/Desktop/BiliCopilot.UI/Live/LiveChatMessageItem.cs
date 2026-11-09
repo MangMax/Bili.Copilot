@@ -61,6 +61,7 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
 {
     private readonly Brush? _nameBrush;
     private readonly Brush? _medalBrush;
+    private readonly Brush? _medalBackgroundBrush;
     private readonly Brush? _userLevelBrush;
     private int _mergeCount = 1;
     private string? _remainingText;
@@ -96,6 +97,7 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         BadgeText = GetBadge(message, badgeText ?? LiveChatBadgeKindText.Get);
         _nameBrush = CreateBrush(message.NameColor);
         _medalBrush = CreateBrush(message.MedalColor);
+        _medalBackgroundBrush = CreateTintBrush(message.MedalColor, 0x2E);
         _userLevelBrush = CreateBrush(message.UserLevelColor);
         TitleIconSource = BuildTitleIcon(message.UserTitleId, titleResources);
         Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
@@ -283,6 +285,11 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     public Brush? MedalBrush => _medalBrush;
 
     /// <summary>
+    /// Gets 勋章底色：用勋章色做低透明度混入，保持材质感.
+    /// </summary>
+    public Brush? MedalBackgroundBrush => _medalBackgroundBrush;
+
+    /// <summary>
     /// Gets 等级画刷.
     /// </summary>
     public Brush? UserLevelBrush => _userLevelBrush;
@@ -290,7 +297,7 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     /// <summary>
     /// Gets a value indicating whether 有任意徽标需要显示.
     /// </summary>
-    public bool HasAnyBadge => HasMedal || HasUserLevel || !string.IsNullOrEmpty(BadgeText) || HasTitle;
+    public bool HasAnyBadge => HasMedal || HasUserLevel || !string.IsNullOrEmpty(BadgeText) || HasTitleIcon;
 
     /// <summary>
     /// Gets a value indicating whether 有头衔.
@@ -494,6 +501,24 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
 
         var normalized = url.StartsWith("//", StringComparison.Ordinal) ? "https:" + url : url;
         return Uri.TryCreate(normalized, UriKind.Absolute, out uri!);
+    }
+
+    private static Brush? CreateTintBrush(string? color, byte alpha)
+    {
+        if (string.IsNullOrWhiteSpace(color))
+        {
+            return null;
+        }
+
+        try
+        {
+            var parsed = AppToolkit.HexToColor(color);
+            return new SolidColorBrush(Windows.UI.Color.FromArgb(alpha, parsed.R, parsed.G, parsed.B));
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private static Brush? CreateBrush(string? color)
