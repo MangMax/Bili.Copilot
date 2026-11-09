@@ -76,13 +76,15 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     /// <param name="badgeText">徽标文案解析器；为空时回落到内置中文，便于纯逻辑单测.</param>
     /// <param name="priceFormat">金额格式解析器；为空时回落到内置 <c>¥</c>.</param>
     /// <param name="emoteResources">直播间表情包索引；用于把官方表情的 official_xxx 映射回 [名称].</param>
+    /// <param name="titleResources">直播头衔索引；用于把 title-233-1 映射成图标.</param>
     public LiveChatMessageItem(
         LiveChatMessage message,
         Func<LiveChatSystemKind, string>? systemText,
         DateTimeOffset now,
         Func<LiveChatBadgeKind, string>? badgeText = null,
         Func<int, string>? priceFormat = null,
-        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveDanmakuEmote>? emoteResources = null)
+        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveDanmakuEmote>? emoteResources = null,
+        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveTitleItem>? titleResources = null)
     {
         Message = message ?? throw new ArgumentNullException(nameof(message));
         PriceText = message.IsSuperChat
@@ -95,6 +97,7 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         _nameBrush = CreateBrush(message.NameColor);
         _medalBrush = CreateBrush(message.MedalColor);
         _userLevelBrush = CreateBrush(message.UserLevelColor);
+        TitleIconSource = BuildTitleIcon(message.UserTitleId, titleResources);
         Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
             message.Text ?? string.Empty,
             BuildEmoteIndex(message.Text, message.Emotes, emoteResources));
@@ -223,6 +226,16 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     /// </summary>
     public Uri? AvatarUri
         => Uri.TryCreate(Message.Avatar, UriKind.Absolute, out var uri) ? uri : null;
+
+    /// <summary>
+    /// Gets 头衔图标；没有头衔或未取到头衔表时为空.
+    /// </summary>
+    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? TitleIconSource { get; }
+
+    /// <summary>
+    /// Gets 是否显示头衔图标.
+    /// </summary>
+    public bool HasTitleIcon => TitleIconSource is not null;
 
     /// <summary>
     /// Gets 头像位图；按 64px 解码，避免每条消息按原图解码把内存打爆.
@@ -412,6 +425,20 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
                     3 => text(LiveChatBadgeKind.Captain),
                     _ => message.IsVip ? text(LiveChatBadgeKind.Vip) : null,
                 };
+
+    private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? BuildTitleIcon(
+        string? titleId,
+        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveTitleItem>? resources)
+    {
+        if (string.IsNullOrEmpty(titleId) || resources is null || !resources.TryGetValue(titleId, out var title))
+        {
+            return null;
+        }
+
+        return TryCreateAbsoluteUri(title.Url, out var uri)
+            ? new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
+            : null;
+    }
 
     private static Dictionary<string, Richasy.BiliKernel.Models.Appearance.BiliImage>? BuildEmoteIndex(
         string? text,

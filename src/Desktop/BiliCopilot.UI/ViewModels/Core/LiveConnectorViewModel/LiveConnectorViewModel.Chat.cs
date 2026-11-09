@@ -32,6 +32,7 @@ public sealed partial class LiveConnectorViewModel
     private string? _chatRoomId;
     private DateTimeOffset _lastEnterRoomAt = DateTimeOffset.MinValue;
     private IReadOnlyDictionary<string, LiveDanmakuEmote>? _emoteResources;
+    private IReadOnlyDictionary<string, LiveTitleItem>? _titleResources;
     private bool _isChatBackfillStarted;
     private bool _isChatHooked;
 
@@ -57,6 +58,35 @@ public sealed partial class LiveConnectorViewModel
         _chatTimer = timer;
         timer.Start();
         _ = LoadEmoteResourcesAsync();
+        _ = LoadTitleResourcesAsync();
+    }
+
+    private async Task LoadTitleResourcesAsync()
+    {
+        if (_titleResources is { Count: > 0 })
+        {
+            return;
+        }
+
+        try
+        {
+            var items = await this.Get<Richasy.BiliKernel.Bili.Media.IPlayerService>()
+                .GetLiveTitlesAsync()
+                .ConfigureAwait(false);
+            if (items.Count == 0)
+            {
+                return;
+            }
+
+            _titleResources = items
+                .GroupBy(item => item.Id, StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+        }
+        catch (Exception ex)
+        {
+            // 头衔图标拿不到只影响标识展示，不影响聊天。
+            _logger.LogDebug(ex, "加载直播头衔失败");
+        }
     }
 
     private async Task LoadEmoteResourcesAsync()
@@ -273,7 +303,7 @@ public sealed partial class LiveConnectorViewModel
     }
 
     private LiveChatMessageItem CreateChatItem(LiveChatMessage message, DateTimeOffset now)
-        => new(message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText, _emoteResources);
+        => new(message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText, _emoteResources, _titleResources);
 
     /// <summary>
     /// 按参考实现的准入思路处理上屏：同文案短窗合并、进房提示限速，避免刷屏把列表打爆。

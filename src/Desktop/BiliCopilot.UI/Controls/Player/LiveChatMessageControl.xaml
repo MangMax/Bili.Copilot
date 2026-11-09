@@ -80,6 +80,7 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock
                         VerticalAlignment="Center"
@@ -108,15 +109,21 @@
                             Foreground="{x:Bind ViewModel.MedalBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorSecondaryBrush}"
                             Text="{x:Bind ViewModel.MedalText, Mode=OneWay, FallbackValue=''}" />
                     </Border>
-                    <TextBlock
+                    <Image
                         Grid.Column="3"
+                        Height="18"
+                        VerticalAlignment="Center"
+                        Source="{x:Bind ViewModel.TitleIconSource, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.HasTitleIcon, Mode=OneWay, FallbackValue=Collapsed}" />
+                    <TextBlock
+                        Grid.Column="4"
                         VerticalAlignment="Center"
                         FontSize="10"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Text="{x:Bind ViewModel.BadgeText, Mode=OneWay, FallbackValue=''}"
                         Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
                     <TextBlock
-                        Grid.Column="4"
+                        Grid.Column="5"
                         VerticalAlignment="Center"
                         FontSize="10"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"

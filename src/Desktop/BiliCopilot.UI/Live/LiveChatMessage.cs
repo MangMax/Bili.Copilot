@@ -202,6 +202,11 @@ public sealed class LiveChatMessage
     public string? UserTitle { get; private init; }
 
     /// <summary>
+    /// Gets 头衔标识（title-233-1）；图标由头衔表映射.
+    /// </summary>
+    public string? UserTitleId { get; private init; }
+
+    /// <summary>
     /// Gets 本条消息携带的表情包.
     /// </summary>
     public IReadOnlyDictionary<string, LiveDanmakuEmote>? Emotes { get; private init; }
@@ -246,6 +251,7 @@ public sealed class LiveChatMessage
             MedalColor = danmaku.MedalColor,
             NameColor = danmaku.NameColor,
             UserTitle = danmaku.UserTitle,
+            UserTitleId = danmaku.UserTitleId,
             Emotes = danmaku.Emotes,
             Avatar = danmaku.UserFace,
             Timestamp = timestamp,
