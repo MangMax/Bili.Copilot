@@ -64,7 +64,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     private readonly Brush? _medalBackgroundBrush;
     private readonly Brush? _medalGradientBrush;
     private readonly Brush? _medalTextBrush;
-    private readonly Brush? _userLevelBrush;
     private int _mergeCount = 1;
     private string? _remainingText;
     private bool _isRemainingVisible;
@@ -105,7 +104,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         MedalGuardIconSource = CreateBitmap(message.MedalGuardIcon, 32);
         // 船锚已经在勋章里表达了大航海身份，不再重复挂“舰长”文字标签。
         BadgeText = message.GuardLevel > 0 && MedalGuardIconSource is not null ? null : badge;
-        _userLevelBrush = CreateBrush(message.UserLevelColor);
         TitleIconSource = BuildTitleIcon(message.UserTitleId, titleResources);
         Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
             message.Text ?? string.Empty,
@@ -137,26 +135,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     public string? UserName => Message.UserName;
 
     /// <summary>
-    /// Gets 用户等级（含 UL 前缀）.
-    /// </summary>
-    public string? UserLevel => Message.UserLevel;
-
-    /// <summary>
-    /// Gets 用户等级数值，供网页同款等级图使用.
-    /// </summary>
-    public int UserLevelNumber => Message.UserLevelNumber;
-
-    /// <summary>
-    /// Gets a value indicating whether 有等级徽标.
-    /// </summary>
-    public bool HasUserLevel => !string.IsNullOrEmpty(Message.UserLevel);
-
-    /// <summary>
-    /// Gets 用户等级颜色.
-    /// </summary>
-    public string? UserLevelColor => Message.UserLevelColor;
-
-    /// <summary>
     /// Gets 粉丝勋章名称.
     /// </summary>
     public string? MedalName => Message.MedalName;
@@ -180,11 +158,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     /// Gets 昵称颜色（装扮）.
     /// </summary>
     public string? NameColor => Message.NameColor;
-
-    /// <summary>
-    /// Gets 用户头衔.
-    /// </summary>
-    public string? UserTitle => Message.UserTitle;
 
     /// <summary>
     /// Gets a value indicating whether 是进房提示.
@@ -237,16 +210,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         => Uri.TryCreate(Message.Avatar, UriKind.Absolute, out var uri) ? uri : null;
 
     /// <summary>
-    /// Gets 荣耀等级.
-    /// </summary>
-    public int? WealthLevel => Message.WealthLevel;
-
-    /// <summary>
-    /// Gets 荣耀等级图标标识.
-    /// </summary>
-    public string? WealthIconKey => Message.WealthIconKey;
-
-    /// <summary>
     /// Gets 头衔图标；没有头衔或未取到头衔表时为空.
     /// </summary>
     public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? TitleIconSource { get; }
@@ -275,11 +238,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
             };
         }
     }
-
-    /// <summary>
-    /// Gets a value indicating whether 有可用头像.
-    /// </summary>
-    public bool HasAvatar => AvatarUri is not null;
 
     /// <summary>
     /// Gets 勋章文案（名称 + 等级），避免两个 TextBlock 之间出现空白.
@@ -320,21 +278,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     /// Gets 是否显示船锚图标.
     /// </summary>
     public bool HasMedalGuardIcon => MedalGuardIconSource is not null;
-
-    /// <summary>
-    /// Gets 等级画刷.
-    /// </summary>
-    public Brush? UserLevelBrush => _userLevelBrush;
-
-    /// <summary>
-    /// Gets a value indicating whether 有任意徽标需要显示.
-    /// </summary>
-    public bool HasAnyBadge => HasMedal || !string.IsNullOrEmpty(BadgeText) || HasTitleIcon;
-
-    /// <summary>
-    /// Gets a value indicating whether 有头衔.
-    /// </summary>
-    public bool HasTitle => !string.IsNullOrEmpty(Message.UserTitle);
 
     /// <summary>
     /// Gets 昵称徽标（舰长/管理/老爷）；没有徽标时为 null.

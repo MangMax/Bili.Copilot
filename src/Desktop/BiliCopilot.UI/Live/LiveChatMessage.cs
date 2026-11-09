@@ -162,21 +162,6 @@ public sealed class LiveChatMessage
     public string? SystemDetail { get; private init; }
 
     /// <summary>
-    /// Gets 用户等级文本（例如 UL12）.
-    /// </summary>
-    public string? UserLevel { get; private init; }
-
-    /// <summary>
-    /// Gets 用户等级数值.
-    /// </summary>
-    public int UserLevelNumber { get; private init; }
-
-    /// <summary>
-    /// Gets 用户等级颜色.
-    /// </summary>
-    public string? UserLevelColor { get; private init; }
-
-    /// <summary>
     /// Gets 粉丝勋章名称.
     /// </summary>
     public string? MedalName { get; private init; }
@@ -190,21 +175,6 @@ public sealed class LiveChatMessage
     /// Gets 粉丝勋章颜色.
     /// </summary>
     public string? MedalColor { get; private init; }
-
-    /// <summary>
-    /// Gets 调试用用户 JSON.
-    /// </summary>
-    public string? UserDebugJson { get; private init; }
-
-    /// <summary>
-    /// Gets 荣耀等级.
-    /// </summary>
-    public int? WealthLevel { get; private init; }
-
-    /// <summary>
-    /// Gets 荣耀等级图标标识.
-    /// </summary>
-    public string? WealthIconKey { get; private init; }
 
     /// <summary>
     /// Gets 舰长船锚图标.
@@ -230,11 +200,6 @@ public sealed class LiveChatMessage
     /// Gets 昵称颜色（装扮）.
     /// </summary>
     public string? NameColor { get; private init; }
-
-    /// <summary>
-    /// Gets 用户头衔.
-    /// </summary>
-    public string? UserTitle { get; private init; }
 
     /// <summary>
     /// Gets 头衔标识（title-233-1）；图标由头衔表映射.
@@ -278,21 +243,14 @@ public sealed class LiveChatMessage
             GuardLevel = danmaku.GuardLevel,
             IsAdmin = danmaku.IsAdmin,
             IsVip = danmaku.IsVip,
-            UserLevel = danmaku.UserLevel,
-            UserLevelNumber = danmaku.UserLevelNumber,
-            UserLevelColor = danmaku.UserLevelColor,
             MedalName = danmaku.MedalName,
             MedalLevel = danmaku.MedalLevel,
             MedalColor = danmaku.MedalColor,
-            UserDebugJson = danmaku.UserDebugJson,
-            WealthLevel = danmaku.WealthLevel,
-            WealthIconKey = danmaku.WealthIconKey,
             MedalGuardIcon = danmaku.MedalGuardIcon,
             MedalColorStart = danmaku.MedalColorStart,
             MedalColorEnd = danmaku.MedalColorEnd,
             MedalTextColor = danmaku.MedalTextColor,
             NameColor = danmaku.NameColor,
-            UserTitle = danmaku.UserTitle,
             UserTitleId = danmaku.UserTitleId,
             Emotes = danmaku.Emotes,
             Avatar = danmaku.UserFace,
