@@ -36,13 +36,14 @@
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     Text="{x:Bind ViewModel.UpName, Mode=OneWay, FallbackValue=''}" />
                 <Border
-                    Padding="6,1"
+                    Padding="7,2"
                     VerticalAlignment="Center"
-                    Background="{ThemeResource AccentFillColorSecondaryBrush}"
+                    Background="{ThemeResource AccentFillColorDefaultBrush}"
                     CornerRadius="4">
                     <TextBlock
                         FontSize="11"
-                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                        FontWeight="SemiBold"
+                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                         Text="{x:Bind ViewModel.RoomStatusText, Mode=OneWay, FallbackValue=''}" />
                 </Border>
                 <TextBlock

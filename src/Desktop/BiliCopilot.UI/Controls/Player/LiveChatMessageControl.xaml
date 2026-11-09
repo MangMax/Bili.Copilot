@@ -134,18 +134,25 @@
                     </Border>
                 </Grid>
 
-                <StackPanel Orientation="Horizontal" Spacing="6">
+                <Grid ColumnSpacing="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <comp:EmoteTextBlock
+                        HorizontalAlignment="Stretch"
                         FontSize="13"
                         MaxLines="10"
                         Text="{x:Bind ViewModel.Content, Mode=OneWay}" />
                     <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
                         FontSize="11"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                         Text="{x:Bind ViewModel.MergeText, Mode=OneWay, FallbackValue=''}"
                         Visibility="{x:Bind ViewModel.MergeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
-                </StackPanel>
+                </Grid>
             </StackPanel>
         </Grid>
 

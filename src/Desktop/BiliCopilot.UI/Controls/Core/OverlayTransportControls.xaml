@@ -339,6 +339,10 @@
                             IconVariant="Filled"
                             Symbol="Previous" />
                     </Button>
+                    <!--  直播没有前进/后退：整组隐藏，避免窄态 VisualState 的 Setter 又把按钮显示出来。  -->
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}">
                     <Button
                         x:Name="BackwardButton"
                         Margin="0,0,8,0"
@@ -383,6 +387,7 @@
                             IconVariant="Filled"
                             Symbol="ArrowStepOver" />
                     </Button>
+                    </StackPanel>
                     <Button
                         x:Name="NextButton"
                         Margin="8,0,0,0"
@@ -692,7 +697,8 @@
                         Margin="0,0,8,0"
                         VerticalAlignment="Center"
                         Style="{StaticResource BasicPlayerIconButtonStyle}"
-                        ToolTipService.ToolTip="{x:Bind GetSpeedText(ViewModel.Player.PlaybackRate), Mode=OneWay}">
+                        ToolTipService.ToolTip="{x:Bind GetSpeedText(ViewModel.Player.PlaybackRate), Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}">
                         <Button.Flyout>
                             <Flyout
                                 Closed="OnFlyoutClosed"
