@@ -93,7 +93,7 @@ public sealed partial class LiveConnectorViewModel
 
     private async Task LoadEmoteResourcesAsync()
     {
-        var roomId = Session.RoomId;
+        var roomId = string.IsNullOrEmpty(_chatRoomId) ? Session.RoomId : _chatRoomId;
         if (string.IsNullOrEmpty(roomId) || _emoteResources is { Count: > 0 })
         {
             return;
@@ -284,6 +284,9 @@ public sealed partial class LiveConnectorViewModel
         _chatGeneration = generation;
         _chatRoomId = roomId;
         _isChatBackfillStarted = false;
+        // 进房时房号才确定；StartChat 里可能还是空串，这里补一次资源加载。
+        _ = LoadEmoteResourcesAsync();
+        _ = LoadTitleResourcesAsync();
         while (_chatQueue.TryDequeue(out _))
         {
         }
