@@ -339,22 +339,23 @@
                             IconVariant="Filled"
                             Symbol="Previous" />
                     </Button>
-                    <!--  直播没有前进/后退：整组隐藏，避免窄态 VisualState 的 Setter 又把按钮显示出来。  -->
+                    <!--  直播没有前进/后退：只包住这两个按钮，避免窄态 VisualState 的 Setter 又把它们显示出来。  -->
                     <StackPanel
                         Orientation="Horizontal"
                         Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}">
-                    <Button
-                        x:Name="BackwardButton"
-                        Margin="0,0,8,0"
-                        Command="{x:Bind ViewModel.SkipBackwardCommand, Mode=OneWay}"
-                        Style="{StaticResource BasicPlayerIconButtonStyle}"
-                        ToolTipService.ToolTip="{x:Bind ViewModel.BackwardTip, Mode=OneWay}"
-                        Visibility="{x:Bind IsSkipButtonsVisible, Mode=OneWay}">
-                        <ic:SymbolIcon
-                            FontSize="16"
-                            IconVariant="Filled"
-                            Symbol="ArrowStepBack" />
-                    </Button>
+                        <Button
+                            x:Name="BackwardButton"
+                            Margin="0,0,8,0"
+                            Command="{x:Bind ViewModel.SkipBackwardCommand, Mode=OneWay}"
+                            Style="{StaticResource BasicPlayerIconButtonStyle}"
+                            ToolTipService.ToolTip="{x:Bind ViewModel.BackwardTip, Mode=OneWay}"
+                            Visibility="{x:Bind IsSkipButtonsVisible, Mode=OneWay}">
+                            <ic:SymbolIcon
+                                FontSize="16"
+                                IconVariant="Filled"
+                                Symbol="ArrowStepBack" />
+                        </Button>
+                    </StackPanel>
                     <Grid>
                         <Button
                             x:Name="PlayPauseButton"
@@ -375,18 +376,21 @@
                             BorderThickness="4"
                             IsActive="{x:Bind IsLoading(ViewModel.Player.PlaybackState, ViewModel.Player.IsLoading), Mode=OneWay}" />
                     </Grid>
-                    <Button
-                        x:Name="ForwardButton"
-                        Margin="8,0,0,0"
-                        Command="{x:Bind ViewModel.SkipForwardCommand, Mode=OneWay}"
-                        Style="{StaticResource BasicPlayerIconButtonStyle}"
-                        ToolTipService.ToolTip="{x:Bind ViewModel.ForwardTip, Mode=OneWay}"
-                        Visibility="{x:Bind IsSkipButtonsVisible, Mode=OneWay}">
-                        <ic:SymbolIcon
-                            FontSize="16"
-                            IconVariant="Filled"
-                            Symbol="ArrowStepOver" />
-                    </Button>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}">
+                        <Button
+                            x:Name="ForwardButton"
+                            Margin="8,0,0,0"
+                            Command="{x:Bind ViewModel.SkipForwardCommand, Mode=OneWay}"
+                            Style="{StaticResource BasicPlayerIconButtonStyle}"
+                            ToolTipService.ToolTip="{x:Bind ViewModel.ForwardTip, Mode=OneWay}"
+                            Visibility="{x:Bind IsSkipButtonsVisible, Mode=OneWay}">
+                            <ic:SymbolIcon
+                                FontSize="16"
+                                IconVariant="Filled"
+                                Symbol="ArrowStepOver" />
+                        </Button>
                     </StackPanel>
                     <Button
                         x:Name="NextButton"
