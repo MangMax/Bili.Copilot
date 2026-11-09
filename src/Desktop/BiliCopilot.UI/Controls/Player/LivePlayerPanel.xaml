@@ -6,16 +6,14 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <!--
-        竖屏直播与窄窗口下侧栏随可用宽度收缩，保证状态与聊天入口不被裁掉。
-        竖屏（#198）：聊天列表默认收起为状态行，只留"展开聊天"入口，把宽度让给画面；
-        面板宿主仍是播放器的覆盖层，因此这里靠"收起内容"而不是改窗口布局来让位。
-        竖屏判定用窗口宽高比作代理——流级竖屏标记需要内核 API，当前内核没有该字段，
-        也不在此改动 mpv 的画面缩放（mpv 自己保持宽高比，不拉伸）。
+        直播侧栏与点播侧栏同构：固定 360、头部留白、1px 分割线、正文占满高度。
+        竖屏/窄窗口只收起聊天内容，不改变窗口布局。
     -->
     <Grid Width="360">
         <Grid.RowDefinitions>
@@ -23,48 +21,78 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Padding="0,16,0,8" Spacing="6">
+
+        <StackPanel Padding="16,16,16,12" Spacing="8">
             <base:TrimTextBlock
                 FontSize="18"
                 FontWeight="SemiBold"
                 MaxLines="2"
                 Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue=''}" />
+
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <TextBlock
+                    VerticalAlignment="Center"
                     FontSize="12"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     Text="{x:Bind ViewModel.UpName, Mode=OneWay, FallbackValue=''}" />
+                <Border
+                    Padding="6,1"
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource AccentFillColorSecondaryBrush}"
+                    CornerRadius="4">
+                    <TextBlock
+                        FontSize="11"
+                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                        Text="{x:Bind ViewModel.RoomStatusText, Mode=OneWay, FallbackValue=''}" />
+                </Border>
                 <TextBlock
-                    FontSize="12"
-                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                    Text="{x:Bind ViewModel.RoomStatusText, Mode=OneWay, FallbackValue=''}" />
-                <TextBlock
+                    VerticalAlignment="Center"
                     FontSize="12"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                     Text="{x:Bind ViewModel.TagName, Mode=OneWay, FallbackValue=''}"
                     Visibility="{x:Bind ViewModel.TagName, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
             </StackPanel>
-            <!--  在线人数与开播时长（#198）：人数随事件更新，时长按分钟/小时展示。  -->
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <TextBlock
-                    FontSize="12"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, FallbackValue=''}"
-                    Visibility="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
-                <TextBlock
-                    FontSize="12"
-                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                    Text="{x:Bind ViewModel.UptimeText, Mode=OneWay, FallbackValue=''}"
-                    Visibility="{x:Bind ViewModel.UptimeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="4"
+                    Visibility="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <ic:SymbolIcon
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Symbol="People" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, FallbackValue=''}" />
+                </StackPanel>
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="4"
+                    Visibility="{x:Bind ViewModel.UptimeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <ic:SymbolIcon
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Symbol="Clock" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind ViewModel.UptimeText, Mode=OneWay, FallbackValue=''}" />
+                </StackPanel>
             </StackPanel>
-            <!--  竖屏/窄窗口的折叠入口（#198）：收起后画面获得全部宽度。  -->
+
             <HyperlinkButton
                 Padding="0"
                 HorizontalAlignment="Left"
                 Command="{x:Bind ViewModel.TogglePortraitChatCommand, Mode=OneWay}"
                 Content="{ext:Locale Name=LivePortraitChatExpand}"
                 Visibility="{x:Bind ViewModel.IsChatPanelCollapsed, Mode=OneWay, FallbackValue=Collapsed}" />
-            <!--  终态说明：下播/被切断时把原因留在侧栏，窗口不黑屏。  -->
+
             <TextBlock
                 FontSize="12"
                 Foreground="{ThemeResource SystemFillColorCautionBrush}"
@@ -72,16 +100,13 @@
                 TextWrapping="Wrap"
                 Visibility="{x:Bind ViewModel.IsRoomTerminal, Mode=OneWay, FallbackValue=Collapsed}" />
         </StackPanel>
+
         <Border
             Grid.Row="1"
             Height="1"
             HorizontalAlignment="Stretch"
             Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
-        <!--
-            聊天侧栏（#197）占满剩余高度，房间信息与画质/线路收在其下方。
-            侧栏折叠后聊天区让出空间，但画质/线路/兜底入口仍然可用；
-            侧栏只在自己的行里伸缩，不触碰全屏与画中画的窗口级布局。
-        -->
+
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -91,22 +116,22 @@
                 x:Name="ChatSidebar"
                 ViewModel="{x:Bind ViewModel, Mode=OneWay}"
                 Visibility="{x:Bind ViewModel.IsChatPanelCollapsed, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}" />
-        <StackPanel
-            Grid.Row="1"
-            Padding="16,8,16,12"
-            Spacing="10">
-            <!--  画质/线路已移到播放器标题栏，与视频播放器一致；此处只保留失败原因与兜底入口。  -->
-            <!--  地址/鉴权/解码失败时给出可读原因与兜底入口。  -->
-            <TextBlock
-                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                Text="{x:Bind ViewModel.ErrorText, Mode=OneWay, FallbackValue=''}"
-                TextWrapping="Wrap"
-                Visibility="{x:Bind ViewModel.ErrorText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
-            <HyperlinkButton
-                HorizontalAlignment="Left"
-                Command="{x:Bind ViewModel.OpenInBrowserCommand, Mode=OneWay}"
-                Content="{ext:Locale Name=OpenInBrowser}" />
-        </StackPanel>
+
+            <StackPanel
+                Grid.Row="1"
+                Padding="16,8,16,12"
+                Spacing="10">
+                <TextBlock
+                    Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                    Text="{x:Bind ViewModel.ErrorText, Mode=OneWay, FallbackValue=''}"
+                    TextWrapping="Wrap"
+                    Visibility="{x:Bind ViewModel.ErrorText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+                <HyperlinkButton
+                    Padding="0"
+                    HorizontalAlignment="Left"
+                    Command="{x:Bind ViewModel.OpenInBrowserCommand, Mode=OneWay}"
+                    Content="{ext:Locale Name=OpenInBrowser}" />
+            </StackPanel>
         </Grid>
     </Grid>
 </local:LivePlayerControlBase>

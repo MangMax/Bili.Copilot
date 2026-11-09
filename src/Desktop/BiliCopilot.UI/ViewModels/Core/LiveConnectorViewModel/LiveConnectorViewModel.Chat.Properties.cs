@@ -66,7 +66,10 @@ public sealed partial class LiveConnectorViewModel
     [CommunityToolkit.Mvvm.Input.RelayCommand]
     private void TogglePortraitChat()
     {
-        IsChatExpandedInPortrait = !IsChatExpandedInPortrait;
+        // 入口只在面板收起时显示：点击必须先把通用折叠位清掉，
+        // 否则 IsChatCollapsed 仍为 true，展开看起来"没反应"。
+        IsChatCollapsed = false;
+        IsChatExpandedInPortrait = true;
         OnPropertyChanged(nameof(IsChatPanelCollapsed));
     }
 
