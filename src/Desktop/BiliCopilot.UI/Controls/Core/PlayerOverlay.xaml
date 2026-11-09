@@ -62,15 +62,61 @@
                 <DropDownButton
                     MinWidth="112"
                     HorizontalContentAlignment="Left"
-                    Click="OnLiveQualityClick"
                     Content="{x:Bind QualityText, Mode=OneWay}"
-                    ToolTipService.ToolTip="{ext:Locale Name=Quality}" />
+                    ToolTipService.ToolTip="{ext:Locale Name=Quality}">
+                    <DropDownButton.Flyout>
+                        <Flyout
+                            FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
+                            Placement="Bottom">
+                            <ItemsRepeater
+                                MaxWidth="280"
+                                ItemsSource="{x:Bind Qualities, Mode=OneWay}">
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LiveQualityOption">
+                                        <Button
+                                            Click="OnLiveQualityItemClick"
+                                            DataContext="{x:Bind}"
+                                            Style="{StaticResource ItemButtonStyle}">
+                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                                <ItemsRepeater.Layout>
+                                    <StackLayout Spacing="4" />
+                                </ItemsRepeater.Layout>
+                            </ItemsRepeater>
+                        </Flyout>
+                    </DropDownButton.Flyout>
+                </DropDownButton>
                 <DropDownButton
                     MinWidth="112"
                     HorizontalContentAlignment="Left"
-                    Click="OnLiveLineClick"
                     Content="{x:Bind LineText, Mode=OneWay}"
-                    ToolTipService.ToolTip="{ext:Locale Name=PlayLine}" />
+                    ToolTipService.ToolTip="{ext:Locale Name=PlayLine}">
+                    <DropDownButton.Flyout>
+                        <Flyout
+                            FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
+                            Placement="Bottom">
+                            <ItemsRepeater
+                                MaxWidth="280"
+                                ItemsSource="{x:Bind Lines, Mode=OneWay}">
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LiveLineOption">
+                                        <Button
+                                            Click="OnLiveLineItemClick"
+                                            DataContext="{x:Bind}"
+                                            Style="{StaticResource ItemButtonStyle}">
+                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                                <ItemsRepeater.Layout>
+                                    <StackLayout Spacing="4" />
+                                </ItemsRepeater.Layout>
+                            </ItemsRepeater>
+                        </Flyout>
+                    </DropDownButton.Flyout>
+                </DropDownButton>
             </StackPanel>
         </DataTemplate>
         <ext:PlayerComponentTemplateSelector

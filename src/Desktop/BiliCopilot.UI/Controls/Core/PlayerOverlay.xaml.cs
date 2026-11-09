@@ -1,8 +1,10 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.WinUIKernel.Share.Base;
@@ -264,57 +266,44 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         SourceFlyout?.Hide();
     }
 
-    private void OnLiveQualityClick(object sender, RoutedEventArgs e)
+    private void OnLiveQualityItemClick(object sender, RoutedEventArgs e)
     {
-        if (sender is not DropDownButton button || ViewModel?.LiveConnector is not { } connector)
+        if (sender is not FrameworkElement element
+            || ViewModel?.LiveConnector is not { } connector
+            || element.DataContext is not LiveQualityOption option)
         {
             return;
         }
 
-        var flyout = new MenuFlyout
-        {
-            Placement = FlyoutPlacementMode.Bottom,
-            ShouldConstrainToRootBounds = true,
-        };
-        foreach (var option in connector.Qualities)
-        {
-            var item = new ToggleMenuFlyoutItem
-            {
-                Text = option.Name,
-                IsChecked = ReferenceEquals(option, connector.SelectedQuality),
-                Tag = option,
-            };
-            item.Click += (_, _) => connector.SelectedQuality = option;
-            flyout.Items.Add(item);
-        }
-
-        flyout.ShowAt(button);
+        connector.SelectedQuality = option;
+        CloseAncestorFlyout(element);
     }
 
-    private void OnLiveLineClick(object sender, RoutedEventArgs e)
+    private void OnLiveLineItemClick(object sender, RoutedEventArgs e)
     {
-        if (sender is not DropDownButton button || ViewModel?.LiveConnector is not { } connector)
+        if (sender is not FrameworkElement element
+            || ViewModel?.LiveConnector is not { } connector
+            || element.DataContext is not LiveLineOption option)
         {
             return;
         }
 
-        var flyout = new MenuFlyout
-        {
-            Placement = FlyoutPlacementMode.Bottom,
-            ShouldConstrainToRootBounds = true,
-        };
-        foreach (var option in connector.Lines)
-        {
-            var item = new ToggleMenuFlyoutItem
-            {
-                Text = option.Name,
-                IsChecked = ReferenceEquals(option, connector.SelectedLine),
-                Tag = option,
-            };
-            item.Click += (_, _) => connector.SelectedLine = option;
-            flyout.Items.Add(item);
-        }
+        connector.SelectedLine = option;
+        CloseAncestorFlyout(element);
+    }
 
-        flyout.ShowAt(button);
+    private static void CloseAncestorFlyout(FrameworkElement element)
+    {
+        DependencyObject? current = element;
+        while (current is not null)
+        {
+            if (current is Popup popup)
+            {
+                popup.IsOpen = false;
+                return;
+            }
+
+            current = VisualTreeHelper.GetParent(current);
+        }
     }
 }
