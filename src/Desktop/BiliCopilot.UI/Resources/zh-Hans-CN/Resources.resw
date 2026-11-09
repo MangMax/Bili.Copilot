@@ -3453,12 +3453,6 @@
   <data name="LiveChatBackToBottom" xml:space="preserve">
     <value>回到底部</value>
   </data>
-  <data name="LiveChatCollapse" xml:space="preserve">
-    <value>收起聊天</value>
-  </data>
-  <data name="LiveChatExpand" xml:space="preserve">
-    <value>展开聊天</value>
-  </data>
   <data name="LiveChatBlockTitle" xml:space="preserve">
     <value>屏蔽</value>
   </data>
@@ -3540,12 +3534,5 @@
   </data>
   <data name="LiveDanmakuHighlightKeywordsPlaceholder" xml:space="preserve">
     <value>例如：抽奖，福利</value>
-  </data>
-  <!--  竖屏直播（#198）：聊天/状态侧栏折叠与展开。  -->
-  <data name="LivePortraitChatCollapse" xml:space="preserve">
-    <value>收起聊天，让出画面</value>
-  </data>
-  <data name="LivePortraitChatExpand" xml:space="preserve">
-    <value>展开聊天</value>
   </data>
 </root>

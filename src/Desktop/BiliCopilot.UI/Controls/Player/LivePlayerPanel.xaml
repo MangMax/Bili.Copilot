@@ -86,13 +86,6 @@
                 </StackPanel>
             </StackPanel>
 
-            <HyperlinkButton
-                Padding="0"
-                HorizontalAlignment="Left"
-                Command="{x:Bind ViewModel.TogglePortraitChatCommand, Mode=OneWay}"
-                Content="{ext:Locale Name=LivePortraitChatExpand}"
-                Visibility="{x:Bind ViewModel.IsChatPanelCollapsed, Mode=OneWay, FallbackValue=Collapsed}" />
-
             <TextBlock
                 FontSize="12"
                 Foreground="{ThemeResource SystemFillColorCautionBrush}"
@@ -114,8 +107,7 @@
             </Grid.RowDefinitions>
             <local:LiveChatSidebar
                 x:Name="ChatSidebar"
-                ViewModel="{x:Bind ViewModel, Mode=OneWay}"
-                Visibility="{x:Bind ViewModel.IsChatPanelCollapsed, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}" />
+                ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
 
             <StackPanel
                 Grid.Row="1"

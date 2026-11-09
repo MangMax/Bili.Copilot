@@ -162,6 +162,51 @@ public sealed class LiveChatMessage
     public string? SystemDetail { get; private init; }
 
     /// <summary>
+    /// Gets 用户等级文本（例如 UL12）.
+    /// </summary>
+    public string? UserLevel { get; private init; }
+
+    /// <summary>
+    /// Gets 用户等级颜色.
+    /// </summary>
+    public string? UserLevelColor { get; private init; }
+
+    /// <summary>
+    /// Gets 粉丝勋章名称.
+    /// </summary>
+    public string? MedalName { get; private init; }
+
+    /// <summary>
+    /// Gets 粉丝勋章等级.
+    /// </summary>
+    public string? MedalLevel { get; private init; }
+
+    /// <summary>
+    /// Gets 粉丝勋章颜色.
+    /// </summary>
+    public string? MedalColor { get; private init; }
+
+    /// <summary>
+    /// Gets 昵称颜色（装扮）.
+    /// </summary>
+    public string? NameColor { get; private init; }
+
+    /// <summary>
+    /// Gets 用户头衔.
+    /// </summary>
+    public string? UserTitle { get; private init; }
+
+    /// <summary>
+    /// Gets 本条消息携带的表情包.
+    /// </summary>
+    public IReadOnlyDictionary<string, LiveDanmakuEmote>? Emotes { get; private init; }
+
+    /// <summary>
+    /// Gets a value indicating whether 这是一条进房提示.
+    /// </summary>
+    public bool IsEnterRoom { get; private init; }
+
+    /// <summary>
     /// Gets a value indicating whether 是否为醒目留言.
     /// </summary>
     public bool IsSuperChat => Kind == LiveChatMessageKind.SuperChat;
@@ -183,6 +228,40 @@ public sealed class LiveChatMessage
             GuardLevel = danmaku.GuardLevel,
             IsAdmin = danmaku.IsAdmin,
             IsVip = danmaku.IsVip,
+            UserLevel = danmaku.UserLevel,
+            UserLevelColor = danmaku.UserLevelColor,
+            MedalName = danmaku.MedalName,
+            MedalLevel = danmaku.MedalLevel,
+            MedalColor = danmaku.MedalColor,
+            NameColor = danmaku.NameColor,
+            UserTitle = danmaku.UserTitle,
+            Emotes = danmaku.Emotes,
+            Timestamp = timestamp,
+        };
+    }
+
+    /// <summary>
+    /// 由一条进房事件创建聊天消息；作为普通列表项追加到最下面。
+    /// </summary>
+    /// <param name="user">进入用户.</param>
+    /// <param name="sequence">会话内序号.</param>
+    /// <param name="timestamp">接收时间.</param>
+    /// <returns>聊天消息.</returns>
+    public static LiveChatMessage FromEnter(LiveUserEnteredInformation user, long sequence, DateTimeOffset timestamp)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        return new LiveChatMessage(LiveChatMessageKind.System, sequence, string.Empty)
+        {
+            UserId = user.UserId,
+            UserName = user.UserName,
+            GuardLevel = user.GuardLevel,
+            MedalName = user.MedalName,
+            MedalLevel = user.MedalLevel,
+            MedalColor = user.MedalColor,
+            NameColor = user.NameColor,
+            IsAdmin = user.IsAdmin,
+            IsVip = user.IsVip,
+            IsEnterRoom = true,
             Timestamp = timestamp,
         };
     }

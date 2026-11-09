@@ -1,6 +1,8 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using System.ComponentModel;
+using BiliCopilot.UI.Toolkits;
+using Microsoft.UI.Xaml.Media;
 
 namespace BiliCopilot.UI.Live;
 
@@ -83,6 +85,7 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
             ? systemText?.Invoke(message.SystemKind) ?? message.SystemKind.ToString()
             : null;
         BadgeText = GetBadge(message, badgeText ?? LiveChatBadgeKindText.Get);
+        Segments = LiveChatTextSegment.Parse(message.Text, message.Emotes);
         UpdateRemaining(now);
     }
 
@@ -108,6 +111,91 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     /// Gets 发送者昵称.
     /// </summary>
     public string? UserName => Message.UserName;
+
+    /// <summary>
+    /// Gets 用户等级（含 UL 前缀）.
+    /// </summary>
+    public string? UserLevel => Message.UserLevel;
+
+    /// <summary>
+    /// Gets a value indicating whether 有等级徽标.
+    /// </summary>
+    public bool HasUserLevel => !string.IsNullOrEmpty(Message.UserLevel);
+
+    /// <summary>
+    /// Gets 用户等级颜色.
+    /// </summary>
+    public string? UserLevelColor => Message.UserLevelColor;
+
+    /// <summary>
+    /// Gets 粉丝勋章名称.
+    /// </summary>
+    public string? MedalName => Message.MedalName;
+
+    /// <summary>
+    /// Gets a value indicating whether 有粉丝勋章.
+    /// </summary>
+    public bool HasMedal => !string.IsNullOrEmpty(Message.MedalName);
+
+    /// <summary>
+    /// Gets 粉丝勋章等级.
+    /// </summary>
+    public string? MedalLevel => Message.MedalLevel;
+
+    /// <summary>
+    /// Gets 粉丝勋章颜色.
+    /// </summary>
+    public string? MedalColor => Message.MedalColor;
+
+    /// <summary>
+    /// Gets 昵称颜色（装扮）.
+    /// </summary>
+    public string? NameColor => Message.NameColor;
+
+    /// <summary>
+    /// Gets 用户头衔.
+    /// </summary>
+    public string? UserTitle => Message.UserTitle;
+
+    /// <summary>
+    /// Gets a value indicating whether 是进房提示.
+    /// </summary>
+    public bool IsEnterRoom => Message.IsEnterRoom;
+
+    /// <summary>
+    /// Gets 进房提示文案.
+    /// </summary>
+    public string? EnterText => Message.IsEnterRoom ? $"{Message.UserName} 进入直播间" : null;
+
+    /// <summary>
+    /// Gets 正文分段：普通文本与表情图片.
+    /// </summary>
+    public IReadOnlyList<LiveChatTextSegment> Segments { get; } = Array.Empty<LiveChatTextSegment>();
+
+    /// <summary>
+    /// Gets 昵称画刷（装扮颜色）；没有时回落到默认.
+    /// </summary>
+    public Brush? NameBrush => CreateBrush(Message.NameColor);
+
+    /// <summary>
+    /// Gets 勋章画刷.
+    /// </summary>
+    public Brush? MedalBrush => CreateBrush(Message.MedalColor);
+
+    /// <summary>
+    /// Gets 等级画刷.
+    /// </summary>
+    public Brush? UserLevelBrush => CreateBrush(Message.UserLevelColor);
+
+    /// <summary>
+    /// Gets a value indicating whether 有任意徽标需要显示.
+    /// </summary>
+    public bool HasAnyBadge => HasMedal || HasUserLevel || !string.IsNullOrEmpty(BadgeText) || HasTitle;
+
+    /// <summary>
+    /// Gets a value indicating whether 有头衔.
+    /// </summary>
+    public bool HasTitle => !string.IsNullOrEmpty(Message.UserTitle);
 
     /// <summary>
     /// Gets 昵称徽标（舰长/管理/老爷）；没有徽标时为 null.
@@ -237,6 +325,23 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
                     3 => text(LiveChatBadgeKind.Captain),
                     _ => message.IsVip ? text(LiveChatBadgeKind.Vip) : null,
                 };
+
+    private static Brush? CreateBrush(string? color)
+    {
+        if (string.IsNullOrWhiteSpace(color))
+        {
+            return null;
+        }
+
+        try
+        {
+            return new SolidColorBrush(AppToolkit.HexToColor(color));
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
     private void Raise(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

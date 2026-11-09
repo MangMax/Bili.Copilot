@@ -149,6 +149,8 @@ public sealed class LiveChatSession
         {
             case LiveDanmakuReceivedEvent received:
                 return AppendDanmaku(received.Danmaku, received.ReceivedAt);
+            case LiveUserEnteredEvent entered:
+                return AppendEnter(entered.User, entered.ReceivedAt);
             case LiveSuperChatEvent superChat:
                 return AppendSuperChat(superChat.SuperChat);
             case LiveSuperChatDeletedEvent deleted:
@@ -247,6 +249,19 @@ public sealed class LiveChatSession
 
             var message = LiveChatMessage.FromDanmaku(danmaku, NextSequence(), timestamp);
             return AppendCore(message);
+        }
+    }
+
+    private LiveChatApplyResult AppendEnter(LiveUserEnteredInformation user, DateTimeOffset timestamp)
+    {
+        if (user is null || string.IsNullOrEmpty(user.UserName))
+        {
+            return default;
+        }
+
+        lock (_gate)
+        {
+            return AppendCore(LiveChatMessage.FromEnter(user, NextSequence(), timestamp));
         }
     }
 

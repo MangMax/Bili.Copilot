@@ -26,7 +26,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
                 VerticalAlignment="Center"
@@ -41,19 +40,6 @@
                 AutomationProperties.Name="{ext:Locale Name=LiveChatBackfilling}"
                 IsActive="{x:Bind ViewModel.IsChatBackfilling, Mode=OneWay, FallbackValue=False}"
                 Visibility="{x:Bind ViewModel.IsChatBackfilling, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-            <Button
-                x:Name="CollapseButton"
-                Grid.Column="2"
-                Width="32"
-                Height="32"
-                Padding="0"
-                AutomationProperties.Name="{ext:Locale Name=LiveChatCollapse}"
-                Background="Transparent"
-                BorderThickness="0"
-                Command="{x:Bind ViewModel.ToggleChatCollapsedCommand, Mode=OneWay}"
-                ToolTipService.ToolTip="{ext:Locale Name=LiveChatCollapse}">
-                <ic:SymbolIcon FontSize="12" Symbol="ChevronRight" />
-            </Button>
         </Grid>
 
         <!--
@@ -63,8 +49,7 @@
         <Grid Grid.Row="1">
             <ScrollView
                 x:Name="ChatView"
-                Style="{StaticResource PageScrollViewStyle}"
-                Visibility="{x:Bind ViewModel.IsChatCollapsed, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}">
+                Style="{StaticResource PageScrollViewStyle}">
                 <ItemsRepeater Margin="16,0,16,8" ItemsSource="{x:Bind ViewModel.ChatMessages, Mode=OneWay}">
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="live:LiveChatMessageItem">
@@ -107,8 +92,7 @@
             <Expander
                 Margin="16,4,16,8"
                 HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch"
-                Visibility="{x:Bind ViewModel.IsChatCollapsed, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}">
+                HorizontalContentAlignment="Stretch">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock

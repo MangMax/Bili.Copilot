@@ -93,12 +93,6 @@ public sealed partial class LiveConnectorViewModel
         UpdateChatBlockCounters();
     }
 
-    /// <summary>
-    /// 切换聊天侧栏的折叠状态（窄窗口用）。
-    /// </summary>
-    [CommunityToolkit.Mvvm.Input.RelayCommand]
-    private void ToggleChatCollapsed() => IsChatCollapsed = !IsChatCollapsed;
-
     private LiveChatSession GetOrCreateChatSession()
     {
         if (_chatSession is { } existing)
