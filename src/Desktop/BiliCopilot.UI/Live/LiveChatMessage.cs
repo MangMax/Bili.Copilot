@@ -192,6 +192,26 @@ public sealed class LiveChatMessage
     public string? MedalColor { get; private init; }
 
     /// <summary>
+    /// Gets 舰长船锚图标.
+    /// </summary>
+    public string? MedalGuardIcon { get; private init; }
+
+    /// <summary>
+    /// Gets 勋章渐变起点颜色.
+    /// </summary>
+    public string? MedalColorStart { get; private init; }
+
+    /// <summary>
+    /// Gets 勋章渐变终点颜色.
+    /// </summary>
+    public string? MedalColorEnd { get; private init; }
+
+    /// <summary>
+    /// Gets 勋章文字颜色.
+    /// </summary>
+    public string? MedalTextColor { get; private init; }
+
+    /// <summary>
     /// Gets 昵称颜色（装扮）.
     /// </summary>
     public string? NameColor { get; private init; }
@@ -249,6 +269,10 @@ public sealed class LiveChatMessage
             MedalName = danmaku.MedalName,
             MedalLevel = danmaku.MedalLevel,
             MedalColor = danmaku.MedalColor,
+            MedalGuardIcon = danmaku.MedalGuardIcon,
+            MedalColorStart = danmaku.MedalColorStart,
+            MedalColorEnd = danmaku.MedalColorEnd,
+            MedalTextColor = danmaku.MedalTextColor,
             NameColor = danmaku.NameColor,
             UserTitle = danmaku.UserTitle,
             UserTitleId = danmaku.UserTitleId,

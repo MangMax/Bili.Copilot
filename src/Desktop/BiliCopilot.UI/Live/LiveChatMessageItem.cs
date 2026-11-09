@@ -62,6 +62,8 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     private readonly Brush? _nameBrush;
     private readonly Brush? _medalBrush;
     private readonly Brush? _medalBackgroundBrush;
+    private readonly Brush? _medalGradientBrush;
+    private readonly Brush? _medalTextBrush;
     private readonly Brush? _userLevelBrush;
     private int _mergeCount = 1;
     private string? _remainingText;
@@ -98,6 +100,9 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         _nameBrush = CreateBrush(message.NameColor);
         _medalBrush = CreateBrush(message.MedalColor);
         _medalBackgroundBrush = CreateTintBrush(message.MedalColor, 0x2E);
+        _medalGradientBrush = CreateGradientBrush(message.MedalColorStart, message.MedalColorEnd) ?? _medalBackgroundBrush;
+        _medalTextBrush = CreateBrush(message.MedalTextColor) ?? _medalBrush;
+        MedalGuardIconSource = CreateBitmap(message.MedalGuardIcon, 32);
         _userLevelBrush = CreateBrush(message.UserLevelColor);
         TitleIconSource = BuildTitleIcon(message.UserTitleId, titleResources);
         Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
@@ -287,7 +292,22 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     /// <summary>
     /// Gets 勋章底色：用勋章色做低透明度混入，保持材质感.
     /// </summary>
-    public Brush? MedalBackgroundBrush => _medalBackgroundBrush;
+    public Brush? MedalBackgroundBrush => _medalGradientBrush ?? _medalBackgroundBrush;
+
+    /// <summary>
+    /// Gets 勋章文字画刷；优先使用 v2 文字色.
+    /// </summary>
+    public Brush? MedalTextBrush => _medalTextBrush;
+
+    /// <summary>
+    /// Gets 舰长船锚图标；非舰长或无数据时为空.
+    /// </summary>
+    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? MedalGuardIconSource { get; }
+
+    /// <summary>
+    /// Gets 是否显示船锚图标.
+    /// </summary>
+    public bool HasMedalGuardIcon => MedalGuardIconSource is not null;
 
     /// <summary>
     /// Gets 等级画刷.
@@ -501,6 +521,74 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
 
         var normalized = url.StartsWith("//", StringComparison.Ordinal) ? "https:" + url : url;
         return Uri.TryCreate(normalized, UriKind.Absolute, out uri!);
+    }
+
+    private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? CreateBitmap(string? url, int decodeWidth)
+    {
+        if (!TryCreateAbsoluteUri(url, out var uri))
+        {
+            return null;
+        }
+
+        return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
+        {
+            DecodePixelWidth = decodeWidth,
+            DecodePixelType = Microsoft.UI.Xaml.Media.Imaging.DecodePixelType.Logical,
+        };
+    }
+
+    private static Brush? CreateGradientBrush(string? start, string? end)
+    {
+        var hasStart = TryParseColor(start, out var startColor);
+        var hasEnd = TryParseColor(end, out var endColor);
+        if (!hasStart && !hasEnd)
+        {
+            return null;
+        }
+
+        if (!hasStart)
+        {
+            startColor = endColor;
+        }
+
+        if (!hasEnd)
+        {
+            endColor = startColor;
+        }
+
+        var brush = new LinearGradientBrush
+        {
+            StartPoint = new Windows.Foundation.Point(0, 0),
+            EndPoint = new Windows.Foundation.Point(1, 1),
+        };
+        brush.GradientStops.Add(new GradientStop { Color = startColor, Offset = 0 });
+        brush.GradientStops.Add(new GradientStop { Color = endColor, Offset = 1 });
+        return brush;
+    }
+
+    private static bool TryParseColor(string? value, out Windows.UI.Color color)
+    {
+        color = default;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        var hex = value.TrimStart('#');
+        if (hex.Length == 6 && uint.TryParse(hex, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out var rgb))
+        {
+            color = Windows.UI.Color.FromArgb(255, (byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
+            return true;
+        }
+
+        if (hex.Length == 8 && uint.TryParse(hex, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out var argb8))
+        {
+            // 直播勋章色是 #RRGGBBAA。
+            color = Windows.UI.Color.FromArgb((byte)argb8, (byte)(argb8 >> 24), (byte)(argb8 >> 16), (byte)(argb8 >> 8));
+            return true;
+        }
+
+        return false;
     }
 
     private static Brush? CreateTintBrush(string? color, byte alpha)

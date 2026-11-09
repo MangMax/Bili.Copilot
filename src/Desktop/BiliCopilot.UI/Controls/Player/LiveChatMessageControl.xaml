@@ -105,10 +105,19 @@
                         BorderThickness="1"
                         CornerRadius="4"
                         Visibility="{x:Bind ViewModel.HasMedal, Mode=OneWay, FallbackValue=Collapsed}">
-                        <TextBlock
-                            FontSize="10"
-                            Foreground="{x:Bind ViewModel.MedalBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorSecondaryBrush}"
-                            Text="{x:Bind ViewModel.MedalText, Mode=OneWay, FallbackValue=''}" />
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <Image
+                                Width="12"
+                                Height="12"
+                                VerticalAlignment="Center"
+                                Source="{x:Bind ViewModel.MedalGuardIconSource, Mode=OneWay}"
+                                Visibility="{x:Bind ViewModel.HasMedalGuardIcon, Mode=OneWay, FallbackValue=Collapsed}" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="10"
+                                Foreground="{x:Bind ViewModel.MedalTextBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorPrimaryBrush}"
+                                Text="{x:Bind ViewModel.MedalText, Mode=OneWay, FallbackValue=''}" />
+                        </StackPanel>
                     </Border>
                     <Image
                         Grid.Column="3"
