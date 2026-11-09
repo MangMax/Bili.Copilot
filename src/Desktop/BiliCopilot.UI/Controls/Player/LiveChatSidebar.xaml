@@ -22,7 +22,7 @@
 
         <components:SlidingTabBar
             x:Name="SectionTabs"
-            Margin="8,0"
+            Margin="8,10,8,8"
             HorizontalAlignment="Center"
             AutomationProperties.AutomationId="LiveChatSectionTabs" />
 
@@ -32,7 +32,7 @@
             <ScrollView
                 x:Name="ChatView"
                 Style="{StaticResource PageScrollViewStyle}">
-                <ItemsRepeater Margin="16,0,16,8" ItemsSource="{x:Bind ViewModel.ChatMessages, Mode=OneWay}">
+                <ItemsRepeater Margin="16,4,16,8" ItemsSource="{x:Bind ViewModel.ChatMessages, Mode=OneWay}">
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="live:LiveChatMessageItem">
                             <local:LiveChatMessageControl Margin="0,4" ViewModel="{x:Bind}" />
@@ -79,8 +79,13 @@
         <ScrollViewer
             x:Name="BlockPanel"
             Grid.Row="1"
+            Padding="0"
+            VerticalContentAlignment="Top"
             Visibility="Collapsed">
-            <StackPanel Padding="16,8,16,16" Spacing="10">
+            <StackPanel
+                Padding="16,4,16,16"
+                Spacing="10"
+                VerticalAlignment="Top">
                 <TextBlock
                     FontSize="11"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
