@@ -4,6 +4,7 @@ using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Toolkits;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -69,10 +70,24 @@ public sealed partial class LiveConnectorViewModel
 
             QualityText = SelectedQuality?.Name;
             LineText = SelectedLine?.Name;
+            SyncSelectionFlags();
         }
         finally
         {
             _isSyncingPlayback = false;
+        }
+    }
+
+    private void SyncSelectionFlags()
+    {
+        foreach (var option in Qualities)
+        {
+            option.IsSelected = ReferenceEquals(option, SelectedQuality);
+        }
+
+        foreach (var option in Lines)
+        {
+            option.IsSelected = ReferenceEquals(option, SelectedLine);
         }
     }
 
@@ -83,6 +98,7 @@ public sealed partial class LiveConnectorViewModel
             return;
         }
 
+        SyncSelectionFlags();
         _ = Parent.ChangeLiveQualityAsync(value.Quality);
     }
 
@@ -93,6 +109,7 @@ public sealed partial class LiveConnectorViewModel
             return;
         }
 
+        SyncSelectionFlags();
         _ = Parent.ChangeLiveLineAsync(value.Key);
     }
 
@@ -128,13 +145,46 @@ public sealed partial class LiveConnectorViewModel
 /// <summary>
 /// 画质选项；只持有清晰度标识与展示名，不持有任何地址.
 /// </summary>
-/// <param name="Quality">清晰度标识.</param>
-/// <param name="Name">展示名.</param>
-public sealed record LiveQualityOption(int Quality, string Name);
+/// <remarks>
+/// 以构造函数参数初始化清晰度标识与展示名.
+/// </remarks>
+public sealed partial class LiveQualityOption(int quality, string name) : ObservableObject
+{
+    /// <summary>
+    /// Gets 清晰度标识.
+    /// </summary>
+    public int Quality { get; } = quality;
+
+    /// <summary>
+    /// Gets 展示名.
+    /// </summary>
+    public string Name { get; } = name;
+
+    /// <summary>
+    /// Gets or sets 是否为当前选择的清晰度.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSelected { get; set; }
+}
 
 /// <summary>
 /// 线路选项；Key 是候选首选地址的域名，刷新后仍能定位同一条线路.
 /// </summary>
-/// <param name="Key">稳定标识.</param>
-/// <param name="Name">展示名.</param>
-public sealed record LiveLineOption(string Key, string Name);
+public sealed partial class LiveLineOption(string key, string name) : ObservableObject
+{
+    /// <summary>
+    /// Gets 稳定标识.
+    /// </summary>
+    public string Key { get; } = key;
+
+    /// <summary>
+    /// Gets 展示名.
+    /// </summary>
+    public string Name { get; } = name;
+
+    /// <summary>
+    /// Gets or sets 是否为当前选择的线路.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSelected { get; set; }
+}
