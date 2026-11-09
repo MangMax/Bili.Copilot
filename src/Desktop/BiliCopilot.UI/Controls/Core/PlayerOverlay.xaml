@@ -69,11 +69,13 @@
                             FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
                             Placement="Bottom">
                             <ItemsRepeater
-                                Width="260"
+                                MaxWidth="360"
+                                HorizontalAlignment="Left"
                                 ItemsSource="{x:Bind Qualities, Mode=OneWay}">
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:LiveQualityOption">
                                         <Button
+                                            HorizontalAlignment="Left"
                                             Click="OnLiveQualityItemClick"
                                             DataContext="{x:Bind}"
                                             Style="{StaticResource ItemButtonStyle}">
@@ -103,11 +105,13 @@
                             FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
                             Placement="Bottom">
                             <ItemsRepeater
-                                Width="260"
+                                MaxWidth="360"
+                                HorizontalAlignment="Left"
                                 ItemsSource="{x:Bind Lines, Mode=OneWay}">
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:LiveLineOption">
                                         <Button
+                                            HorizontalAlignment="Left"
                                             Click="OnLiveLineItemClick"
                                             DataContext="{x:Bind}"
                                             Style="{StaticResource ItemButtonStyle}">
