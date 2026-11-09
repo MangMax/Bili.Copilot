@@ -149,6 +149,10 @@ public sealed partial class PlayerOverlay : PlayerControlBase
                 _cursorTimer.Start();
             }
         }
+        else if (e.PropertyName == nameof(ViewModel.IsExtraPanelVisible))
+        {
+            UpdateTitleBarRegions();
+        }
         else if (e.PropertyName == nameof(ViewModel.CurrentVolume))
         {
             var thumbHeight = VolumeContainer.ActualHeight * (ViewModel.CurrentVolume / ViewModel.MaxVolume);

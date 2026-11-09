@@ -29,12 +29,14 @@ public sealed partial class PlayerOverlay
         _titleWindow.Changed += OnTitleWindowChanged;
         _titleRoot.Changed += OnTitleRootChanged;
         HeaderBar.LayoutUpdated += OnTitleLayoutUpdated;
+        ExtraPanelContent.SizeChanged += OnTitleLayoutUpdated;
         UpdateTitleBarLayout();
     }
 
     private void DetachTitleBar()
     {
         HeaderBar.LayoutUpdated -= OnTitleLayoutUpdated;
+        ExtraPanelContent.SizeChanged -= OnTitleLayoutUpdated;
         if (_titleRoot is not null)
         {
             _titleRoot.Changed -= OnTitleRootChanged;
@@ -113,7 +115,11 @@ public sealed partial class PlayerOverlay
 
         var regions = _nextTitleRegions;
         regions.Clear();
-        if (!ViewModel.IsControlsVisible)
+        if (ViewModel.IsExtraPanelVisible)
+        {
+            AddElement(ExtraPanelContent);
+        }
+        else if (!ViewModel.IsControlsVisible)
         {
             // Let moving into the hidden header reveal controls, but never pass
             // native caption-button input through to the XAML island.
