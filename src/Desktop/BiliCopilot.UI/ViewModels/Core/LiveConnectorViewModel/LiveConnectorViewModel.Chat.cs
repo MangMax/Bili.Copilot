@@ -34,6 +34,7 @@ public sealed partial class LiveConnectorViewModel
     private IReadOnlyDictionary<string, LiveDanmakuEmote>? _emoteResources;
     private IReadOnlyDictionary<string, LiveTitleItem>? _titleResources;
     private int _wealthLogCount;
+    private int _liveProbeCount;
     private bool _isChatBackfillStarted;
     private bool _isChatHooked;
 
@@ -316,8 +317,9 @@ public sealed partial class LiveConnectorViewModel
     /// </summary>
     private void AppendChatMessage(LiveChatMessage message, DateTimeOffset now)
     {
-        if (_wealthLogCount < 3 && _logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+        if (_liveProbeCount < 3 && message.Kind == LiveChatMessageKind.Danmaku && _logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
         {
+            _liveProbeCount++;
             var probeName = message.UserName;
             var probeLevel = message.WealthLevel ?? -1;
             var probeKey = message.WealthIconKey ?? "none";

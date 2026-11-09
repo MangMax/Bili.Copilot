@@ -79,7 +79,6 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock
                         MaxWidth="140"
@@ -90,14 +89,8 @@
                         Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="NoWrap" />
-                    <Image
-                        Grid.Column="1"
-                        Height="10"
-                        VerticalAlignment="Center"
-                        Source="{x:Bind ViewModel.UserLevelNumber, Mode=OneWay, Converter={StaticResource LevelImageConverter}}"
-                        Visibility="{x:Bind ViewModel.HasUserLevel, Mode=OneWay, FallbackValue=Collapsed}" />
                     <Border
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Padding="5,1"
                         VerticalAlignment="Center"
                         Background="{x:Bind ViewModel.MedalBackgroundBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=ControlFillColorSecondaryBrush}"
@@ -120,13 +113,13 @@
                         </StackPanel>
                     </Border>
                     <Image
-                        Grid.Column="3"
+                        Grid.Column="2"
                         Height="18"
                         VerticalAlignment="Center"
                         Source="{x:Bind ViewModel.TitleIconSource, Mode=OneWay}"
                         Visibility="{x:Bind ViewModel.HasTitleIcon, Mode=OneWay, FallbackValue=Collapsed}" />
                     <Border
-                        Grid.Column="4"
+                        Grid.Column="3"
                         Padding="5,1"
                         VerticalAlignment="Center"
                         Background="{ThemeResource ControlFillColorSecondaryBrush}"

@@ -329,7 +329,7 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     /// <summary>
     /// Gets a value indicating whether 有任意徽标需要显示.
     /// </summary>
-    public bool HasAnyBadge => HasMedal || HasUserLevel || !string.IsNullOrEmpty(BadgeText) || HasTitleIcon;
+    public bool HasAnyBadge => HasMedal || !string.IsNullOrEmpty(BadgeText) || HasTitleIcon;
 
     /// <summary>
     /// Gets a value indicating whether 有头衔.
