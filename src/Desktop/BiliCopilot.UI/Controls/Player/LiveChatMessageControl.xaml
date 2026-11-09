@@ -73,20 +73,30 @@
 
             <StackPanel Grid.Column="1" Spacing="4">
                 <!--  发言人一行：姓名、等级图、勋章、舰长、头衔。  -->
-                <StackPanel Orientation="Horizontal" Spacing="6">
+                <Grid ColumnSpacing="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <TextBlock
                         VerticalAlignment="Center"
                         FontSize="13"
                         FontWeight="SemiBold"
                         Foreground="{x:Bind ViewModel.NameBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorPrimaryBrush}"
                         Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
-                        TextTrimming="CharacterEllipsis" />
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
                     <Image
+                        Grid.Column="1"
                         Height="10"
                         VerticalAlignment="Center"
                         Source="{x:Bind ViewModel.UserLevelNumber, Mode=OneWay, Converter={StaticResource LevelImageConverter}}"
                         Visibility="{x:Bind ViewModel.HasUserLevel, Mode=OneWay, FallbackValue=Collapsed}" />
                     <Border
+                        Grid.Column="2"
                         Padding="4,0"
                         VerticalAlignment="Center"
                         BorderBrush="{x:Bind ViewModel.MedalBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorSecondaryBrush}"
@@ -99,18 +109,20 @@
                             Text="{x:Bind ViewModel.MedalText, Mode=OneWay, FallbackValue=''}" />
                     </Border>
                     <TextBlock
+                        Grid.Column="3"
                         VerticalAlignment="Center"
                         FontSize="10"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Text="{x:Bind ViewModel.BadgeText, Mode=OneWay, FallbackValue=''}"
                         Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
                     <TextBlock
+                        Grid.Column="4"
                         VerticalAlignment="Center"
                         FontSize="10"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                         Text="{x:Bind ViewModel.UserTitle, Mode=OneWay, FallbackValue=''}"
                         Visibility="{x:Bind ViewModel.HasTitle, Mode=OneWay, FallbackValue=Collapsed}" />
-                </StackPanel>
+                </Grid>
 
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <comp:EmoteTextBlock

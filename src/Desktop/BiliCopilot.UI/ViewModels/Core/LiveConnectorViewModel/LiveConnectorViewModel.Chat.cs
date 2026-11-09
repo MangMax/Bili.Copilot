@@ -31,6 +31,7 @@ public sealed partial class LiveConnectorViewModel
     private int _chatGeneration = -1;
     private string? _chatRoomId;
     private DateTimeOffset _lastEnterRoomAt = DateTimeOffset.MinValue;
+    private IReadOnlyDictionary<string, LiveDanmakuEmote>? _emoteResources;
     private bool _isChatBackfillStarted;
     private bool _isChatHooked;
 
@@ -55,6 +56,49 @@ public sealed partial class LiveConnectorViewModel
         timer.Tick += OnChatTimerTick;
         _chatTimer = timer;
         timer.Start();
+        _ = LoadEmoteResourcesAsync();
+    }
+
+    private async Task LoadEmoteResourcesAsync()
+    {
+        var roomId = Session.RoomId;
+        if (string.IsNullOrEmpty(roomId) || _emoteResources is { Count: > 0 })
+        {
+            return;
+        }
+
+        try
+        {
+            var items = await this.Get<Richasy.BiliKernel.Bili.Media.IPlayerService>()
+                .GetLiveEmoticonsAsync(roomId)
+                .ConfigureAwait(false);
+            if (items.Count == 0)
+            {
+                return;
+            }
+
+            var map = new Dictionary<string, LiveDanmakuEmote>(StringComparer.Ordinal);
+            foreach (var item in items)
+            {
+                var emote = new LiveDanmakuEmote(item.Url, item.Width, item.Height, item.Unique);
+                if (!string.IsNullOrEmpty(item.Text))
+                {
+                    map[item.Text.Trim('[', ']')] = emote;
+                }
+
+                if (!string.IsNullOrEmpty(item.Unique))
+                {
+                    map[item.Unique.Trim('[', ']')] = emote;
+                }
+            }
+
+            _emoteResources = map;
+        }
+        catch (Exception ex)
+        {
+            // 表情包拿不到只影响表情渲染，不影响聊天。
+            _logger.LogDebug(ex, "加载直播间表情包失败");
+        }
     }
 
     /// <summary>
@@ -229,7 +273,7 @@ public sealed partial class LiveConnectorViewModel
     }
 
     private LiveChatMessageItem CreateChatItem(LiveChatMessage message, DateTimeOffset now)
-        => new(message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText);
+        => new(message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText, _emoteResources);
 
     /// <summary>
     /// 按参考实现的准入思路处理上屏：同文案短窗合并、进房提示限速，避免刷屏把列表打爆。

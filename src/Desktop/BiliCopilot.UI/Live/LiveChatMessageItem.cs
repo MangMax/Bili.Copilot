@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.UI.Xaml.Media;
 
@@ -56,7 +57,7 @@ public static class LiveChatBadgeKindText
 /// 由列表控件按固定节拍调用 <see cref="UpdateRemaining"/>，而不是每个条目自带计时器。
 /// 系统文案由调用方注入的解析器决定，纯逻辑层不依赖资源键。
 /// </remarks>
-public sealed class LiveChatMessageItem : INotifyPropertyChanged
+public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
 {
     private readonly Brush? _nameBrush;
     private readonly Brush? _medalBrush;
@@ -74,12 +75,14 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     /// <param name="now">创建时间，用于计算醒目留言剩余时间.</param>
     /// <param name="badgeText">徽标文案解析器；为空时回落到内置中文，便于纯逻辑单测.</param>
     /// <param name="priceFormat">金额格式解析器；为空时回落到内置 <c>¥</c>.</param>
+    /// <param name="emoteResources">直播间表情包索引；用于把官方表情的 official_xxx 映射回 [名称].</param>
     public LiveChatMessageItem(
         LiveChatMessage message,
         Func<LiveChatSystemKind, string>? systemText,
         DateTimeOffset now,
         Func<LiveChatBadgeKind, string>? badgeText = null,
-        Func<int, string>? priceFormat = null)
+        Func<int, string>? priceFormat = null,
+        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveDanmakuEmote>? emoteResources = null)
     {
         Message = message ?? throw new ArgumentNullException(nameof(message));
         PriceText = message.IsSuperChat
@@ -94,7 +97,7 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
         _userLevelBrush = CreateBrush(message.UserLevelColor);
         Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
             message.Text ?? string.Empty,
-            BuildEmoteIndex(message.Emotes));
+            BuildEmoteIndex(message.Text, message.Emotes, emoteResources));
         UpdateRemaining(now);
     }
 
@@ -411,26 +414,48 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
                 };
 
     private static Dictionary<string, Richasy.BiliKernel.Models.Appearance.BiliImage>? BuildEmoteIndex(
-        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveDanmakuEmote>? emotes)
+        string? text,
+        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveDanmakuEmote>? emotes,
+        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveDanmakuEmote>? resources)
     {
-        if (emotes is null || emotes.Count == 0)
+        var result = new Dictionary<string, Richasy.BiliKernel.Models.Appearance.BiliImage>(StringComparer.Ordinal);
+        if (emotes is not null)
         {
-            return null;
+            foreach (var pair in emotes)
+            {
+                // 表情地址可能是协议相对（//i0.hdslb.com/...）或非法值；
+                // 直接 new Uri 会在 UI 线程抛异常并让整个聊天列表崩掉。
+                if (TryCreateAbsoluteUri(pair.Value.Url, out var uri))
+                {
+                    result[$"[{pair.Key}]"] = new Richasy.BiliKernel.Models.Appearance.BiliImage(uri);
+                }
+            }
         }
 
-        var result = new Dictionary<string, Richasy.BiliKernel.Models.Appearance.BiliImage>(StringComparer.Ordinal);
-        foreach (var pair in emotes)
+        // 官方表情只带 official_xxx，正文是 [doge]；用表情包资源按文本补齐。
+        if (!string.IsNullOrEmpty(text) && resources is { Count: > 0 })
         {
-            // 表情地址可能是协议相对（//i0.hdslb.com/...）或非法值；
-            // 直接 new Uri 会在 UI 线程抛异常并让整个聊天列表崩掉。
-            if (TryCreateAbsoluteUri(pair.Value.Url, out var uri))
+            foreach (Match match in EmoteTokenPattern().Matches(text))
             {
-                result[$"[{pair.Key}]"] = new Richasy.BiliKernel.Models.Appearance.BiliImage(uri);
+                var key = $"[{match.Groups[1].Value}]";
+                if (result.ContainsKey(key))
+                {
+                    continue;
+                }
+
+                if (resources.TryGetValue(match.Groups[1].Value, out var resource)
+                    && TryCreateAbsoluteUri(resource.Url, out var uri))
+                {
+                    result[key] = new Richasy.BiliKernel.Models.Appearance.BiliImage(uri);
+                }
             }
         }
 
         return result.Count == 0 ? null : result;
     }
+
+    [System.Text.RegularExpressions.GeneratedRegex(@"\[([^\[\]]+)\]")]
+    private static partial System.Text.RegularExpressions.Regex EmoteTokenPattern();
 
     private static bool TryCreateAbsoluteUri(string? url, out Uri uri)
     {
