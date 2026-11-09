@@ -26,12 +26,6 @@ public sealed partial class LiveConnectorViewModel
     private bool _isRoomStatusAttached;
 
     /// <summary>
-    /// Gets 在线人数文案（按万/亿格式化）.
-    /// </summary>
-    [ObservableProperty]
-    public partial string? OnlineCountText { get; set; }
-
-    /// <summary>
     /// Gets 人气（热度）文案.
     /// </summary>
     [ObservableProperty]
@@ -84,7 +78,6 @@ public sealed partial class LiveConnectorViewModel
         RoomStateTitle = default;
         RoomStateDescription = default;
         UptimeText = default;
-        OnlineCountText = default;
         PopularityText = default;
         ViewerCountText = default;
         RefreshUptime();
@@ -173,10 +166,9 @@ public sealed partial class LiveConnectorViewModel
             case LiveRoomStatusSignal.OnlineCountChanged:
                 if (_roomStatus.ApplyOnlineCount(roomId, update.OnlineCount, update.OnlineCountSource))
                 {
-                    RefreshOnlineCount();
+                    ApplyOnlineCountText(update.OnlineCount, update.OnlineCountSource);
                 }
 
-                ApplyOnlineCountText(update.OnlineCount, update.OnlineCountSource);
                 break;
             case LiveRoomStatusSignal.PlayUrlReload:
                 if (_roomStatus.TryBeginReload(roomId, TimeProvider.GetLocalNow()))
@@ -288,11 +280,7 @@ public sealed partial class LiveConnectorViewModel
             PopularityText = AppToolkit.FormatCount(viewerCount);
         }
 
-        RefreshOnlineCount();
     }
-
-    private void RefreshOnlineCount()
-        => OnlineCountText = _roomStatus.OnlineCount is { } count ? AppToolkit.FormatCount(count) : default;
 
     private void ApplyOnlineCountText(int count, LiveOnlineCountSource source)
     {

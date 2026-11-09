@@ -8,7 +8,6 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:live="using:BiliCopilot.UI.Live"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -107,7 +106,7 @@
                 <TextBox
                     x:Name="BlockUserIdBox"
                     AutomationProperties.Name="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}"
-                    Header="UID"
+                    Header="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}"
                     PlaceholderText="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}" />
                 <TextBox
                     x:Name="BlockUserNameBox"

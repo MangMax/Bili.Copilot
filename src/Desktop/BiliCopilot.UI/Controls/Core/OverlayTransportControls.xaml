@@ -1312,13 +1312,13 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Background="{ThemeResource AccentFillColorDefaultBrush}"
-                        CornerRadius="4"
+                        CornerRadius="{StaticResource ControlCornerRadius}"
                         Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}">
                         <TextBlock
                             FontSize="10"
                             FontWeight="SemiBold"
                             Foreground="White"
-                            Text="LIVE" />
+                            Text="{ext:Locale Name=LiveBadgeLabel}" />
                     </Border>
                     <TextBlock
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"

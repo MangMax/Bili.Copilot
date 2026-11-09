@@ -96,7 +96,7 @@
                         Background="{x:Bind ViewModel.MedalBackgroundBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=ControlFillColorSecondaryBrush}"
                         BorderBrush="{x:Bind ViewModel.MedalBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorSecondaryBrush}"
                         BorderThickness="1"
-                        CornerRadius="4"
+                        CornerRadius="{StaticResource ControlCornerRadius}"
                         Visibility="{x:Bind ViewModel.HasMedal, Mode=OneWay, FallbackValue=Collapsed}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Image
@@ -125,7 +125,7 @@
                         Background="{ThemeResource ControlFillColorSecondaryBrush}"
                         BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                         BorderThickness="1"
-                        CornerRadius="4"
+                        CornerRadius="{StaticResource ControlCornerRadius}"
                         Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                         <TextBlock
                             FontSize="10"

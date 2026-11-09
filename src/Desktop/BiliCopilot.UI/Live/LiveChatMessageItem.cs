@@ -102,6 +102,7 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         _medalGradientBrush = CreateGradientBrush(message.MedalColorStart, message.MedalColorEnd) ?? _medalBackgroundBrush;
         _medalTextBrush = CreateBrush(message.MedalTextColor) ?? _medalBrush;
         MedalGuardIconSource = CreateBitmap(message.MedalGuardIcon, 32);
+        AvatarSource = CreateBitmap(message.Avatar, 64);
         // 船锚已经在勋章里表达了大航海身份，不再重复挂“舰长”文字标签。
         BadgeText = message.GuardLevel > 0 && MedalGuardIconSource is not null ? null : badge;
         TitleIconSource = BuildTitleIcon(message.UserTitleId, titleResources);
@@ -199,17 +200,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     public Richasy.BiliKernel.Models.Appearance.EmoteText Content { get; }
 
     /// <summary>
-    /// Gets 头像地址.
-    /// </summary>
-    public string? Avatar => Message.Avatar;
-
-    /// <summary>
-    /// Gets 头像图片；没有头像时为 null.
-    /// </summary>
-    public Uri? AvatarUri
-        => Uri.TryCreate(Message.Avatar, UriKind.Absolute, out var uri) ? uri : null;
-
-    /// <summary>
     /// Gets 头衔图标；没有头衔或未取到头衔表时为空.
     /// </summary>
     public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? TitleIconSource { get; }
@@ -220,24 +210,9 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     public bool HasTitleIcon => TitleIconSource is not null;
 
     /// <summary>
-    /// Gets 头像位图；按 64px 解码，避免每条消息按原图解码把内存打爆.
+    /// Gets 头像位图；按 64px 解码并与同一地址复用，避免每条消息各自解码.
     /// </summary>
-    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? AvatarSource
-    {
-        get
-        {
-            if (AvatarUri is not { } uri)
-            {
-                return null;
-            }
-
-            return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
-            {
-                DecodePixelWidth = 64,
-                DecodePixelType = Microsoft.UI.Xaml.Media.Imaging.DecodePixelType.Logical,
-            };
-        }
-    }
+    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? AvatarSource { get; }
 
     /// <summary>
     /// Gets 勋章文案（名称 + 等级），避免两个 TextBlock 之间出现空白.
@@ -478,6 +453,9 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         return Uri.TryCreate(normalized, UriKind.Absolute, out uri!);
     }
 
+    // 同一地址的位图在有界缓存里复用：头像/船锚/头衔在长房间里会重复成千上万次。
+    private static readonly Dictionary<string, WeakReference<Microsoft.UI.Xaml.Media.Imaging.BitmapImage>> BitmapCache = new(StringComparer.Ordinal);
+
     private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? CreateBitmap(string? url, int decodeWidth)
     {
         if (!TryCreateAbsoluteUri(url, out var uri))
@@ -485,11 +463,24 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
             return null;
         }
 
-        return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
+        var key = $"{decodeWidth}|{url}";
+        if (BitmapCache.TryGetValue(key, out var weak) && weak.TryGetTarget(out var cached))
+        {
+            return cached;
+        }
+
+        var image = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
         {
             DecodePixelWidth = decodeWidth,
             DecodePixelType = Microsoft.UI.Xaml.Media.Imaging.DecodePixelType.Logical,
         };
+        if (BitmapCache.Count > 512)
+        {
+            BitmapCache.Clear();
+        }
+
+        BitmapCache[key] = new WeakReference<Microsoft.UI.Xaml.Media.Imaging.BitmapImage>(image);
+        return image;
     }
 
     private static Brush? CreateGradientBrush(string? start, string? end)

@@ -109,19 +109,21 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
 
     private void InitializeSections()
     {
-        var items = new[]
+        var interaction = new SelectorBarItem
         {
-            new SelectorBarItem
-            {
-                Text = ResourceToolkit.GetLocalizedString(StringNames.LiveChatInteractionTitle),
-                Tag = InteractionTag,
-            },
-            new SelectorBarItem
-            {
-                Text = ResourceToolkit.GetLocalizedString(StringNames.LiveChatBlockTitle),
-                Tag = BlockTag,
-            },
+            Text = ResourceToolkit.GetLocalizedString(StringNames.LiveChatInteractionTitle),
+            Tag = InteractionTag,
         };
+        var block = new SelectorBarItem
+        {
+            Text = ResourceToolkit.GetLocalizedString(StringNames.LiveChatBlockTitle),
+            Tag = BlockTag,
+        };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(interaction, "LiveChatInteractionTab");
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(interaction, interaction.Text);
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(block, "LiveChatBlockTab");
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(block, block.Text);
+        var items = new[] { interaction, block };
         SectionTabs.SetItems(items, InteractionTag);
     }
 
