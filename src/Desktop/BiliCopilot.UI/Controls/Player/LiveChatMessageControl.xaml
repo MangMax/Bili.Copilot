@@ -50,11 +50,26 @@
             </Grid.ColumnDefinitions>
 
             <!--  头像：PersonPicture 自带空态占位，加载失败也不会留下空洞。  -->
-            <PersonPicture
+            <Grid
                 Width="32"
                 Height="32"
-                VerticalAlignment="Top"
-                ProfilePicture="{x:Bind ViewModel.AvatarUri, Mode=OneWay, Converter={StaticResource BitmapConverter}}" />
+                VerticalAlignment="Top">
+                <Border
+                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                    CornerRadius="16">
+                    <ic:SymbolIcon
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Symbol="Person" />
+                </Border>
+                <Border CornerRadius="16">
+                    <Image
+                        Source="{x:Bind ViewModel.AvatarSource, Mode=OneWay}"
+                        Stretch="UniformToFill" />
+                </Border>
+            </Grid>
 
             <StackPanel Grid.Column="1" Spacing="4">
                 <!--  发言人一行：姓名、等级图、勋章、舰长、头衔。  -->

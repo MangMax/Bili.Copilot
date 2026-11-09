@@ -94,9 +94,7 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
         _userLevelBrush = CreateBrush(message.UserLevelColor);
         Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
             message.Text ?? string.Empty,
-            message.Emotes?.ToDictionary(
-                pair => $"[{pair.Key}]",
-                pair => new Richasy.BiliKernel.Models.Appearance.BiliImage(new Uri(pair.Value.Url))));
+            BuildEmoteIndex(message.Emotes));
         UpdateRemaining(now);
     }
 
@@ -222,6 +220,26 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     /// </summary>
     public Uri? AvatarUri
         => Uri.TryCreate(Message.Avatar, UriKind.Absolute, out var uri) ? uri : null;
+
+    /// <summary>
+    /// Gets 头像位图；按 64px 解码，避免每条消息按原图解码把内存打爆.
+    /// </summary>
+    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? AvatarSource
+    {
+        get
+        {
+            if (AvatarUri is not { } uri)
+            {
+                return null;
+            }
+
+            return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
+            {
+                DecodePixelWidth = 64,
+                DecodePixelType = Microsoft.UI.Xaml.Media.Imaging.DecodePixelType.Logical,
+            };
+        }
+    }
 
     /// <summary>
     /// Gets a value indicating whether 有可用头像.
@@ -391,6 +409,40 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
                     3 => text(LiveChatBadgeKind.Captain),
                     _ => message.IsVip ? text(LiveChatBadgeKind.Vip) : null,
                 };
+
+    private static Dictionary<string, Richasy.BiliKernel.Models.Appearance.BiliImage>? BuildEmoteIndex(
+        IReadOnlyDictionary<string, Richasy.BiliKernel.Models.Media.LiveDanmakuEmote>? emotes)
+    {
+        if (emotes is null || emotes.Count == 0)
+        {
+            return null;
+        }
+
+        var result = new Dictionary<string, Richasy.BiliKernel.Models.Appearance.BiliImage>(StringComparer.Ordinal);
+        foreach (var pair in emotes)
+        {
+            // 表情地址可能是协议相对（//i0.hdslb.com/...）或非法值；
+            // 直接 new Uri 会在 UI 线程抛异常并让整个聊天列表崩掉。
+            if (TryCreateAbsoluteUri(pair.Value.Url, out var uri))
+            {
+                result[$"[{pair.Key}]"] = new Richasy.BiliKernel.Models.Appearance.BiliImage(uri);
+            }
+        }
+
+        return result.Count == 0 ? null : result;
+    }
+
+    private static bool TryCreateAbsoluteUri(string? url, out Uri uri)
+    {
+        uri = null!;
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return false;
+        }
+
+        var normalized = url.StartsWith("//", StringComparison.Ordinal) ? "https:" + url : url;
+        return Uri.TryCreate(normalized, UriKind.Absolute, out uri!);
+    }
 
     private static Brush? CreateBrush(string? color)
     {

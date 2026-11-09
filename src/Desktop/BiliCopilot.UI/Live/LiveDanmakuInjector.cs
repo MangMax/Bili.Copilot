@@ -17,12 +17,12 @@ public sealed class LiveDanmakuInjector
     /// <summary>
     /// 默认注入节拍（毫秒）：落在 16–50ms 的固定节奏内。
     /// </summary>
-    public static readonly TimeSpan DefaultFlushInterval = TimeSpan.FromMilliseconds(33);
+    public static readonly TimeSpan DefaultFlushInterval = TimeSpan.FromMilliseconds(100);
 
     /// <summary>
     /// 单次节拍最多注入的条数，避免优先级洪水时一帧塞爆渲染器。
     /// </summary>
-    public const int DefaultMaxInjectionsPerFlush = 16;
+    public const int DefaultMaxInjectionsPerFlush = 6;
 
     private readonly LiveDanmakuAdmission _admission;
     private readonly Action<IReadOnlyList<string>> _injectBatch;
