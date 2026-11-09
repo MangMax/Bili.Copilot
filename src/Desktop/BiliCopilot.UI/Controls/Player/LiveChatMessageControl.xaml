@@ -12,6 +12,19 @@
     mc:Ignorable="d">
 
     <Grid>
+        <!--  系统提示（连接/重连/下播）：居中浅色单行，不套评论卡片。  -->
+        <TextBlock
+            Margin="12,2"
+            HorizontalAlignment="Center"
+            FontSize="11"
+            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+            TextAlignment="Center"
+            TextWrapping="Wrap"
+            Visibility="{x:Bind ViewModel.ShowSystemRow, Mode=OneWay, FallbackValue=Collapsed}">
+            <Run Text="{x:Bind ViewModel.SystemText, Mode=OneWay, FallbackValue=''}" />
+            <Run Text="{x:Bind ViewModel.SystemDetail, Mode=OneWay, FallbackValue=''}" />
+        </TextBlock>
+
         <!--  进房提示：浅色单行，不占卡片高度。  -->
         <TextBlock
             Margin="12,2"

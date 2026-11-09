@@ -181,7 +181,12 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     /// <summary>
     /// Gets a value indicating whether 渲染为普通聊天卡片.
     /// </summary>
-    public bool ShowNormalRow => !IsSuperChat && !IsEnterRoom;
+    public bool ShowNormalRow => IsDanmaku && !IsSuperChat;
+
+    /// <summary>
+    /// Gets a value indicating whether 渲染为系统提示行（连接、重连、下播等）.
+    /// </summary>
+    public bool ShowSystemRow => IsSystem && !IsEnterRoom;
 
     /// <summary>
     /// Gets 合并后的条数文案（同文案刷屏时显示 ×N）；未合并为 null.
