@@ -15,13 +15,13 @@
         CornerRadius="{StaticResource ControlCornerRadius}"
         RequestedTheme="Dark">
         <base:Shimmer
-            MinWidth="220"
-            MinHeight="68"
+            MinWidth="200"
+            MinHeight="72"
             CornerRadius="{StaticResource ControlCornerRadius}"
             Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, FallbackValue=Collapsed}" />
         <Button
             x:Name="WidgetButton"
-            MinWidth="220"
+            MinWidth="200"
             Padding="12,8"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -38,7 +38,7 @@
                 </Grid.ColumnDefinitions>
                 <controls:BasicCoverImage
                     Width="100"
-                    Height="52"
+                    Height="68"
                     Margin="0,0,12,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
