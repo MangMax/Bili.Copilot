@@ -69,7 +69,8 @@
                             FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
                             Placement="Bottom">
                             <ItemsRepeater
-                                MaxWidth="280"
+                                MinWidth="240"
+                                MaxWidth="320"
                                 ItemsSource="{x:Bind Qualities, Mode=OneWay}">
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:LiveQualityOption">
@@ -77,7 +78,12 @@
                                             Click="OnLiveQualityItemClick"
                                             DataContext="{x:Bind}"
                                             Style="{StaticResource ItemButtonStyle}">
-                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                                            <Grid MinHeight="32" Margin="0,4">
+                                                <TextBlock
+                                                    Margin="12,0"
+                                                    VerticalAlignment="Center"
+                                                    Text="{x:Bind Name, Mode=OneWay}" />
+                                            </Grid>
                                         </Button>
                                     </DataTemplate>
                                 </ItemsRepeater.ItemTemplate>
@@ -98,7 +104,8 @@
                             FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
                             Placement="Bottom">
                             <ItemsRepeater
-                                MaxWidth="280"
+                                MinWidth="240"
+                                MaxWidth="320"
                                 ItemsSource="{x:Bind Lines, Mode=OneWay}">
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:LiveLineOption">
@@ -106,7 +113,12 @@
                                             Click="OnLiveLineItemClick"
                                             DataContext="{x:Bind}"
                                             Style="{StaticResource ItemButtonStyle}">
-                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                                            <Grid MinHeight="32" Margin="0,4">
+                                                <TextBlock
+                                                    Margin="12,0"
+                                                    VerticalAlignment="Center"
+                                                    Text="{x:Bind Name, Mode=OneWay}" />
+                                            </Grid>
                                         </Button>
                                     </DataTemplate>
                                 </ItemsRepeater.ItemTemplate>
