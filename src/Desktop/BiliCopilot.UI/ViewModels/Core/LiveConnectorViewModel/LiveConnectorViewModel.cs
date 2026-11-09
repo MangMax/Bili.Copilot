@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
+using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -109,6 +110,20 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
     /// </summary>
     [RelayCommand]
     private void OpenPanel() => RequestOpenExtraPanel?.Invoke(this, EventArgs.Empty);
+
+    /// <summary>
+    /// 打开主播的个人空间，与点播侧栏的头像点击行为一致。
+    /// </summary>
+    [RelayCommand]
+    private void OpenUserSpace()
+    {
+        if (Session.Page?.Information.User is not { } profile)
+        {
+            return;
+        }
+
+        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), profile);
+    }
 
     /// <summary>
     /// 在系统浏览器打开当前直播间，作为地址/鉴权/解码失败时的兜底。

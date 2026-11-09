@@ -56,6 +56,7 @@
                 <local:UpSectionControl
                     Margin="-8,0,0,0"
                     HorizontalAlignment="Left"
+                    ActiveCommand="{x:Bind ViewModel.OpenUserSpaceCommand, Mode=OneWay}"
                     Avatar="{x:Bind ViewModel.UpAvatar, Mode=OneWay}"
                     IsFollowButtonShown="False"
                     Subtitle="{x:Bind ViewModel.TagName, Mode=OneWay}"
