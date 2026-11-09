@@ -316,6 +316,14 @@ public sealed partial class LiveConnectorViewModel
     /// </summary>
     private void AppendChatMessage(LiveChatMessage message, DateTimeOffset now)
     {
+        if (_wealthLogCount < 3 && _logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+        {
+            var probeName = message.UserName;
+            var probeLevel = message.WealthLevel ?? -1;
+            var probeKey = message.WealthIconKey ?? "none";
+            _logger.LogInformation("LIVEDM|{Name}|{Level}|{Key}", probeName, probeLevel, probeKey);
+        }
+
         if (_wealthLogCount < 20 && message.WealthIconKey is { Length: > 0 } wealthKey)
         {
             _wealthLogCount++;
