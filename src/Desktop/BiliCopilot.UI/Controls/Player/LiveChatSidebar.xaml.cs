@@ -101,6 +101,17 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         }
     }
 
+    private void OnSectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    {
+        var showBlock = ReferenceEquals(sender.SelectedItem, BlockItem);
+        InteractionPanel.Visibility = showBlock ? Microsoft.UI.Xaml.Visibility.Collapsed : Microsoft.UI.Xaml.Visibility.Visible;
+        BlockPanel.Visibility = showBlock ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+        if (!showBlock && _ownership.IsFollowing)
+        {
+            StartScrollToBottom();
+        }
+    }
+
     private void OnChatMessagesChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         var count = ViewModel?.ChatMessages.Count ?? 0;

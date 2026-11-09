@@ -12,41 +12,29 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <!--  互动与屏蔽拆成两个页签，避免屏蔽表单长期占据列表底部。  -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--  聊天标题行：标题、补屏进度、收起入口。  -->
-        <Grid
-            Padding="16,4,8,8"
-            ColumnSpacing="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBlock
-                VerticalAlignment="Center"
-                FontSize="14"
-                FontWeight="SemiBold"
-                Text="{ext:Locale Name=LiveChatTitle}" />
-            <ProgressRing
-                Grid.Column="1"
-                Width="16"
-                Height="16"
-                VerticalAlignment="Center"
-                AutomationProperties.Name="{ext:Locale Name=LiveChatBackfilling}"
-                IsActive="{x:Bind ViewModel.IsChatBackfilling, Mode=OneWay, FallbackValue=False}"
-                Visibility="{x:Bind ViewModel.IsChatBackfilling, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-        </Grid>
+        <SelectorBar
+            x:Name="SectionSelector"
+            Margin="8,4,8,4"
+            SelectionChanged="OnSectionChanged">
+            <SelectorBarItem
+                x:Name="InteractionItem"
+                IsSelected="True"
+                Text="{ext:Locale Name=LiveChatInteractionTitle}" />
+            <SelectorBarItem
+                x:Name="BlockItem"
+                Text="{ext:Locale Name=LiveChatBlockTitle}" />
+        </SelectorBar>
 
-        <!--
-            消息区沿用 ChatSessionBody 的滚动所有权：外层 ScrollView + ItemsRepeater，
-            自动跟随由 40ms 稳定定时器驱动，用户上滚即停止。
-        -->
-        <Grid Grid.Row="1">
+        <Grid
+            x:Name="InteractionPanel"
+            Grid.Row="1">
             <ScrollView
                 x:Name="ChatView"
                 Style="{StaticResource PageScrollViewStyle}">
@@ -66,6 +54,16 @@
                 Emoji="&#x1F4AC;"
                 Visibility="{x:Bind ViewModel.IsChatEmpty, Mode=OneWay, FallbackValue=Collapsed}" />
 
+            <ProgressRing
+                Width="16"
+                Height="16"
+                Margin="0,6,16,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                AutomationProperties.Name="{ext:Locale Name=LiveChatBackfilling}"
+                IsActive="{x:Bind ViewModel.IsChatBackfilling, Mode=OneWay, FallbackValue=False}"
+                Visibility="{x:Bind ViewModel.IsChatBackfilling, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+
             <Button
                 x:Name="BackToBottomButton"
                 Margin="0,0,0,12"
@@ -84,51 +82,36 @@
             </Button>
         </Grid>
 
-        <!--  屏蔽设置：与聊天列表用分割线隔开，避免整块贴边。  -->
-        <Border
-            Grid.Row="2"
-            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-            BorderThickness="0,1,0,0">
-            <Expander
-                Margin="16,4,16,8"
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch">
-                <Expander.Header>
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="12"
-                            Text="{ext:Locale Name=LiveChatBlockTitle}" />
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="11"
-                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                            Text="{x:Bind ViewModel.ChatBlockCountersText, Mode=OneWay, FallbackValue=''}"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                </Expander.Header>
-                <StackPanel Padding="0,4,0,4" Spacing="8">
-                    <TextBox
-                        x:Name="BlockUserIdBox"
-                        AutomationProperties.Name="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}"
-                        Header="UID"
-                        PlaceholderText="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}" />
-                    <TextBox
-                        x:Name="BlockUserNameBox"
-                        AutomationProperties.Name="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}"
-                        Header="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}"
-                        PlaceholderText="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}" />
-                    <TextBox
-                        x:Name="BlockKeywordBox"
-                        AutomationProperties.Name="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}"
-                        Header="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}"
-                        PlaceholderText="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}" />
-                    <Button
-                        HorizontalAlignment="Stretch"
-                        Click="OnApplyBlockRulesClick"
-                        Content="{ext:Locale Name=LiveChatBlockApply}" />
-                </StackPanel>
-            </Expander>
-        </Border>
+        <ScrollViewer
+            x:Name="BlockPanel"
+            Grid.Row="1"
+            Visibility="Collapsed">
+            <StackPanel Padding="16,8,16,16" Spacing="10">
+                <TextBlock
+                    FontSize="11"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                    Text="{x:Bind ViewModel.ChatBlockCountersText, Mode=OneWay, FallbackValue=''}"
+                    TextWrapping="Wrap" />
+                <TextBox
+                    x:Name="BlockUserIdBox"
+                    AutomationProperties.Name="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}"
+                    Header="UID"
+                    PlaceholderText="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}" />
+                <TextBox
+                    x:Name="BlockUserNameBox"
+                    AutomationProperties.Name="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}"
+                    Header="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}"
+                    PlaceholderText="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}" />
+                <TextBox
+                    x:Name="BlockKeywordBox"
+                    AutomationProperties.Name="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}"
+                    Header="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}"
+                    PlaceholderText="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="OnApplyBlockRulesClick"
+                    Content="{ext:Locale Name=LiveChatBlockApply}" />
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </local:LiveChatControlBase>

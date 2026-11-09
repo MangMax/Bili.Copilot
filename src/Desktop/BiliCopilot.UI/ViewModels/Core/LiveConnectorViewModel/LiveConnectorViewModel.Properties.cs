@@ -68,6 +68,12 @@ public sealed partial class LiveConnectorViewModel
     [ObservableProperty]
     public partial string? UpName { get; set; }
 
+    /// <summary>
+    /// Gets UP 主头像.
+    /// </summary>
+    [ObservableProperty]
+    public partial Uri? UpAvatar { get; set; }
+
     [ObservableProperty]
     public partial Uri? Cover { get; set; }
 

@@ -3447,6 +3447,9 @@
   <data name="LiveChatTitle" xml:space="preserve">
     <value>聊天</value>
   </data>
+  <data name="LiveChatInteractionTitle" xml:space="preserve">
+    <value>互动</value>
+  </data>
   <data name="LiveChatEmpty" xml:space="preserve">
     <value>还没有消息，先看会儿直播吧</value>
   </data>

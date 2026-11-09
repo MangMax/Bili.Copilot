@@ -31,6 +31,7 @@ public sealed partial class LiveConnectorViewModel
     private CancellationTokenSource? _danmakuSource;
     private Task? _danmakuTask;
     private int _danmakuGeneration;
+    private bool _isLiveDanmakuHeld;
 
     /// <summary>
     /// Gets 当前观看的弹幕事件泵；#197/#198 可订阅强类型事件与连接状态。
@@ -294,6 +295,21 @@ public sealed partial class LiveConnectorViewModel
                 return;
             }
 
+            // 直播暂停期间持续到达的弹幕不再入队：恢复播放时按最新位置继续，
+            // 否则积压的一批会同时从同一位置涌入。
+            if (!Parent.Player.IsPlaying)
+            {
+                if (!_isLiveDanmakuHeld)
+                {
+                    _isLiveDanmakuHeld = true;
+                    Parent.Danmaku.ClearDanmaku();
+                }
+
+                UpdateDanmakuCounters();
+                return;
+            }
+
+            _isLiveDanmakuHeld = false;
             foreach (var text in batch)
             {
                 Parent.Danmaku.AddDanmaku(text);

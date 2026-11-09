@@ -125,6 +125,7 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
     {
         Title = Session.Title;
         UpName = Session.AnchorName;
+        UpAvatar = Session.Page?.Information.User?.Avatar?.Uri;
         Cover = Session.Page?.Information.Identifier.Cover?.Uri;
         IsLiving = Session.IsLiving;
         TagName = Session.TagName;

@@ -22,20 +22,46 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Padding="16,16,16,12" Spacing="8">
-            <base:TrimTextBlock
-                FontSize="18"
-                FontWeight="SemiBold"
-                MaxLines="2"
-                Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue=''}" />
+        <StackPanel Padding="16,16,16,12" Spacing="10">
+            <!--  标题行：标题 + 在浏览器打开（图标按钮）。  -->
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <base:TrimTextBlock
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    MaxLines="2"
+                    Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue=''}" />
+                <Button
+                    Grid.Column="1"
+                    Padding="6"
+                    VerticalAlignment="Top"
+                    AutomationProperties.Name="{ext:Locale Name=OpenInBrowser}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Command="{x:Bind ViewModel.OpenInBrowserCommand, Mode=OneWay}"
+                    ToolTipService.ToolTip="{ext:Locale Name=OpenInBrowser}">
+                    <ic:SymbolIcon FontSize="14" Symbol="Globe" />
+                </Button>
+            </Grid>
 
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    FontSize="12"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Text="{x:Bind ViewModel.UpName, Mode=OneWay, FallbackValue=''}" />
+            <!--  UP 主：与点播侧栏同一套头像/昵称布局。  -->
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <local:UpSectionControl
+                    Margin="-8,0,0,0"
+                    HorizontalAlignment="Left"
+                    Avatar="{x:Bind ViewModel.UpAvatar, Mode=OneWay}"
+                    IsFollowButtonShown="False"
+                    Subtitle="{x:Bind ViewModel.TagName, Mode=OneWay}"
+                    UserName="{x:Bind ViewModel.UpName, Mode=OneWay}" />
                 <Border
+                    Grid.Column="1"
                     Padding="7,2"
                     VerticalAlignment="Center"
                     Background="{ThemeResource AccentFillColorDefaultBrush}"
@@ -46,19 +72,29 @@
                         Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                         Text="{x:Bind ViewModel.RoomStatusText, Mode=OneWay, FallbackValue=''}" />
                 </Border>
-                <TextBlock
-                    VerticalAlignment="Center"
-                    FontSize="12"
-                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                    Text="{x:Bind ViewModel.TagName, Mode=OneWay, FallbackValue=''}"
-                    Visibility="{x:Bind ViewModel.TagName, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
-            </StackPanel>
+            </Grid>
 
+            <!--  统计行：热度、在线人数、开播时长。  -->
             <StackPanel Orientation="Horizontal" Spacing="16">
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="4"
-                    Visibility="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                    Visibility="{x:Bind ViewModel.PopularityText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <ic:SymbolIcon
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Symbol="Heart" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind ViewModel.PopularityText, Mode=OneWay, FallbackValue=''}" />
+                </StackPanel>
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="4"
+                    Visibility="{x:Bind ViewModel.ViewerCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                     <ic:SymbolIcon
                         VerticalAlignment="Center"
                         FontSize="12"
@@ -68,7 +104,7 @@
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, FallbackValue=''}" />
+                        Text="{x:Bind ViewModel.ViewerCountText, Mode=OneWay, FallbackValue=''}" />
                 </StackPanel>
                 <StackPanel
                     Orientation="Horizontal"
@@ -119,11 +155,6 @@
                     Text="{x:Bind ViewModel.ErrorText, Mode=OneWay, FallbackValue=''}"
                     TextWrapping="Wrap"
                     Visibility="{x:Bind ViewModel.ErrorText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
-                <HyperlinkButton
-                    Padding="0"
-                    HorizontalAlignment="Left"
-                    Command="{x:Bind ViewModel.OpenInBrowserCommand, Mode=OneWay}"
-                    Content="{ext:Locale Name=OpenInBrowser}" />
             </StackPanel>
         </Grid>
     </Grid>

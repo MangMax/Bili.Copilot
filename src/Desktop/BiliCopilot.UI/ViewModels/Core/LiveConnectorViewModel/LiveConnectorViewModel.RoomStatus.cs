@@ -32,6 +32,18 @@ public sealed partial class LiveConnectorViewModel
     public partial string? OnlineCountText { get; set; }
 
     /// <summary>
+    /// Gets 人气（热度）文案.
+    /// </summary>
+    [ObservableProperty]
+    public partial string? PopularityText { get; set; }
+
+    /// <summary>
+    /// Gets 在线观看人数文案.
+    /// </summary>
+    [ObservableProperty]
+    public partial string? ViewerCountText { get; set; }
+
+    /// <summary>
     /// Gets 开播时长文案（分钟/小时）.
     /// </summary>
     [ObservableProperty]
@@ -73,6 +85,8 @@ public sealed partial class LiveConnectorViewModel
         RoomStateDescription = default;
         UptimeText = default;
         OnlineCountText = default;
+        PopularityText = default;
+        ViewerCountText = default;
         RefreshUptime();
         SeedOnlineCount();
         StartUptimeTimer();
@@ -162,6 +176,7 @@ public sealed partial class LiveConnectorViewModel
                     RefreshOnlineCount();
                 }
 
+                ApplyOnlineCountText(update.OnlineCount, update.OnlineCountSource);
                 break;
             case LiveRoomStatusSignal.PlayUrlReload:
                 if (_roomStatus.TryBeginReload(roomId, TimeProvider.GetLocalNow()))
@@ -270,6 +285,7 @@ public sealed partial class LiveConnectorViewModel
         if (viewerCount >= 0)
         {
             _roomStatus.ApplyOnlineCount(_roomStatus.RoomId, viewerCount, LiveOnlineCountSource.Popularity);
+            PopularityText = AppToolkit.FormatCount(viewerCount);
         }
 
         RefreshOnlineCount();
@@ -277,6 +293,24 @@ public sealed partial class LiveConnectorViewModel
 
     private void RefreshOnlineCount()
         => OnlineCountText = _roomStatus.OnlineCount is { } count ? AppToolkit.FormatCount(count) : default;
+
+    private void ApplyOnlineCountText(int count, LiveOnlineCountSource source)
+    {
+        var text = AppToolkit.FormatCount(count);
+        switch (source)
+        {
+            case LiveOnlineCountSource.Viewers:
+                ViewerCountText = text;
+                break;
+            case LiveOnlineCountSource.Watched:
+                // 看过人数与在线人数口径不同，不覆盖热度/在线人数。
+                break;
+            case LiveOnlineCountSource.Popularity:
+            default:
+                PopularityText = text;
+                break;
+        }
+    }
 
     private void StartUptimeTimer()
     {
