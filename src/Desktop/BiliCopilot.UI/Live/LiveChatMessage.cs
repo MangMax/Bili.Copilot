@@ -192,6 +192,11 @@ public sealed class LiveChatMessage
     public string? MedalColor { get; private init; }
 
     /// <summary>
+    /// Gets 调试用用户 JSON.
+    /// </summary>
+    public string? UserDebugJson { get; private init; }
+
+    /// <summary>
     /// Gets 荣耀等级.
     /// </summary>
     public int? WealthLevel { get; private init; }
@@ -279,6 +284,7 @@ public sealed class LiveChatMessage
             MedalName = danmaku.MedalName,
             MedalLevel = danmaku.MedalLevel,
             MedalColor = danmaku.MedalColor,
+            UserDebugJson = danmaku.UserDebugJson,
             WealthLevel = danmaku.WealthLevel,
             WealthIconKey = danmaku.WealthIconKey,
             MedalGuardIcon = danmaku.MedalGuardIcon,

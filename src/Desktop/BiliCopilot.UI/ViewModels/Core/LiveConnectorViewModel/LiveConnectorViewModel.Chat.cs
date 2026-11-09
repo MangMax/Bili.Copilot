@@ -321,7 +321,8 @@ public sealed partial class LiveConnectorViewModel
             var probeName = message.UserName;
             var probeLevel = message.WealthLevel ?? -1;
             var probeKey = message.WealthIconKey ?? "none";
-            _logger.LogInformation("LIVEDM|{Name}|{Level}|{Key}", probeName, probeLevel, probeKey);
+            var probeUser = message.UserDebugJson ?? "none";
+            _logger.LogInformation("LIVEDM|{Name}|{Level}|{Key}|{User}", probeName, probeLevel, probeKey, probeUser);
         }
 
         if (_wealthLogCount < 20 && message.WealthIconKey is { Length: > 0 } wealthKey)
