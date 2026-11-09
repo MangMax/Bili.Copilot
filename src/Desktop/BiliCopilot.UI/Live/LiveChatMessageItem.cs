@@ -96,13 +96,15 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         SystemText = message.Kind == LiveChatMessageKind.System
             ? systemText?.Invoke(message.SystemKind) ?? message.SystemKind.ToString()
             : null;
-        BadgeText = GetBadge(message, badgeText ?? LiveChatBadgeKindText.Get);
+        var badge = GetBadge(message, badgeText ?? LiveChatBadgeKindText.Get);
         _nameBrush = CreateBrush(message.NameColor);
         _medalBrush = CreateBrush(message.MedalColor);
         _medalBackgroundBrush = CreateTintBrush(message.MedalColor, 0x2E);
         _medalGradientBrush = CreateGradientBrush(message.MedalColorStart, message.MedalColorEnd) ?? _medalBackgroundBrush;
         _medalTextBrush = CreateBrush(message.MedalTextColor) ?? _medalBrush;
         MedalGuardIconSource = CreateBitmap(message.MedalGuardIcon, 32);
+        // 船锚已经在勋章里表达了大航海身份，不再重复挂“舰长”文字标签。
+        BadgeText = message.GuardLevel > 0 && MedalGuardIconSource is not null ? null : badge;
         _userLevelBrush = CreateBrush(message.UserLevelColor);
         TitleIconSource = BuildTitleIcon(message.UserTitleId, titleResources);
         Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
