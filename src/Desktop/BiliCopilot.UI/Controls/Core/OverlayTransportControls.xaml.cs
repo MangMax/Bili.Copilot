@@ -80,7 +80,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         {
             _observedRoot.Changed += OnRootChanged;
         }
-        ViewModel.Player.PropertyChanged += OnPlayerPropertyChanged;
+        if (ViewModel?.Player is not null)
+        {
+            ViewModel.Player.PropertyChanged += OnPlayerPropertyChanged;
+        }
+
         UpdateLayoutState();
     }
 
@@ -118,7 +122,10 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             _observedRoot.Changed -= OnRootChanged;
             _observedRoot = null;
         }
-        ViewModel.Player.PropertyChanged -= OnPlayerPropertyChanged;
+        if (ViewModel?.Player is not null)
+        {
+            ViewModel.Player.PropertyChanged -= OnPlayerPropertyChanged;
+        }
         _isOverlayActive = false;
         _appliedLayout = null;
         _pendingSpeed = null;
@@ -242,11 +249,12 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     }
 
     private OverlayControlMode CurrentMode => OverlayControlLayout.SelectMode(
-        ViewModel?.Player.IsCompactOverlay == true, XamlRoot?.Size.Width ?? ActualWidth, XamlRoot?.Size.Height ?? ActualHeight);
+        ViewModel?.Player?.IsCompactOverlay == true, XamlRoot?.Size.Width ?? ActualWidth, XamlRoot?.Size.Height ?? ActualHeight);
 
     public bool ContainsInteractivePoint(Windows.Foundation.Point point)
-        => OverlayControlLayout.Contains(CurrentMode, XamlRoot?.Size.Width ?? ActualWidth,
-            XamlRoot?.Size.Height ?? ActualHeight, point.X, point.Y);
+        => ViewModel?.Player is not null
+            && OverlayControlLayout.Contains(CurrentMode, XamlRoot?.Size.Width ?? ActualWidth,
+                XamlRoot?.Size.Height ?? ActualHeight, point.X, point.Y);
 
     private void UpdateLayoutState()
     {
@@ -255,7 +263,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         // Reconcile from arranged geometry, both on first layout and later resizes.
         var width = RootGrid.ActualWidth;
         var height = XamlRoot?.Size.Height ?? ActualHeight;
-        var mode = OverlayControlLayout.SelectMode(ViewModel.Player.IsCompactOverlay, width, height);
+        var mode = OverlayControlLayout.SelectMode(ViewModel.Player?.IsCompactOverlay == true, width, height);
         var layout = (Mode: mode, Width: width, Height: height, Danmaku: ViewModel.IsDanmakuControlVisible);
         if (_appliedLayout == layout) return;
         var state = OverlayControlLayout.StateName(mode, width, layout.Danmaku);
