@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -24,6 +24,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     private DanmakuFrostMaster? _danmakuMaster;
     private DanmakuRenderer? _danmakuRenderer;
     private DanmakuRenderViewModel? _subscribedViewModel;
+    private double _appliedRollingSpeed = double.NaN;
     private bool _isActive;
     private bool _rendererFailed;
     private bool _rendererCleanupFailed;
@@ -417,6 +418,13 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         }
 
         var finalSpeed = ViewModel.DanmakuSpeed * 5 * ViewModel.ExtraSpeed;
+        if (Math.Abs(finalSpeed - _appliedRollingSpeed) < 0.01)
+        {
+            // 速度没变就不要重配渲染器：UpdateConfiguration 会重建 DirectX 配置。
+            return;
+        }
+
+        _appliedRollingSpeed = finalSpeed;
         _danmakuMaster?.SetRollingSpeed(finalSpeed);
         _danmakuRenderer?.UpdateConfiguration(new DanmakuConfiguration { RollingSpeedBase = (float)finalSpeed });
     }

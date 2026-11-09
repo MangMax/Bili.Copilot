@@ -69,6 +69,7 @@
             <localConverters:ColorTextConverter x:Key="ColorTextConverter" />
             <localConverters:ColorToBrushConverter x:Key="BrushConverter" />
             <localConverters:PlayerPositionConverter x:Key="PlayerPositionConverter" />
+            <localConverters:BrushOrDefaultConverter x:Key="BrushOrDefaultConverter" />
 
             <UniformGridLayout
                 x:Key="VideoLayout"

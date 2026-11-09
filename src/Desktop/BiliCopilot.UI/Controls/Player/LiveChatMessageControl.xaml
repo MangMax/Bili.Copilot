@@ -63,7 +63,7 @@
                         VerticalAlignment="Center"
                         FontSize="13"
                         FontWeight="SemiBold"
-                        Foreground="{x:Bind ViewModel.NameBrush, Mode=OneWay}"
+                        Foreground="{x:Bind ViewModel.NameBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorPrimaryBrush}"
                         Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
                         TextTrimming="CharacterEllipsis" />
                     <Image
@@ -74,13 +74,13 @@
                     <Border
                         Padding="4,0"
                         VerticalAlignment="Center"
-                        BorderBrush="{x:Bind ViewModel.MedalBrush, Mode=OneWay}"
+                        BorderBrush="{x:Bind ViewModel.MedalBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorSecondaryBrush}"
                         BorderThickness="1"
                         CornerRadius="3"
                         Visibility="{x:Bind ViewModel.HasMedal, Mode=OneWay, FallbackValue=Collapsed}">
                         <TextBlock
                             FontSize="10"
-                            Foreground="{x:Bind ViewModel.MedalBrush, Mode=OneWay}"
+                            Foreground="{x:Bind ViewModel.MedalBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorSecondaryBrush}"
                             Text="{x:Bind ViewModel.MedalText, Mode=OneWay, FallbackValue=''}" />
                     </Border>
                     <TextBlock

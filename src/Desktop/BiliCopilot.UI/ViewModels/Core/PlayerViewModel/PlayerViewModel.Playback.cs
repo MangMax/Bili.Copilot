@@ -30,6 +30,13 @@ public sealed partial class PlayerViewModel
         }
         else if (e.PropertyName == nameof(Player.PlaybackRate))
         {
+            // 直播没有时间轴弹幕：mpv 的 playback-rate 在直播下会持续微调（对时），
+            // 每次都驱动弹幕渲染器重配会以几十赫兹重建 DirectX 配置，最终把 UI 线程打崩。
+            if (!LiveCapabilities.SupportsDanmakuTimeline)
+            {
+                return;
+            }
+
             Danmaku.ExtraSpeed = Player.PlaybackRate;
         }
         else if (e.PropertyName == nameof(Player.PlaybackState))
