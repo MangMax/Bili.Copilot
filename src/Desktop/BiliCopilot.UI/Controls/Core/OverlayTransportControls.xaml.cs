@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -265,10 +265,22 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         // preferred dimensions and orientation; these limits only reflect the viewport.
         var maxWidth = Math.Max(1, width - 16);
         var maxHeight = Math.Max(1, height - 16);
-        foreach (var content in new FrameworkElement[] { VolumeContent, SpeedContent, ChapterContent, SubtitleContent, DanmakuContent })
-            content.MaxWidth = maxWidth;
-        foreach (var popup in new ScrollViewer[] { VolumePopup, SpeedPopup, ChapterPopup, SubtitlePopup, DanmakuPopup })
-            popup.MaxHeight = maxHeight;
+        // 这些元素在 danmaku 关闭 / 模板尚未加载时可能为 null；布局回调不能因此抛 NRE。
+        foreach (var content in new FrameworkElement?[] { VolumeContent, SpeedContent, ChapterContent, SubtitleContent, DanmakuContent })
+        {
+            if (content is not null)
+            {
+                content.MaxWidth = maxWidth;
+            }
+        }
+
+        foreach (var popup in new ScrollViewer?[] { VolumePopup, SpeedPopup, ChapterPopup, SubtitlePopup, DanmakuPopup })
+        {
+            if (popup is not null)
+            {
+                popup.MaxHeight = maxHeight;
+            }
+        }
         if (mode != OverlayControlMode.CompactPortrait) BalanceLeftRightWidth();
     }
 
