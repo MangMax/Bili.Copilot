@@ -30,6 +30,7 @@ public sealed partial class LiveConnectorViewModel
     private DispatcherQueueTimer? _chatTimer;
     private int _chatGeneration = -1;
     private string? _chatRoomId;
+    private DateTimeOffset _lastEnterRoomAt = DateTimeOffset.MinValue;
     private bool _isChatBackfillStarted;
     private bool _isChatHooked;
 
@@ -184,7 +185,7 @@ public sealed partial class LiveConnectorViewModel
 
             foreach (var message in added)
             {
-                ChatMessages.Append(CreateChatItem(message, now));
+                AppendChatMessage(message, now);
             }
         }
 
@@ -229,6 +230,58 @@ public sealed partial class LiveConnectorViewModel
 
     private LiveChatMessageItem CreateChatItem(LiveChatMessage message, DateTimeOffset now)
         => new(message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText);
+
+    /// <summary>
+    /// 按参考实现的准入思路处理上屏：同文案短窗合并、进房提示限速，避免刷屏把列表打爆。
+    /// </summary>
+    private void AppendChatMessage(LiveChatMessage message, DateTimeOffset now)
+    {
+        if (message.IsEnterRoom)
+        {
+            // 大房间每秒有大量进房事件；保留提示但限制到每秒最多一条。
+            if (now - _lastEnterRoomAt < TimeSpan.FromSeconds(1))
+            {
+                return;
+            }
+
+            _lastEnterRoomAt = now;
+            ChatMessages.Append(CreateChatItem(message, now));
+            return;
+        }
+
+        if (message.Kind == LiveChatMessageKind.Danmaku
+            && TryMergeRecentDanmaku(message, now))
+        {
+            return;
+        }
+
+        ChatMessages.Append(CreateChatItem(message, now));
+    }
+
+    private bool TryMergeRecentDanmaku(LiveChatMessage message, DateTimeOffset now)
+    {
+        // 只看最近的少量条目：刷屏通常是连续重复，不需要回扫整个窗口。
+        var count = Math.Min(ChatMessages.Count, 12);
+        for (var i = ChatMessages.Count - 1; i >= ChatMessages.Count - count; i--)
+        {
+            var item = ChatMessages[i];
+            if (item.Kind != LiveChatMessageKind.Danmaku
+                || !string.Equals(item.Text, message.Text, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            if (now - item.Message.Timestamp <= TimeSpan.FromSeconds(2))
+            {
+                item.IncrementMerge();
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
 
     private string GetChatBadgeText(LiveChatBadgeKind kind)
     {

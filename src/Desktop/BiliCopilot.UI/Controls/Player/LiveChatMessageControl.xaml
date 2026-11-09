@@ -84,10 +84,18 @@
                         Visibility="{x:Bind ViewModel.HasTitle, Mode=OneWay, FallbackValue=Collapsed}" />
                 </StackPanel>
 
-                <comp:EmoteTextBlock
-                    FontSize="13"
-                    MaxLines="10"
-                    Text="{x:Bind ViewModel.Content, Mode=OneWay}" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <comp:EmoteTextBlock
+                        FontSize="13"
+                        MaxLines="10"
+                        Text="{x:Bind ViewModel.Content, Mode=OneWay}" />
+                    <TextBlock
+                        VerticalAlignment="Bottom"
+                        FontSize="11"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Text="{x:Bind ViewModel.MergeText, Mode=OneWay, FallbackValue=''}"
+                        Visibility="{x:Bind ViewModel.MergeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+                </StackPanel>
             </StackPanel>
         </Grid>
 

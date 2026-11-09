@@ -61,6 +61,7 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     private readonly Brush? _nameBrush;
     private readonly Brush? _medalBrush;
     private readonly Brush? _userLevelBrush;
+    private int _mergeCount = 1;
     private string? _remainingText;
     private bool _isRemainingVisible;
     private bool _isExpired;
@@ -181,6 +182,20 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     /// Gets a value indicating whether 渲染为普通聊天卡片.
     /// </summary>
     public bool ShowNormalRow => !IsSuperChat && !IsEnterRoom;
+
+    /// <summary>
+    /// Gets 合并后的条数文案（同文案刷屏时显示 ×N）；未合并为 null.
+    /// </summary>
+    public string? MergeText => _mergeCount > 1 ? $"×{_mergeCount}" : null;
+
+    /// <summary>
+    /// 把同文案的新消息并入当前条目。
+    /// </summary>
+    public void IncrementMerge()
+    {
+        _mergeCount++;
+        Raise(nameof(MergeText));
+    }
 
     /// <summary>
     /// Gets 进房提示文案.
