@@ -40,6 +40,13 @@ public sealed partial class PlayerViewModel
                 ? unavailable.Kind
                 : LivePlaybackFailureClassifier.ClassifyPlayback(exception);
             logger.LogWarning(exception, "直播刷新播放失败：{Kind}", kind);
+            if (kind is LivePlaybackFailureKind.Transport or LivePlaybackFailureKind.DecoderInit)
+            {
+                // 403/连接失败/解码失败通常只坏了一条 CDN 线路：换候选重取，不直接打断用户。
+                RunLivePlaybackRecovery(kind, () => true);
+                return;
+            }
+
             ShowLivePlaybackFailure(LivePlaybackFailureClassifier.ToLiveFailureKind(kind), canRetry: true);
             return;
         }

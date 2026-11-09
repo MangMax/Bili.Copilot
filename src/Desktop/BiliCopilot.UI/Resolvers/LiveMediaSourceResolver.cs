@@ -305,6 +305,12 @@ internal sealed partial class LiveMediaSourceResolver(
 
         LastPlaybackFailure = kind;
         _pendingRecovery = _recovery.Report(kind, HasNextTarget());
+        if (_pendingRecovery != LiveRecoveryAction.None)
+        {
+            // 这条线路已经失败，别再让旧偏好把选择拉回去；让恢复流程换到下一条候选。
+            _preferredLineKey = null;
+        }
+
         return _pendingRecovery;
     }
 

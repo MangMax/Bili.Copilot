@@ -3,7 +3,6 @@
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Resolvers;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Richasy.MpvKernel;
 using Richasy.MpvKernel.Player.Models;
 
@@ -187,30 +186,20 @@ public sealed partial class PlayerViewModel
 
             _isPlaybackRefreshReload = true;
             _continuePosition = null;
-            for (var attempt = 1; ; attempt++)
+            var loaded = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            void OnLoaded(object? sender, EventArgs args) => loaded.TrySetResult();
+            void OnError(object? sender, MpvError error) => loaded.TrySetException(new InvalidOperationException($"直播刷新失败：{error}"));
+            client.ReachFileLoaded += OnLoaded;
+            client.ErrorOccurred += OnError;
+            try
             {
-                var loaded = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-                void OnLoaded(object? sender, EventArgs args) => loaded.TrySetResult();
-                void OnError(object? sender, MpvError error) => loaded.TrySetException(new InvalidOperationException($"直播刷新失败：{error}"));
-                client.ReachFileLoaded += OnLoaded;
-                client.ErrorOccurred += OnError;
-                try
-                {
-                    await client.PlayAsync(source.Url, source.Options);
-                    await loaded.Task.WaitAsync(TimeSpan.FromSeconds(15));
-                    break;
-                }
-                catch (InvalidOperationException ex) when (attempt < 3 && ex.Message.Contains("VoInitFailed", StringComparison.Ordinal))
-                {
-                    // 快速重开时旧 VO 尚未释放，mpv 偶发 VoInitFailed；短暂等待后重试，不把它当终态。
-                    logger.LogWarning("直播视频输出初始化失败，第 {Attempt} 次重试", attempt);
-                    await Task.Delay(400 * attempt, cancellationToken);
-                }
-                finally
-                {
-                    client.ReachFileLoaded -= OnLoaded;
-                    client.ErrorOccurred -= OnError;
-                }
+                await client.PlayAsync(source.Url, source.Options);
+                await loaded.Task.WaitAsync(TimeSpan.FromSeconds(15));
+            }
+            finally
+            {
+                client.ReachFileLoaded -= OnLoaded;
+                client.ErrorOccurred -= OnError;
             }
         }
         finally
