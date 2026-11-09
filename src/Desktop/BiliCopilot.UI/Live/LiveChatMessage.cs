@@ -167,6 +167,11 @@ public sealed class LiveChatMessage
     public string? UserLevel { get; private init; }
 
     /// <summary>
+    /// Gets 用户等级数值.
+    /// </summary>
+    public int UserLevelNumber { get; private init; }
+
+    /// <summary>
     /// Gets 用户等级颜色.
     /// </summary>
     public string? UserLevelColor { get; private init; }
@@ -202,6 +207,11 @@ public sealed class LiveChatMessage
     public IReadOnlyDictionary<string, LiveDanmakuEmote>? Emotes { get; private init; }
 
     /// <summary>
+    /// Gets 用户头像地址.
+    /// </summary>
+    public string? Avatar { get; private init; }
+
+    /// <summary>
     /// Gets a value indicating whether 这是一条进房提示.
     /// </summary>
     public bool IsEnterRoom { get; private init; }
@@ -229,6 +239,7 @@ public sealed class LiveChatMessage
             IsAdmin = danmaku.IsAdmin,
             IsVip = danmaku.IsVip,
             UserLevel = danmaku.UserLevel,
+            UserLevelNumber = danmaku.UserLevelNumber,
             UserLevelColor = danmaku.UserLevelColor,
             MedalName = danmaku.MedalName,
             MedalLevel = danmaku.MedalLevel,
@@ -236,6 +247,7 @@ public sealed class LiveChatMessage
             NameColor = danmaku.NameColor,
             UserTitle = danmaku.UserTitle,
             Emotes = danmaku.Emotes,
+            Avatar = danmaku.UserFace,
             Timestamp = timestamp,
         };
     }

@@ -86,6 +86,11 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
             : null;
         BadgeText = GetBadge(message, badgeText ?? LiveChatBadgeKindText.Get);
         Segments = LiveChatTextSegment.Parse(message.Text, message.Emotes);
+        Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
+            message.Text ?? string.Empty,
+            message.Emotes?.ToDictionary(
+                pair => $"[{pair.Key}]",
+                pair => new Richasy.BiliKernel.Models.Appearance.BiliImage(new Uri(pair.Value.Url))));
         UpdateRemaining(now);
     }
 
@@ -116,6 +121,11 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     /// Gets 用户等级（含 UL 前缀）.
     /// </summary>
     public string? UserLevel => Message.UserLevel;
+
+    /// <summary>
+    /// Gets 用户等级数值，供网页同款等级图使用.
+    /// </summary>
+    public int UserLevelNumber => Message.UserLevelNumber;
 
     /// <summary>
     /// Gets a value indicating whether 有等级徽标.
@@ -163,6 +173,11 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     public bool IsEnterRoom => Message.IsEnterRoom;
 
     /// <summary>
+    /// Gets a value indicating whether 渲染为普通聊天卡片.
+    /// </summary>
+    public bool ShowNormalRow => !IsSuperChat && !IsEnterRoom;
+
+    /// <summary>
     /// Gets 进房提示文案.
     /// </summary>
     public string? EnterText => Message.IsEnterRoom ? $"{Message.UserName} 进入直播间" : null;
@@ -171,6 +186,22 @@ public sealed class LiveChatMessageItem : INotifyPropertyChanged
     /// Gets 正文分段：普通文本与表情图片.
     /// </summary>
     public IReadOnlyList<LiveChatTextSegment> Segments { get; } = Array.Empty<LiveChatTextSegment>();
+
+    /// <summary>
+    /// Gets 供 <c>EmoteTextBlock</c> 使用的富文本：文本 + 表情索引，和点播评论同一套渲染.
+    /// </summary>
+    public Richasy.BiliKernel.Models.Appearance.EmoteText Content { get; }
+
+    /// <summary>
+    /// Gets 头像地址.
+    /// </summary>
+    public string? Avatar => Message.Avatar;
+
+    /// <summary>
+    /// Gets 头像图片；没有头像时为 null.
+    /// </summary>
+    public Uri? AvatarUri
+        => Uri.TryCreate(Message.Avatar, UriKind.Absolute, out var uri) ? uri : null;
 
     /// <summary>
     /// Gets 昵称画刷（装扮颜色）；没有时回落到默认.

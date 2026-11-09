@@ -3,81 +3,93 @@
     x:Class="BiliCopilot.UI.Controls.Player.LiveChatMessageControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:comp="using:BiliCopilot.UI.Controls.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Grid>
-        <!--  普通弹幕/进房：徽标行 + 昵称与正文（含表情图片）。  -->
-        <StackPanel
-            Spacing="2"
-            Visibility="{x:Bind ViewModel.IsSuperChat, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}">
-            <StackPanel
-                Orientation="Horizontal"
-                Spacing="4"
-                Visibility="{x:Bind ViewModel.HasAnyBadge, Mode=OneWay, FallbackValue=Collapsed}">
-                <Border
-                    Padding="4,0"
-                    VerticalAlignment="Center"
-                    Background="{x:Bind ViewModel.MedalBrush, Mode=OneWay}"
-                    CornerRadius="3"
-                    Visibility="{x:Bind ViewModel.HasMedal, Mode=OneWay, FallbackValue=Collapsed}">
+        <!--  进房提示：和普通消息区分，不占卡片高度。  -->
+        <TextBlock
+            Margin="12,2"
+            FontSize="12"
+            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+            Text="{x:Bind ViewModel.EnterText, Mode=OneWay, FallbackValue=''}"
+            Visibility="{x:Bind ViewModel.IsEnterRoom, Mode=OneWay, FallbackValue=Collapsed}" />
+
+        <!--  普通弹幕：复用点播评论的卡片、头像、姓名/等级与 EmoteTextBlock 正文。  -->
+        <Grid
+            Margin="0,0,0,4"
+            Padding="12"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderThickness="1"
+            ColumnSpacing="12"
+            CornerRadius="{StaticResource ControlCornerRadius}"
+            Visibility="{x:Bind ViewModel.ShowNormalRow, Mode=OneWay, FallbackValue=Visible}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <controls:BasicCoverImage
+                Width="32"
+                Height="32"
+                VerticalAlignment="Top"
+                CornerRadius="16"
+                DecodeWidth="64"
+                Source="{x:Bind ViewModel.AvatarUri, Mode=OneWay}" />
+            <StackPanel Grid.Column="1" Spacing="4">
+                <StackPanel Orientation="Horizontal" Spacing="6">
                     <TextBlock
-                        FontSize="10"
-                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
-                        Text="{x:Bind ViewModel.MedalName, Mode=OneWay, FallbackValue=''}" />
-                </Border>
-                <TextBlock
-                    VerticalAlignment="Center"
-                    FontSize="10"
-                    FontWeight="SemiBold"
-                    Foreground="{x:Bind ViewModel.MedalBrush, Mode=OneWay}"
-                    Text="{x:Bind ViewModel.MedalLevel, Mode=OneWay, FallbackValue=''}"
-                    Visibility="{x:Bind ViewModel.HasMedal, Mode=OneWay, FallbackValue=Collapsed}" />
-                <Border
-                    Padding="3,0"
-                    VerticalAlignment="Center"
-                    BorderBrush="{x:Bind ViewModel.UserLevelBrush, Mode=OneWay}"
-                    BorderThickness="1"
-                    CornerRadius="3"
-                    Visibility="{x:Bind ViewModel.HasUserLevel, Mode=OneWay, FallbackValue=Collapsed}">
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Foreground="{x:Bind ViewModel.NameBrush, Mode=OneWay}"
+                        Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
+                        TextTrimming="CharacterEllipsis" />
+                    <Image
+                        Height="8"
+                        VerticalAlignment="Center"
+                        Source="{x:Bind ViewModel.UserLevelNumber, Mode=OneWay, Converter={StaticResource LevelImageConverter}}"
+                        Visibility="{x:Bind ViewModel.HasUserLevel, Mode=OneWay, FallbackValue=Collapsed}" />
+                    <Border
+                        Padding="4,0"
+                        VerticalAlignment="Center"
+                        BorderBrush="{x:Bind ViewModel.MedalBrush, Mode=OneWay}"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        Visibility="{x:Bind ViewModel.HasMedal, Mode=OneWay, FallbackValue=Collapsed}">
+                        <StackPanel Orientation="Horizontal" Spacing="3">
+                            <TextBlock
+                                FontSize="10"
+                                Foreground="{x:Bind ViewModel.MedalBrush, Mode=OneWay}"
+                                Text="{x:Bind ViewModel.MedalName, Mode=OneWay, FallbackValue=''}" />
+                            <TextBlock
+                                FontSize="10"
+                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                Text="{x:Bind ViewModel.MedalLevel, Mode=OneWay, FallbackValue=''}" />
+                        </StackPanel>
+                    </Border>
                     <TextBlock
-                        FontSize="9"
-                        Foreground="{x:Bind ViewModel.UserLevelBrush, Mode=OneWay}"
-                        Text="{x:Bind ViewModel.UserLevel, Mode=OneWay, FallbackValue=''}" />
-                </Border>
-                <Border
-                    Padding="4,0"
-                    VerticalAlignment="Center"
-                    Background="{ThemeResource AccentFillColorSecondaryBrush}"
-                    CornerRadius="3"
-                    Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
-                    <TextBlock
+                        VerticalAlignment="Center"
                         FontSize="10"
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                        Text="{x:Bind ViewModel.BadgeText, Mode=OneWay, FallbackValue=''}" />
-                </Border>
-                <Border
-                    Padding="4,0"
-                    VerticalAlignment="Center"
-                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
-                    CornerRadius="3"
-                    Visibility="{x:Bind ViewModel.HasTitle, Mode=OneWay, FallbackValue=Collapsed}">
+                        Text="{x:Bind ViewModel.BadgeText, Mode=OneWay, FallbackValue=''}"
+                        Visibility="{x:Bind ViewModel.BadgeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
                     <TextBlock
+                        VerticalAlignment="Center"
                         FontSize="10"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="{x:Bind ViewModel.UserTitle, Mode=OneWay, FallbackValue=''}" />
-                </Border>
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Text="{x:Bind ViewModel.UserTitle, Mode=OneWay, FallbackValue=''}"
+                        Visibility="{x:Bind ViewModel.HasTitle, Mode=OneWay, FallbackValue=Collapsed}" />
+                </StackPanel>
+                <comp:EmoteTextBlock
+                    FontSize="13"
+                    MaxLines="10"
+                    Text="{x:Bind ViewModel.Content, Mode=OneWay}" />
             </StackPanel>
-
-            <RichTextBlock
-                x:Name="ContentBlock"
-                FontSize="12"
-                IsTextSelectionEnabled="False"
-                LineHeight="18"
-                TextWrapping="Wrap" />
-        </StackPanel>
+        </Grid>
 
         <!--  醒目留言卡片：金额与剩余时间，删除/到期后由列表移除。  -->
         <Border
