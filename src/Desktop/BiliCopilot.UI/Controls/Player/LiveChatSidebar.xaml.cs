@@ -175,7 +175,19 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
 
     private void OnBackToBottomClick(object sender, RoutedEventArgs e)
     {
-        StartScrollToBottom();
+        if (ChatView is not null)
+        {
+            // 用户手动回到底部：整段动画滚过去，而不是瞬移。
+            var target = Math.Max(0d, ChatView.ExtentHeight - ChatView.ViewportHeight);
+            ChatView.ScrollTo(0d, target, new ScrollingScrollOptions(ScrollingAnimationMode.Enabled));
+        }
+
+        _ownership.RequestBackToBottom();
+        _scrollTicks = 0;
+        _lastScrollExtent = double.NaN;
+        _lastScrollOffset = double.NaN;
+        _scrollTimer.Stop();
+        _scrollTimer.Start();
         UpdateBackToBottomVisibility(false);
     }
 
@@ -245,7 +257,11 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
 
         if (!atBottom)
         {
-            ChatView.ScrollTo(0d, target, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
+            // 正常追加一条时用系统动画顺滑过渡；位置落后太多说明是重置/跳转，直接对齐。
+            var mode = target - offset <= 240d
+                ? ScrollingAnimationMode.Auto
+                : ScrollingAnimationMode.Disabled;
+            ChatView.ScrollTo(0d, target, new ScrollingScrollOptions(mode));
         }
 
         _lastScrollExtent = extent;

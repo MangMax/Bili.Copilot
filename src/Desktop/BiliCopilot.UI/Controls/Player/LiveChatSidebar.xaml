@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
@@ -35,7 +36,18 @@
                 <ItemsRepeater Margin="16,4,16,8" ItemsSource="{x:Bind ViewModel.ChatMessages, Mode=OneWay}">
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="live:LiveChatMessageItem">
-                            <local:LiveChatMessageControl Margin="0,4" ViewModel="{x:Bind}" />
+                            <local:LiveChatMessageControl Margin="0,4" ViewModel="{x:Bind}">
+                                <animations:Implicit.ShowAnimations>
+                                    <animations:OpacityAnimation
+                                        From="0"
+                                        To="1"
+                                        Duration="0:0:0.2" />
+                                    <animations:TranslationAnimation
+                                        From="0,8,0"
+                                        To="0,0,0"
+                                        Duration="0:0:0.2" />
+                                </animations:Implicit.ShowAnimations>
+                            </local:LiveChatMessageControl>
                         </DataTemplate>
                     </ItemsRepeater.ItemTemplate>
                     <ItemsRepeater.Layout>
@@ -83,14 +95,15 @@
             VerticalContentAlignment="Top"
             Visibility="Collapsed">
             <StackPanel
-                Padding="16,4,16,16"
-                Spacing="10"
+                Padding="16,2,16,16"
+                Spacing="8"
                 VerticalAlignment="Top">
                 <TextBlock
                     FontSize="11"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                     Text="{x:Bind ViewModel.ChatBlockCountersText, Mode=OneWay, FallbackValue=''}"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap"
+                    Visibility="{x:Bind ViewModel.ChatBlockCountersText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
                 <TextBox
                     x:Name="BlockUserIdBox"
                     AutomationProperties.Name="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}"
