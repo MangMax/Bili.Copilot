@@ -118,6 +118,12 @@ public sealed partial class LiveConnectorViewModel
     public partial TimeSpan LiveElapsedTime { get; set; }
 
     /// <summary>
+    /// Gets 已开播秒数；供播放器时间轴直接格式化，避免绑定 TimeSpan 走错转换器。
+    /// </summary>
+    [ObservableProperty]
+    public partial double LiveElapsedSeconds { get; set; }
+
+    /// <summary>
     /// 当前选中的线路；只影响首选地址，不改播放器实例.
     /// </summary>
     [ObservableProperty]

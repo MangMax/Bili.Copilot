@@ -1,7 +1,8 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.WinUIKernel.Share.Base;
@@ -261,5 +262,59 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         var selectedSource = (sender as FrameworkElement)?.DataContext as SourceItemViewModel;
         selectedSource?.ActiveCommand.Execute(default);
         SourceFlyout?.Hide();
+    }
+
+    private void OnLiveQualityClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not DropDownButton button || ViewModel?.LiveConnector is not { } connector)
+        {
+            return;
+        }
+
+        var flyout = new MenuFlyout
+        {
+            Placement = FlyoutPlacementMode.Bottom,
+            ShouldConstrainToRootBounds = true,
+        };
+        foreach (var option in connector.Qualities)
+        {
+            var item = new ToggleMenuFlyoutItem
+            {
+                Text = option.Name,
+                IsChecked = ReferenceEquals(option, connector.SelectedQuality),
+                Tag = option,
+            };
+            item.Click += (_, _) => connector.SelectedQuality = option;
+            flyout.Items.Add(item);
+        }
+
+        flyout.ShowAt(button);
+    }
+
+    private void OnLiveLineClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not DropDownButton button || ViewModel?.LiveConnector is not { } connector)
+        {
+            return;
+        }
+
+        var flyout = new MenuFlyout
+        {
+            Placement = FlyoutPlacementMode.Bottom,
+            ShouldConstrainToRootBounds = true,
+        };
+        foreach (var option in connector.Lines)
+        {
+            var item = new ToggleMenuFlyoutItem
+            {
+                Text = option.Name,
+                IsChecked = ReferenceEquals(option, connector.SelectedLine),
+                Tag = option,
+            };
+            item.Click += (_, _) => connector.SelectedLine = option;
+            flyout.Items.Add(item);
+        }
+
+        flyout.ShowAt(button);
     }
 }

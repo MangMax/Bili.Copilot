@@ -59,28 +59,18 @@
         </DataTemplate>
         <DataTemplate x:Key="LiveHeaderSelectorTemplate" x:DataType="core:LiveConnectorViewModel">
             <StackPanel Orientation="Horizontal" RequestedTheme="Dark" Spacing="8">
-                <ComboBox
-                    Width="112"
-                    ItemsSource="{x:Bind Qualities, Mode=OneWay}"
-                    PlaceholderText="{ext:Locale Name=Quality}"
-                    SelectedItem="{x:Bind SelectedQuality, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="vm:LiveQualityOption">
-                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <ComboBox
-                    Width="112"
-                    ItemsSource="{x:Bind Lines, Mode=OneWay}"
-                    PlaceholderText="{ext:Locale Name=PlayLine}"
-                    SelectedItem="{x:Bind SelectedLine, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="vm:LiveLineOption">
-                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                <DropDownButton
+                    MinWidth="112"
+                    HorizontalContentAlignment="Left"
+                    Click="OnLiveQualityClick"
+                    Content="{x:Bind QualityText, Mode=OneWay}"
+                    ToolTipService.ToolTip="{ext:Locale Name=Quality}" />
+                <DropDownButton
+                    MinWidth="112"
+                    HorizontalContentAlignment="Left"
+                    Click="OnLiveLineClick"
+                    Content="{x:Bind LineText, Mode=OneWay}"
+                    ToolTipService.ToolTip="{ext:Locale Name=PlayLine}" />
             </StackPanel>
         </DataTemplate>
         <ext:PlayerComponentTemplateSelector

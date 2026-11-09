@@ -314,6 +314,7 @@ public sealed partial class LiveConnectorViewModel
         }
 
         LiveElapsedTime = elapsed;
+        LiveElapsedSeconds = elapsed.TotalSeconds;
         UptimeText = LiveRoomStatusText.FormatDuration(
             elapsed,
             ResourceToolkit.GetLocalizedString(StringNames.LiveUptimeMinutesTemplate),

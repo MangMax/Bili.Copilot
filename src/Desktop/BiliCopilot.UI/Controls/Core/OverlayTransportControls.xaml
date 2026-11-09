@@ -1367,7 +1367,7 @@
                     IsTextScaleFactorEnabled="False"
                     RequestedTheme="Dark"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind GetTimeText(ViewModel.Player.Position), Mode=OneWay}"
+                    Text="{x:Bind ViewModel.LiveConnector.LiveElapsedSeconds, Mode=OneWay, Converter={StaticResource PlayerPositionConverter}, FallbackValue=0}"
                     Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
             </Grid>
 
