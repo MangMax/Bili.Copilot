@@ -22,7 +22,7 @@ namespace Richasy.MpvKernel
 {
     public enum MpvFormat { Int64 }
     // Success/Unavailable 供小窗比例适配器读取播放属性；LoadingFailed 供播放失败路径使用。
-    public enum MpvError { Success, Unavailable, LoadingFailed }
+    public enum MpvError { Success, Unavailable, LoadingFailed, Http403, Http404, Http500, TlsError, VoInitFailed, AoInitFailed, Unsupported, UnknownFormat, NothingToPlay }
     public struct MpvNode { public long IntegerValue; }
     public sealed class MpvInteropHandle
     {

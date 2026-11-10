@@ -67,11 +67,8 @@
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <AppxManifest Include="Package.Dev.appxmanifest" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' != 'Debug' And '$(Configuration)' != 'LivePreview'">
+  <ItemGroup Condition="'$(Configuration)' != 'Debug'">
     <AppxManifest Include="Package.appxmanifest" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'LivePreview'">
-    <AppxManifest Include="Package.LivePreview.appxmanifest" />
   </ItemGroup>
 
   <!--
@@ -92,7 +89,7 @@
     上面的 TreatAsLocalProperty 让工程能覆盖命令行传入的全局属性，否则命令行永远优先.
   -->
   <PropertyGroup>
-    <UseRepoDevCertificate Condition="('$(Configuration)' == 'Debug' or '$(Configuration)' == 'LivePreview') and ('$(PackageCertificateKeyFile)' == '' or $(PackageCertificateKeyFile.EndsWith('BiliCopilot.UI_TemporaryKey.pfx')))">true</UseRepoDevCertificate>
+    <UseRepoDevCertificate Condition="'$(Configuration)' == 'Debug' and ('$(PackageCertificateKeyFile)' == '' or $(PackageCertificateKeyFile.EndsWith('BiliCopilot.UI_TemporaryKey.pfx')))">true</UseRepoDevCertificate>
   </PropertyGroup>
   <PropertyGroup Condition="'$(UseRepoDevCertificate)' == 'true'">
     <PackageCertificateKeyFile>$(MSBuildThisFileDirectory)DevSigning.pfx</PackageCertificateKeyFile>

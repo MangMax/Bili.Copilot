@@ -209,7 +209,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task PlayPauseAsync()
     {
-        if (!await PreparePlaybackIntentAsync())
+        if (!await PreparePlaybackIntentAsync(changesPause: true))
         {
             return;
         }

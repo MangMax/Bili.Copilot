@@ -11,6 +11,41 @@ public sealed class LiveChatSessionTests
     private static readonly DateTimeOffset Now = new(2026, 11, 8, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public void TrimBoundary_ReportsNewestMessageAndCountsIt()
+    {
+        var session = new LiveChatSession(retention: 3, slack: 1);
+        for (var i = 0; i < 4; i++)
+        {
+            session.Apply(DanmakuEvent("m" + i, i, "u"), Now);
+        }
+
+        var change = session.Apply(DanmakuEvent("newest", 5, "u"), Now);
+        Assert.Equal("newest", Assert.Single(change.Added).Text);
+        Assert.Equal(2, change.Trimmed);
+        Assert.Equal(5, session.Counters.Displayed);
+        Assert.Equal(["m2", "m3", "newest"], session.Window.Items.Select(m => m.Text));
+    }
+
+    [Fact]
+    public void DuplicateRows_RemainMergedAfterSuperChatDeletionAndTrimming()
+    {
+        var session = new LiveChatSession(retention: 3, slack: 1);
+        session.Apply(SuperChatEvent("sc", "paid", 30, Now.AddMinutes(1)), Now);
+        var original = Assert.Single(session.Apply(DanmakuEvent("same", 1, "u"), Now).Added);
+        session.Apply(DanmakuEvent("same", 1, "u"), Now);
+        session.Apply(SuperChatDeleteEvent("sc"), Now);
+        Assert.Equal(2, Assert.Single(session.Window.Items).MergeCount);
+        for (var i = 0; i < 3; i++)
+        {
+            session.Apply(DanmakuEvent("m" + i, i, "u"), Now);
+        }
+
+        Assert.Same(original, session.Window.Items[0]);
+        session.Apply(DanmakuEvent("last", 9, "u"), Now);
+        Assert.Equal(["m1", "m2", "last"], session.Window.Items.Select(m => m.Text));
+    }
+
+    [Fact]
     public void Apply_Danmaku_AddsMessageAndCounts()
     {
         var session = new LiveChatSession();
@@ -153,7 +188,7 @@ public sealed class LiveChatSessionTests
     }
 
     [Fact]
-    public void UpdateBlockRules_TakesEffectForSubsequentMessages()
+    public void UpdateBlockRules_TakesEffectForExistingAndSubsequentMessages()
     {
         var session = new LiveChatSession();
         _ = session.Apply(DanmakuEvent("clean", 1L, "u"), Now);
@@ -162,8 +197,8 @@ public sealed class LiveChatSessionTests
         var blocked = session.Apply(DanmakuEvent("clean again", 1L, "u"), Now);
 
         Assert.Empty(blocked.Added);
-        Assert.Equal(1, session.Counters.Blocked);
-        Assert.Single(session.Window.Items);
+        Assert.Equal(2, session.Counters.Blocked);
+        Assert.Empty(session.Window.Items);
     }
 
     private static LiveDanmakuReceivedEvent DanmakuEvent(string text, long userId, string userName)

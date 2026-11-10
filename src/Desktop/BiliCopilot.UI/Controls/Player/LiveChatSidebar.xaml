@@ -29,9 +29,9 @@
         <Grid
             x:Name="InteractionPanel"
             Grid.Row="1">
-            <ScrollView
+            <ScrollViewer
                 x:Name="ChatView"
-                Style="{StaticResource PageScrollViewStyle}">
+                Style="{StaticResource PageScrollViewerStyle}">
                 <ItemsRepeater Margin="16,4,16,8" ItemsSource="{x:Bind ViewModel.ChatMessages, Mode=OneWay}">
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="live:LiveChatMessageItem">
@@ -53,7 +53,7 @@
                         <StackLayout />
                     </ItemsRepeater.Layout>
                 </ItemsRepeater>
-            </ScrollView>
+            </ScrollViewer>
             <base:EmptyHolder
                 Description="{ext:Locale Name=LiveChatEmpty}"
                 Emoji="&#x1F4AC;"
@@ -105,22 +105,29 @@
                     Visibility="{x:Bind ViewModel.ChatBlockCountersText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
                 <TextBox
                     x:Name="BlockUserIdBox"
+                    AcceptsReturn="True"
+                    Text="{x:Bind ViewModel.ChatBlockedUserIds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     AutomationProperties.Name="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}"
                     Header="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}"
                     PlaceholderText="{ext:Locale Name=LiveChatBlockUserIdPlaceholder}" />
                 <TextBox
                     x:Name="BlockUserNameBox"
+                    AcceptsReturn="True"
+                    Text="{x:Bind ViewModel.ChatBlockedUserNames, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     AutomationProperties.Name="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}"
                     Header="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}"
                     PlaceholderText="{ext:Locale Name=LiveChatBlockUserNamePlaceholder}" />
                 <TextBox
                     x:Name="BlockKeywordBox"
+                    AcceptsReturn="True"
+                    Text="{x:Bind ViewModel.ChatBlockedKeywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     AutomationProperties.Name="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}"
                     Header="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}"
                     PlaceholderText="{ext:Locale Name=LiveChatBlockKeywordPlaceholder}" />
                 <Button
+                    x:Name="ApplyBlockRulesButton"
                     HorizontalAlignment="Stretch"
-                    Click="OnApplyBlockRulesClick"
+                    Command="{x:Bind ViewModel.ApplyChatBlockRulesCommand, Mode=OneWay}"
                     Content="{ext:Locale Name=LiveChatBlockApply}" />
             </StackPanel>
         </ScrollViewer>

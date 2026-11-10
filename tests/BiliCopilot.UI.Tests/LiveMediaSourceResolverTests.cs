@@ -204,7 +204,7 @@ public sealed class LiveMediaSourceResolverTests
         Assert.Equal("https://hls.example/live/a.m3u8?sign=2", refreshed.Url);
         Assert.Null(refreshed.Options.StartPosition);
         Assert.Equal(1d, refreshed.Options.InitialSpeed);
-        Assert.Equal(2, ((LivePlayerService)(object)service).PageCalls);
+        Assert.Equal(1, ((LivePlayerService)(object)service).PageCalls);
         Assert.Equal(2, ((LivePlayerService)(object)service).PlayCalls);
     }
 
@@ -224,6 +224,7 @@ public sealed class LiveMediaSourceResolverTests
 
         Assert.Equal("https://first.example/live/a.m3u8?sign=1", first.Url);
         Assert.Equal("https://second.example/live/a.m3u8?sign=1", next.Url);
+        Assert.Equal("second.example", resolver.CurrentHost);
         Assert.Equal(1, ((LivePlayerService)(object)service).PlayCalls);
 
         Assert.Equal(LiveRecoveryAction.ReRequestPlayUrl, resolver.NotifyPlaybackFailure(LivePlaybackFailureKind.Transport));
@@ -274,7 +275,7 @@ public sealed class LiveMediaSourceResolverTests
         resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
         await resolver.GetSourceAsync();
         var preferred = resolver.Candidates.Single(candidate => candidate.Primary.Host == "second.example");
-        resolver.SelectLine(preferred.Key);
+        resolver.SelectLine(preferred.Primary.Host);
 
         var calls = 0;
         ((LivePlayerService)(object)service).Fetch = () => Task.FromResult(Playback(
@@ -305,6 +306,35 @@ public sealed class LiveMediaSourceResolverTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => refresh);
         ((LivePlayerService)(object)service).Fetch = null;
         Assert.Equal("https://hls.example/live/a.m3u8?sign=1", (await resolver.GetSourceAsync()).Url);
+    }
+
+    [Fact]
+    public async Task KnownRoomDetailsAreReusedWhileSignedUrlsAreRefreshed()
+    {
+        var service = CreateService();
+        var api = (LivePlayerService)(object)service;
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "卡片标题", null))));
+        resolver.SetPageDetail(api.View);
+        Assert.Equal("房间详情标题", (await resolver.GetSourceAsync()).Title);
+        await resolver.RefreshSourceAsync(CancellationToken.None);
+        Assert.Equal(0, api.PageCalls);
+        Assert.Equal(2, api.PlayCalls);
+    }
+
+    [Fact]
+    public async Task SelectedBackupHostIsUsedAfterRefresh()
+    {
+        var service = CreateService([Line("avc", 400,
+            Url("http_hls", "https://first.example", "/live/a.m3u8", "?sign=1"),
+            Url("http_hls", "https://backup.example", "/live/a.m3u8", "?sign=1"))]);
+        var resolver = new LiveMediaSourceResolver(service, Cookie(string.Empty), NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "room", null))));
+        await resolver.GetSourceAsync();
+        resolver.SelectLine("backup.example");
+        var source = await resolver.RefreshSourceAsync(CancellationToken.None);
+        Assert.Equal("backup.example", new Uri(source.Url).Host);
+        Assert.Equal("backup.example", resolver.CurrentHost);
     }
 
     private static IPlayerService CreateService(IList<LiveLineInformation>? lines = null)

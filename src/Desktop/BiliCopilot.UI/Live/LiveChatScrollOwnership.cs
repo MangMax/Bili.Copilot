@@ -72,6 +72,13 @@ public sealed class LiveChatScrollOwnership
     /// <returns>是否需要滚到底部.</returns>
     public bool ReportAppend() => IsFollowing;
 
+    /// <summary>Transfers ownership immediately when the user begins interacting.</summary>
+    public void BeginUserInteraction()
+    {
+        IsFollowing = false;
+        ShouldShowBackToBottom = true;
+    }
+
     /// <summary>
     /// 用户点了"回到底部"。
     /// </summary>

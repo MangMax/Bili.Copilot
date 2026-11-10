@@ -3,6 +3,7 @@
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
+using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Toolkits;
@@ -40,23 +41,6 @@ public sealed partial class PlayerViewModel
                 ? unavailable.Kind
                 : LivePlaybackFailureClassifier.ClassifyPlayback(exception);
             logger.LogWarning(exception, "直播刷新播放失败：{Kind}", kind);
-            _liveRecoveryAttempts++;
-            if (_liveRecoveryAttempts > 3)
-            {
-                // 连续多条候选都失败（例如整批签名 403），停止自动重试，给出可重试的提示。
-                logger.LogError("直播连续 {Attempts} 次取流失败，停止自动恢复：{Kind}", _liveRecoveryAttempts, kind);
-                _liveRecoveryAttempts = 0;
-                ShowLivePlaybackFailure(LivePlaybackFailureClassifier.ToLiveFailureKind(kind), canRetry: true);
-                return;
-            }
-
-            if (kind is LivePlaybackFailureKind.Transport or LivePlaybackFailureKind.DecoderInit)
-            {
-                // 403/连接失败/解码失败通常只坏了一条 CDN 线路：换候选重取，不直接打断用户。
-                RunLivePlaybackRecovery(kind, () => true);
-                return;
-            }
-
             ShowLivePlaybackFailure(LivePlaybackFailureClassifier.ToLiveFailureKind(kind), canRetry: true);
             return;
         }
@@ -376,6 +360,29 @@ public sealed partial class PlayerViewModel
 
     private async void OnClientErrorOccurred(object? sender, MpvError e)
     {
+        // 关闭或换集之后到达的错误只属于旧会话：既不重播，也不写旧会话的界面状态。
+        var isCurrent = CapturePlaybackValidity();
+        if (IsLive)
+        {
+            // 直播 Duration 恒小于 1：不能走"坏源重播一次"的分支，
+            // 该分支会拿同一个失效地址重播并把 _isBroken 永久置位。
+            if (_playbackRefresh.IsRefreshing)
+            {
+                return;
+            }
+
+            var playbackFailure = LiveNativePlaybackFailure.Classify(e);
+            var attempt = _liveNativeAttempt;
+            queue.TryEnqueue(() =>
+            {
+                if (attempt == _liveNativeAttempt)
+                {
+                    RunLivePlaybackRecovery(playbackFailure, isCurrent);
+                }
+            });
+            return;
+        }
+
         if (e == MpvError.TlsError)
         {
             if (!_isTlsFailed)
@@ -384,16 +391,6 @@ public sealed partial class PlayerViewModel
                 return;
             }
 
-            return;
-        }
-        // 关闭或换集之后到达的错误只属于旧会话：既不重播，也不写旧会话的界面状态。
-        var isCurrent = CapturePlaybackValidity();
-        if (IsLive)
-        {
-            // 直播 Duration 恒小于 1：不能走"坏源重播一次"的分支，
-            // 该分支会拿同一个失效地址重播并把 _isBroken 永久置位。
-            var playbackFailure = LivePlaybackFailureClassifier.FromPlayerError(LiveFailureText.FromPlayerError(e));
-            queue.TryEnqueue(() => RunLivePlaybackRecovery(playbackFailure, isCurrent));
             return;
         }
 
@@ -449,6 +446,11 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        if (Player?.PlaybackState == MpvPlayerState.Paused || !_liveWatchdog.TryBeginRecovery(GetLiveRecoveryTime()))
+        {
+            return;
+        }
+
         var action = resolver.NotifyPlaybackFailure(kind);
         if (action is LiveRecoveryAction.AdvanceCandidate or LiveRecoveryAction.ReRequestPlayUrl)
         {
@@ -469,6 +471,50 @@ public sealed partial class PlayerViewModel
         catch (Exception ex)
         {
             ReportPlaybackRefreshFailure(ex);
+        }
+    }
+
+    private DispatcherQueueTimer? _liveRecoveryTimer;
+    private long _liveRecoveryStarted;
+
+    private TimeSpan GetLiveRecoveryTime() => TimeProvider.System.GetElapsedTime(_liveRecoveryStarted);
+
+    private void StartLiveRecoveryMonitor()
+    {
+        StopLiveRecoveryMonitor();
+        _liveRecoveryStarted = TimeProvider.System.GetTimestamp();
+        _liveRecoveryTimer = queue.CreateTimer();
+        _liveRecoveryTimer.Interval = TimeSpan.FromSeconds(1);
+        _liveRecoveryTimer.Tick += OnLiveRecoveryTick;
+        _liveRecoveryTimer.Start();
+    }
+
+    private void StopLiveRecoveryMonitor()
+    {
+        if (_liveRecoveryTimer is { } timer)
+        {
+            timer.Stop();
+            timer.Tick -= OnLiveRecoveryTick;
+            _liveRecoveryTimer = null;
+        }
+
+        _liveWatchdog.Reset();
+    }
+
+    private void OnLiveRecoveryTick(DispatcherQueueTimer sender, object args)
+    {
+        if (!IsLive || !IsSessionCurrent() || Player is null)
+        {
+            StopLiveRecoveryMonitor();
+            return;
+        }
+
+        if (_liveWatchdog.Observe(GetLiveRecoveryTime(), Player.Position, Player.CacheSpeed,
+            Player.PlaybackState == MpvPlayerState.Paused,
+            IsLiveRoomTerminal, _playbackRefresh.IsRefreshing || IsConnecting,
+            Player.PlaybackState == MpvPlayerState.End))
+        {
+            RunLivePlaybackRecovery(LivePlaybackFailureKind.Transport, CapturePlaybackValidity());
         }
     }
 

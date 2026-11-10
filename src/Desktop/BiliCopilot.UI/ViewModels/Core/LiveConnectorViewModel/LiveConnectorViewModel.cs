@@ -2,13 +2,18 @@
 
 using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Media;
+using Richasy.BiliKernel.Bili.Authorization;
+using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models.User;
 using Richasy.MpvKernel.Player;
 using Richasy.WinUIKernel.Share.ViewModels;
+using Richasy.WinUIKernel.Share.Base;
 using Windows.System;
 
 namespace BiliCopilot.UI.ViewModels.Core;
@@ -48,24 +53,28 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
         Session.Reset(snapshot.Live);
         ResetRoomStatus(snapshot.Live.Identifier.Id);
         ErrorText = default;
+        IsFollow = false;
+        IsFollowButtonShown = false;
         IsLoading = true;
         SyncFromSession();
         var request = Session.BeginRequest();
         try
         {
-            _view = await this.Get<IPlayerService>().GetLivePageDetailAsync(
+            var view = await this.Get<IPlayerService>().GetLivePageDetailAsync(
                 snapshot.Live.Identifier,
                 request.CancellationToken);
-            if (!Session.CompletePage(request.Generation, _view))
+            if (!Session.CompletePage(request.Generation, view))
             {
                 return;
             }
 
+            _view = view;
             SyncFromSession();
             ApplyRoomDetailStatus();
             UpdateProperties();
             // 弹幕连接不阻塞播放初始化：认证与重连在后台进行，失败只影响弹幕状态。
             StartDanmakuInBackground(snapshot.Live.Identifier.Id);
+            await LoadFollowStateAsync(request.Generation, request.CancellationToken);
         }
         catch (OperationCanceledException)
         {
@@ -83,9 +92,12 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
         }
         finally
         {
-            IsLoading = false;
-            SyncFromSession();
-            PlaylistInitialized?.Invoke(this, new PlaylistInitializedEventArgs(false, false, default, default));
+            if (Session.IsCurrent(request.Generation))
+            {
+                IsLoading = false;
+                SyncFromSession();
+                PlaylistInitialized?.Invoke(this, new PlaylistInitializedEventArgs(false, false, default, default));
+            }
         }
     }
 
@@ -123,6 +135,67 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
         }
 
         this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), profile);
+    }
+
+    [RelayCommand]
+    private async Task ToggleFollowAsync()
+    {
+        if (Session.Page?.Information.User is not { } user)
+        {
+            return;
+        }
+
+        var generation = Session.Generation;
+        var follow = !IsFollow;
+        try
+        {
+            var service = this.Get<IRelationshipService>();
+            await (follow ? service.FollowUserAsync(user.Id) : service.UnfollowUserAsync(user.Id));
+            if (Session.IsCurrent(generation))
+            {
+                IsFollow = follow;
+                Parent.Window?.ShowTip(ResourceToolkit.GetLocalizedString(follow ? StringNames.Followed : StringNames.Unfollowed), InfoType.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "更新直播主播关注状态失败");
+            if (Session.IsCurrent(generation))
+            {
+                Parent.Window?.ShowTip(ResourceToolkit.GetLocalizedString(follow ? StringNames.FailedToFollowUser : StringNames.FailedToUnfollowUser), InfoType.Error);
+            }
+        }
+    }
+
+    private async Task LoadFollowStateAsync(int generation, CancellationToken cancellationToken)
+    {
+        if (Session.Page?.Information.User is not { } user
+            || this.Get<IBiliTokenResolver>().GetToken() is not { } token
+            || user.Id == token.UserId.ToString())
+        {
+            return;
+        }
+
+        try
+        {
+            var relation = await this.Get<IRelationshipService>().GetRelationshipAsync(user.Id, cancellationToken);
+            if (Session.IsCurrent(generation))
+            {
+                IsFollow = relation is UserRelationStatus.Following or UserRelationStatus.Friends or UserRelationStatus.SpeciallyFollowed;
+                IsFollowButtonShown = true;
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "读取直播主播关注状态失败");
+            if (Session.IsCurrent(generation))
+            {
+                Parent.Window?.ShowTip(ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserRelation), InfoType.Error);
+            }
+        }
     }
 
     /// <summary>

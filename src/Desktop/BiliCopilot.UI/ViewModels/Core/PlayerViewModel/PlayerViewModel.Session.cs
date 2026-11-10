@@ -15,6 +15,7 @@ public sealed partial class PlayerViewModel
         // 先拒绝迟到回调，再取消弹幕加载；之后的回调都会被 CapturePlaybackValidity 拦下。
         _isDanmakuClosed = true;
         CancelPlaybackRefresh();
+        StopLiveRecoveryMonitor();
         _danmakuLoadSession?.Dispose();
         // 关闭窗口时取消仍在进行的直播地址请求与房间详情请求。
         if (_sourceResolver is LiveMediaSourceResolver liveResolver)

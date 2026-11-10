@@ -1,9 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.Live;
-using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Resolvers;
-using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BiliCopilot.UI.ViewModels.Core;
@@ -34,7 +31,6 @@ public sealed partial class LiveConnectorViewModel
         _isSyncingPlayback = true;
         try
         {
-            Session.SetPlayback(playback);
             Qualities.Clear();
             // 内核会把同一清晰度的多种编码都列出来；界面按 qn 去重，只留一个可选项。
             var seenQualities = new HashSet<int>();
@@ -61,8 +57,8 @@ public sealed partial class LiveConnectorViewModel
             }
 
             var orderedHosts = resolver.Candidates
-                .Where(candidate => !string.IsNullOrEmpty(candidate.Primary.Host))
-                .Select(candidate => candidate.Primary.Host)
+                .SelectMany(candidate => candidate.Targets.Select(target => target.Host))
+                .OfType<string>()
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
             foreach (var host in orderedHosts)
@@ -73,9 +69,7 @@ public sealed partial class LiveConnectorViewModel
                 }
             }
 
-            // 用户刚选的线路优先于解析器当前仍在使用的候选，否则刷新后会被旧值拉回第一条。
-            SelectedLine = Lines.FirstOrDefault(option => string.Equals(option.Key, resolver.PreferredLineKey, StringComparison.OrdinalIgnoreCase))
-                ?? Lines.FirstOrDefault(option => string.Equals(option.Key, resolver.CurrentCandidate?.Key, StringComparison.OrdinalIgnoreCase))
+            SelectedLine = Lines.FirstOrDefault(option => string.Equals(option.Key, resolver.CurrentHost, StringComparison.OrdinalIgnoreCase))
                 ?? Lines.FirstOrDefault();
 
             QualityText = SelectedQuality?.Name;
@@ -139,17 +133,7 @@ public sealed partial class LiveConnectorViewModel
             _ => index.ToString(System.Globalization.CultureInfo.InvariantCulture),
         };
 
-    private static string DescribeLine(LivePlaybackCandidate candidate)
-    {
-        var host = candidate.Primary.Host;
-        var fallbackName = ResourceToolkit.GetLocalizedString(StringNames.LiveLineFallbackName);
-        var label = string.IsNullOrEmpty(host)
-            ? candidate.CodecName ?? fallbackName
-            : string.IsNullOrEmpty(candidate.CodecName) ? host : candidate.CodecName + " · " + host;
-        return candidate.IsMcdn
-            ? label + ResourceToolkit.GetLocalizedString(StringNames.LiveLineMcdnSuffix)
-            : label;
-    }
+
 }
 
 /// <summary>

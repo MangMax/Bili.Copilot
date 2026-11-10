@@ -74,11 +74,6 @@ public sealed record LivePlaybackCandidate(
     IReadOnlyList<LivePlaybackTarget> Targets)
 {
     /// <summary>
-    /// Gets 用于在刷新后恢复线路偏好的稳定标识（首选地址域名）.
-    /// </summary>
-    public string Key => $"{CodecName ?? "unknown"}|{Targets[0].Host ?? Protocol}";
-
-    /// <summary>
     /// Gets 候选内第一条地址.
     /// </summary>
     public LivePlaybackTarget Primary => Targets[0];

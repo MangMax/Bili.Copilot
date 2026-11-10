@@ -112,7 +112,7 @@ public sealed partial class LiveConnectorViewModel
             if (LiveDanmakuAuthFailure.IsAuthenticationFailure(ex))
             {
                 // 认证失败不会重试（#192）：必须成为一条聊天系统消息 + 连接文案，而不是静默断开。
-                ReportDanmakuAuthenticationFailure(LiveDanmakuAuthFailure.GetDetail(ex));
+                ReportDanmakuAuthenticationFailure(LiveDanmakuAuthFailure.GetDetail(ex), generation);
             }
 
             return;
@@ -237,11 +237,16 @@ public sealed partial class LiveConnectorViewModel
     /// <summary>
     /// 把认证失败写进聊天系统消息与连接文案（UI 线程）。
     /// </summary>
-    private void ReportDanmakuAuthenticationFailure(string? detail)
+    private void ReportDanmakuAuthenticationFailure(string? detail, int generation)
     {
         var dispatcher = this.Get<DispatcherQueue>();
         dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
+            if (generation != Volatile.Read(ref _danmakuGeneration) || Parent.Window?.IsClosed != false)
+            {
+                return;
+            }
+
             var text = ResourceToolkit.GetLocalizedString(StringNames.LiveChatSystemAuthenticationFailed);
             DanmakuConnectionText = string.IsNullOrEmpty(detail) ? text : $"{text}（{detail}）";
             EnqueueChatAuthenticationFailure(detail);
@@ -249,10 +254,20 @@ public sealed partial class LiveConnectorViewModel
     }
 
     private void OnDanmakuPumpEventReceived(object? sender, LiveDanmakuEvent liveEvent)
-        => DanmakuEventReceived?.Invoke(this, liveEvent);
+    {
+        if (ReferenceEquals(sender, _danmakuPump))
+        {
+            DanmakuEventReceived?.Invoke(sender, liveEvent);
+        }
+    }
 
     private void OnDanmakuStateChanged(object? sender, LiveDanmakuConnectionState state)
     {
+        if (!ReferenceEquals(sender, _danmakuPump))
+        {
+            return;
+        }
+
         DanmakuStateChanged?.Invoke(this, state);
         var detail = _danmakuPump?.StateDetail;
         var connectionName = GetConnectionName(state);
@@ -260,6 +275,11 @@ public sealed partial class LiveConnectorViewModel
         var dispatcher = this.Get<DispatcherQueue>();
         dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
+            if (!ReferenceEquals(sender, _danmakuPump) || Parent.Window?.IsClosed != false)
+            {
+                return;
+            }
+
             var text = ResourceToolkit.GetLocalizedString(isAuthFailure ? StringNames.LiveChatSystemAuthenticationFailed : connectionName);
             DanmakuConnectionText = string.IsNullOrEmpty(detail) ? text : $"{text}（{detail}）";
             if (isAuthFailure)

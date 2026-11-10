@@ -1,9 +1,8 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
-using BiliCopilot.UI.Services.Live;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using H.NotifyIcon;
@@ -38,27 +37,13 @@ public partial class App : Application
         InitializeComponent();
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         UnhandledException += OnUnhandledException;
-        // 存根异常（0xc000027b）常常绕开 XAML 的 UnhandledException；
-        // 这两个钩子把托管侧的最后机会异常也落盘，便于定位闪退。
-        AppDomain.CurrentDomain.UnhandledException += (_, e) => DumpCrash("AppDomain", e.ExceptionObject as Exception);
-        TaskScheduler.UnobservedTaskException += (_, e) => DumpCrash("Task", e.Exception);
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            Log.Logger.Fatal(e.ExceptionObject as Exception, "Unhandled AppDomain exception");
+        TaskScheduler.UnobservedTaskException += (_, e) =>
+            Log.Logger.Error(e.Exception, "Unobserved task exception");
         _notificationManager = AppNotificationManager.Default;
         _notificationManager.NotificationInvoked += OnAppNotificationInvoked;
         _notificationManager.Register();
-    }
-
-    private static void DumpCrash(string source, Exception? exception)
-    {
-        try
-        {
-            var folder = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
-            var path = System.IO.Path.Combine(folder, "crash.log");
-            var text = $"[{DateTimeOffset.Now:O}] {source}{Environment.NewLine}{exception}{Environment.NewLine}";
-            System.IO.File.AppendAllText(path, text);
-        }
-        catch
-        {
-        }
     }
 
     /// <summary>
@@ -97,17 +82,6 @@ public partial class App : Application
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
-        UnhandledException += (_, e) =>
-        {
-            try
-            {
-                var folder = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
-                System.IO.File.WriteAllText(System.IO.Path.Combine(folder, "crash.log"), e.Exception?.ToString() ?? e.Message);
-            }
-            catch
-            {
-            }
-        };
         var instance = Microsoft.Windows.AppLifecycle.AppInstance.FindOrRegisterForKey(Id);
         if (instance.IsCurrent)
         {
@@ -122,21 +96,7 @@ public partial class App : Application
             instance.Activated += OnInstanceActivated;
             Richasy.WinUIKernel.Share.Base.ImageExBase.EnableBackgroundDecoding = false;
             GlobalDependencies.Initialize();
-            StartLiveDanmakuProbeIfRequested();
-            if (File.Exists(Path.Combine(Package.Current.InstalledPath, "live-preview.flag")))
-            {
-                new Forms.LivePreviewWindow().Activate();
-            }
-            else if (File.Exists(Path.Combine(Package.Current.InstalledPath, "open-main.flag")))
-            {
-                new Forms.MainWindow().Activate();
-            }
-            else
-            {
-                GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
-            }
-
-
+            GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
         }
         else
         {
@@ -145,60 +105,6 @@ public partial class App : Application
             // this instance's UI thread or the windowless secondary stays alive.
             _ = instance.RedirectActivationToAsync(activatedArgs).AsTask()
                 .ContinueWith(_ => _dispatcherQueue.TryEnqueue(() => Current.Exit()));
-        }
-    }
-
-    /// <summary>
-    /// 调试探针的存活引用；应用退出时据此停止并释放，避免后台连接悬空。
-    /// </summary>
-    private static LiveDanmakuProbeService? _liveDanmakuProbe;
-
-    private static void StartLiveDanmakuProbeIfRequested()
-    {
-        // 调试入口：设置 BILI_LIVE_DANMAKU_PROBE_ROOM=<roomId> 后启动应用，
-        // 内核事件计数会写入日志；不写设置、不进入历史/进度路径.
-        var roomId = Environment.GetEnvironmentVariable("BILI_LIVE_DANMAKU_PROBE_ROOM");
-        if (string.IsNullOrWhiteSpace(roomId))
-        {
-            return;
-        }
-
-        var probe = GlobalDependencies.Kernel.GetRequiredService<LiveDanmakuProbeService>();
-        var logger = GlobalDependencies.Kernel.GetRequiredService<ILogger<App>>();
-        _liveDanmakuProbe = probe;
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await probe.StartAsync(roomId).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Live danmaku probe failed to start for room {RoomId}.", roomId);
-            }
-        });
-    }
-
-    /// <summary>
-    /// 停止并释放调试探针；退出流程调用，可重复调用。
-    /// </summary>
-    /// <returns>停止任务.</returns>
-    internal static async Task StopLiveDanmakuProbeAsync()
-    {
-        if (_liveDanmakuProbe is not { } probe)
-        {
-            return;
-        }
-
-        _liveDanmakuProbe = null;
-        try
-        {
-            await probe.StopAsync().ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            GlobalDependencies.Kernel.GetRequiredService<ILogger<App>>()
-                .LogError(ex, "停止直播弹幕调试探针失败");
         }
     }
 

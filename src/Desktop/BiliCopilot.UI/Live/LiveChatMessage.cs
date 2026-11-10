@@ -96,6 +96,11 @@ public sealed class LiveChatMessage
     /// </summary>
     public long Sequence { get; }
 
+    /// <summary>Gets the number of messages represented by this retained row.</summary>
+    public int MergeCount { get; private set; } = 1;
+
+    internal void Merge() => MergeCount++;
+
     /// <summary>
     /// Gets 正文.
     /// </summary>

@@ -76,6 +76,12 @@ internal sealed partial class LiveMediaSourceResolver(
     internal LivePlaybackCandidate? CurrentCandidate
         => _candidateIndex >= 0 && _candidateIndex < _candidates.Count ? _candidates[_candidateIndex] : default;
 
+    /// <summary>Gets 当前实际取流地址的域名，包括候选内的备用地址.</summary>
+    internal string? CurrentHost => GetCurrentTarget()?.Host;
+
+    /// <summary>复用连接器已读取的本房间详情.</summary>
+    internal void SetPageDetail(LivePlayerView view) => _view = view;
+
     /// <summary>
     /// Gets 当前会话选中的清晰度标识.
     /// </summary>
@@ -217,6 +223,7 @@ internal sealed partial class LiveMediaSourceResolver(
         var fresh = new LiveMediaSourceResolver(playerService, cookiesResolver, logger);
         fresh.Initialize(_snapshot);
         fresh.WindowHandle = WindowHandle;
+        fresh._view = _view;
         // 只继承清晰度与线路偏好；绝不继承签名地址、起始位置或倍速。
         fresh._selectedQuality = quality;
         fresh._preferredLineKey = _preferredLineKey;
@@ -405,7 +412,7 @@ internal sealed partial class LiveMediaSourceResolver(
         _initCts?.Dispose();
         _initCts = new CancellationTokenSource();
         var token = _initCts.Token;
-        var view = await playerService.GetLivePageDetailAsync(_snapshot.Live!.Identifier, token);
+        var view = _view ?? await playerService.GetLivePageDetailAsync(_snapshot.Live!.Identifier, token);
         var information = await playerService.GetLivePlayDetailAsync(
             _snapshot.Live.Identifier,
             ResolveSelectedQuality(),
@@ -492,26 +499,27 @@ internal sealed partial class LiveMediaSourceResolver(
         }
 
         _candidates = LivePlayUrlSelector.OrderCandidates(_playbackInfo.Lines);
-        _candidateIndex = _candidates.Count == 0 ? -1 : FindPreferredCandidate();
-        _urlIndex = _candidateIndex < 0 ? -1 : 0;
+        (_candidateIndex, _urlIndex) = FindPreferredTarget();
     }
 
-    private int FindPreferredCandidate()
+    private (int Candidate, int Url) FindPreferredTarget()
     {
         if (!string.IsNullOrEmpty(_preferredLineKey))
         {
             for (var i = 0; i < _candidates.Count; i++)
             {
-                // 偏好按“域名”保存：编码顺序在每次取址时都可能变化，
-                // 用 Codec|Host 做键会让同一条线路在刷新后对不上。
-                if (string.Equals(_candidates[i].Primary.Host, _preferredLineKey, StringComparison.OrdinalIgnoreCase))
+                var targets = _candidates[i].Targets;
+                for (var j = 0; j < targets.Count; j++)
                 {
-                    return i;
+                    if (string.Equals(targets[j].Host, _preferredLineKey, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (i, j);
+                    }
                 }
             }
         }
 
-        return 0;
+        return _candidates.Count == 0 ? (-1, -1) : (0, 0);
     }
 
     private LivePlaybackTarget? GetCurrentTarget()

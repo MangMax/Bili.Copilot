@@ -31,7 +31,7 @@ public sealed class LiveRoomUrlAndTextTests
     public void BadgeText_CanBeOverriddenByLocalizedResolver()
     {
         var message = Danmaku("hello", guardLevel: 1);
-        var item = new LiveChatMessageItem(message, null, Now, kind => "badge:" + kind, price => "price:" + price);
+        var item = new LiveChatMessagePresentation(message, null, Now, kind => "badge:" + kind, price => "price:" + price);
 
         Assert.Equal("badge:Governor", item.BadgeText);
     }
@@ -43,7 +43,7 @@ public sealed class LiveRoomUrlAndTextTests
     public void GuardLevel_MapsToTheMatchingBadgeKind(int guardLevel, LiveChatBadgeKind expected)
     {
         LiveChatBadgeKind? captured = null;
-        var item = new LiveChatMessageItem(
+        var item = new LiveChatMessagePresentation(
             Danmaku("hello", guardLevel),
             null,
             Now,
@@ -60,11 +60,11 @@ public sealed class LiveRoomUrlAndTextTests
     [Fact]
     public void BadgeText_FallsBackToBuiltInChineseWithoutResolver()
     {
-        Assert.Equal("总督", new LiveChatMessageItem(Danmaku("a", 1), null, Now).BadgeText);
-        Assert.Equal("提督", new LiveChatMessageItem(Danmaku("a", 2), null, Now).BadgeText);
-        Assert.Equal("舰长", new LiveChatMessageItem(Danmaku("a", 3), null, Now).BadgeText);
-        Assert.Equal("管理", new LiveChatMessageItem(Danmaku("a", 0, isAdmin: true), null, Now).BadgeText);
-        Assert.Equal("老爷", new LiveChatMessageItem(Danmaku("a", 0, isVip: true), null, Now).BadgeText);
+        Assert.Equal("总督", new LiveChatMessagePresentation(Danmaku("a", 1), null, Now).BadgeText);
+        Assert.Equal("提督", new LiveChatMessagePresentation(Danmaku("a", 2), null, Now).BadgeText);
+        Assert.Equal("舰长", new LiveChatMessagePresentation(Danmaku("a", 3), null, Now).BadgeText);
+        Assert.Equal("管理", new LiveChatMessagePresentation(Danmaku("a", 0, isAdmin: true), null, Now).BadgeText);
+        Assert.Equal("老爷", new LiveChatMessagePresentation(Danmaku("a", 0, isVip: true), null, Now).BadgeText);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public sealed class LiveRoomUrlAndTextTests
                 "#123456"),
             1);
 
-        var item = new LiveChatMessageItem(message, null, Now, null, price => LiveChatSuperChatTime.FormatPrice(price, "￥{0}"));
+        var item = new LiveChatMessagePresentation(message, null, Now, null, price => LiveChatSuperChatTime.FormatPrice(price, "￥{0}"));
 
         Assert.Equal("￥30", item.PriceText);
     }
@@ -90,6 +90,24 @@ public sealed class LiveRoomUrlAndTextTests
     [Fact]
     public void DefaultPriceTemplate_KeepsTheDocumentedYenPrefix()
         => Assert.Equal("¥30", LiveChatSuperChatTime.FormatPrice(30, LiveChatSuperChatTime.DefaultPriceTemplate));
+
+    [Fact]
+    public void LateRoomEmotesUpdateExistingPresentationAndNotifyBindings()
+    {
+        var item = new LiveChatMessagePresentation(Danmaku("[doge]"), null, Now);
+        var changed = new List<string?>();
+        item.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
+        Assert.Null(item.Content.Emotes);
+
+        item.UpdateEmotes(new Dictionary<string, Richasy.BiliKernel.Models.Media.LiveDanmakuEmote>
+        {
+            ["doge"] = new("https://example.com/doge.png", 24, 24, "official_1"),
+        });
+
+        Assert.Equal("https://example.com/doge.png", item.Content.Emotes!["[doge]"].Uri.AbsoluteUri);
+        Assert.Equal([nameof(item.Content)], changed);
+        Assert.Equal("[doge]", item.Text);
+    }
 
     private static LiveChatMessage Danmaku(string text, int guardLevel = 0, bool isAdmin = false, bool isVip = false)
         => LiveChatMessage.FromDanmaku(

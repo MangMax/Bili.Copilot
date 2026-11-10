@@ -35,6 +35,7 @@
                     MaxLines="2"
                     Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue=''}" />
                 <Button
+                    x:Name="OpenInBrowserButton"
                     Grid.Column="1"
                     Padding="6"
                     VerticalAlignment="Top"
@@ -58,7 +59,9 @@
                     HorizontalAlignment="Left"
                     ActiveCommand="{x:Bind ViewModel.OpenUserSpaceCommand, Mode=OneWay}"
                     Avatar="{x:Bind ViewModel.UpAvatar, Mode=OneWay}"
-                    IsFollowButtonShown="False"
+                    IsFollow="{x:Bind ViewModel.IsFollow, Mode=OneWay}"
+                    IsFollowButtonShown="{x:Bind ViewModel.IsFollowButtonShown, Mode=OneWay}"
+                    ToggleFollowCommand="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
                     Subtitle="{x:Bind ViewModel.TagName, Mode=OneWay}"
                     UserName="{x:Bind ViewModel.UpName, Mode=OneWay}" />
                 <Border

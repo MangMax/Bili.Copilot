@@ -72,6 +72,12 @@ public sealed class SeekTestPlayer
 
 public sealed class SeekTestClient
 {
+    public bool IsDisposed { get; set; }
+    public int PauseCount { get; private set; }
+    public Task PauseAsync() { PauseCount++; return Task.CompletedTask; }
+    public int ResumeCount { get; private set; }
+    public Task ResumeAsync() { ResumeCount++; return Task.CompletedTask; }
+
     public Func<double> ReadPosition { get; set; } = () => 21;
     public Func<double> ReadSpeed { get; set; } = () => 1;
     public Func<double> ReadVolume { get; set; } = () => 100;
@@ -90,6 +96,7 @@ public sealed class SeekTestClient
     public List<Richasy.MpvKernel.Player.Models.MpvMediaSource> Loads { get; } = [];
 
     public bool CompleteLoads { get; set; } = true;
+    public Action? OnLoad { get; set; }
     public void CompleteLoad() => ReachFileLoaded?.Invoke(this, EventArgs.Empty);
     public void FailLoad() => ErrorOccurred?.Invoke(this, Richasy.MpvKernel.MpvError.LoadingFailed);
     public event EventHandler? ReachFileLoaded;
@@ -98,7 +105,8 @@ public sealed class SeekTestClient
     public Task PlayAsync(string url, Richasy.MpvKernel.Core.Models.MpvPlayOptions options)
     {
         Loads.Add(new(url, "id", "title", options));
-        if (CompleteLoads) CompleteLoad();
+        if (OnLoad is { } onLoad) onLoad();
+        else if (CompleteLoads) CompleteLoad();
         return Task.CompletedTask;
     }
 

@@ -137,4 +137,7 @@ public sealed class LiveChatWindow
     /// 清空窗口。
     /// </summary>
     public void Clear() => _items.Clear();
+
+    /// <summary>Removes matching displayed messages while retaining other rows.</summary>
+    internal int RemoveWhere(Predicate<LiveChatMessage> predicate) => _items.RemoveAll(predicate);
 }

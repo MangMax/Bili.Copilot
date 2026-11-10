@@ -102,51 +102,6 @@ public enum LivePlaybackFailureKind
 }
 
 /// <summary>
-/// 播放器内核错误在纯逻辑层的替身，避免直播策略依赖 MpvKernel。
-/// </summary>
-public enum LivePlayerError
-{
-    /// <summary>无错误.</summary>
-    None,
-
-    /// <summary>HTTP 403.</summary>
-    Http403,
-
-    /// <summary>HTTP 404.</summary>
-    Http404,
-
-    /// <summary>HTTP 412（签名地址被拒绝，取址阶段的同名状态归为鉴权失败）.</summary>
-    Http412,
-
-    /// <summary>HTTP 5xx.</summary>
-    HttpServerError,
-
-    /// <summary>TLS 失败.</summary>
-    Tls,
-
-    /// <summary>加载失败.</summary>
-    LoadingFailed,
-
-    /// <summary>视频输出/解码器初始化失败.</summary>
-    VideoInitFailed,
-
-    /// <summary>音频输出初始化失败.</summary>
-    AudioInitFailed,
-
-    /// <summary>不支持的格式.</summary>
-    Unsupported,
-
-    /// <summary>未知格式.</summary>
-    UnknownFormat,
-
-    /// <summary>没有可播放内容.</summary>
-    NothingToPlay,
-
-    /// <summary>其他错误.</summary>
-    Other,
-}
-
-/// <summary>
 /// 失败分类与恢复次序。
 /// </summary>
 /// <remarks>
@@ -155,29 +110,6 @@ public enum LivePlayerError
 /// </remarks>
 public static class LivePlaybackFailureClassifier
 {
-    /// <summary>
-    /// 把播放器内核错误映射为播放失败分类。
-    /// </summary>
-    /// <param name="error">播放器错误替身.</param>
-    /// <returns>失败分类.</returns>
-    public static LivePlaybackFailureKind FromPlayerError(LivePlayerError error)
-        => error switch
-        {
-            LivePlayerError.None => LivePlaybackFailureKind.None,
-            LivePlayerError.Http403
-                or LivePlayerError.Http404
-                or LivePlayerError.Http412
-                or LivePlayerError.HttpServerError
-                or LivePlayerError.Tls
-                or LivePlayerError.LoadingFailed => LivePlaybackFailureKind.Transport,
-            LivePlayerError.VideoInitFailed
-                or LivePlayerError.AudioInitFailed
-                or LivePlayerError.Unsupported
-                or LivePlayerError.UnknownFormat
-                or LivePlayerError.NothingToPlay => LivePlaybackFailureKind.DecoderInit,
-            _ => LivePlaybackFailureKind.Unknown,
-        };
-
     /// <summary>
     /// 把取址/重开异常映射为播放失败分类。
     /// </summary>

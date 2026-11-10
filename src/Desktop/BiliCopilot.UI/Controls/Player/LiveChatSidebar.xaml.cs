@@ -1,6 +1,5 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using System.Globalization;
 using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -44,6 +43,13 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         _scrollTimer.IsRepeating = true;
         _scrollTimer.Tick += OnScrollTimerTick;
         SectionTabs.SelectionChanged += OnSectionChanged;
+        ChatView.DirectManipulationStarted += OnChatInteractionStarted;
+        ChatView.AddHandler(UIElement.PointerWheelChangedEvent,
+            new Microsoft.UI.Xaml.Input.PointerEventHandler(OnChatPointerWheelChanged), true);
+        ChatView.AddHandler(UIElement.PointerPressedEvent,
+            new Microsoft.UI.Xaml.Input.PointerEventHandler(OnChatPointerPressed), true);
+        ChatView.AddHandler(UIElement.KeyDownEvent,
+            new Microsoft.UI.Xaml.Input.KeyEventHandler(OnChatKeyDown), true);
     }
 
     /// <inheritdoc/>
@@ -157,7 +163,7 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         }
     }
 
-    private void OnChatViewChanged(ScrollView sender, object args)
+    private void OnChatViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         if (ChatView is null)
         {
@@ -175,13 +181,50 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         UpdateBackToBottomVisibility(_ownership.ShouldShowBackToBottom);
     }
 
+    private void OnChatInteractionStarted(object? sender, object args)
+        => TakeScrollOwnership();
+
+    private void OnChatPointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs args)
+        => TakeScrollOwnership();
+
+    private void OnChatPointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs args)
+    {
+        if (args.OriginalSource is RichTextBlock or TextBlock)
+        {
+            TakeScrollOwnership();
+        }
+    }
+
+    private void OnChatKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args)
+    {
+        if (args.Key is Windows.System.VirtualKey.Up or Windows.System.VirtualKey.Down
+            or Windows.System.VirtualKey.PageUp or Windows.System.VirtualKey.PageDown
+            or Windows.System.VirtualKey.Home or Windows.System.VirtualKey.End)
+        {
+            TakeScrollOwnership();
+        }
+    }
+
+    private void TakeScrollOwnership()
+    {
+        var wasFollowing = _scrollTimer.IsRunning;
+        _scrollTimer.Stop();
+        if (wasFollowing)
+        {
+            ChatView.ChangeView(null, ChatView.VerticalOffset, null, disableAnimation: true);
+        }
+
+        _ownership.BeginUserInteraction();
+        UpdateBackToBottomVisibility(true);
+    }
+
     private void OnBackToBottomClick(object sender, RoutedEventArgs e)
     {
         if (ChatView is not null)
         {
             // 用户手动回到底部：整段动画滚过去，而不是瞬移。
             var target = Math.Max(0d, ChatView.ExtentHeight - ChatView.ViewportHeight);
-            ChatView.ScrollTo(0d, target, new ScrollingScrollOptions(ScrollingAnimationMode.Enabled));
+            ChatView.ChangeView(null, target, null, disableAnimation: false);
         }
 
         _ownership.RequestBackToBottom();
@@ -192,38 +235,6 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         _scrollTimer.Start();
         UpdateBackToBottomVisibility(false);
     }
-
-    private void OnApplyBlockRulesClick(object sender, RoutedEventArgs e)
-    {
-        if (ViewModel is null)
-        {
-            return;
-        }
-
-        ViewModel.SetChatBlockRules(
-            ParseIds(BlockUserIdBox.Text),
-            Split(BlockUserNameBox.Text),
-            Split(BlockKeywordBox.Text));
-    }
-
-    private static IReadOnlyList<long> ParseIds(string? text)
-    {
-        var result = new List<long>();
-        foreach (var part in Split(text))
-        {
-            if (long.TryParse(part, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value) && value > 0)
-            {
-                result.Add(value);
-            }
-        }
-
-        return result;
-    }
-
-    private static IReadOnlyList<string> Split(string? text)
-        => string.IsNullOrWhiteSpace(text)
-            ? []
-            : text.Split([',', '，', ';', '；', '\n', '\r', ' ', '\t'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
     private void StartScrollToBottom()
     {
@@ -260,10 +271,7 @@ public sealed partial class LiveChatSidebar : LiveChatControlBase
         if (!atBottom)
         {
             // 正常追加一条时用系统动画顺滑过渡；位置落后太多说明是重置/跳转，直接对齐。
-            var mode = target - offset <= 240d
-                ? ScrollingAnimationMode.Auto
-                : ScrollingAnimationMode.Disabled;
-            ChatView.ScrollTo(0d, target, new ScrollingScrollOptions(mode));
+            ChatView.ChangeView(null, target, null, disableAnimation: target - offset > 240d);
         }
 
         _lastScrollExtent = extent;

@@ -1,12 +1,17 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using System.Collections.Concurrent;
 using BiliCopilot.UI.Live;
+using BiliCopilot.UI.Pages.Overlay;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Richasy.BiliKernel.Models.User;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Models.Media;
+using Richasy.WinUIKernel.Share.Base;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -15,8 +20,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// </summary>
 /// <remarks>
 /// 事件在弹幕泵线程触发，这里只入队（无锁、不触碰 UI）；UI 线程按固定节拍批量消费，
-/// 因此不存在"每条消息一次调度"。列表只有在批量裁剪或醒目留言被删除时才整表重置，
-/// 其余时候只追加一条。补屏在房间就绪后拉取最近弹幕，失败只记日志、不影响播放。
+/// 列表投影保留存活的消息对象，重复合并、裁剪与删除统一由会话模型决定。补屏在房间就绪后拉取最近弹幕，失败只记日志、不影响播放。
 /// 屏蔽只做展示侧过滤，不发送、不送礼、不撤回。
 /// </remarks>
 public sealed partial class LiveConnectorViewModel
@@ -24,13 +28,14 @@ public sealed partial class LiveConnectorViewModel
     private static readonly TimeSpan ChatTickInterval = TimeSpan.FromMilliseconds(120);
     private const int MaxChatEventsPerTick = 64;
 
-    private readonly ConcurrentQueue<LiveDanmakuEvent> _chatQueue = new();
+    private readonly LiveChatEventBuffer _chatQueue = new();
     private readonly object _chatGate = new();
     private LiveChatSession? _chatSession;
     private DispatcherQueueTimer? _chatTimer;
     private int _chatGeneration = -1;
     private string? _chatRoomId;
-    private DateTimeOffset _lastEnterRoomAt = DateTimeOffset.MinValue;
+    private long _lastCountdownSecond = -1;
+    private readonly List<LiveChatMessageItem> _activeSuperChats = [];
     private IReadOnlyDictionary<string, LiveDanmakuEmote>? _emoteResources;
     private IReadOnlyDictionary<string, LiveTitleItem>? _titleResources;
     private bool _isChatBackfillStarted;
@@ -56,9 +61,8 @@ public sealed partial class LiveConnectorViewModel
         timer.IsRepeating = true;
         timer.Tick += OnChatTimerTick;
         _chatTimer = timer;
+        SyncChatGeneration();
         timer.Start();
-        _ = LoadEmoteResourcesAsync();
-        _ = LoadTitleResourcesAsync();
     }
 
     private async Task LoadTitleResourcesAsync()
@@ -71,8 +75,7 @@ public sealed partial class LiveConnectorViewModel
         try
         {
             var items = await this.Get<Richasy.BiliKernel.Bili.Media.IPlayerService>()
-                .GetLiveTitlesAsync()
-                .ConfigureAwait(false);
+                .GetLiveTitlesAsync();
             if (items.Count == 0)
             {
                 return;
@@ -81,6 +84,11 @@ public sealed partial class LiveConnectorViewModel
             _titleResources = items
                 .GroupBy(item => item.Id, StringComparer.Ordinal)
                 .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            foreach (var row in ChatMessages)
+            {
+                row.UpdateTitles(_titleResources);
+            }
+
             _logger.LogInformation("直播头衔表已加载");
         }
         catch (Exception ex)
@@ -98,11 +106,11 @@ public sealed partial class LiveConnectorViewModel
             return;
         }
 
+        var generation = Session.Generation;
         try
         {
             var items = await this.Get<Richasy.BiliKernel.Bili.Media.IPlayerService>()
-                .GetLiveEmoticonsAsync(roomId)
-                .ConfigureAwait(false);
+                .GetLiveEmoticonsAsync(roomId);
             if (items.Count == 0)
             {
                 return;
@@ -123,7 +131,16 @@ public sealed partial class LiveConnectorViewModel
                 }
             }
 
+            if (generation != Session.Generation || roomId != Session.RoomId)
+            {
+                return;
+            }
+
             _emoteResources = map;
+            foreach (var row in ChatMessages)
+            {
+                row.UpdateEmotes(_emoteResources);
+            }
             _logger.LogInformation("直播表情包已加载");
         }
         catch (Exception ex)
@@ -154,20 +171,55 @@ public sealed partial class LiveConnectorViewModel
         }
     }
 
-    /// <summary>
-    /// 更新屏蔽规则；只影响之后到达的消息。
-    /// </summary>
-    /// <param name="userIds">要屏蔽的用户 ID.</param>
-    /// <param name="userNames">要屏蔽的昵称.</param>
-    /// <param name="keywords">要屏蔽的关键词.</param>
-    internal void SetChatBlockRules(
-        IEnumerable<long>? userIds,
-        IEnumerable<string>? userNames,
-        IEnumerable<string>? keywords)
+    [ObservableProperty]
+    public partial string ChatBlockedUserIds { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string ChatBlockedUserNames { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string ChatBlockedKeywords { get; set; } = string.Empty;
+
+    [RelayCommand]
+    private void ApplyChatBlockRules()
     {
         var session = GetOrCreateChatSession();
-        session.UpdateBlockRules(userIds, userNames, keywords);
+        session.UpdateBlockRules(LiveChatBlockInput.UserIds(ChatBlockedUserIds),
+            LiveChatBlockInput.Lines(ChatBlockedUserNames), LiveChatBlockInput.Lines(ChatBlockedKeywords));
+        ReplaceChatItems(session, TimeProvider.GetUtcNow());
+        IsChatEmpty = ChatMessages.Count == 0;
         UpdateChatBlockCounters();
+        Parent.Window?.ShowTip(ResourceToolkit.GetLocalizedString(StringNames.LiveChatBlockRulesApplied), InfoType.Success);
+    }
+
+    internal void BlockChatUser(long userId)
+    {
+        if (userId <= 0) return;
+        ChatBlockedUserIds = string.Join(Environment.NewLine,
+            LiveChatBlockInput.UserIds(ChatBlockedUserIds).Append(userId).Distinct());
+        ApplyChatBlockRules();
+    }
+
+    internal void BlockChatText(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return;
+        ChatBlockedKeywords = LiveChatBlockInput.Add(ChatBlockedKeywords, text);
+        ApplyChatBlockRules();
+    }
+
+    internal void CopyChatText(string text)
+    {
+        var data = new DataPackage();
+        data.SetText(text);
+        Clipboard.SetContent(data);
+        Parent.Window?.ShowTip(ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success);
+    }
+
+    internal void OpenChatUser(LiveChatMessage message)
+    {
+        if (message.UserId <= 0) return;
+        var profile = new UserProfile(message.UserId.ToString(System.Globalization.CultureInfo.InvariantCulture), message.UserName, null);
+        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), profile);
     }
 
     private LiveChatSession GetOrCreateChatSession()
@@ -186,11 +238,7 @@ public sealed partial class LiveConnectorViewModel
 
     private void OnChatEventReceived(object? sender, LiveDanmakuEvent liveEvent)
     {
-        if (liveEvent is LiveDanmakuReceivedEvent or LiveSuperChatEvent or LiveSuperChatDeletedEvent
-            or LiveConnectionStateChangedEvent or LiveRoomNotStartedEvent or LiveStartedEvent or LiveRoomCutOffEvent)
-        {
-            _chatQueue.Enqueue(liveEvent);
-        }
+        _chatQueue.Enqueue(liveEvent);
     }
 
     private void OnChatStateChanged(object? sender, LiveDanmakuConnectionState state)
@@ -208,16 +256,9 @@ public sealed partial class LiveConnectorViewModel
     private void EnqueueChatAuthenticationFailure(string? detail)
     {
         var now = TimeProvider.GetUtcNow();
-        var result = GetOrCreateChatSession().ApplyAuthenticationFailure(detail, now);
-        foreach (var message in result.Added)
-        {
-            ChatMessages.Append(CreateChatItem(message, now));
-        }
-
-        if (result.RequiresReset)
-        {
-            ReplaceChatItems(GetOrCreateChatSession(), now);
-        }
+        var session = GetOrCreateChatSession();
+        session.ApplyAuthenticationFailure(detail, now);
+        ReplaceChatItems(session, now);
 
         IsChatEmpty = ChatMessages.Count == 0;
     }
@@ -228,44 +269,26 @@ public sealed partial class LiveConnectorViewModel
 
         var session = GetOrCreateChatSession();
         var now = TimeProvider.GetUtcNow();
-        var added = new List<LiveChatMessage>(MaxChatEventsPerTick);
-        var requiresReset = false;
-        var trimmed = 0;
-
+        var changed = false;
         for (var i = 0; i < MaxChatEventsPerTick && _chatQueue.TryDequeue(out var liveEvent); i++)
         {
-            var result = session.Apply(liveEvent, now);
-            // 醒目留言被删除时必须整表重建（要按标识移除）；普通裁剪只需从头部摘掉对应条数，
-            // 否则每 50 条消息就要重建 500 个条目，长时间观看会明显卡顿。
-            requiresReset |= result.Removed > 0;
-            trimmed += result.Trimmed;
-            foreach (var message in result.Added)
-            {
-                added.Add(message);
-            }
+            session.Apply(liveEvent, now);
+            changed = true;
         }
 
-        var expired = session.ExpireSuperChats(now);
-        requiresReset |= expired > 0;
+        var second = now.ToUnixTimeSeconds();
+        if (second != _lastCountdownSecond)
+        {
+            _lastCountdownSecond = second;
+            changed |= session.ExpireSuperChats(now) > 0;
+            UpdateChatRemaining(now);
+        }
 
-        if (requiresReset)
+        if (changed)
         {
             ReplaceChatItems(session, now);
         }
-        else
-        {
-            if (trimmed > 0)
-            {
-                ChatMessages.RemoveFromStart(trimmed);
-            }
 
-            foreach (var message in added)
-            {
-                AppendChatMessage(message, now);
-            }
-        }
-
-        UpdateChatRemaining(now);
         UpdateChatBlockCounters();
         IsChatEmpty = ChatMessages.Count == 0;
         TryStartChatBackfill();
@@ -283,84 +306,28 @@ public sealed partial class LiveConnectorViewModel
         _chatGeneration = generation;
         _chatRoomId = roomId;
         _isChatBackfillStarted = false;
+        _emoteResources = null;
         // 进房时房号才确定；StartChat 里可能还是空串，这里补一次资源加载。
         _ = LoadEmoteResourcesAsync();
         _ = LoadTitleResourcesAsync();
-        while (_chatQueue.TryDequeue(out _))
-        {
-        }
+        _chatQueue.Clear();
 
         GetOrCreateChatSession().Clear();
         ChatMessages.ClearAll();
+        _activeSuperChats.Clear();
         IsChatEmpty = true;
         UpdateChatBlockCounters();
     }
 
     private void ReplaceChatItems(LiveChatSession session, DateTimeOffset now)
     {
-        var items = new List<LiveChatMessageItem>(session.Window.Count);
-        foreach (var message in session.Window.Items)
-        {
-            items.Add(CreateChatItem(message, now));
-        }
-
-        ChatMessages.ReplaceAll(items);
+        LiveChatProjection.Synchronize(ChatMessages, session.Window.Items, message => CreateChatItem(message, now));
+        _activeSuperChats.Clear();
+        _activeSuperChats.AddRange(ChatMessages.Where(item => item.IsSuperChat));
     }
 
     private LiveChatMessageItem CreateChatItem(LiveChatMessage message, DateTimeOffset now)
-        => new(message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText, _emoteResources, _titleResources);
-
-    /// <summary>
-    /// 按参考实现的准入思路处理上屏：同文案短窗合并、进房提示限速，避免刷屏把列表打爆。
-    /// </summary>
-    private void AppendChatMessage(LiveChatMessage message, DateTimeOffset now)
-    {
-        if (message.IsEnterRoom)
-        {
-            // 大房间每秒有大量进房事件；保留提示但限制到每秒最多一条。
-            if (now - _lastEnterRoomAt < TimeSpan.FromSeconds(1))
-            {
-                return;
-            }
-
-            _lastEnterRoomAt = now;
-            ChatMessages.Append(CreateChatItem(message, now));
-            return;
-        }
-
-        if (message.Kind == LiveChatMessageKind.Danmaku
-            && TryMergeRecentDanmaku(message, now))
-        {
-            return;
-        }
-
-        ChatMessages.Append(CreateChatItem(message, now));
-    }
-
-    private bool TryMergeRecentDanmaku(LiveChatMessage message, DateTimeOffset now)
-    {
-        // 只看最近的少量条目：刷屏通常是连续重复，不需要回扫整个窗口。
-        var count = Math.Min(ChatMessages.Count, 12);
-        for (var i = ChatMessages.Count - 1; i >= ChatMessages.Count - count; i--)
-        {
-            var item = ChatMessages[i];
-            if (item.Kind != LiveChatMessageKind.Danmaku
-                || !string.Equals(item.Text, message.Text, StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            if (now - item.Message.Timestamp <= TimeSpan.FromSeconds(2))
-            {
-                item.IncrementMerge();
-                return true;
-            }
-
-            return false;
-        }
-
-        return false;
-    }
+        => new(this, message, GetChatSystemText, now, GetChatBadgeText, GetChatPriceText, _emoteResources, _titleResources);
 
     private string GetChatBadgeText(LiveChatBadgeKind kind)
     {
@@ -398,12 +365,9 @@ public sealed partial class LiveConnectorViewModel
 
     private void UpdateChatRemaining(DateTimeOffset now)
     {
-        foreach (var item in ChatMessages)
+        foreach (var item in _activeSuperChats)
         {
-            if (item.IsSuperChat)
-            {
-                item.UpdateRemaining(now);
-            }
+            item.UpdateRemaining(now);
         }
     }
 
@@ -438,41 +402,26 @@ public sealed partial class LiveConnectorViewModel
         try
         {
             var messages = await this.Get<Richasy.BiliKernel.Bili.Media.IPlayerService>()
-                .GetRecentLiveDanmakuAsync(new MediaIdentifier(roomId, null, null))
-                .ConfigureAwait(false);
+                .GetRecentLiveDanmakuAsync(new MediaIdentifier(roomId, null, null));
             if (messages.Count == 0)
             {
                 return;
             }
 
-            var dispatcher = this.Get<DispatcherQueue>();
-            dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            if (!LiveChatBackfillGuard.IsCurrent(generation, _chatGeneration, Session.Generation))
             {
-                if (!LiveChatBackfillGuard.IsCurrent(generation, _chatGeneration, Session.Generation))
-                {
-                    return;
-                }
+                return;
+            }
 
-                var session = GetOrCreateChatSession();
-                var now = TimeProvider.GetUtcNow();
-                foreach (var danmaku in messages)
-                {
-                    var result = session.Apply(new LiveDanmakuReceivedEvent(danmaku, "BACKFILL", now), now);
-                    if (result.RequiresReset)
-                    {
-                        ReplaceChatItems(session, now);
-                    }
-                    else
-                    {
-                        foreach (var message in result.Added)
-                        {
-                            ChatMessages.Append(CreateChatItem(message, now));
-                        }
-                    }
-                }
+            var session = GetOrCreateChatSession();
+            var now = TimeProvider.GetUtcNow();
+            foreach (var danmaku in messages)
+            {
+                session.Apply(new LiveDanmakuReceivedEvent(danmaku, "BACKFILL", now), now);
+            }
 
-                IsChatEmpty = ChatMessages.Count == 0;
-            });
+            ReplaceChatItems(session, now);
+            IsChatEmpty = ChatMessages.Count == 0;
         }
         catch (Exception ex)
         {
@@ -480,8 +429,10 @@ public sealed partial class LiveConnectorViewModel
         }
         finally
         {
-            var dispatcher = this.Get<DispatcherQueue>();
-            dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () => IsChatBackfilling = false);
+            if (LiveChatBackfillGuard.IsCurrent(generation, _chatGeneration, Session.Generation))
+            {
+                IsChatBackfilling = false;
+            }
         }
     }
 }

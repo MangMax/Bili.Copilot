@@ -50,19 +50,6 @@ public sealed class LiveSessionTests
         Assert.Equal("房间标题", session.Title);
         Assert.Equal("主播甲", session.AnchorName);
         Assert.True(session.IsLiving);
-    }
-
-    [Fact]
-    public void ApplyTarget_MarksSessionReady()
-    {
-        var session = new LiveSession();
-        var request = session.BeginRequest();
-        session.CompletePage(request.Generation, Page("123", "房间标题", "主播甲", isLiving: true));
-
-        var target = new LivePlaybackTarget("https://a.example/live.m3u8", "avc", 400, "http_hls", false);
-        Assert.True(session.ApplyTarget(request.Generation, target));
-
-        Assert.Same(target, session.Target);
         Assert.Equal(LiveSessionState.Ready, session.State);
     }
 
@@ -91,21 +78,9 @@ public sealed class LiveSessionTests
         Assert.Equal("456", session.RoomId);
         Assert.Equal("另一个房间", session.Title);
         Assert.Null(session.Page);
-        Assert.Null(session.Target);
         Assert.Equal(LiveSessionState.Idle, session.State);
         Assert.Equal(LiveFailureKind.None, session.FailureKind);
         Assert.Null(session.FailureDetail);
-    }
-
-    [Fact]
-    public void BrowserFallback_IsTerminalForNativeAttempt()
-    {
-        var session = new LiveSession();
-        var request = session.BeginRequest();
-
-        Assert.True(session.MarkBrowserFallback(request.Generation));
-
-        Assert.Equal(LiveSessionState.BrowserFallback, session.State);
     }
 
     [Fact]

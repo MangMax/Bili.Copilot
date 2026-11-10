@@ -4,7 +4,7 @@ using BiliCopilot.UI.Live;
 namespace BiliCopilot.UI.Tests;
 
 /// <summary>
-/// 聊天集合：追加发一条通知，批量替换只发一次 Reset。
+/// 裁剪保留存活条目，不重置虚拟化视图。
 /// </summary>
 public sealed class LiveChatItemCollectionTests
 {
@@ -23,37 +23,28 @@ public sealed class LiveChatItemCollectionTests
     }
 
     [Fact]
-    public void ReplaceAll_RaisesOneResetNotification()
+    public void PrefixTrimmingPreservesSurvivingRowsWithoutResettingTheView()
     {
-        var collection = new LiveChatItemCollection<string>();
-        collection.Append("old");
+        var collection = new LiveChatItemCollection<object>();
+        var retained = new object();
+        collection.Add(new object());
+        collection.Add(new object());
+        collection.Add(retained);
         var actions = new List<NotifyCollectionChangedAction>();
         collection.CollectionChanged += (_, e) => actions.Add(e.Action);
 
-        collection.ReplaceAll(["a", "b", "c"]);
+        collection.RemoveFromStart(2);
 
-        Assert.Equal([NotifyCollectionChangedAction.Reset], actions);
-        Assert.Equal(["a", "b", "c"], collection);
-    }
-
-    [Fact]
-    public void ReplaceAll_WithIdenticalContentRaisesNothing()
-    {
-        var collection = new LiveChatItemCollection<string>();
-        collection.ReplaceAll(["a", "b"]);
-        var raised = 0;
-        collection.CollectionChanged += (_, _) => raised++;
-
-        collection.ReplaceAll(["a", "b"]);
-
-        Assert.Equal(0, raised);
+        Assert.Same(retained, Assert.Single(collection));
+        Assert.Equal([NotifyCollectionChangedAction.Remove, NotifyCollectionChangedAction.Remove], actions);
     }
 
     [Fact]
     public void ClearAll_RaisesOneResetAndIsIdempotent()
     {
         var collection = new LiveChatItemCollection<string>();
-        collection.ReplaceAll(["a", "b"]);
+        collection.Add("a");
+        collection.Add("b");
         var actions = new List<NotifyCollectionChangedAction>();
         collection.CollectionChanged += (_, e) => actions.Add(e.Action);
 
@@ -64,20 +55,4 @@ public sealed class LiveChatItemCollectionTests
         Assert.Empty(collection);
     }
 
-    [Fact]
-    public void ReplaceAll_HandlesFloodWithoutGrowing()
-    {
-        var collection = new LiveChatItemCollection<int>();
-        var notifications = 0;
-        collection.CollectionChanged += (_, _) => notifications++;
-
-        for (var batch = 0; batch < 100; batch++)
-        {
-            collection.ReplaceAll(Enumerable.Range(batch * 500, 500));
-        }
-
-        Assert.Equal(500, collection.Count);
-        Assert.Equal(100, notifications);
-        Assert.Equal(49_999, collection[^1]);
-    }
 }

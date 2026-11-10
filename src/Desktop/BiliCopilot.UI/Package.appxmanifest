@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -16,14 +16,14 @@
     正式发布使用本文件；Debug 配置使用 Package.Dev.appxmanifest.
   -->
   <Identity
-    Name="Mang.BiliCopilot.LivePreview"
+    Name="Mang.BiliCopilot"
     Publisher="CN=Mang"
-    Version="2.2611.9.1" />
+    Version="2.2610.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="6f1b2a94-3c7d-4e58-9a06-1d2b8f0c4e73" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>哔哩助理 · 直播预览</DisplayName>
+    <DisplayName>ms-resource:AppName</DisplayName>
     <PublisherDisplayName>Mang</PublisherDisplayName>
     <Logo>Assets\Logo\StoreLogo.png</Logo>
   </Properties>
@@ -78,4 +78,3 @@
     <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 </Package>
-

@@ -1,16 +1,21 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Resolvers;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.MpvKernel;
+using Richasy.MpvKernel.Core.Enums;
 using Richasy.MpvKernel.Player.Models;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
 public sealed partial class PlayerViewModel
 {
-    private int _liveRecoveryAttempts;
+    private readonly LivePlaybackWatchdog _liveWatchdog = new();
+    private int _liveNativeAttempt;
+    private bool _resumeAfterLiveTerminal;
+    private Task _liveTerminalPauseDrained = Task.CompletedTask;
     private readonly PlaybackRefreshController _playbackRefresh = new();
     private Task _nativeRefreshDrained = Task.CompletedTask;
     private bool _isPlaybackRefreshReload;
@@ -61,16 +66,52 @@ public sealed partial class PlayerViewModel
     /// </summary>
     private async Task RefreshLivePlaybackAsync(LiveMediaSourceResolver resolver, bool automatic, Func<bool> isCurrent)
     {
+        if (!automatic)
+        {
+            _liveWatchdog.ResetFailures();
+        }
+
         try
         {
             Func<CancellationToken, Task<MpvMediaSource>> fetch = automatic
                 ? resolver.GetRecoverySourceAsync
                 : resolver.RefreshSourceAsync;
+            var failureRecorded = false;
+            async Task<MpvMediaSource> FetchAsync(CancellationToken token)
+            {
+                failureRecorded = false;
+                return await fetch(token);
+            }
+
+            async Task<MpvMediaSource> FetchRecoveryAsync(CancellationToken token)
+            {
+                failureRecorded = false;
+                return await resolver.GetRecoverySourceAsync(token);
+            }
+
             await _playbackRefresh.RefreshAsync(
-                fetch,
+                FetchAsync,
                 (source, token) => ReopenLivePlaybackAsync(source, token, isCurrent),
-                () => isCurrent() && ReferenceEquals(resolver, _sourceResolver),
-                ReportPlaybackRefreshFailure);
+                () => isCurrent() && !IsLiveRoomTerminal && ReferenceEquals(resolver, _sourceResolver),
+                exception =>
+                {
+                    if (!failureRecorded)
+                    {
+                        _liveWatchdog.RecordFailure();
+                    }
+
+                    ReportPlaybackRefreshFailure(exception);
+                },
+                retry: exception =>
+                {
+                    failureRecorded = true;
+                    var canRetry = _liveWatchdog.RecordFailure();
+                    var kind = exception is LivePlaybackUnavailableException unavailable
+                        ? unavailable.Kind
+                        : LivePlaybackFailureClassifier.ClassifyPlayback(exception);
+                    return canRetry && resolver.NotifyPlaybackFailure(kind) is LiveRecoveryAction.AdvanceCandidate or LiveRecoveryAction.ReRequestPlayUrl;
+                },
+                retryFetch: FetchRecoveryAsync);
         }
         finally
         {
@@ -125,6 +166,7 @@ public sealed partial class PlayerViewModel
             // it unconditionally resumes, so use the same client's explicit load here.
             _isPlaybackRefreshReload = true;
             _continuePosition = null;
+            _liveNativeAttempt++;
             var loaded = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             void OnLoaded(object? sender, EventArgs args) => loaded.TrySetResult();
             void OnError(object? sender, MpvError error) => loaded.TrySetException(new InvalidOperationException($"刷新播放失败：{error}"));
@@ -158,12 +200,16 @@ public sealed partial class PlayerViewModel
         // Capture the queue before replacing it: the helper owns the (already suppressed)
         // await of this instance's UI-owned seek queue.
         var previousPosition = WaitForPositionChangesAsync();
+        var previousTerminalPause = _liveTerminalPauseDrained;
         var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         _positionChangesDrained = completion.Task;
         _nativeRefreshDrained = completion.Task;
         try
         {
             await previousPosition;
+#pragma warning disable VSTHRD003 // Terminal pause belongs to this UI-owned playback queue.
+            await previousTerminalPause;
+#pragma warning restore VSTHRD003
             cancellationToken.ThrowIfCancellationRequested();
             if (!isCurrent())
             {
@@ -187,16 +233,27 @@ public sealed partial class PlayerViewModel
 
             _isPlaybackRefreshReload = true;
             _continuePosition = null;
+            _liveNativeAttempt++;
             var loaded = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             void OnLoaded(object? sender, EventArgs args) => loaded.TrySetResult();
-            void OnError(object? sender, MpvError error) => loaded.TrySetException(new InvalidOperationException($"直播刷新失败：{error}"));
+            void OnError(object? sender, MpvError error) => loaded.TrySetException(
+                new LivePlaybackUnavailableException(LiveNativePlaybackFailure.Classify(error), $"直播刷新失败：{error}"));
             client.ReachFileLoaded += OnLoaded;
             client.ErrorOccurred += OnError;
             try
             {
                 await client.PlayAsync(source.Url, source.Options);
                 await loaded.Task.WaitAsync(TimeSpan.FromSeconds(15));
-                _liveRecoveryAttempts = 0;
+                if (!cancellationToken.IsCancellationRequested && isCurrent() && !IsLiveRoomTerminal)
+                {
+                    if (_resumeAfterLiveTerminal)
+                    {
+                        await client.ResumeAsync();
+                        _resumeAfterLiveTerminal = false;
+                    }
+
+                    _liveWatchdog.RecordSuccess();
+                }
             }
             finally
             {
@@ -210,9 +267,17 @@ public sealed partial class PlayerViewModel
         }
     }
 
-    internal async Task<bool> PreparePlaybackIntentAsync()
+    internal void RememberLiveTerminalPause()
+        => _resumeAfterLiveTerminal = Player?.PlaybackState != MpvPlayerState.Paused;
+
+    internal async Task<bool> PreparePlaybackIntentAsync(bool changesPause = false)
     {
         var isCurrent = CapturePlaybackValidity();
+        if (changesPause)
+        {
+            _resumeAfterLiveTerminal = false;
+        }
+
         CancelPlaybackRefresh();
         await WaitForNativeRefreshAsync();
         return isCurrent();
@@ -228,7 +293,7 @@ public sealed partial class PlayerViewModel
             return Task.CompletedTask;
         }
 
-        _liveRecoveryAttempts = 0;
+        _liveWatchdog.ResetFailures();
         resolver.SelectQuality(quality);
         return RefreshLiveAsyncAfterPreferenceChangeAsync(resolver);
     }
@@ -243,7 +308,7 @@ public sealed partial class PlayerViewModel
             return Task.CompletedTask;
         }
 
-        _liveRecoveryAttempts = 0;
+        _liveWatchdog.ResetFailures();
         resolver.SelectLine(key);
         return RefreshLiveAsyncAfterPreferenceChangeAsync(resolver);
     }

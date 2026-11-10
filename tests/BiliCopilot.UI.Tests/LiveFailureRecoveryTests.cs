@@ -1,5 +1,7 @@
 using System.Net;
 using BiliCopilot.UI.Live;
+using BiliCopilot.UI.PlaybackRouting;
+using Richasy.MpvKernel;
 
 namespace BiliCopilot.UI.Tests;
 
@@ -42,26 +44,25 @@ public sealed class LiveFailureRecoveryTests
     }
 
     [Theory]
-    [InlineData(LivePlayerError.VideoInitFailed)]
-    [InlineData(LivePlayerError.AudioInitFailed)]
-    [InlineData(LivePlayerError.Unsupported)]
-    [InlineData(LivePlayerError.UnknownFormat)]
-    [InlineData(LivePlayerError.NothingToPlay)]
-    public void FromPlayerError_MapsDecoderFailuresToDecoderInit(LivePlayerError error)
+    [InlineData(MpvError.VoInitFailed)]
+    [InlineData(MpvError.AoInitFailed)]
+    [InlineData(MpvError.Unsupported)]
+    [InlineData(MpvError.UnknownFormat)]
+    [InlineData(MpvError.NothingToPlay)]
+    public void FromPlayerError_MapsDecoderFailuresToDecoderInit(MpvError error)
     {
-        Assert.Equal(LivePlaybackFailureKind.DecoderInit, LivePlaybackFailureClassifier.FromPlayerError(error));
+        Assert.Equal(LivePlaybackFailureKind.DecoderInit, LiveNativePlaybackFailure.Classify(error));
     }
 
     [Theory]
-    [InlineData(LivePlayerError.Http403)]
-    [InlineData(LivePlayerError.Http404)]
-    [InlineData(LivePlayerError.Http412)]
-    [InlineData(LivePlayerError.HttpServerError)]
-    [InlineData(LivePlayerError.Tls)]
-    [InlineData(LivePlayerError.LoadingFailed)]
-    public void FromPlayerError_MapsTransportErrorsToTransport(LivePlayerError error)
+    [InlineData(MpvError.Http403)]
+    [InlineData(MpvError.Http404)]
+    [InlineData(MpvError.Http500)]
+    [InlineData(MpvError.TlsError)]
+    [InlineData(MpvError.LoadingFailed)]
+    public void FromPlayerError_MapsTransportErrorsToTransport(MpvError error)
     {
-        Assert.Equal(LivePlaybackFailureKind.Transport, LivePlaybackFailureClassifier.FromPlayerError(error));
+        Assert.Equal(LivePlaybackFailureKind.Transport, LiveNativePlaybackFailure.Classify(error));
     }
 
     [Fact]
@@ -72,7 +73,7 @@ public sealed class LiveFailureRecoveryTests
 
         Assert.Equal(
             LiveRecoveryAction.AdvanceCandidate,
-            sequencer.Report(LivePlaybackFailureClassifier.FromPlayerError(LivePlayerError.Http412), hasNextCandidate: true));
+            sequencer.Report(LivePlaybackFailureClassifier.ClassifyPlayback(new HttpRequestException("expired", null, (HttpStatusCode)412)), hasNextCandidate: true));
     }
 
     [Theory]

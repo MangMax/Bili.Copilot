@@ -20,14 +20,9 @@ public enum LiveSessionState
     Loading,
 
     /// <summary>
-    /// 已拿到可播放地址.
+    /// 已读取房间详情.
     /// </summary>
     Ready,
-
-    /// <summary>
-    /// 已转交浏览器.
-    /// </summary>
-    BrowserFallback,
 
     /// <summary>
     /// 播放失败.
@@ -48,19 +43,11 @@ public enum LiveSessionState
 public readonly record struct LiveRequest(int Generation, CancellationToken CancellationToken);
 
 /// <summary>
-/// 一次直播观看的完整状态：房间信息、线路候选、播放目标、失败原因与请求代际。
+/// 直播房间详情的状态：房间信息、失败原因与请求代际。
 /// </summary>
 /// <remarks>
 /// 纯状态容器：不依赖 WinUI，也不直接发请求。连接器在 UI 线程发起请求，
 /// 每次 <see cref="BeginRequest"/> 都会让上一代请求失效，迟到的结果不得写入。
-/// <para>
-/// 扩展接缝：
-/// #194 画质/线路/断流恢复——在 <see cref="Playback"/> 上记录候选与选择，恢复动作仍走
-///       PlaybackRefreshController，不新建生命周期。
-/// #196 弹幕准入——会话就绪后由连接器把实时事件交给准入层，再走 AddDanmaku。
-/// #197 聊天侧栏——会话只暴露房间/连接状态，消息有界列表由面板自持。
-/// #198 房间状态/实时事件——标题/在线人数/上下播/PLAYURL_RELOAD 写回本类与 PropertiesUpdated。
-/// </para>
 /// </remarks>
 public sealed class LiveSession
 {
@@ -77,16 +64,6 @@ public sealed class LiveSession
     /// Gets 房间详情.
     /// </summary>
     public LivePlayerView? Page { get; private set; }
-
-    /// <summary>
-    /// Gets 播放信息（清晰度与线路候选）.
-    /// </summary>
-    public LiveMediaInformation? Playback { get; private set; }
-
-    /// <summary>
-    /// Gets 当前选中的播放地址.
-    /// </summary>
-    public LivePlaybackTarget? Target { get; private set; }
 
     /// <summary>
     /// Gets 当前会话状态.
@@ -170,23 +147,7 @@ public sealed class LiveSession
         }
 
         Page = view;
-        return true;
-    }
-
-    /// <summary>
-    /// 写入播放信息。
-    /// </summary>
-    /// <param name="generation">请求代际.</param>
-    /// <param name="playback">播放信息.</param>
-    /// <returns>写入成功时为 true；迟到请求返回 false.</returns>
-    public bool CompletePlayback(int generation, LiveMediaInformation playback)
-    {
-        if (!IsCurrent(generation) || playback is null)
-        {
-            return false;
-        }
-
-        Playback = playback;
+        State = LiveSessionState.Ready;
         return true;
     }
 
@@ -196,30 +157,6 @@ public sealed class LiveSession
     /// <param name="title">新标题.</param>
     public void SetTitle(string? title)
         => _titleOverride = string.IsNullOrWhiteSpace(title) ? _titleOverride : title;
-
-    /// <summary>
-    /// 写入内核返回的最新播放信息（刷新/重新取址后由解析器回填）.
-    /// </summary>
-    /// <param name="playback">播放信息.</param>
-    public void SetPlayback(LiveMediaInformation? playback) => Playback = playback;
-
-    /// <summary>
-    /// 写入选中的播放地址。
-    /// </summary>
-    /// <param name="generation">请求代际.</param>
-    /// <param name="target">播放目标.</param>
-    /// <returns>写入成功时为 true；迟到请求返回 false.</returns>
-    public bool ApplyTarget(int generation, LivePlaybackTarget target)
-    {
-        if (!IsCurrent(generation) || target is null)
-        {
-            return false;
-        }
-
-        Target = target;
-        State = LiveSessionState.Ready;
-        return true;
-    }
 
     /// <summary>
     /// 记录一次失败。
@@ -238,22 +175,6 @@ public sealed class LiveSession
         FailureKind = kind;
         FailureDetail = detail;
         State = LiveSessionState.Faulted;
-        return true;
-    }
-
-    /// <summary>
-    /// 标记已转交浏览器。
-    /// </summary>
-    /// <param name="generation">请求代际.</param>
-    /// <returns>写入成功时为 true；迟到请求返回 false.</returns>
-    public bool MarkBrowserFallback(int generation)
-    {
-        if (!IsCurrent(generation))
-        {
-            return false;
-        }
-
-        State = LiveSessionState.BrowserFallback;
         return true;
     }
 
@@ -282,8 +203,6 @@ public sealed class LiveSession
         Information = information;
         _titleOverride = default;
         Page = default;
-        Playback = default;
-        Target = default;
         State = LiveSessionState.Idle;
         FailureKind = LiveFailureKind.None;
         FailureDetail = default;

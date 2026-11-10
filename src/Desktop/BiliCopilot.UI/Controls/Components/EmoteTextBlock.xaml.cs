@@ -30,6 +30,17 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         set => SetValue(ExpandInlineProperty, value);
     }
 
+    /// <summary>Optional fixed inline-image height; NaN preserves the intrinsic image layout.</summary>
+    public static readonly DependencyProperty EmoteHeightProperty =
+        DependencyProperty.Register(nameof(EmoteHeight), typeof(double), typeof(EmoteTextBlock), new PropertyMetadata(double.NaN));
+
+    /// <summary>Gets or sets a reserved inline-image height.</summary>
+    public double EmoteHeight
+    {
+        get => (double)GetValue(EmoteHeightProperty);
+        set => SetValue(EmoteHeightProperty, value);
+    }
+
     /// <summary>
     /// <see cref="MaxLines"/> 的依赖属性.
     /// </summary>
@@ -81,6 +92,15 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     {
         get => (ICommand?)GetValue(SeekCommandProperty);
         set => SetValue(SeekCommandProperty, value);
+    }
+
+    /// <summary>Supplies a context menu for both the inline and expanded selectable text.</summary>
+    public void SetTextContextFlyout(MenuFlyout flyout)
+    {
+        RichBlock.ContextFlyout = flyout;
+        FlyoutRichBlock.ContextFlyout = flyout;
+        RichBlock.SelectionFlyout = null;
+        FlyoutRichBlock.SelectionFlyout = null;
     }
 
     protected override void OnControlUnloaded()
@@ -160,7 +180,18 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
                     if (emoji != null && emoji.Uri is not null)
                     {
                         var inlineCon = new InlineUIContainer();
-                        var img = new Image() { Width = 20, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(2, 0, 2, -4) };
+                        // Reserve the inline box before decoding; image arrival must not change line height.
+                        var width = !double.IsNaN(EmoteHeight) && emoji.Width > 0 && emoji.Height > 0
+                            ? Math.Clamp(EmoteHeight * emoji.Width / emoji.Height, 16d, 96d)
+                            : 20d;
+                        var img = new Image
+                        {
+                            Width = width,
+                            Height = EmoteHeight,
+                            Stretch = Microsoft.UI.Xaml.Media.Stretch.Uniform,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Margin = new Thickness(2, 0, 2, -4),
+                        };
                         var bitmap = new BitmapImage(emoji.Uri) { DecodePixelWidth = 40 };
                         img.Source = bitmap;
                         inlineCon.Child = img;

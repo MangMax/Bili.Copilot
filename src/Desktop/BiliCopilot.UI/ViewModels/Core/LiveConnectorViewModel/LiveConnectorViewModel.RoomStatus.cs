@@ -116,7 +116,12 @@ public sealed partial class LiveConnectorViewModel
             _isRoomStatusAttached = false;
         }
 
-        _uptimeTimer?.Stop();
+        if (_uptimeTimer is { } timer)
+        {
+            timer.Stop();
+            timer.Tick -= OnUptimeTimerTick;
+        }
+
         _uptimeTimer = null;
     }
 
@@ -129,7 +134,13 @@ public sealed partial class LiveConnectorViewModel
         }
 
         var dispatcher = this.Get<DispatcherQueue>();
-        dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () => ApplyRoomStatusUpdate(update));
+        dispatcher.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (_isRoomStatusAttached && ReferenceEquals(sender, _danmakuPump) && Parent.Window?.IsClosed == false)
+            {
+                ApplyRoomStatusUpdate(update);
+            }
+        });
     }
 
     private void ApplyRoomStatusUpdate(LiveRoomStatusUpdate update)

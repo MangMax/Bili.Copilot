@@ -68,6 +68,7 @@ public sealed class LiveChatSession
     private int _superChatsRemoved;
     private int _systemMessages;
     private int _trimmed;
+    private DateTimeOffset? _lastEnterAt;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LiveChatSession"/> class.
@@ -130,7 +131,14 @@ public sealed class LiveChatSession
         IEnumerable<long>? userIds,
         IEnumerable<string>? userNames,
         IEnumerable<string>? keywords)
-        => _blockRules.Replace(userIds, userNames, keywords);
+    {
+        lock (_gate)
+        {
+            _blockRules.Replace(userIds, userNames, keywords);
+            _blocked += _window.RemoveWhere(message => message.Kind != LiveChatMessageKind.System
+                && _blockRules.Evaluate(message.UserId, message.UserName, message.Text) != LiveChatBlockKind.None);
+        }
+    }
 
     /// <summary>
     /// 应用一个内核事件。
@@ -228,6 +236,7 @@ public sealed class LiveChatSession
         {
             _window.Clear();
             _lastState = default;
+            _lastEnterAt = null;
         }
     }
 
@@ -248,6 +257,22 @@ public sealed class LiveChatSession
             }
 
             var message = LiveChatMessage.FromDanmaku(danmaku, NextSequence(), timestamp);
+            var items = _window.Items;
+            for (var i = items.Count - 1; i >= Math.Max(0, items.Count - 12); i--)
+            {
+                var previous = items[i];
+                if (previous.Kind == LiveChatMessageKind.Danmaku
+                    && previous.UserId == message.UserId
+                    && previous.UserName == message.UserName
+                    && previous.Text == message.Text
+                    && timestamp >= previous.Timestamp
+                    && timestamp - previous.Timestamp <= TimeSpan.FromSeconds(2))
+                {
+                    previous.Merge();
+                    return default;
+                }
+            }
+
             return AppendCore(message);
         }
     }
@@ -261,6 +286,13 @@ public sealed class LiveChatSession
 
         lock (_gate)
         {
+            if (_blockRules.Evaluate(user.UserId, user.UserName, string.Empty) != LiveChatBlockKind.None
+                || (_lastEnterAt is { } last && timestamp - last < TimeSpan.FromSeconds(1)))
+            {
+                return default;
+            }
+
+            _lastEnterAt = timestamp;
             return AppendCore(LiveChatMessage.FromEnter(user, NextSequence(), timestamp));
         }
     }
@@ -331,19 +363,14 @@ public sealed class LiveChatSession
     private LiveChatApplyResult AppendCore(LiveChatMessage message)
     {
         var change = _window.Append(message);
-        if (change.RequiresReset)
-        {
-            _trimmed += change.Trimmed;
-            return new LiveChatApplyResult(Array.Empty<LiveChatMessage>(), 0, change.Trimmed);
-        }
-
+        _trimmed += change.Trimmed;
         _displayed++;
         if (message.Kind == LiveChatMessageKind.System)
         {
             _systemMessages++;
         }
 
-        return new LiveChatApplyResult(new[] { message });
+        return new LiveChatApplyResult(new[] { message }, Trimmed: change.Trimmed);
     }
 
     private long NextSequence() => ++_sequence;

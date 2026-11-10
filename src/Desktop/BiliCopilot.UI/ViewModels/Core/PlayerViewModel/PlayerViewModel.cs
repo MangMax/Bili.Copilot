@@ -233,6 +233,9 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     private async Task InitializeCoreAsync(MediaSnapshot snapshot)
     {
         _mediaDisplaySource?.Suspend();
+        StopLiveRecoveryMonitor();
+        _resumeAfterLiveTerminal = false;
+        ClearLiveRoomTerminal();
         CancelPlaybackRefresh();
         _isPlaybackRefreshReload = false;
         _danmakuPlaybackVersion++;
@@ -355,6 +358,11 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                 {
                     var resolver = this.Get<LiveMediaSourceResolver>();
                     resolver.Initialize(_snapshot);
+                    if (Connector is LiveConnectorViewModel { Session.Page: { } page })
+                    {
+                        resolver.SetPageDetail(page);
+                    }
+
                     _sourceResolver = resolver;
                     _sourceResolver.WindowHandle = Window!.Handle;
 
@@ -450,6 +458,11 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         if (Window.IsClosed)
         {
             return;
+        }
+
+        if (IsLive)
+        {
+            StartLiveRecoveryMonitor();
         }
 
         try

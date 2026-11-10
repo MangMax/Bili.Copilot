@@ -11,14 +11,6 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// <summary>
 /// 直播连接器视图模型.
 /// </summary>
-/// <remarks>
-/// 扩展接缝（供后续子票使用，本票不实现）：
-/// #194 画质/线路/断流恢复——在 <see cref="Session"/> 上扩展候选与刷新状态，
-///       播放地址刷新统一走 PlayerViewModel 的 PlaybackRefreshController。
-/// #196 弹幕准入/上屏——在会话就绪后调用 DanmakuRenderViewModel.AddDanmaku，不在这里直连内核。
-/// #197 聊天侧栏——由 LivePlayerPanel 承载列表，Connector 只暴露与控制连接状态。
-/// #198 房间状态/实时事件——把标题、在线人数、开播/下播、PLAYURL_RELOAD 写回 Session 与 PropertiesUpdated。
-/// </remarks>
 public sealed partial class LiveConnectorViewModel
 {
     private readonly Microsoft.Extensions.Logging.ILogger<LiveConnectorViewModel> _logger;
@@ -73,6 +65,12 @@ public sealed partial class LiveConnectorViewModel
     /// </summary>
     [ObservableProperty]
     public partial Uri? UpAvatar { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsFollow { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsFollowButtonShown { get; set; }
 
     [ObservableProperty]
     public partial Uri? Cover { get; set; }

@@ -44,6 +44,12 @@ public sealed partial class PlayerViewModel
     /// <param name="description">可读说明.</param>
     internal void ApplyLiveRoomTerminal(LiveRoomPhase phase, string? description)
     {
+        if (!IsLiveRoomTerminal)
+        {
+            RememberLiveTerminalPause();
+        }
+
+        CancelPlaybackRefresh();
         LiveRoomTerminalTitle = ResourceToolkit.GetLocalizedString(
             phase == LiveRoomPhase.CutOff ? StringNames.LiveRoomCutOffTitle : StringNames.LiveRoomNotStartedTitle);
         LiveRoomTerminalDescription = description;
@@ -55,16 +61,25 @@ public sealed partial class PlayerViewModel
         IsEnd = false;
         CheckBlackBackgroundVisible();
         // 终态下不再保留播放器重连循环：暂停当前流，避免无限缓冲。
-        _ = PauseLivePlaybackAsync();
+        _liveTerminalPauseDrained = PauseLivePlaybackAsync();
+        _positionChangesDrained = _liveTerminalPauseDrained;
     }
 
     private async Task PauseLivePlaybackAsync()
     {
+        var isCurrent = CapturePlaybackValidity();
+        var client = Client;
+        var previousPosition = WaitForPositionChangesAsync();
+        var previousRefresh = WaitForNativeRefreshAsync();
         try
         {
-            if (Client?.IsDisposed == false)
+#pragma warning disable VSTHRD003 // Captured UI-owned writes are joined before terminal pause and release.
+            await previousPosition;
+            await previousRefresh;
+#pragma warning restore VSTHRD003
+            if (isCurrent() && IsLiveRoomTerminal && ReferenceEquals(client, Client) && client?.IsDisposed == false)
             {
-                await Client.PauseAsync();
+                await client.PauseAsync();
             }
         }
         catch (Exception ex)
@@ -92,14 +107,28 @@ public sealed partial class PlayerViewModel
     /// 房间事件触发的播放地址重载：与手动刷新共用同一次单飞准入，永不新建播放器。
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
-    internal Task RequestLivePlayUrlReloadAsync()
+    internal async Task RequestLivePlayUrlReloadAsync()
     {
-        if (!IsLive || IsLiveRoomTerminal || !IsSessionCurrent())
+        var isCurrent = CapturePlaybackValidity();
+        if (!IsLive || IsLiveRoomTerminal || !isCurrent())
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return RefreshPlaybackAsync();
+        do
+        {
+#pragma warning disable VSTHRD003 // LIVE joins the admitted refresh and terminal pause before requesting a fresh source.
+            await _playbackRefresh.Completion;
+            await _liveTerminalPauseDrained;
+#pragma warning restore VSTHRD003
+            if (!isCurrent() || IsLiveRoomTerminal)
+            {
+                return;
+            }
+        }
+        while (_playbackRefresh.IsRefreshing);
+
+        await RefreshPlaybackAsync();
     }
 
     /// <summary>

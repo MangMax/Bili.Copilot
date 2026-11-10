@@ -6,6 +6,7 @@
     xmlns:comp="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -49,27 +50,38 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!--  头像：PersonPicture 自带空态占位，加载失败也不会留下空洞。  -->
-            <Grid
+            <Button
                 Width="32"
                 Height="32"
-                VerticalAlignment="Top">
-                <Border
-                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
-                    CornerRadius="16">
-                    <ic:SymbolIcon
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="14"
-                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Symbol="Person" />
-                </Border>
-                <Border CornerRadius="16">
-                    <Image
-                        Source="{x:Bind ViewModel.AvatarSource, Mode=OneWay}"
-                        Stretch="UniformToFill" />
-                </Border>
-            </Grid>
+                Padding="0"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Style="{StaticResource AvatarButtonStyle}"
+                ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}"
+                Command="{x:Bind ViewModel.OpenUserCommand, Mode=OneWay}"
+                AutomationProperties.Name="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}">
+                <Grid
+                    Width="32"
+                    Height="32"
+                    VerticalAlignment="Top">
+                    <Border
+                        Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                        CornerRadius="16">
+                        <ic:SymbolIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            Symbol="Person" />
+                    </Border>
+                    <controls:RecommendationCoverImage
+                        Width="32"
+                        Height="32"
+                        CornerRadius="16"
+                        Source="{x:Bind ViewModel.AvatarSource, Mode=OneWay}" />
+                </Grid>
+            </Button>
 
             <StackPanel Grid.Column="1" Spacing="4">
                 <!--  发言人一行：姓名、等级图、勋章、舰长、头衔。  -->
@@ -80,15 +92,20 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock
-                        MaxWidth="140"
-                        VerticalAlignment="Center"
-                        FontSize="13"
-                        FontWeight="SemiBold"
-                        Foreground="{x:Bind ViewModel.NameBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorPrimaryBrush}"
-                        Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
-                        TextTrimming="CharacterEllipsis"
-                        TextWrapping="NoWrap" />
+                    <controls:InlineTextButton
+                        AutomationProperties.Name="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
+                        ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}"
+                        Command="{x:Bind ViewModel.OpenUserCommand, Mode=OneWay}">
+                        <TextBlock
+                            MaxWidth="140"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            Foreground="{x:Bind ViewModel.NameBrush, Mode=OneWay, Converter={StaticResource BrushOrDefaultConverter}, ConverterParameter=TextFillColorPrimaryBrush}"
+                            Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap" />
+                    </controls:InlineTextButton>
                     <Border
                         Grid.Column="1"
                         Padding="5,1"
@@ -140,6 +157,8 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <comp:EmoteTextBlock
+                        x:Name="MessageBody"
+                        EmoteHeight="20"
                         HorizontalAlignment="Stretch"
                         FontSize="13"
                         MaxLines="10"
@@ -174,13 +193,18 @@
                         FontWeight="SemiBold"
                         Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                         Text="{x:Bind ViewModel.PriceText, Mode=OneWay, FallbackValue=''}" />
-                    <TextBlock
+                    <controls:InlineTextButton
                         Grid.Column="1"
-                        FontSize="12"
-                        FontWeight="SemiBold"
-                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
-                        Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
-                        TextTrimming="CharacterEllipsis" />
+                        AutomationProperties.Name="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
+                        ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}"
+                        Command="{x:Bind ViewModel.OpenUserCommand, Mode=OneWay}">
+                        <TextBlock
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                            Text="{x:Bind ViewModel.UserName, Mode=OneWay, FallbackValue=''}"
+                            TextTrimming="CharacterEllipsis" />
+                    </controls:InlineTextButton>
                     <TextBlock
                         Grid.Column="2"
                         FontSize="11"
@@ -189,6 +213,8 @@
                         Visibility="{x:Bind ViewModel.IsRemainingVisible, Mode=OneWay, FallbackValue=Collapsed}" />
                 </Grid>
                 <TextBlock
+                    x:Name="SuperChatBody"
+                    IsTextSelectionEnabled="True"
                     FontSize="12"
                     Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                     Text="{x:Bind ViewModel.Text, Mode=OneWay, FallbackValue=''}"

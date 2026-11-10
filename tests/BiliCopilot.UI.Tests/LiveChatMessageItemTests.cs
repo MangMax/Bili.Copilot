@@ -6,7 +6,7 @@ namespace BiliCopilot.UI.Tests;
 /// <summary>
 /// 聊天条目：价格、剩余时间、舰长标记与系统文案的展示映射。
 /// </summary>
-public sealed class LiveChatMessageItemTests
+public sealed class LiveChatMessagePresentationTests
 {
     private static readonly DateTimeOffset Now = new(2026, 11, 8, 12, 0, 0, TimeSpan.Zero);
 
@@ -71,7 +71,7 @@ public sealed class LiveChatMessageItemTests
     [Fact]
     public void SystemItem_UsesProvidedTextResolver()
     {
-        var item = new LiveChatMessageItem(
+        var item = new LiveChatMessagePresentation(
             LiveChatMessage.System(LiveChatSystemKind.RoomCutOff, 1, Now, "bye"),
             kind => "system:" + kind,
             Now);
@@ -84,12 +84,12 @@ public sealed class LiveChatMessageItemTests
     [Fact]
     public void SystemItem_FallsBackToKindNameWithoutResolver()
     {
-        var item = new LiveChatMessageItem(LiveChatMessage.System(LiveChatSystemKind.Connected, 1, Now), null, Now);
+        var item = new LiveChatMessagePresentation(LiveChatMessage.System(LiveChatSystemKind.Connected, 1, Now), null, Now);
 
         Assert.Equal("Connected", item.SystemText);
     }
 
-    private static LiveChatMessageItem Create(LiveChatMessage message)
+    private static LiveChatMessagePresentation Create(LiveChatMessage message)
         => new(message, null, Now);
 
     private static LiveChatMessage Danmaku(string text, int guardLevel = 0, bool isAdmin = false, bool isVip = false)

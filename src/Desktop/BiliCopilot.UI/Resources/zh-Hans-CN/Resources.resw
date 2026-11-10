@@ -3466,10 +3466,10 @@
     <value>用户 ID，用逗号或换行分隔</value>
   </data>
   <data name="LiveChatBlockUserNamePlaceholder" xml:space="preserve">
-    <value>昵称，用逗号或换行分隔</value>
+    <value>屏蔽昵称（每行一个）</value>
   </data>
   <data name="LiveChatBlockKeywordPlaceholder" xml:space="preserve">
-    <value>关键词，用逗号或换行分隔</value>
+    <value>屏蔽关键词（每行一个，支持完整短语）</value>
   </data>
   <data name="LiveChatBlockApply" xml:space="preserve">
     <value>应用屏蔽</value>
@@ -3540,5 +3540,14 @@
   </data>
   <data name="LiveDanmakuHighlightKeywordsPlaceholder" xml:space="preserve">
     <value>例如：抽奖，福利</value>
+  </data>
+  <data name="LiveChatBlockRulesApplied" xml:space="preserve">
+    <value>屏蔽规则已生效</value>
+  </data>
+  <data name="LiveChatBlockUserAction" xml:space="preserve">
+    <value>屏蔽此用户 ID</value>
+  </data>
+  <data name="LiveChatBlockSelectionAction" xml:space="preserve">
+    <value>屏蔽所选文字</value>
   </data>
 </root>

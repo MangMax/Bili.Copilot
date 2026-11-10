@@ -1,4 +1,4 @@
-// Copyright (c) Bili Copilot. All rights reserved.
+﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.AI.Chat;
 using BiliCopilot.UI.AI.Conversation;
@@ -6,7 +6,6 @@ using BiliCopilot.UI.AI.Context;
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Services.AI;
-using BiliCopilot.UI.Services.Live;
 using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -131,7 +130,6 @@ internal static class GlobalDependencies
             .AddSingleton<SettingsPageViewModel>()
             .AddSingleton<UserSpacePageViewModel>()
             .AddSingleton<NotificationViewModel>()
-            .AddSingleton<LiveDanmakuProbeService>()
             .AddTransient<SubtitleViewModel>()
             .AddTransient<AIViewModel>()
             .AddTransient<UserMomentDetailViewModel>()

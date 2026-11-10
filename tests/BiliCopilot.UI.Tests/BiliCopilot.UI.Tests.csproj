@@ -28,6 +28,7 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Resolvers/QualitySelectionAdapter.cs" Link="Routing/QualitySelectionAdapter.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/SettingsPageViewModel/SettingsPageViewModel.PlaybackRouting.cs" Link="Routing/SettingsPageViewModel.PlaybackRouting.cs" />
     <Using Include="Xunit" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.LiveRoomStatus.cs" Link="Playback/PlayerViewModel.LiveRoomStatus.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.PlaybackRouting.cs" Link="Playback/PlayerViewModel.PlaybackRouting.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/PlaybackRouting/*.cs" Link="PlaybackRouting/%(Filename)%(Extension)" />
     <!-- 与 UI 工程的 GlobalUsing.cs 对齐：链接的 AI 源文件直接使用 StringBuilder 等类型。 -->
