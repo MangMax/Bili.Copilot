@@ -83,14 +83,6 @@ public sealed partial class LiveConnectorViewModel
         // 关键词高亮只在进入房间时读一次设置，避免每条弹幕都读本地设置。
         RefreshKeywordHighlight();
 
-        if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
-        {
-            var tokenUid = this.Get<Richasy.BiliKernel.Bili.Authorization.IBiliTokenResolver>().GetToken()?.UserId ?? 0;
-            var cookies = this.Get<Richasy.BiliKernel.Bili.Authorization.IBiliCookiesResolver>().GetCookies();
-            cookies.TryGetValue("DedeUserID", out var dedeUserId);
-            _logger.LogInformation("LIVE-WS tokenUid={TokenUid} cookieUid={CookieUid}", tokenUid, dedeUserId ?? "none");
-        }
-
         var generation = Interlocked.Increment(ref _danmakuGeneration);
         var admission = new LiveDanmakuAdmission(LiveDanmakuAdmissionOptions.Default);
         var pump = new LiveEventPump(this.Get<ILiveDanmakuService>(), DanmakuEventCapacity);

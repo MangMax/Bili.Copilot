@@ -29,14 +29,14 @@ public sealed partial class PlayerOverlay
         _titleWindow.Changed += OnTitleWindowChanged;
         _titleRoot.Changed += OnTitleRootChanged;
         HeaderBar.LayoutUpdated += OnTitleLayoutUpdated;
-        ExtraPanelContent.SizeChanged += OnTitleLayoutUpdated;
+        ExtraPanelContent.SizeChanged += OnExtraPanelContentSizeChanged;
         UpdateTitleBarLayout();
     }
 
     private void DetachTitleBar()
     {
         HeaderBar.LayoutUpdated -= OnTitleLayoutUpdated;
-        ExtraPanelContent.SizeChanged -= OnTitleLayoutUpdated;
+        ExtraPanelContent.SizeChanged -= OnExtraPanelContentSizeChanged;
         if (_titleRoot is not null)
         {
             _titleRoot.Changed -= OnTitleRootChanged;
@@ -99,6 +99,11 @@ public sealed partial class PlayerOverlay
         // LayoutUpdated publishes only the resulting arranged geometry, without
         // queued size snapshots, forced layout or fixed-duration delays.
     }
+
+    // 侧栏尺寸变化只需要刷新拖拽区域；如果这里再改标题栏列宽，
+    // 列宽变化又会触发侧栏 SizeChanged，形成布局循环。
+    private void OnExtraPanelContentSizeChanged(object? sender, Microsoft.UI.Xaml.SizeChangedEventArgs args)
+        => UpdateTitleBarRegions();
 
     private void OnTitleLayoutUpdated(object? sender, object args)
     {

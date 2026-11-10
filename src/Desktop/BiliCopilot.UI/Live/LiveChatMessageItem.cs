@@ -102,7 +102,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         _medalGradientBrush = CreateGradientBrush(message.MedalColorStart, message.MedalColorEnd) ?? _medalBackgroundBrush;
         _medalTextBrush = CreateBrush(message.MedalTextColor) ?? _medalBrush;
         MedalGuardIconSource = CreateBitmap(message.MedalGuardIcon, 32);
-        AvatarSource = CreateBitmap(message.Avatar, 64);
         // 船锚已经在勋章里表达了大航海身份，不再重复挂“舰长”文字标签。
         BadgeText = message.GuardLevel > 0 && MedalGuardIconSource is not null ? null : badge;
         TitleIconSource = BuildTitleIcon(message.UserTitleId, titleResources);
@@ -210,9 +209,24 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
     public bool HasTitleIcon => TitleIconSource is not null;
 
     /// <summary>
-    /// Gets 头像位图；按 64px 解码并与同一地址复用，避免每条消息各自解码.
+    /// Gets 头像位图；按 64px 解码，避免按原图解码.
     /// </summary>
-    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? AvatarSource { get; }
+    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? AvatarSource
+    {
+        get
+        {
+            if (!TryCreateAbsoluteUri(Message.Avatar, out var uri))
+            {
+                return null;
+            }
+
+            return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
+            {
+                DecodePixelWidth = 64,
+                DecodePixelType = Microsoft.UI.Xaml.Media.Imaging.DecodePixelType.Logical,
+            };
+        }
+    }
 
     /// <summary>
     /// Gets 勋章文案（名称 + 等级），避免两个 TextBlock 之间出现空白.
@@ -411,7 +425,7 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
                 // 直接 new Uri 会在 UI 线程抛异常并让整个聊天列表崩掉。
                 if (TryCreateAbsoluteUri(pair.Value.Url, out var uri))
                 {
-                    result[$"[{pair.Key}]"] = new Richasy.BiliKernel.Models.Appearance.BiliImage(uri);
+                    result[$"[{pair.Key}]"] = CreateEmoteImage(uri, pair.Value);
                 }
             }
         }
@@ -430,7 +444,7 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
                 if (resources.TryGetValue(match.Groups[1].Value, out var resource)
                     && TryCreateAbsoluteUri(resource.Url, out var uri))
                 {
-                    result[key] = new Richasy.BiliKernel.Models.Appearance.BiliImage(uri);
+                    result[key] = CreateEmoteImage(uri, resource);
                 }
             }
         }
@@ -440,6 +454,20 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
 
     [System.Text.RegularExpressions.GeneratedRegex(@"\[([^\[\]]+)\]")]
     private static partial System.Text.RegularExpressions.Regex EmoteTokenPattern();
+
+    // 内联表情必须带尺寸：没有宽高时 RichTextBlock 会在测量里反复调整行高，长房间里可能触发布局循环。
+    private static Richasy.BiliKernel.Models.Appearance.BiliImage CreateEmoteImage(
+        Uri uri,
+        Richasy.BiliKernel.Models.Media.LiveDanmakuEmote emote)
+    {
+        var width = emote.Width > 0 ? Math.Clamp(emote.Width, 16, 96) : 24;
+        var height = emote.Height > 0 ? Math.Clamp(emote.Height, 16, 96) : 24;
+        return new Richasy.BiliKernel.Models.Appearance.BiliImage(uri)
+        {
+            Width = width,
+            Height = height,
+        };
+    }
 
     private static bool TryCreateAbsoluteUri(string? url, out Uri uri)
     {
@@ -453,9 +481,6 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
         return Uri.TryCreate(normalized, UriKind.Absolute, out uri!);
     }
 
-    // 同一地址的位图在有界缓存里复用：头像/船锚/头衔在长房间里会重复成千上万次。
-    private static readonly Dictionary<string, WeakReference<Microsoft.UI.Xaml.Media.Imaging.BitmapImage>> BitmapCache = new(StringComparer.Ordinal);
-
     private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? CreateBitmap(string? url, int decodeWidth)
     {
         if (!TryCreateAbsoluteUri(url, out var uri))
@@ -463,24 +488,11 @@ public sealed partial class LiveChatMessageItem : INotifyPropertyChanged
             return null;
         }
 
-        var key = $"{decodeWidth}|{url}";
-        if (BitmapCache.TryGetValue(key, out var weak) && weak.TryGetTarget(out var cached))
-        {
-            return cached;
-        }
-
-        var image = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
+        return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri)
         {
             DecodePixelWidth = decodeWidth,
             DecodePixelType = Microsoft.UI.Xaml.Media.Imaging.DecodePixelType.Logical,
         };
-        if (BitmapCache.Count > 512)
-        {
-            BitmapCache.Clear();
-        }
-
-        BitmapCache[key] = new WeakReference<Microsoft.UI.Xaml.Media.Imaging.BitmapImage>(image);
-        return image;
     }
 
     private static Brush? CreateGradientBrush(string? start, string? end)
