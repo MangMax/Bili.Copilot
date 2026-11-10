@@ -28,6 +28,7 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Resolvers/QualitySelectionAdapter.cs" Link="Routing/QualitySelectionAdapter.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/SettingsPageViewModel/SettingsPageViewModel.PlaybackRouting.cs" Link="Routing/SettingsPageViewModel.PlaybackRouting.cs" />
     <Using Include="Xunit" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.LiveRoomStatus.cs" Link="Playback/PlayerViewModel.LiveRoomStatus.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/PlayerViewModel/PlayerViewModel.PlaybackRouting.cs" Link="Playback/PlayerViewModel.PlaybackRouting.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/PlaybackRouting/*.cs" Link="PlaybackRouting/%(Filename)%(Extension)" />
     <!-- 与 UI 工程的 GlobalUsing.cs 对齐：链接的 AI 源文件直接使用 StringBuilder 等类型。 -->
@@ -174,5 +175,15 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/LivePartitionPageViewModel/*.cs" Link="LivePartition/%(Filename)%(Extension)" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/LivePartition/LiveSubPartitionSelector.xaml.cs" Link="LivePartition/LiveSubPartitionSelector.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/LiveCardStyle.cs" Link="LivePartition/LiveCardStyle.cs" />
+  </ItemGroup>
+
+  <!--
+    直播模式策略、地址选择与会话状态是与 WinUI 无关的纯逻辑（#193）；
+    LiveMediaSourceResolver 只做内核取址与头部/选项的粘合，用 DispatchProxy 假服务驱动。
+  -->
+  <ItemGroup>
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Live/*.cs" Link="Live/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/BiliMediaType.cs" Link="Live/BiliMediaType.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Resolvers/LiveMediaSourceResolver.cs" Link="Live/LiveMediaSourceResolver.cs" />
   </ItemGroup>
 </Project>

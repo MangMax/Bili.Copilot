@@ -19,10 +19,24 @@ public sealed partial class PlayerViewModel
 
         if (e.PropertyName == nameof(Player.Position))
         {
+            if (!LiveCapabilities.SupportsDanmakuTimeline)
+            {
+                // 直播没有时间轴（LiveModePolicy.SupportsDanmakuTimeline = false）：
+                // 位置变化只代表直播流的推进，不能驱动时间轴弹幕。
+                return;
+            }
+
             Danmaku.UpdatePosition(Convert.ToInt32(Player.Position));
         }
         else if (e.PropertyName == nameof(Player.PlaybackRate))
         {
+            // 直播没有时间轴弹幕：mpv 的 playback-rate 在直播下会持续微调（对时），
+            // 每次都驱动弹幕渲染器重配会以几十赫兹重建 DirectX 配置，最终把 UI 线程打崩。
+            if (!LiveCapabilities.SupportsDanmakuTimeline)
+            {
+                return;
+            }
+
             Danmaku.ExtraSpeed = Player.PlaybackRate;
         }
         else if (e.PropertyName == nameof(Player.PlaybackState))
@@ -44,7 +58,7 @@ public sealed partial class PlayerViewModel
     /// <returns><see cref="Task"/>.</returns>
     public async Task ChangePositionAsync(double position)
     {
-        if (Player is null || Client is null || _isDanmakuClosed
+        if (!LiveCapabilities.SupportsTimeline || Player is null || Client is null || _isDanmakuClosed
             || !double.IsFinite(position) || position < 0 || (Player.Duration > 0 && position > Player.Duration))
         {
             return;

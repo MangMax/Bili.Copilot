@@ -76,6 +76,7 @@ internal static class GlobalDependencies
             .AddDanmakuService()
             .AddSubtitleService()
             .AddPlayerService()
+            .AddLiveDanmakuService()
             .AddSponsorBlockService()
             .AddAIConversation()
 
@@ -137,6 +138,8 @@ internal static class GlobalDependencies
             .AddTransient<VideoMediaHistoryResolver>()
             .AddTransient<PgcMediaSourceResolver>()
             .AddTransient<PgcMediaHistoryResolver>()
+            .AddTransient<LiveMediaSourceResolver>()
+            .AddTransient<LiveMediaHistoryResolver>()
             .AddTransient<PlayerViewModel>()
             .AddTransient<DanmakuSendViewModel>()
             .AddNotificationViewModel()

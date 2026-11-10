@@ -1,4 +1,4 @@
-﻿using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models.Danmaku;
@@ -112,6 +112,11 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
 
     public void AddDanmaku(string text)
         => RequestAddSingleDanmaku?.Invoke(this, text);
+
+    /// <summary>
+    /// 重新从设置读取弹幕样式；进入直播房间时调用，保证与视频弹幕使用同一份配置。
+    /// </summary>
+    public void ReloadOptions() => ResetOptions();
 
     private void ResetOptions()
     {

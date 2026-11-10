@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Forms;
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Player;
@@ -232,11 +233,15 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     private async Task InitializeCoreAsync(MediaSnapshot snapshot)
     {
         _mediaDisplaySource?.Suspend();
+        StopLiveRecoveryMonitor();
+        _resumeAfterLiveTerminal = false;
+        ClearLiveRoomTerminal();
         CancelPlaybackRefresh();
         _isPlaybackRefreshReload = false;
         _danmakuPlaybackVersion++;
         _danmakuLoadSession?.Cancel();
         _snapshot = snapshot;
+        NotifyLiveModeChanged();
         ErrorMessage = default;
         ErrorActionText = default;
         HasErrorAction = false;
@@ -246,6 +251,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         IsConnecting = true;
         IsSourceSelectable = false;
         IsDanmakuEnabled = false;
+        IsDanmakuControlVisible = false;
         IsDanmakuLoading = false;
         IsStatsOverlayShown = false;
         IsEnd = false;
@@ -297,14 +303,24 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             }
         }
 
-        StartSponsorBlockLoading();
+        if (LiveCapabilities.RunsSponsorBlock)
+        {
+            StartSponsorBlockLoading();
+        }
 
         Title = Connector switch
         {
             VideoConnectorViewModel videoVM => videoVM.Title,
             PgcConnectorViewModel pgcVM => pgcVM.Title,
+            LiveConnectorViewModel liveVM => liveVM.Title,
             _ => string.Empty
         };
+
+        if (IsLive && Window?.GetWindow() is { } liveWindow)
+        {
+            // 直播标题同时驱动自绘标题栏与系统窗口标题。
+            liveWindow.Title = Title ?? string.Empty;
+        }
 
         // TODO: 创建源处理器
         switch (_snapshot.Type)
@@ -339,6 +355,44 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                 }
                 break;
             case BiliMediaType.Live:
+                {
+                    var resolver = this.Get<LiveMediaSourceResolver>();
+                    resolver.Initialize(_snapshot);
+                    if (Connector is LiveConnectorViewModel { Session.Page: { } page })
+                    {
+                        resolver.SetPageDetail(page);
+                    }
+
+                    _sourceResolver = resolver;
+                    _sourceResolver.WindowHandle = Window!.Handle;
+
+                    // 播放器内核会把取源异常吞成日志：先预取地址，才能把可读原因交给用户。
+                    if (!await resolver.TryPrepareAsync())
+                    {
+                        if (Window.IsClosed)
+                        {
+                            return;
+                        }
+
+                        ShowLivePlaybackFailure(resolver.FailureKind);
+                        IsConnecting = false;
+                        OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));
+                        RefreshPlaybackCommand.NotifyCanExecuteChanged();
+                        CheckBlackBackgroundVisible();
+                        return;
+                    }
+
+                    if (Connector is LiveConnectorViewModel liveConnector)
+                    {
+                        liveConnector.ApplyPlaybackInfo(resolver);
+                    }
+
+                    if (Window.IsClosed)
+                    {
+                        return;
+                    }
+                }
+
                 break;
             default:
                 break;
@@ -374,6 +428,11 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                 }
                 break;
             case BiliMediaType.Live:
+                {
+                    // 直播不写历史也不续播：用空实现满足播放器的调用契约。
+                    _historyResolver = this.Get<LiveMediaHistoryResolver>();
+                }
+
                 break;
             default:
                 break;
@@ -395,6 +454,17 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             Player.UpdateResolvers(_sourceResolver, _historyResolver);
         }
 
+        await ApplyPlaybackProfileAsync(_snapshot.Type);
+        if (Window.IsClosed)
+        {
+            return;
+        }
+
+        if (IsLive)
+        {
+            StartLiveRecoveryMonitor();
+        }
+
         try
         {
             _mediaDisplaySource?.Resume();
@@ -402,7 +472,15 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
         catch (Exception ex)
         {
-            ErrorMessage = ex.Message;
+            if (IsLive)
+            {
+                ShowLivePlaybackFailure(LiveFailureClassifier.Classify(ex));
+            }
+            else
+            {
+                ErrorMessage = ex.Message;
+            }
+
             return;
         }
 
@@ -419,7 +497,12 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         CheckFullScreen();
         CheckCompactOverlay();
-        ProgressChanged?.Invoke(this, 0);
+        if (LiveCapabilities.ReportsProgress)
+        {
+            // 直播不上报进度（LiveModePolicy.ReportsProgress = false）。
+            ProgressChanged?.Invoke(this, 0);
+        }
+
         await LoadSourcesAsync();
         await LoadSubtitlesAsync();
         if (Window.IsClosed)
@@ -559,7 +642,21 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     }
 
     private void CheckBottomProgressBarVisible()
-        => IsBottomProgressBarVisible = !IsControlsVisible && SettingsToolkit.ReadLocalSetting(SettingNames.IsBottomProgressBarVisible, true);
+        => IsBottomProgressBarVisible = LiveCapabilities.ReportsProgress && !IsControlsVisible && SettingsToolkit.ReadLocalSetting(SettingNames.IsBottomProgressBarVisible, true);
+
+    /// <summary>
+    /// 媒体类型确定后刷新所有由 <see cref="LiveModePolicy"/> 推导的只读属性。
+    /// </summary>
+    private void NotifyLiveModeChanged()
+    {
+        OnPropertyChanged(nameof(IsLive));
+        OnPropertyChanged(nameof(LiveCapabilities));
+        OnPropertyChanged(nameof(IsProgressBarVisible));
+        OnPropertyChanged(nameof(IsTimelineProgressVisible));
+        OnPropertyChanged(nameof(IsProgressPanelVisible));
+        OnPropertyChanged(nameof(IsSeekAvailable));
+        CheckBottomProgressBarVisible();
+    }
 
     partial void OnIsControlsVisibleChanged(bool value)
         => Window?.SetCaptionButtonVisibility(value);

@@ -1,5 +1,6 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
@@ -49,10 +50,33 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
         _removeAction = removeAction;
     }
 
+    /// <summary>
+    /// 左键打开直播间：默认进入应用内播放器；"直播时使用网页播放器"开启时仍走浏览器。
+    /// </summary>
+    /// <returns><see cref="Task"/>.</returns>
     [RelayCommand]
     private async Task PlayAsync()
     {
-        await Launcher.LaunchUriAsync(new Uri(GetWebUrl()));
+        var useWebPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.UseWebPlayerWhenLive, false);
+        if (LiveEntryPolicy.Decide(useWebPlayer) == LiveEntryTarget.Browser)
+        {
+            await OpenInBrowserAsync();
+            return;
+        }
+
+        this.Get<AppViewModel>().OpenPlayerCommand.Execute(new MediaSnapshot(Data));
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// 在系统浏览器打开直播间；右键菜单与原生播放失败兜底共用。
+    /// </summary>
+    /// <returns><see cref="Task"/>.</returns>
+    [RelayCommand]
+    private Task OpenInBrowserAsync()
+    {
+        var url = LiveRoomUrl.Create(Data.Identifier.Id);
+        return url is null ? Task.CompletedTask : Launcher.LaunchUriAsync(url).AsTask();
     }
 
     [RelayCommand]
@@ -81,6 +105,4 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
-    private string GetWebUrl()
-        => $"https://live.bilibili.com/{Data.Identifier.Id}";
 }

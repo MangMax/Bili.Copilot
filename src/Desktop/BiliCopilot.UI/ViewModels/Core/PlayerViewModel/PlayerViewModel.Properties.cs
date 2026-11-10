@@ -1,6 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Resolvers;
@@ -47,6 +48,7 @@ public sealed partial class PlayerViewModel
     private bool _isTlsFailed;
     private double _prevPosition;
     private bool _isBroken;
+    private bool _liveProfileApplied;
 
     public event EventHandler<string> WarningOccurred;
     public event EventHandler ChapterInitialized;
@@ -122,6 +124,14 @@ public sealed partial class PlayerViewModel
 
     [ObservableProperty]
     public partial IPlayerConnectorViewModel? Connector { get; set; }
+
+    /// <summary>
+    /// Gets 当前直播连接器；视频/PGC 时为 <c>null</c>，供标题栏的画质/线路选择绑定。
+    /// </summary>
+    public LiveConnectorViewModel? LiveConnector => Connector as LiveConnectorViewModel;
+
+    partial void OnConnectorChanged(IPlayerConnectorViewModel? value)
+        => OnPropertyChanged(nameof(LiveConnector));
 
     [ObservableProperty]
     public partial bool IsPrevButtonEnabled { get; set; }
@@ -250,6 +260,45 @@ public sealed partial class PlayerViewModel
 
     [ObservableProperty]
     public partial bool IsClearShaderEnabled { get; set; }
+
+    /// <summary>
+    /// Gets 当前媒体的直播能力集合；时间轴相关的守卫一律读这里的标志位，
+    /// 而不是各自再写一遍"是不是直播"。
+    /// </summary>
+    /// <remarks>
+    /// 唯一判定来源是 <see cref="Live.LiveModePolicy"/>。仍有少量按 <see cref="IsLive"/>
+    /// 分支的地方（键盘/快捷键、错误恢复、窗口标题、媒体源类型），它们判断的是"直播这一媒体事实"
+    /// 而不是某项时间轴能力，因此保留 <see cref="IsLive"/>。
+    /// </remarks>
+    public LiveModeCapabilities LiveCapabilities => LiveModePolicy.For(CurrentMediaType);
+
+    /// <summary>
+    /// Gets a value indicating whether 当前媒体是否为直播；直接由 <see cref="LiveModePolicy"/> 推导，
+    /// 不再单独维护一个布尔字段。
+    /// </summary>
+    public bool IsLive => LiveModePolicy.IsLive(CurrentMediaType);
+
+    private BiliMediaType CurrentMediaType => _snapshot?.Type ?? BiliMediaType.Video;
+
+    /// <summary>
+    /// Gets a value indicating whether 是否显示进度条（直播不上报进度）.
+    /// </summary>
+    public bool IsProgressBarVisible => LiveCapabilities.ReportsProgress;
+
+    /// <summary>
+    /// Gets 是否显示可跳转的时间轴。直播只有已播时长，不进入章节/进度条逻辑。
+    /// </summary>
+    public bool IsTimelineProgressVisible => !IsLive && IsProgressBarVisible;
+
+    /// <summary>
+    /// Gets 是否显示进度区域：点播按原规则，直播始终显示静态时间轴。
+    /// </summary>
+    public bool IsProgressPanelVisible => IsLive || IsProgressBarVisible;
+
+    /// <summary>
+    /// Gets a value indicating whether 是否允许跳转/倍速（直播没有时间轴）.
+    /// </summary>
+    public bool IsSeekAvailable => LiveCapabilities.SupportsTimeline;
 
     public bool IsTouching { get; set; }
 

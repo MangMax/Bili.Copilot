@@ -119,7 +119,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { SearchVerificationRequired, SearchFailed, Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, RecommendLive, RecommendLivePartition, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, User, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { LiveRoomCutOffTitle, LiveRoomNotStartedTitle, SearchVerificationRequired, SearchFailed, Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, RecommendLive, RecommendLivePartition, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, User, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
@@ -147,12 +147,27 @@ namespace BiliCopilot.UI.ViewModels.Items
 }
 namespace BiliCopilot.UI.Models
 {
-    public sealed class MediaSnapshot(VideoInformation video)
+    public sealed class MediaSnapshot
     {
-        public VideoInformation Video { get; } = video;
+        public MediaSnapshot(VideoInformation video)
+            => Video = video;
+
+        public MediaSnapshot(LiveInformation live)
+        {
+            Live = live;
+            Type = BiliCopilot.UI.Models.Constants.BiliMediaType.Live;
+        }
+
+        public VideoInformation? Video { get; }
+
+        public LiveInformation? Live { get; }
+
+        public BiliCopilot.UI.Models.Constants.BiliMediaType Type { get; set; }
+
         public EpisodeInformation? Episode { get; set; }
         public SeasonInformation? Season { get; set; }
         public int? PreferQuality { get; set; }
+        public double? StartPosition { get; set; }
         public List<MediaSnapshot> Playlist { get; set; } = new();
     }
 }

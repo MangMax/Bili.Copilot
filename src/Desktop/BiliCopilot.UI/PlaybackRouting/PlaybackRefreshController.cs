@@ -7,13 +7,17 @@ namespace BiliCopilot.UI.PlaybackRouting;
 internal sealed class PlaybackRefreshController
 {
     private CancellationTokenSource? _cancellation;
+    private TaskCompletionSource? _completion;
+
+    public Task Completion => _completion?.Task ?? Task.CompletedTask;
 
     public bool IsRefreshing => _cancellation is not null;
 
     public void Cancel() => _cancellation?.Cancel();
 
     public async Task RefreshAsync<T>(Func<CancellationToken, Task<T>> fetch, Func<T, CancellationToken, Task> reopen,
-        Func<bool> isCurrent, Action<Exception> reportError, TimeSpan? timeout = null)
+        Func<bool> isCurrent, Action<Exception> reportError, TimeSpan? timeout = null,
+        Func<Exception, bool>? retry = null, Func<CancellationToken, Task<T>>? retryFetch = null)
     {
         if (IsRefreshing || !isCurrent())
         {
@@ -23,15 +27,34 @@ internal sealed class PlaybackRefreshController
         using var userCancellation = new CancellationTokenSource();
         using var deadline = new CancellationTokenSource(timeout ?? TimeSpan.FromSeconds(20));
         using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(userCancellation.Token, deadline.Token);
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _completion = completion;
         _cancellation = userCancellation;
         try
         {
-            var source = await fetch(cancellation.Token).WaitAsync(cancellation.Token);
-            cancellation.Token.ThrowIfCancellationRequested();
-            if (isCurrent())
+            for (var attempt = 0; ; attempt++)
             {
-                // Reopen must join any native write already admitted, even when cancelled.
-                await reopen(source, cancellation.Token);
+                try
+                {
+                    var source = await fetch(cancellation.Token).WaitAsync(cancellation.Token);
+                    cancellation.Token.ThrowIfCancellationRequested();
+                    if (isCurrent())
+                    {
+                        // Every admitted native load is joined before retry, cancellation or teardown.
+                        await reopen(source, cancellation.Token);
+                    }
+
+                    return;
+                }
+                catch (Exception ex) when (!cancellation.IsCancellationRequested && isCurrent())
+                {
+                    if (retry is null || !retry(ex) || attempt >= 2)
+                    {
+                        throw;
+                    }
+
+                    fetch = retryFetch ?? fetch;
+                }
             }
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
@@ -51,6 +74,7 @@ internal sealed class PlaybackRefreshController
         finally
         {
             _cancellation = null;
+            completion.SetResult();
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.WinUIKernel.Share.Base;
@@ -265,5 +268,46 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         var selectedSource = (sender as FrameworkElement)?.DataContext as SourceItemViewModel;
         selectedSource?.ActiveCommand.Execute(default);
         SourceFlyout?.Hide();
+    }
+
+    private void OnLiveQualityItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement element
+            || ViewModel?.LiveConnector is not { } connector
+            || element.DataContext is not LiveQualityOption option)
+        {
+            return;
+        }
+
+        connector.SelectedQuality = option;
+        CloseAncestorFlyout(element);
+    }
+
+    private void OnLiveLineItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement element
+            || ViewModel?.LiveConnector is not { } connector
+            || element.DataContext is not LiveLineOption option)
+        {
+            return;
+        }
+
+        connector.SelectedLine = option;
+        CloseAncestorFlyout(element);
+    }
+
+    private static void CloseAncestorFlyout(FrameworkElement element)
+    {
+        DependencyObject? current = element;
+        while (current is not null)
+        {
+            if (current is Popup popup)
+            {
+                popup.IsOpen = false;
+                return;
+            }
+
+            current = VisualTreeHelper.GetParent(current);
+        }
     }
 }

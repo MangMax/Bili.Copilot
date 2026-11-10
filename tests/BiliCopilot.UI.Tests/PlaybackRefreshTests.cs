@@ -1,8 +1,16 @@
+using BiliCopilot.UI.Live;
+using BiliCopilot.UI.Models;
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Toolkits;
+using Microsoft.Extensions.Logging.Abstractions;
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.Components;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
+using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Media;
 using System.Reflection;
 
 namespace BiliCopilot.UI.Tests;
@@ -134,6 +142,256 @@ public sealed class PlaybackRefreshTests
         await refresh;
         Assert.Single(vm.RefreshErrors);
         Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
+    }
+
+
+    [Fact]
+    public async Task PlayerRefresh_LiveOffersRefreshAndReopensWithoutPositionOrSpeed()
+    {
+        var (resolver, service) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        Assert.True(vm.IsPlaybackRefreshAvailable);
+        Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
+
+        vm.Player.Position = 24;
+        vm.Player.PlaybackRate = 1.75;
+        vm.Player.Volume = 37;
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+
+        var load = Assert.Single(vm.Client!.Loads);
+        Assert.Equal(2, service.PlayCalls);
+        Assert.Null(load.Options.StartPosition);
+        Assert.Equal(1d, load.Options.InitialSpeed);
+        Assert.Equal(37d, load.Options.InitialVolume);
+        Assert.Empty(vm.RefreshErrors);
+    }
+
+    [Fact]
+    public async Task PlayerRefresh_LiveRefreshIsSingleFlightAndLateFetchIsDiscardedAfterClose()
+    {
+        var (resolver, service) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        var pending = new TaskCompletionSource<LiveMediaInformation>();
+        service.Fetch = () => pending.Task;
+
+        var refresh = vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.False(vm.RefreshPlaybackCommand.CanExecute(null));
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        await vm.ReleaseSessionCoreAsync(() => Task.CompletedTask);
+        pending.SetResult(service.Information);
+        await refresh;
+
+        Assert.Empty(vm.Client!.Loads);
+        Assert.Empty(vm.RefreshErrors);
+        Assert.False(resolver.IsRefreshPending);
+    }
+
+    [Fact]
+    public async Task PlayerRefresh_LiveFetchFailureIsReportedAndButtonCanRetry()
+    {
+        var (resolver, service) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        service.Fetch = () => Task.FromException<LiveMediaInformation>(
+            new HttpRequestException("403", null, System.Net.HttpStatusCode.Forbidden));
+
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+
+        Assert.Single(vm.RefreshErrors);
+        Assert.Empty(vm.Client!.Loads);
+        Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task LiveRefreshFailedNativeLoadRetriesWithinSameOperation()
+    {
+        var (resolver, service) = await CreateLiveResolverAsync();
+        service.Information = new LiveMediaInformation("123", [],
+            [new LiveLineInformation("avc", 400, [400],
+                [new LivePlayUrl("http_hls", "https://first.example", "/a.m3u8", ""),
+                 new LivePlayUrl("http_hls", "https://backup.example", "/a.m3u8", "")])]);
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        vm.Client!.OnLoad = () =>
+        {
+            if (vm.Client.Loads.Count == 1) vm.Client.FailLoad();
+            else vm.Client.CompleteLoad();
+        };
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Equal(2, vm.Client.Loads.Count);
+        Assert.Equal("backup.example", new Uri(vm.Client.Loads[1].Url).Host);
+        Assert.Empty(vm.RefreshErrors);
+        Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task LiveRefreshExhaustsCandidatesThenRequestsFreshUrlWithinSameOperation()
+    {
+        var (resolver, service) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        vm.Client!.OnLoad = () =>
+        {
+            if (vm.Client.Loads.Count == 1) vm.Client.FailLoad();
+            else vm.Client.CompleteLoad();
+        };
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Equal(2, vm.Client.Loads.Count);
+        Assert.Equal(3, service.PlayCalls); // Initial, manual refresh, then recovery refresh.
+        Assert.Empty(vm.RefreshErrors);
+    }
+
+    [Fact]
+    public async Task LiveRefreshStopsAfterThreeFailedNativeLoadsWithOriginalFailureKind()
+    {
+        var (resolver, service) = await CreateLiveResolverAsync();
+        service.Information = new LiveMediaInformation("123", [],
+            [new LiveLineInformation("avc", 400, [400],
+                Enumerable.Range(0, 5).Select(i => new LivePlayUrl("http_hls", $"https://host{i}.example", "/a.m3u8", "")).ToArray())]);
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        vm.Client!.OnLoad = vm.Client.FailLoad;
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Equal(3, vm.Client.Loads.Count);
+        var error = Assert.IsType<LivePlaybackUnavailableException>(Assert.Single(vm.RefreshErrors));
+        Assert.Equal(LivePlaybackFailureKind.Transport, error.Kind);
+        Assert.True(vm.RefreshPlaybackCommand.CanExecute(null));
+    }
+
+    [Theory]
+    [InlineData(Richasy.MpvKernel.MpvError.Http403, LivePlaybackFailureKind.Transport)]
+    [InlineData(Richasy.MpvKernel.MpvError.TlsError, LivePlaybackFailureKind.Transport)]
+    [InlineData(Richasy.MpvKernel.MpvError.VoInitFailed, LivePlaybackFailureKind.DecoderInit)]
+    public void NativeFailureClassificationPreservesTransportAndDecoderErrors(Richasy.MpvKernel.MpvError error, LivePlaybackFailureKind expected)
+        => Assert.Equal(expected, LiveNativePlaybackFailure.Classify(error));
+
+    [Theory]
+    [InlineData(false, 1)]
+    [InlineData(true, 0)]
+    public async Task LiveReloadResumesTerminalOwnedPauseButPreservesUserPause(bool userPaused, int expectedResumes)
+    {
+        var (resolver, _) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        vm.Player.PlaybackState = userPaused
+            ? Richasy.MpvKernel.Core.Enums.MpvPlayerState.Paused
+            : Richasy.MpvKernel.Core.Enums.MpvPlayerState.Playing;
+        vm.RememberLiveTerminalPause();
+        vm.Player.PlaybackState = Richasy.MpvKernel.Core.Enums.MpvPlayerState.Paused;
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Equal(expectedResumes, vm.Client!.ResumeCount);
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Equal(expectedResumes, vm.Client.ResumeCount);
+    }
+
+    [Theory]
+    [InlineData(true, 0)]
+    [InlineData(false, 1)]
+    public async Task OnlyExplicitPauseIntentRevokesTerminalResumeOwnership(bool changesPause, int expectedResumes)
+    {
+        var (resolver, _) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        vm.Player.PlaybackState = Richasy.MpvKernel.Core.Enums.MpvPlayerState.Playing;
+        vm.RememberLiveTerminalPause();
+        Assert.True(await vm.PreparePlaybackIntentAsync(changesPause));
+        await vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Equal(expectedResumes, vm.Client!.ResumeCount);
+    }
+
+    [Fact]
+    public async Task TerminalPauseArrivingBehindQueuedPositionCannotDeadlockAdmittedReload()
+    {
+        var (resolver, _) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        var position = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        vm.SetPositionQueueTask(position.Task);
+        var refresh = vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Empty(vm.Client!.Loads);
+        // A later terminal pause waits for the already-admitted native reload.
+        vm.SetTerminalPauseTask(vm.DrainPositionChangesAsync());
+        position.SetResult();
+        await refresh.WaitAsync(TimeSpan.FromSeconds(2));
+        Assert.Single(vm.Client.Loads);
+        Assert.Empty(vm.RefreshErrors);
+    }
+
+    [Theory]
+    [InlineData(false, 1)]
+    [InlineData(true, 0)]
+    public async Task LiveAfterTerminalDuringNativeReloadWaitsAndReloadsFreshInsteadOfLosingStart(bool userPaused, int expectedResumes)
+    {
+        var (resolver, service) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        vm.Player.PlaybackState = userPaused
+            ? Richasy.MpvKernel.Core.Enums.MpvPlayerState.Paused
+            : Richasy.MpvKernel.Core.Enums.MpvPlayerState.Playing;
+        vm.Client!.CompleteLoads = false;
+        var admitted = vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        Assert.Single(vm.Client.Loads);
+        vm.ApplyLiveRoomTerminal(LiveRoomPhase.NotStarted, null);
+        vm.ClearLiveRoomTerminal();
+        var started = vm.RequestLivePlayUrlReloadAsync();
+        Assert.False(started.IsCompleted);
+        Assert.Single(vm.Client.Loads);
+        vm.Client.CompleteLoads = true;
+        vm.Client.CompleteLoad();
+        await Task.WhenAll(admitted, started).WaitAsync(TimeSpan.FromSeconds(2));
+        Assert.Equal(2, vm.Client.Loads.Count);
+        Assert.Equal(3, service.PlayCalls);
+        Assert.Equal(0, vm.Client.PauseCount);
+        Assert.Equal(expectedResumes, vm.Client.ResumeCount);
+        Assert.False(vm.IsLiveRoomTerminal);
+        Assert.Empty(vm.RefreshErrors);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PendingLiveStartIsDiscardedAfterCloseOrNewTerminalEvent(bool close)
+    {
+        var (resolver, service) = await CreateLiveResolverAsync();
+        var vm = new PlayerViewModel { IsLive = true };
+        vm.SetRefreshResolver(resolver);
+        vm.Player.PlaybackState = Richasy.MpvKernel.Core.Enums.MpvPlayerState.Playing;
+        vm.Client!.CompleteLoads = false;
+        var admitted = vm.RefreshPlaybackCommand.ExecuteAsync(null);
+        vm.ApplyLiveRoomTerminal(LiveRoomPhase.NotStarted, null);
+        vm.ClearLiveRoomTerminal();
+        var started = vm.RequestLivePlayUrlReloadAsync();
+        if (close) vm.CloseInput();
+        else vm.ApplyLiveRoomTerminal(LiveRoomPhase.CutOff, null);
+        vm.Client.CompleteLoad();
+        await Task.WhenAll(admitted, started).WaitAsync(TimeSpan.FromSeconds(2));
+        Assert.Single(vm.Client.Loads);
+        Assert.Equal(2, service.PlayCalls);
+        Assert.Equal(0, vm.Client.ResumeCount);
+        Assert.Empty(vm.RefreshErrors);
+    }
+
+    private static async Task<(LiveMediaSourceResolver Resolver, LiveMediaSourceResolverTests.LivePlayerService Service)> CreateLiveResolverAsync()
+    {
+        NavigationTestServices.Settings.Value = new();
+        NavigationTestServices.Current.Value = new() { [typeof(AccountViewModel)] = new AccountViewModel() };
+        var api = DispatchProxy.Create<IPlayerService, LiveMediaSourceResolverTests.LivePlayerService>();
+        var service = (LiveMediaSourceResolverTests.LivePlayerService)(object)api;
+        var page = new LivePlayerView(
+            new LiveInformation(new MediaIdentifier("123", "房间标题", null)),
+            new LiveTag("area", "分区", "default"));
+        service.View = page;
+        service.Information = new LiveMediaInformation(
+            "123",
+            [new PlayerFormatInformation(400, "蓝光", false, false)],
+            [new LiveLineInformation("avc", 400, [400], [new LivePlayUrl("http_hls", "https://hls.example", "/live/a.m3u8", "?sign=1")])]);
+        var cookies = DispatchProxy.Create<IBiliCookiesResolver, LiveMediaSourceResolverTests.CookieService>();
+        var resolver = new LiveMediaSourceResolver(api, cookies, NullLogger<LiveMediaSourceResolver>.Instance);
+        resolver.Initialize(new MediaSnapshot(new LiveInformation(new MediaIdentifier("123", "房间标题", null))));
+        await resolver.GetSourceAsync();
+        return (resolver, service);
     }
 
     private static async Task<(PlayerViewModel Player, PlaybackRoutingResolverTests.PlaybackService Api)> CreatePlayerAsync()

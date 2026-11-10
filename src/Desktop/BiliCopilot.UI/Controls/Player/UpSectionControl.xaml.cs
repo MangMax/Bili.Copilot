@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using Richasy.WinUIKernel.Share.Base;
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using System.Windows.Input;
 
 namespace BiliCopilot.UI.Controls.Player;
@@ -56,6 +58,9 @@ public sealed partial class UpSectionControl : LayoutUserControlBase
     /// Initializes a new instance of the <see cref="UpSectionControl"/> class.
     /// </summary>
     public UpSectionControl() => InitializeComponent();
+
+    private string GetFollowActionText(bool isFollow)
+        => ResourceToolkit.GetLocalizedString(isFollow ? StringNames.Unfollow : StringNames.Follow);
 
     /// <summary>
     /// 用户名.

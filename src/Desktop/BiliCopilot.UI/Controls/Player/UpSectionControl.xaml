@@ -14,6 +14,8 @@
     mc:Ignorable="d">
 
     <base:CardControl
+        x:Name="UserSpaceButton"
+        AutomationProperties.Name="{x:Bind UserName, Mode=OneWay}"
         Background="Transparent"
         BorderBrush="Transparent"
         BorderThickness="0"
@@ -46,10 +48,13 @@
                     Text="{x:Bind Subtitle, Mode=OneWay}" />
             </StackPanel>
             <Button
+                x:Name="FollowButton"
                 Grid.Column="2"
                 Margin="8,0,0,0"
                 Padding="8"
                 VerticalAlignment="Center"
+                AutomationProperties.Name="{x:Bind GetFollowActionText(IsFollow), Mode=OneWay}"
+                ToolTipService.ToolTip="{x:Bind GetFollowActionText(IsFollow), Mode=OneWay}"
                 Command="{x:Bind ToggleFollowCommand, Mode=OneWay}"
                 Visibility="{x:Bind IsFollowButtonShown, Mode=OneWay}">
                 <StackPanel Orientation="Horizontal" Spacing="8">

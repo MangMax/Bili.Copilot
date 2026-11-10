@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -80,7 +80,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         {
             _observedRoot.Changed += OnRootChanged;
         }
-        ViewModel.Player.PropertyChanged += OnPlayerPropertyChanged;
+        if (ViewModel?.Player is not null)
+        {
+            ViewModel.Player.PropertyChanged += OnPlayerPropertyChanged;
+        }
+
         UpdateLayoutState();
     }
 
@@ -118,7 +122,10 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
             _observedRoot.Changed -= OnRootChanged;
             _observedRoot = null;
         }
-        ViewModel.Player.PropertyChanged -= OnPlayerPropertyChanged;
+        if (ViewModel?.Player is not null)
+        {
+            ViewModel.Player.PropertyChanged -= OnPlayerPropertyChanged;
+        }
         _isOverlayActive = false;
         _appliedLayout = null;
         _pendingSpeed = null;
@@ -242,11 +249,12 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     }
 
     private OverlayControlMode CurrentMode => OverlayControlLayout.SelectMode(
-        ViewModel?.Player.IsCompactOverlay == true, XamlRoot?.Size.Width ?? ActualWidth, XamlRoot?.Size.Height ?? ActualHeight);
+        ViewModel?.Player?.IsCompactOverlay == true, XamlRoot?.Size.Width ?? ActualWidth, XamlRoot?.Size.Height ?? ActualHeight);
 
     public bool ContainsInteractivePoint(Windows.Foundation.Point point)
-        => OverlayControlLayout.Contains(CurrentMode, XamlRoot?.Size.Width ?? ActualWidth,
-            XamlRoot?.Size.Height ?? ActualHeight, point.X, point.Y);
+        => ViewModel?.Player is not null
+            && OverlayControlLayout.Contains(CurrentMode, XamlRoot?.Size.Width ?? ActualWidth,
+                XamlRoot?.Size.Height ?? ActualHeight, point.X, point.Y);
 
     private void UpdateLayoutState()
     {
@@ -255,7 +263,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         // Reconcile from arranged geometry, both on first layout and later resizes.
         var width = RootGrid.ActualWidth;
         var height = XamlRoot?.Size.Height ?? ActualHeight;
-        var mode = OverlayControlLayout.SelectMode(ViewModel.Player.IsCompactOverlay, width, height);
+        var mode = OverlayControlLayout.SelectMode(ViewModel.Player?.IsCompactOverlay == true, width, height);
         var layout = (Mode: mode, Width: width, Height: height, Danmaku: ViewModel.IsDanmakuControlVisible);
         if (_appliedLayout == layout) return;
         var state = OverlayControlLayout.StateName(mode, width, layout.Danmaku);
@@ -265,10 +273,22 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         // preferred dimensions and orientation; these limits only reflect the viewport.
         var maxWidth = Math.Max(1, width - 16);
         var maxHeight = Math.Max(1, height - 16);
-        foreach (var content in new FrameworkElement[] { VolumeContent, SpeedContent, ChapterContent, SubtitleContent, DanmakuContent })
-            content.MaxWidth = maxWidth;
-        foreach (var popup in new ScrollViewer[] { VolumePopup, SpeedPopup, ChapterPopup, SubtitlePopup, DanmakuPopup })
-            popup.MaxHeight = maxHeight;
+        // 这些元素在 danmaku 关闭 / 模板尚未加载时可能为 null；布局回调不能因此抛 NRE。
+        foreach (var content in new FrameworkElement?[] { VolumeContent, SpeedContent, ChapterContent, SubtitleContent, DanmakuContent })
+        {
+            if (content is not null)
+            {
+                content.MaxWidth = maxWidth;
+            }
+        }
+
+        foreach (var popup in new ScrollViewer?[] { VolumePopup, SpeedPopup, ChapterPopup, SubtitlePopup, DanmakuPopup })
+        {
+            if (popup is not null)
+            {
+                popup.MaxHeight = maxHeight;
+            }
+        }
         if (mode != OverlayControlMode.CompactPortrait) BalanceLeftRightWidth();
     }
 

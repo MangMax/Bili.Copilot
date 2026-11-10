@@ -61,10 +61,42 @@ namespace BiliCopilot.UI.ViewModels.View
 
 namespace BiliCopilot.UI.ViewModels.Core
 {
+    /// <summary>
+    /// 直播连接器的无 WinUI 替身：只验证关闭时会取消进行中的直播请求。
+    /// </summary>
+    public sealed class LiveConnectorViewModel
+    {
+        public CommunityToolkit.Mvvm.Input.IRelayCommand OpenPanelCommand { get; } = new CommunityToolkit.Mvvm.Input.RelayCommand(() => { });
+        public bool IsCancelPendingCalled { get; private set; }
+
+        public void CancelPending() => IsCancelPendingCalled = true;
+
+        internal void ApplyPlaybackInfo(BiliCopilot.UI.Resolvers.LiveMediaSourceResolver resolver)
+        {
+        }
+    }
+
     public sealed partial class PlayerViewModel
     {
+        private void StopLiveRecoveryMonitor() { }
+        private readonly Microsoft.Extensions.Logging.ILogger<PlayerViewModel> logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<PlayerViewModel>.Instance;
+        public string? ErrorMessage { get; set; }
+        public string? ErrorActionText { get; set; }
+        public bool HasErrorAction { get; set; }
+        public bool IsEnd { get; set; }
+        public bool IsExtraPanelVisible { get; set; }
+        public CommunityToolkit.Mvvm.Input.IRelayCommand BackCommand { get; } = new CommunityToolkit.Mvvm.Input.RelayCommand(() => { });
+        private void CheckBlackBackgroundVisible() { }
+        private Task OpenLiveInBrowserAsync() => Task.CompletedTask;
         public bool IsConnecting { get; set; }
+
+        /// <summary>测试替身：生产实现由 <c>LiveModePolicy</c> 从媒体快照推导。</summary>
+        public bool IsLive { get; set; }
+
+        public LiveConnectorViewModel? Connector { get; set; }
         private double? _continuePosition;
+        internal void SetTerminalPauseTask(Task task) => _liveTerminalPauseDrained = task;
+        internal void SetPositionQueueTask(Task task) => _positionChangesDrained = task;
         internal List<Exception> RefreshErrors { get; } = [];
         partial void ReportPlaybackRefreshFailure(Exception exception) => RefreshErrors.Add(exception);
         private BiliCopilot.UI.Resolvers.MediaSourceResolverBase? _sourceResolver;

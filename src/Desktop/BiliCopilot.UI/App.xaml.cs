@@ -37,6 +37,10 @@ public partial class App : Application
         InitializeComponent();
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         UnhandledException += OnUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            Log.Logger.Fatal(e.ExceptionObject as Exception, "Unhandled AppDomain exception");
+        TaskScheduler.UnobservedTaskException += (_, e) =>
+            Log.Logger.Error(e.Exception, "Unobserved task exception");
         _notificationManager = AppNotificationManager.Default;
         _notificationManager.NotificationInvoked += OnAppNotificationInvoked;
         _notificationManager.Register();

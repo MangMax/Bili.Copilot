@@ -1,0 +1,184 @@
+// Copyright (c) Bili Copilot. All rights reserved.
+
+using BiliCopilot.UI.Resolvers;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace BiliCopilot.UI.ViewModels.Core;
+
+/// <summary>
+/// 直播连接器的画质/线路选择（#194）：列表来自解析器当前的
+/// <c>LiveMediaInformation.Formats</c> 与排序后的 <c>LiveLineInformation</c> 候选，
+/// 选择后统一走播放器的刷新准入重新取址；偏好由 <see cref="ApplyPlaybackInfo"/> 在刷新后回填。
+/// </summary>
+public sealed partial class LiveConnectorViewModel
+{
+    private bool _isSyncingPlayback;
+    private string? _lineRoomId;
+
+    /// <summary>
+    /// 用解析器的最新播放信息回填画质与线路列表；刷新后调用，保证界面不回到默认值。
+    /// </summary>
+    /// <param name="resolver">直播媒体源解析器.</param>
+    internal void ApplyPlaybackInfo(LiveMediaSourceResolver resolver)
+    {
+        var playback = resolver.PlaybackInfo;
+        if (playback is null)
+        {
+            // 取址失败时保留上一次可读的画质/线路，不要把界面清空。
+            return;
+        }
+
+        _isSyncingPlayback = true;
+        try
+        {
+            Qualities.Clear();
+            // 内核会把同一清晰度的多种编码都列出来；界面按 qn 去重，只留一个可选项。
+            var seenQualities = new HashSet<int>();
+            foreach (var format in playback.Formats)
+            {
+                if (!seenQualities.Add(format.Quality))
+                {
+                    continue;
+                }
+
+                Qualities.Add(new LiveQualityOption(format.Quality, format.Description));
+            }
+
+            SelectedQuality = Qualities.FirstOrDefault(option => option.Quality == resolver.SelectedQuality)
+                ?? Qualities.FirstOrDefault();
+
+            // 候选是“格式 × 线路”的笛卡尔积；界面按域名去重。
+            // 线路列表按会话保持稳定：刷新取址只补新域名，不重建已有项，
+            // 否则切一次线路编号和条目都会变（首页的取址结果每次都可能不同）。
+            if (!string.Equals(_lineRoomId, Session.RoomId, StringComparison.Ordinal))
+            {
+                _lineRoomId = Session.RoomId;
+                Lines.Clear();
+            }
+
+            var orderedHosts = resolver.Candidates
+                .SelectMany(candidate => candidate.Targets.Select(target => target.Host))
+                .OfType<string>()
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            foreach (var host in orderedHosts)
+            {
+                if (!Lines.Any(option => string.Equals(option.Key, host, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Lines.Add(new LiveLineOption(host, $"线路{ToLineNumber(Lines.Count + 1)}"));
+                }
+            }
+
+            SelectedLine = Lines.FirstOrDefault(option => string.Equals(option.Key, resolver.CurrentHost, StringComparison.OrdinalIgnoreCase))
+                ?? Lines.FirstOrDefault();
+
+            QualityText = SelectedQuality?.Name;
+            LineText = SelectedLine?.Name;
+            SyncSelectionFlags();
+        }
+        finally
+        {
+            _isSyncingPlayback = false;
+        }
+    }
+
+    private void SyncSelectionFlags()
+    {
+        foreach (var option in Qualities)
+        {
+            option.IsSelected = ReferenceEquals(option, SelectedQuality);
+        }
+
+        foreach (var option in Lines)
+        {
+            option.IsSelected = ReferenceEquals(option, SelectedLine);
+        }
+    }
+
+    partial void OnSelectedQualityChanged(LiveQualityOption? value)
+    {
+        if (_isSyncingPlayback || value is null)
+        {
+            return;
+        }
+
+        SyncSelectionFlags();
+        _ = Parent.ChangeLiveQualityAsync(value.Quality);
+    }
+
+    partial void OnSelectedLineChanged(LiveLineOption? value)
+    {
+        if (_isSyncingPlayback || value is null)
+        {
+            return;
+        }
+
+        SyncSelectionFlags();
+        _ = Parent.ChangeLiveLineAsync(value.Key);
+    }
+
+    private static string ToLineNumber(int index)
+        => index switch
+        {
+            1 => "一",
+            2 => "二",
+            3 => "三",
+            4 => "四",
+            5 => "五",
+            6 => "六",
+            7 => "七",
+            8 => "八",
+            9 => "九",
+            10 => "十",
+            _ => index.ToString(System.Globalization.CultureInfo.InvariantCulture),
+        };
+
+
+}
+
+/// <summary>
+/// 画质选项；只持有清晰度标识与展示名，不持有任何地址.
+/// </summary>
+/// <remarks>
+/// 以构造函数参数初始化清晰度标识与展示名.
+/// </remarks>
+public sealed partial class LiveQualityOption(int quality, string name) : ObservableObject
+{
+    /// <summary>
+    /// Gets 清晰度标识.
+    /// </summary>
+    public int Quality { get; } = quality;
+
+    /// <summary>
+    /// Gets 展示名.
+    /// </summary>
+    public string Name { get; } = name;
+
+    /// <summary>
+    /// Gets or sets 是否为当前选择的清晰度.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSelected { get; set; }
+}
+
+/// <summary>
+/// 线路选项；Key 是候选首选地址的域名，刷新后仍能定位同一条线路.
+/// </summary>
+public sealed partial class LiveLineOption(string key, string name) : ObservableObject
+{
+    /// <summary>
+    /// Gets 稳定标识.
+    /// </summary>
+    public string Key { get; } = key;
+
+    /// <summary>
+    /// Gets 展示名.
+    /// </summary>
+    public string Name { get; } = name;
+
+    /// <summary>
+    /// Gets or sets 是否为当前选择的线路.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSelected { get; set; }
+}

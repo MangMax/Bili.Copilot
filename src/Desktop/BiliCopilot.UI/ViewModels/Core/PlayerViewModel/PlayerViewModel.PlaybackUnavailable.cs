@@ -1,12 +1,14 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
+using BiliCopilot.UI.Live;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Bili.Media;
+using Richasy.MpvKernel.Core.Enums;
 using Windows.System;
 
 namespace BiliCopilot.UI.ViewModels.Core;
@@ -17,6 +19,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 public sealed partial class PlayerViewModel
 {
     private const string VipPageUrl = "https://account.bilibili.com/big";
+    private CancellationTokenSource? _failureTipCts;
 
     private PlaybackUnavailableAction _playbackUnavailableAction;
 
@@ -79,9 +82,69 @@ public sealed partial class PlayerViewModel
             case PlaybackUnavailableAction.OpenVipPage:
                 _ = OpenVipPageAsync();
                 break;
+            case PlaybackUnavailableAction.OpenInBrowser:
+                _ = OpenLiveInBrowserAsync();
+                break;
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// 展示直播的失败原因，并把"在浏览器打开"作为可执行操作。
+    /// </summary>
+    /// <param name="kind">失败分类.</param>
+    /// <param name="canRetry">候选与重新取址都失败时为 true，提示从哪里手动重试.</param>
+    internal void ShowLivePlaybackFailure(LiveFailureKind kind, bool canRetry = false)
+    {
+        if (kind == LiveFailureKind.Cancelled)
+        {
+            return;
+        }
+
+        // 直播取流/切线路会有短暂失败，恢复通常在一两秒内完成；
+        // 先保持加载态，确认仍未恢复再显示错误，避免一闪而过的打断。
+        _failureTipCts?.Cancel();
+        _failureTipCts = new CancellationTokenSource();
+        _ = ShowLivePlaybackFailureAsync(kind, canRetry, _failureTipCts.Token);
+    }
+
+    private async Task ShowLivePlaybackFailureAsync(LiveFailureKind kind, bool canRetry, CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2.5), token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        if (token.IsCancellationRequested
+            || Player?.PlaybackState == MpvPlayerState.Playing
+            || IsLiveRoomTerminal)
+        {
+            return;
+        }
+
+        _playbackUnavailableAction = PlaybackUnavailableAction.OpenInBrowser;
+        ErrorMessage = ResourceToolkit.GetLocalizedString(canRetry ? StringNames.LivePlaybackRetry : LiveFailureText.GetMessage(kind));
+        ErrorActionText = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser);
+        HasErrorAction = true;
+        IsConnecting = false;
+        CheckBlackBackgroundVisible();
+    }
+
+    private Task OpenLiveInBrowserAsync()
+    {
+        if (_snapshot?.Live?.Identifier.Id is not { Length: > 0 } roomId)
+        {
+            return Task.CompletedTask;
+        }
+
+        return LiveRoomUrl.Create(roomId) is { } url
+            ? Launcher.LaunchUriAsync(url).AsTask()
+            : Task.CompletedTask;
     }
 
     [RelayCommand]

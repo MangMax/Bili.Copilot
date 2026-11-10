@@ -24,6 +24,14 @@ public sealed partial class PlayerViewModel : CommunityToolkit.Mvvm.ComponentMod
 
     public DanmakuRenderViewModel Danmaku { get; } = new();
 
+    /// <summary>
+    /// 测试替身：生产实现由 <c>LiveModePolicy</c> 从媒体快照推导；
+    /// 这里让能力集合跟随可写的 <c>IsLive</c>，守卫读到的仍是同一份策略。
+    /// </summary>
+    public BiliCopilot.UI.Live.LiveModeCapabilities LiveCapabilities
+        => BiliCopilot.UI.Live.LiveModePolicy.For(
+            IsLive ? BiliCopilot.UI.Models.Constants.BiliMediaType.Live : BiliCopilot.UI.Models.Constants.BiliMediaType.Video);
+
     public SeekTestPlayer Player { get; set; } = new();
 
     public SeekTestClient? Client { get; set; } = new();
@@ -64,6 +72,12 @@ public sealed class SeekTestPlayer
 
 public sealed class SeekTestClient
 {
+    public bool IsDisposed { get; set; }
+    public int PauseCount { get; private set; }
+    public Task PauseAsync() { PauseCount++; return Task.CompletedTask; }
+    public int ResumeCount { get; private set; }
+    public Task ResumeAsync() { ResumeCount++; return Task.CompletedTask; }
+
     public Func<double> ReadPosition { get; set; } = () => 21;
     public Func<double> ReadSpeed { get; set; } = () => 1;
     public Func<double> ReadVolume { get; set; } = () => 100;
@@ -82,6 +96,7 @@ public sealed class SeekTestClient
     public List<Richasy.MpvKernel.Player.Models.MpvMediaSource> Loads { get; } = [];
 
     public bool CompleteLoads { get; set; } = true;
+    public Action? OnLoad { get; set; }
     public void CompleteLoad() => ReachFileLoaded?.Invoke(this, EventArgs.Empty);
     public void FailLoad() => ErrorOccurred?.Invoke(this, Richasy.MpvKernel.MpvError.LoadingFailed);
     public event EventHandler? ReachFileLoaded;
@@ -90,7 +105,8 @@ public sealed class SeekTestClient
     public Task PlayAsync(string url, Richasy.MpvKernel.Core.Models.MpvPlayOptions options)
     {
         Loads.Add(new(url, "id", "title", options));
-        if (CompleteLoads) CompleteLoad();
+        if (OnLoad is { } onLoad) onLoad();
+        else if (CompleteLoads) CompleteLoad();
         return Task.CompletedTask;
     }
 

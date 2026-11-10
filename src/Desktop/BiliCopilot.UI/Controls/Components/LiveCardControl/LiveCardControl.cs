@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -66,6 +66,16 @@ public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewMode
         };
     }
 
+    private static MenuFlyoutItem CreateOpenInBrowserItem()
+    {
+        return new MenuFlyoutItem()
+        {
+            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Tag = nameof(ViewModel.OpenInBrowserCommand),
+        };
+    }
+
     private static MenuFlyoutItem CreatePinItem()
     {
         return new MenuFlyoutItem()
@@ -103,6 +113,7 @@ public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewMode
     {
         var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreateEnterUserSpaceItem());
+        menuFlyout.Items.Add(CreateOpenInBrowserItem());
         menuFlyout.Items.Add(CreatePinItem());
 
         if (ViewModel?.Style == LiveCardStyle.History)
@@ -132,6 +143,9 @@ public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewMode
                     break;
                 case nameof(ViewModel.PinCommand):
                     item.Command = ViewModel.PinCommand;
+                    break;
+                case nameof(ViewModel.OpenInBrowserCommand):
+                    item.Command = ViewModel.OpenInBrowserCommand;
                     break;
             }
         }
