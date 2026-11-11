@@ -3,6 +3,10 @@
 ###############################################################################
 * text=auto
 
+# Batch launchers must keep CRLF line endings to run reliably from cmd.exe.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #

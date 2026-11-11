@@ -8,9 +8,11 @@
 
 ## 安装
 
-前往 [Releases](https://github.com/MangMax/Bili.Copilot/releases) 下载最新的 `BiliCopilot_*.zip`，解压后右键 `Install.ps1`，选择 **使用 PowerShell 运行**。
+前往 [Releases](https://github.com/MangMax/Bili.Copilot/releases) 下载最新的 `BiliCopilot_*.zip`，**完整解压**后双击 `Install.cmd`。
 
-脚本会自动导入随包证书并安装。若提示需要开发人员模式，请在 `设置 → 系统 → 开发者选项` 中开启。
+首次安装会请求管理员权限导入随包证书；应用本身按当前用户安装，不需要开启开发者模式，也不需要修改系统的 PowerShell 执行策略。
+
+旧版本的压缩包中没有 `Install.cmd`，请在该文件夹打开 PowerShell 后执行 `powershell -ExecutionPolicy Bypass -File .\Install.ps1`。
 
 ## 从源码构建
 

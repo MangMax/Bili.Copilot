@@ -167,28 +167,12 @@ jobs:
       - name: Compress Artifacts
         shell: pwsh
         run: |
-          $version = "${{ inputs.version }}"
-          $platform = "${{ env.Platform }}"
-          $repoName = "BiliCopilot"
           $sourceDir = "${{ github.workspace }}\FinalPackages"
-          $zipName = "${repoName}_${version}_${platform}.zip"
-          $zipPath = Join-Path $sourceDir $zipName
-
-          # Copy Guide
-          Copy-Item "docs/sideload-guide.txt" -Destination (Join-Path $sourceDir "安装说明.txt")
-
-          # Copy Install Script
-          Copy-Item "scripts/Install.ps1" -Destination (Join-Path $sourceDir "Install.ps1")
-
-          Write-Host "Compressing files in $sourceDir to $zipPath"
-          $files = Get-ChildItem $sourceDir -File
-          if ($files.Count -gt 0) {
-              Compress-Archive -Path $files.FullName -DestinationPath $zipPath
-              # 删除原始文件，只保留 zip
-              $files | Remove-Item
-          } else {
-              Write-Warning "No files found to compress."
-          }
+          & (Join-Path $env:GITHUB_WORKSPACE 'scripts\package-sideload.ps1') `
+            -SourceDir $sourceDir `
+            -Platform "${{ env.Platform }}" `
+            -Version "${{ inputs.version }}" `
+            -RepositoryRoot $env:GITHUB_WORKSPACE
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
