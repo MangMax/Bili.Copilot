@@ -26,7 +26,7 @@ on:
         default: |
           Bili.Copilot 的独立维护版本。
 
-          安装：解压后右键以 PowerShell 运行 Install.ps1。
+          安装：解压后双击 Install.cmd（首次安装会请求管理员权限导入证书）。
 
 permissions:
   contents: write
@@ -119,14 +119,11 @@ jobs:
 
           Copy-Item $msix.FullName $sourceDir -Force
           Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'signing.cer') $sourceDir -Force
-          Copy-Item 'docs/sideload-guide.txt' (Join-Path $sourceDir '安装说明.txt') -Force
-          Copy-Item 'scripts/Install.ps1' (Join-Path $sourceDir 'Install.ps1') -Force
-
-          $zipName = "BiliCopilot_" + $version + "_x64.zip"
-          $zipPath = Join-Path $sourceDir $zipName
-          Compress-Archive -Path (Join-Path $sourceDir '*') -DestinationPath $zipPath -Force
-          Get-ChildItem $sourceDir -File | Where-Object { $_.Name -ne $zipName } | Remove-Item -Force
-          Write-Host "已生成: " + $zipPath
+          & (Join-Path $env:GITHUB_WORKSPACE 'scripts\package-sideload.ps1') `
+            -SourceDir $sourceDir `
+            -Platform $env:Platform `
+            -Version $version `
+            -RepositoryRoot $env:GITHUB_WORKSPACE
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
