@@ -4,6 +4,7 @@ using BiliCopilot.UI.AI.Chat;
 using BiliCopilot.UI.AI.Conversation;
 using BiliCopilot.UI.AI.Context;
 using BiliCopilot.UI.Extensions;
+using BiliCopilot.UI.Logging;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Services.AI;
 using BiliCopilot.UI.SponsorBlock;
@@ -252,6 +253,7 @@ internal static class GlobalDependencies
 
         // Create a logger with current date.
         Log.Logger = new LoggerConfiguration()
+            .Filter.ByExcluding(DanmakuConfigurationLogFilter.ShouldExclude)
             .WriteTo.File(Path.Combine(loggerPath, $"log-{DateTimeOffset.Now:yyyy-MM-dd}.txt"))
             .CreateLogger();
 
