@@ -36,7 +36,6 @@ internal static class MpvLogging
     /// <returns>日志记录器.</returns>
     public static ILogger CreateLogger(Serilog.ILogger serilogLogger)
     {
-        ArgumentNullException.ThrowIfNull(serilogLogger);
         var markedLogger = serilogLogger.ForContext(MarkerPropertyName, true);
         var provider = new SerilogLoggerProvider(markedLogger);
         return provider.CreateLogger(LoggerCategory);

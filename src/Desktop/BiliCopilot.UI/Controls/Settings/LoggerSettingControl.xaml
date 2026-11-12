@@ -16,7 +16,9 @@
             x:Name="OpenLoggerFolderButton"
             MinWidth="120"
             Click="OnOpenLoggerFolderButtonClick"
-            Content="{ext:Locale Name=OpenFolder}" />
+            Content="{ext:Locale Name=OpenFolder}"
+            AutomationProperties.AutomationId="OpenLoggerFolderButton"
+            AutomationProperties.Name="{ext:Locale Name=OpenFolder}" />
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="Channel" />
         </base:SettingsExpander.HeaderIcon>
@@ -27,6 +29,8 @@
                 <ComboBox
                     x:Name="AppLevelComboBox"
                     MinWidth="120"
+                    AutomationProperties.AutomationId="AppLogLevelComboBox"
+                    AutomationProperties.Name="{ext:Locale Name=AppLogLevel}"
                     SelectionChanged="OnAppLevelChanged">
                     <ComboBoxItem Content="{ext:Locale Name=Error}" Tag="Error" />
                     <ComboBoxItem Content="{ext:Locale Name=Warn}" Tag="Warning" />
@@ -40,6 +44,8 @@
                 <ComboBox
                     x:Name="MpvLevelComboBox"
                     MinWidth="120"
+                    AutomationProperties.AutomationId="MpvLogLevelComboBox"
+                    AutomationProperties.Name="{ext:Locale Name=MpvLogLevel}"
                     SelectionChanged="OnMpvLevelChanged">
                     <ComboBoxItem Content="{ext:Locale Name=Error}" Tag="Error" />
                     <ComboBoxItem Content="{ext:Locale Name=Warn}" Tag="Warn" />

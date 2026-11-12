@@ -20,8 +20,6 @@ public static class LogLevelMigration
     /// <param name="store">设置存取.</param>
     public static void Run(ILogLevelSettingsStore store)
     {
-        ArgumentNullException.ThrowIfNull(store);
-
         if (store.IsSettingKeyExist(SettingNames.LogLevelSplitMigrationCompleted.ToString()))
         {
             return;
