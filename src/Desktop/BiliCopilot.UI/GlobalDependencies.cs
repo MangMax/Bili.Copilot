@@ -257,6 +257,7 @@ internal static class GlobalDependencies
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.ControlledBy(AppLogLevelSwitch.Default.LevelSwitch)
             .Filter.ByExcluding(DanmakuConfigurationLogFilter.ShouldExclude)
+            .Filter.ByExcluding(logEvent => AppLogLevelFilter.ShouldExclude(logEvent, AppLogLevelSwitch.Default.Current))
             .WriteTo.File(Path.Combine(loggerPath, $"log-{DateTimeOffset.Now:yyyy-MM-dd}.txt"))
             .CreateLogger();
 

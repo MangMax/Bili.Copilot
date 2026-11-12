@@ -17,6 +17,7 @@ public class AppLogLevelSwitchTests
         var levelSwitch = new AppLogLevelSwitch(AppLogLevel.Information);
         using var logger = new LoggerConfiguration()
             .MinimumLevel.ControlledBy(levelSwitch.LevelSwitch)
+            .Filter.ByExcluding(logEvent => AppLogLevelFilter.ShouldExclude(logEvent, levelSwitch.Current))
             .WriteTo.Sink(sink)
             .CreateLogger();
 

@@ -15,15 +15,6 @@ public interface ILogLevelSettingsStore
     bool IsSettingKeyExist(string key);
 
     /// <summary>
-    /// 读取设置项.
-    /// </summary>
-    /// <typeparam name="T">设置项类型.</typeparam>
-    /// <param name="key">设置项名称.</param>
-    /// <param name="defaultValue">缺少设置项时的默认值.</param>
-    /// <returns>设置项的值.</returns>
-    T Read<T>(string key, T defaultValue);
-
-    /// <summary>
     /// 写入设置项.
     /// </summary>
     /// <typeparam name="T">设置项类型.</typeparam>

@@ -27,52 +27,40 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
 
     protected override void OnControlLoaded()
     {
-        AppLevelComboBox.SelectedIndex = ViewModel.AppLogLevel switch
-        {
-            AppLogLevel.Warning => 1,
-            AppLogLevel.Information => 2,
-            AppLogLevel.Debug => 3,
-            _ => 0
-        };
-
-        var index = ViewModel.MpvLogLevel switch
-        {
-            MpvLogLevel.V => 3,
-            MpvLogLevel.Info => 2,
-            MpvLogLevel.Warn => 1,
-            MpvLogLevel.Error => 0,
-            _ => 0
-        };
-        MpvLevelComboBox.SelectedIndex = index;
+        SelectByTag(AppLevelComboBox, ViewModel.AppLogLevel.ToString());
+        SelectByTag(MpvLevelComboBox, ViewModel.MpvLogLevel.ToString());
     }
 
     private void OnAppLevelChanged(object sender, SelectionChangedEventArgs e)
     {
-        var index = AppLevelComboBox.SelectedIndex;
-        if (index >= 0 && IsLoaded)
+        if (IsLoaded
+            && AppLevelComboBox.SelectedItem is ComboBoxItem { Tag: string tag }
+            && Enum.TryParse<AppLogLevel>(tag, out var level))
         {
-            ViewModel.AppLogLevel = index switch
-            {
-                3 => AppLogLevel.Debug,
-                2 => AppLogLevel.Information,
-                1 => AppLogLevel.Warning,
-                _ => AppLogLevel.Error
-            };
+            ViewModel.AppLogLevel = level;
         }
     }
 
     private void OnMpvLevelChanged(object sender, SelectionChangedEventArgs e)
     {
-        var index = MpvLevelComboBox.SelectedIndex;
-        if (index >= 0 && IsLoaded)
+        if (IsLoaded
+            && MpvLevelComboBox.SelectedItem is ComboBoxItem { Tag: string tag }
+            && Enum.TryParse<MpvLogLevel>(tag, out var level))
         {
-            ViewModel.MpvLogLevel = index switch
+            ViewModel.MpvLogLevel = level;
+        }
+    }
+
+    private static void SelectByTag(ComboBox comboBox, string tag)
+    {
+        foreach (var item in comboBox.Items)
+        {
+            if (item is ComboBoxItem { Tag: string itemTag }
+                && string.Equals(itemTag, tag, StringComparison.Ordinal))
             {
-                3 => MpvLogLevel.V,
-                2 => MpvLogLevel.Info,
-                1 => MpvLogLevel.Warn,
-                _ => MpvLogLevel.Error
-            };
+                comboBox.SelectedItem = item;
+                return;
+            }
         }
     }
 }

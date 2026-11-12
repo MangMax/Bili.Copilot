@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Live;
+using BiliCopilot.UI.Logging;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Models.Constants;
@@ -108,7 +109,7 @@ public sealed partial class PlayerViewModel
                 UseConfig = false,
                 LoadScripts = true,
             };
-            Client = await MpvClient.CreateAsync(mpvPath, options, logger: logger);
+            Client = await MpvClient.CreateAsync(mpvPath, options, logger: MpvLogging.CreateLogger());
             _mediaDisplaySource?.Dispose();
             _mediaDisplaySource = new(Client, queue, Window!.BeginRatioMedia, Window.UpdateRatioMedia);
             Client.ErrorOccurred += OnClientErrorOccurred;

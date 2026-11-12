@@ -28,10 +28,10 @@
                     x:Name="AppLevelComboBox"
                     MinWidth="120"
                     SelectionChanged="OnAppLevelChanged">
-                    <ComboBoxItem Content="{ext:Locale Name=Error}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Warn}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Info}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Debug}" />
+                    <ComboBoxItem Content="{ext:Locale Name=Error}" Tag="Error" />
+                    <ComboBoxItem Content="{ext:Locale Name=Warn}" Tag="Warning" />
+                    <ComboBoxItem Content="{ext:Locale Name=Info}" Tag="Information" />
+                    <ComboBoxItem Content="{ext:Locale Name=Debug}" Tag="Debug" />
                 </ComboBox>
             </base:SettingsCard>
             <base:SettingsCard
@@ -41,10 +41,10 @@
                     x:Name="MpvLevelComboBox"
                     MinWidth="120"
                     SelectionChanged="OnMpvLevelChanged">
-                    <ComboBoxItem Content="{ext:Locale Name=Error}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Warn}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Info}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Verb}" />
+                    <ComboBoxItem Content="{ext:Locale Name=Error}" Tag="Error" />
+                    <ComboBoxItem Content="{ext:Locale Name=Warn}" Tag="Warn" />
+                    <ComboBoxItem Content="{ext:Locale Name=Info}" Tag="Info" />
+                    <ComboBoxItem Content="{ext:Locale Name=Verb}" Tag="V" />
                 </ComboBox>
             </base:SettingsCard>
         </base:SettingsExpander.Items>
