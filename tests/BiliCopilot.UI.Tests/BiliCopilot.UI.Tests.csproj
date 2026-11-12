@@ -69,6 +69,7 @@
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\SponsorBlock\*.cs" Link="SponsorBlock\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\ViewModels\Items\SponsorBlockCategorySettingViewModel.cs" Link="ViewModels\Items\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\SettingNames.cs" Link="Models\Constants\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI.Models\Constants\AppLogLevel.cs" Link="Models\Constants\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Logging\*.cs" Link="Logging\%(Filename)%(Extension)" />
   </ItemGroup>
 

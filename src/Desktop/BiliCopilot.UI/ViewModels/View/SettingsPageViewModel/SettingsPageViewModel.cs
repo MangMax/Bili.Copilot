@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls.AI;
+using BiliCopilot.UI.Logging;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Toolkits;
@@ -37,7 +38,8 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         ScrollAccelerate = SettingsToolkit.ReadLocalSetting(SettingNames.ScrollAccelerate, true);
         AppTheme = SettingsToolkit.ReadLocalSetting(SettingNames.AppTheme, ElementTheme.Default);
         CheckTheme();
-        LogLevel = SettingsToolkit.ReadLocalSetting(SettingNames.MpvLogLevel, MpvLogLevel.Warn);
+        AppLogLevel = SettingsToolkit.ReadLocalSetting(SettingNames.AppLogLevel, LogLevelMigration.DefaultAppLevel);
+        MpvLogLevel = SettingsToolkit.ReadLocalSetting(SettingNames.MpvLogLevel, MpvLogLevel.Warn);
         HideMainWindowOnPlay = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true);
         IsTopNavShown = SettingsToolkit.ReadLocalSetting(SettingNames.IsTopNavBarShown, true);
         IsAutoPlayNextRecommendVideo = SettingsToolkit.ReadLocalSetting(SettingNames.AutoPlayNextRecommendVideo, false);
@@ -377,7 +379,10 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         this.Get<AppViewModel>().ChangeThemeCommand.Execute(value);
     }
 
-    partial void OnLogLevelChanged(MpvLogLevel value)
+    partial void OnAppLogLevelChanged(AppLogLevel value)
+        => LogLevelSettings.ApplyAppLogLevel(value);
+
+    partial void OnMpvLogLevelChanged(MpvLogLevel value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.MpvLogLevel, value);
 
     partial void OnHideMainWindowOnPlayChanged(bool value)
