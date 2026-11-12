@@ -4,6 +4,7 @@ using BiliCopilot.UI.Logging;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Parsing;
+using static BiliCopilot.UI.Tests.DanmakuConfigurationLogFilterTestData;
 
 namespace BiliCopilot.UI.Tests;
 
@@ -12,9 +13,6 @@ namespace BiliCopilot.UI.Tests;
 /// </summary>
 public class DanmakuConfigurationLogFilterTests
 {
-    private const string DanmakuSourceContext = "Richasy.Danmaku.DanmakuRenderer";
-    private const string NoiseTemplate = "[Danmaku] DanmakuDirectXRender.cs(43)->UpdateConfiguration(): Configuration updated";
-
     [Theory]
     [InlineData(43)]
     [InlineData(999)]
