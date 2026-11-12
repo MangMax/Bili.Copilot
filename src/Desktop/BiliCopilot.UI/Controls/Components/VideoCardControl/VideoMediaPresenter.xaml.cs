@@ -3,7 +3,6 @@
 using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.Models.Constants;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Xaml.Media;
 using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls.Components;
@@ -19,8 +18,6 @@ public sealed partial class VideoMediaPresenter : VideoMediaPresenterBase
         Loaded += (_, _) => LoadMomentMetadata();
         Unloaded += OnUnloaded;
     }
-
-    public CompositeTransform CoverZoom => CoverTransform;
 
     protected override void OnViewModelChanged(VideoItemViewModel? oldValue, VideoItemViewModel? newValue)
     {

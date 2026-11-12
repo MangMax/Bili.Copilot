@@ -62,7 +62,6 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         ContextRequested -= OnContextRequested;
         PointerEntered -= OnPointerEntered;
         PointerExited -= OnPointerExited;
-        _videoCard?.SetMomentHovered(false);
         _videoCard = null;
         _hovered = false;
         ResetLift();
@@ -73,7 +72,6 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         ContextFlyout?.Hide();
         ContextFlyout = null;
-        _videoCard?.SetMomentHovered(false);
         _videoCard = null;
         _hovered = false;
         ResetLift();
@@ -124,7 +122,6 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
             {
                 _videoCard.MinimumTitleHeight = ViewModel.Style == MomentCardStyle.Video ? 50 : 0;
                 _videoCard.ShowDescription = ViewModel.Style == MomentCardStyle.Comprehensive;
-                _videoCard.SetMomentHovered(_hovered);
             }
         }
     }

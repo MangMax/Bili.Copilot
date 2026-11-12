@@ -58,4 +58,41 @@ public sealed partial class LiveItemViewModel
     /// 样式.
     /// </summary>
     public LiveCardStyle Style { get; init; }
+
+    /// <summary>
+    /// 是否可以进入作者的用户空间.
+    /// </summary>
+    public bool CanOpenUserSpace => Data.User is not null;
+
+    /// <summary>
+    /// 头像缺失时使用的作者名首字.
+    /// </summary>
+    public string AuthorInitial => string.IsNullOrWhiteSpace(Author)
+        ? "?"
+        : System.Globalization.StringInfo.GetNextTextElement(Author);
+
+    /// <summary>
+    /// 是否有作者头像. 推荐直播流不返回头像，此时不占用卡片空间.
+    /// </summary>
+    public bool HasAvatar => Avatar is not null;
+
+    /// <summary>
+    /// 当前直播间是否在直播中.
+    /// </summary>
+    public bool IsLivingNow => IsLiving == true;
+
+    /// <summary>
+    /// 是否有分区/副标题标签.
+    /// </summary>
+    public bool HasSubtitle => !string.IsNullOrWhiteSpace(Subtitle);
+
+    /// <summary>
+    /// 是否有标签名称.
+    /// </summary>
+    public bool HasTagName => !string.IsNullOrWhiteSpace(TagName);
+
+    /// <summary>
+    /// 是否有收集时间.
+    /// </summary>
+    public bool HasCollectTime => !string.IsNullOrWhiteSpace(CollectRelativeTime);
 }

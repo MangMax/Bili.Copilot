@@ -6,32 +6,11 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
-    <Grid CornerRadius="{StaticResource PopularCoverRadius}">
+    <Grid>
         <controls:RecommendationCoverImage
-            Source="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}"
             CornerRadius="{StaticResource PopularCoverRadius}"
-            RenderTransformOrigin="0.5,0.5">
-            <controls:RecommendationCoverImage.RenderTransform>
-                <CompositeTransform x:Name="CoverTransform" />
-            </controls:RecommendationCoverImage.RenderTransform>
-        </controls:RecommendationCoverImage>
-        <Border IsHitTestVisible="False">
-            <Border.Background>
-                <LinearGradientBrush
-                    StartPoint="0,0"
-                    EndPoint="0,1">
-                    <GradientStop
-                        Color="#00000000"
-                        Offset="0.54" />
-                    <GradientStop
-                        Color="#6B06080C"
-                        Offset="0.8" />
-                    <GradientStop
-                        Color="#D106080C"
-                        Offset="1" />
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
+            ShadeColor="#D106080C"
+            Source="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}" />
         <StackPanel
             Margin="10,8,10,0"
             HorizontalAlignment="Left"

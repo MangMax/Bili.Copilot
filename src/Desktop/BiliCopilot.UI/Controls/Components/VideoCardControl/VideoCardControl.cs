@@ -4,8 +4,6 @@ using BiliCopilot.UI.Models.Constants;
 using Microsoft.Extensions.Logging;
 using BiliCopilot.UI.ViewModels.Components;
 using System.ComponentModel;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -41,8 +39,6 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         set => SetValue(MinimumTitleHeightProperty, value);
     }
 
-    private CompositeTransform? _popularCoverZoom;
-    private Storyboard? _coverAnimation;
     private ButtonBase _rootCard;
     private Button _userButton;
     private Button _authorButton;
@@ -56,6 +52,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     public VideoCardControl()
     {
         DefaultStyleKey = typeof(VideoCardControl);
+        // CardControl is a ButtonBase and marks pointer events as handled, so a
+        // plain subscription on it never fires for the template's content.
+        AddHandler(PointerEnteredEvent, new PointerEventHandler(OnPopularPointerEntered), true);
+        AddHandler(PointerExitedEvent, new PointerEventHandler(OnPopularPointerExited), true);
         Loaded += OnCardLoaded;
         Unloaded += OnCardUnloaded;
     }
@@ -66,86 +66,28 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         if (_moreButton is not null) _moreButton.Click -= OnMoreClick;
         _moreButton = GetTemplateChild("MoreButton") as Button;
         if (_moreButton is not null) _moreButton.Click += OnMoreClick;
-        if (_rootCard is not null)
-        {
-            _rootCard.PointerEntered -= OnPopularPointerEntered;
-            _rootCard.PointerExited -= OnPopularPointerExited;
-        }
-        _coverAnimation?.Stop();
         _rootCard = GetTemplateChild("RootCard") as ButtonBase;
-        _popularCoverZoom = (GetTemplateChild("VideoMedia") as VideoMediaPresenter)?.CoverZoom;
-        if (_rootCard is not null && _popularCoverZoom is not null)
-        {
-            _rootCard.PointerEntered += OnPopularPointerEntered;
-            _rootCard.PointerExited += OnPopularPointerExited;
-        }
         _userButton = GetTemplateChild("UserButton") as Button;
         _authorButton = GetTemplateChild("AuthorButton") as Button;
         if (IsLoaded) RefreshPopularCardData();
-        if (ViewModel is not null)
-        {
-            if (_rootCard is not null)
-            {
-                _rootCard.Command = ViewModel.PlayCommand;
-            }
-
-            if (_userButton is not null)
-            {
-                _userButton.Command = ViewModel.ShowUserSpaceCommand;
-                _userButton.IsEnabled = ViewModel.CanOpenUserSpace;
-            }
-
-            if (_authorButton is not null)
-            {
-                _authorButton.Command = ViewModel.ShowUserSpaceCommand;
-                _authorButton.IsEnabled = ViewModel.CanOpenUserSpace;
-            }
-        }
+        ApplyViewModelCommands(ViewModel);
     }
-
-    /// <summary>Lets the containing dynamic own the entire hover surface.</summary>
-    public void SetMomentHovered(bool hovered) => AnimatePopularCover(hovered);
 
     private void OnPopularPointerEntered(object sender, PointerRoutedEventArgs args)
     {
-        if (ViewModel?.Style != VideoCardStyle.Moment) AnimatePopularCover(true);
+        if (ViewModel?.Style != VideoCardStyle.Moment) SetPopularPointerState(true);
     }
 
     private void OnPopularPointerExited(object sender, PointerRoutedEventArgs args)
     {
-        if (ViewModel?.Style != VideoCardStyle.Moment) AnimatePopularCover(false);
+        if (ViewModel?.Style != VideoCardStyle.Moment) SetPopularPointerState(false);
     }
 
-    private void AnimatePopularCover(bool hovered)
-    {
-        if (_popularCoverZoom is null) return;
-        _coverAnimation?.Stop();
-        var story = new Storyboard();
-        foreach (var property in new[] { "ScaleX", "ScaleY" })
-        {
-            var animation = new DoubleAnimation
-            {
-                To = hovered ? 1.025 : 1,
-                Duration = TimeSpan.FromMilliseconds(160),
-                EnableDependentAnimation = true,
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
-            };
-            Storyboard.SetTarget(animation, _popularCoverZoom);
-            Storyboard.SetTargetProperty(animation, property);
-            story.Children.Add(animation);
-        }
-        _coverAnimation = story;
-        story.Begin();
-        VisualStateManager.GoToState(this, hovered ? "PopularPointerOver" : "PopularNormal", false);
-    }
+    private void SetPopularPointerState(bool hovered)
+        => VisualStateManager.GoToState(this, hovered ? "PopularPointerOver" : "PopularNormal", false);
 
     private void ResetPopularCover()
-    {
-        _coverAnimation?.Stop();
-        _coverAnimation = null;
-        if (_popularCoverZoom is not null) _popularCoverZoom.ScaleX = _popularCoverZoom.ScaleY = 1;
-        VisualStateManager.GoToState(this, "PopularNormal", false);
-    }
+        => VisualStateManager.GoToState(this, "PopularNormal", false);
 
     private void OnCardLoaded(object sender, RoutedEventArgs args)
     {
@@ -229,21 +171,26 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         ContextFlyout?.Hide();
         ContextFlyout = null;
         RefreshPopularCardData();
+        ApplyViewModelCommands(newValue);
+    }
+
+    private void ApplyViewModelCommands(VideoItemViewModel? viewModel)
+    {
         if (_rootCard is not null)
         {
-            _rootCard.Command = newValue?.PlayCommand;
+            _rootCard.Command = viewModel?.PlayCommand;
         }
 
         if (_userButton is not null)
         {
-            _userButton.Command = newValue?.ShowUserSpaceCommand;
-            _userButton.IsEnabled = newValue?.CanOpenUserSpace ?? false;
+            _userButton.Command = viewModel?.ShowUserSpaceCommand;
+            _userButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
         }
 
         if (_authorButton is not null)
         {
-            _authorButton.Command = newValue?.ShowUserSpaceCommand;
-            _authorButton.IsEnabled = newValue?.CanOpenUserSpace ?? false;
+            _authorButton.Command = viewModel?.ShowUserSpaceCommand;
+            _authorButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
         }
     }
 

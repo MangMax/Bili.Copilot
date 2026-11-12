@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="BiliCopilot.UI.Controls.Components.CardTagControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ic="using:FluentIcons.WinUI"
+    IsTabStop="False">
+    <Border Style="{StaticResource CardTagBorderStyle}">
+        <Grid
+            ColumnSpacing="3"
+            VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <ic:SymbolIcon
+                Symbol="Tag"
+                FontSize="10"
+                Margin="0,1,0,0"
+                VerticalAlignment="Center"
+                AutomationProperties.AccessibilityView="Raw"
+                Foreground="{StaticResource PopularMediaForeground}" />
+            <TextBlock
+                x:Name="TagText"
+                Grid.Column="1"
+                Style="{StaticResource CardTagTextStyle}" />
+        </Grid>
+    </Border>
+</UserControl>

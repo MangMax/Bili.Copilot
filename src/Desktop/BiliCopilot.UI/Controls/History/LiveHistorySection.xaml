@@ -21,7 +21,7 @@
                     <repeater:AppRepeater
                         x:Name="LiveRepeater"
                         ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-                        Layout="{StaticResource VideoLayout}">
+                        Layout="{StaticResource LiveLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:LiveItemViewModel">
                                 <components:LiveCardControl Style="{StaticResource HistoryLiveCardStyle}" ViewModel="{Binding}" />

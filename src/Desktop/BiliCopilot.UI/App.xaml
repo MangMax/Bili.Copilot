@@ -15,6 +15,7 @@
                 <ResourceDictionary Source="ms-appx:///Styles/Overrides.xaml" />
                 <ResourceDictionary Source="ms-appx:///Controls/InlineTextButton.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/Repeater.xaml" />
+                <ResourceDictionary Source="ms-appx:///Styles/CardResources.xaml" />
                 <ResourceDictionary Source="ms-appx:///Controls/Components/VideoCardControl/VideoCardControl.xaml" />
                 <ResourceDictionary Source="ms-appx:///Controls/Components/SeasonCardControl/SeasonCardControl.xaml" />
                 <ResourceDictionary Source="ms-appx:///Controls/Components/LiveCardControl/LiveCardControl.xaml" />
@@ -87,12 +88,12 @@
                 MinItemWidth="148"
                 MinRowSpacing="24" />
 
+            <!-- Omit MinItemHeight: the row must fit the complete card, or the metadata gets clipped. -->
             <UniformGridLayout
                 x:Key="LiveLayout"
-                ItemsStretch="Uniform"
+                ItemsStretch="Fill"
                 MinColumnSpacing="20"
-                MinItemHeight="200"
-                MinItemWidth="220"
+                MinItemWidth="232"
                 MinRowSpacing="20" />
 
             <UniformGridLayout

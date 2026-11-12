@@ -8,13 +8,6 @@
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
 
-    <!-- Popular design tokens: outer radius = cover radius + inset. -->
-    <CornerRadius x:Key="PopularCoverRadius">4</CornerRadius>
-    <CornerRadius x:Key="PopularCardRadius">12</CornerRadius>
-    <SolidColorBrush x:Key="PopularMediaForeground" Color="White" />
-    <SolidColorBrush x:Key="PopularTagBackground" Color="Black" />
-    <!-- Match the content and accent badges in the approved web design. -->
-    <SolidColorBrush x:Key="PopularContentBadgeBackground" Color="#CC0C4470" />
     <Style
         x:Key="FeedVideoCardStyle"
         TargetType="local:VideoCardControl">
@@ -53,9 +46,7 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <local:PopularVideoCardPanel>
-                            <local:VideoMediaPresenter
-                                x:Name="VideoMedia"
-                                ViewModel="{TemplateBinding ViewModel}" />
+                            <local:VideoMediaPresenter ViewModel="{TemplateBinding ViewModel}" />
                             <Grid
                                 Padding="0,10,0,0"
                                 RowSpacing="4">
@@ -186,36 +177,10 @@
                                                         </TextBlock.RenderTransform>
                                                     </TextBlock>
                                                 </Border>
-                                                <Border
-                                                    Padding="6,0"
-                                                    Height="20"
-                                                    CornerRadius="{StaticResource ControlCornerRadius}"
-                                                    Background="{StaticResource PopularTagBackground}"
-                                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName, Converter={StaticResource ObjectToVisibilityConverter}}">
-                                                    <Grid
-                                                        ColumnSpacing="3"
-                                                        VerticalAlignment="Center">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="Auto" />
-                                                            <ColumnDefinition />
-                                                        </Grid.ColumnDefinitions>
-                                                        <ic:SymbolIcon
-                                                            Symbol="Tag"
-                                                            FontSize="10"
-                                                            Margin="0,1,0,0"
-                                                            VerticalAlignment="Center"
-                                                            Foreground="{StaticResource PopularMediaForeground}"
-                                                            AutomationProperties.AccessibilityView="Raw" />
-                                                        <TextBlock
-                                                            Grid.Column="1"
-                                                            Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
-                                                            Foreground="{StaticResource PopularMediaForeground}"
-                                                            FontSize="11"
-                                                            TextTrimming="CharacterEllipsis"
-                                                            VerticalAlignment="Center"
-                                                            ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}" />
-                                                    </Grid>
-                                                </Border>
+                                                <local:CardTagControl
+                                                    Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
+                                                    ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
+                                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName, Converter={StaticResource ObjectToVisibilityConverter}}" />
                                             </local:PopularVideoLabelsPanel>
                                             <TextBlock
                                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularDisplayTime}"
@@ -297,7 +262,7 @@
                                 </ControlTemplate>
                             </Button.Template>
                             <local:PopularVideoCardPanel>
-                                <local:VideoMediaPresenter x:Name="VideoMedia" ViewModel="{TemplateBinding ViewModel}" />
+                                <local:VideoMediaPresenter ViewModel="{TemplateBinding ViewModel}" />
                                 <Border MinHeight="{TemplateBinding MinimumTitleHeight}">
                                 <TextBlock Margin="0,10,0,0" FontSize="14" FontWeight="Normal" LineHeight="20"
                                     Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title, Converter={StaticResource ObjectToVisibilityConverter}}"

@@ -158,7 +158,6 @@
     <None Remove="Controls\Components\ForwardMomentPresenter.xaml" />
     <None Remove="Controls\Components\FullMomentPresenter.xaml" />
     <None Remove="Controls\Components\HistoryArticlePresenter.xaml" />
-    <None Remove="Controls\Components\HistoryLivePresenter.xaml" />
     <None Remove="Controls\Components\IndexFilterItemControl.xaml" />
     <None Remove="Controls\Components\IndexSeasonPresenter.xaml" />
     <None Remove="Controls\Components\LiveCardControl\LiveCardControl.xaml" />
@@ -166,13 +165,10 @@
     <None Remove="Controls\Components\MomentEpisodePresenter.xaml" />
     <None Remove="Controls\Components\MomentCardControl\MomentCardControl.xaml" />
     <None Remove="Controls\Components\PartitionArticlePresenter.xaml" />
-    <None Remove="Controls\Components\PartitionLivePresenter.xaml" />
     <None Remove="Controls\Components\PersonalFullMomentPresenter.xaml" />
     <None Remove="Controls\Components\PersonalVideoMomentPresenter.xaml" />
     <None Remove="Controls\Components\PlayerEpisodePresenter.xaml" />
     <None Remove="Controls\Components\PlayerSeasonPresenter.xaml" />
-    <None Remove="Controls\Components\RecommendLivePresenter.xaml" />
-    <None Remove="Controls\Components\SearchLivePresenter.xaml" />
     <None Remove="Controls\Components\ShimmerLayout\ShimmerLayout.xaml" />
     <None Remove="Controls\Components\TimelineSeasonPresenter.xaml" />
     <None Remove="Controls\Components\TopNavigationItem.xaml" />
@@ -1375,19 +1371,7 @@
     <Page Update="Controls\Components\VideoMomentPresenter.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="Controls\Components\HistoryLivePresenter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Components\PartitionLivePresenter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="Controls\Components\FollowLivePresenter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Components\SearchLivePresenter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Components\RecommendLivePresenter.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Components\PlayerEpisodePresenter.xaml">
