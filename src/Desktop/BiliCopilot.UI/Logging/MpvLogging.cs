@@ -38,7 +38,7 @@ internal static class MpvLogging
     {
         ArgumentNullException.ThrowIfNull(serilogLogger);
         var markedLogger = serilogLogger.ForContext(MarkerPropertyName, true);
-        using var factory = new SerilogLoggerFactory(markedLogger);
-        return factory.CreateLogger(LoggerCategory);
+        var provider = new SerilogLoggerProvider(markedLogger);
+        return provider.CreateLogger(LoggerCategory);
     }
 }
