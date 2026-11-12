@@ -251,13 +251,16 @@ internal static class GlobalDependencies
             Directory.CreateDirectory(loggerPath);
         }
 
+        AppLogLevelSwitch.Default.Apply(LogLevelSettings.ReadAppLogLevel());
+
         // Create a logger with current date.
         Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.ControlledBy(AppLogLevelSwitch.Default.LevelSwitch)
             .Filter.ByExcluding(DanmakuConfigurationLogFilter.ShouldExclude)
             .WriteTo.File(Path.Combine(loggerPath, $"log-{DateTimeOffset.Now:yyyy-MM-dd}.txt"))
             .CreateLogger();
 
-        builder.Services.AddLogging(b => b.AddSerilog(dispose: true));
+        builder.Services.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace).AddSerilog(dispose: true));
         return builder;
     }
 

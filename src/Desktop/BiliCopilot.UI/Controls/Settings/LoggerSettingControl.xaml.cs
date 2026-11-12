@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
 using Richasy.MpvKernel;
 using Windows.Storage;
 using Windows.System;
@@ -26,7 +27,15 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
 
     protected override void OnControlLoaded()
     {
-        var index = ViewModel.LogLevel switch
+        AppLevelComboBox.SelectedIndex = ViewModel.AppLogLevel switch
+        {
+            AppLogLevel.Warning => 1,
+            AppLogLevel.Information => 2,
+            AppLogLevel.Debug => 3,
+            _ => 0
+        };
+
+        var index = ViewModel.MpvLogLevel switch
         {
             MpvLogLevel.V => 3,
             MpvLogLevel.Info => 2,
@@ -34,15 +43,30 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
             MpvLogLevel.Error => 0,
             _ => 0
         };
-        LevelComboBox.SelectedIndex = index;
+        MpvLevelComboBox.SelectedIndex = index;
     }
 
-    private void OnLevelChanged(object sender, SelectionChangedEventArgs e)
+    private void OnAppLevelChanged(object sender, SelectionChangedEventArgs e)
     {
-        var index = LevelComboBox.SelectedIndex;
+        var index = AppLevelComboBox.SelectedIndex;
         if (index >= 0 && IsLoaded)
         {
-            ViewModel.LogLevel = index switch
+            ViewModel.AppLogLevel = index switch
+            {
+                3 => AppLogLevel.Debug,
+                2 => AppLogLevel.Information,
+                1 => AppLogLevel.Warning,
+                _ => AppLogLevel.Error
+            };
+        }
+    }
+
+    private void OnMpvLevelChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var index = MpvLevelComboBox.SelectedIndex;
+        if (index >= 0 && IsLoaded)
+        {
+            ViewModel.MpvLogLevel = index switch
             {
                 3 => MpvLogLevel.V,
                 2 => MpvLogLevel.Info,
