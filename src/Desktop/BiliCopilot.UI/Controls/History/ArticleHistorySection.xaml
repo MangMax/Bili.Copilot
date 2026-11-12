@@ -21,7 +21,7 @@
                     <repeater:AppRepeater
                         x:Name="ArticleRepeater"
                         ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-                        Layout="{StaticResource VideoLayout}">
+                        Layout="{StaticResource ArticleLayout}">
                         <repeater:AppRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:ArticleItemViewModel">
                                 <components:ArticleCardControl Style="{StaticResource HistoryArticleCardStyle}" ViewModel="{Binding}" />

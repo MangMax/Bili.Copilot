@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -10,16 +10,14 @@ using Richasy.WinUIKernel.Share.Toolkits;
 namespace BiliCopilot.UI.Controls.Components;
 
 /// <summary>
-/// 文章卡片展示.
-/// </summary>
-public abstract class ArticleCardPresenter : LayoutUserControlBase<ArticleItemViewModel>;
-
-/// <summary>
 /// 文章卡片控件.
 /// </summary>
 public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemViewModel>
 {
     private CardControl _rootCard;
+    private Button? _userButton;
+    private Button? _authorButton;
+    private Button? _moreButton;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleCardControl"/> class.
@@ -29,14 +27,21 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
     {
-        _rootCard = GetTemplateChild("RootCard") as CardControl;
-        if (ViewModel is not null)
+        if (_moreButton is not null)
         {
-            if (_rootCard is not null)
-            {
-                _rootCard.Command = ViewModel.OpenReaderCommand;
-            }
+            _moreButton.Click -= OnMoreClick;
         }
+
+        _rootCard = GetTemplateChild("RootCard") as CardControl;
+        _userButton = GetTemplateChild("UserButton") as Button;
+        _authorButton = GetTemplateChild("AuthorButton") as Button;
+        _moreButton = GetTemplateChild("MoreButton") as Button;
+        if (_moreButton is not null)
+        {
+            _moreButton.Click += OnMoreClick;
+        }
+
+        ApplyViewModelCommands(ViewModel);
     }
 
     /// <inheritdoc/>
@@ -45,14 +50,36 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
-        => ContextRequested -= OnContextRequested;
+    {
+        ContextRequested -= OnContextRequested;
+        ContextFlyout?.Hide();
+    }
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(ArticleItemViewModel? oldValue, ArticleItemViewModel? newValue)
     {
+        ContextFlyout?.Hide();
+        ContextFlyout = null;
+        ApplyViewModelCommands(newValue);
+    }
+
+    private void ApplyViewModelCommands(ArticleItemViewModel? viewModel)
+    {
         if (_rootCard is not null)
         {
-            _rootCard.Command = newValue?.OpenReaderCommand;
+            _rootCard.Command = viewModel?.OpenReaderCommand;
+        }
+
+        if (_userButton is not null)
+        {
+            _userButton.Command = viewModel?.ShowUserSpaceCommand;
+            _userButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
+        }
+
+        if (_authorButton is not null)
+        {
+            _authorButton.Command = viewModel?.ShowUserSpaceCommand;
+            _authorButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
         }
     }
 
@@ -96,6 +123,25 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         };
     }
 
+    private void OnMoreClick(object sender, RoutedEventArgs args)
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        if (ContextFlyout is null)
+        {
+            CreateContextFlyout();
+        }
+
+        RelocateCommands();
+        if (sender is FrameworkElement target)
+        {
+            ContextFlyout?.ShowAt(target);
+        }
+    }
+
     private void OnContextRequested(UIElement sender, ContextRequestedEventArgs args)
     {
         if (ContextFlyout is null)
@@ -113,7 +159,11 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
     {
         var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreateOpenInBroswerItem());
-        menuFlyout.Items.Add(CreateEnterUserSpaceItem());
+        if (ViewModel.CanOpenUserSpace)
+        {
+            menuFlyout.Items.Add(CreateEnterUserSpaceItem());
+        }
+
         menuFlyout.Items.Add(CreatePinItem());
         if (ViewModel.Style == ArticleCardStyle.History)
         {

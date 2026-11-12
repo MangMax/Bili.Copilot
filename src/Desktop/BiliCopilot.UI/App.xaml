@@ -96,12 +96,12 @@
                 MinItemWidth="232"
                 MinRowSpacing="20" />
 
+            <!-- Omit MinItemHeight: the row must fit the complete card, or the metadata gets clipped. -->
             <UniformGridLayout
                 x:Key="ArticleLayout"
-                ItemsStretch="Uniform"
+                ItemsStretch="Fill"
                 MinColumnSpacing="20"
-                MinItemHeight="220"
-                MinItemWidth="220"
+                MinItemWidth="232"
                 MinRowSpacing="20" />
 
             <UniformGridLayout

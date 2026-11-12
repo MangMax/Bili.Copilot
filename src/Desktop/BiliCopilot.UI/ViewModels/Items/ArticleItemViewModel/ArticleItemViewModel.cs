@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Article;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -40,6 +41,10 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
         Avatar = data.Publisher?.Avatar?.Uri;
         PublishRelativeTime = data.PublishDateTime.Humanize(culture: new CultureInfo(primaryLan));
         LikeCount = data.CommunityInformation?.LikeCount;
+        ReplyCount = data.CommunityInformation?.CommentCount
+            ?? (style == ArticleCardStyle.Search ? data.CommunityInformation?.LikeCount : null);
+        ViewCount = data.CommunityInformation?.ViewCount;
+        PartitionName = data.GetExtensionIfNotNull<Partition>(ArticleExtensionDataId.Partition)?.Name;
         Style = style;
         var collectTime = data.GetExtensionIfNotNull<DateTimeOffset?>(ArticleExtensionDataId.CollectTime);
         if (collectTime is not null)

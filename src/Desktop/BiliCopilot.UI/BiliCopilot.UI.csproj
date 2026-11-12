@@ -157,14 +157,12 @@
     <None Remove="Controls\Components\FollowLivePresenter.xaml" />
     <None Remove="Controls\Components\ForwardMomentPresenter.xaml" />
     <None Remove="Controls\Components\FullMomentPresenter.xaml" />
-    <None Remove="Controls\Components\HistoryArticlePresenter.xaml" />
     <None Remove="Controls\Components\IndexFilterItemControl.xaml" />
     <None Remove="Controls\Components\IndexSeasonPresenter.xaml" />
     <None Remove="Controls\Components\LiveCardControl\LiveCardControl.xaml" />
     <None Remove="Controls\Components\MomentCardControl\MomentItemOperationPanel.xaml" />
     <None Remove="Controls\Components\MomentEpisodePresenter.xaml" />
     <None Remove="Controls\Components\MomentCardControl\MomentCardControl.xaml" />
-    <None Remove="Controls\Components\PartitionArticlePresenter.xaml" />
     <None Remove="Controls\Components\PersonalFullMomentPresenter.xaml" />
     <None Remove="Controls\Components\PersonalVideoMomentPresenter.xaml" />
     <None Remove="Controls\Components\PlayerEpisodePresenter.xaml" />
@@ -289,7 +287,6 @@
     <None Remove="Controls\Popular\PopularSideBody.xaml" />
     <None Remove="Controls\Popular\PopularSideHeader.xaml" />
     <None Remove="Controls\RootLayout.xaml" />
-    <None Remove="Controls\SearchArticlePresenter.xaml" />
     <None Remove="Controls\Search\ArticleSectionDetailControl.xaml" />
     <None Remove="Controls\Search\LiveSectionDetailControl.xaml" />
     <None Remove="Controls\Search\SearchHeader.xaml" />
@@ -1384,15 +1381,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Components\DefaultCommentItemPresenter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Components\HistoryArticlePresenter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\SearchArticlePresenter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Components\PartitionArticlePresenter.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\AI\CustomPromptDialog.xaml">

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="BiliCopilot.UI.Controls.Components.CardStatControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    IsTabStop="False">
+    <StackPanel
+        VerticalAlignment="Center"
+        Orientation="Horizontal"
+        Spacing="4">
+        <ContentPresenter
+            VerticalAlignment="Center"
+            Content="{x:Bind Icon, Mode=OneWay}" />
+        <TextBlock
+            VerticalAlignment="Center"
+            FontSize="11.5"
+            Foreground="#F2FFFFFF"
+            Text="{x:Bind Text, Mode=OneWay}">
+            <TextBlock.RenderTransform>
+                <TranslateTransform Y="-1" />
+            </TextBlock.RenderTransform>
+        </TextBlock>
+    </StackPanel>
+</UserControl>
