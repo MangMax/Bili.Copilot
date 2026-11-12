@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Richasy.WinUIKernel.Share.Base;
+using Windows.UI;
 using Windows.Graphics.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 
@@ -57,10 +58,27 @@ public sealed partial class RecommendationCoverImage : UserControl
         nameof(Stretch), typeof(Stretch), typeof(RecommendationCoverImage),
         new PropertyMetadata(Stretch.UniformToFill, OnStretchChanged));
 
+    /// <summary>
+    /// Tint painted into the bottom of the decoded artwork. It is part of the
+    /// bitmap on purpose: a separate shade element is clipped and rasterized on
+    /// its own, so while the card moves between device pixels its last row can
+    /// trail the artwork and leave a bright seam along the cover's bottom edge.
+    /// Baked pixels can never separate from the artwork they cover.
+    /// </summary>
+    public static readonly DependencyProperty ShadeColorProperty = DependencyProperty.Register(
+        nameof(ShadeColor), typeof(Color), typeof(RecommendationCoverImage),
+        new PropertyMetadata(Color.FromArgb(0, 0, 0, 0), OnShadeColorChanged));
+
     public Stretch Stretch
     {
         get => (Stretch)GetValue(StretchProperty);
         set => SetValue(StretchProperty, value);
+    }
+
+    public Color ShadeColor
+    {
+        get => (Color)GetValue(ShadeColorProperty);
+        set => SetValue(ShadeColorProperty, value);
     }
 
     private static void OnStretchChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -90,6 +108,13 @@ public sealed partial class RecommendationCoverImage : UserControl
     {
         var cover = (RecommendationCoverImage)sender;
         cover._resizeTimer?.Stop();
+        cover.Reload();
+    }
+
+    private static void OnShadeColorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+    {
+        var cover = (RecommendationCoverImage)sender;
+        cover._requested = default;
         cover.Reload();
     }
 
@@ -241,9 +266,11 @@ public sealed partial class RecommendationCoverImage : UserControl
                     ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb).AsTask();
                 token.ThrowIfCancellationRequested();
                 var result = new WriteableBitmap((int)outputWidth, (int)outputHeight);
+                var data = pixels.DetachPixelData();
+                ApplyShade(data, (int)outputWidth, (int)outputHeight, ShadeColor);
                 using (var buffer = result.PixelBuffer.AsStream())
                 {
-                    await buffer.WriteAsync(pixels.DetachPixelData(), token);
+                    await buffer.WriteAsync(data, token);
                 }
                 result.Invalidate();
                 token.ThrowIfCancellationRequested();
@@ -310,6 +337,59 @@ public sealed partial class RecommendationCoverImage : UserControl
         }
 
         return new MemoryStream(await pending.WaitAsync(token), writable: false);
+    }
+
+    // The shade fades from clear at 54% of the cover height to 51% of the
+    // requested alpha at 80%, then to the requested alpha at the bottom edge.
+    private static readonly (double Offset, double Alpha)[] ShadeStops = [(0.54, 0), (0.8, 0.512), (1, 1)];
+
+    private static void ApplyShade(byte[] pixels, int width, int height, Color color)
+    {
+        var maxAlpha = color.A / 255d;
+        if (maxAlpha <= 0 || width <= 0 || height <= 0)
+        {
+            return;
+        }
+
+        for (var y = 0; y < height; y++)
+        {
+            var alpha = maxAlpha * InterpolateShade((y + 0.5) / height);
+            if (alpha <= 0)
+            {
+                continue;
+            }
+
+            var shade = (B: color.B * alpha, G: color.G * alpha, R: color.R * alpha);
+            var remain = 1 - alpha;
+            var offset = y * width * 4;
+            for (var i = offset; i < offset + width * 4; i += 4)
+            {
+                pixels[i] = (byte)((pixels[i] * remain) + shade.B + 0.5);
+                pixels[i + 1] = (byte)((pixels[i + 1] * remain) + shade.G + 0.5);
+                pixels[i + 2] = (byte)((pixels[i + 2] * remain) + shade.R + 0.5);
+                pixels[i + 3] = (byte)((pixels[i + 3] * remain) + (alpha * 255) + 0.5);
+            }
+        }
+    }
+
+    private static double InterpolateShade(double position)
+    {
+        if (position <= ShadeStops[0].Offset)
+        {
+            return ShadeStops[0].Alpha;
+        }
+
+        for (var i = 1; i < ShadeStops.Length; i++)
+        {
+            if (position <= ShadeStops[i].Offset)
+            {
+                var previous = ShadeStops[i - 1];
+                var progress = (position - previous.Offset) / (ShadeStops[i].Offset - previous.Offset);
+                return previous.Alpha + ((ShadeStops[i].Alpha - previous.Alpha) * progress);
+            }
+        }
+
+        return ShadeStops[^1].Alpha;
     }
 
     private static async Task DownloadAsync(Uri uri, TaskCompletionSource<byte[]> completion)

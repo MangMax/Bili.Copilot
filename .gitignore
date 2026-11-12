@@ -389,3 +389,6 @@ docs/engine-61-design-draft/**/*.png
 docs/list-resize/**/*.png
 docs/seek-*/**/*.png
 docs/resize-*/**/*.png
+
+# Local design output
+.oil-ui-local/

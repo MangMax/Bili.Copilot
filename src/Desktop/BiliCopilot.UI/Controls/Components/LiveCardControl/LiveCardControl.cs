@@ -20,23 +20,36 @@ public abstract class LiveCardPresenter : LayoutUserControlBase<LiveItemViewMode
 public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewModel>
 {
     private CardControl _rootCard;
+    private Button? _userButton;
+    private Button? _authorButton;
+    private Button? _moreButton;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LiveCardControl"/> class.
     /// </summary>
-    public LiveCardControl() => DefaultStyleKey = typeof(LiveCardControl);
+    public LiveCardControl()
+    {
+        DefaultStyleKey = typeof(LiveCardControl);
+    }
 
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
     {
-        _rootCard = GetTemplateChild("RootCard") as CardControl;
-        if (ViewModel is not null)
+        if (_moreButton is not null)
         {
-            if (_rootCard is not null)
-            {
-                _rootCard.Command = ViewModel.PlayCommand;
-            }
+            _moreButton.Click -= OnMoreClick;
         }
+
+        _rootCard = GetTemplateChild("RootCard") as CardControl;
+        _userButton = GetTemplateChild("UserButton") as Button;
+        _authorButton = GetTemplateChild("AuthorButton") as Button;
+        _moreButton = GetTemplateChild("MoreButton") as Button;
+        if (_moreButton is not null)
+        {
+            _moreButton.Click += OnMoreClick;
+        }
+
+        ApplyViewModelCommands(ViewModel);
     }
 
     /// <inheritdoc/>
@@ -45,14 +58,50 @@ public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewMode
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
-        => ContextRequested -= OnContextRequested;
+    {
+        ContextRequested -= OnContextRequested;
+        ContextFlyout?.Hide();
+    }
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(LiveItemViewModel? oldValue, LiveItemViewModel? newValue)
     {
+        ContextFlyout?.Hide();
+        ContextFlyout = null;
+        ApplyViewModelCommands(newValue);
+    }
+
+    private void ApplyViewModelCommands(LiveItemViewModel? viewModel)
+    {
         if (_rootCard is not null)
         {
-            _rootCard.Command = newValue?.PlayCommand;
+            _rootCard.Command = viewModel?.PlayCommand;
+        }
+
+        if (_userButton is not null)
+        {
+            _userButton.Command = viewModel?.ShowUserSpaceCommand;
+            _userButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
+        }
+
+        if (_authorButton is not null)
+        {
+            _authorButton.Command = viewModel?.ShowUserSpaceCommand;
+            _authorButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
+        }
+    }
+
+    private void OnMoreClick(object sender, RoutedEventArgs e)
+    {
+        if (ContextFlyout is null)
+        {
+            CreateContextFlyout();
+        }
+
+        RelocateCommands();
+        if (sender is FrameworkElement target)
+        {
+            ContextFlyout?.ShowAt(target);
         }
     }
 
