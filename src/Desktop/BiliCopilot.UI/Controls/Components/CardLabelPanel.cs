@@ -1,9 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 namespace BiliCopilot.UI.Controls.Components;
 
-/// <summary>Fits compact labels from the leading edge, giving the recommendation reason priority.</summary>
-public sealed partial class PopularVideoLabelsPanel : Panel
+/// <summary>Fits compact labels from the leading edge, giving the first label priority.</summary>
+public sealed partial class CardLabelPanel : Panel
 {
     private const double Spacing = 6;
     private readonly List<double> _slots = new();

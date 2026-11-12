@@ -9,8 +9,8 @@
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
 
     <!--
-        Grid live cards reuse the popular video card frame:
-        PopularVideoCardPanel owns the 16:10 cover, the metadata keeps its
+        Grid live cards reuse the shared card frame:
+        CardContentPanel owns the 16:10 cover, the metadata keeps its
         natural height, and labels use the shared CardTagControl.
     -->
     <Style x:Key="LiveGridCardStyle" TargetType="local:LiveCardControl">
@@ -23,9 +23,9 @@
                         Background="Transparent"
                         BorderThickness="0"
                         VerticalAlignment="Top"
-                        CornerRadius="{StaticResource PopularCardRadius}"
+                        CornerRadius="{StaticResource CardSurfaceRadius}"
                         AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}">
-                        <local:PopularVideoCardPanel>
+                        <local:CardContentPanel>
                             <local:LiveMediaPresenter ViewModel="{TemplateBinding ViewModel}" />
                             <Grid
                                 Padding="0,10,0,0"
@@ -42,11 +42,8 @@
                                     Style="{StaticResource BodyStrongTextBlockStyle}"
                                     LineHeight="20"
                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}" />
-                                <Grid Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
+                                <local:CardMetaPanel Grid.Row="1">
+                                    <local:CardMetaPanel.Avatar>
                                     <!-- 推荐直播流不返回头像，收起头像槽位让作者与标签占满整行. -->
                                     <Grid
                                         x:Name="AvatarSlot"
@@ -87,13 +84,8 @@
                                             </Grid>
                                         </Button>
                                     </Grid>
-                                    <Grid
-                                        Grid.Column="1"
-                                        RowSpacing="4">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="20" />
-                                            <RowDefinition Height="22" />
-                                        </Grid.RowDefinitions>
+                                    </local:CardMetaPanel.Avatar>
+                                    <local:CardMetaPanel.Author>
                                         <controls:InlineTextButton
                                             x:Name="AuthorButton"
                                             AutomationProperties.AutomationId="LiveAuthor"
@@ -106,15 +98,9 @@
                                                 Style="{StaticResource CaptionTextBlockStyle}"
                                                 TextTrimming="CharacterEllipsis" />
                                         </controls:InlineTextButton>
-                                        <Grid
-                                            Grid.Row="1"
-                                            ColumnSpacing="8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <local:PopularVideoLabelsPanel
+                                    </local:CardMetaPanel.Author>
+                                    <local:CardMetaPanel.Badges>
+                                            <local:CardLabelPanel
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center">
                                                 <local:CardTagControl
@@ -125,18 +111,20 @@
                                                     Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
                                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
                                                     Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasTagName, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                            </local:PopularVideoLabelsPanel>
+                                            </local:CardLabelPanel>
+                                    </local:CardMetaPanel.Badges>
+                                    <local:CardMetaPanel.Info>
                                             <TextBlock
-                                                Grid.Column="1"
                                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.CollectRelativeTime}"
                                                 Style="{StaticResource CaptionTextBlockStyle}"
                                                 LineHeight="18"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                 VerticalAlignment="Center"
                                                 Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasCollectTime, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                    </local:CardMetaPanel.Info>
+                                    <local:CardMetaPanel.Actions>
                                             <Button
                                                 x:Name="MoreButton"
-                                                Grid.Column="2"
                                                 Width="22"
                                                 Height="22"
                                                 MinWidth="0"
@@ -154,11 +142,10 @@
                                                     FontSize="12"
                                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                             </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
+                                    </local:CardMetaPanel.Actions>
+                                </local:CardMetaPanel>
                             </Grid>
-                        </local:PopularVideoCardPanel>
+                        </local:CardContentPanel>
                     </base:CardControl>
                 </ControlTemplate>
             </Setter.Value>

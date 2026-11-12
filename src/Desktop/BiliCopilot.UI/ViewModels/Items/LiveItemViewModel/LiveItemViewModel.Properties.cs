@@ -77,9 +77,9 @@ public sealed partial class LiveItemViewModel
     public bool HasAvatar => Avatar is not null;
 
     /// <summary>
-    /// 当前直播间是否在直播中.
+    /// 当前直播间是否在直播中. 推荐流不返回直播状态，此时按直播中处理.
     /// </summary>
-    public bool IsLivingNow => IsLiving == true;
+    public bool IsLivingNow => IsLiving != false;
 
     /// <summary>
     /// 是否有分区/副标题标签.

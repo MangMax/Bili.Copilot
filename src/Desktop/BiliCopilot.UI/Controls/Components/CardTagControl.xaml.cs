@@ -3,7 +3,7 @@
 namespace BiliCopilot.UI.Controls.Components;
 
 /// <summary>
-/// Shared category tag used by video and live cards.
+/// Shared category tag used by video, live and article cards.
 /// </summary>
 public sealed partial class CardTagControl : UserControl
 {

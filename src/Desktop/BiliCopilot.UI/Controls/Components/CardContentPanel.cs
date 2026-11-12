@@ -2,8 +2,8 @@
 
 namespace BiliCopilot.UI.Controls.Components;
 
-/// <summary>Measures a popular card's 16:10 cover independently from its metadata.</summary>
-public sealed partial class PopularVideoCardPanel : Panel
+/// <summary>Measures a card's 16:10 cover independently from its metadata.</summary>
+public sealed partial class CardContentPanel : Panel
 {
     /// <inheritdoc/>
     protected override Windows.Foundation.Size MeasureOverride(Windows.Foundation.Size availableSize)

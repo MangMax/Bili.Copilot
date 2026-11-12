@@ -24,8 +24,8 @@
                         Background="Transparent"
                         BorderThickness="0"
                         VerticalAlignment="Top"
-                        CornerRadius="{StaticResource PopularCardRadius}"
-                        AutomationProperties.AutomationId="PopularVideoPlay"
+                        CornerRadius="{StaticResource CardSurfaceRadius}"
+                        AutomationProperties.AutomationId="VideoCardPlay"
                         AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="PopularHoverStates">
@@ -45,7 +45,7 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <local:PopularVideoCardPanel>
+                        <local:CardContentPanel>
                             <local:VideoMediaPresenter ViewModel="{TemplateBinding ViewModel}" />
                             <Grid
                                 Padding="0,10,0,0"
@@ -62,15 +62,11 @@
                                     Style="{StaticResource BodyStrongTextBlockStyle}"
                                     LineHeight="20"
                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}" />
-                                <Grid
-                                    Grid.Row="1"
-                                    ColumnSpacing="8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="40" />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
+                                <local:CardMetaPanel Grid.Row="1">
+                                    <local:CardMetaPanel.Avatar>
                                     <Button
                                         x:Name="UserButton"
+                                        Margin="0,0,8,0"
                                         Width="40"
                                         Height="40"
                                         Padding="0"
@@ -80,7 +76,7 @@
                                         Style="{StaticResource AvatarButtonStyle}"
                                         IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.CanOpenUserSpace}"
                                         ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}"
-                                        AutomationProperties.AutomationId="PopularVideoAvatar"
+                                        AutomationProperties.AutomationId="VideoCardAvatar"
                                         AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.AuthorDisplayName}">
                                         <Grid
                                             Width="40"
@@ -102,17 +98,12 @@
                                                 Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Avatar}" />
                                         </Grid>
                                     </Button>
-                                    <Grid
-                                        Grid.Column="1"
-                                        RowSpacing="4">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="20" />
-                                            <RowDefinition Height="22" />
-                                        </Grid.RowDefinitions>
+                                    </local:CardMetaPanel.Avatar>
+                                    <local:CardMetaPanel.Author>
                                         <controls:InlineTextButton
                                             x:Name="AuthorButton"
                                             IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.CanOpenUserSpace}"
-                                            AutomationProperties.AutomationId="PopularVideoAuthor"
+                                            AutomationProperties.AutomationId="VideoCardAuthor"
                                             AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.AuthorDisplayName}"
                                             ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
                                             <Grid>
@@ -147,15 +138,9 @@
                                                     TextTrimming="CharacterEllipsis" />
                                             </Grid>
                                         </controls:InlineTextButton>
-                                        <Grid
-                                            Grid.Row="1"
-                                            ColumnSpacing="8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <local:PopularVideoLabelsPanel
+                                    </local:CardMetaPanel.Author>
+                                    <local:CardMetaPanel.Badges>
+                                            <local:CardLabelPanel
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularLabels, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -181,26 +166,20 @@
                                                     Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
                                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
                                                     Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName, Converter={StaticResource ObjectToVisibilityConverter}}" />
-                                            </local:PopularVideoLabelsPanel>
+                                            </local:CardLabelPanel>
+                                    </local:CardMetaPanel.Badges>
+                                    <local:CardMetaPanel.Info>
                                             <TextBlock
                                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularDisplayTime}"
                                                 Style="{StaticResource CaptionTextBlockStyle}"
                                                 LineHeight="18"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                 VerticalAlignment="Center"
-                                                Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularLabels, Converter={StaticResource BoolToVisibilityReverseConverter}}"
                                                 TextTrimming="CharacterEllipsis" />
-                                            <TextBlock
-                                                Grid.Column="1"
-                                                Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularDisplayTime}"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                LineHeight="18"
-                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                VerticalAlignment="Center"
-                                                Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularLabels, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                    </local:CardMetaPanel.Info>
+                                    <local:CardMetaPanel.Actions>
                                             <Button
                                                 x:Name="MoreButton"
-                                                Grid.Column="2"
                                                 Width="22"
                                                 Height="22"
                                                 MinWidth="0"
@@ -210,7 +189,7 @@
                                                 BorderThickness="0"
                                                 HorizontalContentAlignment="Center"
                                                 VerticalContentAlignment="Center"
-                                                AutomationProperties.AutomationId="PopularVideoMore"
+                                                AutomationProperties.AutomationId="VideoCardMore"
                                                 AutomationProperties.Name="{ext:Locale Name=MoreOptions}"
                                                 ToolTipService.ToolTip="{ext:Locale Name=MoreOptions}">
                                                 <ic:SymbolIcon
@@ -218,11 +197,10 @@
                                                     FontSize="12"
                                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                             </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
+                                    </local:CardMetaPanel.Actions>
+                                </local:CardMetaPanel>
                             </Grid>
-                        </local:PopularVideoCardPanel>
+                        </local:CardContentPanel>
                     </base:CardControl>
                 </ControlTemplate>
             </Setter.Value>
@@ -249,7 +227,7 @@
                     <StackPanel>
                         <Button x:Name="RootCard"
                             Padding="8" Background="Transparent" BorderThickness="0"
-                            CornerRadius="{StaticResource PopularCardRadius}"
+                            CornerRadius="{StaticResource CardSurfaceRadius}"
                             UseSystemFocusVisuals="True"
                             AutomationProperties.AutomationId="MomentVideoPlay"
                             AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.AccessibleTitle}">
@@ -261,7 +239,7 @@
                                         VerticalContentAlignment="Stretch" />
                                 </ControlTemplate>
                             </Button.Template>
-                            <local:PopularVideoCardPanel>
+                            <local:CardContentPanel>
                                 <local:VideoMediaPresenter ViewModel="{TemplateBinding ViewModel}" />
                                 <Border MinHeight="{TemplateBinding MinimumTitleHeight}">
                                 <TextBlock Margin="0,10,0,0" FontSize="14" FontWeight="Normal" LineHeight="20"
@@ -270,7 +248,7 @@
                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}"
                                     Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}" />
                                 </Border>
-                            </local:PopularVideoCardPanel>
+                            </local:CardContentPanel>
                         </Button>
                         <Border Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ShowDescription, Converter={StaticResource BoolToVisibilityConverter}}">
                             <local:EmoteTextBlock Margin="8,0,8,8" FontSize="12" MaxLines="3"
@@ -781,8 +759,8 @@
 
     <DataTemplate x:Key="FeedVideoSkeletonTemplate">
         <Grid Padding="8" VerticalAlignment="Top" IsHitTestVisible="False" AutomationProperties.AccessibilityView="Raw">
-            <local:PopularVideoCardPanel>
-                <Border CornerRadius="{StaticResource PopularCoverRadius}" Background="{ThemeResource ControlFillColorSecondaryBrush}" />
+            <local:CardContentPanel>
+                <Border CornerRadius="{StaticResource CardCoverRadius}" Background="{ThemeResource ControlFillColorSecondaryBrush}" />
                 <Grid Padding="0,10,0,0" RowSpacing="4">
                     <Grid.RowDefinitions><RowDefinition Height="40" /><RowDefinition Height="46" /></Grid.RowDefinitions>
                     <StackPanel Spacing="6">
@@ -798,7 +776,7 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
-            </local:PopularVideoCardPanel>
+            </local:CardContentPanel>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

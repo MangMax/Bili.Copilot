@@ -19,7 +19,7 @@
                 Margin="0,1,0,0"
                 VerticalAlignment="Center"
                 AutomationProperties.AccessibilityView="Raw"
-                Foreground="{StaticResource PopularMediaForeground}" />
+                Foreground="{StaticResource CardMediaForeground}" />
             <TextBlock
                 x:Name="TagText"
                 Grid.Column="1"

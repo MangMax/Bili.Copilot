@@ -3,50 +3,41 @@
     x:Class="BiliCopilot.UI.Controls.Components.LiveMediaPresenter"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
-    <Grid>
-        <controls:RecommendationCoverImage
-            CornerRadius="{StaticResource PopularCoverRadius}"
-            ShadeColor="#D106080C"
-            Source="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}" />
-        <Border
-            Margin="10,8,0,0"
-            VerticalAlignment="Top"
-            Background="#B3C42020"
-            Style="{StaticResource CardTagBorderStyle}"
-            Visibility="{x:Bind ViewModel.IsLivingNow, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
-            <StackPanel
-                VerticalAlignment="Center"
-                Orientation="Horizontal"
-                Spacing="4">
-                <Ellipse
-                    Width="5"
-                    Height="5"
-                    Fill="White" />
-                <TextBlock
-                    Style="{StaticResource CardTagTextStyle}"
-                    Text="{ext:Locale Name=Living}" />
-            </StackPanel>
-        </Border>
-        <StackPanel
-            Margin="10,0,10,7"
-            VerticalAlignment="Bottom"
-            Orientation="Horizontal"
-            Spacing="4"
-            ToolTipService.ToolTip="{ext:Locale Name=Viewer}">
-            <ic:SymbolIcon
-                VerticalAlignment="Center"
-                FontSize="12"
-                Foreground="#F2FFFFFF"
-                Symbol="Fire" />
-            <TextBlock
-                VerticalAlignment="Center"
-                FontSize="11.5"
-                Foreground="#F2FFFFFF"
-                Text="{x:Bind ViewModel.ViewerCount, Converter={StaticResource CountConverter}, Mode=OneWay, FallbackValue={x:Null}}" />
-        </StackPanel>
-    </Grid>
+    <local:CardMediaFrame Cover="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}">
+        <local:CardMediaFrame.TopStart>
+            <Border
+                Background="#B3C42020"
+                Style="{StaticResource CardTagBorderStyle}"
+                Visibility="{x:Bind ViewModel.IsLivingNow, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="4">
+                    <Ellipse
+                        Width="5"
+                        Height="5"
+                        Fill="White" />
+                    <TextBlock
+                        Style="{StaticResource CardTagTextStyle}"
+                        Text="{ext:Locale Name=Living}" />
+                </StackPanel>
+            </Border>
+        </local:CardMediaFrame.TopStart>
+        <local:CardMediaFrame.BottomStart>
+            <local:CardStatControl
+                Text="{x:Bind ViewModel.ViewerCount, Converter={StaticResource CountConverter}, Mode=OneWay, FallbackValue={x:Null}}"
+                ToolTipService.ToolTip="{ext:Locale Name=Viewer}">
+                <local:CardStatControl.Icon>
+                    <ic:SymbolIcon
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="#F2FFFFFF"
+                        Symbol="Fire" />
+                </local:CardStatControl.Icon>
+            </local:CardStatControl>
+        </local:CardMediaFrame.BottomStart>
+    </local:CardMediaFrame>
 </local:LiveMediaPresenterBase>

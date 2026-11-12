@@ -3,44 +3,159 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
 
-    <Style x:Key="PartitionArticleCardStyle" TargetType="local:ArticleCardControl">
+    <!--
+        Article grids share the video/live card frame: CardContentPanel owns
+        the 16:10 cover, metadata keeps its natural height, and labels use the
+        shared CardTagControl.
+    -->
+    <Style x:Key="ArticleGridCardStyle" TargetType="local:ArticleCardControl">
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ArticleCardControl">
-                    <base:CardControl x:Name="RootCard" BorderThickness="0">
-                        <local:PartitionArticlePresenter ViewModel="{TemplateBinding ViewModel}" />
+                    <base:CardControl
+                        x:Name="RootCard"
+                        Padding="8"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        VerticalAlignment="Top"
+                        CornerRadius="{StaticResource CardSurfaceRadius}"
+                        AutomationProperties.AutomationId="ArticleOpen"
+                        AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}">
+                        <local:CardContentPanel>
+                            <local:ArticleMediaPresenter ViewModel="{TemplateBinding ViewModel}" />
+                            <Grid
+                                Padding="0,10,0,0"
+                                RowSpacing="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40" />
+                                    <RowDefinition Height="46" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}"
+                                    MaxLines="2"
+                                    TextWrapping="Wrap"
+                                    TextTrimming="CharacterEllipsis"
+                                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                                    LineHeight="20"
+                                    ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}" />
+                                <local:CardMetaPanel Grid.Row="1">
+                                    <local:CardMetaPanel.Avatar>
+                                    <Button
+                                        x:Name="UserButton"
+                                        Margin="0,0,8,0"
+                                        Width="40"
+                                        Height="40"
+                                        Padding="0"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource AvatarButtonStyle}"
+                                        ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}"
+                                        AutomationProperties.AutomationId="ArticleAvatar"
+                                        AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}">
+                                        <Grid
+                                            Width="40"
+                                            Height="40">
+                                            <Border
+                                                CornerRadius="20"
+                                                Background="{ThemeResource ControlFillColorSecondaryBrush}">
+                                                <TextBlock
+                                                    Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.AuthorInitial}"
+                                                    FontSize="14.4"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                            </Border>
+                                            <controls:RecommendationCoverImage
+                                                Width="40"
+                                                Height="40"
+                                                CornerRadius="20"
+                                                Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Avatar}" />
+                                        </Grid>
+                                    </Button>
+                                    </local:CardMetaPanel.Avatar>
+                                    <local:CardMetaPanel.Author>
+                                        <controls:InlineTextButton
+                                            x:Name="AuthorButton"
+                                            AutomationProperties.AutomationId="ArticleAuthor"
+                                            AutomationProperties.Name="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
+                                            ToolTipService.ToolTip="{ext:Locale Name=EnterUserSpace}">
+                                            <TextBlock
+                                                LineHeight="18"
+                                                Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Author}"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                TextTrimming="CharacterEllipsis" />
+                                        </controls:InlineTextButton>
+                                    </local:CardMetaPanel.Author>
+                                    <local:CardMetaPanel.Badges>
+                                            <local:CardLabelPanel
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center">
+                                                <local:CardTagControl
+                                                    Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PartitionName}"
+                                                    ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PartitionName}"
+                                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPartitionName, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                            </local:CardLabelPanel>
+                                    </local:CardMetaPanel.Badges>
+                                    <local:CardMetaPanel.Info>
+                                            <TextBlock
+                                                Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.DisplayTime}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                LineHeight="18"
+                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                VerticalAlignment="Center"
+                                                Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasDisplayTime, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                    </local:CardMetaPanel.Info>
+                                    <local:CardMetaPanel.Actions>
+                                            <Button
+                                                x:Name="MoreButton"
+                                                Width="22"
+                                                Height="22"
+                                                MinWidth="0"
+                                                MinHeight="0"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                AutomationProperties.AutomationId="ArticleMore"
+                                                AutomationProperties.Name="{ext:Locale Name=MoreOptions}"
+                                                ToolTipService.ToolTip="{ext:Locale Name=MoreOptions}">
+                                                <ic:SymbolIcon
+                                                    Symbol="MoreVertical"
+                                                    FontSize="12"
+                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                            </Button>
+                                    </local:CardMetaPanel.Actions>
+                                </local:CardMetaPanel>
+                            </Grid>
+                        </local:CardContentPanel>
                     </base:CardControl>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style x:Key="SearchArticleCardStyle" TargetType="local:ArticleCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:ArticleCardControl">
-                    <base:CardControl x:Name="RootCard" BorderThickness="0">
-                        <local:SearchArticlePresenter ViewModel="{TemplateBinding ViewModel}" />
-                    </base:CardControl>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <Style
+        x:Key="PartitionArticleCardStyle"
+        BasedOn="{StaticResource ArticleGridCardStyle}"
+        TargetType="local:ArticleCardControl" />
 
-    <Style x:Key="HistoryArticleCardStyle" TargetType="local:ArticleCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:ArticleCardControl">
-                    <base:CardControl x:Name="RootCard" BorderThickness="0">
-                        <local:HistoryArticlePresenter ViewModel="{TemplateBinding ViewModel}" />
-                    </base:CardControl>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <Style
+        x:Key="SearchArticleCardStyle"
+        BasedOn="{StaticResource ArticleGridCardStyle}"
+        TargetType="local:ArticleCardControl" />
+
+    <Style
+        x:Key="HistoryArticleCardStyle"
+        BasedOn="{StaticResource ArticleGridCardStyle}"
+        TargetType="local:ArticleCardControl" />
 
 </ResourceDictionary>
