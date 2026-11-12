@@ -40,8 +40,6 @@ internal static class LogLevelSettings
 
         public bool IsSettingKeyExist(string key) => _settings.IsSettingKeyExist(key);
 
-        public T Read<T>(string key, T defaultValue) => _settings.ReadLocalSetting(key, defaultValue);
-
         public void Write<T>(string key, T value) => _settings.WriteLocalSetting(key, value);
     }
 }

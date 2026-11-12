@@ -20,7 +20,7 @@ public sealed class AppLogLevelSwitch
     public AppLogLevelSwitch(AppLogLevel initialLevel)
     {
         Current = initialLevel;
-        _levelSwitch = new LoggingLevelSwitch(ToSerilogLevel(initialLevel));
+        _levelSwitch = new LoggingLevelSwitch(ToEffectiveMinimum(initialLevel));
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public sealed class AppLogLevelSwitch
     /// <summary>
     /// 交给 Serilog 的级别开关.
     /// </summary>
-    public LoggingLevelSwitch LevelSwitch => _levelSwitch;
+    internal LoggingLevelSwitch LevelSwitch => _levelSwitch;
 
     /// <summary>
     /// 立即应用新的应用日志级别.
@@ -45,7 +45,18 @@ public sealed class AppLogLevelSwitch
     public void Apply(AppLogLevel level)
     {
         Current = level;
-        _levelSwitch.MinimumLevel = ToSerilogLevel(level);
+        _levelSwitch.MinimumLevel = ToEffectiveMinimum(level);
+    }
+
+    /// <summary>
+    /// 计算 Serilog 管道允许通过的最低级别：始终放行 Information 及以上，供逐事件过滤区分 mpv 与普通应用日志.
+    /// </summary>
+    /// <param name="level">应用日志级别.</param>
+    /// <returns>Serilog 管道最低级别.</returns>
+    internal static LogEventLevel ToEffectiveMinimum(AppLogLevel level)
+    {
+        var mapped = ToSerilogLevel(level);
+        return mapped < LogEventLevel.Information ? mapped : LogEventLevel.Information;
     }
 
     /// <summary>

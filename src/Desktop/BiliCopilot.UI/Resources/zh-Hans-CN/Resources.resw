@@ -3034,13 +3034,13 @@
     <value>应用日志级别</value>
   </data>
   <data name="AppLogLevelDescription" xml:space="preserve">
-    <value>控制写入应用日志文件的详细程度，默认记录信息及以上</value>
+    <value>控制应用自身日志文件的详细程度，不影响播放器（mpv）的 [MPV] 输出</value>
   </data>
   <data name="MpvLogLevel" xml:space="preserve">
     <value>mpv 日志级别</value>
   </data>
   <data name="MpvLogLevelDescription" xml:space="preserve">
-    <value>仅控制播放器（mpv）输出的详细程度，不影响应用日志文件</value>
+    <value>仅控制播放器（mpv）的 [MPV] 输出级别，与应用日志级别相互独立</value>
   </data>
   <data name="Debug" xml:space="preserve">
     <value>调试</value>
