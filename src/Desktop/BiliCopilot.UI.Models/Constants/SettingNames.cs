@@ -118,6 +118,8 @@ public enum SettingNames
     PlayerPresenterMode,
     IsBottomProgressBarVisible,
     MpvLogLevel,
+    AppLogLevel,
+    LogLevelSplitMigrationCompleted,
     AudioExclusiveEnabled,
     MaxVolume,
     HrSeek,

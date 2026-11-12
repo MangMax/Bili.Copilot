@@ -263,7 +263,10 @@ public sealed partial class SettingsPageViewModel
     public partial double StepBackwardSecond { get; set; }
 
     [ObservableProperty]
-    public partial MpvLogLevel LogLevel { get; set; }
+    public partial AppLogLevel AppLogLevel { get; set; }
+
+    [ObservableProperty]
+    public partial MpvLogLevel MpvLogLevel { get; set; }
 
     [ObservableProperty]
     public partial bool HideMainWindowOnPlay { get; set; }
