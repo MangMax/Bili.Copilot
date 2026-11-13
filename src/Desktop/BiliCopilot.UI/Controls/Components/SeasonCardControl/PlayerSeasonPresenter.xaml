@@ -26,11 +26,15 @@
             Text="{x:Bind ViewModel.Title, Mode=OneWay}" />
         <Border
             Margin="8"
+            Padding="8,4"
             HorizontalAlignment="Right"
-            Style="{StaticResource CardCoverBadgeStyle}"
+            VerticalAlignment="Top"
+            Background="{ThemeResource AccentFillColorTertiaryBrush}"
+            CornerRadius="{StaticResource ControlCornerRadius}"
             Visibility="{x:Bind ViewModel.Highlight, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
             <TextBlock
-                Style="{StaticResource CardCoverBadgeTextStyle}"
+                Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                Style="{StaticResource CaptionTextBlockStyle}"
                 Text="{x:Bind ViewModel.Highlight, Mode=OneWay}" />
         </Border>
     </Grid>
