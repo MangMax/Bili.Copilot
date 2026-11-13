@@ -227,12 +227,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
 
         var request = AvatarTransitionSession.Current;
-        if (request is null
-            || !AvatarTransitionPolicy.CanStart(
-                request,
-                profile.Id,
-                avatar,
-                DateTimeOffset.Now))
+        var canStart = request is not null
+            && AvatarTransitionPolicy.CanStart(request, profile.Id, avatar, DateTimeOffset.Now);
+        if (!canStart)
         {
             return;
         }
@@ -295,18 +292,14 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
         _avatarStartInProgress = true;
         LayoutUpdated -= OnAvatarLayoutUpdated;
-        _ = StartAvatarTransitionAsync(header, profile.Id, avatar);
+        StartAvatarTransition(header, profile.Id, avatar);
     }
 
-    private async Task StartAvatarTransitionAsync(UserSpacePageHeader header, string userId, Uri avatar)
+    private void StartAvatarTransition(UserSpacePageHeader header, string userId, Uri avatar)
     {
         try
         {
-            await AvatarConnectedAnimation.TryStartAsync(
-                header.AvatarElement,
-                userId,
-                avatar,
-                header.WaitForAvatarAsync);
+            AvatarConnectedAnimation.TryStart(header.AvatarElement, userId, avatar);
         }
         finally
         {

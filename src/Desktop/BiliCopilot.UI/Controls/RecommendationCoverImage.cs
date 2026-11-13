@@ -35,51 +35,6 @@ public sealed partial class RecommendationCoverImage : UserControl
 
     public event EventHandler? ImageOpened;
 
-    /// <summary>
-    /// 是否已经解码出一张可以显示的图片.
-    /// </summary>
-    private bool HasImage => _image.Source is not null;
-
-    /// <summary>
-    /// 在限定时间内等待图片解码完成，供串联动画决定何时启动.
-    /// </summary>
-    /// <param name="timeout">最长等待时间.</param>
-    /// <returns>到期时图片已就绪为 <see langword="true"/>.</returns>
-    public async Task<bool> WaitForImageAsync(TimeSpan timeout)
-    {
-        if (HasImage)
-        {
-            return true;
-        }
-
-        if (timeout <= TimeSpan.Zero)
-        {
-            return false;
-        }
-
-        var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-        void OnOpened(object? sender, EventArgs args) => completion.TrySetResult(true);
-        ImageOpened += OnOpened;
-        try
-        {
-            // 订阅后才完成解码的图片也要算作就绪。
-            if (HasImage)
-            {
-                return true;
-            }
-
-            return await completion.Task.WaitAsync(timeout);
-        }
-        catch (TimeoutException)
-        {
-            return false;
-        }
-        finally
-        {
-            ImageOpened -= OnOpened;
-        }
-    }
-
     public uint SourcePixelWidth { get; private set; }
 
     public uint SourcePixelHeight { get; private set; }

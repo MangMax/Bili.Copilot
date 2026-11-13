@@ -26,15 +26,11 @@ public static class AvatarTransitionPolicy
     public static TimeSpan MaxPrepareAge { get; } = TimeSpan.FromSeconds(1);
 
     /// <summary>
-    /// 等待目标头像解码的总预算，包含寻找目标元素与导航本身消耗的时间.
-    /// </summary>
-    public static TimeSpan MaxImageWait { get; } = TimeSpan.FromMilliseconds(250);
-
-    /// <summary>
     /// 判断点击卡片时是否值得准备动画.
     /// </summary>
     /// <param name="animationsEnabled">系统动画是否开启.</param>
     /// <param name="sourceVisible">源头像是否已完成布局并可见.</param>
+    /// <param name="sourceHasImage">源头像是否已经显示了一张图片.</param>
     /// <param name="canOpenUserSpace">卡片是否提供可用的作者入口.</param>
     /// <param name="userId">作者用户 Id.</param>
     /// <param name="avatarUri">作者头像地址.</param>
@@ -42,11 +38,13 @@ public static class AvatarTransitionPolicy
     public static bool CanPrepare(
         bool animationsEnabled,
         bool sourceVisible,
+        bool sourceHasImage,
         bool canOpenUserSpace,
         string? userId,
         Uri? avatarUri)
         => animationsEnabled
             && sourceVisible
+            && sourceHasImage
             && canOpenUserSpace
             && !string.IsNullOrWhiteSpace(userId)
             && avatarUri is not null;
@@ -109,25 +107,6 @@ public static class AvatarTransitionPolicy
         DateTimeOffset now)
         => Matches(request, destinationUserId, destinationAvatarUri)
             && IsFresh(request, now);
-
-    /// <summary>
-    /// 计算目标头像还能等待的剩余时间.
-    /// </summary>
-    /// <param name="request">准备阶段记录的请求.</param>
-    /// <param name="age">从准备到现在的耗时.</param>
-    /// <returns>剩余等待时间；没有请求或预算耗尽时为零.</returns>
-    public static TimeSpan GetImageWaitBudget(AvatarTransitionRequest? request, TimeSpan age)
-    {
-        if (request is null)
-        {
-            return TimeSpan.Zero;
-        }
-
-        var remaining = MaxImageWait - age;
-        return remaining <= TimeSpan.Zero
-            ? TimeSpan.Zero
-            : remaining > MaxImageWait ? MaxImageWait : remaining;
-    }
 }
 
 /// <summary>

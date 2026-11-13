@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Richasy.BiliKernel.Models.User;
 using Windows.UI.ViewManagement;
@@ -44,9 +45,13 @@ public static class AvatarConnectedAnimation
 
         var sourceVisible = source is { IsLoaded: true, Visibility: Visibility.Visible }
             && source.ActualWidth > 0;
+
+        // 卡片可能仍在显示作者首字占位；只有已经显示图片的头像才值得串联.
+        var sourceHasImage = source is not RecommendationCoverImage cover || cover.Source is not null;
         if (!AvatarTransitionPolicy.CanPrepare(
                 animationsEnabled,
                 sourceVisible,
+                sourceHasImage,
                 user is not null,
                 user?.Id,
                 avatarUri))
@@ -75,54 +80,32 @@ public static class AvatarConnectedAnimation
     /// <param name="destination">页头头像元素.</param>
     /// <param name="userId">目标页展示的用户 Id.</param>
     /// <param name="avatarUri">目标页使用的头像地址.</param>
-    /// <param name="waitForImage">等待头像解码完成的回调，参数为剩余预算.</param>
     /// <returns>动画已启动时为 <see langword="true"/>；否则已清理状态.</returns>
-    public static async Task<bool> TryStartAsync(
+    public static bool TryStart(
         UIElement destination,
         string userId,
-        Uri avatarUri,
-        Func<TimeSpan, Task<bool>> waitForImage)
+        Uri avatarUri)
     {
         var request = AvatarTransitionSession.Current;
-        if (request is null || !AvatarTransitionPolicy.CanStart(request, userId, avatarUri, DateTimeOffset.Now))
+        if (request is null
+            || !AvatarTransitionPolicy.CanStart(request, userId, avatarUri, DateTimeOffset.Now))
         {
             Cancel();
             return false;
         }
 
-        var ready = false;
-        try
-        {
-            ready = await waitForImage(
-                AvatarTransitionPolicy.GetImageWaitBudget(
-                    request, DateTimeOffset.Now - request.PreparedAt));
-        }
-        catch (Exception ex)
-        {
-            // 等待失败与超时等价：取消动画，按普通页面切换处理.
-            System.Diagnostics.Debug.WriteLine(ex);
-            ready = false;
-        }
-
-        // 等待期间可能发生新的点击并替换了请求：旧的等待结果必须作废，
-        // 且不能取消最后一次点击准备的动画。
-        // Current 会在请求过期时返回 null：此时没有更新的请求，系统动画必须取消，
-        // 否则会留下悬停的源快照。
+        // 目标元素尺寸固定，不等待头像解码：解码在动画背后完成，
+        // 否则首次打开页面的布局耗时就会耗尽等待预算，动画永远不会出现.
         var current = AvatarTransitionSession.Current;
         if (!ReferenceEquals(current, request))
         {
+            // 等待期间发生了新的点击：旧动画已由新的 Prepare 取消，
+            // 这里不能误伤最后一次点击准备的动画.
             if (current is null)
             {
                 Cancel();
             }
 
-            return false;
-        }
-
-        if (!ready
-            || !AvatarTransitionPolicy.CanStart(request, userId, avatarUri, DateTimeOffset.Now))
-        {
-            Cancel();
             return false;
         }
 

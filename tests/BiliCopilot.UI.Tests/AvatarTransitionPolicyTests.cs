@@ -19,18 +19,26 @@ public class AvatarTransitionPolicyTests
     private static readonly DateTimeOffset PreparedAt = new(2026, 11, 13, 12, 0, 0, TimeSpan.Zero);
 
     [Theory]
-    [InlineData(true, true, true, true)]
-    [InlineData(false, true, true, false)]
-    [InlineData(true, false, true, false)]
-    [InlineData(true, true, false, false)]
-    public void CanPrepare_RequiresAnimationsVisibleAndNavigableSource(
+    [InlineData(true, true, true, true, true)]
+    [InlineData(false, true, true, true, false)]
+    [InlineData(true, false, true, true, false)]
+    [InlineData(true, true, false, true, false)]
+    [InlineData(true, true, true, false, false)]
+    public void CanPrepare_RequiresAnimationsVisibleImageAndNavigableSource(
         bool animationsEnabled,
         bool sourceVisible,
+        bool sourceHasImage,
         bool canOpenUserSpace,
         bool expected)
         => Assert.Equal(
             expected,
-            AvatarTransitionPolicy.CanPrepare(animationsEnabled, sourceVisible, canOpenUserSpace, "100", Avatar));
+            AvatarTransitionPolicy.CanPrepare(
+                animationsEnabled,
+                sourceVisible,
+                sourceHasImage,
+                canOpenUserSpace,
+                "100",
+                Avatar));
 
     [Theory]
     [InlineData(null, true)]
@@ -38,6 +46,7 @@ public class AvatarTransitionPolicyTests
     [InlineData("100", false)]
     public void CanPrepare_RequiresUserIdentityAndAvatar(string? userId, bool avatarPresent)
         => Assert.False(AvatarTransitionPolicy.CanPrepare(
+            true,
             true,
             true,
             true,
@@ -141,26 +150,6 @@ public class AvatarTransitionPolicyTests
             request, "100", Avatar,
             PreparedAt + AvatarTransitionPolicy.MaxPrepareAge + TimeSpan.FromMilliseconds(1)));
     }
-
-    [Theory]
-    [InlineData(-1000, 250)]
-    [InlineData(0, 250)]
-    [InlineData(100, 150)]
-    [InlineData(250, 0)]
-    [InlineData(400, 0)]
-    public void GetImageWaitBudget_LeavesOnlyTheRemainingImageBudget(int ageMs, int expectedMs)
-    {
-        var request = new AvatarTransitionRequest("100", Avatar, PreparedAt);
-
-        var budget = AvatarTransitionPolicy.GetImageWaitBudget(
-            request, TimeSpan.FromMilliseconds(ageMs));
-
-        Assert.Equal(TimeSpan.FromMilliseconds(expectedMs), budget);
-    }
-
-    [Fact]
-    public void GetImageWaitBudget_WithoutRequestHasNoWait()
-        => Assert.Equal(TimeSpan.Zero, AvatarTransitionPolicy.GetImageWaitBudget(null, TimeSpan.Zero));
 
     [Fact]
     public void Session_StoresSinglePendingRequestAndClearReleasesIt()

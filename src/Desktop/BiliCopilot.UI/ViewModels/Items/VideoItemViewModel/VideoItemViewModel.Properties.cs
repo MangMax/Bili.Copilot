@@ -138,7 +138,23 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 卡片作者的用户资料，与导航命令使用同一数据源；供头像串联准备动画.
     /// </summary>
-    public UserProfile? UserSpaceProfile => Data.Publisher?.User;
+    /// <remarks>
+    /// 信息流卡片的头像可能由共享元数据补全，而列表返回的用户资料本身没有头像。
+    /// 这里用卡片上实际显示的头像补齐导航资料，页头与串联目标才能与源头像一致.
+    /// </remarks>
+    public UserProfile? UserSpaceProfile
+    {
+        get
+        {
+            var user = Data.Publisher?.User;
+            if (user is null || user.Avatar is not null || Avatar is null)
+            {
+                return user;
+            }
+
+            return new UserProfile(user.Id, user.Name, new BiliImage(Avatar));
+        }
+    }
 
     /// <summary>
     /// 是否可以进入作者的用户空间.
