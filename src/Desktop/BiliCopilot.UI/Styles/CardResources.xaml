@@ -9,6 +9,8 @@
     <CornerRadius x:Key="CardSurfaceRadius">12</CornerRadius>
     <SolidColorBrush x:Key="CardMediaForeground" Color="White" />
     <SolidColorBrush x:Key="CardTagBackground" Color="Black" />
+    <!-- Neutral scrim for labels that should stay recessive over cover artwork. -->
+    <SolidColorBrush x:Key="CardOverlayBadgeBackground" Color="#CC000000" />
     <!-- Match the content and accent badges in the approved web design. -->
     <SolidColorBrush x:Key="CardContentBadgeBackground" Color="#CC0C4470" />
     <Style x:Key="CardTagBorderStyle" TargetType="Border">
@@ -37,6 +39,18 @@
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style
+        x:Key="CardCoverScrimBadgeStyle"
+        TargetType="Border"
+        BasedOn="{StaticResource CardCoverBadgeStyle}">
+        <Setter Property="Background" Value="{StaticResource CardOverlayBadgeBackground}" />
+    </Style>
+    <Style
+        x:Key="CardCoverScrimBadgeTextStyle"
+        TargetType="TextBlock"
+        BasedOn="{StaticResource CardCoverBadgeTextStyle}">
+        <Setter Property="Foreground" Value="{StaticResource CardMediaForeground}" />
     </Style>
     <Style
         x:Key="CardMetaTimeTextStyle"

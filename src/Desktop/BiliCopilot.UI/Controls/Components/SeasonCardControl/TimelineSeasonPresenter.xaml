@@ -28,9 +28,18 @@
             <Border
                 HorizontalAlignment="Left"
                 Style="{StaticResource CardCoverBadgeStyle}"
-                Visibility="{x:Bind ViewModel.Subtitle, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
+                Visibility="{x:Bind ViewModel.IsSubtitleAccent, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <TextBlock
                     Style="{StaticResource CardCoverBadgeTextStyle}"
+                    MaxLines="1"
+                    Text="{x:Bind ViewModel.Subtitle, Mode=OneWay}" />
+            </Border>
+            <Border
+                HorizontalAlignment="Left"
+                Style="{StaticResource CardCoverScrimBadgeStyle}"
+                Visibility="{x:Bind ViewModel.IsSubtitleScrim, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <TextBlock
+                    Style="{StaticResource CardCoverScrimBadgeTextStyle}"
                     MaxLines="1"
                     Text="{x:Bind ViewModel.Subtitle, Mode=OneWay}" />
             </Border>
