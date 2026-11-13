@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
 using Richasy.MpvKernel;
 using Windows.Storage;
 using Windows.System;
@@ -26,29 +27,40 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
 
     protected override void OnControlLoaded()
     {
-        var index = ViewModel.LogLevel switch
-        {
-            MpvLogLevel.V => 3,
-            MpvLogLevel.Info => 2,
-            MpvLogLevel.Warn => 1,
-            MpvLogLevel.Error => 0,
-            _ => 0
-        };
-        LevelComboBox.SelectedIndex = index;
+        SelectByTag(AppLevelComboBox, ViewModel.AppLogLevel.ToString());
+        SelectByTag(MpvLevelComboBox, ViewModel.MpvLogLevel.ToString());
     }
 
-    private void OnLevelChanged(object sender, SelectionChangedEventArgs e)
+    private void OnAppLevelChanged(object sender, SelectionChangedEventArgs e)
     {
-        var index = LevelComboBox.SelectedIndex;
-        if (index >= 0 && IsLoaded)
+        if (IsLoaded
+            && AppLevelComboBox.SelectedItem is ComboBoxItem { Tag: string tag }
+            && Enum.TryParse<AppLogLevel>(tag, out var level))
         {
-            ViewModel.LogLevel = index switch
+            ViewModel.AppLogLevel = level;
+        }
+    }
+
+    private void OnMpvLevelChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (IsLoaded
+            && MpvLevelComboBox.SelectedItem is ComboBoxItem { Tag: string tag }
+            && Enum.TryParse<MpvLogLevel>(tag, out var level))
+        {
+            ViewModel.MpvLogLevel = level;
+        }
+    }
+
+    private static void SelectByTag(ComboBox comboBox, string tag)
+    {
+        foreach (var item in comboBox.Items)
+        {
+            if (item is ComboBoxItem { Tag: string itemTag }
+                && string.Equals(itemTag, tag, StringComparison.Ordinal))
             {
-                3 => MpvLogLevel.V,
-                2 => MpvLogLevel.Info,
-                1 => MpvLogLevel.Warn,
-                _ => MpvLogLevel.Error
-            };
+                comboBox.SelectedItem = item;
+                return;
+            }
         }
     }
 }

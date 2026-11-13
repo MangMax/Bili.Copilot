@@ -4,6 +4,7 @@ using BiliCopilot.UI.AI.Chat;
 using BiliCopilot.UI.AI.Conversation;
 using BiliCopilot.UI.AI.Context;
 using BiliCopilot.UI.Extensions;
+using BiliCopilot.UI.Logging;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Services.AI;
 using BiliCopilot.UI.SponsorBlock;
@@ -250,12 +251,17 @@ internal static class GlobalDependencies
             Directory.CreateDirectory(loggerPath);
         }
 
+        AppLogLevelSwitch.Default.Apply(LogLevelSettings.ReadAppLogLevel());
+
         // Create a logger with current date.
         Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.ControlledBy(AppLogLevelSwitch.Default.LevelSwitch)
+            .Filter.ByExcluding(DanmakuConfigurationLogFilter.ShouldExclude)
+            .Filter.ByExcluding(logEvent => AppLogLevelFilter.ShouldExclude(logEvent, AppLogLevelSwitch.Default.Current))
             .WriteTo.File(Path.Combine(loggerPath, $"log-{DateTimeOffset.Now:yyyy-MM-dd}.txt"))
             .CreateLogger();
 
-        builder.Services.AddLogging(b => b.AddSerilog(dispose: true));
+        builder.Services.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace).AddSerilog(dispose: true));
         return builder;
     }
 

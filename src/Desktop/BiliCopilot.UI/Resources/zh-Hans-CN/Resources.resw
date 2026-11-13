@@ -3030,11 +3030,20 @@
   <data name="UseIntegrationBehaviorDescription" xml:space="preserve">
     <value>仅单播放窗口时，关闭播放窗口视作关闭应用，点击返回按钮才显示主窗口</value>
   </data>
-  <data name="LogLevel" xml:space="preserve">
-    <value>日志级别</value>
+  <data name="AppLogLevel" xml:space="preserve">
+    <value>应用日志级别</value>
   </data>
-  <data name="LogLevelDescription" xml:space="preserve">
-    <value>选择记录日志的详细程度</value>
+  <data name="AppLogLevelDescription" xml:space="preserve">
+    <value>控制应用自身日志文件的详细程度，不影响播放器（mpv）的 [MPV] 输出</value>
+  </data>
+  <data name="MpvLogLevel" xml:space="preserve">
+    <value>mpv 日志级别</value>
+  </data>
+  <data name="MpvLogLevelDescription" xml:space="preserve">
+    <value>仅控制播放器（mpv）的 [MPV] 输出级别，与应用日志级别相互独立</value>
+  </data>
+  <data name="Debug" xml:space="preserve">
+    <value>调试</value>
   </data>
   <data name="Warn" xml:space="preserve">
     <value>警告</value>

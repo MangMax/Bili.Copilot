@@ -16,23 +16,41 @@
             x:Name="OpenLoggerFolderButton"
             MinWidth="120"
             Click="OnOpenLoggerFolderButtonClick"
-            Content="{ext:Locale Name=OpenFolder}" />
+            Content="{ext:Locale Name=OpenFolder}"
+            AutomationProperties.AutomationId="OpenLoggerFolderButton"
+            AutomationProperties.Name="{ext:Locale Name=OpenFolder}" />
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="Channel" />
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
             <base:SettingsCard
-                x:Name="Card"
-                Description="{ext:Locale Name=LogLevelDescription}"
-                Header="{ext:Locale Name=LogLevel}">
+                Description="{ext:Locale Name=AppLogLevelDescription}"
+                Header="{ext:Locale Name=AppLogLevel}">
                 <ComboBox
-                    x:Name="LevelComboBox"
+                    x:Name="AppLevelComboBox"
                     MinWidth="120"
-                    SelectionChanged="OnLevelChanged">
-                    <ComboBoxItem Content="{ext:Locale Name=Error}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Warn}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Info}" />
-                    <ComboBoxItem Content="{ext:Locale Name=Verb}" />
+                    AutomationProperties.AutomationId="AppLogLevelComboBox"
+                    AutomationProperties.Name="{ext:Locale Name=AppLogLevel}"
+                    SelectionChanged="OnAppLevelChanged">
+                    <ComboBoxItem Content="{ext:Locale Name=Error}" Tag="Error" />
+                    <ComboBoxItem Content="{ext:Locale Name=Warn}" Tag="Warning" />
+                    <ComboBoxItem Content="{ext:Locale Name=Info}" Tag="Information" />
+                    <ComboBoxItem Content="{ext:Locale Name=Debug}" Tag="Debug" />
+                </ComboBox>
+            </base:SettingsCard>
+            <base:SettingsCard
+                Description="{ext:Locale Name=MpvLogLevelDescription}"
+                Header="{ext:Locale Name=MpvLogLevel}">
+                <ComboBox
+                    x:Name="MpvLevelComboBox"
+                    MinWidth="120"
+                    AutomationProperties.AutomationId="MpvLogLevelComboBox"
+                    AutomationProperties.Name="{ext:Locale Name=MpvLogLevel}"
+                    SelectionChanged="OnMpvLevelChanged">
+                    <ComboBoxItem Content="{ext:Locale Name=Error}" Tag="Error" />
+                    <ComboBoxItem Content="{ext:Locale Name=Warn}" Tag="Warn" />
+                    <ComboBoxItem Content="{ext:Locale Name=Info}" Tag="Info" />
+                    <ComboBoxItem Content="{ext:Locale Name=Verb}" Tag="V" />
                 </ComboBox>
             </base:SettingsCard>
         </base:SettingsExpander.Items>
