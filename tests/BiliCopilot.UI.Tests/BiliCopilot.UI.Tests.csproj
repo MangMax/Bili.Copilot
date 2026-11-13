@@ -184,6 +184,14 @@
   </ItemGroup>
 
   <!--
+    封面控件的模板生命周期（#177）：真实基类由适配器按 ImageExBase 契约模拟，
+    链接生产控件验证「模板未就绪时保持可重试」与重新挂载时的重建行为。
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Controls\ReloadableCoverImage.cs" Link="Cover\ReloadableCoverImage.cs" />
+  </ItemGroup>
+
+  <!--
     直播模式策略、地址选择与会话状态是与 WinUI 无关的纯逻辑（#193）；
     LiveMediaSourceResolver 只做内核取址与头部/选项的粘合，用 DispatchProxy 假服务驱动。
   -->
