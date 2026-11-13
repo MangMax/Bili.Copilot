@@ -72,6 +72,7 @@ namespace Richasy.WinUIKernel.Share.Base
     public abstract class ImageExBase : Microsoft.UI.Xaml.FrameworkElement
     {
         private Microsoft.UI.Xaml.Controls.Panel? _rootPanel;
+        private bool _templateApplied;
 
         public event Microsoft.UI.Xaml.RoutedEventHandler? Loaded;
 
@@ -92,11 +93,17 @@ namespace Richasy.WinUIKernel.Share.Base
         protected Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource? CanvasImageSource { get; set; }
 
         /// <summary>Installs the control template, as a real Loaded/apply cycle would.</summary>
-        public void InstallTemplate() => _rootPanel = new Microsoft.UI.Xaml.Controls.Panel();
+        public void InstallTemplate()
+        {
+            _rootPanel = new Microsoft.UI.Xaml.Controls.Panel();
+            _templateApplied = false;
+        }
 
-        /// <summary>Tears the template down while the element is still alive.</summary>
-        public void RemoveTemplate() => _rootPanel = null;
-
+        /// <summary>
+        /// Mimics the observed WinUI contract: the return value reports whether this call
+        /// applied the template, so an already-applied template returns false even though
+        /// the part is present and usable.
+        /// </summary>
         public bool ApplyTemplate()
         {
             ApplyTemplateCalls++;
@@ -106,6 +113,12 @@ namespace Richasy.WinUIKernel.Share.Base
                 return false;
             }
 
+            if (_templateApplied)
+            {
+                return false;
+            }
+
+            _templateApplied = true;
             OnApplyTemplate();
             return true;
         }
