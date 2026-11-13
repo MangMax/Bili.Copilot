@@ -10,11 +10,11 @@
         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
         <Button Width="38" Height="38" Padding="0" CornerRadius="19" Style="{StaticResource AvatarButtonStyle}"
             AutomationProperties.AutomationId="MomentAuthorAvatar" AutomationProperties.Name="{x:Bind ViewModel.Author, Mode=OneWay, FallbackValue=''}"
-            Command="{x:Bind ViewModel.ShowUserSpaceCommand, Mode=OneWay}">
-            <controls:RecommendationCoverImage Width="38" Height="38" CornerRadius="19" Source="{x:Bind ViewModel.Avatar, Mode=OneWay}" />
+            Click="OnUserSpaceClick">
+            <controls:RecommendationCoverImage x:Name="AvatarCover" Width="38" Height="38" CornerRadius="19" Source="{x:Bind ViewModel.Avatar, Mode=OneWay}" />
         </Button>
         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-            <controls:InlineTextButton AutomationProperties.AutomationId="MomentAuthorName" Command="{x:Bind ViewModel.ShowUserSpaceCommand, Mode=OneWay}">
+            <controls:InlineTextButton AutomationProperties.AutomationId="MomentAuthorName" Click="OnUserSpaceClick">
                 <TextBlock MaxLines="1" TextTrimming="CharacterEllipsis" FontSize="14" FontWeight="SemiBold" Text="{x:Bind ViewModel.Author, Mode=OneWay}" />
             </controls:InlineTextButton>
             <TextBlock FontSize="12" MaxLines="1" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind ViewModel.Tip, Mode=OneWay}" />
