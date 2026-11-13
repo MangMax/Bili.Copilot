@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
+using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
 using System.Diagnostics.CodeAnalysis;
 using WinUIEx;
@@ -221,14 +222,85 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                 await initialization;
 #pragma warning restore VSTHRD003
             }
+            catch (OperationCanceledException)
+            {
+                // 关闭或换集打断初始化属于正常路径，不提示也不上抛。
+                if (logger.IsEnabled(LogLevel.Information))
+                {
+                    logger.LogInformation("播放器初始化已取消（{Media}）", DescribeSnapshot(snapshot));
+                }
+            }
             catch (Exception ex)
             {
-                // 初始化失败会回滚会话；这里保留原有的失败记录。
-                logger.LogError(ex, "初始化播放器失败");
-                throw;
+                // 初始化失败由会话回滚，异常必须在这里被消化：它若继续向上抛，
+                // AsyncRelayCommand 会把它重新抛回 UI 线程，WinUI 只能转成
+                // 0xc000027b（stowed exception）直接结束进程，用户看到的就是闪退。
+                logger.LogError(ex, "初始化播放器失败（{Media}）", DescribeSnapshot(snapshot));
+                RecoverFromInitializationFailure();
             }
         }
     }
+
+    /// <summary>
+    /// 初始化失败后把界面恢复成可操作状态，而不是让异常越过 WinUI 的异步边界。
+    /// </summary>
+    private void RecoverFromInitializationFailure()
+    {
+        if (!queue.HasThreadAccess)
+        {
+            queue.TryEnqueue(RecoverFromInitializationFailure);
+            return;
+        }
+
+        try
+        {
+            IsConnecting = false;
+            var message = ResourceToolkit.GetLocalizedString(StringNames.PlayerInitializationFailed);
+            var playerWindowVisible = Window?.IsDisposed == false && Window.GetWindow().IsVisible;
+
+            // 会话回滚后窗口可能已被销毁；窗口还在说明是播放中切换媒体失败，直接把原因显示在播放器里。
+            if (playerWindowVisible && _uiElementSetted)
+            {
+                ErrorMessage = message;
+                CheckBlackBackgroundVisible();
+                Window!.ShowTip(message, InfoType.Error);
+            }
+
+            var app = this.Get<AppViewModel>();
+            if (app.IsClosed)
+            {
+                return;
+            }
+
+            if (!playerWindowVisible)
+            {
+                app.ShowTipCommand.Execute((message, InfoType.Error));
+
+                // 首次初始化失败会回滚并关掉播放器窗口；主窗口可能在播放开始时被隐藏，需要还原。
+                var trayLifecycle = ((App)Application.Current).TrayLifecycle;
+                if (!app.IsMainWindowVisible()
+                    && trayLifecycle is not { IsResident: true }
+                    && app.Windows.Find(p => p is MainWindow) is MainWindow mainWindow)
+                {
+                    mainWindow.Show();
+                    mainWindow.Activate();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "恢复播放器初始化失败状态时出错");
+        }
+    }
+
+    private static string DescribeSnapshot(MediaSnapshot snapshot)
+        => snapshot.Type switch
+        {
+            BiliMediaType.Video => $"video:{snapshot.Video?.Identifier.Id ?? "unknown"}",
+            BiliMediaType.Pgc => $"pgc:{snapshot.Episode?.Identifier.Id ?? snapshot.Season?.Identifier.Id ?? "unknown"}",
+            BiliMediaType.Live => $"live:{snapshot.Live?.Identifier.Id ?? "unknown"}",
+            _ => "unknown",
+        };
 
     private async Task InitializeCoreAsync(MediaSnapshot snapshot)
     {
@@ -556,7 +628,19 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         // the first visible frame is already the requested mode and geometry.
         if (!_uiElementSetted)
         {
-            var overlay = new PlayerOverlay { ViewModel = this };
+            PlayerOverlay overlay;
+            try
+            {
+                overlay = new PlayerOverlay { ViewModel = this };
+            }
+            catch (Exception ex)
+            {
+                // 单独记录界面创建失败：XAML 解析/资源错误与播放失败要能区分开，
+                // 窗口由初始化回滚统一释放。
+                logger.LogError(ex, "创建播放器界面失败（PlayerOverlay），窗口将随初始化失败一起回滚");
+                throw;
+            }
+
             Window!.SetUIElement(overlay);
             _uiElementSetted = true;
 
