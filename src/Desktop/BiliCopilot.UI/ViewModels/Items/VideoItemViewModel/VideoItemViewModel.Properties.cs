@@ -168,10 +168,29 @@ public sealed partial class VideoItemViewModel
     public bool HasPopularLabels => !string.IsNullOrWhiteSpace(PopularRecommendReason) || !string.IsNullOrWhiteSpace(TagName);
 
     /// <summary>Relationship reasons belong beside the author, not in the metadata row.</summary>
-    public string? PopularRecommendReason => IsServerFollowingReason ? null : RecommendReason;
+    public string? PopularRecommendReason => RemoveFollowingLabel(RecommendReason);
 
-    private bool IsServerFollowingReason => string.Equals(RecommendReason?.Trim(), "已关注", StringComparison.Ordinal)
-        || string.Equals(RecommendReason?.Trim(), ResourceToolkit.GetLocalizedString(StringNames.Followed), StringComparison.Ordinal);
+    /// <summary>
+    /// 服务端会把关注状态拼进推荐理由（如「已关注 | 竖屏」），
+    /// 而作者行已经显示关注徽标，这里去掉重复的片段.
+    /// </summary>
+    private static string? RemoveFollowingLabel(string? reason)
+    {
+        if (string.IsNullOrWhiteSpace(reason)) return null;
+        var segments = reason
+            .Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(segment => !IsFollowingText(segment))
+            .ToList();
+        return segments.Count == 0 ? null : string.Join(" | ", segments);
+    }
+
+    private static bool HasFollowingLabel(string? reason)
+        => !string.IsNullOrWhiteSpace(reason)
+            && reason.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(IsFollowingText);
+
+    private static bool IsFollowingText(string? text)
+        => string.Equals(text?.Trim(), "已关注", StringComparison.Ordinal)
+            || string.Equals(text?.Trim(), ResourceToolkit.GetLocalizedString(StringNames.Followed), StringComparison.Ordinal);
 
     /// <summary>First text element used while the author's avatar is unavailable.</summary>
     public string AuthorInitial => string.IsNullOrWhiteSpace(Author) ? "?" : System.Globalization.StringInfo.GetNextTextElement(Author);
