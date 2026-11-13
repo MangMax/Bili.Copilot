@@ -38,7 +38,7 @@ public sealed partial class RecommendationCoverImage : UserControl
     /// <summary>
     /// 是否已经解码出一张可以显示的图片.
     /// </summary>
-    public bool HasImage => _image.Source is not null;
+    private bool HasImage => _image.Source is not null;
 
     /// <summary>
     /// 在限定时间内等待图片解码完成，供串联动画决定何时启动.
@@ -153,6 +153,16 @@ public sealed partial class RecommendationCoverImage : UserControl
     {
         var cover = (RecommendationCoverImage)sender;
         cover._resizeTimer?.Stop();
+
+        // 叠层页会复用用户空间页面：控件在收起或零尺寸时更换 Source 也必须立即
+        // 丢弃上一位用户的位图并复位已请求状态，否则重新显示时旧图会被当成新图已就绪.
+        cover._request?.Cancel();
+        cover._request = null;
+        cover._requested = default;
+        cover._image.Source = null;
+        cover._retry.Visibility = Visibility.Collapsed;
+        cover._loading.IsActive = false;
+        cover._loading.Visibility = Visibility.Collapsed;
         cover.Reload();
     }
 
@@ -223,6 +233,16 @@ public sealed partial class RecommendationCoverImage : UserControl
 
         var size = ((int)Math.Ceiling(ActualWidth * XamlRoot.RasterizationScale),
             (int)Math.Ceiling(ActualHeight * XamlRoot.RasterizationScale));
+
+        // Source 在收起或零尺寸时已经变化：尺寸恢复后立即加载新图，
+        // 不再等待 200ms 的尺寸去抖，否则复用页会继续显示旧头像.
+        if (_requested.Source != Source)
+        {
+            _resizeTimer?.Stop();
+            Reload();
+            return;
+        }
+
         if (size == (_requested.Width, _requested.Height))
         {
             _resizeTimer?.Stop();

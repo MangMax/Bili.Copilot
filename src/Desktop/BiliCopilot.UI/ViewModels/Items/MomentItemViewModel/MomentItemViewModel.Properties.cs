@@ -81,9 +81,9 @@ public sealed partial class MomentItemViewModel
     public MomentCardStyle Style { get; init; }
 
     /// <summary>
-    /// 卡片对应的作者资料，供头像串联准备动画.
+    /// 卡片作者的用户资料，与导航命令使用同一数据源；供头像串联准备动画.
     /// </summary>
-    public UserProfile? SpaceUser => Data.User;
+    public UserProfile? UserSpaceProfile => Data.User;
 
     /// <summary>Pure-video cards expose their dynamic text without changing the grid height.</summary>
     public bool HasDescriptionPreview => Style == MomentCardStyle.Video && !string.IsNullOrWhiteSpace(Description?.Text);

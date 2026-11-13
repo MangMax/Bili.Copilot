@@ -113,7 +113,8 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         StopAvatarTransition();
         if (_navigationProfile is { } profile
             && AvatarTransitionSession.Current is { } request
-            && request.UserId == profile.Id)
+            && AvatarTransitionPolicy.Matches(
+                request, profile.Id, profile.Avatar?.Uri))
         {
             AvatarConnectedAnimation.Cancel();
         }
@@ -231,7 +232,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
                 request,
                 profile.Id,
                 avatar,
-                DateTimeOffset.Now - request.PreparedAt))
+                DateTimeOffset.Now))
         {
             return;
         }
@@ -269,10 +270,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             return;
         }
 
-        var age = DateTimeOffset.Now - request.PreparedAt;
-        if (!AvatarTransitionPolicy.CanStart(request, profile.Id, avatar, age))
+        if (!AvatarTransitionPolicy.CanStart(request, profile.Id, avatar, DateTimeOffset.Now))
         {
-            if (request.UserId == profile.Id && request.AvatarUri == avatar)
+            if (AvatarTransitionPolicy.Matches(request, profile.Id, avatar))
             {
                 // 本页的请求已过期：释放悬停的源头像快照。
                 AvatarConnectedAnimation.Cancel();
@@ -288,9 +288,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
 
         var header = _activeHeader ?? FindChild<UserSpacePageHeader>(this);
-        if (header is null
-            || header.AvatarElement is not FrameworkElement avatarElement
-            || avatarElement.ActualWidth <= 0)
+        if (header is null || header.AvatarElement.ActualWidth <= 0)
         {
             return;
         }

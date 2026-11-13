@@ -87,8 +87,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         }
 
         // 头像与作者名共用同一条动画路径；没有头像的模板只会取消旧请求并正常导航。
-        AvatarConnectedAnimation.Prepare(_avatarCover, ViewModel.SpaceUser);
-        ViewModel.ShowUserSpaceCommand.Execute(default);
+        UserSpaceNavigation.Open(_avatarCover, ViewModel.UserSpaceProfile, ViewModel.ShowUserSpaceCommand);
     }
 
     private void OnPopularPointerEntered(object sender, PointerRoutedEventArgs args)
