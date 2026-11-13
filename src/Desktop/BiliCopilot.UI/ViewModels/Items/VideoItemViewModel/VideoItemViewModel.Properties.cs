@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using BiliCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
+using Richasy.BiliKernel.Models.User;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -133,6 +134,11 @@ public sealed partial class VideoItemViewModel
     /// 用户信息是否有效.
     /// </summary>
     public bool IsUserValid { get; init; }
+
+    /// <summary>
+    /// 卡片对应的作者资料，供头像串联准备动画.
+    /// </summary>
+    public UserProfile? SpaceUser => Data.Publisher?.User;
 
     /// <summary>
     /// 是否可以进入作者的用户空间.
