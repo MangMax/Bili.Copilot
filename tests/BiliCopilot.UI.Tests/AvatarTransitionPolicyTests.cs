@@ -11,6 +11,7 @@ namespace BiliCopilot.UI.Tests;
 /// 这些测试只断言外部可观察的决策：是否准备、是否启动、请求是否过期，
 /// 不涉及 ConnectedAnimationService 的内部调用。
 /// </remarks>
+[Collection("AvatarTransitionSession")]
 public class AvatarTransitionPolicyTests
 {
     private static readonly Uri Avatar = new("https://i0.hdslb.com/bfs/face/avatar.jpg@104w_104h_1c.webp");

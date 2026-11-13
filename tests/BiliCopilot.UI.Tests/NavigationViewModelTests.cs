@@ -14,6 +14,7 @@ using System.Reflection;
 
 namespace BiliCopilot.UI.Tests;
 
+[Collection("AvatarTransitionSession")]
 public sealed class NavigationViewModelTests : IDisposable
 {
     private readonly NavigationViewModel _model = new();
