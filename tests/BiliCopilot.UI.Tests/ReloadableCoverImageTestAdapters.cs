@@ -13,7 +13,6 @@ namespace Microsoft.UI.Xaml.Controls
     /// </summary>
     public class Panel : Microsoft.UI.Xaml.UIElement
     {
-        public object? Background { get; set; }
     }
 }
 
@@ -42,21 +41,7 @@ namespace Microsoft.Graphics.Canvas.UI.Xaml
     public sealed class CanvasImageSource
     {
         public CanvasImageSource(CanvasDevice device, float width, float height, float dpi, CanvasAlphaMode alphaMode)
-        {
-            Device = device;
-            Width = width;
-            Height = height;
-            Dpi = dpi;
-            AlphaMode = alphaMode;
-        }
-
-        public CanvasDevice Device { get; }
-
-        public float Width { get; }
-
-        public float Height { get; }
-
-        public float Dpi { get; }
+            => AlphaMode = alphaMode;
 
         public CanvasAlphaMode AlphaMode { get; }
     }

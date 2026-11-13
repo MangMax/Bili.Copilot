@@ -27,12 +27,11 @@ public sealed class ReloadableCoverImageTests
     }
 
     [Fact]
-    public void FailedTemplateInitializationLeavesControlRetryable()
+    public void LoadWithoutTemplateStaysRetryableForTheNextLoad()
     {
         var image = new TestCoverImage();
-        // Record the defect without aborting: the load may throw, but the control
-        // must still initialize once a template becomes available.
-        _ = Record.Exception(image.Load);
+
+        image.Load();
 
         image.InstallTemplate();
         image.Load();
