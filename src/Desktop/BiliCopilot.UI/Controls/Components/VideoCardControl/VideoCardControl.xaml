@@ -139,7 +139,13 @@
                                             </Grid>
                                         </controls:InlineTextButton>
                                     </local:CardMetaPanel.Author>
-                                    <local:CardMetaPanel.Badges>
+                                    <local:CardMetaPanel.Meta>
+                                        <Grid ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
                                             <local:CardLabelPanel
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
@@ -167,19 +173,14 @@
                                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
                                                     Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName, Converter={StaticResource ObjectToVisibilityConverter}}" />
                                             </local:CardLabelPanel>
-                                    </local:CardMetaPanel.Badges>
-                                    <local:CardMetaPanel.Info>
+                                            <!-- Without labels the timestamp takes the leading column; with labels it trails next to the actions. -->
                                             <TextBlock
+                                                Grid.Column="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularLabels, Converter={StaticResource BoolToGridColumnConverter}}"
                                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularDisplayTime}"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                LineHeight="18"
-                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                VerticalAlignment="Center"
-                                                TextTrimming="CharacterEllipsis" />
-                                    </local:CardMetaPanel.Info>
-                                    <local:CardMetaPanel.Actions>
+                                                Style="{StaticResource CardMetaTimeTextStyle}" />
                                             <Button
                                                 x:Name="MoreButton"
+                                                Grid.Column="2"
                                                 Width="22"
                                                 Height="22"
                                                 MinWidth="0"
@@ -197,7 +198,8 @@
                                                     FontSize="12"
                                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                             </Button>
-                                    </local:CardMetaPanel.Actions>
+                                        </Grid>
+                                    </local:CardMetaPanel.Meta>
                                 </local:CardMetaPanel>
                             </Grid>
                         </local:CardContentPanel>

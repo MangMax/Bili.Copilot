@@ -116,10 +116,7 @@
                                     <local:CardMetaPanel.Info>
                                             <TextBlock
                                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.CollectRelativeTime}"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                LineHeight="18"
-                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                VerticalAlignment="Center"
+                                                Style="{StaticResource CardMetaTimeTextStyle}"
                                                 Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasCollectTime, Converter={StaticResource BoolToVisibilityConverter}}" />
                                     </local:CardMetaPanel.Info>
                                     <local:CardMetaPanel.Actions>

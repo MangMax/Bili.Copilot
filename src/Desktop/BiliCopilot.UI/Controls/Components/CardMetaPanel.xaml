@@ -23,25 +23,31 @@
             Content="{x:Bind Author, Mode=OneWay}" />
         <Grid
             Grid.Row="1"
-            Grid.Column="1"
-            ColumnSpacing="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            Grid.Column="1">
             <ContentPresenter
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Content="{x:Bind Badges, Mode=OneWay}" />
-            <ContentPresenter
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                Content="{x:Bind Info, Mode=OneWay}" />
-            <ContentPresenter
-                Grid.Column="2"
-                VerticalAlignment="Center"
-                Content="{x:Bind Actions, Mode=OneWay}" />
+                x:Name="MetaPresenter"
+                Content="{x:Bind Meta, Mode=OneWay}" />
+            <Grid
+                x:Name="DefaultMetaRow"
+                ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ContentPresenter
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="{x:Bind Badges, Mode=OneWay}" />
+                <ContentPresenter
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Content="{x:Bind Info, Mode=OneWay}" />
+                <ContentPresenter
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Content="{x:Bind Actions, Mode=OneWay}" />
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>
