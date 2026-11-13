@@ -29,9 +29,14 @@ public abstract partial class ReloadableCoverImage : ImageExBase
             return;
         }
 
+        // Loaded 可能早于模板应用（复用卡片正在拆装模板）。模板不可用时保持未激活，
+        // 交给下一次 Loaded 重试；否则 ImageExBase 会抛 TemplateRoot not found。
+        if (!ApplyTemplate() || GetTemplateChild("Root") is not Panel)
+        {
+            return;
+        }
+
         _active = true;
-        // Loaded 可能早于模板应用；先确保模板存在，否则 ImageExBase 会抛 TemplateRoot not found。
-        _ = ApplyTemplate();
         // ImageExBase clears its brush reference on unload, even when the template survives.
         base.OnApplyTemplate();
         if (_wasUnloaded && CanvasImageSource is null)
