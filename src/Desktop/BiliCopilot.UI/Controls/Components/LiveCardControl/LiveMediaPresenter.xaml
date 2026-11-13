@@ -7,25 +7,6 @@
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
     <local:CardMediaFrame Cover="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}">
-        <local:CardMediaFrame.TopStart>
-            <Border
-                Background="#B3C42020"
-                Style="{StaticResource CardTagBorderStyle}"
-                Visibility="{x:Bind ViewModel.IsLivingNow, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
-                <StackPanel
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal"
-                    Spacing="4">
-                    <Ellipse
-                        Width="5"
-                        Height="5"
-                        Fill="White" />
-                    <TextBlock
-                        Style="{StaticResource CardTagTextStyle}"
-                        Text="{ext:Locale Name=Living}" />
-                </StackPanel>
-            </Border>
-        </local:CardMediaFrame.TopStart>
         <local:CardMediaFrame.BottomStart>
             <local:CardStatControl
                 Text="{x:Bind ViewModel.ViewerCount, Converter={StaticResource CountConverter}, Mode=OneWay, FallbackValue={x:Null}}"

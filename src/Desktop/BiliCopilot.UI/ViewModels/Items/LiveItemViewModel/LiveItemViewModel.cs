@@ -40,7 +40,6 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
         ViewerCount = data.GetExtensionIfNotNull<double>(LiveExtensionDataId.ViewerCount);
         Subtitle = data.GetExtensionIfNotNull<string>(VideoExtensionDataId.Subtitle);
         TagName = data.GetExtensionIfNotNull<string>(LiveExtensionDataId.TagName);
-        IsLiving = data.GetExtensionIfNotNull<bool?>(LiveExtensionDataId.IsLiving);
         var collectTime = data.GetExtensionIfNotNull<DateTimeOffset?>(LiveExtensionDataId.CollectTime);
         if (collectTime is not null)
         {

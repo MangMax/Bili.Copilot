@@ -45,11 +45,6 @@ public sealed partial class LiveItemViewModel
     public string? TagName { get; init; }
 
     /// <summary>
-    /// 是否正在直播.
-    /// </summary>
-    public bool? IsLiving { get; init; }
-
-    /// <summary>
     /// 收集时间.
     /// </summary>
     public string? CollectRelativeTime { get; init; }
@@ -75,11 +70,6 @@ public sealed partial class LiveItemViewModel
     /// 是否有作者头像. 推荐直播流不返回头像，此时不占用卡片空间.
     /// </summary>
     public bool HasAvatar => Avatar is not null;
-
-    /// <summary>
-    /// 当前直播间是否在直播中. 推荐流不返回直播状态，此时按直播中处理.
-    /// </summary>
-    public bool IsLivingNow => IsLiving != false;
 
     /// <summary>
     /// 是否有分区/副标题标签.
