@@ -38,13 +38,32 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
         }
     }
 
-    public void NavigateTo(Type pageType, object? parameter = null)
+    public void NavigateTo(Type pageType, object? parameter = null, bool animateIn = true)
     {
         if (pageType is null)
         {
             return;
         }
 
+        // 同一导航只创建一对过渡，新建与复用的页面都重新应用，清空后也能恢复.
+        var showSet = new ImplicitAnimationSet
+        {
+            new OpacityAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(200),
+                From = 0,
+                To = 1,
+            },
+        };
+        var hideSet = new ImplicitAnimationSet
+        {
+            new OpacityAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(100),
+                From = 1,
+                To = 0,
+            },
+        };
         UIElement? targetElement = null;
 
         // 查找是否已存在该类型的控件
@@ -72,29 +91,6 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
                 mainFramePage.SetParameter(parameter);
             }
 
-            var showOpacityAnimation = new OpacityAnimation
-            {
-                Duration = TimeSpan.FromMilliseconds(200),
-                From = 0,
-                To = 1,
-            };
-            var hideOpacityAnimation = new OpacityAnimation
-            {
-                Duration = TimeSpan.FromMilliseconds(100),
-                From = 1,
-                To = 0,
-            };
-            var showSet = new ImplicitAnimationSet
-            {
-                showOpacityAnimation
-            };
-            var hideSet = new ImplicitAnimationSet
-            {
-                hideOpacityAnimation
-            };
-            Implicit.SetShowAnimations(element, showSet);
-            Implicit.SetHideAnimations(element, hideSet);
-
             RootGrid.Children.Add(element);
         }
         else if (RootGrid.Children.Count > 1)
@@ -102,6 +98,11 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
             // 将 targetElement 移动到最后
             RootGrid.Children.Move(Convert.ToUInt32(RootGrid.Children.IndexOf(targetElement)), Convert.ToUInt32(RootGrid.Children.Count - 1));
         }
+
+        // 头像串联导航必须抑制叠层页自身的淡入，避免两套过渡同时播放；
+        // 之后以默认参数返回同一页面时再恢复淡入。
+        Implicit.SetShowAnimations(targetElement, animateIn ? showSet : null);
+        Implicit.SetHideAnimations(targetElement, hideSet);
 
         // 设置可见性
         foreach (var child in RootGrid.Children)

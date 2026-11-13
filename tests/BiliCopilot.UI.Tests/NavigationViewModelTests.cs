@@ -182,6 +182,44 @@ public sealed class NavigationViewModelTests : IDisposable
     }
 
     [Fact]
+    public void UserSpaceNavigationSuppressesFadeOnlyWhileAvatarTransitionIsPending()
+    {
+        Initialize();
+        var profile = new Richasy.BiliKernel.Models.User.UserProfile("100");
+        AvatarTransitionSession.Prepare(
+            "100",
+            new Uri("https://i0.hdslb.com/bfs/face/avatar.jpg"),
+            DateTimeOffset.Now);
+        try
+        {
+            _model.NavigateToOver(typeof(UserSpacePage), profile);
+            Assert.Null(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
+        }
+        finally
+        {
+            AvatarTransitionSession.Clear();
+        }
+
+        _model.NavigateToOver(typeof(UserSpacePage), profile);
+        Assert.NotNull(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
+
+        // 目标页始终没有出现时，过期请求不能永久抑制后续导航的淡入。
+        AvatarTransitionSession.Prepare(
+            "100",
+            new Uri("https://i0.hdslb.com/bfs/face/avatar.jpg"),
+            DateTimeOffset.Now - AvatarTransitionPolicy.MaxPrepareAge - TimeSpan.FromSeconds(1));
+        try
+        {
+            _model.NavigateToOver(typeof(UserSpacePage), profile);
+            Assert.NotNull(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
+        }
+        finally
+        {
+            AvatarTransitionSession.Clear();
+        }
+    }
+
+    [Fact]
     public void NavigationBeforeInitializeRejectsWithoutActivatingWindow()
     {
         Assert.Throws<InvalidOperationException>(() => _model.NavigateTo(typeof(PopularPage)));

@@ -92,6 +92,7 @@
                                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                             </Border>
                                             <controls:RecommendationCoverImage
+                                                x:Name="AvatarCover"
                                                 Width="40"
                                                 Height="40"
                                                 CornerRadius="20"

@@ -90,6 +90,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         var userId = profile.Id;
         _profile = profile;
 
+        // 页头头像由导航参数驱动，必须立即通知，不能等用户卡片数据返回.
+        OnPropertyChanged(nameof(AvatarUri));
+
         // 关注态与用户卡片都属于当前目标：新目标开始时先同步清空，
         // 避免上一目标的值一直显示到本次关系请求返回。
         Card = default;

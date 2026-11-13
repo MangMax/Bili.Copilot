@@ -117,7 +117,14 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
 
         ActiveMainWindow();
-        _overFrame.NavigateTo(pageType, parameter);
+
+        // 头像串联即将开始时不叠加叠层页淡入；没有待启动的串联时保持原有过渡。
+        // 过期请求不得永久抑制淡入（目标页可能始终没有出现）。
+        var transition = AvatarTransitionSession.Current;
+        var animateIn = pageType != typeof(UserSpacePage)
+            || transition is null
+            || DateTimeOffset.Now - transition.PreparedAt > AvatarTransitionPolicy.MaxPrepareAge;
+        _overFrame.NavigateTo(pageType, parameter, animateIn);
         IsOverlayOpen = true;
         CheckSubPageStatus();
 
