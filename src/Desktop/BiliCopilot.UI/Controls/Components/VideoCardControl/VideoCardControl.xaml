@@ -139,47 +139,30 @@
                                             </Grid>
                                         </controls:InlineTextButton>
                                     </local:CardMetaPanel.Author>
-                                    <local:CardMetaPanel.Badges>
+                                    <local:CardMetaPanel.Meta>
+                                        <Grid ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
                                             <local:CardLabelPanel
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
-                                                Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularLabels, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                <Border
-                                                    Padding="6,0"
-                                                    Height="20"
-                                                    CornerRadius="{StaticResource ControlCornerRadius}"
-                                                    Background="{ThemeResource AccentFillColorDefaultBrush}"
-                                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularRecommendReason, Converter={StaticResource ObjectToVisibilityConverter}}">
-                                                    <TextBlock
-                                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularRecommendReason}"
-                                                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
-                                                        FontSize="11"
-                                                        TextTrimming="CharacterEllipsis"
-                                                        VerticalAlignment="Center"
-                                                        ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularRecommendReason}">
-                                                        <TextBlock.RenderTransform>
-                                                            <TranslateTransform Y="-1" />
-                                                        </TextBlock.RenderTransform>
-                                                    </TextBlock>
-                                                </Border>
+                                                Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularTag, Converter={StaticResource BoolToVisibilityConverter}}">
                                                 <local:CardTagControl
                                                     Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
                                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
                                                     Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName, Converter={StaticResource ObjectToVisibilityConverter}}" />
                                             </local:CardLabelPanel>
-                                    </local:CardMetaPanel.Badges>
-                                    <local:CardMetaPanel.Info>
+                                            <!-- Without labels the timestamp takes the leading column; with labels it trails next to the actions. -->
                                             <TextBlock
+                                                Grid.Column="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularTag, Converter={StaticResource BoolToGridColumnConverter}}"
                                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularDisplayTime}"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                LineHeight="18"
-                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                VerticalAlignment="Center"
-                                                TextTrimming="CharacterEllipsis" />
-                                    </local:CardMetaPanel.Info>
-                                    <local:CardMetaPanel.Actions>
+                                                Style="{StaticResource CardMetaTimeTextStyle}" />
                                             <Button
                                                 x:Name="MoreButton"
+                                                Grid.Column="2"
                                                 Width="22"
                                                 Height="22"
                                                 MinWidth="0"
@@ -197,7 +180,8 @@
                                                     FontSize="12"
                                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                             </Button>
-                                    </local:CardMetaPanel.Actions>
+                                        </Grid>
+                                    </local:CardMetaPanel.Meta>
                                 </local:CardMetaPanel>
                             </Grid>
                         </local:CardContentPanel>

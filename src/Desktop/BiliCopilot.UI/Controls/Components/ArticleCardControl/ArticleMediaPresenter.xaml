@@ -20,24 +20,6 @@
                     Symbol="Book" />
             </Border>
         </local:CardMediaFrame.Placeholder>
-        <local:CardMediaFrame.TopStart>
-            <Border
-                Background="{StaticResource CardContentBadgeBackground}"
-                Style="{StaticResource CardTagBorderStyle}">
-                <StackPanel
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal"
-                    Spacing="4">
-                    <ic:SymbolIcon
-                        Symbol="Book"
-                        FontSize="10"
-                        Foreground="{StaticResource CardMediaForeground}" />
-                    <TextBlock
-                        Style="{StaticResource CardTagTextStyle}"
-                        Text="{ext:Locale Name=Article}" />
-                </StackPanel>
-            </Border>
-        </local:CardMediaFrame.TopStart>
         <local:CardMediaFrame.BottomStart>
             <StackPanel
                 VerticalAlignment="Center"

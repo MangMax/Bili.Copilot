@@ -71,7 +71,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         if (IsFeedCard && !string.IsNullOrWhiteSpace(info.Publisher?.User?.Id))
         {
             var following = info.GetExtensionIfNotNull<bool?>(VideoExtensionDataId.PublisherIsFollowed)
-                ?? (IsServerFollowingReason ? true : null);
+                ?? (HasFollowingLabel(RecommendReason) ? true : null);
             _followingState = new(this.Get<UserRelationBatcher>(), this.Get<AccountViewModel>().MyProfile?.User.Id,
                 info.Publisher?.User?.Id ?? string.Empty, following);
             IsAuthorFollowed = _followingState.Current;

@@ -111,7 +111,7 @@ public sealed partial class VideoItemViewModel
     /// 标签名称.
     /// </summary>
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasPopularLabels))]
+    [NotifyPropertyChangedFor(nameof(HasPopularTag))]
     public partial string? TagName { get; set; }
 
     /// <summary>
@@ -164,14 +164,36 @@ public sealed partial class VideoItemViewModel
     /// <summary>Display label for a server-ordered ranking item.</summary>
     public string? RankLabel => RankPosition?.ToString("D2", System.Globalization.CultureInfo.CurrentCulture);
 
-    /// <summary>Whether the popular card has any recommendation or category labels.</summary>
-    public bool HasPopularLabels => !string.IsNullOrWhiteSpace(PopularRecommendReason) || !string.IsNullOrWhiteSpace(TagName);
+    /// <summary>Whether the popular card shows a category tag beside the actions.</summary>
+    public bool HasPopularTag => !string.IsNullOrWhiteSpace(TagName);
+
+    /// <summary>Recommendation reasons only decorate grid-feed covers.</summary>
+    public bool HasPopularRecommendReason => IsFeedCard && !string.IsNullOrWhiteSpace(PopularRecommendReason);
 
     /// <summary>Relationship reasons belong beside the author, not in the metadata row.</summary>
-    public string? PopularRecommendReason => IsServerFollowingReason ? null : RecommendReason;
+    public string? PopularRecommendReason => RemoveFollowingLabel(RecommendReason);
 
-    private bool IsServerFollowingReason => string.Equals(RecommendReason?.Trim(), "已关注", StringComparison.Ordinal)
-        || string.Equals(RecommendReason?.Trim(), ResourceToolkit.GetLocalizedString(StringNames.Followed), StringComparison.Ordinal);
+    /// <summary>
+    /// 服务端会把关注状态拼进推荐理由（如「已关注 | 竖屏」），
+    /// 而作者行已经显示关注徽标，这里去掉重复的片段.
+    /// </summary>
+    private static string? RemoveFollowingLabel(string? reason)
+    {
+        if (string.IsNullOrWhiteSpace(reason)) return null;
+        var segments = reason
+            .Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(segment => !IsFollowingText(segment))
+            .ToList();
+        return segments.Count == 0 ? null : string.Join(" | ", segments);
+    }
+
+    private static bool HasFollowingLabel(string? reason)
+        => !string.IsNullOrWhiteSpace(reason)
+            && reason.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(IsFollowingText);
+
+    private static bool IsFollowingText(string? text)
+        => string.Equals(text?.Trim(), "已关注", StringComparison.Ordinal)
+            || string.Equals(text?.Trim(), ResourceToolkit.GetLocalizedString(StringNames.Followed), StringComparison.Ordinal);
 
     /// <summary>First text element used while the author's avatar is unavailable.</summary>
     public string AuthorInitial => string.IsNullOrWhiteSpace(Author) ? "?" : System.Globalization.StringInfo.GetNextTextElement(Author);

@@ -73,6 +73,16 @@
                 </Border>
             </StackPanel>
         </local:CardMediaFrame.TopStart>
+        <local:CardMediaFrame.TopEnd>
+            <Border
+                Style="{StaticResource CardCoverBadgeStyle}"
+                Visibility="{x:Bind ViewModel.HasPopularRecommendReason, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
+                <TextBlock
+                    Text="{x:Bind ViewModel.PopularRecommendReason, Mode=OneWay, FallbackValue={x:Null}}"
+                    Style="{StaticResource CardCoverBadgeTextStyle}"
+                    ToolTipService.ToolTip="{x:Bind ViewModel.PopularRecommendReason, Mode=OneWay, FallbackValue={x:Null}}" />
+            </Border>
+        </local:CardMediaFrame.TopEnd>
         <local:CardMediaFrame.BottomStart>
             <StackPanel
                 VerticalAlignment="Center"

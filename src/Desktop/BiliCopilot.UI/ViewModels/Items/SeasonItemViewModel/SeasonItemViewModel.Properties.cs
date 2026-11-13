@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BiliCopilot.UI.ViewModels.Items;
@@ -19,6 +20,16 @@ public sealed partial class SeasonItemViewModel
     /// 副标题.
     /// </summary>
     public string? Subtitle { get; init; }
+
+    /// <summary>Only the published timeline state uses the accent badge.</summary>
+    public bool IsSubtitleAccent => IsUpdatedSubtitle(Subtitle);
+
+    /// <summary>Other subtitles keep the neutral scrim.</summary>
+    public bool IsSubtitleScrim => !string.IsNullOrWhiteSpace(Subtitle) && !IsSubtitleAccent;
+
+    private static bool IsUpdatedSubtitle(string? subtitle)
+        => string.Equals(subtitle?.Trim(), "已更新", StringComparison.Ordinal)
+            || string.Equals(subtitle?.Trim(), ResourceToolkit.GetLocalizedString(StringNames.Updated), StringComparison.Ordinal);
 
     /// <summary>
     /// 高亮内容.

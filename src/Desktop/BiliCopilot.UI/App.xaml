@@ -54,6 +54,7 @@
 
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityReverseConverter" IsReverse="True" />
+            <localConverters:BoolToGridColumnConverter x:Key="BoolToGridColumnConverter" />
         <localConverters:ChapterFontWeightConverter x:Key="ChapterFontWeightConverter" />
         <localConverters:ChapterForegroundConverter x:Key="ChapterForegroundConverter" />
             <converters:ObjectToBoolConverter x:Key="ObjectToBoolConverter" />
