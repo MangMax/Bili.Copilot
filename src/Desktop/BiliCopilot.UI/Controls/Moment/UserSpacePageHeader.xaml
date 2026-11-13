@@ -101,11 +101,11 @@
                                     Height="104"
                                     DisplayName="{x:Bind ViewModel.UserName, Mode=OneWay}" />
                                 <controls:RecommendationCoverImage
+                                    x:Name="AvatarCover"
                                     Width="104"
                                     Height="104"
                                     CornerRadius="52"
-                                    Source="{x:Bind ViewModel.Card.Profile.User.Avatar.SourceUri, Mode=OneWay, FallbackValue={x:Null}}"
-                                    Visibility="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
+                                    Source="{x:Bind ViewModel.AvatarUri, Mode=OneWay}" />
                             </Grid>
                         </Border>
                         <Image

@@ -132,6 +132,32 @@ public sealed class NavigationFrameTests
     }
 
     [Fact]
+    public void OverlayNavigationSuppressesAndRestoresFadeOnNewAndReusedPages()
+    {
+        var frame = new OverlayFrame();
+        frame.NavigateTo(typeof(SearchPage), animateIn: false);
+        var search = Assert.IsType<SearchPage>(frame.GetCurrentContent());
+        Assert.Null(search.ShowAnimations);
+        Assert.NotNull(search.HideAnimations);
+
+        frame.NavigateTo(typeof(UserSpacePage), animateIn: false);
+        var space = Assert.IsType<UserSpacePage>(frame.GetCurrentContent());
+        Assert.Null(space.ShowAnimations);
+
+        frame.NavigateTo(typeof(SearchPage));
+        Assert.Same(search, frame.GetCurrentContent());
+        Assert.NotNull(search.ShowAnimations);
+
+        frame.NavigateTo(typeof(UserSpacePage), animateIn: false);
+        Assert.Same(space, frame.GetCurrentContent());
+        Assert.Null(space.ShowAnimations);
+
+        frame.NavigateTo(typeof(SearchPage));
+        Assert.Same(search, frame.GetCurrentContent());
+        Assert.NotNull(search.ShowAnimations);
+    }
+
+    [Fact]
     public void ClearedOverlayConstructsFreshPageAndNullNavigationLeavesContentUnchanged()
     {
         var frame = new OverlayFrame();

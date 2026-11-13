@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using Richasy.BiliKernel.Models.User;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -68,6 +69,11 @@ public sealed partial class ArticleItemViewModel
     /// 卡片样式.
     /// </summary>
     public ArticleCardStyle Style { get; init; }
+
+    /// <summary>
+    /// 卡片作者的用户资料，与导航命令使用同一数据源；供头像串联准备动画.
+    /// </summary>
+    public UserProfile? UserSpaceProfile => Data.Publisher;
 
     /// <summary>
     /// 是否可以进入作者的用户空间.

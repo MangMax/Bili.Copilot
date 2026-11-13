@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using Microsoft.UI.Xaml.Media;
+using BiliCopilot.UI.Toolkits;
 
 namespace BiliCopilot.UI.Controls.Components;
 
@@ -16,6 +17,17 @@ public sealed partial class MomentAuthorHeader : MomentCardPresenter
     }
 
     public MomentAuthorHeader() => InitializeComponent();
+
+    private void OnUserSpaceClick(object sender, RoutedEventArgs args)
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        // 头像与作者名共用同一条动画路径；38px 头像由串联动画自行缩放。
+        UserSpaceNavigation.Open(AvatarCover, ViewModel.UserSpaceProfile, ViewModel.ShowUserSpaceCommand);
+    }
 
     private void OnMoreClick(object sender, RoutedEventArgs args)
     {

@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Controls.Moment;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
@@ -18,10 +19,15 @@ namespace BiliCopilot.UI.Pages.Overlay;
 /// </summary>
 public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, ICancelPageViewModel
 {
+    private const int MaxAvatarStartAttempts = 60;
+
     private readonly UISettings _uiSettings = new();
     private int _loadGeneration = -1;
     private ScrollView? _activeScroll;
     private UserSpacePageHeader? _activeHeader;
+    private UserProfile? _navigationProfile;
+    private int _avatarStartAttempts;
+    private bool _avatarStartInProgress;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePage"/> class.
@@ -44,6 +50,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     {
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         LayoutUpdated -= OnSpaceLayoutUpdated;
+        CancelAvatarTransition();
         DisconnectHeader();
         _activeScroll = null;
         ConnectBackdrop();
@@ -98,6 +105,18 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         {
             _activeHeader.SizeChanged -= OnHeaderSizeChanged;
             _activeHeader = null;
+        }
+    }
+
+    private void CancelAvatarTransition()
+    {
+        StopAvatarTransition();
+        if (_navigationProfile is { } profile
+            && AvatarTransitionSession.Current is { } request
+            && AvatarTransitionPolicy.Matches(
+                request, profile.Id, profile.Avatar?.Uri))
+        {
+            AvatarConnectedAnimation.Cancel();
         }
     }
 
@@ -190,7 +209,115 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             // 记录本次页面发起的加载代次，卸载时只取消这一代，不影响新页面。
             _loadGeneration = ViewModel.CurrentLoadGeneration;
             ViewModel.InitializeUserInformationCommand.Execute(default);
+
+            // 叠层页会按类型缓存，复用页面不会再触发 Loaded；每次收到参数都重新等待布局。
+            BeginAvatarTransition(profile);
         }
+    }
+
+    private void BeginAvatarTransition(UserProfile profile)
+    {
+        _navigationProfile = profile;
+        LayoutUpdated -= OnAvatarLayoutUpdated;
+        _avatarStartInProgress = false;
+
+        if (profile.Avatar?.Uri is not { } avatar)
+        {
+            return;
+        }
+
+        var request = AvatarTransitionSession.Current;
+        if (request is null
+            || !AvatarTransitionPolicy.CanStart(
+                request,
+                profile.Id,
+                avatar,
+                DateTimeOffset.Now))
+        {
+            return;
+        }
+
+        // 新页面和复用页面都要等自身可见、页头完成布局后再启动，
+        // 而不是依赖只触发一次的 Loaded。
+        _avatarStartAttempts = 0;
+        LayoutUpdated += OnAvatarLayoutUpdated;
+    }
+
+    private void OnAvatarLayoutUpdated(object? sender, object e)
+    {
+        if (_avatarStartInProgress)
+        {
+            return;
+        }
+
+        if (++_avatarStartAttempts > MaxAvatarStartAttempts)
+        {
+            // 页面始终没有完成布局：释放本页尚未启动的请求。
+            CancelAvatarTransition();
+            return;
+        }
+
+        if (_navigationProfile is not { } profile || profile.Avatar?.Uri is not { } avatar)
+        {
+            StopAvatarTransition();
+            return;
+        }
+
+        var request = AvatarTransitionSession.Current;
+        if (request is null)
+        {
+            StopAvatarTransition();
+            return;
+        }
+
+        if (!AvatarTransitionPolicy.CanStart(request, profile.Id, avatar, DateTimeOffset.Now))
+        {
+            if (AvatarTransitionPolicy.Matches(request, profile.Id, avatar))
+            {
+                // 本页的请求已过期：释放悬停的源头像快照。
+                AvatarConnectedAnimation.Cancel();
+            }
+
+            StopAvatarTransition();
+            return;
+        }
+
+        if (Visibility != Visibility.Visible || ActualWidth <= 0)
+        {
+            return;
+        }
+
+        var header = _activeHeader ?? FindChild<UserSpacePageHeader>(this);
+        if (header is null || header.AvatarElement.ActualWidth <= 0)
+        {
+            return;
+        }
+
+        _avatarStartInProgress = true;
+        LayoutUpdated -= OnAvatarLayoutUpdated;
+        _ = StartAvatarTransitionAsync(header, profile.Id, avatar);
+    }
+
+    private async Task StartAvatarTransitionAsync(UserSpacePageHeader header, string userId, Uri avatar)
+    {
+        try
+        {
+            await AvatarConnectedAnimation.TryStartAsync(
+                header.AvatarElement,
+                userId,
+                avatar,
+                header.WaitForAvatarAsync);
+        }
+        finally
+        {
+            _avatarStartInProgress = false;
+        }
+    }
+
+    private void StopAvatarTransition()
+    {
+        LayoutUpdated -= OnAvatarLayoutUpdated;
+        _avatarStartInProgress = false;
     }
 
     public void CancelLoading()

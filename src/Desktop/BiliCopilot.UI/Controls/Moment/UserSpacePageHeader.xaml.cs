@@ -19,6 +19,18 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
     public static string GetFollowLabel(bool isFollowed)
         => ResourceToolkit.GetLocalizedString(isFollowed ? StringNames.Followed : StringNames.Follow);
 
+    /// <summary>
+    /// 页头头像元素，供串联动画作为目标.
+    /// </summary>
+    public RecommendationCoverImage AvatarElement => AvatarCover;
+
+    /// <summary>
+    /// 等待页头头像解码完成.
+    /// </summary>
+    /// <param name="timeout">最长等待时间.</param>
+    /// <returns>到期时头像已就绪为 <see langword="true"/>.</returns>
+    public Task<bool> WaitForAvatarAsync(TimeSpan timeout) => AvatarCover.WaitForImageAsync(timeout);
+
     private void OnHeaderSizeChanged(object sender, SizeChangedEventArgs e)
         => VisualStateManager.GoToState(this, e.NewSize.Width < 760 ? "Compact" : "Wide", false);
 

@@ -74,7 +74,18 @@ public sealed partial class UserSpacePageViewModel
     public partial bool IsSearchEmpty { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AvatarUri))]
     public partial UserCard Card { get; set; }
+
+    /// <summary>
+    /// 页头头像地址.
+    /// </summary>
+    /// <remarks>
+    /// 页面生命周期内始终优先使用导航参数里的头像：它就是用户点击的那张图，
+    /// 与卡片共用同一份 CDN 地址与磁盘缓存，既能让页头立即显示、避免闪变，
+    /// 也能让串联动画的目标保持稳定。卡片数据仍提供其余资料字段.
+    /// </remarks>
+    public Uri? AvatarUri => _profile?.Avatar?.Uri ?? Card?.Profile?.User.Avatar?.Uri;
 
     [ObservableProperty]
     public partial bool IsUserInformationLoading { get; set; }

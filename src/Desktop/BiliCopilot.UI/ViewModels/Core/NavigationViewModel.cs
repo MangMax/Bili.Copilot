@@ -9,6 +9,7 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.View;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Richasy.BiliKernel.Models.User;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
 using System.Collections.ObjectModel;
@@ -117,7 +118,18 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
 
         ActiveMainWindow();
-        _overFrame.NavigateTo(pageType, parameter);
+
+        // 只有这次导航的目标正是刚准备头像的用户（Id 与头像都一致）且请求还新鲜时，
+        // 才抑制叠层页淡入。导航到其他用户或右键菜单发起的导航必须保留原有过渡。
+        var transition = AvatarTransitionSession.Current;
+        var suppressFade = pageType == typeof(UserSpacePage)
+            && parameter is UserProfile profile
+            && AvatarTransitionPolicy.CanStart(
+                transition,
+                profile.Id,
+                profile.Avatar?.Uri,
+                DateTimeOffset.Now);
+        _overFrame.NavigateTo(pageType, parameter, !suppressFade);
         IsOverlayOpen = true;
         CheckSubPageStatus();
 

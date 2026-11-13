@@ -23,6 +23,7 @@ public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewMode
     private Button? _userButton;
     private Button? _authorButton;
     private Button? _moreButton;
+    private RecommendationCoverImage? _avatarCover;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LiveCardControl"/> class.
@@ -40,13 +41,34 @@ public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewMode
             _moreButton.Click -= OnMoreClick;
         }
 
+        if (_userButton is not null)
+        {
+            _userButton.Click -= OnUserSpaceClick;
+        }
+
+        if (_authorButton is not null)
+        {
+            _authorButton.Click -= OnUserSpaceClick;
+        }
+
         _rootCard = GetTemplateChild("RootCard") as CardControl;
         _userButton = GetTemplateChild("UserButton") as Button;
         _authorButton = GetTemplateChild("AuthorButton") as Button;
         _moreButton = GetTemplateChild("MoreButton") as Button;
+        _avatarCover = GetTemplateChild("AvatarCover") is RecommendationCoverImage avatar ? avatar : null;
         if (_moreButton is not null)
         {
             _moreButton.Click += OnMoreClick;
+        }
+
+        if (_userButton is not null)
+        {
+            _userButton.Click += OnUserSpaceClick;
+        }
+
+        if (_authorButton is not null)
+        {
+            _authorButton.Click += OnUserSpaceClick;
         }
 
         ApplyViewModelCommands(ViewModel);
@@ -80,15 +102,29 @@ public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewMode
 
         if (_userButton is not null)
         {
-            _userButton.Command = viewModel?.ShowUserSpaceCommand;
+            // 作者入口改由 Click 处理：先准备头像串联再执行导航命令。
+            // 右键菜单仍直接绑定 ShowUserSpaceCommand，不参与动画。
+            _userButton.Command = null;
             _userButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
         }
 
         if (_authorButton is not null)
         {
-            _authorButton.Command = viewModel?.ShowUserSpaceCommand;
+            _authorButton.Command = null;
             _authorButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
         }
+    }
+
+    private void OnUserSpaceClick(object sender, RoutedEventArgs args)
+    {
+        if (ViewModel is null || !ViewModel.CanOpenUserSpace)
+        {
+            return;
+        }
+
+        // 头像与作者名共用同一条动画路径；无头像时模板会收起头像槽位，
+        // 准备动画会跳过但导航照常执行。
+        UserSpaceNavigation.Open(_avatarCover, ViewModel.UserSpaceProfile, ViewModel.ShowUserSpaceCommand);
     }
 
     private void OnMoreClick(object sender, RoutedEventArgs e)

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.Appearance;
+using Richasy.BiliKernel.Models.User;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -78,6 +79,11 @@ public sealed partial class MomentItemViewModel
     /// 卡片样式.
     /// </summary>
     public MomentCardStyle Style { get; init; }
+
+    /// <summary>
+    /// 卡片作者的用户资料，与导航命令使用同一数据源；供头像串联准备动画.
+    /// </summary>
+    public UserProfile? UserSpaceProfile => Data.User;
 
     /// <summary>Pure-video cards expose their dynamic text without changing the grid height.</summary>
     public bool HasDescriptionPreview => Style == MomentCardStyle.Video && !string.IsNullOrWhiteSpace(Description?.Text);

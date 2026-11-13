@@ -307,6 +307,32 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
     }
 
     [Fact]
+    public async Task HeaderAvatarFollowsNavigationProfileAndDoesNotFlashWhenCardArrives()
+    {
+        var moments = new MomentService();
+        var relationships = new RelationshipService();
+        var harness = Create(moments, relationships, new UserService(), new SearchService());
+        var page = harness.Page;
+        var a = User("A");
+
+        page.InitializeCommand.Execute(a);
+        Assert.Equal(a.Avatar!.Uri, page.AvatarUri);
+        await DrainAsync(harness, moments, relationships);
+
+        // 用户卡片可能使用不同尺寸的头像地址；卡片返回后页头必须保持导航参数的头像。
+        page.Card = new UserCard(
+            new UserDetailProfile(new UserProfile("A", "User A", new BiliImage(new Uri("https://example.invalid/card.png")))),
+            new UserCommunityInformation("A"));
+        Assert.Equal(a.Avatar.Uri, page.AvatarUri);
+
+        // 复用页面切换到新目标时，页头立即改为新目标的头像。
+        var b = User("B");
+        page.InitializeCommand.Execute(b);
+        Assert.Equal(b.Avatar!.Uri, page.AvatarUri);
+        await DrainAsync(harness, moments, relationships);
+    }
+
+    [Fact]
     public async Task LateUserCardResponseAfterTargetSwitchDoesNotLand()
     {
         var users = new UserService();
@@ -576,6 +602,30 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
             Sections = new List<UserMomentDetailViewModel> { video, comprehensive },
         };
         return new Harness(page, video, comprehensive);
+    }
+
+    private static async Task DrainAsync(Harness harness, MomentService moments, RelationshipService relationships)
+    {
+        var relation = relationships.Requests.LastOrDefault(request => !request.Completion.Task.IsCompleted);
+        if (relation is not null)
+        {
+            relationships.Complete(relation, UserRelationStatus.Unfollow);
+        }
+
+        if (harness.Page.InitializeCommand.ExecutionTask is { } pageTask)
+        {
+            await pageTask;
+        }
+
+        foreach (var request in moments.Requests)
+        {
+            moments.Complete(request, [], string.Empty, false);
+        }
+
+        if (harness.Video.InitializeCommand.ExecutionTask is { IsCompleted: false } sectionTask)
+        {
+            await sectionTask;
+        }
     }
 
     private static UserProfile User(string id)

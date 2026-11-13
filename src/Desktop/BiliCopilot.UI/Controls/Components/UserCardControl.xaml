@@ -15,7 +15,7 @@
     <base:CardControl
         x:Name="RootCard"
         BorderThickness="0"
-        Command="{x:Bind ViewModel.ShowUserSpaceCommand, Mode=OneWay}">
+        Click="OnRootCardClick">
         <Grid Padding="12,12,12,8" ColumnSpacing="16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -23,6 +23,7 @@
             </Grid.ColumnDefinitions>
             <Grid VerticalAlignment="Top">
                 <controls:BasicCoverImage
+                    x:Name="AvatarCover"
                     Width="48"
                     Height="48"
                     CornerRadius="24"
