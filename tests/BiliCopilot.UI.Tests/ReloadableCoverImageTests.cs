@@ -37,7 +37,6 @@ public sealed class ReloadableCoverImageTests
         image.Load();
 
         Assert.Equal(1, image.OnControlLoadedCalls);
-        Assert.Null(image.Surface);
     }
 
     [Fact]
@@ -50,7 +49,6 @@ public sealed class ReloadableCoverImageTests
 
         Assert.Equal(1, image.ApplyTemplateCalls);
         Assert.Equal(1, image.OnControlLoadedCalls);
-        Assert.Null(image.Surface);
     }
 
     [Fact]

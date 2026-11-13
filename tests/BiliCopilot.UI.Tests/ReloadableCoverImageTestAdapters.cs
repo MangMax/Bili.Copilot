@@ -1,10 +1,10 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 global using Microsoft.UI.Xaml;
+global using Microsoft.UI.Xaml.Controls;
 
 // Headless stand-ins for the WinUIKernel image-control surface used by
 // ReloadableCoverImage (#177). Only the template lifecycle contract is modeled.
-using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -51,8 +51,9 @@ namespace Richasy.WinUIKernel.Share.Base
 {
     /// <summary>
     /// Mirrors the packaged ImageExBase lifecycle:
-    /// ApplyTemplate loads the template (and invokes OnApplyTemplate only when one is installed),
-    /// OnApplyTemplate throws when "Root" is missing, and OnControlUnloaded clears the surface.
+    /// ApplyTemplate applies an installed template and invokes OnApplyTemplate only for a
+    /// newly applied one, OnApplyTemplate throws when "Root" is missing, and
+    /// OnControlUnloaded clears the surface.
     /// </summary>
     public abstract class ImageExBase : Microsoft.UI.Xaml.FrameworkElement
     {
