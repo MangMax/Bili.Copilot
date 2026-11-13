@@ -9,8 +9,6 @@
     <CornerRadius x:Key="CardSurfaceRadius">12</CornerRadius>
     <SolidColorBrush x:Key="CardMediaForeground" Color="White" />
     <SolidColorBrush x:Key="CardTagBackground" Color="Black" />
-    <!-- Neutral translucent badge for text laid over cover artwork. -->
-    <SolidColorBrush x:Key="CardOverlayBadgeBackground" Color="#CC000000" />
     <!-- Match the content and accent badges in the approved web design. -->
     <SolidColorBrush x:Key="CardContentBadgeBackground" Color="#CC0C4470" />
     <Style x:Key="CardTagBorderStyle" TargetType="Border">
@@ -30,11 +28,11 @@
         <Setter Property="Height" Value="20" />
         <Setter Property="Padding" Value="6,0" />
         <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Background" Value="{StaticResource CardOverlayBadgeBackground}" />
+        <Setter Property="Background" Value="{ThemeResource AccentFillColorTertiaryBrush}" />
         <Setter Property="VerticalAlignment" Value="Top" />
     </Style>
     <Style x:Key="CardCoverBadgeTextStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{StaticResource CardMediaForeground}" />
+        <Setter Property="Foreground" Value="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
