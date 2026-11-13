@@ -18,11 +18,24 @@
                 Source="{x:Bind Cover, Mode=OneWay, FallbackValue={x:Null}}"
                 AutomationProperties.AccessibilityView="Raw" />
         </Border>
-        <ContentPresenter
+        <Grid
             Margin="10,8,10,0"
-            HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Content="{x:Bind TopStart, Mode=OneWay}" />
+            ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ContentPresenter
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Content="{x:Bind TopStart, Mode=OneWay}" />
+            <ContentPresenter
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Content="{x:Bind TopEnd, Mode=OneWay}" />
+        </Grid>
         <Grid
             Margin="10,0,10,7"
             VerticalAlignment="Bottom"

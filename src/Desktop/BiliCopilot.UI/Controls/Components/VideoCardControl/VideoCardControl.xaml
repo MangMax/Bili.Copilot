@@ -149,25 +149,7 @@
                                             <local:CardLabelPanel
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
-                                                Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularLabels, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                <Border
-                                                    Padding="6,0"
-                                                    Height="20"
-                                                    CornerRadius="{StaticResource ControlCornerRadius}"
-                                                    Background="{ThemeResource AccentFillColorDefaultBrush}"
-                                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularRecommendReason, Converter={StaticResource ObjectToVisibilityConverter}}">
-                                                    <TextBlock
-                                                        Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularRecommendReason}"
-                                                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
-                                                        FontSize="11"
-                                                        TextTrimming="CharacterEllipsis"
-                                                        VerticalAlignment="Center"
-                                                        ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularRecommendReason}">
-                                                        <TextBlock.RenderTransform>
-                                                            <TranslateTransform Y="-1" />
-                                                        </TextBlock.RenderTransform>
-                                                    </TextBlock>
-                                                </Border>
+                                                Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularTag, Converter={StaticResource BoolToVisibilityConverter}}">
                                                 <local:CardTagControl
                                                     Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
                                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.TagName}"
@@ -175,7 +157,7 @@
                                             </local:CardLabelPanel>
                                             <!-- Without labels the timestamp takes the leading column; with labels it trails next to the actions. -->
                                             <TextBlock
-                                                Grid.Column="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularLabels, Converter={StaticResource BoolToGridColumnConverter}}"
+                                                Grid.Column="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.HasPopularTag, Converter={StaticResource BoolToGridColumnConverter}}"
                                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.PopularDisplayTime}"
                                                 Style="{StaticResource CardMetaTimeTextStyle}" />
                                             <Button

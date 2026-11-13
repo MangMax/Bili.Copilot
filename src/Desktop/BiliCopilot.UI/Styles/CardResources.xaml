@@ -9,6 +9,8 @@
     <CornerRadius x:Key="CardSurfaceRadius">12</CornerRadius>
     <SolidColorBrush x:Key="CardMediaForeground" Color="White" />
     <SolidColorBrush x:Key="CardTagBackground" Color="Black" />
+    <!-- Neutral translucent badge for text laid over cover artwork. -->
+    <SolidColorBrush x:Key="CardOverlayBadgeBackground" Color="#CC000000" />
     <!-- Match the content and accent badges in the approved web design. -->
     <SolidColorBrush x:Key="CardContentBadgeBackground" Color="#CC0C4470" />
     <Style x:Key="CardTagBorderStyle" TargetType="Border">

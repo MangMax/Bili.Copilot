@@ -30,6 +30,9 @@ public sealed partial class CardMediaFrame : UserControl
     public static readonly DependencyProperty TopStartProperty = DependencyProperty.Register(
         nameof(TopStart), typeof(object), typeof(CardMediaFrame), new PropertyMetadata(null));
 
+    public static readonly DependencyProperty TopEndProperty = DependencyProperty.Register(
+        nameof(TopEnd), typeof(object), typeof(CardMediaFrame), new PropertyMetadata(null));
+
     public static readonly DependencyProperty BottomStartProperty = DependencyProperty.Register(
         nameof(BottomStart), typeof(object), typeof(CardMediaFrame), new PropertyMetadata(null));
 
@@ -74,6 +77,15 @@ public sealed partial class CardMediaFrame : UserControl
     {
         get => GetValue(TopStartProperty);
         set => SetValue(TopStartProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the top trailing overlay slot.
+    /// </summary>
+    public object? TopEnd
+    {
+        get => GetValue(TopEndProperty);
+        set => SetValue(TopEndProperty, value);
     }
 
     /// <summary>

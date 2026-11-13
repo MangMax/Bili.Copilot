@@ -111,7 +111,7 @@ public sealed partial class VideoItemViewModel
     /// 标签名称.
     /// </summary>
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasPopularLabels))]
+    [NotifyPropertyChangedFor(nameof(HasPopularTag))]
     public partial string? TagName { get; set; }
 
     /// <summary>
@@ -164,8 +164,11 @@ public sealed partial class VideoItemViewModel
     /// <summary>Display label for a server-ordered ranking item.</summary>
     public string? RankLabel => RankPosition?.ToString("D2", System.Globalization.CultureInfo.CurrentCulture);
 
-    /// <summary>Whether the popular card has any recommendation or category labels.</summary>
-    public bool HasPopularLabels => !string.IsNullOrWhiteSpace(PopularRecommendReason) || !string.IsNullOrWhiteSpace(TagName);
+    /// <summary>Whether the popular card shows a category tag beside the actions.</summary>
+    public bool HasPopularTag => !string.IsNullOrWhiteSpace(TagName);
+
+    /// <summary>Recommendation reasons only decorate grid-feed covers.</summary>
+    public bool HasPopularRecommendReason => IsFeedCard && !string.IsNullOrWhiteSpace(PopularRecommendReason);
 
     /// <summary>Relationship reasons belong beside the author, not in the metadata row.</summary>
     public string? PopularRecommendReason => RemoveFollowingLabel(RecommendReason);
