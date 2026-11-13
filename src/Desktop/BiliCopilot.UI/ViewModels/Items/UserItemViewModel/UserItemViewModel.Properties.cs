@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Richasy.BiliKernel.Models.User;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -41,4 +42,9 @@ public sealed partial class UserItemViewModel
     /// 用户 Id.
     /// </summary>
     public string Id { get; init; }
+
+    /// <summary>
+    /// 用于头像串联的用户资料，与导航命令使用同一数据源.
+    /// </summary>
+    public UserProfile? SpaceUser => Data.Profile.User;
 }
