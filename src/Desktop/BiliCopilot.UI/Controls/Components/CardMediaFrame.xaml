@@ -15,7 +15,8 @@
                 x:Name="CoverImage"
                 CornerRadius="{StaticResource CardCoverRadius}"
                 ShadeColor="#D106080C"
-                Source="{x:Bind Cover, Mode=OneWay, FallbackValue={x:Null}}" />
+                Source="{x:Bind Cover, Mode=OneWay, FallbackValue={x:Null}}"
+                AutomationProperties.AccessibilityView="Raw" />
         </Border>
         <ContentPresenter
             Margin="10,8,10,0"
