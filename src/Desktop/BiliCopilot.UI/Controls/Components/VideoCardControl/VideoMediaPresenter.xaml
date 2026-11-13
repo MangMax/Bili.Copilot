@@ -75,19 +75,11 @@
         </local:CardMediaFrame.TopStart>
         <local:CardMediaFrame.TopEnd>
             <Border
-                Height="20"
-                Padding="6,0"
-                CornerRadius="4"
-                Background="{StaticResource CardOverlayBadgeBackground}"
-                VerticalAlignment="Top"
+                Style="{StaticResource CardCoverBadgeStyle}"
                 Visibility="{x:Bind ViewModel.HasPopularRecommendReason, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
                 <TextBlock
                     Text="{x:Bind ViewModel.PopularRecommendReason, Mode=OneWay, FallbackValue={x:Null}}"
-                    Foreground="{StaticResource CardMediaForeground}"
-                    FontSize="11"
-                    FontWeight="Medium"
-                    TextTrimming="CharacterEllipsis"
-                    VerticalAlignment="Center"
+                    Style="{StaticResource CardCoverBadgeTextStyle}"
                     ToolTipService.ToolTip="{x:Bind ViewModel.PopularRecommendReason, Mode=OneWay, FallbackValue={x:Null}}" />
             </Border>
         </local:CardMediaFrame.TopEnd>

@@ -26,6 +26,20 @@
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
+    <Style x:Key="CardCoverBadgeStyle" TargetType="Border">
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Background" Value="{StaticResource CardOverlayBadgeBackground}" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+    <Style x:Key="CardCoverBadgeTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource CardMediaForeground}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
     <Style
         x:Key="CardMetaTimeTextStyle"
         TargetType="TextBlock"
