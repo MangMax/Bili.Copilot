@@ -101,8 +101,7 @@ public sealed partial class UserCardControl : UserCardControlBase
             return;
         }
 
-        AvatarConnectedAnimation.Prepare(AvatarCover, ViewModel.SpaceUser);
-        ViewModel.ShowUserSpaceCommand.Execute(default);
+        UserSpaceNavigation.Open(AvatarCover, ViewModel.UserSpaceProfile, ViewModel.ShowUserSpaceCommand);
     }
 
     private bool IsFollowButtonClick(object? source)

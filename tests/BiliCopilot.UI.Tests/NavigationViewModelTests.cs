@@ -183,35 +183,56 @@ public sealed class NavigationViewModelTests : IDisposable
     }
 
     [Fact]
-    public void UserSpaceNavigationSuppressesFadeOnlyWhileAvatarTransitionIsPending()
+    public void UserSpaceNavigationSuppressesFadeOnlyForFreshMatchingTarget()
     {
         Initialize();
-        var profile = new Richasy.BiliKernel.Models.User.UserProfile("100");
-        AvatarTransitionSession.Prepare(
-            "100",
-            new Uri("https://i0.hdslb.com/bfs/face/avatar.jpg"),
-            DateTimeOffset.Now);
+        var avatar = new Uri("https://i0.hdslb.com/bfs/face/avatar.jpg");
+        var otherAvatar = new Uri("https://i0.hdslb.com/bfs/face/other.jpg");
+        var userA = Profile("100", avatar);
+        var userB = Profile("200", avatar);
+
+        AvatarTransitionSession.Prepare("100", avatar, DateTimeOffset.Now);
         try
         {
-            _model.NavigateToOver(typeof(UserSpacePage), profile);
+            // 目标用户与头像都匹配且请求新鲜：抑制叠层页淡入。
+            _model.NavigateToOver(typeof(UserSpacePage), userA);
             Assert.Null(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
+
+            // 请求属于 A：导航到 B 不得抑制 B 的淡入。
+            _model.NavigateToOver(typeof(UserSpacePage), userB);
+            Assert.NotNull(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
+
+            // 同一用户但头像不同（例如右键菜单从其他数据源发起）也不抑制。
+            _model.NavigateToOver(typeof(UserSpacePage), Profile("100", otherAvatar));
+            Assert.NotNull(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
+
+            // 非用户空间页保持原有过渡。
+            _model.NavigateToOver(typeof(FavoritesPage));
+            Assert.NotNull(Assert.IsType<FavoritesPage>(_overlay.GetCurrentContent()).ShowAnimations);
         }
         finally
         {
             AvatarTransitionSession.Clear();
         }
 
-        _model.NavigateToOver(typeof(UserSpacePage), profile);
+        _model.NavigateToOver(typeof(UserSpacePage), userA);
         Assert.NotNull(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
+    }
 
-        // 目标页始终没有出现时，过期请求不能永久抑制后续导航的淡入。
+    [Fact]
+    public void ExpiredAvatarTransitionDoesNotSuppressFade()
+    {
+        Initialize();
+        var avatar = new Uri("https://i0.hdslb.com/bfs/face/avatar.jpg");
+        var userA = Profile("100", avatar);
         AvatarTransitionSession.Prepare(
             "100",
-            new Uri("https://i0.hdslb.com/bfs/face/avatar.jpg"),
+            avatar,
             DateTimeOffset.Now - AvatarTransitionPolicy.MaxPrepareAge - TimeSpan.FromSeconds(1));
         try
         {
-            _model.NavigateToOver(typeof(UserSpacePage), profile);
+            // 目标页始终没有出现时，过期请求不能永久抑制后续导航的淡入。
+            _model.NavigateToOver(typeof(UserSpacePage), userA);
             Assert.NotNull(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
         }
         finally
@@ -229,6 +250,10 @@ public sealed class NavigationViewModelTests : IDisposable
     }
 
     private void Initialize() => _model.Initialize(_view, _main, _overlay);
+
+    private static Richasy.BiliKernel.Models.User.UserProfile Profile(string id, Uri avatar)
+        => new(id, $"User {id}", new Richasy.BiliKernel.Models.Appearance.BiliImage(avatar));
+
     public void Dispose()
     {
         NavigationTestServices.Current.Value = null;

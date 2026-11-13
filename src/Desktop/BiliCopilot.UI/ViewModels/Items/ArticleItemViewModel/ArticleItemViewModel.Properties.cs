@@ -71,9 +71,9 @@ public sealed partial class ArticleItemViewModel
     public ArticleCardStyle Style { get; init; }
 
     /// <summary>
-    /// 卡片对应的作者资料，供头像串联准备动画.
+    /// 卡片作者的用户资料，与导航命令使用同一数据源；供头像串联准备动画.
     /// </summary>
-    public UserProfile? SpaceUser => Data.Publisher;
+    public UserProfile? UserSpaceProfile => Data.Publisher;
 
     /// <summary>
     /// 是否可以进入作者的用户空间.

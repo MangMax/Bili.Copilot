@@ -44,7 +44,7 @@ public sealed partial class UserItemViewModel
     public string Id { get; init; }
 
     /// <summary>
-    /// 用于头像串联的用户资料，与导航命令使用同一数据源.
+    /// 卡片用户的空间资料，与导航命令使用同一数据源；供头像串联准备动画.
     /// </summary>
-    public UserProfile? SpaceUser => Data.Profile.User;
+    public UserProfile? UserSpaceProfile => Data.Profile.User;
 }

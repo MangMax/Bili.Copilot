@@ -123,9 +123,8 @@ public sealed partial class LiveCardControl : LayoutControlBase<LiveItemViewMode
         }
 
         // 头像与作者名共用同一条动画路径；无头像时模板会收起头像槽位，
-        // Prepare 会跳过但导航照常执行。
-        AvatarConnectedAnimation.Prepare(_avatarCover, ViewModel.SpaceUser);
-        ViewModel.ShowUserSpaceCommand.Execute(default);
+        // 准备动画会跳过但导航照常执行。
+        UserSpaceNavigation.Open(_avatarCover, ViewModel.UserSpaceProfile, ViewModel.ShowUserSpaceCommand);
     }
 
     private void OnMoreClick(object sender, RoutedEventArgs e)

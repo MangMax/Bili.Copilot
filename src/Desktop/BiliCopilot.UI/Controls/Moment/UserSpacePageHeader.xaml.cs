@@ -22,7 +22,7 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
     /// <summary>
     /// 页头头像元素，供串联动画作为目标.
     /// </summary>
-    public UIElement AvatarElement => AvatarCover;
+    public RecommendationCoverImage AvatarElement => AvatarCover;
 
     /// <summary>
     /// 等待页头头像解码完成.

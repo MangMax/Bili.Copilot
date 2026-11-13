@@ -84,8 +84,7 @@ public static class AvatarConnectedAnimation
         Func<TimeSpan, Task<bool>> waitForImage)
     {
         var request = AvatarTransitionSession.Current;
-        var age = request is null ? TimeSpan.Zero : DateTimeOffset.Now - request.PreparedAt;
-        if (request is null || !AvatarTransitionPolicy.CanStart(request, userId, avatarUri, age))
+        if (request is null || !AvatarTransitionPolicy.CanStart(request, userId, avatarUri, DateTimeOffset.Now))
         {
             Cancel();
             return false;
@@ -94,7 +93,9 @@ public static class AvatarConnectedAnimation
         var ready = false;
         try
         {
-            ready = await waitForImage(AvatarTransitionPolicy.GetImageWaitBudget(request, age));
+            ready = await waitForImage(
+                AvatarTransitionPolicy.GetImageWaitBudget(
+                    request, DateTimeOffset.Now - request.PreparedAt));
         }
         catch (Exception ex)
         {
@@ -105,15 +106,21 @@ public static class AvatarConnectedAnimation
 
         // 等待期间可能发生新的点击并替换了请求：旧的等待结果必须作废，
         // 且不能取消最后一次点击准备的动画。
-        var stillCurrent = ReferenceEquals(AvatarTransitionSession.Current, request);
-        if (!stillCurrent)
+        // Current 会在请求过期时返回 null：此时没有更新的请求，系统动画必须取消，
+        // 否则会留下悬停的源快照。
+        var current = AvatarTransitionSession.Current;
+        if (!ReferenceEquals(current, request))
         {
+            if (current is null)
+            {
+                Cancel();
+            }
+
             return false;
         }
 
         if (!ready
-            || !AvatarTransitionPolicy.CanStart(
-                request, userId, avatarUri, DateTimeOffset.Now - request.PreparedAt))
+            || !AvatarTransitionPolicy.CanStart(request, userId, avatarUri, DateTimeOffset.Now))
         {
             Cancel();
             return false;
