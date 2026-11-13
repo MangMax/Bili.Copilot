@@ -29,7 +29,6 @@ namespace Microsoft.Graphics.Canvas
     {
         Ignore,
         Premultiplied,
-        Straight,
     }
 }
 
