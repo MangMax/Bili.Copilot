@@ -265,7 +265,7 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
             return;
         }
 
-        if (isShort && !_shortReviewCursors.ContainsKey(page))
+        if (!GetReviewCursors(isShort).ContainsKey(page))
         {
             // 还没有这一页的游标，说明前页数据不完整.
             return;
@@ -345,8 +345,8 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
             HasShortReviews = items.Count > 0;
             if (!string.IsNullOrEmpty(nextCursor))
             {
-                // 短评按游标翻页：记住每一页的游标，上一页时直接复用.
-                _shortReviewCursors[page + 1] = nextCursor;
+                // 评价按游标翻页：记住每一页的游标，上一页时直接复用.
+                GetReviewCursors(true)[page + 1] = nextCursor;
             }
         }
         else
@@ -355,6 +355,10 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
             LongReviews = items;
             LongReviewTotal = total;
             HasLongReviews = items.Count > 0;
+            if (!string.IsNullOrEmpty(nextCursor))
+            {
+                GetReviewCursors(false)[page + 1] = nextCursor;
+            }
         }
 
         RefreshReviewTabTitles();
@@ -389,6 +393,9 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         CanGoNextReviewPage = page < pages;
     }
 
+    private Dictionary<int, string?> GetReviewCursors(bool isShort)
+        => isShort ? _shortReviewCursors : _longReviewCursors;
+
     private int GetReviewTotalPages(bool isShort)
     {
         var total = isShort ? ShortReviewTotal : LongReviewTotal;
@@ -399,7 +406,7 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     {
         try
         {
-            var cursor = isShort && _shortReviewCursors.TryGetValue(page, out var value) ? value : null;
+            var cursor = GetReviewCursors(isShort).TryGetValue(page, out var value) ? value : null;
             return await _entertainmentService.GetPgcReviewsAsync(mediaId, isShort, page, cursor);
         }
         catch (Exception ex)
@@ -485,6 +492,8 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         _longReviewPage = 1;
         _shortReviewCursors.Clear();
         _shortReviewCursors[1] = null;
+        _longReviewCursors.Clear();
+        _longReviewCursors[1] = null;
         ShortReviews = [];
         LongReviews = [];
         HasShortReviews = false;
