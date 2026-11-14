@@ -3,8 +3,6 @@
     x:Class="BiliCopilot.UI.Controls.Components.MomentEpisodePresenter"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
-    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
@@ -12,87 +10,84 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid
-        Height="120"
-        Padding="4"
-        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-        ColumnSpacing="12"
-        CornerRadius="{StaticResource ControlCornerRadius}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="180" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <controls:BasicCoverImage
-            CornerRadius="{StaticResource ControlCornerRadius}"
-            DecodeWidth="600"
-            Source="{x:Bind ViewModel.Cover, Mode=OneWay}" />
-        <Border
-            Margin="8"
-            Padding="4"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            CornerRadius="{StaticResource ControlCornerRadius}">
-            <Border.Background>
-                <SolidColorBrush Opacity="0.6" Color="Black" />
-            </Border.Background>
-            <TextBlock
-                Foreground="White"
-                Style="{StaticResource CaptionTextBlockStyle}"
-                Text="{x:Bind ViewModel.Duration, Mode=OneWay}" />
-        </Border>
-        <Grid
-            Grid.Column="1"
-            Padding="0,8,12,8"
-            RowSpacing="6">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <base:TrimTextBlock
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                FontWeight="Bold"
-                Text="{x:Bind ViewModel.Title, Mode=OneWay}" />
-            <StackPanel
-                Grid.Row="1"
-                Orientation="Horizontal"
-                Spacing="12">
-                <StackPanel
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal"
-                    Spacing="4"
-                    ToolTipService.ToolTip="{ext:Locale Name=PlayCount}">
-                    <ic:SymbolIcon
+    <!--
+        番剧动态沿用视频动态卡的几何：16:10 封面 + 两行标题（最小 50px），
+        这样同一条动态流里两类卡片高度一致，均匀布局不会按其中一类的高度裁剪另一类。
+    -->
+    <Button
+        x:Name="MomentEntry"
+        Padding="8"
+        Background="Transparent"
+        BorderThickness="0"
+        CornerRadius="{StaticResource CardSurfaceRadius}"
+        UseSystemFocusVisuals="True"
+        AutomationProperties.AutomationId="MomentEpisodePlay"
+        AutomationProperties.Name="{x:Bind ViewModel.Title, Mode=OneWay}"
+        Click="OnContentClick">
+        <Button.Template>
+            <ControlTemplate TargetType="Button">
+                <ContentPresenter
+                    Padding="{TemplateBinding Padding}"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Content="{TemplateBinding Content}" />
+            </ControlTemplate>
+        </Button.Template>
+        <local:CardContentPanel>
+            <local:CardMediaFrame Cover="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}">
+                <local:CardMediaFrame.TopStart>
+                    <Border
+                        Height="20"
+                        Padding="6,0"
+                        VerticalAlignment="Top"
+                        Background="{StaticResource CardContentBadgeBackground}"
+                        CornerRadius="4">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            FontWeight="Medium"
+                            Foreground="{StaticResource CardMediaForeground}"
+                            Text="{ext:Locale Name=Bangumi}" />
+                    </Border>
+                </local:CardMediaFrame.TopStart>
+                <local:CardMediaFrame.BottomStart>
+                    <StackPanel
                         VerticalAlignment="Center"
-                        FontSize="10"
-                        Foreground="{ThemeResource AccentTextFillColorTertiaryBrush}"
-                        Symbol="PlayCircle" />
+                        Orientation="Horizontal"
+                        Spacing="4"
+                        Visibility="{x:Bind ViewModel.PlayCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
+                        <ic:SymbolIcon
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Foreground="{StaticResource CardMediaForeground}"
+                            Symbol="PlayCircle" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="11.5"
+                            Foreground="#F2FFFFFF"
+                            Text="{x:Bind ViewModel.PlayCount, Converter={StaticResource CountConverter}, Mode=OneWay}" />
+                    </StackPanel>
+                </local:CardMediaFrame.BottomStart>
+                <local:CardMediaFrame.BottomEnd>
                     <TextBlock
                         VerticalAlignment="Center"
-                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind ViewModel.PlayCount, Converter={StaticResource CountConverter}, Mode=OneWay}"
-                        TextLineBounds="Tight" />
-                </StackPanel>
-                <StackPanel
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal"
-                    Spacing="4"
-                    ToolTipService.ToolTip="{ext:Locale Name=DanmakuCount}"
-                    Visibility="{x:Bind ViewModel.DanmakuCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
-                    <ic:SymbolIcon
-                        VerticalAlignment="Center"
-                        FontSize="10"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Symbol="TextBulletList" />
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind ViewModel.DanmakuCount, Converter={StaticResource CountConverter}, Mode=OneWay}"
-                        TextLineBounds="Tight" />
-                </StackPanel>
-            </StackPanel>
-        </Grid>
-    </Grid>
+                        FontSize="11.5"
+                        Foreground="#F2FFFFFF"
+                        Text="{x:Bind ViewModel.Duration, Mode=OneWay, FallbackValue={x:Null}}" />
+                </local:CardMediaFrame.BottomEnd>
+            </local:CardMediaFrame>
+            <Border MinHeight="50">
+                <TextBlock
+                    Margin="0,10,0,0"
+                    FontSize="14"
+                    FontWeight="Normal"
+                    LineHeight="20"
+                    MaxLines="2"
+                    Text="{x:Bind ViewModel.Title, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap"
+                    ToolTipService.ToolTip="{x:Bind ViewModel.Title, Mode=OneWay}" />
+            </Border>
+        </local:CardContentPanel>
+    </Button>
 </local:EpisodeCardPresenter>
