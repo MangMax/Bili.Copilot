@@ -24,6 +24,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     private readonly UISettings _uiSettings = new();
     private int _loadGeneration = -1;
     private ScrollView? _activeScroll;
+    private IncrementVerticalScrollControl? _activeScrollHost;
     private UserSpacePageHeader? _activeHeader;
     private UserProfile? _navigationProfile;
     private int _avatarStartAttempts;
@@ -89,6 +90,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
         DisconnectHeader();
         _activeScroll = scroll;
+        _activeScrollHost = host;
         _activeHeader = FindChild<UserSpacePageHeader>(scroll);
         if (_activeHeader is not null)
         {
@@ -203,6 +205,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     {
         if (parameter is UserProfile profile)
         {
+            // 复用页面时停在上一目标的滚动位置会让新目标从中段开始，先回到顶部。
+            _activeScrollHost?.ResetScrollPosition();
+
             // 叠层按类型缓存页面，同一页面会再次收到新的用户参数。
             ViewModel.InitializeCommand.Execute(profile);
 

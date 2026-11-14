@@ -9,32 +9,59 @@ namespace BiliCopilot.UI.Controls;
 
 public sealed partial class OverlayFrame : LayoutUserControlBase
 {
+    // 返回时把页面留在视觉树里，只把它从可见栈里摘掉：
+    // 叠层页重建要几百毫秒，重新挂载也要几十毫秒，留着它头像串联动画才不会先停住再飞.
+    private const int MaxCachedPages = 2;
+
+    // 可见的返回栈；被返回的页面可能仍留在 RootGrid.Children 里等待复用，不算栈的一部分.
+    private readonly List<UIElement> _backStack = new();
+
     public OverlayFrame() => InitializeComponent();
 
     public List<object> GetBackStack()
-        => [.. RootGrid.Children];
+        => [.. _backStack];
 
     public void ClearBackStack()
     {
+        _backStack.Clear();
         RootGrid.Children.Clear();
     }
 
     public void GoBack()
     {
-        if (RootGrid.Children.Count > 0)
+        if (_backStack.Count > 0)
         {
-            RootGrid.Children.RemoveAt(RootGrid.Children.Count - 1);
+            var removed = _backStack[^1];
+            _backStack.RemoveAt(_backStack.Count - 1);
+            removed.Visibility = Visibility.Collapsed;
+
+            // 只有实现参数接口的页面能复用，其余页面照旧真正移除.
+            if (removed is not IParameterPage)
+            {
+                RootGrid.Children.Remove(removed);
+            }
+            else
+            {
+                var index = RootGrid.Children.IndexOf(removed);
+                if (index >= 0 && RootGrid.Children.Count > 1)
+                {
+                    // 挪到最后，缓存按最近的返回顺序保留.
+                    RootGrid.Children.Move(Convert.ToUInt32(index), Convert.ToUInt32(RootGrid.Children.Count - 1));
+                }
+
+                TrimCachedPages();
+            }
         }
 
         // 如果还有元素，则将最后一个元素设置为可见
-        if (RootGrid.Children.Count > 0)
+        if (_backStack.Count > 0)
         {
-            foreach (var child in RootGrid.Children)
+            foreach (var child in _backStack)
             {
                 child.Visibility = Visibility.Collapsed;
             }
 
-            RootGrid.Children[^1].Visibility = Visibility.Visible;
+            _backStack[^1].Visibility = Visibility.Visible;
         }
     }
 
@@ -62,6 +89,18 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
                 Duration = TimeSpan.FromMilliseconds(100),
                 From = 1,
                 To = 0,
+            },
+        };
+
+        // 抑制淡入时仍要挂一个零时长显示动画：上一次隐藏动画会把不透明度停在 0，
+        // 只把显示动画设为 null 的话，复用的页面会整页透明（元素在、画面是空的）.
+        var instantSet = new ImplicitAnimationSet
+        {
+            new OpacityAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(1),
+                From = 0,
+                To = 1,
             },
         };
         UIElement? targetElement = null;
@@ -93,33 +132,62 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
 
             RootGrid.Children.Add(element);
         }
-        else if (RootGrid.Children.Count > 1)
+        else
         {
-            // 将 targetElement 移动到最后
-            RootGrid.Children.Move(Convert.ToUInt32(RootGrid.Children.IndexOf(targetElement)), Convert.ToUInt32(RootGrid.Children.Count - 1));
+            if (RootGrid.Children.Count > 1)
+            {
+                // 将 targetElement 移动到最后
+                RootGrid.Children.Move(Convert.ToUInt32(RootGrid.Children.IndexOf(targetElement)), Convert.ToUInt32(RootGrid.Children.Count - 1));
+            }
         }
+
+        // 维护逻辑返回栈：目标页可能来自栈中，也可能是返回时保留下来的页面.
+        _backStack.Remove(targetElement);
+        _backStack.Add(targetElement);
 
         // 头像串联导航必须抑制叠层页自身的淡入，避免两套过渡同时播放；
         // 之后以默认参数返回同一页面时再恢复淡入。
-        Implicit.SetShowAnimations(targetElement, animateIn ? showSet : null);
+        Implicit.SetShowAnimations(targetElement, animateIn ? showSet : instantSet);
         Implicit.SetHideAnimations(targetElement, hideSet);
 
         // 设置可见性
-        foreach (var child in RootGrid.Children)
+        foreach (var child in _backStack)
         {
             child.Visibility = child == targetElement ? Visibility.Visible : Visibility.Collapsed;
-            if (child.Visibility == Visibility.Collapsed && child is ICancelPageViewModel cancelPageViewModel)
+            if (child != targetElement && child is ICancelPageViewModel cancelPageViewModel)
             {
                 cancelPageViewModel.CancelLoading();
             }
         }
     }
 
+    /// <summary>
+    /// 限制保留的缓存页面数量，超出时从最旧的开始移除.
+    /// </summary>
+    private void TrimCachedPages()
+    {
+        var cached = 0;
+        for (var i = RootGrid.Children.Count - 1; i >= 0; i--)
+        {
+            var child = RootGrid.Children[i];
+            if (_backStack.Contains(child) || child is not IParameterPage)
+            {
+                continue;
+            }
+
+            cached++;
+            if (cached > MaxCachedPages)
+            {
+                RootGrid.Children.RemoveAt(i);
+            }
+        }
+    }
+
     public object? GetCurrentContent()
     {
-        if (RootGrid.Children.Count > 0)
+        if (_backStack.Count > 0)
         {
-            return RootGrid.Children[^1];
+            return _backStack[^1];
         }
 
         return default;

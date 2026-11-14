@@ -195,8 +195,11 @@ public sealed class NavigationViewModelTests : IDisposable
         try
         {
             // 目标用户与头像都匹配且请求新鲜：抑制叠层页淡入。
+            // 抑制时仍挂零时长显示动画，用来清掉隐藏动画留在页面上的 0 不透明度。
             _model.NavigateToOver(typeof(UserSpacePage), userA);
-            Assert.Null(Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations);
+            var suppressed = Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations;
+            Assert.NotNull(suppressed);
+            Assert.True(suppressed![0].Duration <= TimeSpan.FromMilliseconds(1));
 
             // 请求属于 A：导航到 B 不得抑制 B 的淡入。
             _model.NavigateToOver(typeof(UserSpacePage), userB);

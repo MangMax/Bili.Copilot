@@ -100,6 +100,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         HasUserInformationError = false;
         IsFollowed = false;
         UserName = profile.Name;
+
+        // 页面会被缓存复用：上一目标打开的评论浮层不能带到新目标上.
+        IsCommentsOpened = false;
         if (IsSearchMode)
         {
             ExitSearch();
