@@ -2289,6 +2289,15 @@
   <data name="PgcFollowCount" xml:space="preserve">
     <value>追番数</value>
   </data>
+  <data name="PrevPage" xml:space="preserve">
+    <value>上一页</value>
+  </data>
+  <data name="NextPage" xml:space="preserve">
+    <value>下一页</value>
+  </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>加载更多</value>
+  </data>
   <data name="ShortReviews" xml:space="preserve">
     <value>短评</value>
   </data>

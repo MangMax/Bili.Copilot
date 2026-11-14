@@ -1,5 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
@@ -17,8 +19,12 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     private readonly IPlayerService _playerService;
     private readonly IEntertainmentDiscoveryService _entertainmentService;
     private readonly ILogger<PgcDetailPageViewModel> _logger;
+    private const int ReviewPageSize = 20;
+
     private PgcPlayerView? _view;
     private string? _mediaId;
+    private int _shortReviewPage;
+    private int _longReviewPage;
     private bool _reviewsLoaded;
     private int _loadGeneration;
     private CancellationTokenSource? _loadCancellation;
@@ -142,6 +148,72 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     /// </summary>
     [ObservableProperty]
     public partial bool ShowReviews { get; set; }
+
+    /// <summary>
+    /// 当前显示短评（否则显示长评）.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowLongReviews))]
+    public partial bool ShowShortReviews { get; set; } = true;
+
+    /// <summary>
+    /// 当前显示长评.
+    /// </summary>
+    public bool ShowLongReviews => !ShowShortReviews;
+
+    /// <summary>
+    /// 短评总数.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShortReviewTabTitle))]
+    public partial int ShortReviewTotal { get; set; }
+
+    /// <summary>
+    /// 长评总数.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(LongReviewTabTitle))]
+    public partial int LongReviewTotal { get; set; }
+
+    /// <summary>
+    /// 正在切换评价分页.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsLoadingMoreReviews { get; set; }
+
+    /// <summary>
+    /// 当前评价页码.
+    /// </summary>
+    [ObservableProperty]
+    public partial int ActiveReviewPage { get; set; }
+
+    /// <summary>
+    /// 当前评价页码文本.
+    /// </summary>
+    [ObservableProperty]
+    public partial string ReviewPageText { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 可以上一页.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool CanGoPrevReviewPage { get; set; }
+
+    /// <summary>
+    /// 可以下一页.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool CanGoNextReviewPage { get; set; }
+
+    /// <summary>
+    /// 短评分区标题，带数量.
+    /// </summary>
+    public string ShortReviewTabTitle => $"{ResourceToolkit.GetLocalizedString(StringNames.ShortReviews)} ({AppToolkit.FormatCount(ShortReviewTotal)})";
+
+    /// <summary>
+    /// 长评分区标题，带数量.
+    /// </summary>
+    public string LongReviewTabTitle => $"{ResourceToolkit.GetLocalizedString(StringNames.LongReviews)} ({AppToolkit.FormatCount(LongReviewTotal)})";
 
     /// <summary>
     /// 正在加载评价.

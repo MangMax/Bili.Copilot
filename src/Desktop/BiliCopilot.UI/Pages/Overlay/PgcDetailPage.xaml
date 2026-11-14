@@ -344,60 +344,57 @@
                     </ItemsRepeater>
                 </Grid>
 
-                <!--  评价：简介、评分与演职人员  -->
-                <Grid
-                    Margin="28,8,28,0"
-                    ColumnSpacing="32"
-                    Visibility="{x:Bind ViewModel.ShowIntro, Mode=OneWay}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Spacing="10">
-                        <TextBlock
-                            Style="{StaticResource SubtitleTextBlockStyle}"
-                            Text="{ext:Locale Name=MediaReview}" />
-                        <TextBlock
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            IsTextSelectionEnabled="True"
-                            Text="{x:Bind ViewModel.Description, Mode=OneWay}"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                    <StackPanel
-                        Grid.Column="1"
-                        Spacing="10"
-                        Visibility="{x:Bind ViewModel.HasLabor, Mode=OneWay}">
-                        <TextBlock
-                            Style="{StaticResource SubtitleTextBlockStyle}"
-                            Text="{ext:Locale Name=CastAndCrew}" />
-                        <ItemsRepeater ItemTemplate="{StaticResource LaborTemplate}" ItemsSource="{x:Bind ViewModel.LaborItems, Mode=OneWay}" />
-                    </StackPanel>
-                </Grid>
-
-                <!--  评价：短评与长评  -->
+                <!--  演职人员分区  -->
                 <StackPanel
                     Margin="28,8,28,0"
                     MaxWidth="960"
                     HorizontalAlignment="Left"
-                    Spacing="18"
+                    Spacing="10"
+                    Visibility="{x:Bind ViewModel.ShowIntro, Mode=OneWay}">
+                    <ItemsRepeater ItemTemplate="{StaticResource LaborTemplate}" ItemsSource="{x:Bind ViewModel.LaborItems, Mode=OneWay}" />
+                </StackPanel>
+
+                <!--  评价：短评与长评分开，各自分页  -->
+                <StackPanel
+                    Margin="28,8,28,0"
+                    MaxWidth="960"
+                    HorizontalAlignment="Left"
+                    Spacing="14"
                     Visibility="{x:Bind ViewModel.ShowReviews, Mode=OneWay}">
+                    <components:SlidingTabBar
+                        x:Name="ReviewTabSelector"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="PgcReviewTabs" />
                     <ProgressRing
                         Width="32"
                         Height="32"
                         HorizontalAlignment="Left"
                         IsActive="{x:Bind ViewModel.IsReviewsLoading, Mode=OneWay}"
                         Visibility="{x:Bind ViewModel.IsReviewsLoading, Mode=OneWay}" />
-                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.HasShortReviews, Mode=OneWay}">
-                        <TextBlock
-                            Style="{StaticResource SubtitleTextBlockStyle}"
-                            Text="{ext:Locale Name=ShortReviews}" />
+                    <StackPanel Spacing="10" Visibility="{x:Bind ViewModel.ShowShortReviews, Mode=OneWay}">
                         <ItemsRepeater ItemTemplate="{StaticResource ReviewTemplate}" ItemsSource="{x:Bind ViewModel.ShortReviews, Mode=OneWay}" />
                     </StackPanel>
-                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.HasLongReviews, Mode=OneWay}">
-                        <TextBlock
-                            Style="{StaticResource SubtitleTextBlockStyle}"
-                            Text="{ext:Locale Name=LongReviews}" />
+                    <StackPanel Spacing="10" Visibility="{x:Bind ViewModel.ShowLongReviews, Mode=OneWay}">
                         <ItemsRepeater ItemTemplate="{StaticResource ReviewTemplate}" ItemsSource="{x:Bind ViewModel.LongReviews, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="12"
+                        Visibility="{x:Bind ViewModel.ReviewPageText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
+                        <Button
+                            Padding="12,4"
+                            Command="{x:Bind ViewModel.PrevReviewPageCommand}"
+                            Content="{ext:Locale Name=PrevPage}"
+                            IsEnabled="{x:Bind ViewModel.CanGoPrevReviewPage, Mode=OneWay}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind ViewModel.ReviewPageText, Mode=OneWay}" />
+                        <Button
+                            Padding="12,4"
+                            Command="{x:Bind ViewModel.NextReviewPageCommand}"
+                            Content="{ext:Locale Name=NextPage}"
+                            IsEnabled="{x:Bind ViewModel.CanGoNextReviewPage, Mode=OneWay}" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

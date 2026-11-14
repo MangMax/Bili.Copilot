@@ -222,7 +222,46 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 加载短评与长评.
+    /// 切换短评/长评.
+    /// </summary>
+    /// <param name="isShort">是否显示短评.</param>
+    public void SelectReviewTab(bool isShort)
+    {
+        ShowShortReviews = isShort;
+        UpdateReviewPager();
+    }
+
+    /// <summary>
+    /// 上一页评价.
+    /// </summary>
+    [RelayCommand]
+    private Task PrevReviewPageAsync() => ChangeReviewPageAsync(-1);
+
+    /// <summary>
+    /// 下一页评价.
+    /// </summary>
+    [RelayCommand]
+    private Task NextReviewPageAsync() => ChangeReviewPageAsync(1);
+
+    private async Task ChangeReviewPageAsync(int delta)
+    {
+        if (!_reviewsLoaded || IsLoadingMoreReviews || string.IsNullOrWhiteSpace(_mediaId))
+        {
+            return;
+        }
+
+        var isShort = ShowShortReviews;
+        var page = (isShort ? _shortReviewPage : _longReviewPage) + delta;
+        if (page < 1 || page > GetReviewTotalPages(isShort))
+        {
+            return;
+        }
+
+        await LoadReviewPageAsync(isShort, page);
+    }
+
+    /// <summary>
+    /// 加载短评与长评的第一页.
     /// </summary>
     private async Task LoadReviewsAsync()
     {
@@ -236,35 +275,97 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         try
         {
             // 短评与长评是两个接口，其中一个失败不应让另一个也空着.
-            var shortReviews = await LoadReviewsAsync(true);
-            var longReviews = await LoadReviewsAsync(false);
+            await LoadReviewPageCoreAsync(mediaId, true, 1);
+            await LoadReviewPageCoreAsync(mediaId, false, 1);
             if (!string.Equals(mediaId, _mediaId, StringComparison.Ordinal))
             {
                 return;
             }
 
-            ShortReviews = [.. shortReviews.Select(ToReviewItem)];
-            LongReviews = [.. longReviews.Select(ToReviewItem)];
-            HasShortReviews = ShortReviews.Count > 0;
-            HasLongReviews = LongReviews.Count > 0;
             _reviewsLoaded = true;
+            UpdateReviewPager();
         }
         finally
         {
             IsReviewsLoading = false;
         }
+    }
 
-        async Task<IReadOnlyList<PgcReviewInformation>> LoadReviewsAsync(bool isShort)
+    private async Task LoadReviewPageAsync(bool isShort, int page)
+    {
+        var mediaId = _mediaId;
+        if (mediaId is null)
         {
-            try
+            return;
+        }
+
+        IsLoadingMoreReviews = true;
+        try
+        {
+            await LoadReviewPageCoreAsync(mediaId, isShort, page);
+            if (string.Equals(mediaId, _mediaId, StringComparison.Ordinal))
             {
-                return await _entertainmentService.GetPgcReviewsAsync(mediaId, isShort);
+                UpdateReviewPager();
             }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "获取影视作品评价失败（{Kind}）", isShort ? "短评" : "长评");
-                return [];
-            }
+        }
+        finally
+        {
+            IsLoadingMoreReviews = false;
+        }
+    }
+
+    private async Task LoadReviewPageCoreAsync(string mediaId, bool isShort, int page)
+    {
+        var (reviews, total) = await RequestReviewsAsync(mediaId, isShort, page);
+        if (!string.Equals(mediaId, _mediaId, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        var items = reviews.Select(ToReviewItem).ToList();
+        if (isShort)
+        {
+            _shortReviewPage = page;
+            ShortReviews = items;
+            ShortReviewTotal = total;
+            HasShortReviews = items.Count > 0;
+        }
+        else
+        {
+            _longReviewPage = page;
+            LongReviews = items;
+            LongReviewTotal = total;
+            HasLongReviews = items.Count > 0;
+        }
+    }
+
+    private void UpdateReviewPager()
+    {
+        var isShort = ShowShortReviews;
+        var page = isShort ? _shortReviewPage : _longReviewPage;
+        var pages = GetReviewTotalPages(isShort);
+        ActiveReviewPage = page;
+        ReviewPageText = pages > 0 ? $"第 {page} / {pages} 页" : string.Empty;
+        CanGoPrevReviewPage = page > 1;
+        CanGoNextReviewPage = page < pages;
+    }
+
+    private int GetReviewTotalPages(bool isShort)
+    {
+        var total = isShort ? ShortReviewTotal : LongReviewTotal;
+        return total <= 0 ? 0 : (int)Math.Ceiling(total / (double)ReviewPageSize);
+    }
+
+    private async Task<(IReadOnlyList<PgcReviewInformation> Reviews, int Total)> RequestReviewsAsync(string mediaId, bool isShort, int page)
+    {
+        try
+        {
+            return await _entertainmentService.GetPgcReviewsAsync(mediaId, isShort, page);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "获取影视作品评价失败（{Kind}）", isShort ? "短评" : "长评");
+            return ([], 0);
         }
     }
 
@@ -324,7 +425,7 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         }
 
         tabs.Add(new PgcDetailTabViewModel(
-            ResourceToolkit.GetLocalizedString(StringNames.Description),
+            ResourceToolkit.GetLocalizedString(StringNames.CastAndCrew),
             [],
             PgcDetailTabKind.Intro));
         tabs.Add(new PgcDetailTabViewModel(
@@ -334,10 +435,17 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         Tabs = tabs;
         _mediaId = information.GetExtensionIfNotNull<string>(SeasonExtensionDataId.MediaId);
         _reviewsLoaded = false;
+        _shortReviewPage = 1;
+        _longReviewPage = 1;
         ShortReviews = [];
         LongReviews = [];
         HasShortReviews = false;
         HasLongReviews = false;
+        ShortReviewTotal = 0;
+        LongReviewTotal = 0;
+        ReviewPageText = string.Empty;
+        CanGoPrevReviewPage = false;
+        CanGoNextReviewPage = false;
 
         var labor = information.GetExtensionIfNotNull<Dictionary<string, string>>(SeasonExtensionDataId.LaborSections);
         LaborItems = labor is null
@@ -383,6 +491,11 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         HasShortReviews = false;
         HasLongReviews = false;
         IsReviewsLoading = false;
+        ShortReviewTotal = 0;
+        LongReviewTotal = 0;
+        ReviewPageText = string.Empty;
+        CanGoPrevReviewPage = false;
+        CanGoNextReviewPage = false;
         _mediaId = null;
         _reviewsLoaded = false;
     }
