@@ -588,10 +588,11 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
         bool videoSelected = true)
     {
         NavigationTestServices.Settings.Value![SettingNames.LastUserSpaceSectionIsVideo] = videoSelected;
-        var video = new UserMomentDetailViewModel(moments, NullLogger<UserMomentDetailViewModel>.Instance);
-        video.SetIsVideo(true);
-        var comprehensive = new UserMomentDetailViewModel(moments, NullLogger<UserMomentDetailViewModel>.Instance);
-        comprehensive.SetIsVideo(false);
+
+        // 页面现在只用一份综合动态分区承载「动态」内容；视频类投稿走投稿分区。
+        // 测试里按 videoSelected 决定这份分区的类型，Video / Comprehensive 都指向它。
+        var section = new UserMomentDetailViewModel(moments, NullLogger<UserMomentDetailViewModel>.Instance);
+        section.SetIsVideo(videoSelected);
         var page = new UserSpacePageViewModel(
             new CommentMainViewModel(),
             relationships,
@@ -599,9 +600,9 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
             search,
             NullLogger<UserSpacePageViewModel>.Instance)
         {
-            Sections = new List<UserMomentDetailViewModel> { video, comprehensive },
+            Sections = new List<UserMomentDetailViewModel> { section },
         };
-        return new Harness(page, video, comprehensive);
+        return new Harness(page, section, section);
     }
 
     private static async Task DrainAsync(Harness harness, MomentService moments, RelationshipService relationships)
