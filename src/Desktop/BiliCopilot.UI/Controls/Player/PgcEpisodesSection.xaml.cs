@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Base;
+using System.ComponentModel;
 
 namespace BiliCopilot.UI.Controls.Player;
 
@@ -18,7 +19,23 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         InitializeLayoutAsync();
+    }
+
+    /// <inheritdoc/>
+    protected override void OnControlUnloaded()
+    {
+        ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(PgcPlayerEpisodeSectionDetailViewModel.Episodes) or nameof(PgcPlayerEpisodeSectionDetailViewModel.SelectedGroup))
+        {
+            // 切换分组后重新定位到正在播放的那一集.
+            InitializeLayoutAsync();
+        }
     }
 
     private async void OnIndexToggledAsync(object sender, RoutedEventArgs e)
@@ -30,32 +47,47 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
     private async void InitializeLayoutAsync()
     {
         await Task.Delay(100);
-        var selectedItem = ViewModel.Episodes.Find(p => p.IsSelected);
+        if (ViewModel.Episodes is not { } episodes || XamlRoot is null)
+        {
+            return;
+        }
+
+        var selectedItem = episodes.Find(p => p.IsSelected);
         if (selectedItem is null)
         {
             return;
         }
 
-        var index = ViewModel.Episodes.ToList().IndexOf(selectedItem);
-        var actualOffset = 0d;
-        if (ViewModel.OnlyIndex)
+        var index = episodes.IndexOf(selectedItem);
+        if (index < 0)
         {
-            var offset = 40 * (index / 7);
-            actualOffset = offset - IndexView.ViewportHeight;
+            return;
+        }
 
-            if (actualOffset > 0)
+        if (ViewModel.ShowIndexLayout)
+        {
+            if (IndexView is null)
             {
-                IndexView.ScrollTo(0, actualOffset);
+                return;
+            }
+
+            var offset = (40 * (index / 7)) - IndexView.ViewportHeight;
+            if (offset > 0)
+            {
+                IndexView.ScrollTo(0, offset);
             }
         }
         else
         {
-            var offset = 86 * index;
-            actualOffset = offset - DefaultView.ViewportHeight;
-
-            if (actualOffset > 0)
+            if (DefaultView is null)
             {
-                DefaultView.ScrollTo(0, actualOffset + (DefaultView.ViewportHeight / 2));
+                return;
+            }
+
+            var offset = (86 * index) - DefaultView.ViewportHeight;
+            if (offset > 0)
+            {
+                DefaultView.ScrollTo(0, offset + (DefaultView.ViewportHeight / 2));
             }
         }
     }

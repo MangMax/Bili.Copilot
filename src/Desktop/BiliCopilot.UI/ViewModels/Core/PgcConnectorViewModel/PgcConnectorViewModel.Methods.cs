@@ -76,9 +76,10 @@ public sealed partial class PgcConnectorViewModel
             new PgcPlayerInfoSectionDetailViewModel(this),
         };
 
-        if (_view.Episodes?.Count > 1)
+        if (_view.Episodes?.Count > 0 || _view.Extras?.Count > 0)
         {
-            sections.Add(new PgcPlayerEpisodeSectionDetailViewModel(_view.Episodes, _episode.Identifier.Id, ChangeEpisode));
+            // 正片与附加分区（花絮、预告…）放进同一个选集控件，用下拉框切换.
+            sections.Add(new PgcPlayerEpisodeSectionDetailViewModel(_view.Episodes, _view.Extras, _episode.Identifier.Id, ChangeEpisode));
         }
 
         if (_view.Seasons?.Count > 1)

@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:playervm="using:BiliCopilot.UI.ViewModels.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
@@ -65,21 +66,39 @@
     <Grid RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
+        <!--  正片 / 花絮 / 预告等分组切换  -->
+        <ComboBox
+            Margin="12,8,12,0"
+            HorizontalAlignment="Stretch"
+            AutomationProperties.AutomationId="PgcEpisodeGroupSelector"
+            ItemsSource="{x:Bind ViewModel.Groups, Mode=OneWay}"
+            SelectedItem="{x:Bind ViewModel.SelectedGroup, Mode=TwoWay}"
+            Visibility="{x:Bind ViewModel.HasMultipleGroups, Mode=OneWay}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="playervm:PgcPlayerEpisodeGroupViewModel">
+                    <TextBlock Text="{x:Bind Title, Mode=OneWay}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
         <ToggleSwitch
+            Grid.Row="1"
             Margin="12,8,12,0"
             IsOn="{x:Bind ViewModel.OnlyIndex, Mode=TwoWay}"
             OffContent="{ext:Locale Name=OnlyIndex}"
             OnContent="{ext:Locale Name=OnlyIndex}"
-            Toggled="OnIndexToggledAsync" />
+            Toggled="OnIndexToggledAsync"
+            Visibility="{x:Bind ViewModel.ShowIndexToggle, Mode=OneWay}" />
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <ScrollView
                 x:Name="DefaultView"
                 Padding="12,0"
-                x:Load="{x:Bind ViewModel.OnlyIndex, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}">
+                x:Load="{x:Bind ViewModel.ShowIndexLayout, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}">
                 <repeater:AppRepeater
                     Margin="0,0,0,12"
                     ItemTemplate="{StaticResource DefaultTemplate}"
@@ -89,7 +108,7 @@
             <ScrollView
                 x:Name="IndexView"
                 Padding="12,0"
-                x:Load="{x:Bind ViewModel.OnlyIndex, Mode=OneWay}">
+                x:Load="{x:Bind ViewModel.ShowIndexLayout, Mode=OneWay}">
                 <repeater:AppRepeater
                     Margin="0,0,0,12"
                     ItemTemplate="{StaticResource IndexTemplate}"
