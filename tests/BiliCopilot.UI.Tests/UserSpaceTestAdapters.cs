@@ -26,6 +26,9 @@ namespace BiliCopilot.UI.ViewModels.Items
         /// <summary>卡片样式.</summary>
         public MomentCardStyle Style { get; } = style;
 
+        /// <summary>内部内容；投稿的「动态」用它过滤掉视频类动态.</summary>
+        public object? InnerContent { get; init; }
+
         /// <summary>触发评论回调.</summary>
         public void ShowComment() => showCommentAction?.Invoke(this);
     }

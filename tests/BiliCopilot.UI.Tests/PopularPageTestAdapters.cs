@@ -119,7 +119,7 @@ namespace BiliCopilot.UI.Toolkits
         public static string GetLocalizedString(StringNames name) => name.ToString();
     }
 }
-namespace BiliCopilot.UI.Models.Constants { public enum StringNames { LiveRoomCutOffTitle, LiveRoomNotStartedTitle, SearchVerificationRequired, SearchFailed, Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, RecommendLive, RecommendLivePartition, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, User, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos } }
+namespace BiliCopilot.UI.Models.Constants { public enum StringNames { LiveRoomCutOffTitle, LiveRoomNotStartedTitle, SearchVerificationRequired, SearchFailed, Recommend, Hot, Rank, WholePartitions, RefreshingRecommendVideos, UserSpace, ViewHistory, PopularSlim, DynamicFeed, Video, Live, Anime, Cinema, Article, Message, Settings, RecommendLive, RecommendLivePartition, LikeMessageMultipleDescription, LikeMessageSingleDescription, RecommendArticle, HotArticle, Comprehensive, User, Followed, Unfollowed, FailedToFollowUser, FailedToUnfollowUser, FailedToGetUserInformation, FailedToGetUserRelation, FailedToSearchUserVideos, UserSpaceHome, UserSpaceSubmission, SpecialColumn, RecentVideos, RecentDynamics } }
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
