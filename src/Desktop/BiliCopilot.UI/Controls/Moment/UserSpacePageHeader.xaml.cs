@@ -73,5 +73,8 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
         }
 
         Selector.SetItems(items, ViewModel.SelectedTab);
+
+        // 重建标签栏后把分区状态与当前选中项对齐，避免初始分区高亮与内容不一致.
+        ViewModel.SelectTabCommand.Execute(ViewModel.SelectedTab);
     }
 }
