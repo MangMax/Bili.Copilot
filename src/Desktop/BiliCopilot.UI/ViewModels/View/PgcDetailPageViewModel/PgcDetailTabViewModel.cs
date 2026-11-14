@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Items;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BiliCopilot.UI.ViewModels.View;
 
@@ -20,15 +21,20 @@ public enum PgcDetailTabKind
     Intro,
 
     /// <summary>
-    /// 短评与长评.
+    /// 短评.
     /// </summary>
-    Reviews,
+    ShortReviews,
+
+    /// <summary>
+    /// 长评.
+    /// </summary>
+    LongReviews,
 }
 
 /// <summary>
 /// 番剧详情页的一个分区，例如正片、花絮、简介、评价.
 /// </summary>
-public sealed class PgcDetailTabViewModel
+public sealed partial class PgcDetailTabViewModel : ObservableObject
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcDetailTabViewModel"/> class.
@@ -46,7 +52,8 @@ public sealed class PgcDetailTabViewModel
     /// <summary>
     /// 分区标题.
     /// </summary>
-    public string Title { get; }
+    [ObservableProperty]
+    public partial string Title { get; set; }
 
     /// <summary>
     /// 分区里的剧集.
@@ -64,9 +71,19 @@ public sealed class PgcDetailTabViewModel
     public bool IsIntro => Kind == PgcDetailTabKind.Intro;
 
     /// <summary>
+    /// 是否是短评分区.
+    /// </summary>
+    public bool IsShortReviews => Kind == PgcDetailTabKind.ShortReviews;
+
+    /// <summary>
+    /// 是否是长评分区.
+    /// </summary>
+    public bool IsLongReviews => Kind == PgcDetailTabKind.LongReviews;
+
+    /// <summary>
     /// 是否是评价分区.
     /// </summary>
-    public bool IsReviews => Kind == PgcDetailTabKind.Reviews;
+    public bool IsReviews => Kind is PgcDetailTabKind.ShortReviews or PgcDetailTabKind.LongReviews;
 
     /// <summary>
     /// 是否有剧集.

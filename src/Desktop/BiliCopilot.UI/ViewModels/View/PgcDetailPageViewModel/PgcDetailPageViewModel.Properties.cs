@@ -208,12 +208,15 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     /// <summary>
     /// 短评分区标题，带数量.
     /// </summary>
-    public string ShortReviewTabTitle => $"{ResourceToolkit.GetLocalizedString(StringNames.ShortReviews)} ({AppToolkit.FormatCount(ShortReviewTotal)})";
+    public string ShortReviewTabTitle => BuildReviewTabTitle(ResourceToolkit.GetLocalizedString(StringNames.ShortReviews), ShortReviewTotal);
 
     /// <summary>
     /// 长评分区标题，带数量.
     /// </summary>
-    public string LongReviewTabTitle => $"{ResourceToolkit.GetLocalizedString(StringNames.LongReviews)} ({AppToolkit.FormatCount(LongReviewTotal)})";
+    public string LongReviewTabTitle => BuildReviewTabTitle(ResourceToolkit.GetLocalizedString(StringNames.LongReviews), LongReviewTotal);
+
+    private static string BuildReviewTabTitle(string name, int total)
+        => total <= 0 ? name : $"{name} ({AppToolkit.FormatCount(total)})";
 
     /// <summary>
     /// 正在加载评价.

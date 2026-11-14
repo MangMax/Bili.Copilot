@@ -215,9 +215,17 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         HasEpisodes = Episodes.Count > 0;
         ShowIntro = tab.IsIntro;
         ShowReviews = tab.IsReviews;
-        if (tab.IsReviews)
+        if (tab.IsShortReviews)
         {
+            ShowShortReviews = true;
             _ = LoadReviewsAsync();
+            UpdateReviewPager();
+        }
+        else if (tab.IsLongReviews)
+        {
+            ShowShortReviews = false;
+            _ = LoadReviewsAsync();
+            UpdateReviewPager();
         }
     }
 
@@ -337,6 +345,26 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
             LongReviewTotal = total;
             HasLongReviews = items.Count > 0;
         }
+
+        RefreshReviewTabTitles();
+    }
+
+    private void RefreshReviewTabTitles()
+    {
+        // 数量和首屏一起返回，拿到后把「短评」「长评」标签补成「短评 (16万)」.
+        foreach (var tab in Tabs)
+        {
+            if (tab.IsShortReviews)
+            {
+                tab.Title = ShortReviewTabTitle;
+            }
+            else if (tab.IsLongReviews)
+            {
+                tab.Title = LongReviewTabTitle;
+            }
+        }
+
+        OnPropertyChanged(nameof(Tabs));
     }
 
     private void UpdateReviewPager()
@@ -429,12 +457,18 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
             [],
             PgcDetailTabKind.Intro));
         tabs.Add(new PgcDetailTabViewModel(
-            ResourceToolkit.GetLocalizedString(StringNames.MediaReview),
+            ShortReviewTabTitle,
             [],
-            PgcDetailTabKind.Reviews));
+            PgcDetailTabKind.ShortReviews));
+        tabs.Add(new PgcDetailTabViewModel(
+            LongReviewTabTitle,
+            [],
+            PgcDetailTabKind.LongReviews));
         Tabs = tabs;
         _mediaId = information.GetExtensionIfNotNull<string>(SeasonExtensionDataId.MediaId);
         _reviewsLoaded = false;
+        // 提前取第一页，标签上直接显示短评/长评数量.
+        _ = LoadReviewsAsync();
         _shortReviewPage = 1;
         _longReviewPage = 1;
         ShortReviews = [];

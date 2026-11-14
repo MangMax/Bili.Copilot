@@ -32,8 +32,6 @@ public sealed partial class PgcDetailPage : PgcDetailPageBase, IParameterPage, I
         Loaded += OnPageLoaded;
         Unloaded += OnPageUnloadedEvent;
         TabSelector.SelectionChanged += OnTabSelectionChanged;
-        ReviewTabSelector.SelectionChanged += OnReviewTabSelectionChanged;
-        SetReviewTabs();
     }
 
     /// <inheritdoc/>
@@ -83,29 +81,6 @@ public sealed partial class PgcDetailPage : PgcDetailPageBase, IParameterPage, I
         else if (e.PropertyName == nameof(PgcDetailPageViewModel.SelectedTab))
         {
             TabSelector.Select(ViewModel.SelectedTab);
-        }
-        else if (e.PropertyName is nameof(PgcDetailPageViewModel.ShortReviewTabTitle) or nameof(PgcDetailPageViewModel.LongReviewTabTitle))
-        {
-            SetReviewTabs();
-        }
-    }
-
-    private void SetReviewTabs()
-    {
-        // Tag 用字符串：SelectorBarItem 按引用比较 Tag，装箱的 bool 会匹配不上.
-        var items = new List<Microsoft.UI.Xaml.Controls.SelectorBarItem>
-        {
-            new() { Text = ViewModel.ShortReviewTabTitle, Tag = "short" },
-            new() { Text = ViewModel.LongReviewTabTitle, Tag = "long" },
-        };
-        ReviewTabSelector.SetItems(items, ViewModel.ShowShortReviews ? "short" : "long");
-    }
-
-    private void OnReviewTabSelectionChanged(object? sender, EventArgs e)
-    {
-        if (ReviewTabSelector.SelectedItem is string kind)
-        {
-            ViewModel.SelectReviewTab(kind == "short");
         }
     }
 

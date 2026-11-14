@@ -361,10 +361,6 @@
                     HorizontalAlignment="Left"
                     Spacing="14"
                     Visibility="{x:Bind ViewModel.ShowReviews, Mode=OneWay}">
-                    <components:SlidingTabBar
-                        x:Name="ReviewTabSelector"
-                        HorizontalAlignment="Left"
-                        AutomationProperties.AutomationId="PgcReviewTabs" />
                     <ProgressRing
                         Width="32"
                         Height="32"
