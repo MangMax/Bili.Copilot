@@ -23,6 +23,7 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
 
     private PgcPlayerView? _view;
     private string? _mediaId;
+    private readonly Dictionary<int, string?> _shortReviewCursors = new() { [1] = null };
     private int _shortReviewPage;
     private int _longReviewPage;
     private bool _reviewsLoaded;

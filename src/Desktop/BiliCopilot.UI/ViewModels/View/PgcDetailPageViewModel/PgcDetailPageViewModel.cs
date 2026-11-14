@@ -265,6 +265,12 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
             return;
         }
 
+        if (isShort && !_shortReviewCursors.ContainsKey(page))
+        {
+            // 还没有这一页的游标，说明前页数据不完整.
+            return;
+        }
+
         await LoadReviewPageAsync(isShort, page);
     }
 
@@ -324,7 +330,7 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
 
     private async Task LoadReviewPageCoreAsync(string mediaId, bool isShort, int page)
     {
-        var (reviews, total) = await RequestReviewsAsync(mediaId, isShort, page);
+        var (reviews, total, nextCursor) = await RequestReviewsAsync(mediaId, isShort, page);
         if (!string.Equals(mediaId, _mediaId, StringComparison.Ordinal))
         {
             return;
@@ -337,6 +343,11 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
             ShortReviews = items;
             ShortReviewTotal = total;
             HasShortReviews = items.Count > 0;
+            if (!string.IsNullOrEmpty(nextCursor))
+            {
+                // 短评按游标翻页：记住每一页的游标，上一页时直接复用.
+                _shortReviewCursors[page + 1] = nextCursor;
+            }
         }
         else
         {
@@ -384,16 +395,17 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         return total <= 0 ? 0 : (int)Math.Ceiling(total / (double)ReviewPageSize);
     }
 
-    private async Task<(IReadOnlyList<PgcReviewInformation> Reviews, int Total)> RequestReviewsAsync(string mediaId, bool isShort, int page)
+    private async Task<(IReadOnlyList<PgcReviewInformation> Reviews, int Total, string? NextCursor)> RequestReviewsAsync(string mediaId, bool isShort, int page)
     {
         try
         {
-            return await _entertainmentService.GetPgcReviewsAsync(mediaId, isShort, page);
+            var cursor = isShort && _shortReviewCursors.TryGetValue(page, out var value) ? value : null;
+            return await _entertainmentService.GetPgcReviewsAsync(mediaId, isShort, page, cursor);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "获取影视作品评价失败（{Kind}）", isShort ? "短评" : "长评");
-            return ([], 0);
+            return ([], 0, null);
         }
     }
 
@@ -471,6 +483,8 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         _ = LoadReviewsAsync();
         _shortReviewPage = 1;
         _longReviewPage = 1;
+        _shortReviewCursors.Clear();
+        _shortReviewCursors[1] = null;
         ShortReviews = [];
         LongReviews = [];
         HasShortReviews = false;
