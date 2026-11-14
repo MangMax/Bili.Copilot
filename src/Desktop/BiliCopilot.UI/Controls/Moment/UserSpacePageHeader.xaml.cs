@@ -2,7 +2,7 @@
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
-using BiliCopilot.UI.ViewModels.Components;
+using BiliCopilot.UI.ViewModels.View;
 
 namespace BiliCopilot.UI.Controls.Moment;
 
@@ -51,18 +51,18 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (Selector.SelectedItem is UserMomentDetailViewModel item && item != ViewModel.SelectedSection)
+        if (Selector.SelectedItem is UserSpaceTabViewModel item && item != ViewModel.SelectedTab)
         {
-            ViewModel.SelectSectionCommand.Execute(item);
+            ViewModel.SelectTabCommand.Execute(item);
         }
     }
 
     private void InitializeChildPartitions()
     {
         var items = new List<SelectorBarItem>();
-        if (ViewModel.Sections is not null)
+        if (ViewModel.Tabs is { Count: > 0 } tabs)
         {
-            foreach (var item in ViewModel.Sections)
+            foreach (var item in tabs)
             {
                 items.Add(new SelectorBarItem()
                 {
@@ -72,6 +72,6 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
             }
         }
 
-        Selector.SetItems(items, ViewModel.SelectedSection);
+        Selector.SetItems(items, ViewModel.SelectedTab);
     }
 }

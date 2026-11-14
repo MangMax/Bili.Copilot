@@ -3,13 +3,40 @@
     x:Class="BiliCopilot.UI.Pages.Overlay.UserSpacePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:comment="using:BiliCopilot.UI.Controls.Comment"
+    xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Pages.Overlay"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:moment="using:BiliCopilot.UI.Controls.Moment"
+    xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater"
     mc:Ignorable="d">
+
+    <local:UserSpacePageBase.Resources>
+        <UniformGridLayout
+            x:Key="UserVideoGrid"
+            ItemsStretch="Fill"
+            MinColumnSpacing="16"
+            MinItemWidth="240"
+            MinRowSpacing="16" />
+        <UniformGridLayout
+            x:Key="UserArticleGrid"
+            ItemsStretch="Fill"
+            MinColumnSpacing="16"
+            MinItemWidth="300"
+            MinRowSpacing="16" />
+        <UniformGridLayout
+            x:Key="UserMomentGrid"
+            ItemsStretch="Fill"
+            MinColumnSpacing="16"
+            MinItemWidth="280"
+            MinRowSpacing="16" />
+    </local:UserSpacePageBase.Resources>
+
     <Grid
         x:Name="PageLayout"
         Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
@@ -18,8 +45,7 @@
         <Canvas IsHitTestVisible="False">
             <Grid x:Name="Backdrop" Height="600">
                 <Grid x:Name="BackdropImage">
-                    <controls:RecommendationCoverImage
-                        Source="{x:Bind ViewModel.Card.Banner.SourceUri, Mode=OneWay, FallbackValue={x:Null}}" />
+                    <controls:RecommendationCoverImage Source="{x:Bind ViewModel.Card.Banner.SourceUri, Mode=OneWay, FallbackValue={x:Null}}" />
                     <Border Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" Opacity="0.18" />
                 </Grid>
                 <Border x:Name="BackdropFade">
@@ -33,12 +59,114 @@
                 </Border>
             </Grid>
         </Canvas>
-        <moment:UserSpacePageBody
-            x:Name="SpaceBody"
-            Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-        <moment:UserSpaceVideoSearchSection
-            x:Name="SearchSection"
-            Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}" />
+
+        <!--  单一滚动宿主：页头、视差背景与各分区内容都在同一个 ScrollView 里，切分区不重建页面  -->
+        <controls:IncrementVerticalScrollControl
+            x:Name="SpaceScroll"
+            LoadMoreCommand="{x:Bind ViewModel.MomentSection.LoadItemsCommand, Mode=OneWay, FallbackValue={x:Null}}"
+            Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+            <controls:IncrementVerticalScrollControl.Element>
+                <Grid Margin="0,0,0,16" RowSpacing="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <moment:UserSpacePageHeader Margin="-20,0" />
+
+                    <Grid Grid.Row="1">
+                        <!--  主页  -->
+                        <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.IsHomeTab, Mode=OneWay}">
+                            <TextBlock
+                                Margin="8,0,0,0"
+                                Style="{StaticResource SubtitleTextBlockStyle}"
+                                Text="{ext:Locale Name=RecentVideos}" />
+                            <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.HomeVideos, Mode=OneWay}" Layout="{StaticResource UserVideoGrid}">
+                                <repeater:AppRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="items:VideoItemViewModel">
+                                        <components:VideoCardControl Style="{StaticResource SearchVideoCardStyle}" ViewModel="{x:Bind}" />
+                                    </DataTemplate>
+                                </repeater:AppRepeater.ItemTemplate>
+                            </repeater:AppRepeater>
+                            <TextBlock
+                                Margin="8,12,0,0"
+                                Style="{StaticResource SubtitleTextBlockStyle}"
+                                Text="{ext:Locale Name=RecentDynamics}" />
+                            <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.HomeMoments, Mode=OneWay}" Layout="{StaticResource UserMomentGrid}">
+                                <repeater:AppRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="items:MomentItemViewModel">
+                                        <components:MomentCardControl Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
+                                    </DataTemplate>
+                                </repeater:AppRepeater.ItemTemplate>
+                            </repeater:AppRepeater>
+                        </StackPanel>
+
+                        <!--  动态  -->
+                        <Grid MinHeight="160" Visibility="{x:Bind ViewModel.IsMomentsTab, Mode=OneWay}">
+                            <repeater:AppRepeater
+                                MaxWidth="680"
+                                HorizontalAlignment="Stretch"
+                                ItemsSource="{x:Bind ViewModel.MomentSection.Items, Mode=OneWay, FallbackValue={x:Null}}">
+                                <repeater:AppRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="items:MomentItemViewModel">
+                                        <components:MomentCardControl
+                                            Margin="0,0,0,18"
+                                            Style="{StaticResource PersonalFullMomentCardStyle}"
+                                            ViewModel="{x:Bind}" />
+                                    </DataTemplate>
+                                </repeater:AppRepeater.ItemTemplate>
+                            </repeater:AppRepeater>
+                            <base:EmptyHolder
+                                Description="{ext:Locale Name=NoSpecificData}"
+                                Emoji="&#x1F440;"
+                                Visibility="{x:Bind ViewModel.MomentSection.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                            <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.MomentSection.IsLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                        </Grid>
+
+                        <!--  投稿  -->
+                        <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.IsSubmissionTab, Mode=OneWay}">
+                            <components:SlidingTabBar
+                                x:Name="SubmissionSelector"
+                                Margin="8,0,0,0"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="UserSubmissionTabs" />
+                            <repeater:AppRepeater
+                                ItemsSource="{x:Bind ViewModel.SubmissionVideos, Mode=OneWay}"
+                                Layout="{StaticResource UserVideoGrid}"
+                                Visibility="{x:Bind ViewModel.ShowSubmissionVideos, Mode=OneWay}">
+                                <repeater:AppRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="items:VideoItemViewModel">
+                                        <components:VideoCardControl Style="{StaticResource SearchVideoCardStyle}" ViewModel="{x:Bind}" />
+                                    </DataTemplate>
+                                </repeater:AppRepeater.ItemTemplate>
+                            </repeater:AppRepeater>
+                            <repeater:AppRepeater
+                                ItemsSource="{x:Bind ViewModel.SubmissionArticles, Mode=OneWay}"
+                                Layout="{StaticResource UserArticleGrid}"
+                                Visibility="{x:Bind ViewModel.ShowSubmissionArticles, Mode=OneWay}">
+                                <repeater:AppRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="items:ArticleItemViewModel">
+                                        <components:ArticleCardControl Style="{StaticResource SearchArticleCardStyle}" ViewModel="{x:Bind}" />
+                                    </DataTemplate>
+                                </repeater:AppRepeater.ItemTemplate>
+                            </repeater:AppRepeater>
+                            <repeater:AppRepeater
+                                ItemsSource="{x:Bind ViewModel.SubmissionMoments, Mode=OneWay}"
+                                Layout="{StaticResource UserMomentGrid}"
+                                Visibility="{x:Bind ViewModel.ShowSubmissionMoments, Mode=OneWay}">
+                                <repeater:AppRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="items:MomentItemViewModel">
+                                        <components:MomentCardControl Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
+                                    </DataTemplate>
+                                </repeater:AppRepeater.ItemTemplate>
+                            </repeater:AppRepeater>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </controls:IncrementVerticalScrollControl.Element>
+        </controls:IncrementVerticalScrollControl>
+
+        <moment:UserSpaceVideoSearchSection x:Name="SearchSection" Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}" />
         <comment:CommentOverlayPanel
             x:Name="CommentPanel"
             IsPanelOpened="{x:Bind ViewModel.IsCommentsOpened, Mode=TwoWay}"

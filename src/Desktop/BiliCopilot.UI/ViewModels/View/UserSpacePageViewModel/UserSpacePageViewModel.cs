@@ -108,36 +108,37 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             ExitSearch();
         }
 
+        HomeVideos = [];
+        HomeMoments = [];
+        SubmissionVideos = [];
+        SubmissionArticles = [];
+        SubmissionMoments = [];
+        _submissionArticlesLoaded = false;
+
         if (Sections is null)
         {
-            Sections = new List<UserMomentDetailViewModel>
-            {
-                this.Get<UserMomentDetailViewModel>(),
-                this.Get<UserMomentDetailViewModel>(),
-            };
+            var momentSection = this.Get<UserMomentDetailViewModel>();
+            momentSection.SetIsVideo(false);
 
-            Sections.ElementAt(0).SetIsVideo(true);
-            Sections.ElementAt(1).SetIsVideo(false);
+            // 主页与投稿的「动态」都来自这个综合动态分区；加载完成后同步一份精简列表.
+            momentSection.ListUpdated += OnMomentListUpdated;
+            Sections = [momentSection];
+            MomentSection = momentSection;
         }
 
-        foreach (var item in Sections)
-        {
-            item.SetShowCommentAction(ShowComment);
+        var section = Sections[0];
+        section.SetShowCommentAction(ShowComment);
 
-            // 重置目标时一并复位动态分区的加载态与代次，上一目标的 IsLoading 不会挡住新目标。
-            item.ResetCommand.Execute(profile);
-        }
+        // 重置目标时一并复位动态分区的加载态与代次，上一目标的 IsLoading 不会挡住新目标。
+        section.ResetCommand.Execute(profile);
+        SelectedSection = section;
+        section.InitializeCommand.Execute(default);
 
-        if (SelectedSection is null)
-        {
-            var isLastVideoSection = SettingsToolkit.ReadLocalSetting(SettingNames.LastUserSpaceSectionIsVideo, true);
-            var section = isLastVideoSection ? Sections.First() : Sections.Last();
-            SelectSection(section);
-        }
-        else
-        {
-            SelectedSection.InitializeCommand.Execute(default);
-        }
+        EnsureTabs();
+        SelectTab(Tabs[0]);
+        SelectSubmissionTab(SelectedSubmissionTab ?? SubmissionTabs[0]);
+
+        _ = LoadHomeAsync(generation, userId, cancellation.Token);
 
         await InitializeRelationAsync(generation, userId, cancellation.Token);
         if (!IsCurrentLoad(generation))
@@ -146,6 +147,162 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
 
         Initialized?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 切换顶部分区.
+    /// </summary>
+    /// <param name="tab">目标分区.</param>
+    [RelayCommand]
+    private void SelectTab(UserSpaceTabViewModel? tab)
+    {
+        if (tab is null)
+        {
+            return;
+        }
+
+        SelectedTab = tab;
+        IsHomeTab = tab.Kind == UserSpaceTabKind.Home;
+        IsMomentsTab = tab.Kind == UserSpaceTabKind.Moments;
+        IsSubmissionTab = tab.Kind == UserSpaceTabKind.Submission;
+        if (IsSubmissionTab)
+        {
+            _ = EnsureSubmissionAsync(SelectedSubmissionTab);
+        }
+    }
+
+    /// <summary>
+    /// 切换投稿分区：视频 / 专栏 / 动态.
+    /// </summary>
+    /// <param name="tab">目标分区.</param>
+    [RelayCommand]
+    private void SelectSubmissionTab(UserSpaceTabViewModel? tab)
+    {
+        if (tab is null)
+        {
+            return;
+        }
+
+        SelectedSubmissionTab = tab;
+        ShowSubmissionVideos = tab.Kind == UserSpaceTabKind.Videos;
+        ShowSubmissionArticles = tab.Kind == UserSpaceTabKind.Articles;
+        ShowSubmissionMoments = tab.Kind == UserSpaceTabKind.MomentPosts;
+        _ = EnsureSubmissionAsync(tab);
+    }
+
+    private void EnsureTabs()
+    {
+        if (Tabs.Count > 0)
+        {
+            return;
+        }
+
+        Tabs =
+        [
+            new(ResourceToolkit.GetLocalizedString(StringNames.UserSpaceHome), UserSpaceTabKind.Home),
+            new(ResourceToolkit.GetLocalizedString(StringNames.DynamicFeed), UserSpaceTabKind.Moments),
+            new(ResourceToolkit.GetLocalizedString(StringNames.UserSpaceSubmission), UserSpaceTabKind.Submission),
+        ];
+        SubmissionTabs =
+        [
+            new(ResourceToolkit.GetLocalizedString(StringNames.Video), UserSpaceTabKind.Videos),
+            new(ResourceToolkit.GetLocalizedString(StringNames.SpecialColumn), UserSpaceTabKind.Articles),
+            new(ResourceToolkit.GetLocalizedString(StringNames.DynamicFeed), UserSpaceTabKind.MomentPosts),
+        ];
+    }
+
+    private async Task LoadHomeAsync(int generation, string userId, CancellationToken cancellationToken)
+    {
+        IsHomeLoading = true;
+        try
+        {
+            var (videos, _) = await _userService.GetUserVideosAsync(userId, 0, cancellationToken);
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
+            var list = videos.Take(12).Select(p => new VideoItemViewModel(p, VideoCardStyle.Search)).ToList();
+            HomeVideos = list;
+            SubmissionVideos = list;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // 目标已切换，结果作废.
+        }
+        catch (Exception ex)
+        {
+            if (IsCurrentLoad(generation))
+            {
+                _logger.LogWarning(ex, "获取用户投稿失败");
+            }
+        }
+        finally
+        {
+            if (IsCurrentLoad(generation))
+            {
+                IsHomeLoading = false;
+            }
+        }
+    }
+
+    private async Task EnsureSubmissionAsync(UserSpaceTabViewModel? tab)
+    {
+        if (tab is null || _profile is null)
+        {
+            return;
+        }
+
+        if (tab.Kind != UserSpaceTabKind.Articles || _submissionArticlesLoaded)
+        {
+            return;
+        }
+
+        var generation = CurrentLoadGeneration;
+        var cancellationToken = CurrentLoadToken;
+        var userId = _profile.Id;
+        IsSubmissionLoading = true;
+        try
+        {
+            var articles = await _userService.GetUserArticlesAsync(userId, 0, cancellationToken);
+            if (!IsCurrentLoad(generation))
+            {
+                return;
+            }
+
+            SubmissionArticles = [.. articles.Select(p => new ArticleItemViewModel(p, ArticleCardStyle.Search))];
+            _submissionArticlesLoaded = true;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // 目标已切换，结果作废.
+        }
+        catch (Exception ex)
+        {
+            if (IsCurrentLoad(generation))
+            {
+                _logger.LogWarning(ex, "获取用户专栏失败");
+            }
+        }
+        finally
+        {
+            if (IsCurrentLoad(generation))
+            {
+                IsSubmissionLoading = false;
+            }
+        }
+    }
+
+    private void OnMomentListUpdated(object? sender, EventArgs e)
+    {
+        if (sender is not UserMomentDetailViewModel section)
+        {
+            return;
+        }
+
+        // 主页只展示最近几条；投稿的「动态」只保留图文动态，视频类在「视频」分区里.
+        HomeMoments = [.. section.Items.Take(6)];
+        SubmissionMoments = [.. section.Items.Where(p => p.InnerContent is not VideoItemViewModel).Take(20)];
     }
 
     [RelayCommand]

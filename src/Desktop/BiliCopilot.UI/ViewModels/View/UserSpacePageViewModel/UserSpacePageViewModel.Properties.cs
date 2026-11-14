@@ -18,6 +18,7 @@ public sealed partial class UserSpacePageViewModel
 {
     private readonly IRelationshipService _relationshipService;
     private readonly IUserService _userService;
+    private bool _submissionArticlesLoaded;
     private readonly ISearchService _searchService;
     private readonly ILogger<UserSpacePageViewModel> _logger;
     private UserProfile _profile;
@@ -45,6 +46,114 @@ public sealed partial class UserSpacePageViewModel
     private readonly object _searchLock = new();
 
     private CancellationTokenSource? _searchCancellation;
+
+    /// <summary>
+    /// 顶部分区：主页、动态、投稿.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<UserSpaceTabViewModel> Tabs { get; set; } = [];
+
+    /// <summary>
+    /// 当前分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial UserSpaceTabViewModel? SelectedTab { get; set; }
+
+    /// <summary>
+    /// 当前是否主页分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsHomeTab { get; set; }
+
+    /// <summary>
+    /// 当前是否动态分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsMomentsTab { get; set; }
+
+    /// <summary>
+    /// 当前是否投稿分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSubmissionTab { get; set; }
+
+    /// <summary>
+    /// 动态分区使用的视图模型.
+    /// </summary>
+    [ObservableProperty]
+    public partial UserMomentDetailViewModel? MomentSection { get; set; }
+
+    /// <summary>
+    /// 主页的最近投稿.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<VideoItemViewModel> HomeVideos { get; set; } = [];
+
+    /// <summary>
+    /// 主页的最近动态.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<MomentItemViewModel> HomeMoments { get; set; } = [];
+
+    /// <summary>
+    /// 主页是否正在加载.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsHomeLoading { get; set; }
+
+    /// <summary>
+    /// 投稿分区：视频、专栏、动态.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<UserSpaceTabViewModel> SubmissionTabs { get; set; } = [];
+
+    /// <summary>
+    /// 当前投稿分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial UserSpaceTabViewModel? SelectedSubmissionTab { get; set; }
+
+    /// <summary>
+    /// 投稿视频.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<VideoItemViewModel> SubmissionVideos { get; set; } = [];
+
+    /// <summary>
+    /// 投稿专栏.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<ArticleItemViewModel> SubmissionArticles { get; set; } = [];
+
+    /// <summary>
+    /// 投稿动态（图文）.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<MomentItemViewModel> SubmissionMoments { get; set; } = [];
+
+    /// <summary>
+    /// 投稿是否正在加载.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSubmissionLoading { get; set; }
+
+    /// <summary>
+    /// 当前展示投稿视频.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionVideos { get; set; } = true;
+
+    /// <summary>
+    /// 当前展示投稿专栏.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionArticles { get; set; }
+
+    /// <summary>
+    /// 当前展示投稿动态.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionMoments { get; set; }
 
     [ObservableProperty]
     public partial List<UserMomentDetailViewModel> Sections { get; set; }

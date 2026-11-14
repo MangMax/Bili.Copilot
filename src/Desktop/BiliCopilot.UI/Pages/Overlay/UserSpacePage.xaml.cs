@@ -44,12 +44,15 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     {
         UpdateBackdropColor();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        SubmissionSelector.SelectionChanged += OnSubmissionTabSelectionChanged;
+        UpdateSubmissionTabs();
         QueueScrollHostUpdate();
     }
 
     private void OnSpaceUnloaded(object sender, RoutedEventArgs e)
     {
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        SubmissionSelector.SelectionChanged -= OnSubmissionTabSelectionChanged;
         LayoutUpdated -= OnSpaceLayoutUpdated;
         CancelAvatarTransition();
         DisconnectHeader();
@@ -63,6 +66,26 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         {
             QueueScrollHostUpdate();
         }
+        else if (e.PropertyName is nameof(UserSpacePageViewModel.SubmissionTabs) or nameof(UserSpacePageViewModel.SelectedSubmissionTab))
+        {
+            UpdateSubmissionTabs();
+        }
+    }
+
+    private void UpdateSubmissionTabs()
+    {
+        var items = ViewModel.SubmissionTabs
+            .Select(p => new SelectorBarItem { Text = p.Title, Tag = p })
+            .ToList();
+        SubmissionSelector.SetItems(items, ViewModel.SelectedSubmissionTab);
+    }
+
+    private void OnSubmissionTabSelectionChanged(object? sender, EventArgs e)
+    {
+        if (SubmissionSelector.SelectedItem is UserSpaceTabViewModel tab && !ReferenceEquals(tab, ViewModel.SelectedSubmissionTab))
+        {
+            ViewModel.SelectSubmissionTabCommand.Execute(tab);
+        }
     }
 
     private void QueueScrollHostUpdate()
@@ -74,7 +97,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
     private void OnSpaceLayoutUpdated(object? sender, object e)
     {
-        var root = ViewModel.IsSearchMode ? (DependencyObject)SearchSection : SpaceBody;
+        var root = ViewModel.IsSearchMode ? (DependencyObject)SearchSection : this;
         var host = FindChild<IncrementVerticalScrollControl>(root);
         var scroll = host is null ? null : FindChild<ScrollView>(host);
         if (scroll is null)
@@ -217,6 +240,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
             // 叠层页会按类型缓存，复用页面不会再触发 Loaded；每次收到参数都重新等待布局。
             BeginAvatarTransition(profile);
+            UpdateSubmissionTabs();
         }
     }
 
