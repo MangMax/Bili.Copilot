@@ -70,6 +70,12 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     public partial string ScoreText { get; set; } = string.Empty;
 
     /// <summary>
+    /// 评分人数文本.
+    /// </summary>
+    [ObservableProperty]
+    public partial string RatingCountText { get; set; } = string.Empty;
+
+    /// <summary>
     /// 连载进度文本.
     /// </summary>
     [ObservableProperty]
@@ -100,14 +106,51 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     public partial bool IsFollowed { get; set; }
 
     /// <summary>
-    /// 剧集列表.
+    /// 分区列表：正片、花絮等附加内容，以及最后的评价分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<PgcDetailTabViewModel> Tabs { get; set; } = [];
+
+    /// <summary>
+    /// 当前分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial PgcDetailTabViewModel? SelectedTab { get; set; }
+
+    /// <summary>
+    /// 当前分区里的剧集.
     /// </summary>
     [ObservableProperty]
     public partial List<EpisodeItemViewModel> Episodes { get; set; } = [];
 
     /// <summary>
-    /// 是否有剧集.
+    /// 当前分区是否有剧集.
     /// </summary>
     [ObservableProperty]
     public partial bool HasEpisodes { get; set; }
+
+    /// <summary>
+    /// 当前是否显示简介/评价.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowIntro { get; set; }
+
+    /// <summary>
+    /// 演职人员.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<PgcLaborItemViewModel> LaborItems { get; set; } = [];
+
+    /// <summary>
+    /// 是否有演职人员.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool HasLabor { get; set; }
 }
+
+/// <summary>
+/// 演职人员条目.
+/// </summary>
+/// <param name="Title">分组标题，比如「角色声优」.</param>
+/// <param name="Content">分组内容.</param>
+public sealed record PgcLaborItemViewModel(string Title, string Content);

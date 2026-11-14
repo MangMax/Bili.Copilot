@@ -2286,6 +2286,15 @@
   <data name="Native" xml:space="preserve">
     <value>原生</value>
   </data>
+  <data name="PgcFollowCount" xml:space="preserve">
+    <value>追番数</value>
+  </data>
+  <data name="MediaReview" xml:space="preserve">
+    <value>评价</value>
+  </data>
+  <data name="RatingCountTemplate" xml:space="preserve">
+    <value>{0} 人评分</value>
+  </data>
   <data name="FailedToLoadPgcDetail" xml:space="preserve">
     <value>番剧信息加载失败，请稍后重试</value>
   </data>

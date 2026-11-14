@@ -199,6 +199,23 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         await InitializeAsync(_view.Information.Identifier.Id);
     }
 
+    /// <summary>
+    /// 切换分区.
+    /// </summary>
+    /// <param name="tab">目标分区.</param>
+    public void SelectTab(PgcDetailTabViewModel? tab)
+    {
+        if (tab is null || ReferenceEquals(tab, SelectedTab))
+        {
+            return;
+        }
+
+        SelectedTab = tab;
+        Episodes = [.. tab.Episodes];
+        HasEpisodes = Episodes.Count > 0;
+        ShowIntro = tab.IsIntro;
+    }
+
     private void ApplyView(PgcPlayerView view)
     {
         var information = view.Information;
@@ -210,14 +227,57 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         ProgressText = information.GetExtensionIfNotNull<string>(SeasonExtensionDataId.DisplayProgress);
         var score = information.GetExtensionIfNotNull<double>(SeasonExtensionDataId.Score);
         ScoreText = score > 0 ? score.ToString("0.0") : string.Empty;
+        var ratingCount = information.GetExtensionIfNotNull<int>(SeasonExtensionDataId.RatingCount);
+        RatingCountText = ratingCount > 0
+            ? string.Format(ResourceToolkit.GetLocalizedString(StringNames.RatingCountTemplate), AppToolkit.FormatCount(ratingCount))
+            : string.Empty;
         PlayCount = information.CommunityInformation?.PlayCount;
         DanmakuCount = information.CommunityInformation?.DanmakuCount;
         FollowCount = information.CommunityInformation?.TrackCount;
         IsFollowed = information.IsTracking ?? false;
-        Episodes = view.Episodes is null
+
+        var tabs = new List<PgcDetailTabViewModel>();
+        if (view.Episodes is { Count: > 0 } episodes)
+        {
+            tabs.Add(new PgcDetailTabViewModel(
+                ResourceToolkit.GetLocalizedString(StringNames.MainEpisode),
+                [.. episodes.Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Detail))]));
+        }
+
+        if (view.Extras is not null)
+        {
+            foreach (var section in view.Extras)
+            {
+                if (section.Value is not { Count: > 0 })
+                {
+                    continue;
+                }
+
+                tabs.Add(new PgcDetailTabViewModel(
+                    section.Key,
+                    [.. section.Value.Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Detail))]));
+            }
+        }
+
+        tabs.Add(new PgcDetailTabViewModel(
+            ResourceToolkit.GetLocalizedString(StringNames.MediaReview),
+            [],
+            isIntro: true));
+        Tabs = tabs;
+
+        var labor = information.GetExtensionIfNotNull<Dictionary<string, string>>(SeasonExtensionDataId.LaborSections);
+        LaborItems = labor is null
             ? []
-            : [.. view.Episodes.Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Detail))];
-        HasEpisodes = Episodes.Count > 0;
+            : [.. labor.Where(p => !string.IsNullOrWhiteSpace(p.Value)).Select(p => new PgcLaborItemViewModel(p.Key, p.Value))];
+        HasLabor = LaborItems.Count > 0;
+
+        SelectTab(tabs.FirstOrDefault(p => p.HasEpisodes) ?? tabs.FirstOrDefault());
+        if (SelectedTab is not null)
+        {
+            Episodes = [.. SelectedTab.Episodes];
+            HasEpisodes = Episodes.Count > 0;
+            ShowIntro = SelectedTab.IsIntro;
+        }
     }
 
     private void ClearContent()
@@ -234,7 +294,13 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         DanmakuCount = default;
         FollowCount = default;
         IsFollowed = false;
+        Tabs = [];
+        SelectedTab = default;
         Episodes = [];
         HasEpisodes = false;
+        ShowIntro = false;
+        LaborItems = [];
+        HasLabor = false;
+        RatingCountText = string.Empty;
     }
 }
