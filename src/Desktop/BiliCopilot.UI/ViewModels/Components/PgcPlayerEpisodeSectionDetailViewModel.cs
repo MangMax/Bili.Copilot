@@ -43,10 +43,12 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel : ViewModelBa
         var groups = new List<PgcPlayerEpisodeGroupViewModel>();
         if (episodes is { Count: > 0 })
         {
+            var (mainEpisodes, mainSupportsIndex) = BuildEpisodes(episodes);
             groups.Add(new PgcPlayerEpisodeGroupViewModel(
                 ResourceToolkit.GetLocalizedString(StringNames.MainEpisode),
-                BuildEpisodes(episodes),
-                isMainGroup: true));
+                mainEpisodes,
+                isMainGroup: true,
+                supportsIndex: mainSupportsIndex));
         }
 
         if (extras is not null)
@@ -56,7 +58,8 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel : ViewModelBa
                 if (extra.Value is { Count: > 0 })
                 {
                     // 花絮、预告等分区直接沿用接口给的标题.
-                    groups.Add(new PgcPlayerEpisodeGroupViewModel(extra.Key, BuildEpisodes(extra.Value)));
+                    var (extraEpisodes, extraSupportsIndex) = BuildEpisodes(extra.Value);
+                    groups.Add(new PgcPlayerEpisodeGroupViewModel(extra.Key, extraEpisodes, supportsIndex: extraSupportsIndex));
                 }
             }
         }
@@ -104,19 +107,22 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel : ViewModelBa
     private static Task TryFirstLoadAsync()
         => Task.CompletedTask;
 
-    private List<EpisodeItemViewModel> BuildEpisodes(IList<EpisodeInformation> episodes)
+    private (List<EpisodeItemViewModel> Episodes, bool SupportsIndex) BuildEpisodes(IList<EpisodeInformation> episodes)
     {
         var list = episodes
             .Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Player, PlayEpisode))
             .ToList();
+
+        // 接口没有单独的 index 字段：正片和部分附加分区（如 2020版）用纯数字标题当序号，
+        // 花絮、预告、UP论道等的标题是描述文字，解析不出序号.
+        var supportsIndex = list.All(p => p.Index is not null);
         for (var i = 0; i < list.Count; i++)
         {
-            // 花絮、预告等没有分集序号，按顺序补一个，避免「仅显示序号」出现空白格.
             list[i].Index ??= i + 1;
             list[i].IsSelected = list[i].Data.Identifier.Id == _currentEpisodeId;
         }
 
-        return list;
+        return (list, supportsIndex);
     }
 
     partial void OnSelectedGroupChanged(PgcPlayerEpisodeGroupViewModel? value)
@@ -128,9 +134,11 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel : ViewModelBa
 
     private void UpdateIndexAvailability()
     {
-        var isMainGroup = SelectedGroup?.IsMainGroup ?? false;
-        ShowIndexToggle = isMainGroup;
-        ShowIndexLayout = OnlyIndex && isMainGroup;
+        // 只有「每一集都有真实序号」的分组才适合只显示序号（正片、2020版这类），
+        // 花絮、预告等标题是描述文字，没有序号，只能按卡片展示.
+        var supportsIndex = SelectedGroup?.SupportsIndex ?? false;
+        ShowIndexToggle = supportsIndex;
+        ShowIndexLayout = OnlyIndex && supportsIndex;
     }
 
     private void HighlightCurrentEpisode()
@@ -158,12 +166,21 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel : ViewModelBa
 /// <summary>
 /// 播放器里的一组剧集，比如正片或花絮.
 /// </summary>
-public sealed class PgcPlayerEpisodeGroupViewModel(string title, List<EpisodeItemViewModel> episodes, bool isMainGroup = false)
+public sealed class PgcPlayerEpisodeGroupViewModel(
+    string title,
+    List<EpisodeItemViewModel> episodes,
+    bool isMainGroup = false,
+    bool supportsIndex = false)
 {
     /// <summary>
     /// 是否是正片分组.
     /// </summary>
     public bool IsMainGroup { get; } = isMainGroup;
+
+    /// <summary>
+    /// 是否每一集都有真实序号，可以只显示序号.
+    /// </summary>
+    public bool SupportsIndex { get; } = supportsIndex;
 
     /// <summary>
     /// 分组标题.
