@@ -30,6 +30,8 @@ public sealed partial class MomentAuthorHeader : MomentCardPresenter
         // 番剧动态的“作者”是番剧账号，点进去应该看这个季度的详情，而不是用户空间.
         if (ViewModel.IsPgc && !string.IsNullOrEmpty(ViewModel.SeasonId))
         {
+            // 头像飞到季度详情页的海报上；两张图不同，只按季度 Id 匹配.
+            AvatarConnectedAnimation.PrepareForTarget(AvatarCover, ViewModel.SeasonId);
             this.Get<NavigationViewModel>().NavigateToOver(typeof(PgcDetailPage), ViewModel.SeasonId);
             return;
         }

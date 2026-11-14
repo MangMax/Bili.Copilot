@@ -129,6 +129,10 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
                 profile.Id,
                 profile.Avatar?.Uri,
                 DateTimeOffset.Now);
+        suppressFade = suppressFade
+            || (pageType == typeof(PgcDetailPage)
+                && parameter is string seasonId
+                && AvatarTransitionPolicy.CanStartTarget(transition, seasonId, DateTimeOffset.Now));
         _overFrame.NavigateTo(pageType, parameter, !suppressFade);
         IsOverlayOpen = true;
         CheckSubPageStatus();

@@ -3,6 +3,7 @@
     x:Class="BiliCopilot.UI.Pages.Overlay.PgcDetailPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -19,7 +20,7 @@
             x:Key="EpisodeLayout"
             ItemsStretch="Fill"
             MinColumnSpacing="16"
-            MinItemWidth="232"
+            MinItemWidth="300"
             MinRowSpacing="18" />
         <DataTemplate x:Key="LaborTemplate" x:DataType="vm:PgcLaborItemViewModel">
             <StackPanel Margin="0,0,0,10" Spacing="2">
@@ -39,18 +40,20 @@
         x:Name="PageLayout"
         Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
         SizeChanged="OnPageSizeChanged">
+        <!--  视差背景：随内容滚动缓慢上移  -->
         <Canvas IsHitTestVisible="False">
-            <Grid x:Name="Backdrop" Height="560">
+            <Grid x:Name="Backdrop" Height="760">
                 <Grid x:Name="BackdropImage">
                     <controls:RecommendationCoverImage
                         Source="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}"
                         Stretch="UniformToFill" />
-                    <Border Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" Opacity="0.62" />
+                    <Border Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" Opacity="0.58" />
                 </Grid>
-                <Border>
+                <Border x:Name="BackdropFade">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Offset="0.32" Color="#00000000" />
+                            <GradientStop Offset="0.28" Color="#00000000" />
+                            <GradientStop Offset="0.82" Color="{ThemeResource SolidBackgroundFillColorBase}" />
                             <GradientStop Offset="1" Color="{ThemeResource SolidBackgroundFillColorBase}" />
                         </LinearGradientBrush>
                     </Border.Background>
@@ -58,77 +61,85 @@
             </Grid>
         </Canvas>
 
-        <ScrollView Padding="20,0" Style="{StaticResource PageScrollViewStyle}">
+        <ScrollView x:Name="PageScroll" Padding="20,0" Style="{StaticResource PageScrollViewStyle}">
             <StackPanel Margin="0,0,0,24">
-                <!--  页头：与用户空间保持同一节奏（海报 112、右侧信息、底部操作）  -->
-                <Grid RowSpacing="10">
+                <Grid RowSpacing="14">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="188" />
+                        <RowDefinition Height="168" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="1" Padding="28,0,28,12" ColumnSpacing="20">
+
+                    <!--  页头：大海报 + 右侧信息，和海报墙应用一样聚焦  -->
+                    <Grid
+                        Grid.Row="1"
+                        Padding="28,0"
+                        ColumnSpacing="24">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Grid
-                            Width="112"
-                            Height="152"
-                            Margin="0,-88,0,0"
-                            VerticalAlignment="Top">
+                        <Grid Width="200" Height="286">
                             <Border
                                 Background="{ThemeResource LayerFillColorDefaultBrush}"
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="1"
-                                CornerRadius="8">
+                                CornerRadius="12">
                                 <controls:RecommendationCoverImage
-                                    CornerRadius="8"
+                                    x:Name="PosterCover"
+                                    CornerRadius="12"
                                     Source="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}" />
                             </Border>
                         </Grid>
                         <StackPanel
                             Grid.Column="1"
-                            Margin="0,14,0,0"
-                            Spacing="8"
-                            VerticalAlignment="Top">
+                            Spacing="10"
+                            VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Border
+                                    Padding="9,3"
+                                    Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                    CornerRadius="6"
+                                    Visibility="{x:Bind ViewModel.ScoreText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
+                                    <TextBlock
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                        Text="{x:Bind ViewModel.ScoreText, Mode=OneWay}" />
+                                </Border>
+                                <Border
+                                    Padding="9,3"
+                                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                    CornerRadius="6"
+                                    Visibility="{x:Bind ViewModel.ProgressText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
+                                    <TextBlock
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind ViewModel.ProgressText, Mode=OneWay}" />
+                                </Border>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                    Text="{x:Bind ViewModel.Tags, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
                             <TextBlock
                                 MaxLines="2"
-                                Style="{StaticResource TitleTextBlockStyle}"
+                                Style="{StaticResource TitleLargeTextBlockStyle}"
                                 Text="{x:Bind ViewModel.SeasonTitle, Mode=OneWay}"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="Wrap"
                                 ToolTipService.ToolTip="{x:Bind ViewModel.SeasonTitle, Mode=OneWay}" />
-                            <StackPanel
-                                Orientation="Horizontal"
-                                Spacing="10"
-                                Visibility="{x:Bind ViewModel.Alias, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
-                                <TextBlock
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    MaxLines="1"
-                                    Text="{x:Bind ViewModel.Alias, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                    Style="{StaticResource BodyStrongTextBlockStyle}"
-                                    Text="{x:Bind ViewModel.ScoreText, Mode=OneWay}"
-                                    Visibility="{x:Bind ViewModel.ScoreText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{x:Bind ViewModel.ProgressText, Mode=OneWay}" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{x:Bind ViewModel.Tags, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis" />
-                            </StackPanel>
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                MaxLines="1"
+                                Text="{x:Bind ViewModel.Alias, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"
+                                Visibility="{x:Bind ViewModel.Alias, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                MaxLines="3"
+                                Text="{x:Bind ViewModel.Description, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="Wrap" />
                             <StackPanel Orientation="Horizontal" Spacing="18">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock
@@ -161,57 +172,59 @@
                                         Text="{ext:Locale Name=PgcFollowCount}" />
                                 </StackPanel>
                             </StackPanel>
-                        </StackPanel>
-                        <StackPanel
-                            Grid.Column="2"
-                            Margin="0,14,0,0"
-                            VerticalAlignment="Top"
-                            Orientation="Horizontal"
-                            Spacing="8">
-                            <Button
-                                Padding="18,7"
-                                Command="{x:Bind ViewModel.PlayCommand}"
-                                Style="{StaticResource AccentButtonStyle}"
-                                AutomationProperties.AutomationId="PgcDetailPlay">
-                                <StackPanel
-                                    Orientation="Horizontal"
-                                    Spacing="8">
-                                    <ic:SymbolIcon
-                                        VerticalAlignment="Center"
-                                        FontSize="15"
-                                        Symbol="Play" />
-                                    <TextBlock Text="{ext:Locale Name=Play}" />
-                                </StackPanel>
-                            </Button>
-                            <ToggleButton
-                                Padding="14,7"
-                                Command="{x:Bind ViewModel.ToggleFollowCommand}"
-                                IsChecked="{x:Bind ViewModel.IsFollowed, Mode=OneWay}"
-                                AutomationProperties.AutomationId="PgcDetailFollow">
-                                <StackPanel
-                                    Orientation="Horizontal"
-                                    Spacing="8">
-                                    <ic:SymbolIcon
-                                        VerticalAlignment="Center"
-                                        FontSize="15"
-                                        IconVariant="{x:Bind ViewModel.IsFollowed, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
-                                        Symbol="Heart" />
-                                    <TextBlock Text="{ext:Locale Name=Follow}" />
-                                </StackPanel>
-                            </ToggleButton>
-                            <Button
-                                Width="36"
-                                Height="36"
-                                Padding="0"
-                                Command="{x:Bind ViewModel.RefreshCommand}"
-                                Style="{StaticResource IconButtonStyle}"
-                                ToolTipService.ToolTip="{ext:Locale Name=Refresh}"
-                                AutomationProperties.Name="{ext:Locale Name=Refresh}">
-                                <ic:SymbolIcon FontSize="15" Symbol="ArrowSync" />
-                            </Button>
+                            <StackPanel
+                                Margin="0,4,0,0"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <Button
+                                    Padding="18,7"
+                                    Command="{x:Bind ViewModel.PlayCommand}"
+                                    Style="{StaticResource AccentButtonStyle}"
+                                    AutomationProperties.AutomationId="PgcDetailPlay">
+                                    <StackPanel
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <ic:SymbolIcon
+                                            VerticalAlignment="Center"
+                                            FontSize="15"
+                                            Symbol="Play" />
+                                        <TextBlock Text="{ext:Locale Name=Play}" />
+                                    </StackPanel>
+                                </Button>
+                                <ToggleButton
+                                    Padding="14,7"
+                                    Command="{x:Bind ViewModel.ToggleFollowCommand}"
+                                    IsChecked="{x:Bind ViewModel.IsFollowed, Mode=OneWay}"
+                                    AutomationProperties.AutomationId="PgcDetailFollow">
+                                    <StackPanel
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <ic:SymbolIcon
+                                            VerticalAlignment="Center"
+                                            FontSize="15"
+                                            IconVariant="{x:Bind ViewModel.IsFollowed, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
+                                            Symbol="Heart" />
+                                        <TextBlock Text="{ext:Locale Name=Follow}" />
+                                    </StackPanel>
+                                </ToggleButton>
+                                <Button
+                                    Width="36"
+                                    Height="36"
+                                    Padding="0"
+                                    Command="{x:Bind ViewModel.RefreshCommand}"
+                                    Style="{StaticResource IconButtonStyle}"
+                                    ToolTipService.ToolTip="{ext:Locale Name=Refresh}"
+                                    AutomationProperties.Name="{ext:Locale Name=Refresh}">
+                                    <ic:SymbolIcon FontSize="15" Symbol="ArrowSync" />
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Row="2" Padding="28,0" MinHeight="46">
+
+                    <Grid
+                        Grid.Row="2"
+                        Padding="28,0"
+                        MinHeight="46">
                         <components:SlidingTabBar
                             x:Name="TabSelector"
                             HorizontalAlignment="Left"
@@ -227,51 +240,39 @@
                     <ItemsRepeater ItemsSource="{x:Bind ViewModel.Episodes, Mode=OneWay}" Layout="{StaticResource EpisodeLayout}">
                         <ItemsRepeater.ItemTemplate>
                             <DataTemplate x:DataType="items:EpisodeItemViewModel">
-                                <Button
-                                    Padding="0"
+                                <base:CardControl
+                                    Padding="8"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalAlignment="Top"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     Click="OnEpisodeClick"
-                                    CornerRadius="10"
+                                    CornerRadius="{StaticResource CardSurfaceRadius}"
                                     Tag="{x:Bind}"
                                     AutomationProperties.AutomationId="PgcDetailEpisode"
                                     AutomationProperties.Name="{x:Bind Title, Mode=OneWay}"
                                     ToolTipService.ToolTip="{x:Bind Title, Mode=OneWay}">
-                                    <StackPanel Spacing="6">
-                                        <Grid Height="126">
-                                            <Border
-                                                Background="{ThemeResource LayerFillColorDefaultBrush}"
-                                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="8">
-                                                <controls:RecommendationCoverImage
-                                                    CornerRadius="8"
-                                                    Source="{x:Bind Cover, Mode=OneWay, FallbackValue={x:Null}}" />
-                                            </Border>
-                                            <Border
-                                                Margin="6"
-                                                Padding="5,0"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Bottom"
-                                                Background="{StaticResource CardContentBadgeBackground}"
-                                                CornerRadius="4">
+                                    <components:CardContentPanel>
+                                        <components:CardMediaFrame Cover="{x:Bind Cover, Mode=OneWay, FallbackValue={x:Null}}">
+                                            <components:CardMediaFrame.BottomEnd>
                                                 <TextBlock
-                                                    FontSize="11"
-                                                    Foreground="White"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="11.5"
+                                                    Foreground="#F2FFFFFF"
                                                     Text="{x:Bind Duration, Mode=OneWay}" />
-                                            </Border>
-                                        </Grid>
-                                        <TextBlock
-                                            MinHeight="20"
-                                            FontSize="13"
-                                            MaxLines="1"
-                                            Text="{x:Bind Title, Mode=OneWay}"
-                                            TextTrimming="CharacterEllipsis" />
-                                    </StackPanel>
-                                </Button>
+                                            </components:CardMediaFrame.BottomEnd>
+                                        </components:CardMediaFrame>
+                                        <Border MinHeight="22">
+                                            <TextBlock
+                                                Margin="0,8,0,0"
+                                                FontSize="13"
+                                                MaxLines="1"
+                                                Text="{x:Bind Title, Mode=OneWay}"
+                                                TextTrimming="CharacterEllipsis" />
+                                        </Border>
+                                    </components:CardContentPanel>
+                                </base:CardControl>
                             </DataTemplate>
                         </ItemsRepeater.ItemTemplate>
                     </ItemsRepeater>
@@ -309,10 +310,12 @@
             </StackPanel>
         </ScrollView>
 
-        <ProgressBar
-            Margin="0,2,0,0"
-            VerticalAlignment="Top"
-            IsIndeterminate="True"
+        <ProgressRing
+            Width="36"
+            Height="36"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
 
         <InfoBar

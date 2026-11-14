@@ -8,7 +8,7 @@ namespace BiliCopilot.UI.Toolkits;
 /// <param name="UserId">目标用户 Id.</param>
 /// <param name="AvatarUri">准备动画时卡片上显示的头像地址.</param>
 /// <param name="PreparedAt">准备动画的时间.</param>
-public sealed record AvatarTransitionRequest(string UserId, Uri AvatarUri, DateTimeOffset PreparedAt);
+public sealed record AvatarTransitionRequest(string UserId, Uri? AvatarUri, DateTimeOffset PreparedAt);
 
 /// <summary>
 /// 判断何时可以准备、启动或放弃头像串联动画.
@@ -63,6 +63,47 @@ public static class AvatarTransitionPolicy
         => request is not null
             && string.Equals(request.UserId, destinationUserId, StringComparison.Ordinal)
             && request.AvatarUri == destinationAvatarUri;
+
+    /// <summary>
+    /// 判断点击时是否值得为目标页准备封面串联（不要求源头像与目标封面同一张图）.
+    /// </summary>
+    /// <param name="animationsEnabled">系统动画是否开启.</param>
+    /// <param name="sourceVisible">源头像是否已完成布局并可见.</param>
+    /// <param name="sourceHasImage">源头像是否已经显示了一张图片.</param>
+    /// <param name="targetId">目标页 Id（用户 Id 或季度 Id）.</param>
+    /// <returns>可以准备时为 <see langword="true"/>.</returns>
+    public static bool CanPrepareTarget(
+        bool animationsEnabled,
+        bool sourceVisible,
+        bool sourceHasImage,
+        string? targetId)
+        => animationsEnabled
+            && sourceVisible
+            && sourceHasImage
+            && !string.IsNullOrWhiteSpace(targetId);
+
+    /// <summary>
+    /// 判断请求是否指向同一个目标 Id.
+    /// </summary>
+    /// <param name="request">准备阶段记录的请求.</param>
+    /// <param name="targetId">目标页 Id.</param>
+    /// <returns>Id 相同时为 <see langword="true"/>.</returns>
+    public static bool MatchesTarget(AvatarTransitionRequest? request, string? targetId)
+        => request is not null
+            && string.Equals(request.UserId, targetId, StringComparison.Ordinal);
+
+    /// <summary>
+    /// 按当前时刻判断目标页出现时是否还值得启动封面串联.
+    /// </summary>
+    /// <param name="request">准备阶段记录的请求.</param>
+    /// <param name="targetId">目标页 Id.</param>
+    /// <param name="now">当前时间.</param>
+    /// <returns>目标匹配且未超时时为 <see langword="true"/>.</returns>
+    public static bool CanStartTarget(
+        AvatarTransitionRequest? request,
+        string? targetId,
+        DateTimeOffset now)
+        => MatchesTarget(request, targetId) && IsFresh(request, now);
 
     /// <summary>
     /// 判断请求是否仍在新旧预算内.
@@ -158,6 +199,14 @@ public static class AvatarTransitionSession
     /// <param name="now">准备动画的时间.</param>
     public static void Prepare(string userId, Uri avatarUri, DateTimeOffset now)
         => _current = new AvatarTransitionRequest(userId, avatarUri, now);
+
+    /// <summary>
+    /// 记录新的封面串联请求；封面与源头像不是同一张图，只按目标 Id 匹配.
+    /// </summary>
+    /// <param name="targetId">目标页 Id.</param>
+    /// <param name="now">准备动画的时间.</param>
+    public static void PrepareTarget(string targetId, DateTimeOffset now)
+        => _current = new AvatarTransitionRequest(targetId, null, now);
 
     /// <summary>
     /// 释放待启动请求.

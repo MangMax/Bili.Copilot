@@ -75,6 +75,88 @@ public static class AvatarConnectedAnimation
     }
 
     /// <summary>
+    /// 准备一次「源头像 → 目标页封面」的串联.
+    /// </summary>
+    /// <remarks>
+    /// 番剧动态里的头像是 UP 主/番剧账号头像，目标页展示的是季度海报，
+    /// 两者不是同一张图，因此只按目标 Id 匹配，不做图片地址校验.
+    /// </remarks>
+    /// <param name="source">卡片上可见的头像元素.</param>
+    /// <param name="targetId">目标页 Id（季度 Id）.</param>
+    /// <returns>成功准备时为 <see langword="true"/>.</returns>
+    public static bool PrepareForTarget(FrameworkElement? source, string? targetId)
+    {
+        Cancel();
+
+        var animationsEnabled = false;
+        try
+        {
+            animationsEnabled = new UISettings().AnimationsEnabled;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+
+        var sourceVisible = source is { IsLoaded: true, Visibility: Visibility.Visible }
+            && source.ActualWidth > 0;
+        var sourceHasImage = source is not RecommendationCoverImage cover || cover.Source is not null;
+        if (!AvatarTransitionPolicy.CanPrepareTarget(animationsEnabled, sourceVisible, sourceHasImage, targetId))
+        {
+            return false;
+        }
+
+        try
+        {
+            var animation = ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate(AnimationKey, source!);
+            animation.Configuration = new BasicConnectedAnimationConfiguration();
+            AvatarTransitionSession.PrepareTarget(targetId!, DateTimeOffset.Now);
+            return true;
+        }
+        catch (Exception)
+        {
+            Cancel();
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 目标页封面完成布局后启动串联.
+    /// </summary>
+    /// <param name="destination">目标页封面元素.</param>
+    /// <param name="targetId">目标页 Id（季度 Id）.</param>
+    /// <returns>动画已启动时为 <see langword="true"/>；否则已清理状态.</returns>
+    public static bool TryStartForTarget(UIElement destination, string targetId)
+    {
+        var request = AvatarTransitionSession.Current;
+        if (request is null
+            || !AvatarTransitionPolicy.CanStartTarget(request, targetId, DateTimeOffset.Now))
+        {
+            Cancel();
+            return false;
+        }
+
+        try
+        {
+            var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation(AnimationKey);
+            if (animation is null || !animation.TryStart(destination))
+            {
+                Cancel();
+                return false;
+            }
+
+            AvatarTransitionSession.Clear();
+            return true;
+        }
+        catch (Exception)
+        {
+            Cancel();
+            return false;
+        }
+    }
+
+    /// <summary>
     /// 目标页可见并完成布局后启动头像串联.
     /// </summary>
     /// <param name="destination">页头头像元素.</param>
