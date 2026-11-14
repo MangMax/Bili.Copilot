@@ -2675,6 +2675,18 @@
   <data name="FailedToGetUserInformation" xml:space="preserve">
     <value>获取用户信息时失败</value>
   </data>
+  <data name="RecentVideos" xml:space="preserve">
+    <value>最近投稿</value>
+  </data>
+  <data name="RecentDynamics" xml:space="preserve">
+    <value>最近动态</value>
+  </data>
+  <data name="UserSpaceHome" xml:space="preserve">
+    <value>主页</value>
+  </data>
+  <data name="UserSpaceSubmission" xml:space="preserve">
+    <value>投稿</value>
+  </data>
   <data name="UserSpace" xml:space="preserve">
     <value>用户空间</value>
   </data>
