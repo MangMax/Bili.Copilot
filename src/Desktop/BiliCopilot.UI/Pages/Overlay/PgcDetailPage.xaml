@@ -22,6 +22,72 @@
             MinColumnSpacing="16"
             MinItemWidth="300"
             MinRowSpacing="18" />
+        <DataTemplate x:Key="ReviewTemplate" x:DataType="vm:PgcReviewItemViewModel">
+            <Grid Margin="0,0,0,16" ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <controls:RecommendationCoverImage
+                    Width="36"
+                    Height="36"
+                    VerticalAlignment="Top"
+                    CornerRadius="18"
+                    Source="{x:Bind Avatar, Mode=OneWay, FallbackValue={x:Null}}" />
+                <StackPanel Grid.Column="1" Spacing="4">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            Text="{x:Bind AuthorName, Mode=OneWay}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                            Text="{x:Bind ScoreText, Mode=OneWay}"
+                            Visibility="{x:Bind ScoreText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            Text="{x:Bind TimeText, Mode=OneWay}" />
+                    </StackPanel>
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        Text="{x:Bind Title, Mode=OneWay}"
+                        TextWrapping="Wrap"
+                        Visibility="{x:Bind Title, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
+                    <TextBlock
+                        IsTextSelectionEnabled="True"
+                        MaxLines="8"
+                        Text="{x:Bind Content, Mode=OneWay}"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            Text="{x:Bind Progress, Mode=OneWay}"
+                            Visibility="{x:Bind Progress, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Spacing="4"
+                            Visibility="{x:Bind LikeText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
+                            <ic:SymbolIcon
+                                VerticalAlignment="Center"
+                                FontSize="11"
+                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                Symbol="ThumbLike" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                Text="{x:Bind LikeText, Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
         <DataTemplate x:Key="LaborTemplate" x:DataType="vm:PgcLaborItemViewModel">
             <StackPanel Margin="0,0,0,10" Spacing="2">
                 <TextBlock
@@ -307,6 +373,33 @@
                         <ItemsRepeater ItemTemplate="{StaticResource LaborTemplate}" ItemsSource="{x:Bind ViewModel.LaborItems, Mode=OneWay}" />
                     </StackPanel>
                 </Grid>
+
+                <!--  评价：短评与长评  -->
+                <StackPanel
+                    Margin="28,8,28,0"
+                    MaxWidth="960"
+                    HorizontalAlignment="Left"
+                    Spacing="18"
+                    Visibility="{x:Bind ViewModel.ShowReviews, Mode=OneWay}">
+                    <ProgressRing
+                        Width="32"
+                        Height="32"
+                        HorizontalAlignment="Left"
+                        IsActive="{x:Bind ViewModel.IsReviewsLoading, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.IsReviewsLoading, Mode=OneWay}" />
+                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.HasShortReviews, Mode=OneWay}">
+                        <TextBlock
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{ext:Locale Name=ShortReviews}" />
+                        <ItemsRepeater ItemTemplate="{StaticResource ReviewTemplate}" ItemsSource="{x:Bind ViewModel.ShortReviews, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.HasLongReviews, Mode=OneWay}">
+                        <TextBlock
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{ext:Locale Name=LongReviews}" />
+                        <ItemsRepeater ItemTemplate="{StaticResource ReviewTemplate}" ItemsSource="{x:Bind ViewModel.LongReviews, Mode=OneWay}" />
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
         </ScrollView>
 

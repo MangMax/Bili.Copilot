@@ -18,6 +18,8 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     private readonly IEntertainmentDiscoveryService _entertainmentService;
     private readonly ILogger<PgcDetailPageViewModel> _logger;
     private PgcPlayerView? _view;
+    private string? _mediaId;
+    private bool _reviewsLoaded;
     private int _loadGeneration;
     private CancellationTokenSource? _loadCancellation;
 
@@ -136,6 +138,42 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     public partial bool ShowIntro { get; set; }
 
     /// <summary>
+    /// 当前是否显示评价（短评与长评）.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowReviews { get; set; }
+
+    /// <summary>
+    /// 正在加载评价.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsReviewsLoading { get; set; }
+
+    /// <summary>
+    /// 短评.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<PgcReviewItemViewModel> ShortReviews { get; set; } = [];
+
+    /// <summary>
+    /// 长评.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<PgcReviewItemViewModel> LongReviews { get; set; } = [];
+
+    /// <summary>
+    /// 是否有短评.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool HasShortReviews { get; set; }
+
+    /// <summary>
+    /// 是否有长评.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool HasLongReviews { get; set; }
+
+    /// <summary>
     /// 演职人员.
     /// </summary>
     [ObservableProperty]
@@ -154,3 +192,26 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
 /// <param name="Title">分组标题，比如「角色声优」.</param>
 /// <param name="Content">分组内容.</param>
 public sealed record PgcLaborItemViewModel(string Title, string Content);
+
+/// <summary>
+/// 一条短评或长评.
+/// </summary>
+/// <param name="AuthorName">作者.</param>
+/// <param name="Avatar">头像.</param>
+/// <param name="Title">标题，只有长评有.</param>
+/// <param name="Content">内容.</param>
+/// <param name="ScoreText">评分文本.</param>
+/// <param name="LikeText">点赞数文本.</param>
+/// <param name="TimeText">时间文本.</param>
+/// <param name="Progress">观看进度.</param>
+/// <param name="IsShort">是否短评.</param>
+public sealed record PgcReviewItemViewModel(
+    string AuthorName,
+    Uri? Avatar,
+    string? Title,
+    string Content,
+    string ScoreText,
+    string LikeText,
+    string TimeText,
+    string? Progress,
+    bool IsShort);

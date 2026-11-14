@@ -5,7 +5,28 @@ using BiliCopilot.UI.ViewModels.Items;
 namespace BiliCopilot.UI.ViewModels.View;
 
 /// <summary>
-/// 番剧详情页的一个分区，例如正片、花絮、评价.
+/// 番剧详情页分区类型.
+/// </summary>
+public enum PgcDetailTabKind
+{
+    /// <summary>
+    /// 剧集列表，比如正片、花絮.
+    /// </summary>
+    Episodes,
+
+    /// <summary>
+    /// 简介与演职人员.
+    /// </summary>
+    Intro,
+
+    /// <summary>
+    /// 短评与长评.
+    /// </summary>
+    Reviews,
+}
+
+/// <summary>
+/// 番剧详情页的一个分区，例如正片、花絮、简介、评价.
 /// </summary>
 public sealed class PgcDetailTabViewModel
 {
@@ -13,13 +34,13 @@ public sealed class PgcDetailTabViewModel
     /// Initializes a new instance of the <see cref="PgcDetailTabViewModel"/> class.
     /// </summary>
     /// <param name="title">分区标题.</param>
-    /// <param name="episodes">分区里的剧集；评价分区为空.</param>
-    /// <param name="isIntro">是否是简介/评价分区.</param>
-    public PgcDetailTabViewModel(string title, List<EpisodeItemViewModel> episodes, bool isIntro = false)
+    /// <param name="episodes">分区里的剧集；简介与评价分区为空.</param>
+    /// <param name="kind">分区类型.</param>
+    public PgcDetailTabViewModel(string title, List<EpisodeItemViewModel> episodes, PgcDetailTabKind kind = PgcDetailTabKind.Episodes)
     {
         Title = title;
         Episodes = episodes;
-        IsIntro = isIntro;
+        Kind = kind;
     }
 
     /// <summary>
@@ -33,9 +54,19 @@ public sealed class PgcDetailTabViewModel
     public List<EpisodeItemViewModel> Episodes { get; }
 
     /// <summary>
-    /// 是否是简介/评价分区.
+    /// 分区类型.
     /// </summary>
-    public bool IsIntro { get; }
+    public PgcDetailTabKind Kind { get; }
+
+    /// <summary>
+    /// 是否是简介分区.
+    /// </summary>
+    public bool IsIntro => Kind == PgcDetailTabKind.Intro;
+
+    /// <summary>
+    /// 是否是评价分区.
+    /// </summary>
+    public bool IsReviews => Kind == PgcDetailTabKind.Reviews;
 
     /// <summary>
     /// 是否有剧集.

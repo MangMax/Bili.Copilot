@@ -214,7 +214,71 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         Episodes = [.. tab.Episodes];
         HasEpisodes = Episodes.Count > 0;
         ShowIntro = tab.IsIntro;
+        ShowReviews = tab.IsReviews;
+        if (tab.IsReviews)
+        {
+            _ = LoadReviewsAsync();
+        }
     }
+
+    /// <summary>
+    /// 加载短评与长评.
+    /// </summary>
+    private async Task LoadReviewsAsync()
+    {
+        if (_reviewsLoaded || IsReviewsLoading || string.IsNullOrWhiteSpace(_mediaId))
+        {
+            return;
+        }
+
+        IsReviewsLoading = true;
+        var mediaId = _mediaId;
+        try
+        {
+            // 短评与长评是两个接口，其中一个失败不应让另一个也空着.
+            var shortReviews = await LoadReviewsAsync(true);
+            var longReviews = await LoadReviewsAsync(false);
+            if (!string.Equals(mediaId, _mediaId, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            ShortReviews = [.. shortReviews.Select(ToReviewItem)];
+            LongReviews = [.. longReviews.Select(ToReviewItem)];
+            HasShortReviews = ShortReviews.Count > 0;
+            HasLongReviews = LongReviews.Count > 0;
+            _reviewsLoaded = true;
+        }
+        finally
+        {
+            IsReviewsLoading = false;
+        }
+
+        async Task<IReadOnlyList<PgcReviewInformation>> LoadReviewsAsync(bool isShort)
+        {
+            try
+            {
+                return await _entertainmentService.GetPgcReviewsAsync(mediaId, isShort);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "获取影视作品评价失败（{Kind}）", isShort ? "短评" : "长评");
+                return [];
+            }
+        }
+    }
+
+    private static PgcReviewItemViewModel ToReviewItem(PgcReviewInformation review)
+        => new(
+            review.User.Name ?? string.Empty,
+            review.User.Avatar?.Uri,
+            review.Title,
+            review.Content,
+            review.Score is > 0 ? $"{review.Score} 分" : string.Empty,
+            review.LikeCount is > 0 ? AppToolkit.FormatCount(review.LikeCount.Value) : string.Empty,
+            review.PublishTime is { } time ? time.ToLocalTime().ToString("yyyy-MM-dd") : string.Empty,
+            review.Progress,
+            review.IsShort);
 
     private void ApplyView(PgcPlayerView view)
     {
@@ -260,10 +324,20 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         }
 
         tabs.Add(new PgcDetailTabViewModel(
+            ResourceToolkit.GetLocalizedString(StringNames.Description),
+            [],
+            PgcDetailTabKind.Intro));
+        tabs.Add(new PgcDetailTabViewModel(
             ResourceToolkit.GetLocalizedString(StringNames.MediaReview),
             [],
-            isIntro: true));
+            PgcDetailTabKind.Reviews));
         Tabs = tabs;
+        _mediaId = information.GetExtensionIfNotNull<string>(SeasonExtensionDataId.MediaId);
+        _reviewsLoaded = false;
+        ShortReviews = [];
+        LongReviews = [];
+        HasShortReviews = false;
+        HasLongReviews = false;
 
         var labor = information.GetExtensionIfNotNull<Dictionary<string, string>>(SeasonExtensionDataId.LaborSections);
         LaborItems = labor is null
@@ -277,6 +351,7 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
             Episodes = [.. SelectedTab.Episodes];
             HasEpisodes = Episodes.Count > 0;
             ShowIntro = SelectedTab.IsIntro;
+            ShowReviews = SelectedTab.IsReviews;
         }
     }
 
@@ -302,5 +377,13 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
         LaborItems = [];
         HasLabor = false;
         RatingCountText = string.Empty;
+        ShowReviews = false;
+        ShortReviews = [];
+        LongReviews = [];
+        HasShortReviews = false;
+        HasLongReviews = false;
+        IsReviewsLoading = false;
+        _mediaId = null;
+        _reviewsLoaded = false;
     }
 }

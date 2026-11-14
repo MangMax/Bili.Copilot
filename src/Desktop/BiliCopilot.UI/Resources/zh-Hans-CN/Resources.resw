@@ -2289,6 +2289,12 @@
   <data name="PgcFollowCount" xml:space="preserve">
     <value>追番数</value>
   </data>
+  <data name="ShortReviews" xml:space="preserve">
+    <value>短评</value>
+  </data>
+  <data name="LongReviews" xml:space="preserve">
+    <value>长评</value>
+  </data>
   <data name="MediaReview" xml:space="preserve">
     <value>评价</value>
   </data>
