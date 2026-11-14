@@ -23,6 +23,7 @@ public sealed class NavigationFrameTests
     [InlineData(typeof(HistoryPage))]
     [InlineData(typeof(SearchPage))]
     [InlineData(typeof(UserSpacePage))]
+    [InlineData(typeof(PgcDetailPage))]
     [InlineData(typeof(ViewLaterPage))]
     public void FirstNavigationConstructsRequestedPageAndPassesParameter(Type pageType)
     {

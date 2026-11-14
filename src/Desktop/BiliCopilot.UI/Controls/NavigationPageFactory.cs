@@ -97,6 +97,11 @@ internal static class NavigationPageFactory
                 return new UserSpacePage();
             }
 
+            if (pageType == typeof(PgcDetailPage))
+            {
+                return new PgcDetailPage();
+            }
+
             if (pageType == typeof(ViewLaterPage))
             {
                 return new ViewLaterPage();

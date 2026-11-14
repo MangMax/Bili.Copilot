@@ -98,7 +98,15 @@ public sealed partial class PgcConnectorViewModel
         EpisodeInformation? playEpisode = default;
         if (!string.IsNullOrEmpty(initialEpisodeId))
         {
-            playEpisode = _view.Episodes.FirstOrDefault(p => p.Identifier.Id == initialEpisodeId);
+            playEpisode = FindEpisode(initialEpisodeId);
+            if (playEpisode is null
+                && _snapshot.Episode is { } requested
+                && requested.Identifier.Id == initialEpisodeId)
+            {
+                // 花絮、预告片这类内容不在季度正片列表里（附加分区目前不随接口返回）。
+                // 这时要按请求的 ep 号取播放地址，而不是退回第一集——那会播出完全不同的正片。
+                return requested;
+            }
         }
 
         if (playEpisode == null)
@@ -112,6 +120,27 @@ public sealed partial class PgcConnectorViewModel
         }
 
         return playEpisode ?? _view.Episodes.FirstOrDefault();
+    }
+
+    private EpisodeInformation? FindEpisode(string episodeId)
+    {
+        var episode = _view.Episodes?.FirstOrDefault(p => p.Identifier.Id == episodeId);
+
+        // 花絮、预告片这类内容在季度详情里属于附加分区，不在正片列表里；
+        // 只查正片会让它们退回到第一集（往往是最新一集），播放错误的内容。
+        if (episode is null && _view.Extras is not null)
+        {
+            foreach (var extra in _view.Extras.Values)
+            {
+                episode = extra?.FirstOrDefault(p => p.Identifier.Id == episodeId);
+                if (episode is not null)
+                {
+                    break;
+                }
+            }
+        }
+
+        return episode;
     }
 
     private EpisodeInformation? FindNextEpisode()

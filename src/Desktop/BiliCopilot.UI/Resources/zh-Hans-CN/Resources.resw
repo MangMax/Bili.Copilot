@@ -2286,6 +2286,9 @@
   <data name="Native" xml:space="preserve">
     <value>原生</value>
   </data>
+  <data name="FailedToLoadPgcDetail" xml:space="preserve">
+    <value>番剧信息加载失败，请稍后重试</value>
+  </data>
   <data name="FailedToFollowPgc" xml:space="preserve">
     <value>追番/追剧失败</value>
   </data>

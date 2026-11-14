@@ -73,6 +73,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
             {
                 IsPgc = true;
+                SeasonId = einfo.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.SeasonId).ToString();
                 VideoTitle = einfo.Identifier.Title;
                 VideoCover = einfo.Identifier.Cover.Uri;
                 VideoDuration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(einfo.Duration ?? 0));
@@ -129,18 +130,16 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         }
         else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
         {
-            var hasEpid = einfo.Identifier.Id != "0";
-            if (hasEpid)
+            if (einfo.Identifier.Id == "0")
             {
-                var identifier = new MediaIdentifier(einfo.Identifier.Id, string.Empty, default);
-                var snapshot = new MediaSnapshot(default, new EpisodeInformation(identifier));
-                this.Get<AppViewModel>().OpenPlayerCommand.Execute(snapshot);
-            }
-            else
-            {
-                // 出差番剧，使用网页打开.
+                // 出差番剧没有可在站内播放的剧集号，使用网页打开.
                 OpenInBroswerCommand.Execute(default);
+                return;
             }
+
+            // 带上动态里的完整剧集信息：花絮、预告片等不在季度正片列表里的内容，
+            // 播放器需要按这个 ep 号取播放地址，而不是回退到正片第一集.
+            this.Get<AppViewModel>().OpenPlayerCommand.Execute(new MediaSnapshot(default, einfo));
         }
         else if (FindInnerContent<LiveInformation>() is LiveInformation linfo)
         {

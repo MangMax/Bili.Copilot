@@ -1,5 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Pages.Overlay;
+using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.UI.Xaml.Media;
 using BiliCopilot.UI.Toolkits;
 
@@ -22,6 +24,13 @@ public sealed partial class MomentAuthorHeader : MomentCardPresenter
     {
         if (ViewModel is null)
         {
+            return;
+        }
+
+        // 番剧动态的“作者”是番剧账号，点进去应该看这个季度的详情，而不是用户空间.
+        if (ViewModel.IsPgc && !string.IsNullOrEmpty(ViewModel.SeasonId))
+        {
+            this.Get<NavigationViewModel>().NavigateToOver(typeof(PgcDetailPage), ViewModel.SeasonId);
             return;
         }
 

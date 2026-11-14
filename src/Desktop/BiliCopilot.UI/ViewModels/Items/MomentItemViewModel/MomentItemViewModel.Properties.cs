@@ -81,6 +81,11 @@ public sealed partial class MomentItemViewModel
     public MomentCardStyle Style { get; init; }
 
     /// <summary>
+    /// 番剧动态所属的季度 Id；非番剧动态时为空.
+    /// </summary>
+    public string? SeasonId { get; private set; }
+
+    /// <summary>
     /// 卡片作者的用户资料，与导航命令使用同一数据源；供头像串联准备动画.
     /// </summary>
     public UserProfile? UserSpaceProfile => Data.User;
