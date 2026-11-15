@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models.User;
@@ -27,7 +28,9 @@ public sealed partial class CollectionItemViewModel : ViewModelBase<UserCollecti
         Title = data.Title ?? string.Empty;
         Cover = data.Cover?.Uri;
         IsSeason = data.IsSeason;
-        Count = data.Count is > 0 ? AppToolkit.FormatCount(data.Count.Value) : string.Empty;
+        Count = data.Count is > 0
+            ? string.Format(ResourceToolkit.GetLocalizedString(StringNames.CollectionCountTemplate), AppToolkit.FormatCount(data.Count.Value))
+            : string.Empty;
     }
 
     /// <summary>
