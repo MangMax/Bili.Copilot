@@ -148,20 +148,40 @@
                         <!--  动态  -->
                         <Grid MinHeight="160" Visibility="{x:Bind ViewModel.IsMomentsTab, Mode=OneWay}">
                             <StackPanel Spacing="12">
-                                <repeater:AppRepeater
-                                    MaxWidth="680"
-                                    HorizontalAlignment="Stretch"
-                                    ItemsSource="{x:Bind ViewModel.MomentSection.Items, Mode=OneWay, FallbackValue={x:Null}}">
-                                    <repeater:AppRepeater.ItemTemplate>
+                                <components:SlidingTabBar
+                                    x:Name="MomentFilterSelector"
+                                    Margin="8,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    AutomationProperties.AutomationId="UserMomentFilters" />
+                                <ItemsRepeater ItemsSource="{x:Bind ViewModel.MomentSection.Items, Mode=OneWay, FallbackValue={x:Null}}" Visibility="{x:Bind ViewModel.IsAllMomentFilter, Mode=OneWay}">
+                                    <ItemsRepeater.Layout>
+                                        <moment:MomentStaggeredLayout
+                                            ColumnSpacing="16"
+                                            MinItemWidth="320"
+                                            RowSpacing="16" />
+                                    </ItemsRepeater.Layout>
+                                    <ItemsRepeater.ItemTemplate>
                                         <DataTemplate x:DataType="items:MomentItemViewModel">
                                             <components:MomentCardControl
-                                                Margin="0,0,0,18"
                                                 ShowUserSpaceEntry="False"
                                                 Style="{StaticResource PersonalFullMomentCardStyle}"
                                                 ViewModel="{x:Bind}" />
                                         </DataTemplate>
-                                    </repeater:AppRepeater.ItemTemplate>
-                                </repeater:AppRepeater>
+                                    </ItemsRepeater.ItemTemplate>
+                                </ItemsRepeater>
+                                <Grid Visibility="{x:Bind ViewModel.IsVideoMomentFilter, Mode=OneWay}">
+                                    <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.VideoMoments, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserVideoGrid}">
+                                        <repeater:AppRepeater.ItemTemplate>
+                                            <DataTemplate x:DataType="items:VideoItemViewModel">
+                                                <components:VideoCardControl Style="{StaticResource UserSpaceVideoCardStyle}" ViewModel="{x:Bind}" />
+                                            </DataTemplate>
+                                        </repeater:AppRepeater.ItemTemplate>
+                                    </repeater:AppRepeater>
+                                    <base:EmptyHolder
+                                        Description="{ext:Locale Name=NoSpecificData}"
+                                        Emoji="&#x1F3AC;"
+                                        Visibility="{x:Bind ViewModel.IsVideoMomentsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                </Grid>
                                 <StackPanel
                                     Margin="0,0,0,12"
                                     HorizontalAlignment="Center"

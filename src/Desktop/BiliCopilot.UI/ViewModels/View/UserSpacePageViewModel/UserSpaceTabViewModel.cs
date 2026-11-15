@@ -46,6 +46,16 @@ public enum UserSpaceTabKind
     /// 投稿下的合集与系列.
     /// </summary>
     Collections,
+
+    /// <summary>
+    /// 动态里的全部.
+    /// </summary>
+    AllMoments,
+
+    /// <summary>
+    /// 动态里的视频.
+    /// </summary>
+    VideoMoments,
 }
 
 /// <summary>

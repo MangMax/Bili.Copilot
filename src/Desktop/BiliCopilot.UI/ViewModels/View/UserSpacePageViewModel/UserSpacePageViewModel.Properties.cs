@@ -83,6 +83,41 @@ public sealed partial class UserSpacePageViewModel
     public partial UserMomentDetailViewModel? MomentSection { get; set; }
 
     /// <summary>
+    /// 动态分区的筛选：全部 / 视频.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<UserSpaceTabViewModel> MomentFilterTabs { get; set; } = [];
+
+    /// <summary>
+    /// 当前动态筛选.
+    /// </summary>
+    [ObservableProperty]
+    public partial UserSpaceTabViewModel? SelectedMomentFilter { get; set; }
+
+    /// <summary>
+    /// 当前是否展示全部动态.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsAllMomentFilter { get; set; } = true;
+
+    /// <summary>
+    /// 当前是否展示视频动态.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsVideoMomentFilter { get; set; }
+
+    /// <summary>
+    /// 视频动态里的视频，按出现顺序追加.
+    /// </summary>
+    public ObservableCollection<VideoItemViewModel> VideoMoments { get; } = new();
+
+    /// <summary>
+    /// 视频动态是否为空；只在一次加载结束后更新.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsVideoMomentsEmpty { get; set; }
+
+    /// <summary>
     /// 主页的最近投稿：首页到达时取一份快照，之后翻页不再改动.
     /// </summary>
     public ObservableCollection<VideoItemViewModel> HomeVideos { get; } = new();

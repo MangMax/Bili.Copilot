@@ -90,5 +90,6 @@ namespace BiliCopilot.UI.Pages.Overlay
 #endif
     public sealed class UserSpacePage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
     public sealed class PgcDetailPage : NavigationTestPage { }
+    public sealed class CollectionDetailPage : NavigationTestPage { }
     public sealed class ViewLaterPage : NavigationTestPage { }
 }

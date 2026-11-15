@@ -160,6 +160,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         CollectionFeed.ResetCommand.Execute(profile);
 
         EnsureTabs();
+        SelectMomentFilter(SelectedMomentFilter ?? MomentFilterTabs[0]);
         SelectTab(Tabs[0]);
         SelectSubmissionTab(SelectedSubmissionTab ?? SubmissionTabs[0]);
 
@@ -195,6 +196,23 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             SelectSubmissionTab(SelectedSubmissionTab);
         }
+    }
+
+    /// <summary>
+    /// 切换动态筛选：全部 / 视频.
+    /// </summary>
+    /// <param name="tab">目标筛选.</param>
+    [RelayCommand]
+    private void SelectMomentFilter(UserSpaceTabViewModel? tab)
+    {
+        if (tab is null)
+        {
+            return;
+        }
+
+        SelectedMomentFilter = tab;
+        IsAllMomentFilter = tab.Kind == UserSpaceTabKind.AllMoments;
+        IsVideoMomentFilter = tab.Kind == UserSpaceTabKind.VideoMoments;
     }
 
     /// <summary>
@@ -254,6 +272,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             new(ResourceToolkit.GetLocalizedString(StringNames.Audio), UserSpaceTabKind.Audio),
             new(ResourceToolkit.GetLocalizedString(StringNames.UgcSeason), UserSpaceTabKind.Collections),
         ];
+        MomentFilterTabs =
+        [
+            new(ResourceToolkit.GetLocalizedString(StringNames.Total), UserSpaceTabKind.AllMoments),
+            new(ResourceToolkit.GetLocalizedString(StringNames.Video), UserSpaceTabKind.VideoMoments),
+        ];
     }
 
     private void AttachMomentItems(IEnumerable<MomentItemViewModel> items)
@@ -266,6 +289,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         _momentItems = MomentSection?.Items;
         HomeMoments.Clear();
         SubmissionMoments.Clear();
+        VideoMoments.Clear();
+        IsVideoMomentsEmpty = false;
         IsSubmissionMomentsEmpty = false;
         if (_momentItems is null)
         {
@@ -293,8 +318,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
         else if (e.PropertyName == nameof(UserMomentDetailViewModel.IsLoading) && !section.IsLoading)
         {
-            // 一次加载结束后才知道图文动态是否为空；加载中不显示空状态，避免闪一下.
+            // 一次加载结束后才知道图文/视频动态是否为空；加载中不显示空状态，避免闪一下.
             IsSubmissionMomentsEmpty = SubmissionMoments.Count == 0;
+            IsVideoMomentsEmpty = VideoMoments.Count == 0;
         }
     }
 
@@ -330,7 +356,12 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             HomeMoments.Add(item);
         }
 
-        if (item.InnerContent is not VideoItemViewModel)
+        if (item.InnerContent is VideoItemViewModel video)
+        {
+            VideoMoments.Add(video);
+            IsVideoMomentsEmpty = false;
+        }
+        else
         {
             SubmissionMoments.Add(item);
             IsSubmissionMomentsEmpty = false;

@@ -46,6 +46,8 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         SubmissionNav.SelectionChanged += OnSubmissionSelectionChanged;
         SubmissionNavOverlayView.SelectionChanged += OnSubmissionSelectionChanged;
+        MomentFilterSelector.SelectionChanged += OnMomentFilterSelectionChanged;
+        UpdateMomentFilterTabs();
         QueueSubmissionSelectionSync();
         QueueScrollHostUpdate();
     }
@@ -55,6 +57,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         SubmissionNav.SelectionChanged -= OnSubmissionSelectionChanged;
         SubmissionNavOverlayView.SelectionChanged -= OnSubmissionSelectionChanged;
+        MomentFilterSelector.SelectionChanged -= OnMomentFilterSelectionChanged;
         LayoutUpdated -= OnSpaceLayoutUpdated;
         CancelAvatarTransition();
         DisconnectHeader();
@@ -72,9 +75,29 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         {
             QueueSubmissionSelectionSync();
         }
+        else if (e.PropertyName is nameof(UserSpacePageViewModel.MomentFilterTabs) or nameof(UserSpacePageViewModel.SelectedMomentFilter))
+        {
+            UpdateMomentFilterTabs();
+        }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.IsSubmissionTab))
         {
             UpdateSubmissionOverlay();
+        }
+    }
+
+    private void UpdateMomentFilterTabs()
+    {
+        var items = ViewModel.MomentFilterTabs
+            .Select(tab => new SelectorBarItem { Text = tab.Title, Tag = tab })
+            .ToList();
+        MomentFilterSelector.SetItems(items, ViewModel.SelectedMomentFilter);
+    }
+
+    private void OnMomentFilterSelectionChanged(object? sender, EventArgs e)
+    {
+        if (MomentFilterSelector.SelectedItem is UserSpaceTabViewModel tab && !ReferenceEquals(tab, ViewModel.SelectedMomentFilter))
+        {
+            ViewModel.SelectMomentFilterCommand.Execute(tab);
         }
     }
 
@@ -329,6 +352,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             // 叠层页会按类型缓存，复用页面不会再触发 Loaded；每次收到参数都重新等待布局。
             BeginAvatarTransition(profile);
             QueueSubmissionSelectionSync();
+            UpdateMomentFilterTabs();
         }
     }
 
