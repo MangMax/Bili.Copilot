@@ -25,7 +25,7 @@
                             <Border.RenderTransform>
                                 <TranslateTransform x:Name="MomentLift" />
                             </Border.RenderTransform>
-                            <local:VideoMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
+                            <local:VideoMomentPresenter ShowAuthor="{TemplateBinding ShowAuthor}" ViewModel="{TemplateBinding ViewModel}" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -56,7 +56,7 @@
                             <Border.RenderTransform>
                                 <TranslateTransform x:Name="MomentLift" />
                             </Border.RenderTransform>
-                            <local:FullMomentPresenter ViewModel="{TemplateBinding ViewModel}" />
+                            <local:FullMomentPresenter ShowAuthor="{TemplateBinding ShowAuthor}" ViewModel="{TemplateBinding ViewModel}" />
                         </Border>
                     </Grid>
                 </ControlTemplate>

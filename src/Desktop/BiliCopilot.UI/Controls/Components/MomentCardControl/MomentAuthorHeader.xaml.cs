@@ -20,6 +20,14 @@ public sealed partial class MomentAuthorHeader : MomentCardPresenter
 
     public MomentAuthorHeader() => InitializeComponent();
 
+    /// <inheritdoc/>
+    protected override void OnShowAuthorChanged(bool showAuthor)
+    {
+        var visibility = showAuthor ? Visibility.Visible : Visibility.Collapsed;
+        AvatarButton.Visibility = visibility;
+        NameButton.Visibility = visibility;
+    }
+
     private void OnUserSpaceClick(object sender, RoutedEventArgs args)
     {
         if (ViewModel is null)

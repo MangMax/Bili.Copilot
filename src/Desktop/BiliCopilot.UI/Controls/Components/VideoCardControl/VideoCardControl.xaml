@@ -62,7 +62,7 @@
                                     Style="{StaticResource BodyStrongTextBlockStyle}"
                                     LineHeight="20"
                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}" />
-                                <local:CardMetaPanel Grid.Row="1">
+                                <local:CardMetaPanel Grid.Row="1" ShowAuthor="{TemplateBinding ShowAuthor}">
                                     <local:CardMetaPanel.Avatar>
                                     <Button
                                         x:Name="UserButton"
@@ -199,6 +199,10 @@
     <Style x:Key="RankVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}" />
     <Style x:Key="PartitionVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}" />
     <Style x:Key="SearchVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}" />
+    <!--  用户空间里的视频卡不再重复作者头像与名称  -->
+    <Style x:Key="UserSpaceVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}">
+        <Setter Property="ShowAuthor" Value="False" />
+    </Style>
     <Style x:Key="ViewLaterVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}" />
     <Style x:Key="FavoriteVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}" />
 

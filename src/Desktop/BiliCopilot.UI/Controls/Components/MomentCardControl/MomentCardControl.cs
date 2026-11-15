@@ -13,17 +13,47 @@ namespace BiliCopilot.UI.Controls.Components;
 /// <summary>
 /// 动态卡片展示器.
 /// </summary>
-public abstract class MomentCardPresenter : LayoutUserControlBase<MomentItemViewModel>;
+public abstract class MomentCardPresenter : LayoutUserControlBase<MomentItemViewModel>
+{
+    public static readonly DependencyProperty ShowAuthorProperty = DependencyProperty.Register(
+        nameof(ShowAuthor), typeof(bool), typeof(MomentCardPresenter), new PropertyMetadata(true, OnShowAuthorChanged));
+
+    /// <summary>Shows the author header; user-space cards only need the time line.</summary>
+    public bool ShowAuthor
+    {
+        get => (bool)GetValue(ShowAuthorProperty);
+        set => SetValue(ShowAuthorProperty, value);
+    }
+
+    private static void OnShowAuthorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+        => (sender as MomentCardPresenter)?.OnShowAuthorChanged((bool)args.NewValue);
+
+    /// <summary>Reacts to <see cref="ShowAuthor"/> changes in presenters that own an author header.</summary>
+    /// <param name="showAuthor">Whether the author header should be visible.</param>
+    protected virtual void OnShowAuthorChanged(bool showAuthor)
+    {
+    }
+}
 
 /// <summary>
 /// 动态卡片控件.
 /// </summary>
 public sealed partial class MomentCardControl : LayoutControlBase<MomentItemViewModel>
 {
+    public static readonly DependencyProperty ShowAuthorProperty = DependencyProperty.Register(
+        nameof(ShowAuthor), typeof(bool), typeof(MomentCardControl), new PropertyMetadata(true));
+
     private bool _hovered;
     private VideoCardControl? _videoCard;
     private TranslateTransform? _lift;
     private Storyboard? _liftAnimation;
+
+    /// <summary>Shows the author header inside the card.</summary>
+    public bool ShowAuthor
+    {
+        get => (bool)GetValue(ShowAuthorProperty);
+        set => SetValue(ShowAuthorProperty, value);
+    }
 
     /// <summary>Initializes a new instance of the <see cref="MomentCardControl"/> class.</summary>
     public MomentCardControl()

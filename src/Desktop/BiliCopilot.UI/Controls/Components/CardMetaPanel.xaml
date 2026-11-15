@@ -10,14 +10,16 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
+            <RowDefinition x:Name="AuthorRow" Height="20" />
             <RowDefinition Height="22" />
         </Grid.RowDefinitions>
         <ContentPresenter
+            x:Name="AvatarPresenter"
             Grid.RowSpan="2"
             VerticalAlignment="Center"
             Content="{x:Bind Avatar, Mode=OneWay}" />
         <ContentPresenter
+            x:Name="AuthorPresenter"
             Grid.Column="1"
             VerticalAlignment="Center"
             Content="{x:Bind Author, Mode=OneWay}" />

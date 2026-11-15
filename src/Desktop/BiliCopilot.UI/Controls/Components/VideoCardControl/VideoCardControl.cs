@@ -39,6 +39,16 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         set => SetValue(MinimumTitleHeightProperty, value);
     }
 
+    public static readonly DependencyProperty ShowAuthorProperty = DependencyProperty.Register(
+        nameof(ShowAuthor), typeof(bool), typeof(VideoCardControl), new PropertyMetadata(true));
+
+    /// <summary>Shows the author row; user-space lists already belong to one author.</summary>
+    public bool ShowAuthor
+    {
+        get => (bool)GetValue(ShowAuthorProperty);
+        set => SetValue(ShowAuthorProperty, value);
+    }
+
     private ButtonBase _rootCard;
     private Button _userButton;
     private Button _authorButton;
