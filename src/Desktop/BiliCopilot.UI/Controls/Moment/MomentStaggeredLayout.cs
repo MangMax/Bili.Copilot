@@ -7,7 +7,6 @@ namespace BiliCopilot.UI.Controls.Moment;
 /// </summary>
 public sealed partial class MomentStaggeredLayout : NonVirtualizingLayout
 {
-    private const int MaxColumns = 3;
     private readonly List<(double Top, int Column)> _placements = [];
     private double _columnWidth;
 
@@ -120,8 +119,9 @@ public sealed partial class MomentStaggeredLayout : NonVirtualizingLayout
 
     private int GetColumnCount(double width)
     {
+        // 列数只由可用宽度和最小列宽决定：宽屏自动加列，不设上限.
         var itemWidth = MinItemWidth > 0 ? MinItemWidth : 320;
         var columns = (int)Math.Floor((width + ColumnSpacing) / (itemWidth + ColumnSpacing));
-        return Math.Clamp(columns, 1, MaxColumns);
+        return Math.Max(1, columns);
     }
 }
