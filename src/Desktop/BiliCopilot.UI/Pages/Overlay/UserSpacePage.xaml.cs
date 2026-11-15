@@ -4,6 +4,7 @@ using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Controls.Moment;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Richasy.BiliKernel.Models.User;
@@ -30,6 +31,8 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     private int _avatarStartAttempts;
     private bool _avatarStartInProgress;
     private bool _submissionNavAttached;
+    private Visual? _submissionNavVisual;
+    private ExpressionAnimation? _submissionSticky;
     private double _submissionStickyTop;
     private double _submissionStickyMax;
 
@@ -140,6 +143,8 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         {
             UserSpaceTabKind.Articles => FluentIcons.Common.Symbol.DocumentBulletList,
             UserSpaceTabKind.MomentPosts => FluentIcons.Common.Symbol.BubbleMultiple,
+            UserSpaceTabKind.Audio => FluentIcons.Common.Symbol.MusicNote2,
+            UserSpaceTabKind.Collections => FluentIcons.Common.Symbol.Collections,
             _ => FluentIcons.Common.Symbol.VideoClip,
         };
 
@@ -151,8 +156,24 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
 
         _submissionNavAttached = true;
+        ElementCompositionPreview.SetIsTranslationEnabled(SubmissionNavRail, true);
+        var visual = ElementCompositionPreview.GetElementVisual(SubmissionNavRail);
+        visual.Properties.InsertVector3("Translation", Vector3.Zero);
+
+        // 用合成动画直接跟随滚动偏移：位置与滚动同一帧生效，不做逐帧重算，也不会追着内容抖.
+        var sticky = visual.Compositor.CreateExpressionAnimation(
+            "Vector3(0, Min(Max(0, (source.Position.Y - source.MinPosition.Y) - top), maxShift), 0)");
+        sticky.SetReferenceParameter("source", _activeScroll.ExpressionAnimationSources);
+        sticky.SetScalarParameter("top", 0f);
+        sticky.SetScalarParameter("maxShift", 0f);
+        visual.StartAnimation("Translation", sticky);
+        _submissionNavVisual = visual;
+        _submissionSticky = sticky;
+
         _activeScroll.ViewChanged += OnSubmissionScrollViewChanged;
+        LayoutUpdated += OnSubmissionLayoutUpdated;
         UpdateSubmissionStickyBounds();
+        QueueSubmissionStickyUpdate();
     }
 
     private void RefreshSubmissionSidebar()
@@ -180,34 +201,43 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             _activeScroll.ViewChanged -= OnSubmissionScrollViewChanged;
         }
 
+        LayoutUpdated -= OnSubmissionLayoutUpdated;
         _submissionNavAttached = false;
-        if (SubmissionNavShift is not null)
+        if (_submissionNavVisual is not null)
         {
-            SubmissionNavShift.Y = 0;
-            SubmissionNavRail.Background = null;
+            _submissionNavVisual.StopAnimation("Translation");
+            _submissionNavVisual.Properties.InsertVector3("Translation", Vector3.Zero);
         }
+
+        _submissionNavVisual = null;
+        _submissionSticky = null;
+        SubmissionNavRail.Background = null;
     }
 
-    private void OnSubmissionScrollViewChanged(ScrollView sender, object args) => UpdateSubmissionStickyPosition();
+    private void QueueSubmissionStickyUpdate()
+        => DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            UpdateSubmissionStickyBounds);
+
+    private void OnSubmissionLayoutUpdated(object? sender, object e) => UpdateSubmissionStickyBounds();
+
+    private void OnSubmissionScrollViewChanged(ScrollView sender, object args) => UpdateSubmissionPinnedBackdrop();
 
     /// <summary>
-    /// 侧栏在内容滚动后停在视口顶部：滚动位置越过侧栏原始位置时把它往下推同样的距离，
-    /// 到底部时再停住，避免跟着内容一起滚走。
+    /// 侧栏粘住时压在内容上方，需要一层页面同色背板；回到原位时恢复透明.
     /// </summary>
-    private void UpdateSubmissionStickyPosition()
+    private void UpdateSubmissionPinnedBackdrop()
     {
-        if (!_submissionNavAttached || !ViewModel.IsSubmissionTab || _activeScroll is null)
+        if (!_submissionNavAttached || _activeScroll is null)
         {
             return;
         }
 
-        var shift = Math.Clamp(_activeScroll.VerticalOffset - _submissionStickyTop, 0, _submissionStickyMax);
-        if (Math.Abs(SubmissionNavShift.Y - shift) > 0.5)
+        var pinned = _activeScroll.VerticalOffset > _submissionStickyTop;
+        var background = pinned ? PageLayout.Background : null;
+        if (!ReferenceEquals(SubmissionNavRail.Background, background))
         {
-            SubmissionNavShift.Y = shift;
-
-            // 侧栏离开原位后压在内容上方，需要一层页面同色背板；回到原位时恢复透明.
-            SubmissionNavRail.Background = shift > 0 ? PageLayout.Background : null;
+            SubmissionNavRail.Background = background;
         }
     }
 
@@ -223,9 +253,19 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             return;
         }
 
-        _submissionStickyTop = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
-        _submissionStickyMax = Math.Max(0, SubmissionContent.ActualHeight - SubmissionNavRail.ActualHeight);
-        UpdateSubmissionStickyPosition();
+        var top = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
+        var maxShift = Math.Max(0, SubmissionContent.ActualHeight - SubmissionNavRail.ActualHeight);
+        if (Math.Abs(top - _submissionStickyTop) < 0.5 && Math.Abs(maxShift - _submissionStickyMax) < 0.5)
+        {
+            UpdateSubmissionPinnedBackdrop();
+            return;
+        }
+
+        _submissionStickyTop = top;
+        _submissionStickyMax = maxShift;
+        _submissionSticky?.SetScalarParameter("top", (float)top);
+        _submissionSticky?.SetScalarParameter("maxShift", (float)maxShift);
+        UpdateSubmissionPinnedBackdrop();
     }
 
     private void OnSubmissionPanelSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSubmissionStickyBounds();
