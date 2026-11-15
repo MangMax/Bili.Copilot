@@ -128,6 +128,11 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         if (!ViewModel.IsSubmissionTab)
         {
             SubmissionPanel.ClearValue(FrameworkElement.HeightProperty);
+            if (_activeScroll is not null)
+            {
+                _activeScroll.VerticalScrollMode = ScrollingScrollMode.Enabled;
+            }
+
             return;
         }
 
@@ -140,9 +145,18 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         // 减去页头后的行距（16）和内容底边距（16），让外层刚好不出现滚动。
         var available = _activeScroll.ViewportHeight - headerHeight - 32;
         var height = Math.Max(320, available);
-        if (double.IsFinite(height) && Math.Abs(SubmissionPanel.Height - height) > 0.5)
+        // Height 默认是 NaN，第一次必须无条件写入，否则永远不会生效.
+        if (!double.IsFinite(SubmissionPanel.Height) || Math.Abs(SubmissionPanel.Height - height) > 0.5)
         {
             SubmissionPanel.Height = height;
+        }
+
+        // 放得下时锁住外层滚动：页头和分类栏留在原位，只让分类内容滚动.
+        var fits = available >= 320;
+        _activeScroll.VerticalScrollMode = fits ? ScrollingScrollMode.Disabled : ScrollingScrollMode.Enabled;
+        if (fits && _activeScroll.VerticalOffset > 0)
+        {
+            _activeScroll.ScrollTo(0, 0);
         }
     }
 

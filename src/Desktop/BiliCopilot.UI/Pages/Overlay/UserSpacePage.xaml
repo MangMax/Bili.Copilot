@@ -189,7 +189,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <!--  与各页面侧栏同一套 ItemsView + AppItemContainerStyle；滚动时整条侧栏粘在视口顶部  -->
+                            <!--  与各页面侧栏同一套 ItemsView + AppItemContainerStyle；侧栏在滚动区之外，不会跟着列表走  -->
                             <Border
                                 x:Name="SubmissionNavRail"
                                 Padding="2,8,8,8"
