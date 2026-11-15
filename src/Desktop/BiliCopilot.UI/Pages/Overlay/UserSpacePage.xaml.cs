@@ -184,6 +184,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         if (SubmissionNavShift is not null)
         {
             SubmissionNavShift.Y = 0;
+            SubmissionNavRail.Background = null;
         }
     }
 
@@ -204,12 +205,15 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         if (Math.Abs(SubmissionNavShift.Y - shift) > 0.5)
         {
             SubmissionNavShift.Y = shift;
+
+            // 侧栏离开原位后压在内容上方，需要一层页面同色背板；回到原位时恢复透明.
+            SubmissionNavRail.Background = shift > 0 ? PageLayout.Background : null;
         }
     }
 
     private void UpdateSubmissionStickyBounds()
     {
-        if (!_submissionNavAttached || SubmissionNav.ActualHeight <= 0 || SubmissionContent.ActualHeight <= 0)
+        if (!_submissionNavAttached || SubmissionNavRail.ActualHeight <= 0 || SubmissionContent.ActualHeight <= 0)
         {
             return;
         }
@@ -220,7 +224,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
 
         _submissionStickyTop = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
-        _submissionStickyMax = Math.Max(0, SubmissionContent.ActualHeight - SubmissionNav.ActualHeight);
+        _submissionStickyMax = Math.Max(0, SubmissionContent.ActualHeight - SubmissionNavRail.ActualHeight);
         UpdateSubmissionStickyPosition();
     }
 

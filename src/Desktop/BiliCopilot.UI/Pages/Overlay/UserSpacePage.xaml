@@ -39,9 +39,8 @@
             MinRowSpacing="16" />
         <DataTemplate x:Key="UserSubmissionNavTemplate" x:DataType="view:UserSpaceTabViewModel">
             <ItemContainer
-                Height="44"
+                Height="40"
                 AutomationProperties.Name="{x:Bind Title, Mode=OneTime}"
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 Style="{StaticResource AppItemContainerStyle}">
                 <Grid Padding="12,0" ColumnSpacing="10">
                     <Grid.ColumnDefinitions>
@@ -168,7 +167,7 @@
                         <!--  投稿：左侧分类侧栏 + 右侧内容，切换分类只换右栏  -->
                         <Grid
                             x:Name="SubmissionPanel"
-                            ColumnSpacing="20"
+                            ColumnSpacing="32"
                             SizeChanged="OnSubmissionPanelSizeChanged"
                             Visibility="{x:Bind ViewModel.IsSubmissionTab, Mode=OneWay}">
                             <Grid.ColumnDefinitions>
@@ -176,22 +175,28 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <ItemsView
-                                x:Name="SubmissionNav"
+                            <!--  侧栏粘在视口顶部时用页面同色背板盖住从下方滚过的卡片，不在顶部时保持透明  -->
+                            <Border
+                                x:Name="SubmissionNavRail"
+                                Padding="8"
                                 VerticalAlignment="Top"
-                                AutomationProperties.AutomationId="UserSubmissionSections"
-                                ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
-                                ItemsSource="{x:Bind ViewModel.SubmissionTabs, Mode=OneWay}"
-                                SelectionMode="Single"
-                                ScrollViewer.HorizontalScrollMode="Disabled"
-                                ScrollViewer.VerticalScrollMode="Disabled">
-                                <ItemsView.RenderTransform>
+                                CornerRadius="12">
+                                <Border.RenderTransform>
                                     <TranslateTransform x:Name="SubmissionNavShift" />
-                                </ItemsView.RenderTransform>
-                                <ItemsView.Layout>
-                                    <StackLayout Spacing="8" />
-                                </ItemsView.Layout>
-                            </ItemsView>
+                                </Border.RenderTransform>
+                                <ItemsView
+                                    x:Name="SubmissionNav"
+                                    AutomationProperties.AutomationId="UserSubmissionSections"
+                                    ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
+                                    ItemsSource="{x:Bind ViewModel.SubmissionTabs, Mode=OneWay}"
+                                    SelectionMode="Single"
+                                    ScrollViewer.HorizontalScrollMode="Disabled"
+                                    ScrollViewer.VerticalScrollMode="Disabled">
+                                    <ItemsView.Layout>
+                                        <StackLayout Spacing="2" />
+                                    </ItemsView.Layout>
+                                </ItemsView>
+                            </Border>
 
                             <Grid
                                 x:Name="SubmissionContent"
