@@ -54,6 +54,11 @@ public sealed partial class UserSpaceVideoFeedViewModel
     public partial bool IsEmpty { get; set; }
 
     /// <summary>
+    /// 是否还可能取到下一页.
+    /// </summary>
+    public bool HasMore => !_preventLoadMore;
+
+    /// <summary>
     /// 首页加载完成；主页的「最近投稿」用它取一份稳定快照.
     /// </summary>
     public event EventHandler FirstPageLoaded;

@@ -289,8 +289,6 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         _momentItems = MomentSection?.Items;
         HomeMoments.Clear();
         SubmissionMoments.Clear();
-        VideoMoments.Clear();
-        IsVideoMomentsEmpty = false;
         IsSubmissionMomentsEmpty = false;
         if (_momentItems is null)
         {
@@ -320,7 +318,6 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             // 一次加载结束后才知道图文/视频动态是否为空；加载中不显示空状态，避免闪一下.
             IsSubmissionMomentsEmpty = SubmissionMoments.Count == 0;
-            IsVideoMomentsEmpty = VideoMoments.Count == 0;
         }
     }
 
@@ -356,12 +353,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             HomeMoments.Add(item);
         }
 
-        if (item.InnerContent is VideoItemViewModel video)
-        {
-            VideoMoments.Add(video);
-            IsVideoMomentsEmpty = false;
-        }
-        else
+        if (item.InnerContent is not VideoItemViewModel)
         {
             SubmissionMoments.Add(item);
             IsSubmissionMomentsEmpty = false;
@@ -443,7 +435,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     {
         if (IsMomentsTab)
         {
-            if (SelectedSection is not null)
+            if (IsVideoMomentFilter)
+            {
+                await VideoFeed.LoadItemsCommand.ExecuteAsync(default);
+            }
+            else if (SelectedSection is not null)
             {
                 await SelectedSection.LoadItemsCommand.ExecuteAsync(default);
             }

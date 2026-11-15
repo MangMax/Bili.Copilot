@@ -49,6 +49,14 @@
             MinColumnSpacing="16"
             MinItemWidth="220"
             MinRowSpacing="16" />
+        <DataTemplate x:Key="UserMomentVideoTemplate" x:DataType="items:VideoItemViewModel">
+            <components:VideoCardControl Style="{StaticResource UserSpaceVideoCardStyle}" ViewModel="{x:Bind}" />
+        </DataTemplate>
+        <ext:VideoCardTemplateSelector
+            x:Key="UserMomentVideoSelector"
+            DefaultTemplate="{StaticResource UserMomentVideoTemplate}"
+            MomentTemplate="{StaticResource UserMomentVideoTemplate}"
+            SkeletonTemplate="{StaticResource UserSpaceVideoSkeletonTemplate}" />
         <DataTemplate x:Key="UserSubmissionNavTemplate" x:DataType="view:UserSpaceTabViewModel">
             <ItemContainer
                 Height="44"
@@ -191,17 +199,21 @@
                                     </ItemsRepeater.ItemTemplate>
                                 </ItemsRepeater>
                                 <Grid Visibility="{x:Bind ViewModel.IsVideoMomentFilter, Mode=OneWay}">
-                                    <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.VideoMoments, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserVideoGrid}">
+                                    <repeater:AppRepeater ItemsSource="{x:Bind DisplayVideoMoments, Mode=OneWay}" Layout="{StaticResource UserVideoGrid}">
                                         <repeater:AppRepeater.ItemTemplate>
-                                            <DataTemplate x:DataType="items:VideoItemViewModel">
-                                                <components:VideoCardControl Style="{StaticResource UserSpaceVideoCardStyle}" ViewModel="{x:Bind}" />
+                                            <DataTemplate>
+                                                <ContentControl
+                                                    VerticalContentAlignment="Top"
+                                                    Content="{Binding}"
+                                                    ContentTemplateSelector="{StaticResource UserMomentVideoSelector}"
+                                                    Style="{StaticResource AppContentControlStyle}" />
                                             </DataTemplate>
                                         </repeater:AppRepeater.ItemTemplate>
                                     </repeater:AppRepeater>
                                     <base:EmptyHolder
                                         Description="{ext:Locale Name=NoSpecificData}"
                                         Emoji="&#x1F3AC;"
-                                        Visibility="{x:Bind ViewModel.IsVideoMomentsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                        Visibility="{x:Bind ViewModel.VideoFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
                                 </Grid>
                                 <StackPanel
                                     Margin="0,0,0,12"

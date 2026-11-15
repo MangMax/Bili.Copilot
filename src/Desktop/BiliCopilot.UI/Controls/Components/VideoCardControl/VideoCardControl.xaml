@@ -747,6 +747,22 @@
         </Setter>
     </Style>
 
+    <DataTemplate x:Key="UserSpaceVideoSkeletonTemplate">
+        <Grid Padding="8" VerticalAlignment="Top" IsHitTestVisible="False" AutomationProperties.AccessibilityView="Raw">
+            <local:CardContentPanel>
+                <Border CornerRadius="{StaticResource CardCoverRadius}" Background="{ThemeResource ControlFillColorSecondaryBrush}" />
+                <Grid Padding="0,10,0,0" RowSpacing="4">
+                    <Grid.RowDefinitions><RowDefinition Height="40" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                    <StackPanel Spacing="6">
+                        <Border Height="14" CornerRadius="3" Background="{ThemeResource ControlFillColorSecondaryBrush}" />
+                        <Border Height="14" Width="96" HorizontalAlignment="Left" CornerRadius="3" Background="{ThemeResource ControlFillColorTertiaryBrush}" />
+                    </StackPanel>
+                    <Border Grid.Row="1" Height="12" Width="88" HorizontalAlignment="Left" CornerRadius="3" Background="{ThemeResource ControlFillColorSecondaryBrush}" />
+                </Grid>
+            </local:CardContentPanel>
+        </Grid>
+    </DataTemplate>
+
     <DataTemplate x:Key="FeedVideoSkeletonTemplate">
         <Grid Padding="8" VerticalAlignment="Top" IsHitTestVisible="False" AutomationProperties.AccessibilityView="Raw">
             <local:CardContentPanel>

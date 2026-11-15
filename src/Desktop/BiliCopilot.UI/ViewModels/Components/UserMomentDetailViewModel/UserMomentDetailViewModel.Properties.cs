@@ -60,6 +60,11 @@ public sealed partial class UserMomentDetailViewModel
     public partial ObservableCollection<MomentItemViewModel> Items { get; set; } = new();
 
     /// <summary>
+    /// 是否还可能取到下一页；骨架占位只在还有后续内容时保留.
+    /// </summary>
+    public bool HasMore => !_preventLoadMore;
+
+    /// <summary>
     /// 列表已完成更新.
     /// </summary>
     public event EventHandler ListUpdated;
