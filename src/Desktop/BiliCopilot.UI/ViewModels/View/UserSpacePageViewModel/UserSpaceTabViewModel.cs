@@ -53,7 +53,7 @@ public enum UserSpaceTabKind
     AllMoments,
 
     /// <summary>
-    /// 动态里的视频.
+    /// 动态筛选里的视频（展示视频投稿）.
     /// </summary>
     VideoMoments,
 }

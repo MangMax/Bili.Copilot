@@ -101,7 +101,7 @@ public sealed partial class UserSpacePageViewModel
     public partial bool IsAllMomentFilter { get; set; } = true;
 
     /// <summary>
-    /// 当前是否展示视频动态.
+    /// 当前是否展示视频（视频投稿列表）.
     /// </summary>
     [ObservableProperty]
     public partial bool IsVideoMomentFilter { get; set; }

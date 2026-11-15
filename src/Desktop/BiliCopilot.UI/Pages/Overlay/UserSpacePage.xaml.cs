@@ -30,16 +30,16 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     private IncrementVerticalScrollControl? _activeScrollHost;
     private UserSpacePageHeader? _activeHeader;
     private UserProfile? _navigationProfile;
-    private const int MaxMomentAutoFillRounds = 30;
+    private const int MaxSkeletonFillRounds = 30;
 
     private UserMomentDetailViewModel? _momentSection;
     private bool _videoSkeletonGaveUp;
 
     /// <summary>
-    /// 视频动态网格实际渲染的条目：真实视频 + 补齐视口预算的骨架占位.
+    /// 视频网格实际渲染的条目：真实视频 + 补齐视口预算的骨架占位.
     /// </summary>
-    public ObservableCollection<object> DisplayVideoMoments { get; } = new();
-    private int _momentAutoFillRounds;
+    public ObservableCollection<object> DisplayVideos { get; } = new();
+    private int _skeletonFillRounds;
     private int _avatarStartAttempts;
     private bool _avatarStartInProgress;
 
@@ -75,7 +75,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         MomentFilterNav.SelectionChanged -= OnMomentFilterSelectionChanged;
         MomentFilterNavOverlay.SelectionChanged -= OnMomentFilterSelectionChanged;
         AttachMomentSection();
-        ViewModel.VideoFeed.Items.CollectionChanged -= OnVideoMomentsChanged;
+        ViewModel.VideoFeed.Items.CollectionChanged -= OnVideoFeedChanged;
         LayoutUpdated -= OnSpaceLayoutUpdated;
         CancelAvatarTransition();
         DisconnectHeader();
@@ -96,10 +96,10 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         else if (e.PropertyName is nameof(UserSpacePageViewModel.SelectedMomentFilter))
         {
             SyncMomentFilterSelection();
-            _momentAutoFillRounds = 0;
+            _skeletonFillRounds = 0;
             _videoSkeletonGaveUp = false;
-            QueueMomentItemsCheck();
-            SyncVideoMomentsDisplay();
+            QueueContentFillCheck();
+            SyncVideoDisplay();
         }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.MomentSection))
         {
@@ -107,14 +107,14 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.IsMomentsTab))
         {
-            _momentAutoFillRounds = 0;
+            _skeletonFillRounds = 0;
             _videoSkeletonGaveUp = false;
-            QueueMomentItemsCheck();
-            SyncVideoMomentsDisplay();
+            QueueContentFillCheck();
+            SyncVideoDisplay();
         }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.IsVideoMomentFilter))
         {
-            SyncVideoMomentsDisplay();
+            SyncVideoDisplay();
         }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.IsSubmissionTab))
         {
@@ -140,45 +140,44 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
     }
 
-    private void OnMomentSectionListUpdated(object? sender, EventArgs e) => QueueMomentItemsCheck();
+    private void OnMomentSectionListUpdated(object? sender, EventArgs e) => QueueContentFillCheck();
 
     /// <summary>
-    /// 动态加载一页后重新按视口判断：内容不够长时继续取下一页，
-    /// 否则矮内容（例如「视频」筛选）停在首屏、整个页面也没有滚动余量。
+    /// 列表更新后重新按视口判断：内容不够高时继续取下一页，
+    /// 否则矮内容会停在首屏、整个页面也没有滚动余量。
     /// </summary>
-    private void QueueMomentItemsCheck()
+    private void QueueContentFillCheck()
     {
-        // 筛选后当前列表可能比视口矮：补取几页把首屏填满，但设上限，
-        // 避免动态很多、视频很少的账号被自动翻完整个历史。
+        // 筛选后列表可能比视口矮：补取几页把首屏填满，但设上限避免一次筛选连续翻太多页。
         if (_activeScrollHost is not { } host)
         {
             return;
         }
 
-        if (_momentAutoFillRounds >= MaxMomentAutoFillRounds)
+        if (_skeletonFillRounds >= MaxSkeletonFillRounds)
         {
             // 补了很多页仍然填不满：收掉骨架，让列表按实际内容结束.
             if (!_videoSkeletonGaveUp)
             {
                 _videoSkeletonGaveUp = true;
-                SyncVideoMomentsDisplay();
+                SyncVideoDisplay();
             }
 
             return;
         }
 
-        _momentAutoFillRounds++;
+        _skeletonFillRounds++;
         _ = host.DelayCheckItemsAsync();
     }
 
-    private void OnVideoMomentsChanged(object? sender, NotifyCollectionChangedEventArgs e) => SyncVideoMomentsDisplay();
+    private void OnVideoFeedChanged(object? sender, NotifyCollectionChangedEventArgs e) => SyncVideoDisplay();
 
-    private void OnScrollHostBudgetChanged(int budget) => SyncVideoMomentsDisplay();
+    private void OnScrollHostBudgetChanged(int budget) => SyncVideoDisplay();
 
     /// <summary>
-    /// 视频动态网格按视口预算铺骨架：先按一屏的数量占位，真实卡片到达后逐格替换。
+    /// 视频网格按视口预算铺骨架：先按一屏的数量占位，真实卡片到达后逐格替换。
     /// </summary>
-    private void SyncVideoMomentsDisplay()
+    private void SyncVideoDisplay()
     {
         var host = _activeScrollHost;
         if (!ViewModel.IsMomentsTab || !ViewModel.IsVideoMomentFilter)
@@ -190,7 +189,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         var count = ViewModel.VideoFeed.Items.Count;
         if (count == 0 && ViewModel.VideoFeed.IsEmpty)
         {
-            VideoListDisplay.Apply(DisplayVideoMoments, 0, _ => null);
+            VideoListDisplay.Apply(DisplayVideos, 0, _ => null);
             ResetVideoSlotBudget();
             return;
         }
@@ -199,7 +198,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         var canLoadMore = ViewModel.VideoFeed.HasMore && !_videoSkeletonGaveUp;
         var budget = host is { CurrentBudget: > 0 } ? host.CurrentBudget : VideoListDisplay.InitialSkeletonEstimate;
         var desired = canLoadMore ? Math.Max(count, Math.Min(budget, ScrollSlotBudget.DefaultMaxSlots)) : count;
-        VideoListDisplay.Apply(DisplayVideoMoments, desired, i => i < count ? ViewModel.VideoFeed.Items[i] : null);
+        VideoListDisplay.Apply(DisplayVideos, desired, i => i < count ? ViewModel.VideoFeed.Items[i] : null);
         if (host is not null)
         {
             host.ItemCount = count;
@@ -211,7 +210,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         // 滚动余量判据不会触发，这里按预算补一页.
         if (desired > count)
         {
-            QueueMomentItemsCheck();
+            QueueContentFillCheck();
         }
     }
 
@@ -390,7 +389,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         UpdateBackdropSize();
         ConnectBackdrop();
         UpdateSubmissionOverlay();
-        SyncVideoMomentsDisplay();
+        SyncVideoDisplay();
     }
 
     private void DisconnectHeader()
@@ -521,7 +520,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             BeginAvatarTransition(profile);
             QueueSubmissionSelectionSync();
             SyncMomentFilterSelection();
-            _momentAutoFillRounds = 0;
+            _skeletonFillRounds = 0;
             _videoSkeletonGaveUp = false;
         }
     }

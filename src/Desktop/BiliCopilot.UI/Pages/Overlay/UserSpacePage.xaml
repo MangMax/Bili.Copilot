@@ -32,12 +32,6 @@
             MinItemWidth="300"
             MinRowSpacing="16" />
         <UniformGridLayout
-            x:Key="UserMomentGrid"
-            ItemsStretch="Fill"
-            MinColumnSpacing="16"
-            MinItemWidth="280"
-            MinRowSpacing="16" />
-        <UniformGridLayout
             x:Key="UserAudioGrid"
             ItemsStretch="Fill"
             MinColumnSpacing="16"
@@ -49,13 +43,13 @@
             MinColumnSpacing="16"
             MinItemWidth="220"
             MinRowSpacing="16" />
-        <DataTemplate x:Key="UserMomentVideoTemplate" x:DataType="items:VideoItemViewModel">
+        <DataTemplate x:Key="UserVideoGridTemplate" x:DataType="items:VideoItemViewModel">
             <components:VideoCardControl Style="{StaticResource UserSpaceVideoCardStyle}" ViewModel="{x:Bind}" />
         </DataTemplate>
         <ext:VideoCardTemplateSelector
-            x:Key="UserMomentVideoSelector"
-            DefaultTemplate="{StaticResource UserMomentVideoTemplate}"
-            MomentTemplate="{StaticResource UserMomentVideoTemplate}"
+            x:Key="UserVideoGridSelector"
+            DefaultTemplate="{StaticResource UserVideoGridTemplate}"
+            MomentTemplate="{StaticResource UserVideoGridTemplate}"
             SkeletonTemplate="{StaticResource UserSpaceVideoSkeletonTemplate}" />
         <DataTemplate x:Key="UserSubmissionNavTemplate" x:DataType="view:UserSpaceTabViewModel">
             <ItemContainer
@@ -199,13 +193,13 @@
                                     </ItemsRepeater.ItemTemplate>
                                 </ItemsRepeater>
                                 <Grid Visibility="{x:Bind ViewModel.IsVideoMomentFilter, Mode=OneWay}">
-                                    <repeater:AppRepeater ItemsSource="{x:Bind DisplayVideoMoments, Mode=OneWay}" Layout="{StaticResource UserVideoGrid}">
+                                    <repeater:AppRepeater ItemsSource="{x:Bind DisplayVideos, Mode=OneWay}" Layout="{StaticResource UserVideoGrid}">
                                         <repeater:AppRepeater.ItemTemplate>
                                             <DataTemplate>
                                                 <ContentControl
                                                     VerticalContentAlignment="Top"
                                                     Content="{Binding}"
-                                                    ContentTemplateSelector="{StaticResource UserMomentVideoSelector}"
+                                                    ContentTemplateSelector="{StaticResource UserVideoGridSelector}"
                                                     Style="{StaticResource AppContentControlStyle}" />
                                             </DataTemplate>
                                         </repeater:AppRepeater.ItemTemplate>

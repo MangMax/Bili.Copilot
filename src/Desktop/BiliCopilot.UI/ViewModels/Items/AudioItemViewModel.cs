@@ -22,7 +22,6 @@ public sealed partial class AudioItemViewModel : ViewModelBase<AudioInformation>
     {
         Title = data.Identifier.Title ?? string.Empty;
         Cover = data.Identifier.Cover?.Uri;
-        Author = data.Author ?? string.Empty;
         Duration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(data.Duration ?? 0));
         PlayCount = AppToolkit.FormatCount(data.PlayCount ?? 0);
     }
@@ -36,11 +35,6 @@ public sealed partial class AudioItemViewModel : ViewModelBase<AudioInformation>
     /// 封面.
     /// </summary>
     public Uri? Cover { get; }
-
-    /// <summary>
-    /// 作者.
-    /// </summary>
-    public string Author { get; }
 
     /// <summary>
     /// 时长.
