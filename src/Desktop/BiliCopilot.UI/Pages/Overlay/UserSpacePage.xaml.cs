@@ -4,7 +4,6 @@ using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Controls.Moment;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Richasy.BiliKernel.Models.User;
@@ -30,11 +29,6 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     private UserProfile? _navigationProfile;
     private int _avatarStartAttempts;
     private bool _avatarStartInProgress;
-    private bool _submissionNavAttached;
-    private Visual? _submissionNavVisual;
-    private ExpressionAnimation? _submissionSticky;
-    private double _submissionStickyTop;
-    private double _submissionStickyMax;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePage"/> class.
@@ -62,7 +56,6 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         LayoutUpdated -= OnSpaceLayoutUpdated;
         CancelAvatarTransition();
         DisconnectHeader();
-        DisconnectSubmissionSidebar();
         _activeScroll = null;
         ConnectBackdrop();
     }
@@ -79,8 +72,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.IsSubmissionTab))
         {
-            RefreshSubmissionSidebar();
-            QueueSubmissionContentReset();
+            UpdateSubmissionLayout();
         }
     }
 
@@ -89,30 +81,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         if (sender.SelectedItem is UserSpaceTabViewModel tab && !ReferenceEquals(tab, ViewModel.SelectedSubmissionTab))
         {
             ViewModel.SelectSubmissionTabCommand.Execute(tab);
-            QueueSubmissionContentReset();
-        }
-    }
 
-    private void QueueSubmissionContentReset()
-        => DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, EnsureSubmissionContentVisible);
-
-    private void EnsureSubmissionContentVisible()
-    {
-        // 已经滚进内容区时切换分类，回到分类内容的起点，而不是停在原来的滚动位置。
-        if (!ViewModel.IsSubmissionTab || _activeScroll is null || SubmissionPanel.ActualHeight <= 0)
-        {
-            return;
-        }
-
-        if (_activeScroll.Content is not UIElement contentRoot)
-        {
-            return;
-        }
-
-        var top = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
-        if (_activeScroll.VerticalOffset > top)
-        {
-            _activeScroll.ScrollTo(0, Math.Max(0, top - 16));
+            // 切换分类回到列表起点，而不是停在上一个分类的滚动位置。
+            SubmissionScroll.ResetScrollPosition();
         }
     }
 
@@ -148,129 +119,32 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             _ => FluentIcons.Common.Symbol.VideoClip,
         };
 
-    private void ConnectSubmissionSidebar()
-    {
-        if (_activeScroll is null || _submissionNavAttached)
-        {
-            return;
-        }
-
-        _submissionNavAttached = true;
-        ElementCompositionPreview.SetIsTranslationEnabled(SubmissionNavRail, true);
-        var visual = ElementCompositionPreview.GetElementVisual(SubmissionNavRail);
-        visual.Properties.InsertVector3("Translation", Vector3.Zero);
-
-        // 用合成动画直接跟随滚动偏移：位置与滚动同一帧生效，不做逐帧重算，也不会追着内容抖.
-        var sticky = visual.Compositor.CreateExpressionAnimation(
-            "Vector3(0, Min(Max(0, (source.Position.Y - source.MinPosition.Y) - top), maxShift), 0)");
-        sticky.SetReferenceParameter("source", _activeScroll.ExpressionAnimationSources);
-        sticky.SetScalarParameter("top", 0f);
-        sticky.SetScalarParameter("maxShift", 0f);
-        visual.StartAnimation("Translation", sticky);
-        _submissionNavVisual = visual;
-        _submissionSticky = sticky;
-
-        _activeScroll.ViewChanged += OnSubmissionScrollViewChanged;
-        LayoutUpdated += OnSubmissionLayoutUpdated;
-        UpdateSubmissionStickyBounds();
-        QueueSubmissionStickyUpdate();
-    }
-
-    private void RefreshSubmissionSidebar()
+    /// <summary>
+    /// 投稿分区用「左侧固定分类栏 + 右侧独立滚动区」的两栏布局：
+    /// 面板高度取视口减去页头，两栏内部各自滚动，侧栏不会跟着列表走。
+    /// </summary>
+    private void UpdateSubmissionLayout()
     {
         if (!ViewModel.IsSubmissionTab)
         {
-            DisconnectSubmissionSidebar();
+            SubmissionPanel.ClearValue(FrameworkElement.HeightProperty);
             return;
         }
 
-        if (!_submissionNavAttached)
+        if (_activeScroll is null)
         {
-            ConnectSubmissionSidebar();
+            return;
         }
-        else
+
+        var headerHeight = _activeHeader?.ActualHeight ?? 0;
+        // 减去页头后的行距（16）和内容底边距（16），让外层刚好不出现滚动。
+        var available = _activeScroll.ViewportHeight - headerHeight - 32;
+        var height = Math.Max(320, available);
+        if (double.IsFinite(height) && Math.Abs(SubmissionPanel.Height - height) > 0.5)
         {
-            UpdateSubmissionStickyBounds();
+            SubmissionPanel.Height = height;
         }
     }
-
-    private void DisconnectSubmissionSidebar()
-    {
-        if (_activeScroll is not null)
-        {
-            _activeScroll.ViewChanged -= OnSubmissionScrollViewChanged;
-        }
-
-        LayoutUpdated -= OnSubmissionLayoutUpdated;
-        _submissionNavAttached = false;
-        if (_submissionNavVisual is not null)
-        {
-            _submissionNavVisual.StopAnimation("Translation");
-            _submissionNavVisual.Properties.InsertVector3("Translation", Vector3.Zero);
-        }
-
-        _submissionNavVisual = null;
-        _submissionSticky = null;
-        SubmissionNavRail.Background = null;
-    }
-
-    private void QueueSubmissionStickyUpdate()
-        => DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
-            UpdateSubmissionStickyBounds);
-
-    private void OnSubmissionLayoutUpdated(object? sender, object e) => UpdateSubmissionStickyBounds();
-
-    private void OnSubmissionScrollViewChanged(ScrollView sender, object args) => UpdateSubmissionPinnedBackdrop();
-
-    /// <summary>
-    /// 侧栏粘住时压在内容上方，需要一层页面同色背板；回到原位时恢复透明.
-    /// </summary>
-    private void UpdateSubmissionPinnedBackdrop()
-    {
-        if (!_submissionNavAttached || _activeScroll is null)
-        {
-            return;
-        }
-
-        var pinned = _activeScroll.VerticalOffset > _submissionStickyTop;
-        var background = pinned ? PageLayout.Background : null;
-        if (!ReferenceEquals(SubmissionNavRail.Background, background))
-        {
-            SubmissionNavRail.Background = background;
-        }
-    }
-
-    private void UpdateSubmissionStickyBounds()
-    {
-        if (!_submissionNavAttached || SubmissionNavRail.ActualHeight <= 0 || SubmissionContent.ActualHeight <= 0)
-        {
-            return;
-        }
-
-        if (_activeScroll?.Content is not UIElement contentRoot)
-        {
-            return;
-        }
-
-        var top = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
-        var maxShift = Math.Max(0, SubmissionContent.ActualHeight - SubmissionNavRail.ActualHeight);
-        if (Math.Abs(top - _submissionStickyTop) < 0.5 && Math.Abs(maxShift - _submissionStickyMax) < 0.5)
-        {
-            UpdateSubmissionPinnedBackdrop();
-            return;
-        }
-
-        _submissionStickyTop = top;
-        _submissionStickyMax = maxShift;
-        _submissionSticky?.SetScalarParameter("top", (float)top);
-        _submissionSticky?.SetScalarParameter("maxShift", (float)maxShift);
-        UpdateSubmissionPinnedBackdrop();
-    }
-
-    private void OnSubmissionPanelSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSubmissionStickyBounds();
-
-    private void OnSubmissionContentSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSubmissionStickyBounds();
 
     private void QueueScrollHostUpdate()
     {
@@ -295,9 +169,14 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             return;
         }
 
+        if (_activeScroll is not null)
+        {
+            _activeScroll.SizeChanged -= OnSpaceScrollSizeChanged;
+        }
+
         DisconnectHeader();
-        DisconnectSubmissionSidebar();
         _activeScroll = scroll;
+        _activeScroll.SizeChanged += OnSpaceScrollSizeChanged;
         _activeScrollHost = host;
         _activeHeader = FindChild<UserSpacePageHeader>(scroll);
         if (_activeHeader is not null)
@@ -307,7 +186,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
         UpdateBackdropSize();
         ConnectBackdrop();
-        RefreshSubmissionSidebar();
+        UpdateSubmissionLayout();
     }
 
     private void DisconnectHeader()
@@ -331,7 +210,13 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
     }
 
-    private void OnHeaderSizeChanged(object sender, SizeChangedEventArgs e) => UpdateBackdropSize();
+    private void OnSpaceScrollSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSubmissionLayout();
+
+    private void OnHeaderSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        UpdateBackdropSize();
+        UpdateSubmissionLayout();
+    }
 
     private void UpdateBackdropSize()
     {
@@ -377,6 +262,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     {
         Backdrop.Width = e.NewSize.Width;
         PageLayout.Clip = new RectangleGeometry { Rect = new Windows.Foundation.Rect(0, 0, e.NewSize.Width, e.NewSize.Height) };
+        UpdateSubmissionLayout();
     }
 
     private void OnPageThemeChanged(FrameworkElement sender, object args) => UpdateBackdropColor();

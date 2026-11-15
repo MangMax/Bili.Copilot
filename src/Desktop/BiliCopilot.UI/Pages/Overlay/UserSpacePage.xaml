@@ -182,8 +182,7 @@
                         <!--  投稿：左侧分类侧栏 + 右侧内容，切换分类只换右栏  -->
                         <Grid
                             x:Name="SubmissionPanel"
-                            ColumnSpacing="20"
-                            SizeChanged="OnSubmissionPanelSizeChanged"
+                            ColumnSpacing="0"
                             Visibility="{x:Bind ViewModel.IsSubmissionTab, Mode=OneWay}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="180" />
@@ -210,10 +209,13 @@
                                 </ItemsView>
                             </Border>
 
-                            <Grid
-                                x:Name="SubmissionContent"
-                                Grid.Column="1"
-                                SizeChanged="OnSubmissionContentSizeChanged">
+                            <Grid Grid.Column="1">
+                                <!--  分类内容在自己的滚动区里，分类侧栏固定在左侧  -->
+                                <controls:IncrementVerticalScrollControl
+                                    x:Name="SubmissionScroll"
+                                    LoadMoreCommand="{x:Bind ViewModel.LoadMoreCommand, Mode=OneWay}">
+                                    <controls:IncrementVerticalScrollControl.Element>
+                                        <Grid x:Name="SubmissionContent">
                                 <!--  视频  -->
                                 <Grid Visibility="{x:Bind ViewModel.ShowSubmissionVideos, Mode=OneWay}">
                                     <StackPanel Spacing="12">
@@ -451,6 +453,9 @@
                                         Visibility="{x:Bind ViewModel.CollectionFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
                                     <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.CollectionFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
                                 </Grid>
+                                        </Grid>
+                                    </controls:IncrementVerticalScrollControl.Element>
+                                </controls:IncrementVerticalScrollControl>
                             </Grid>
                         </Grid>
                     </Grid>
