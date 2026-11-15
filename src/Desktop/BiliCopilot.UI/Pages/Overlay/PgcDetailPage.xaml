@@ -277,6 +277,7 @@
                                     Width="36"
                                     Height="36"
                                     Padding="0"
+                                    AutomationProperties.AutomationId="PgcDetailRefresh"
                                     Command="{x:Bind ViewModel.RefreshCommand}"
                                     Style="{StaticResource IconButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=Refresh}"
@@ -379,6 +380,7 @@
                         Visibility="{x:Bind ViewModel.ReviewPageText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
                         <Button
                             Padding="12,4"
+                            AutomationProperties.AutomationId="PgcReviewPrevPage"
                             Command="{x:Bind ViewModel.PrevReviewPageCommand}"
                             Content="{ext:Locale Name=PrevPage}"
                             IsEnabled="{x:Bind ViewModel.CanGoPrevReviewPage, Mode=OneWay}" />
@@ -388,6 +390,7 @@
                             Text="{x:Bind ViewModel.ReviewPageText, Mode=OneWay}" />
                         <Button
                             Padding="12,4"
+                            AutomationProperties.AutomationId="PgcReviewNextPage"
                             Command="{x:Bind ViewModel.NextReviewPageCommand}"
                             Content="{ext:Locale Name=NextPage}"
                             IsEnabled="{x:Bind ViewModel.CanGoNextReviewPage, Mode=OneWay}" />
@@ -412,7 +415,10 @@
             Severity="Warning"
             Message="{ext:Locale Name=FailedToLoadPgcDetail}">
             <InfoBar.ActionButton>
-                <Button Command="{x:Bind ViewModel.RefreshCommand}" Content="{ext:Locale Name=Retry}" />
+                <Button
+                    AutomationProperties.AutomationId="PgcDetailRetry"
+                    Command="{x:Bind ViewModel.RefreshCommand}"
+                    Content="{ext:Locale Name=Retry}" />
             </InfoBar.ActionButton>
         </InfoBar>
     </Grid>

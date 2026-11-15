@@ -381,6 +381,7 @@
                                                     <Button
                                                         Padding="8"
                                                         HorizontalContentAlignment="Stretch"
+                                                        AutomationProperties.AutomationId="UserSpaceAudioItem"
                                                         Command="{x:Bind OpenCommand, Mode=OneTime}"
                                                         CornerRadius="8"
                                                         Style="{StaticResource SubtleButtonStyle}"
@@ -452,6 +453,7 @@
                                                     <Button
                                                         Padding="8"
                                                         HorizontalContentAlignment="Stretch"
+                                                        AutomationProperties.AutomationId="UserSpaceCollectionItem"
                                                         Command="{x:Bind OpenCommand, Mode=OneTime}"
                                                         CornerRadius="8"
                                                         Style="{StaticResource SubtleButtonStyle}"
