@@ -29,6 +29,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     private UserProfile? _navigationProfile;
     private int _avatarStartAttempts;
     private bool _avatarStartInProgress;
+    private bool _submissionNavAttached;
+    private double _submissionStickyTop;
+    private double _submissionStickyMax;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePage"/> class.
@@ -44,18 +47,19 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     {
         UpdateBackdropColor();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-        SubmissionSelector.SelectionChanged += OnSubmissionTabSelectionChanged;
-        UpdateSubmissionTabs();
+        SubmissionNav.SelectionChanged += OnSubmissionSelectionChanged;
+        QueueSubmissionSelectionSync();
         QueueScrollHostUpdate();
     }
 
     private void OnSpaceUnloaded(object sender, RoutedEventArgs e)
     {
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-        SubmissionSelector.SelectionChanged -= OnSubmissionTabSelectionChanged;
+        SubmissionNav.SelectionChanged -= OnSubmissionSelectionChanged;
         LayoutUpdated -= OnSpaceLayoutUpdated;
         CancelAvatarTransition();
         DisconnectHeader();
+        DisconnectSubmissionSidebar();
         _activeScroll = null;
         ConnectBackdrop();
     }
@@ -66,27 +70,163 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         {
             QueueScrollHostUpdate();
         }
-        else if (e.PropertyName is nameof(UserSpacePageViewModel.SubmissionTabs) or nameof(UserSpacePageViewModel.SelectedSubmissionTab))
+        else if (e.PropertyName is nameof(UserSpacePageViewModel.SelectedSubmissionTab))
         {
-            UpdateSubmissionTabs();
+            QueueSubmissionSelectionSync();
+        }
+        else if (e.PropertyName is nameof(UserSpacePageViewModel.IsSubmissionTab))
+        {
+            RefreshSubmissionSidebar();
+            QueueSubmissionContentReset();
         }
     }
 
-    private void UpdateSubmissionTabs()
+    private void OnSubmissionSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        var items = ViewModel.SubmissionTabs
-            .Select(p => new SelectorBarItem { Text = p.Title, Tag = p })
-            .ToList();
-        SubmissionSelector.SetItems(items, ViewModel.SelectedSubmissionTab);
-    }
-
-    private void OnSubmissionTabSelectionChanged(object? sender, EventArgs e)
-    {
-        if (SubmissionSelector.SelectedItem is UserSpaceTabViewModel tab && !ReferenceEquals(tab, ViewModel.SelectedSubmissionTab))
+        if (sender.SelectedItem is UserSpaceTabViewModel tab && !ReferenceEquals(tab, ViewModel.SelectedSubmissionTab))
         {
             ViewModel.SelectSubmissionTabCommand.Execute(tab);
+            QueueSubmissionContentReset();
         }
     }
+
+    private void QueueSubmissionContentReset()
+        => DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, EnsureSubmissionContentVisible);
+
+    private void EnsureSubmissionContentVisible()
+    {
+        // 已经滚进内容区时切换分类，回到分类内容的起点，而不是停在原来的滚动位置。
+        if (!ViewModel.IsSubmissionTab || _activeScroll is null || SubmissionPanel.ActualHeight <= 0)
+        {
+            return;
+        }
+
+        if (_activeScroll.Content is not UIElement contentRoot)
+        {
+            return;
+        }
+
+        var top = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
+        if (_activeScroll.VerticalOffset > top)
+        {
+            _activeScroll.ScrollTo(0, Math.Max(0, top - 16));
+        }
+    }
+
+    private void QueueSubmissionSelectionSync()
+        => DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, SyncSubmissionSelection);
+
+    private void SyncSubmissionSelection()
+    {
+        if (!IsLoaded || ViewModel.SubmissionTabs is not { Count: > 0 } tabs || ViewModel.SelectedSubmissionTab is not { } selected)
+        {
+            return;
+        }
+
+        var index = tabs.IndexOf(selected);
+        if (index >= 0 && !ReferenceEquals(SubmissionNav.SelectedItem, selected))
+        {
+            SubmissionNav.Select(index);
+        }
+    }
+
+    /// <summary>
+    /// 投稿分类的图标：侧栏比纯文字更容易扫读.
+    /// </summary>
+    /// <param name="kind">分区类型.</param>
+    /// <returns>图标.</returns>
+    public static FluentIcons.Common.Symbol GetSubmissionIcon(UserSpaceTabKind kind)
+        => kind switch
+        {
+            UserSpaceTabKind.Articles => FluentIcons.Common.Symbol.DocumentBulletList,
+            UserSpaceTabKind.MomentPosts => FluentIcons.Common.Symbol.BubbleMultiple,
+            _ => FluentIcons.Common.Symbol.VideoClip,
+        };
+
+    private void ConnectSubmissionSidebar()
+    {
+        if (_activeScroll is null || _submissionNavAttached)
+        {
+            return;
+        }
+
+        _submissionNavAttached = true;
+        _activeScroll.ViewChanged += OnSubmissionScrollViewChanged;
+        UpdateSubmissionStickyBounds();
+    }
+
+    private void RefreshSubmissionSidebar()
+    {
+        if (!ViewModel.IsSubmissionTab)
+        {
+            DisconnectSubmissionSidebar();
+            return;
+        }
+
+        if (!_submissionNavAttached)
+        {
+            ConnectSubmissionSidebar();
+        }
+        else
+        {
+            UpdateSubmissionStickyBounds();
+        }
+    }
+
+    private void DisconnectSubmissionSidebar()
+    {
+        if (_activeScroll is not null)
+        {
+            _activeScroll.ViewChanged -= OnSubmissionScrollViewChanged;
+        }
+
+        _submissionNavAttached = false;
+        if (SubmissionNavShift is not null)
+        {
+            SubmissionNavShift.Y = 0;
+        }
+    }
+
+    private void OnSubmissionScrollViewChanged(ScrollView sender, object args) => UpdateSubmissionStickyPosition();
+
+    /// <summary>
+    /// 侧栏在内容滚动后停在视口顶部：滚动位置越过侧栏原始位置时把它往下推同样的距离，
+    /// 到底部时再停住，避免跟着内容一起滚走。
+    /// </summary>
+    private void UpdateSubmissionStickyPosition()
+    {
+        if (!_submissionNavAttached || !ViewModel.IsSubmissionTab || _activeScroll is null)
+        {
+            return;
+        }
+
+        var shift = Math.Clamp(_activeScroll.VerticalOffset - _submissionStickyTop, 0, _submissionStickyMax);
+        if (Math.Abs(SubmissionNavShift.Y - shift) > 0.5)
+        {
+            SubmissionNavShift.Y = shift;
+        }
+    }
+
+    private void UpdateSubmissionStickyBounds()
+    {
+        if (!_submissionNavAttached || SubmissionNav.ActualHeight <= 0 || SubmissionContent.ActualHeight <= 0)
+        {
+            return;
+        }
+
+        if (_activeScroll?.Content is not UIElement contentRoot)
+        {
+            return;
+        }
+
+        _submissionStickyTop = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
+        _submissionStickyMax = Math.Max(0, SubmissionContent.ActualHeight - SubmissionNav.ActualHeight);
+        UpdateSubmissionStickyPosition();
+    }
+
+    private void OnSubmissionPanelSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSubmissionStickyBounds();
+
+    private void OnSubmissionContentSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSubmissionStickyBounds();
 
     private void QueueScrollHostUpdate()
     {
@@ -112,6 +252,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
 
         DisconnectHeader();
+        DisconnectSubmissionSidebar();
         _activeScroll = scroll;
         _activeScrollHost = host;
         _activeHeader = FindChild<UserSpacePageHeader>(scroll);
@@ -122,6 +263,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
         UpdateBackdropSize();
         ConnectBackdrop();
+        RefreshSubmissionSidebar();
     }
 
     private void DisconnectHeader()
@@ -240,7 +382,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
             // 叠层页会按类型缓存，复用页面不会再触发 Loaded；每次收到参数都重新等待布局。
             BeginAvatarTransition(profile);
-            UpdateSubmissionTabs();
+            QueueSubmissionSelectionSync();
         }
     }
 

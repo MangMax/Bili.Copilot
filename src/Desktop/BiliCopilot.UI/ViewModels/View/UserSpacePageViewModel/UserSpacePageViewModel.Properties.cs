@@ -18,7 +18,6 @@ public sealed partial class UserSpacePageViewModel
 {
     private readonly IRelationshipService _relationshipService;
     private readonly IUserService _userService;
-    private bool _submissionArticlesLoaded;
     private readonly ISearchService _searchService;
     private readonly ILogger<UserSpacePageViewModel> _logger;
     private UserProfile _profile;
@@ -84,22 +83,14 @@ public sealed partial class UserSpacePageViewModel
     public partial UserMomentDetailViewModel? MomentSection { get; set; }
 
     /// <summary>
-    /// 主页的最近投稿.
+    /// 主页的最近投稿：首页到达时取一份快照，之后翻页不再改动.
     /// </summary>
-    [ObservableProperty]
-    public partial List<VideoItemViewModel> HomeVideos { get; set; } = [];
+    public ObservableCollection<VideoItemViewModel> HomeVideos { get; } = new();
 
     /// <summary>
-    /// 主页的最近动态.
+    /// 主页的最近动态：随动态分区增量追加，到达上限后不再增长.
     /// </summary>
-    [ObservableProperty]
-    public partial List<MomentItemViewModel> HomeMoments { get; set; } = [];
-
-    /// <summary>
-    /// 主页是否正在加载.
-    /// </summary>
-    [ObservableProperty]
-    public partial bool IsHomeLoading { get; set; }
+    public ObservableCollection<MomentItemViewModel> HomeMoments { get; } = new();
 
     /// <summary>
     /// 投稿分区：视频、专栏、动态.
@@ -114,28 +105,25 @@ public sealed partial class UserSpacePageViewModel
     public partial UserSpaceTabViewModel? SelectedSubmissionTab { get; set; }
 
     /// <summary>
-    /// 投稿视频.
+    /// 投稿视频（分页）.
     /// </summary>
-    [ObservableProperty]
-    public partial List<VideoItemViewModel> SubmissionVideos { get; set; } = [];
+    public UserSpaceVideoFeedViewModel VideoFeed { get; }
 
     /// <summary>
-    /// 投稿专栏.
+    /// 投稿专栏（分页）.
     /// </summary>
-    [ObservableProperty]
-    public partial List<ArticleItemViewModel> SubmissionArticles { get; set; } = [];
+    public UserSpaceArticleFeedViewModel ArticleFeed { get; }
 
     /// <summary>
-    /// 投稿动态（图文）.
+    /// 投稿动态（图文）：从动态分区增量过滤，不整份重建.
     /// </summary>
-    [ObservableProperty]
-    public partial List<MomentItemViewModel> SubmissionMoments { get; set; } = [];
+    public ObservableCollection<MomentItemViewModel> SubmissionMoments { get; } = new();
 
     /// <summary>
-    /// 投稿是否正在加载.
+    /// 投稿动态是否为空；只在一次加载结束后更新，避免首屏加载时先闪一下空状态.
     /// </summary>
     [ObservableProperty]
-    public partial bool IsSubmissionLoading { get; set; }
+    public partial bool IsSubmissionMomentsEmpty { get; set; }
 
     /// <summary>
     /// 当前展示投稿视频.

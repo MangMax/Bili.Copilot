@@ -147,6 +147,8 @@
   <ItemGroup>
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/UserSpacePageViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserMomentDetailViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserSpaceVideoFeedViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserSpaceArticleFeedViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/PinItem.cs" Link="UserSpace/PinItem.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/PinContentType.cs" Link="UserSpace/PinContentType.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/MomentCardStyle.cs" Link="UserSpace/MomentCardStyle.cs" />

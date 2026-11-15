@@ -122,6 +122,84 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
     }
 
     [Fact]
+    public async Task HomeAndSubmissionMomentsAppendIncrementallyWithCappedHomePreview()
+    {
+        var moments = new MomentService();
+        var relationships = new RelationshipService();
+        var harness = Create(moments, relationships, new UserService(), new SearchService(), videoSelected: false);
+        var page = harness.Page;
+        var section = harness.Comprehensive;
+        var a = User("A");
+
+        page.InitializeCommand.Execute(a);
+        var init = page.InitializeCommand.ExecutionTask!;
+        var first = Assert.Single(moments.Requests);
+        var firstPage = Enumerable.Range(1, 8).Select(index => Moment($"m-{index}", a)).ToList();
+        moments.Complete(first, firstPage, "m-8", true);
+        await section.InitializeCommand.ExecutionTask!;
+
+        // 主页只保留最近 6 条，投稿的动态保留全部图文动态。
+        Assert.Equal(6, page.HomeMoments.Count);
+        Assert.Equal(8, page.SubmissionMoments.Count);
+        Assert.Equal("m-1", page.HomeMoments[0].Data.Id);
+
+        section.LoadItemsCommand.Execute(null);
+        var next = moments.Requests[1];
+        moments.Complete(next, [Moment("m-9", a), Moment("m-10", a)], "m-10", true);
+        await section.LoadItemsCommand.ExecutionTask!;
+
+        // 后续分页只追加，不整份替换：主页保持 6 条，投稿继续增长。
+        Assert.Equal(6, page.HomeMoments.Count);
+        Assert.Equal(10, page.SubmissionMoments.Count);
+        Assert.Equal("m-10", page.SubmissionMoments[^1].Data.Id);
+
+        relationships.Complete(Assert.Single(relationships.Requests), UserRelationStatus.Unfollow);
+        await init;
+    }
+
+    [Fact]
+    public async Task LoadMoreOnlyLoadsTheActiveSection()
+    {
+        var moments = new MomentService();
+        var relationships = new RelationshipService();
+        var harness = Create(moments, relationships, new UserService(), new SearchService(), videoSelected: false);
+        var page = harness.Page;
+        var section = harness.Comprehensive;
+
+        page.InitializeCommand.Execute(User("A"));
+        var init = page.InitializeCommand.ExecutionTask!;
+        moments.Complete(Assert.Single(moments.Requests), [Moment("a-1", User("A"))], "a-2", true);
+        await section.InitializeCommand.ExecutionTask!;
+
+        // 主页只有预览，滚动到底不应再拉动态分页。
+        Assert.True(page.IsHomeTab);
+        page.LoadMoreCommand.Execute(null);
+        await page.LoadMoreCommand.ExecutionTask!;
+        Assert.Single(moments.Requests);
+
+        // 动态分区滚动到底才继续翻页。
+        page.SelectTabCommand.Execute(page.Tabs[1]);
+        page.LoadMoreCommand.Execute(null);
+        var next = moments.Requests[1];
+        Assert.Equal("a-2", next.Offset);
+        moments.Complete(next, [Moment("a-3", User("A"))], "a-3", true);
+        await page.LoadMoreCommand.ExecutionTask!;
+        Assert.Equal(2, section.Items.Count);
+
+        // 投稿的「动态」共用同一份图文动态，同样按当前分区翻页。
+        page.SelectSubmissionTabCommand.Execute(page.SubmissionTabs[2]);
+        page.SelectTabCommand.Execute(page.Tabs[2]);
+        page.LoadMoreCommand.Execute(null);
+        Assert.Equal(3, moments.Requests.Count);
+        moments.Complete(moments.Requests[2], [Moment("a-4", User("A"))], "a-4", true);
+        await page.LoadMoreCommand.ExecutionTask!;
+        Assert.Equal(3, page.SubmissionMoments.Count);
+
+        relationships.Complete(Assert.Single(relationships.Requests), UserRelationStatus.Unfollow);
+        await init;
+    }
+
+    [Fact]
     public async Task LateVideoResponseAfterNewTargetLandedDoesNotMovePagingCursor()
     {
         var moments = new MomentService();
@@ -780,10 +858,10 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
             => throw new NotSupportedException();
 
         public Task<(IReadOnlyList<VideoInformation> Videos, int TotalCount)> GetUserVideosAsync(string userId, int pageNumber = 0, CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+            => Task.FromResult(((IReadOnlyList<VideoInformation>)[], 0));
 
         public Task<IReadOnlyList<ArticleInformation>> GetUserArticlesAsync(string userId, int pageNumber = 0, CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+            => Task.FromResult<IReadOnlyList<ArticleInformation>>([]);
     }
 
     private sealed class SearchRequest(string userId, string keyword, int pageNumber, CancellationToken token)
