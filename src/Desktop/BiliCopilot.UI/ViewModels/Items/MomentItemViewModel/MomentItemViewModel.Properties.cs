@@ -46,6 +46,11 @@ public sealed partial class MomentItemViewModel
     public string? Tip { get; init; }
 
     /// <summary>
+    /// 转发来源提示，例如「转发了 @某人」.
+    /// </summary>
+    public string? ForwardHint { get; init; }
+
+    /// <summary>
     /// 视频封面.
     /// </summary>
     public Uri? VideoCover { get; init; }

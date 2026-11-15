@@ -50,6 +50,11 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             if (data.Data is MomentInformation forward)
             {
                 InnerContent = new MomentItemViewModel(forward, Style, showCommentAction);
+                var source = forward.User?.Name?.TrimStart('@');
+                if (!string.IsNullOrEmpty(source))
+                {
+                    ForwardHint = string.Format(ResourceToolkit.GetLocalizedString(StringNames.ForwardedFromTemplate), source);
+                }
             }
             else if (data.Data is VideoInformation video)
             {

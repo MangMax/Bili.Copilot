@@ -192,6 +192,9 @@
   <data name="AudienceFeedback" xml:space="preserve">
     <value>观众反馈</value>
   </data>
+  <data name="Audio" xml:space="preserve">
+    <value>音频</value>
+  </data>
   <data name="AudioChannels" xml:space="preserve">
     <value>音频通道数</value>
   </data>
@@ -794,6 +797,9 @@
   </data>
   <data name="ForwardSkip" xml:space="preserve">
     <value>前进</value>
+  </data>
+  <data name="ForwardedFromTemplate" xml:space="preserve">
+    <value>转发了 {0}</value>
   </data>
   <data name="Fps" xml:space="preserve">
     <value>帧率</value>
