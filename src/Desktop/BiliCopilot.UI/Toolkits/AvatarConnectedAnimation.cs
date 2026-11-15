@@ -108,7 +108,8 @@ public static class AvatarConnectedAnimation
 
         var sourceVisible = source is { IsLoaded: true, Visibility: Visibility.Visible }
             && source.ActualWidth > 0;
-        var sourceHasImage = source is not RecommendationCoverImage cover || cover.Source is not null;
+        var coverImage = (source as RecommendationCoverImage)?.DisplayedImage;
+        var sourceHasImage = source is not RecommendationCoverImage || coverImage is not null;
         if (!AvatarTransitionPolicy.CanPrepareTarget(animationsEnabled, sourceVisible, sourceHasImage, targetId))
         {
             return false;
@@ -119,6 +120,7 @@ public static class AvatarConnectedAnimation
             var animation = ConnectedAnimationService.GetForCurrentView()
                 .PrepareToAnimate(AnimationKey, source!);
             animation.Configuration = new BasicConnectedAnimationConfiguration();
+            _pendingSourceImage = coverImage;
             AvatarTransitionSession.PrepareTarget(targetId!, DateTimeOffset.Now);
             return true;
         }
@@ -137,6 +139,10 @@ public static class AvatarConnectedAnimation
     /// <returns>动画已启动时为 <see langword="true"/>；否则已清理状态.</returns>
     public static bool TryStartForTarget(UIElement destination, string targetId)
     {
+        // 目标封面请求回来之前，先用源头像的位图填满海报区域，
+        // 否则串联飞过去以后是一块空白.
+        TryPrime(destination);
+
         var request = AvatarTransitionSession.Current;
         if (request is null
             || !AvatarTransitionPolicy.CanStartTarget(request, targetId, DateTimeOffset.Now))
@@ -154,6 +160,7 @@ public static class AvatarConnectedAnimation
                 return false;
             }
 
+            _pendingSourceImage = null;
             AvatarTransitionSession.Clear();
             return true;
         }

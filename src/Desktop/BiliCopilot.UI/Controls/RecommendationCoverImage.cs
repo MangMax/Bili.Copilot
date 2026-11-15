@@ -56,6 +56,7 @@ public sealed partial class RecommendationCoverImage : UserControl
         }
 
         _image.Source = image;
+        _placeholderPending = true;
         _loading.IsActive = false;
         _loading.Visibility = Visibility.Collapsed;
         _retry.Visibility = Visibility.Collapsed;
@@ -70,6 +71,7 @@ public sealed partial class RecommendationCoverImage : UserControl
     private (Uri? Source, int Width, int Height) _requested;
     private Microsoft.UI.Dispatching.DispatcherQueueTimer? _resizeTimer;
     private (int Width, int Height) _pendingSize;
+    private bool _placeholderPending;
 
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
         nameof(Source), typeof(Uri), typeof(RecommendationCoverImage), new PropertyMetadata(null, OnSourceChanged));
@@ -140,7 +142,14 @@ public sealed partial class RecommendationCoverImage : UserControl
         cover._request?.Cancel();
         cover._request = null;
         cover._requested = default;
-        cover._image.Source = null;
+
+        // 头像串联会先用源头像占位；占位图一直保留到自己的解码结果落地，
+        // 中途的图源变化（包括先清空）都不能把它抹掉，否则串联后会先空一段时间.
+        if (!cover._placeholderPending)
+        {
+            cover._image.Source = null;
+        }
+
         cover._retry.Visibility = Visibility.Collapsed;
         cover._loading.IsActive = false;
         cover._loading.Visibility = Visibility.Collapsed;
@@ -196,6 +205,7 @@ public sealed partial class RecommendationCoverImage : UserControl
         _request?.Cancel();
         _request = null;
         _requested = default;
+        _placeholderPending = false;
         _image.Source = null;
         _retry.Visibility = Visibility.Collapsed;
         _loading.IsActive = false;
@@ -322,6 +332,7 @@ public sealed partial class RecommendationCoverImage : UserControl
                 token.ThrowIfCancellationRequested();
                 if (ReferenceEquals(_request, request) && IsLoaded)
                 {
+                    _placeholderPending = false;
                     _image.Source = result;
                     SourcePixelWidth = decoder.OrientedPixelWidth;
                     SourcePixelHeight = decoder.OrientedPixelHeight;

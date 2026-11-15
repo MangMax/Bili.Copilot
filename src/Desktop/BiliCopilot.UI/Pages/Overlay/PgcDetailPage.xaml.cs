@@ -160,6 +160,9 @@ public sealed partial class PgcDetailPage : PgcDetailPageBase, IParameterPage, I
             return;
         }
 
+        // 海报图要等详情请求回来；先用源头像占位，串联落地时不会是一块空白.
+        AvatarConnectedAnimation.TryPrime(PosterCover);
+
         LayoutUpdated += OnCoverLayoutUpdated;
     }
 
