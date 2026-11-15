@@ -13,6 +13,9 @@ using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace BiliCopilot.UI.ViewModels.View;
 
@@ -21,6 +24,11 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class UserSpacePageViewModel : ViewModelBase
 {
+    private const int HomeVideoPreviewCount = 12;
+    private const int HomeMomentPreviewCount = 6;
+
+    private ObservableCollection<MomentItemViewModel>? _momentItems;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePageViewModel"/> class.
     /// </summary>
@@ -36,6 +44,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         _userService = userService;
         _searchService = searchService;
         _logger = logger;
+        VideoFeed = new UserSpaceVideoFeedViewModel(userService, logger);
+        ArticleFeed = new UserSpaceArticleFeedViewModel(userService, logger);
+        AudioFeed = new UserSpaceAudioFeedViewModel(userService, logger);
+        CollectionFeed = new UserSpaceCollectionFeedViewModel(userService, logger);
+        VideoFeed.FirstPageLoaded += OnVideoFirstPageLoaded;
     }
 
     /// <summary>
@@ -68,7 +81,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         CancelAndDispose(cancellation);
 
-        // 该页面代次同时拥有两个动态分区与搜索模块的在途加载。
+        // 该页面代次同时拥有动态分区、投稿分页与搜索模块的在途加载。
         if (Sections is not null)
         {
             foreach (var section in Sections)
@@ -76,6 +89,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 section.CancelLoad(section.CurrentLoadGeneration);
             }
         }
+
+        VideoFeed.CancelLoad(VideoFeed.CurrentLoadGeneration);
+        ArticleFeed.CancelLoad(ArticleFeed.CurrentLoadGeneration);
+        AudioFeed.CancelLoad(AudioFeed.CurrentLoadGeneration);
+        CollectionFeed.CancelLoad(CollectionFeed.CurrentLoadGeneration);
 
         InvalidateSearch();
         return true;
@@ -90,6 +108,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         var userId = profile.Id;
         _profile = profile;
 
+        // 页头头像由导航参数驱动，必须立即通知，不能等用户卡片数据返回.
+        OnPropertyChanged(nameof(AvatarUri));
+
         // 关注态与用户卡片都属于当前目标：新目标开始时先同步清空，
         // 避免上一目标的值一直显示到本次关系请求返回。
         Card = default;
@@ -97,41 +118,54 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         HasUserInformationError = false;
         IsFollowed = false;
         UserName = profile.Name;
+
+        // 页面会被缓存复用：上一目标打开的评论浮层不能带到新目标上.
+        IsCommentsOpened = false;
         if (IsSearchMode)
         {
             ExitSearch();
         }
 
+        HomeVideos.Clear();
+        HomeMoments.Clear();
+        SubmissionMoments.Clear();
+
         if (Sections is null)
         {
-            Sections = new List<UserMomentDetailViewModel>
-            {
-                this.Get<UserMomentDetailViewModel>(),
-                this.Get<UserMomentDetailViewModel>(),
-            };
-
-            Sections.ElementAt(0).SetIsVideo(true);
-            Sections.ElementAt(1).SetIsVideo(false);
+            var momentSection = this.Get<UserMomentDetailViewModel>();
+            momentSection.SetIsVideo(false);
+            Sections = [momentSection];
         }
 
-        foreach (var item in Sections)
+        var section = Sections[0];
+        if (MomentSection is null)
         {
-            item.SetShowCommentAction(ShowComment);
-
-            // 重置目标时一并复位动态分区的加载态与代次，上一目标的 IsLoading 不会挡住新目标。
-            item.ResetCommand.Execute(profile);
+            // 主页的「最近动态」与投稿的「动态」都从这份综合动态增量派生；
+            // 只在追加时补一行，不整份替换列表，滚动时不会整块重画.
+            MomentSection = section;
+            MomentSection.PropertyChanged += OnMomentSectionPropertyChanged;
         }
 
-        if (SelectedSection is null)
-        {
-            var isLastVideoSection = SettingsToolkit.ReadLocalSetting(SettingNames.LastUserSpaceSectionIsVideo, true);
-            var section = isLastVideoSection ? Sections.First() : Sections.Last();
-            SelectSection(section);
-        }
-        else
-        {
-            SelectedSection.InitializeCommand.Execute(default);
-        }
+        section.SetShowCommentAction(ShowComment);
+
+        // 重置目标时一并复位动态分区的加载态与代次，上一目标的 IsLoading 不会挡住新目标。
+        section.ResetCommand.Execute(profile);
+        AttachMomentItems(section.Items);
+        SelectedSection = section;
+        section.InitializeCommand.Execute(default);
+
+        VideoFeed.ResetCommand.Execute(profile);
+        ArticleFeed.ResetCommand.Execute(profile);
+        AudioFeed.ResetCommand.Execute(profile);
+        CollectionFeed.ResetCommand.Execute(profile);
+
+        EnsureTabs();
+        SelectMomentFilter(SelectedMomentFilter ?? MomentFilterTabs[0]);
+        SelectTab(Tabs[0]);
+        SelectSubmissionTab(SelectedSubmissionTab ?? SubmissionTabs[0]);
+
+        // 主页首屏需要最近投稿，先取第一页；投稿分区打开时直接复用.
+        _ = VideoFeed.LoadItemsCommand.ExecuteAsync(default);
 
         await InitializeRelationAsync(generation, userId, cancellation.Token);
         if (!IsCurrentLoad(generation))
@@ -140,6 +174,200 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
 
         Initialized?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 切换顶部分区.
+    /// </summary>
+    /// <param name="tab">目标分区.</param>
+    [RelayCommand]
+    private void SelectTab(UserSpaceTabViewModel? tab)
+    {
+        if (tab is null)
+        {
+            return;
+        }
+
+        SelectedTab = tab;
+        IsHomeTab = tab.Kind == UserSpaceTabKind.Home;
+        IsMomentsTab = tab.Kind == UserSpaceTabKind.Moments;
+        IsSubmissionTab = tab.Kind == UserSpaceTabKind.Submission;
+        if (IsSubmissionTab)
+        {
+            SelectSubmissionTab(SelectedSubmissionTab);
+        }
+    }
+
+    /// <summary>
+    /// 切换动态筛选：全部 / 视频.
+    /// </summary>
+    /// <param name="tab">目标筛选.</param>
+    [RelayCommand]
+    private void SelectMomentFilter(UserSpaceTabViewModel? tab)
+    {
+        if (tab is null)
+        {
+            return;
+        }
+
+        SelectedMomentFilter = tab;
+        IsAllMomentFilter = tab.Kind == UserSpaceTabKind.AllMoments;
+        IsVideoMomentFilter = tab.Kind == UserSpaceTabKind.VideoMoments;
+    }
+
+    /// <summary>
+    /// 切换投稿分区：视频 / 专栏 / 动态.
+    /// </summary>
+    /// <param name="tab">目标分区.</param>
+    [RelayCommand]
+    private void SelectSubmissionTab(UserSpaceTabViewModel? tab)
+    {
+        if (tab is null)
+        {
+            return;
+        }
+
+        SelectedSubmissionTab = tab;
+        ShowSubmissionVideos = tab.Kind == UserSpaceTabKind.Videos;
+        ShowSubmissionArticles = tab.Kind == UserSpaceTabKind.Articles;
+        ShowSubmissionMoments = tab.Kind == UserSpaceTabKind.MomentPosts;
+        ShowSubmissionAudio = tab.Kind == UserSpaceTabKind.Audio;
+        ShowSubmissionCollections = tab.Kind == UserSpaceTabKind.Collections;
+        if (ShowSubmissionVideos && VideoFeed.Items.Count == 0)
+        {
+            _ = VideoFeed.LoadItemsCommand.ExecuteAsync(default);
+        }
+        else if (ShowSubmissionArticles && ArticleFeed.Items.Count == 0)
+        {
+            _ = ArticleFeed.LoadItemsCommand.ExecuteAsync(default);
+        }
+        else if (ShowSubmissionAudio && AudioFeed.Items.Count == 0)
+        {
+            _ = AudioFeed.LoadItemsCommand.ExecuteAsync(default);
+        }
+        else if (ShowSubmissionCollections && CollectionFeed.Items.Count == 0)
+        {
+            _ = CollectionFeed.LoadItemsCommand.ExecuteAsync(default);
+        }
+    }
+
+    private void EnsureTabs()
+    {
+        if (Tabs.Count > 0)
+        {
+            return;
+        }
+
+        Tabs =
+        [
+            new(ResourceToolkit.GetLocalizedString(StringNames.UserSpaceHome), UserSpaceTabKind.Home),
+            new(ResourceToolkit.GetLocalizedString(StringNames.DynamicFeed), UserSpaceTabKind.Moments),
+            new(ResourceToolkit.GetLocalizedString(StringNames.UserSpaceSubmission), UserSpaceTabKind.Submission),
+        ];
+        SubmissionTabs =
+        [
+            new(ResourceToolkit.GetLocalizedString(StringNames.Video), UserSpaceTabKind.Videos),
+            new(ResourceToolkit.GetLocalizedString(StringNames.SpecialColumn), UserSpaceTabKind.Articles),
+            new(ResourceToolkit.GetLocalizedString(StringNames.DynamicFeed), UserSpaceTabKind.MomentPosts),
+            new(ResourceToolkit.GetLocalizedString(StringNames.Audio), UserSpaceTabKind.Audio),
+            new(ResourceToolkit.GetLocalizedString(StringNames.UgcSeason), UserSpaceTabKind.Collections),
+        ];
+        MomentFilterTabs =
+        [
+            new(ResourceToolkit.GetLocalizedString(StringNames.Total), UserSpaceTabKind.AllMoments),
+            new(ResourceToolkit.GetLocalizedString(StringNames.Video), UserSpaceTabKind.VideoMoments),
+        ];
+    }
+
+    private void AttachMomentItems(IEnumerable<MomentItemViewModel> items)
+    {
+        if (_momentItems is not null)
+        {
+            _momentItems.CollectionChanged -= OnMomentItemsChanged;
+        }
+
+        _momentItems = MomentSection?.Items;
+        HomeMoments.Clear();
+        SubmissionMoments.Clear();
+        IsSubmissionMomentsEmpty = false;
+        if (_momentItems is null)
+        {
+            return;
+        }
+
+        _momentItems.CollectionChanged += OnMomentItemsChanged;
+        foreach (var item in items)
+        {
+            AppendMoment(item);
+        }
+    }
+
+    private void OnMomentSectionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (MomentSection is not { } section)
+        {
+            return;
+        }
+
+        if (e.PropertyName == nameof(UserMomentDetailViewModel.Items))
+        {
+            // 分区重建列表（切换目标、清空）时换成新的集合实例，并重新挂上监听.
+            AttachMomentItems(section.Items);
+        }
+        else if (e.PropertyName == nameof(UserMomentDetailViewModel.IsLoading) && !section.IsLoading)
+        {
+            // 一次加载结束后才知道图文动态是否为空；加载中不显示空状态，避免闪一下.
+            IsSubmissionMomentsEmpty = SubmissionMoments.Count == 0;
+        }
+    }
+
+    private void OnMomentItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems is not null)
+        {
+            foreach (MomentItemViewModel item in e.NewItems)
+            {
+                AppendMoment(item);
+            }
+
+            return;
+        }
+
+        // 清空或重置：两份派生列表一起清空，避免留下上一目标的条目.
+        HomeMoments.Clear();
+        SubmissionMoments.Clear();
+        if (sender is IEnumerable<MomentItemViewModel> items)
+        {
+            foreach (var item in items)
+            {
+                AppendMoment(item);
+            }
+        }
+    }
+
+    private void AppendMoment(MomentItemViewModel item)
+    {
+        // 主页只留最近几条；投稿的「动态」只留图文，视频类在「视频」分区里.
+        if (HomeMoments.Count < HomeMomentPreviewCount)
+        {
+            HomeMoments.Add(item);
+        }
+
+        if (item.InnerContent is not VideoItemViewModel)
+        {
+            SubmissionMoments.Add(item);
+            IsSubmissionMomentsEmpty = false;
+        }
+    }
+
+    private void OnVideoFirstPageLoaded(object? sender, EventArgs e)
+    {
+        // 主页的最近投稿取首屏快照：之后投稿继续翻页不影响主页.
+        HomeVideos.Clear();
+        foreach (var video in VideoFeed.Items.Take(HomeVideoPreviewCount))
+        {
+            HomeVideos.Add(video);
+        }
     }
 
     [RelayCommand]
@@ -161,7 +389,92 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             return;
         }
 
-        await SelectedSection?.RefreshCommand.ExecuteAsync(default);
+        // 刷新只重取当前分区的内容，其他分区保留已加载的列表.
+        if (IsSubmissionTab)
+        {
+            switch (SelectedSubmissionTab?.Kind)
+            {
+                case UserSpaceTabKind.Articles:
+                    await ArticleFeed.RefreshCommand.ExecuteAsync(default);
+                    break;
+                case UserSpaceTabKind.Audio:
+                    await AudioFeed.RefreshCommand.ExecuteAsync(default);
+                    break;
+                case UserSpaceTabKind.Collections:
+                    await CollectionFeed.RefreshCommand.ExecuteAsync(default);
+                    break;
+                case UserSpaceTabKind.MomentPosts:
+                    if (SelectedSection is not null)
+                    {
+                        await SelectedSection.RefreshCommand.ExecuteAsync(default);
+                    }
+
+                    break;
+                case UserSpaceTabKind.Videos:
+                default:
+                    await VideoFeed.RefreshCommand.ExecuteAsync(default);
+                    break;
+            }
+
+            return;
+        }
+
+        await VideoFeed.RefreshCommand.ExecuteAsync(default);
+        if (SelectedSection is not null)
+        {
+            await SelectedSection.RefreshCommand.ExecuteAsync(default);
+        }
+    }
+
+    /// <summary>
+    /// 滚动到底时按当前分区继续加载：动态、投稿各栏各自分页.
+    /// </summary>
+    /// <returns>加载任务.</returns>
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private async Task LoadMoreAsync()
+    {
+        if (IsMomentsTab)
+        {
+            if (IsVideoMomentFilter)
+            {
+                await VideoFeed.LoadItemsCommand.ExecuteAsync(default);
+            }
+            else if (SelectedSection is not null)
+            {
+                await SelectedSection.LoadItemsCommand.ExecuteAsync(default);
+            }
+
+            return;
+        }
+
+        if (!IsSubmissionTab)
+        {
+            return;
+        }
+
+        switch (SelectedSubmissionTab?.Kind)
+        {
+            case UserSpaceTabKind.Articles:
+                await ArticleFeed.LoadItemsCommand.ExecuteAsync(default);
+                break;
+            case UserSpaceTabKind.Audio:
+                await AudioFeed.LoadItemsCommand.ExecuteAsync(default);
+                break;
+            case UserSpaceTabKind.Collections:
+                await CollectionFeed.LoadItemsCommand.ExecuteAsync(default);
+                break;
+            case UserSpaceTabKind.MomentPosts:
+                if (SelectedSection is not null)
+                {
+                    await SelectedSection.LoadItemsCommand.ExecuteAsync(default);
+                }
+
+                break;
+            case UserSpaceTabKind.Videos:
+            default:
+                await VideoFeed.LoadItemsCommand.ExecuteAsync(default);
+                break;
+        }
     }
 
     [RelayCommand]

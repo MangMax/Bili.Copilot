@@ -16,4 +16,9 @@ public enum EpisodeCardStyle
     /// 播放组件样式.
     /// </summary>
     Player,
+
+    /// <summary>
+    /// 番剧详情页样式.
+    /// </summary>
+    Detail,
 }

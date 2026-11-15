@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<local:CollectionDetailPageBase
+    x:Class="BiliCopilot.UI.Pages.Overlay.CollectionDetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
+    xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:local="using:BiliCopilot.UI.Pages.Overlay"
+    xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater">
+
+    <local:CollectionDetailPageBase.Resources>
+        <UniformGridLayout
+            x:Key="CollectionVideoGrid"
+            ItemsStretch="Fill"
+            MinColumnSpacing="16"
+            MinItemWidth="240"
+            MinRowSpacing="16" />
+    </local:CollectionDetailPageBase.Resources>
+
+    <Grid Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+        <controls:IncrementVerticalScrollControl LoadMoreCommand="{x:Bind ViewModel.Feed.LoadItemsCommand, Mode=OneWay, FallbackValue={x:Null}}">
+            <controls:IncrementVerticalScrollControl.Element>
+                <StackPanel
+                    Margin="20,12,20,20"
+                    Spacing="16">
+                    <Grid ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <controls:RecommendationCoverImage
+                            Width="176"
+                            Height="99"
+                            CornerRadius="8"
+                            Source="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}" />
+                        <StackPanel
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Spacing="6">
+                            <TextBlock
+                                MaxLines="2"
+                                Style="{StaticResource SubtitleTextBlockStyle}"
+                                Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue=''}"
+                                TextTrimming="CharacterEllipsis" />
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind ViewModel.CountText, Mode=OneWay, FallbackValue=''}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.Feed.Items, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource CollectionVideoGrid}">
+                        <repeater:AppRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="items:VideoItemViewModel">
+                                <components:VideoCardControl Style="{StaticResource UserSpaceVideoCardStyle}" ViewModel="{x:Bind}" />
+                            </DataTemplate>
+                        </repeater:AppRepeater.ItemTemplate>
+                    </repeater:AppRepeater>
+
+                    <StackPanel
+                        Margin="0,0,0,12"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        Visibility="{x:Bind ViewModel.Feed.IsLoadingMore, Mode=OneWay, FallbackValue=Collapsed}">
+                        <ProgressRing
+                            Width="16"
+                            Height="16"
+                            IsActive="True" />
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{ext:Locale Name=LoadingAndWait}" />
+                    </StackPanel>
+                </StackPanel>
+            </controls:IncrementVerticalScrollControl.Element>
+        </controls:IncrementVerticalScrollControl>
+
+        <base:EmptyHolder
+            Description="{ext:Locale Name=NoSpecificData}"
+            Emoji="&#x1F4C1;"
+            Visibility="{x:Bind ViewModel.Feed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+        <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.Feed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+    </Grid>
+</local:CollectionDetailPageBase>

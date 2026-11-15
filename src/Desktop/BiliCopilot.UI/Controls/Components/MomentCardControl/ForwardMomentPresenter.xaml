@@ -11,21 +11,33 @@
     xmlns:moment="using:BiliCopilot.UI.Controls.Moment"
     mc:Ignorable="d">
 
+    <!--  被转发的动态整体下沉一档，并在顶部说明来源，避免内外两层看起来像重复渲染  -->
     <Grid
         Padding="12"
-        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        BorderThickness="1"
         CornerRadius="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <TextBlock
+            Margin="0,0,0,10"
+            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+            Style="{StaticResource CaptionTextBlockStyle}"
+            Text="{x:Bind ViewModel.ForwardHint, Mode=OneWay}"
+            TextTrimming="CharacterEllipsis"
+            Visibility="{x:Bind ViewModel.ForwardHint, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
         <local:MomentAuthorHeader
+            Grid.Row="1"
             Margin="0,0,0,12"
             ShowMoreButton="False"
             ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         <local:EmoteTextBlock
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="0,0,0,12"
             MaxLines="5"
             ExpandInline="True"
@@ -33,7 +45,7 @@
             Text="{x:Bind ViewModel.Description, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.Description, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
         <moment:MomentPresenter
-            Grid.Row="2"
+            Grid.Row="3"
             ViewModel="{x:Bind ViewModel, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.NoData, Converter={StaticResource BoolToVisibilityReverseConverter}, Mode=OneWay}" />
     </Grid>

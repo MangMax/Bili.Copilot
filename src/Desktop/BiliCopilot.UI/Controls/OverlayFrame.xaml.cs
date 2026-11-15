@@ -9,42 +9,94 @@ namespace BiliCopilot.UI.Controls;
 
 public sealed partial class OverlayFrame : LayoutUserControlBase
 {
+    // 可见的返回栈；被返回的页面可能仍留在 RootGrid.Children 里等待复用，不算栈的一部分.
+    private readonly List<UIElement> _backStack = new();
+
     public OverlayFrame() => InitializeComponent();
 
     public List<object> GetBackStack()
-        => [.. RootGrid.Children];
+        => [.. _backStack];
 
     public void ClearBackStack()
     {
+        _backStack.Clear();
         RootGrid.Children.Clear();
     }
 
     public void GoBack()
     {
-        if (RootGrid.Children.Count > 0)
+        if (_backStack.Count > 0)
         {
-            RootGrid.Children.RemoveAt(RootGrid.Children.Count - 1);
+            var removed = _backStack[^1];
+            _backStack.RemoveAt(_backStack.Count - 1);
+            removed.Visibility = Visibility.Collapsed;
+
+            // 声明保留的页面关闭后留在视觉树里复用，其他页面返回即移除.
+            if (removed is not IRetainedOverlayPage)
+            {
+                RootGrid.Children.Remove(removed);
+            }
+            else
+            {
+                var index = RootGrid.Children.IndexOf(removed);
+                if (index >= 0 && RootGrid.Children.Count > 1)
+                {
+                    // 挪到最后，保持可见栈的顺序.
+                    RootGrid.Children.Move(Convert.ToUInt32(index), Convert.ToUInt32(RootGrid.Children.Count - 1));
+                }
+            }
         }
 
         // 如果还有元素，则将最后一个元素设置为可见
-        if (RootGrid.Children.Count > 0)
+        if (_backStack.Count > 0)
         {
-            foreach (var child in RootGrid.Children)
+            foreach (var child in _backStack)
             {
                 child.Visibility = Visibility.Collapsed;
             }
 
-            RootGrid.Children[^1].Visibility = Visibility.Visible;
+            _backStack[^1].Visibility = Visibility.Visible;
         }
     }
 
-    public void NavigateTo(Type pageType, object? parameter = null)
+    public void NavigateTo(Type pageType, object? parameter = null, bool animateIn = true)
     {
         if (pageType is null)
         {
             return;
         }
 
+        // 同一导航只创建一对过渡，新建与复用的页面都重新应用，清空后也能恢复.
+        var showSet = new ImplicitAnimationSet
+        {
+            new OpacityAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(200),
+                From = 0,
+                To = 1,
+            },
+        };
+        var hideSet = new ImplicitAnimationSet
+        {
+            new OpacityAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(100),
+                From = 1,
+                To = 0,
+            },
+        };
+
+        // 抑制淡入时仍要挂一个零时长显示动画：上一次隐藏动画会把不透明度停在 0，
+        // 只把显示动画设为 null 的话，复用的页面会整页透明（元素在、画面是空的）.
+        var instantSet = new ImplicitAnimationSet
+        {
+            new OpacityAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(1),
+                From = 0,
+                To = 1,
+            },
+        };
         UIElement? targetElement = null;
 
         // 查找是否已存在该类型的控件
@@ -72,42 +124,31 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
                 mainFramePage.SetParameter(parameter);
             }
 
-            var showOpacityAnimation = new OpacityAnimation
-            {
-                Duration = TimeSpan.FromMilliseconds(200),
-                From = 0,
-                To = 1,
-            };
-            var hideOpacityAnimation = new OpacityAnimation
-            {
-                Duration = TimeSpan.FromMilliseconds(100),
-                From = 1,
-                To = 0,
-            };
-            var showSet = new ImplicitAnimationSet
-            {
-                showOpacityAnimation
-            };
-            var hideSet = new ImplicitAnimationSet
-            {
-                hideOpacityAnimation
-            };
-            Implicit.SetShowAnimations(element, showSet);
-            Implicit.SetHideAnimations(element, hideSet);
-
             RootGrid.Children.Add(element);
         }
-        else if (RootGrid.Children.Count > 1)
+        else
         {
-            // 将 targetElement 移动到最后
-            RootGrid.Children.Move(Convert.ToUInt32(RootGrid.Children.IndexOf(targetElement)), Convert.ToUInt32(RootGrid.Children.Count - 1));
+            if (RootGrid.Children.Count > 1)
+            {
+                // 将 targetElement 移动到最后
+                RootGrid.Children.Move(Convert.ToUInt32(RootGrid.Children.IndexOf(targetElement)), Convert.ToUInt32(RootGrid.Children.Count - 1));
+            }
         }
 
+        // 维护逻辑返回栈：目标页可能来自栈中，也可能是返回时保留下来的页面.
+        _backStack.Remove(targetElement);
+        _backStack.Add(targetElement);
+
+        // 头像串联导航必须抑制叠层页自身的淡入，避免两套过渡同时播放；
+        // 之后以默认参数返回同一页面时再恢复淡入。
+        Implicit.SetShowAnimations(targetElement, animateIn ? showSet : instantSet);
+        Implicit.SetHideAnimations(targetElement, hideSet);
+
         // 设置可见性
-        foreach (var child in RootGrid.Children)
+        foreach (var child in _backStack)
         {
             child.Visibility = child == targetElement ? Visibility.Visible : Visibility.Collapsed;
-            if (child.Visibility == Visibility.Collapsed && child is ICancelPageViewModel cancelPageViewModel)
+            if (child != targetElement && child is ICancelPageViewModel cancelPageViewModel)
             {
                 cancelPageViewModel.CancelLoading();
             }
@@ -116,9 +157,9 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
 
     public object? GetCurrentContent()
     {
-        if (RootGrid.Children.Count > 0)
+        if (_backStack.Count > 0)
         {
-            return RootGrid.Children[^1];
+            return _backStack[^1];
         }
 
         return default;

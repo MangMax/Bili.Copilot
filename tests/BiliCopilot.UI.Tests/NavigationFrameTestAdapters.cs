@@ -2,7 +2,12 @@
 namespace Microsoft.UI.Xaml
 {
     public enum Visibility { Visible, Collapsed }
-    public class UIElement { public Visibility Visibility { get; set; } }
+    public class UIElement
+    {
+        public Visibility Visibility { get; set; }
+        public CommunityToolkit.WinUI.Animations.ImplicitAnimationSet? ShowAnimations { get; set; }
+        public CommunityToolkit.WinUI.Animations.ImplicitAnimationSet? HideAnimations { get; set; }
+    }
 }
 namespace CommunityToolkit.WinUI.Animations
 {
@@ -15,8 +20,11 @@ namespace CommunityToolkit.WinUI.Animations
     public sealed class ImplicitAnimationSet : List<OpacityAnimation> { }
     public static class Implicit
     {
-        public static void SetShowAnimations(UIElement element, ImplicitAnimationSet animations) { }
-        public static void SetHideAnimations(UIElement element, ImplicitAnimationSet animations) { }
+        public static void SetShowAnimations(UIElement element, ImplicitAnimationSet? animations)
+            => element.ShowAnimations = animations;
+
+        public static void SetHideAnimations(UIElement element, ImplicitAnimationSet? animations)
+            => element.HideAnimations = animations;
     }
 }
 namespace BiliCopilot.UI.Controls
@@ -80,6 +88,8 @@ namespace BiliCopilot.UI.Pages.Overlay
 #if !SEARCH_RECOVERY_INVESTIGATION
     public sealed class SearchPage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
 #endif
-    public sealed class UserSpacePage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
+    public sealed class UserSpacePage : NavigationTestPage, IRetainedOverlayPage { public NavigationSearchTarget ViewModel { get; } = new(); }
+    public sealed class PgcDetailPage : NavigationTestPage { }
+    public sealed class CollectionDetailPage : NavigationTestPage { }
     public sealed class ViewLaterPage : NavigationTestPage { }
 }

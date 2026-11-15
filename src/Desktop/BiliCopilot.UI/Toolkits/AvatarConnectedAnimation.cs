@@ -1,0 +1,261 @@
+// Copyright (c) Bili Copilot. All rights reserved.
+
+using BiliCopilot.UI.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Richasy.BiliKernel.Models.User;
+using Windows.UI.ViewManagement;
+
+namespace BiliCopilot.UI.Toolkits;
+
+/// <summary>
+/// 把卡片头像串联到用户空间页头的 WinUI 适配器.
+/// </summary>
+/// <remarks>
+/// 主窗口的叠层页宿主不是 Frame，因此只使用手动
+/// <see cref="ConnectedAnimationService.PrepareToAnimate"/> /
+/// <see cref="ConnectedAnimation.TryStart(UIElement)"/>.
+/// 所有调用都必须可以安全失败：动画只是增强，不能阻塞导航.
+/// </remarks>
+public static class AvatarConnectedAnimation
+{
+    private const string AnimationKey = "user-space-avatar";
+
+    /// <summary>
+    /// 准备动画时源头像已经解码好的图片；目标头像先用它占位，避免慢网络下落地后仍是空位.
+    /// </summary>
+    private static ImageSource? _pendingSourceImage;
+
+    /// <summary>
+    /// 准备一次头像串联，同时取消之前尚未启动的动画.
+    /// </summary>
+    /// <param name="source">卡片上可见的头像元素.</param>
+    /// <param name="user">卡片对应的作者资料.</param>
+    /// <returns>成功准备时为 <see langword="true"/>.</returns>
+    public static bool Prepare(FrameworkElement? source, UserProfile? user)
+    {
+        // 同一时刻只允许一个未完成的串联：先取消旧动画，避免旧快照悬停在界面上.
+        Cancel();
+
+        var avatarUri = user?.Avatar?.Uri;
+        var animationsEnabled = false;
+        try
+        {
+            animationsEnabled = new UISettings().AnimationsEnabled;
+        }
+        catch (Exception ex)
+        {
+            // 无法读取系统动画设置时按关闭处理，导航照常进行.
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+
+        var sourceVisible = source is { IsLoaded: true, Visibility: Visibility.Visible }
+            && source.ActualWidth > 0;
+
+        // 卡片可能仍在显示作者首字占位；只有已经解码出图片的头像才值得串联.
+        var coverImage = (source as RecommendationCoverImage)?.DisplayedImage;
+        var sourceHasImage = source is not RecommendationCoverImage || coverImage is not null;
+        if (!AvatarTransitionPolicy.CanPrepare(
+                animationsEnabled,
+                sourceVisible,
+                sourceHasImage,
+                user is not null,
+                user?.Id,
+                avatarUri))
+        {
+            return false;
+        }
+
+        try
+        {
+            var animation = ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate(AnimationKey, source!);
+            animation.Configuration = new BasicConnectedAnimationConfiguration();
+            _pendingSourceImage = coverImage;
+            AvatarTransitionSession.Prepare(user!.Id, avatarUri!, DateTimeOffset.Now);
+            return true;
+        }
+        catch (Exception)
+        {
+            Cancel();
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 准备一次「源头像 → 目标页封面」的串联.
+    /// </summary>
+    /// <remarks>
+    /// 番剧动态里的头像是 UP 主/番剧账号头像，目标页展示的是季度海报，
+    /// 两者不是同一张图，因此只按目标 Id 匹配，不做图片地址校验.
+    /// </remarks>
+    /// <param name="source">卡片上可见的头像元素.</param>
+    /// <param name="targetId">目标页 Id（季度 Id）.</param>
+    /// <returns>成功准备时为 <see langword="true"/>.</returns>
+    public static bool PrepareForTarget(FrameworkElement? source, string? targetId)
+    {
+        Cancel();
+
+        var animationsEnabled = false;
+        try
+        {
+            animationsEnabled = new UISettings().AnimationsEnabled;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+
+        var sourceVisible = source is { IsLoaded: true, Visibility: Visibility.Visible }
+            && source.ActualWidth > 0;
+        var coverImage = (source as RecommendationCoverImage)?.DisplayedImage;
+        var sourceHasImage = source is not RecommendationCoverImage || coverImage is not null;
+        if (!AvatarTransitionPolicy.CanPrepareTarget(animationsEnabled, sourceVisible, sourceHasImage, targetId))
+        {
+            return false;
+        }
+
+        try
+        {
+            var animation = ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate(AnimationKey, source!);
+            animation.Configuration = new BasicConnectedAnimationConfiguration();
+            _pendingSourceImage = coverImage;
+            AvatarTransitionSession.PrepareTarget(targetId!, DateTimeOffset.Now);
+            return true;
+        }
+        catch (Exception)
+        {
+            Cancel();
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 目标页封面完成布局后启动串联.
+    /// </summary>
+    /// <param name="destination">目标页封面元素.</param>
+    /// <param name="targetId">目标页 Id（季度 Id）.</param>
+    /// <returns>动画已启动时为 <see langword="true"/>；否则已清理状态.</returns>
+    public static bool TryStartForTarget(UIElement destination, string targetId)
+    {
+        // 目标封面请求回来之前，先用源头像的位图填满海报区域，
+        // 否则串联飞过去以后是一块空白.
+        TryPrime(destination);
+
+        var request = AvatarTransitionSession.Current;
+        if (request is null
+            || !AvatarTransitionPolicy.CanStartTarget(request, targetId, DateTimeOffset.Now))
+        {
+            Cancel();
+            return false;
+        }
+
+        try
+        {
+            var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation(AnimationKey);
+            if (animation is null || !animation.TryStart(destination))
+            {
+                Cancel();
+                return false;
+            }
+
+            _pendingSourceImage = null;
+            AvatarTransitionSession.Clear();
+            return true;
+        }
+        catch (Exception)
+        {
+            Cancel();
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 目标页可见并完成布局后启动头像串联.
+    /// </summary>
+    /// <param name="destination">页头头像元素.</param>
+    /// <param name="userId">目标页展示的用户 Id.</param>
+    /// <param name="avatarUri">目标页使用的头像地址.</param>
+    /// <returns>动画已启动时为 <see langword="true"/>；否则已清理状态.</returns>
+    public static bool TryStart(
+        UIElement destination,
+        string userId,
+        Uri avatarUri)
+    {
+        // 目标头像先顶上源头像的位图：目标尺寸不同会重新解码，慢网络下这段时间不能是空的.
+        TryPrime(destination);
+        var request = AvatarTransitionSession.Current;
+        if (request is null
+            || !AvatarTransitionPolicy.CanStart(request, userId, avatarUri, DateTimeOffset.Now))
+        {
+            Cancel();
+            return false;
+        }
+
+        // 目标元素尺寸固定，不等待头像解码：解码在动画背后完成，
+        // 否则首次打开页面的布局耗时就会耗尽等待预算，动画永远不会出现.
+        var current = AvatarTransitionSession.Current;
+        if (!ReferenceEquals(current, request))
+        {
+            // 等待期间发生了新的点击：旧动画已由新的 Prepare 取消，
+            // 这里不能误伤最后一次点击准备的动画.
+            if (current is null)
+            {
+                Cancel();
+            }
+
+            return false;
+        }
+
+        try
+        {
+            var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation(AnimationKey);
+            if (animation is null || !animation.TryStart(destination))
+            {
+                Cancel();
+                return false;
+            }
+
+            // 动画已交给系统播放，不再保留待启动状态.
+            _pendingSourceImage = null;
+            AvatarTransitionSession.Clear();
+            return true;
+        }
+        catch (Exception)
+        {
+            Cancel();
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 用源头像已有的位图给目标头像占位；目标已经显示图片时不做任何事.
+    /// </summary>
+    /// <param name="destination">目标头像元素.</param>
+    public static void TryPrime(UIElement? destination)
+    {
+        if (_pendingSourceImage is { } image && destination is RecommendationCoverImage cover)
+        {
+            cover.PrimeImage(image);
+        }
+    }
+
+    /// <summary>
+    /// 取消并释放尚未启动的动画.
+    /// </summary>
+    public static void Cancel()
+    {
+        _pendingSourceImage = null;
+        AvatarTransitionSession.Clear();
+        try
+        {
+            ConnectedAnimationService.GetForCurrentView().GetAnimation(AnimationKey)?.Cancel();
+        }
+        catch (Exception ex)
+        {
+            // 服务在窗口关闭或换根时可能不可用；取消本身不再抛出.
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+    }
+}

@@ -192,6 +192,9 @@
   <data name="AudienceFeedback" xml:space="preserve">
     <value>观众反馈</value>
   </data>
+  <data name="Audio" xml:space="preserve">
+    <value>音频</value>
+  </data>
   <data name="AudioChannels" xml:space="preserve">
     <value>音频通道数</value>
   </data>
@@ -794,6 +797,9 @@
   </data>
   <data name="ForwardSkip" xml:space="preserve">
     <value>前进</value>
+  </data>
+  <data name="ForwardedFromTemplate" xml:space="preserve">
+    <value>转发了 {0}</value>
   </data>
   <data name="Fps" xml:space="preserve">
     <value>帧率</value>
@@ -2079,6 +2085,9 @@
   <data name="UgcSeason" xml:space="preserve">
     <value>合集</value>
   </data>
+  <data name="CollectionCountTemplate" xml:space="preserve">
+    <value>{0} 个视频</value>
+  </data>
   <data name="UHDFirst" xml:space="preserve">
     <value>超高清（4K）优先</value>
   </data>
@@ -2285,6 +2294,33 @@
   </data>
   <data name="Native" xml:space="preserve">
     <value>原生</value>
+  </data>
+  <data name="PgcFollowCount" xml:space="preserve">
+    <value>追番数</value>
+  </data>
+  <data name="PrevPage" xml:space="preserve">
+    <value>上一页</value>
+  </data>
+  <data name="NextPage" xml:space="preserve">
+    <value>下一页</value>
+  </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>加载更多</value>
+  </data>
+  <data name="ShortReviews" xml:space="preserve">
+    <value>短评</value>
+  </data>
+  <data name="LongReviews" xml:space="preserve">
+    <value>长评</value>
+  </data>
+  <data name="MediaReview" xml:space="preserve">
+    <value>评价</value>
+  </data>
+  <data name="RatingCountTemplate" xml:space="preserve">
+    <value>{0} 人评分</value>
+  </data>
+  <data name="FailedToLoadPgcDetail" xml:space="preserve">
+    <value>番剧信息加载失败，请稍后重试</value>
   </data>
   <data name="FailedToFollowPgc" xml:space="preserve">
     <value>追番/追剧失败</value>
@@ -2647,6 +2683,18 @@
   </data>
   <data name="FailedToGetUserInformation" xml:space="preserve">
     <value>获取用户信息时失败</value>
+  </data>
+  <data name="RecentVideos" xml:space="preserve">
+    <value>最近投稿</value>
+  </data>
+  <data name="RecentDynamics" xml:space="preserve">
+    <value>最近动态</value>
+  </data>
+  <data name="UserSpaceHome" xml:space="preserve">
+    <value>主页</value>
+  </data>
+  <data name="UserSpaceSubmission" xml:space="preserve">
+    <value>投稿</value>
   </data>
   <data name="UserSpace" xml:space="preserve">
     <value>用户空间</value>

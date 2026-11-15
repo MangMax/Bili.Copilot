@@ -41,6 +41,18 @@ public sealed partial class UserMomentDetailViewModel
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
 
+    /// <summary>
+    /// 是否正在加载首页；只有此时才用整块加载态盖住列表.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsInitialLoading { get; set; }
+
+    /// <summary>
+    /// 是否正在追加下一页；用列表底部的小提示，不遮挡已有内容，避免滚动时整块闪烁.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsLoadingMore { get; set; }
+
     [ObservableProperty]
     public partial string Title { get; set; }
 

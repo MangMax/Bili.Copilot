@@ -9,7 +9,9 @@
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.Input;
+using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
+using Richasy.BiliKernel.Models.User;
 
 namespace BiliCopilot.UI.ViewModels.Items
 {
@@ -26,8 +28,33 @@ namespace BiliCopilot.UI.ViewModels.Items
         /// <summary>卡片样式.</summary>
         public MomentCardStyle Style { get; } = style;
 
+        /// <summary>内部内容；投稿的「动态」用它过滤掉视频类动态.</summary>
+        public object? InnerContent { get; init; }
+
         /// <summary>触发评论回调.</summary>
         public void ShowComment() => showCommentAction?.Invoke(this);
+    }
+
+    /// <summary>
+    /// Audio tile. The feed view model only constructs items; playback and
+    /// navigation live on the Windows surface.
+    /// </summary>
+    public sealed class AudioItemViewModel(AudioInformation data)
+    {
+        /// <summary>音频信息.</summary>
+        public AudioInformation Data { get; } = data;
+    }
+
+    /// <summary>
+    /// Collection tile. The feed view model only constructs items.
+    /// </summary>
+    public sealed class CollectionItemViewModel(UserCollectionInfo data, string userId)
+    {
+        /// <summary>合集信息.</summary>
+        public UserCollectionInfo Data { get; } = data;
+
+        /// <summary>所属用户.</summary>
+        public string UserId { get; } = userId;
     }
 }
 

@@ -23,6 +23,7 @@ public sealed class NavigationFrameTests
     [InlineData(typeof(HistoryPage))]
     [InlineData(typeof(SearchPage))]
     [InlineData(typeof(UserSpacePage))]
+    [InlineData(typeof(PgcDetailPage))]
     [InlineData(typeof(ViewLaterPage))]
     public void FirstNavigationConstructsRequestedPageAndPassesParameter(Type pageType)
     {
@@ -130,6 +131,113 @@ public sealed class NavigationFrameTests
         Assert.Empty(frame.GetBackStack());
         Assert.Null(frame.GetCurrentContent());
     }
+
+    [Fact]
+    public void SuppressedFadeStillRestoresOpacityWithInstantShowAnimation()
+    {
+        var frame = new OverlayFrame();
+        frame.NavigateTo(typeof(UserSpacePage), animateIn: false);
+        var space = Assert.IsType<UserSpacePage>(frame.GetCurrentContent());
+
+        // 隐藏时页面会停在上一次隐藏动画的 0 不透明度；抑制淡入不能把显示动画设为 null，
+        // 否则复用的页面整页透明（元素都在，画面是空的）。
+        Assert.NotNull(space.ShowAnimations);
+        var show = Assert.Single(space.ShowAnimations!);
+        Assert.Equal(1d, show.To);
+        Assert.True(show.Duration <= TimeSpan.FromMilliseconds(1));
+    }
+
+    [Fact]
+    public void BackedRetainedPageStaysInTreeAndIsReused()
+    {
+        var frame = new OverlayFrame();
+        frame.NavigateTo(typeof(UserSpacePage), "first");
+        var space = Assert.IsType<UserSpacePage>(frame.GetCurrentContent());
+        frame.GoBack();
+        Assert.Empty(frame.GetBackStack());
+        Assert.Null(frame.GetCurrentContent());
+
+        // 声明保留的页面返回后留在视觉树里，再次进入复用同一实例，
+        // 省掉重建与重新挂载的开销（头像串联动画依赖这一点）。
+        frame.NavigateTo(typeof(UserSpacePage), "second");
+        Assert.Same(space, frame.GetCurrentContent());
+        Assert.Equal("second", space.Parameter);
+        Assert.Equal(Visibility.Visible, space.Visibility);
+    }
+
+    [Fact]
+    public void BackedOrdinaryPageIsReleasedAndReconstructed()
+    {
+        var frame = new OverlayFrame();
+        frame.NavigateTo(typeof(SearchPage), "first");
+        var search = Assert.IsType<SearchPage>(frame.GetCurrentContent());
+        frame.GoBack();
+
+        // 未声明保留的页面返回即释放，下次进入重新构造.
+        frame.NavigateTo(typeof(SearchPage), "second");
+        Assert.NotSame(search, frame.GetCurrentContent());
+    }
+
+    [Fact]
+    public void BackedPagesAreRetainedOnlyWhenDeclared()
+    {
+        var frame = new OverlayFrame();
+        frame.NavigateTo(typeof(SearchPage));
+        var search = Assert.IsType<SearchPage>(frame.GetCurrentContent());
+        frame.NavigateTo(typeof(UserSpacePage));
+        var space = Assert.IsType<UserSpacePage>(frame.GetCurrentContent());
+        frame.NavigateTo(typeof(ArticleReaderPage));
+        frame.GoBack();
+        frame.GoBack();
+        frame.GoBack();
+        Assert.Empty(frame.GetBackStack());
+
+        // 未声明保留的页面返回即释放，下次进入重新构造。
+        frame.NavigateTo(typeof(SearchPage));
+        Assert.NotSame(search, frame.GetCurrentContent());
+        frame.GoBack();
+
+        // 声明保留的页面仍复用同一实例。
+        frame.NavigateTo(typeof(UserSpacePage));
+        Assert.Same(space, frame.GetCurrentContent());
+    }
+
+    [Fact]
+    public void OverlayNavigationSuppressesAndRestoresFadeOnNewAndReusedPages()
+    {
+        var frame = new OverlayFrame();
+        frame.NavigateTo(typeof(SearchPage), animateIn: false);
+        var search = Assert.IsType<SearchPage>(frame.GetCurrentContent());
+        Assert.True(IsInstantShow(search));
+        Assert.True(IsFadingShow(search) is false);
+        Assert.NotNull(search.HideAnimations);
+
+        frame.NavigateTo(typeof(UserSpacePage), animateIn: false);
+        var space = Assert.IsType<UserSpacePage>(frame.GetCurrentContent());
+        Assert.True(IsInstantShow(space));
+
+        frame.NavigateTo(typeof(SearchPage));
+        Assert.Same(search, frame.GetCurrentContent());
+        Assert.True(IsFadingShow(search));
+
+        frame.NavigateTo(typeof(UserSpacePage), animateIn: false);
+        Assert.Same(space, frame.GetCurrentContent());
+        Assert.True(IsInstantShow(space));
+
+        frame.NavigateTo(typeof(SearchPage));
+        Assert.Same(search, frame.GetCurrentContent());
+        Assert.True(IsFadingShow(search));
+    }
+
+    private static bool IsInstantShow(NavigationTestPage page)
+        => page.ShowAnimations is { Count: 1 } set
+            && set[0].To == 1
+            && set[0].Duration <= TimeSpan.FromMilliseconds(1);
+
+    private static bool IsFadingShow(NavigationTestPage page)
+        => page.ShowAnimations is { Count: 1 } set
+            && set[0].To == 1
+            && set[0].Duration >= TimeSpan.FromMilliseconds(100);
 
     [Fact]
     public void ClearedOverlayConstructsFreshPageAndNullNavigationLeavesContentUnchanged()

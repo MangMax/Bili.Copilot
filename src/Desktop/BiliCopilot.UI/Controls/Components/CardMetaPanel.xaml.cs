@@ -27,6 +27,9 @@ public sealed partial class CardMetaPanel : UserControl
     public static readonly DependencyProperty MetaProperty = DependencyProperty.Register(
         nameof(Meta), typeof(object), typeof(CardMetaPanel), new PropertyMetadata(null, OnMetaChanged));
 
+    public static readonly DependencyProperty ShowAuthorProperty = DependencyProperty.Register(
+        nameof(ShowAuthor), typeof(bool), typeof(CardMetaPanel), new PropertyMetadata(true, OnShowAuthorChanged));
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CardMetaPanel"/> class.
     /// </summary>
@@ -34,6 +37,7 @@ public sealed partial class CardMetaPanel : UserControl
     {
         InitializeComponent();
         UpdateMetaMode();
+        UpdateAuthorVisibility();
     }
 
     /// <summary>
@@ -92,8 +96,30 @@ public sealed partial class CardMetaPanel : UserControl
         set => SetValue(MetaProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets whether the avatar and author slots are shown. User-space
+    /// lists belong to a single author, so the header row is redundant there.
+    /// </summary>
+    public bool ShowAuthor
+    {
+        get => (bool)GetValue(ShowAuthorProperty);
+        set => SetValue(ShowAuthorProperty, value);
+    }
+
     private static void OnMetaChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         => ((CardMetaPanel)d).UpdateMetaMode();
+
+    private static void OnShowAuthorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((CardMetaPanel)d).UpdateAuthorVisibility();
+
+    private void UpdateAuthorVisibility()
+    {
+        var visibility = ShowAuthor ? Visibility.Visible : Visibility.Collapsed;
+        AvatarPresenter.Visibility = visibility;
+        AuthorPresenter.Visibility = visibility;
+        AuthorRow.Height = ShowAuthor ? new GridLength(20) : new GridLength(0);
+        MetaRoot.RowSpacing = ShowAuthor ? 4 : 0;
+    }
 
     private void UpdateMetaMode()
     {

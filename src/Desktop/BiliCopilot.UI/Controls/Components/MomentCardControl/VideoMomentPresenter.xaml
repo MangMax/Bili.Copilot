@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <local:MomentAuthorHeader Margin="0,0,0,12" ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+        <local:MomentAuthorHeader Margin="0,0,0,12" ShowAuthor="{x:Bind ShowAuthor, Mode=OneWay}" ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         <moment:MomentPresenter Grid.Row="1" ViewModel="{x:Bind ViewModel, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.NoData, Converter={StaticResource BoolToVisibilityReverseConverter}, Mode=OneWay}" />
         <local:MomentItemOperationPanel Grid.Row="2" SeparatorPadding="0,8,0,0" ViewModel="{x:Bind ViewModel, Mode=OneWay}" />

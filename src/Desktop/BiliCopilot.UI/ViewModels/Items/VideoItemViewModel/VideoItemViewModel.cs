@@ -160,7 +160,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private async Task ShowUserSpaceAsync()
     {
-        var user = Data.Publisher?.User;
+        var user = UserSpaceProfile;
         if (user is null && Style == VideoCardStyle.Partition && !string.IsNullOrWhiteSpace(Subtitle))
         {
             // 分区列表只返回作者名称，没有用户 ID，点开时再从视频详情补全。

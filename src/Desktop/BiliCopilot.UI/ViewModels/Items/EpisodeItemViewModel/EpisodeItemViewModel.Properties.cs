@@ -60,7 +60,7 @@ public sealed partial class EpisodeItemViewModel
     /// <summary>
     /// 索引.
     /// </summary>
-    public int? Index { get; init; }
+    public int? Index { get; set; }
 
     /// <summary>
     /// 高亮文本.

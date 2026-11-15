@@ -20,9 +20,19 @@ internal sealed partial class VideoCardTemplateSelector : DataTemplateSelector
     public DataTemplate PartitionTemplate { get; set; }
 
     /// <summary>
+    /// 动态里的视频卡片模板.
+    /// </summary>
+    public DataTemplate MomentTemplate { get; set; }
+
+    /// <summary>
     /// 骨架占位模板.
     /// </summary>
     public DataTemplate SkeletonTemplate { get; set; }
+
+    /// <summary>
+    /// 其他样式（如搜索、用户空间）共用的模板；未设置时沿用原来的空模板行为.
+    /// </summary>
+    public DataTemplate DefaultTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
@@ -39,7 +49,8 @@ internal sealed partial class VideoCardTemplateSelector : DataTemplateSelector
                 VideoCardStyle.Hot => HotTemplate,
                 VideoCardStyle.Rank => RankTemplate,
                 VideoCardStyle.Partition => PartitionTemplate,
-                _ => default
+                VideoCardStyle.Moment => MomentTemplate,
+                _ => DefaultTemplate
             };
         }
 

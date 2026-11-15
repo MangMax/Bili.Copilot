@@ -3,13 +3,80 @@
     x:Class="BiliCopilot.UI.Pages.Overlay.UserSpacePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:comment="using:BiliCopilot.UI.Controls.Comment"
+    xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Pages.Overlay"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:moment="using:BiliCopilot.UI.Controls.Moment"
+    xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater"
+    xmlns:view="using:BiliCopilot.UI.ViewModels.View"
     mc:Ignorable="d">
+
+    <local:UserSpacePageBase.Resources>
+        <UniformGridLayout
+            x:Key="UserVideoGrid"
+            ItemsStretch="Fill"
+            MinColumnSpacing="16"
+            MinItemWidth="240"
+            MinRowSpacing="16" />
+        <UniformGridLayout
+            x:Key="UserArticleGrid"
+            ItemsStretch="Fill"
+            MinColumnSpacing="16"
+            MinItemWidth="300"
+            MinRowSpacing="16" />
+        <UniformGridLayout
+            x:Key="UserAudioGrid"
+            ItemsStretch="Fill"
+            MinColumnSpacing="16"
+            MinItemWidth="320"
+            MinRowSpacing="16" />
+        <UniformGridLayout
+            x:Key="UserCollectionGrid"
+            ItemsStretch="Fill"
+            MinColumnSpacing="16"
+            MinItemWidth="220"
+            MinRowSpacing="16" />
+        <DataTemplate x:Key="UserVideoGridTemplate" x:DataType="items:VideoItemViewModel">
+            <components:VideoCardControl Style="{StaticResource UserSpaceVideoCardStyle}" ViewModel="{x:Bind}" />
+        </DataTemplate>
+        <ext:VideoCardTemplateSelector
+            x:Key="UserVideoGridSelector"
+            DefaultTemplate="{StaticResource UserVideoGridTemplate}"
+            MomentTemplate="{StaticResource UserVideoGridTemplate}"
+            SkeletonTemplate="{StaticResource UserSpaceVideoSkeletonTemplate}" />
+        <DataTemplate x:Key="UserSubmissionNavTemplate" x:DataType="view:UserSpaceTabViewModel">
+            <ItemContainer
+                Height="44"
+                Margin="8,0"
+                AutomationProperties.Name="{x:Bind Title, Mode=OneTime}"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                Style="{StaticResource AppItemContainerStyle}">
+                <Grid Padding="12,0" ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ic:SymbolIcon
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Symbol="{x:Bind local:UserSpacePage.GetSubmissionIcon(Kind), Mode=OneTime}" />
+                    <TextBlock
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Text="{x:Bind Title, Mode=OneTime}"
+                        TextTrimming="CharacterEllipsis" />
+                </Grid>
+            </ItemContainer>
+        </DataTemplate>
+    </local:UserSpacePageBase.Resources>
+
     <Grid
         x:Name="PageLayout"
         Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
@@ -18,8 +85,7 @@
         <Canvas IsHitTestVisible="False">
             <Grid x:Name="Backdrop" Height="600">
                 <Grid x:Name="BackdropImage">
-                    <controls:RecommendationCoverImage
-                        Source="{x:Bind ViewModel.Card.Banner.SourceUri, Mode=OneWay, FallbackValue={x:Null}}" />
+                    <controls:RecommendationCoverImage Source="{x:Bind ViewModel.Card.Banner.SourceUri, Mode=OneWay, FallbackValue={x:Null}}" />
                     <Border Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" Opacity="0.18" />
                 </Grid>
                 <Border x:Name="BackdropFade">
@@ -33,12 +99,471 @@
                 </Border>
             </Grid>
         </Canvas>
-        <moment:UserSpacePageBody
-            x:Name="SpaceBody"
-            Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-        <moment:UserSpaceVideoSearchSection
-            x:Name="SearchSection"
-            Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}" />
+
+        <!--  单一滚动宿主：页头、视差背景与各分区内容都在同一个 ScrollView 里，切分区不重建页面  -->
+        <controls:IncrementVerticalScrollControl
+            x:Name="SpaceScroll"
+            LoadMoreCommand="{x:Bind ViewModel.LoadMoreCommand, Mode=OneWay}"
+            Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+            <controls:IncrementVerticalScrollControl.Element>
+                <Grid Margin="0,0,0,16" RowSpacing="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <moment:UserSpacePageHeader Margin="-20,0" />
+
+                    <Grid x:Name="SectionHost" Grid.Row="1">
+                        <!--  主页  -->
+                        <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.IsHomeTab, Mode=OneWay}">
+                            <TextBlock
+                                Margin="8,0,0,0"
+                                Style="{StaticResource SubtitleTextBlockStyle}"
+                                Text="{ext:Locale Name=RecentVideos}" />
+                            <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.HomeVideos, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserVideoGrid}">
+                                <repeater:AppRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="items:VideoItemViewModel">
+                                        <components:VideoCardControl Style="{StaticResource UserSpaceVideoCardStyle}" ViewModel="{x:Bind}" />
+                                    </DataTemplate>
+                                </repeater:AppRepeater.ItemTemplate>
+                            </repeater:AppRepeater>
+                            <TextBlock
+                                Margin="8,12,0,0"
+                                Style="{StaticResource SubtitleTextBlockStyle}"
+                                Text="{ext:Locale Name=RecentDynamics}" />
+                            <ItemsRepeater ItemsSource="{x:Bind ViewModel.HomeMoments, Mode=OneWay, FallbackValue={x:Null}}">
+                                <ItemsRepeater.Layout>
+                                    <moment:MomentStaggeredLayout
+                                        ColumnSpacing="16"
+                                        MinItemWidth="280"
+                                        RowSpacing="16" />
+                                </ItemsRepeater.Layout>
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="items:MomentItemViewModel">
+                                        <components:MomentCardControl ShowAuthor="False" ShowUserSpaceEntry="False" Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                            </ItemsRepeater>
+                        </StackPanel>
+
+                        <!--  动态  -->
+                        <Grid MinHeight="160" Visibility="{x:Bind ViewModel.IsMomentsTab, Mode=OneWay}">
+                            <Grid ColumnSpacing="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!--  与投稿分区同一套侧栏：全部 / 视频  -->
+                                <Border
+                                    x:Name="MomentNavRail"
+                                    Padding="2,8,8,8"
+                                    VerticalAlignment="Top"
+                                    CornerRadius="12">
+                                    <ItemsView
+                                        x:Name="MomentFilterNav"
+                                        Padding="2,8,8,8"
+                                        AutomationProperties.AutomationId="UserMomentFilters"
+                                        ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
+                                        ItemsSource="{x:Bind ViewModel.MomentFilterTabs, Mode=OneWay}"
+                                        SelectionMode="Single"
+                                        ScrollViewer.HorizontalScrollMode="Disabled"
+                                        ScrollViewer.VerticalScrollMode="Disabled">
+                                        <ItemsView.Layout>
+                                            <StackLayout Spacing="8" />
+                                        </ItemsView.Layout>
+                                    </ItemsView>
+                                </Border>
+                                <Grid Grid.Column="1">
+                            <StackPanel Spacing="12">
+                                <ItemsRepeater ItemsSource="{x:Bind ViewModel.MomentSection.Items, Mode=OneWay, FallbackValue={x:Null}}" Visibility="{x:Bind ViewModel.IsAllMomentFilter, Mode=OneWay}">
+                                    <ItemsRepeater.Layout>
+                                        <moment:MomentStaggeredLayout
+                                            ColumnSpacing="16"
+                                            MinItemWidth="320"
+                                            RowSpacing="16" />
+                                    </ItemsRepeater.Layout>
+                                    <ItemsRepeater.ItemTemplate>
+                                        <DataTemplate x:DataType="items:MomentItemViewModel">
+                                            <components:MomentCardControl
+                                                ShowUserSpaceEntry="False"
+                                                Style="{StaticResource PersonalFullMomentCardStyle}"
+                                                ViewModel="{x:Bind}" />
+                                        </DataTemplate>
+                                    </ItemsRepeater.ItemTemplate>
+                                </ItemsRepeater>
+                                <Grid Visibility="{x:Bind ViewModel.IsVideoMomentFilter, Mode=OneWay}">
+                                    <repeater:AppRepeater ItemsSource="{x:Bind DisplayVideos, Mode=OneWay}" Layout="{StaticResource UserVideoGrid}">
+                                        <repeater:AppRepeater.ItemTemplate>
+                                            <DataTemplate>
+                                                <ContentControl
+                                                    VerticalContentAlignment="Top"
+                                                    Content="{Binding}"
+                                                    ContentTemplateSelector="{StaticResource UserVideoGridSelector}"
+                                                    Style="{StaticResource AppContentControlStyle}" />
+                                            </DataTemplate>
+                                        </repeater:AppRepeater.ItemTemplate>
+                                    </repeater:AppRepeater>
+                                    <base:EmptyHolder
+                                        Description="{ext:Locale Name=NoSpecificData}"
+                                        Emoji="&#x1F3AC;"
+                                        Visibility="{x:Bind ViewModel.VideoFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                </Grid>
+                                <StackPanel
+                                    Margin="0,0,0,12"
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Spacing="8"
+                                    Visibility="{x:Bind ViewModel.MomentSection.IsLoadingMore, Mode=OneWay, FallbackValue=Collapsed}">
+                                    <ProgressRing
+                                        Width="16"
+                                        Height="16"
+                                        IsActive="True" />
+                                    <TextBlock
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{ext:Locale Name=LoadingAndWait}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <base:EmptyHolder
+                                Description="{ext:Locale Name=NoSpecificData}"
+                                Emoji="&#x1F440;"
+                                Visibility="{x:Bind ViewModel.MomentSection.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                            <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.MomentSection.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <!--  投稿：左侧分类侧栏 + 右侧内容，切换分类只换右栏  -->
+                        <Grid
+                            x:Name="SubmissionPanel"
+                            ColumnSpacing="0"
+                            Visibility="{x:Bind ViewModel.IsSubmissionTab, Mode=OneWay}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  与各页面侧栏同一套 ItemsView + AppItemContainerStyle；侧栏在滚动区之外，不会跟着列表走  -->
+                            <Border
+                                x:Name="SubmissionNavRail"
+                                Padding="2,8,8,8"
+                                VerticalAlignment="Top"
+                                CornerRadius="12">
+                                <ItemsView
+                                    x:Name="SubmissionNav"
+                                    AutomationProperties.AutomationId="UserSubmissionSections"
+                                    ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
+                                    ItemsSource="{x:Bind ViewModel.SubmissionTabs, Mode=OneWay}"
+                                    SelectionMode="Single"
+                                    ScrollViewer.HorizontalScrollMode="Disabled"
+                                    ScrollViewer.VerticalScrollMode="Disabled">
+                                    <ItemsView.Layout>
+                                        <StackLayout Spacing="8" />
+                                    </ItemsView.Layout>
+                                </ItemsView>
+                            </Border>
+
+                            <Grid
+                                x:Name="SubmissionContent"
+                                Grid.Column="1">
+                                <!--  视频  -->
+                                <Grid Visibility="{x:Bind ViewModel.ShowSubmissionVideos, Mode=OneWay}">
+                                    <StackPanel Spacing="12">
+                                        <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.VideoFeed.Items, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserVideoGrid}">
+                                            <repeater:AppRepeater.ItemTemplate>
+                                                <DataTemplate x:DataType="items:VideoItemViewModel">
+                                                    <components:VideoCardControl Style="{StaticResource UserSpaceVideoCardStyle}" ViewModel="{x:Bind}" />
+                                                </DataTemplate>
+                                            </repeater:AppRepeater.ItemTemplate>
+                                        </repeater:AppRepeater>
+                                        <StackPanel
+                                            Margin="0,0,0,12"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            Visibility="{x:Bind ViewModel.VideoFeed.IsLoadingMore, Mode=OneWay, FallbackValue=Collapsed}">
+                                            <ProgressRing
+                                                Width="16"
+                                                Height="16"
+                                                IsActive="True" />
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                Text="{ext:Locale Name=LoadingAndWait}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <base:EmptyHolder
+                                        Description="{ext:Locale Name=NoSpecificData}"
+                                        Emoji="&#x1F3AC;"
+                                        Visibility="{x:Bind ViewModel.VideoFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.VideoFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                </Grid>
+
+                                <!--  专栏  -->
+                                <Grid Visibility="{x:Bind ViewModel.ShowSubmissionArticles, Mode=OneWay}">
+                                    <StackPanel Spacing="12">
+                                        <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.ArticleFeed.Items, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserArticleGrid}">
+                                            <repeater:AppRepeater.ItemTemplate>
+                                                <DataTemplate x:DataType="items:ArticleItemViewModel">
+                                                    <components:ArticleCardControl Style="{StaticResource UserSpaceArticleCardStyle}" ViewModel="{x:Bind}" />
+                                                </DataTemplate>
+                                            </repeater:AppRepeater.ItemTemplate>
+                                        </repeater:AppRepeater>
+                                        <StackPanel
+                                            Margin="0,0,0,12"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            Visibility="{x:Bind ViewModel.ArticleFeed.IsLoadingMore, Mode=OneWay, FallbackValue=Collapsed}">
+                                            <ProgressRing
+                                                Width="16"
+                                                Height="16"
+                                                IsActive="True" />
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                Text="{ext:Locale Name=LoadingAndWait}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <base:EmptyHolder
+                                        Description="{ext:Locale Name=NoSpecificData}"
+                                        Emoji="&#x1F4C4;"
+                                        Visibility="{x:Bind ViewModel.ArticleFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.ArticleFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                </Grid>
+
+                                <!--  动态（图文）：按列高排布的瀑布流  -->
+                                <Grid Visibility="{x:Bind ViewModel.ShowSubmissionMoments, Mode=OneWay}">
+                                    <StackPanel Spacing="12">
+                                        <!--  瀑布流需要非虚拟化布局，这里直接用 ItemsRepeater 承载  -->
+                                        <ItemsRepeater ItemsSource="{x:Bind ViewModel.SubmissionMoments, Mode=OneWay, FallbackValue={x:Null}}">
+                                            <ItemsRepeater.Layout>
+                                                <moment:MomentStaggeredLayout
+                                                    ColumnSpacing="16"
+                                                    MinItemWidth="320"
+                                                    RowSpacing="16" />
+                                            </ItemsRepeater.Layout>
+                                            <ItemsRepeater.ItemTemplate>
+                                                <DataTemplate x:DataType="items:MomentItemViewModel">
+                                                    <components:MomentCardControl ShowAuthor="False" ShowUserSpaceEntry="False" Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
+                                                </DataTemplate>
+                                            </ItemsRepeater.ItemTemplate>
+                                        </ItemsRepeater>
+                                        <StackPanel
+                                            Margin="0,0,0,12"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            Visibility="{x:Bind ViewModel.MomentSection.IsLoadingMore, Mode=OneWay, FallbackValue=Collapsed}">
+                                            <ProgressRing
+                                                Width="16"
+                                                Height="16"
+                                                IsActive="True" />
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                Text="{ext:Locale Name=LoadingAndWait}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <base:EmptyHolder
+                                        Description="{ext:Locale Name=NoSpecificData}"
+                                        Emoji="&#x1F5BC;"
+                                        Visibility="{x:Bind ViewModel.IsSubmissionMomentsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                </Grid>
+
+                                <!--  音频  -->
+                                <Grid Visibility="{x:Bind ViewModel.ShowSubmissionAudio, Mode=OneWay}">
+                                    <StackPanel Spacing="12">
+                                        <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.AudioFeed.Items, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserAudioGrid}">
+                                            <repeater:AppRepeater.ItemTemplate>
+                                                <DataTemplate x:DataType="items:AudioItemViewModel">
+                                                    <Button
+                                                        Padding="8"
+                                                        HorizontalContentAlignment="Stretch"
+                                                        AutomationProperties.AutomationId="UserSpaceAudioItem"
+                                                        Command="{x:Bind OpenCommand, Mode=OneTime}"
+                                                        CornerRadius="8"
+                                                        Style="{StaticResource SubtleButtonStyle}"
+                                                        ToolTipService.ToolTip="{x:Bind Title, Mode=OneTime}">
+                                                        <Grid ColumnSpacing="12">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <controls:RecommendationCoverImage
+                                                                Width="64"
+                                                                Height="64"
+                                                                CornerRadius="8"
+                                                                Source="{x:Bind Cover, Mode=OneTime}" />
+                                                            <StackPanel
+                                                                Grid.Column="1"
+                                                                VerticalAlignment="Center"
+                                                                Spacing="4">
+                                                                <TextBlock
+                                                                    MaxLines="2"
+                                                                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                                    Text="{x:Bind Title, Mode=OneTime}"
+                                                                    TextTrimming="CharacterEllipsis" />
+                                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                                    <TextBlock
+                                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                                                        Text="{x:Bind Duration, Mode=OneTime}" />
+                                                                    <TextBlock
+                                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                                                        Text="{x:Bind PlayCount, Mode=OneTime}" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </repeater:AppRepeater.ItemTemplate>
+                                        </repeater:AppRepeater>
+                                        <StackPanel
+                                            Margin="0,0,0,12"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            Visibility="{x:Bind ViewModel.AudioFeed.IsLoadingMore, Mode=OneWay, FallbackValue=Collapsed}">
+                                            <ProgressRing
+                                                Width="16"
+                                                Height="16"
+                                                IsActive="True" />
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                Text="{ext:Locale Name=LoadingAndWait}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <base:EmptyHolder
+                                        Description="{ext:Locale Name=NoSpecificData}"
+                                        Emoji="&#x1F3B5;"
+                                        Visibility="{x:Bind ViewModel.AudioFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.AudioFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                </Grid>
+
+                                <!--  合集  -->
+                                <Grid Visibility="{x:Bind ViewModel.ShowSubmissionCollections, Mode=OneWay}">
+                                    <StackPanel Spacing="12">
+                                        <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.CollectionFeed.Items, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserCollectionGrid}">
+                                            <repeater:AppRepeater.ItemTemplate>
+                                                <DataTemplate x:DataType="items:CollectionItemViewModel">
+                                                    <Button
+                                                        Padding="8"
+                                                        HorizontalContentAlignment="Stretch"
+                                                        AutomationProperties.AutomationId="UserSpaceCollectionItem"
+                                                        Command="{x:Bind OpenCommand, Mode=OneTime}"
+                                                        CornerRadius="8"
+                                                        Style="{StaticResource SubtleButtonStyle}"
+                                                        ToolTipService.ToolTip="{x:Bind Title, Mode=OneTime}">
+                                                        <Grid RowSpacing="8">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
+                                                            </Grid.RowDefinitions>
+                                                            <controls:RecommendationCoverImage
+                                                                Height="110"
+                                                                HorizontalAlignment="Stretch"
+                                                                CornerRadius="8"
+                                                                Source="{x:Bind Cover, Mode=OneTime}" />
+                                                            <StackPanel Grid.Row="1" Spacing="2">
+                                                                <TextBlock
+                                                                    MaxLines="2"
+                                                                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                                    Text="{x:Bind Title, Mode=OneTime}"
+                                                                    TextTrimming="CharacterEllipsis" />
+                                                                <TextBlock
+                                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                                    Text="{x:Bind Count, Mode=OneTime}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </repeater:AppRepeater.ItemTemplate>
+                                        </repeater:AppRepeater>
+                                        <StackPanel
+                                            Margin="0,0,0,12"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            Visibility="{x:Bind ViewModel.CollectionFeed.IsLoadingMore, Mode=OneWay, FallbackValue=Collapsed}">
+                                            <ProgressRing
+                                                Width="16"
+                                                Height="16"
+                                                IsActive="True" />
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                Text="{ext:Locale Name=LoadingAndWait}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <base:EmptyHolder
+                                        Description="{ext:Locale Name=NoSpecificData}"
+                                        Emoji="&#x1F4C1;"
+                                        Visibility="{x:Bind ViewModel.CollectionFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.CollectionFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </controls:IncrementVerticalScrollControl.Element>
+        </controls:IncrementVerticalScrollControl>
+
+        <!--  动态筛选栏的固定版本  -->
+        <Grid
+            x:Name="MomentNavOverlay"
+            Width="180"
+            Margin="20,8,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            CornerRadius="12"
+            Visibility="Collapsed">
+            <ItemsView
+                x:Name="MomentFilterNavOverlay"
+                Padding="2,8,8,8"
+                AutomationProperties.AutomationId="UserMomentFiltersSticky"
+                ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
+                ItemsSource="{x:Bind ViewModel.MomentFilterTabs, Mode=OneWay}"
+                SelectionMode="Single"
+                ScrollViewer.HorizontalScrollMode="Disabled"
+                ScrollViewer.VerticalScrollMode="Disabled">
+                <ItemsView.Layout>
+                    <StackLayout Spacing="8" />
+                </ItemsView.Layout>
+            </ItemsView>
+        </Grid>
+
+        <!--  分类栏滚出视口后，用固定在左上角的同一组分类接替，避免跟着滚动做位移  -->
+        <Grid
+            x:Name="SubmissionNavOverlay"
+            Width="180"
+            Margin="20,8,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            CornerRadius="12"
+            Visibility="Collapsed">
+            <ItemsView
+                x:Name="SubmissionNavOverlayView"
+                Padding="2,8,8,8"
+                AutomationProperties.AutomationId="UserSubmissionSectionsSticky"
+                ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
+                ItemsSource="{x:Bind ViewModel.SubmissionTabs, Mode=OneWay}"
+                SelectionMode="Single"
+                ScrollViewer.HorizontalScrollMode="Disabled"
+                ScrollViewer.VerticalScrollMode="Disabled">
+                <ItemsView.Layout>
+                    <StackLayout Spacing="8" />
+                </ItemsView.Layout>
+            </ItemsView>
+        </Grid>
+
+        <moment:UserSpaceVideoSearchSection x:Name="SearchSection" Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}" />
         <comment:CommentOverlayPanel
             x:Name="CommentPanel"
             IsPanelOpened="{x:Bind ViewModel.IsCommentsOpened, Mode=TwoWay}"

@@ -39,10 +39,31 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         set => SetValue(MinimumTitleHeightProperty, value);
     }
 
+    public static readonly DependencyProperty ShowAuthorProperty = DependencyProperty.Register(
+        nameof(ShowAuthor), typeof(bool), typeof(VideoCardControl), new PropertyMetadata(true));
+
+    /// <summary>Shows the author row; user-space lists already belong to one author.</summary>
+    public bool ShowAuthor
+    {
+        get => (bool)GetValue(ShowAuthorProperty);
+        set => SetValue(ShowAuthorProperty, value);
+    }
+
+    public static readonly DependencyProperty ShowUserSpaceEntryProperty = DependencyProperty.Register(
+        nameof(ShowUserSpaceEntry), typeof(bool), typeof(VideoCardControl), new PropertyMetadata(true));
+
+    /// <summary>Shows「进入用户空间」in the card menu; hidden on user-space pages.</summary>
+    public bool ShowUserSpaceEntry
+    {
+        get => (bool)GetValue(ShowUserSpaceEntryProperty);
+        set => SetValue(ShowUserSpaceEntryProperty, value);
+    }
+
     private ButtonBase _rootCard;
     private Button _userButton;
     private Button _authorButton;
     private Button? _moreButton;
+    private RecommendationCoverImage? _avatarCover;
     private CancellationTokenSource? _authorRequest;
     private AccountViewModel? _account;
 
@@ -64,13 +85,29 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     protected override void OnApplyTemplate()
     {
         if (_moreButton is not null) _moreButton.Click -= OnMoreClick;
+        if (_userButton is not null) _userButton.Click -= OnUserSpaceClick;
+        if (_authorButton is not null) _authorButton.Click -= OnUserSpaceClick;
         _moreButton = GetTemplateChild("MoreButton") as Button;
         if (_moreButton is not null) _moreButton.Click += OnMoreClick;
         _rootCard = GetTemplateChild("RootCard") as ButtonBase;
         _userButton = GetTemplateChild("UserButton") as Button;
         _authorButton = GetTemplateChild("AuthorButton") as Button;
+        _avatarCover = GetTemplateChild("AvatarCover") is RecommendationCoverImage avatar ? avatar : null;
+        if (_userButton is not null) _userButton.Click += OnUserSpaceClick;
+        if (_authorButton is not null) _authorButton.Click += OnUserSpaceClick;
         if (IsLoaded) RefreshPopularCardData();
         ApplyViewModelCommands(ViewModel);
+    }
+
+    private void OnUserSpaceClick(object sender, RoutedEventArgs args)
+    {
+        if (ViewModel is null || !ViewModel.CanOpenUserSpace)
+        {
+            return;
+        }
+
+        // 头像与作者名共用同一条动画路径；没有头像的模板只会取消旧请求并正常导航。
+        UserSpaceNavigation.Open(_avatarCover, ViewModel.UserSpaceProfile, ViewModel.ShowUserSpaceCommand);
     }
 
     private void OnPopularPointerEntered(object sender, PointerRoutedEventArgs args)
@@ -181,15 +218,17 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             _rootCard.Command = viewModel?.PlayCommand;
         }
 
+        // 作者入口改由 Click 处理：先准备头像串联再执行导航命令。
+        // 右键菜单仍直接绑定 ShowUserSpaceCommand，不参与动画。
         if (_userButton is not null)
         {
-            _userButton.Command = viewModel?.ShowUserSpaceCommand;
+            _userButton.Command = null;
             _userButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
         }
 
         if (_authorButton is not null)
         {
-            _authorButton.Command = viewModel?.ShowUserSpaceCommand;
+            _authorButton.Command = null;
             _authorButton.IsEnabled = viewModel?.CanOpenUserSpace == true;
         }
     }
@@ -294,7 +333,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreatePrivatePlayItem());
-        if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.CanOpenUserSpace)
+        if (ShowUserSpaceEntry && ViewModel.Style != VideoCardStyle.Moment && ViewModel.CanOpenUserSpace)
         {
             menuFlyout.Items.Add(CreateUserSpaceItem());
         }

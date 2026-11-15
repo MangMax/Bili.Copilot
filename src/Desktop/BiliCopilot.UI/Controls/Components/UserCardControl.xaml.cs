@@ -4,6 +4,7 @@ using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Richasy.WinUIKernel.Share.Base;
 using System.ComponentModel;
 
@@ -88,6 +89,35 @@ public sealed partial class UserCardControl : UserCardControlBase
         {
             FollowIcon.IconVariant = ViewModel?.IsFollowed == true ? FluentIcons.Common.IconVariant.Filled : FluentIcons.Common.IconVariant.Regular;
         }
+    }
+
+    private void OnRootCardClick(object sender, RoutedEventArgs args)
+    {
+        // 关注按钮只负责切换关注状态，不导航、不播放动画。
+        // Button.Click 本身不是冒泡路由事件，内层按钮也会先处理指针事件；
+        // 这里再按来源元素过滤一次，避免嵌套交互控件的路由行为变化导致误导航。
+        if (ViewModel is null || IsFollowButtonClick(args.OriginalSource))
+        {
+            return;
+        }
+
+        UserSpaceNavigation.Open(AvatarCover, ViewModel.UserSpaceProfile, ViewModel.ShowUserSpaceCommand);
+    }
+
+    private bool IsFollowButtonClick(object? source)
+    {
+        var current = source as DependencyObject;
+        while (current is not null)
+        {
+            if (ReferenceEquals(current, FollowButton))
+            {
+                return true;
+            }
+
+            current = VisualTreeHelper.GetParent(current);
+        }
+
+        return false;
     }
 
     private void OnContextRequested(UIElement sender, ContextRequestedEventArgs args)

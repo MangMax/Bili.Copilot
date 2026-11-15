@@ -2,7 +2,7 @@
 
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
-using BiliCopilot.UI.ViewModels.Components;
+using BiliCopilot.UI.ViewModels.View;
 
 namespace BiliCopilot.UI.Controls.Moment;
 
@@ -18,6 +18,11 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
 
     public static string GetFollowLabel(bool isFollowed)
         => ResourceToolkit.GetLocalizedString(isFollowed ? StringNames.Followed : StringNames.Follow);
+
+    /// <summary>
+    /// 页头头像元素，供串联动画作为目标.
+    /// </summary>
+    public RecommendationCoverImage AvatarElement => AvatarCover;
 
     private void OnHeaderSizeChanged(object sender, SizeChangedEventArgs e)
         => VisualStateManager.GoToState(this, e.NewSize.Width < 760 ? "Compact" : "Wide", false);
@@ -46,18 +51,18 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {
-        if (Selector.SelectedItem is UserMomentDetailViewModel item && item != ViewModel.SelectedSection)
+        if (Selector.SelectedItem is UserSpaceTabViewModel item && item != ViewModel.SelectedTab)
         {
-            ViewModel.SelectSectionCommand.Execute(item);
+            ViewModel.SelectTabCommand.Execute(item);
         }
     }
 
     private void InitializeChildPartitions()
     {
         var items = new List<SelectorBarItem>();
-        if (ViewModel.Sections is not null)
+        if (ViewModel.Tabs is { Count: > 0 } tabs)
         {
-            foreach (var item in ViewModel.Sections)
+            foreach (var item in tabs)
             {
                 items.Add(new SelectorBarItem()
                 {
@@ -67,6 +72,9 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
             }
         }
 
-        Selector.SetItems(items, ViewModel.SelectedSection);
+        Selector.SetItems(items, ViewModel.SelectedTab);
+
+        // 重建标签栏后把分区状态与当前选中项对齐，避免初始分区高亮与内容不一致.
+        ViewModel.SelectTabCommand.Execute(ViewModel.SelectedTab);
     }
 }

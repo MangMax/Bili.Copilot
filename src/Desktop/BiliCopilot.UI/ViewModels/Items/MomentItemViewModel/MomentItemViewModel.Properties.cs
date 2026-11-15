@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.Appearance;
+using Richasy.BiliKernel.Models.User;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -45,6 +46,11 @@ public sealed partial class MomentItemViewModel
     public string? Tip { get; init; }
 
     /// <summary>
+    /// 转发来源提示，例如「转发了 @某人」.
+    /// </summary>
+    public string? ForwardHint { get; init; }
+
+    /// <summary>
     /// 视频封面.
     /// </summary>
     public Uri? VideoCover { get; init; }
@@ -78,6 +84,16 @@ public sealed partial class MomentItemViewModel
     /// 卡片样式.
     /// </summary>
     public MomentCardStyle Style { get; init; }
+
+    /// <summary>
+    /// 番剧动态所属的季度 Id；非番剧动态时为空.
+    /// </summary>
+    public string? SeasonId { get; private set; }
+
+    /// <summary>
+    /// 卡片作者的用户资料，与导航命令使用同一数据源；供头像串联准备动画.
+    /// </summary>
+    public UserProfile? UserSpaceProfile => Data.User;
 
     /// <summary>Pure-video cards expose their dynamic text without changing the grid height.</summary>
     public bool HasDescriptionPreview => Style == MomentCardStyle.Video && !string.IsNullOrWhiteSpace(Description?.Text);

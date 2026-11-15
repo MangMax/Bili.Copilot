@@ -29,7 +29,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentItemViewModel"/> class.
     /// </summary>
-    public MomentItemViewModel(MomentInformation data, MomentCardStyle style, Action<MomentItemViewModel> showCommentAction)
+    public MomentItemViewModel(MomentInformation data, MomentCardStyle style, Action<MomentItemViewModel> showCommentAction, bool isForwarded = false)
         : base(data)
     {
         _showMomentAction = showCommentAction;
@@ -39,6 +39,9 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         LikeCount = data.CommunityInformation?.LikeCount;
         CommentCount = data.CommunityInformation?.CommentCount;
         Author = data.User?.Name?.TrimStart('@');
+        ForwardHint = isForwarded && !string.IsNullOrEmpty(Author)
+            ? string.Format(ResourceToolkit.GetLocalizedString(StringNames.ForwardedFromTemplate), Author)
+            : null;
         Avatar = data.User?.Avatar?.Uri;
         Tip = data.Tip;
         Description = data.Description;
@@ -49,7 +52,8 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             if (data.Data is MomentInformation forward)
             {
-                InnerContent = new MomentItemViewModel(forward, Style, showCommentAction);
+                // 被转发的动态自己带上来源提示，转发卡里显示「转发了 @作者」.
+                InnerContent = new MomentItemViewModel(forward, Style, showCommentAction, isForwarded: true);
             }
             else if (data.Data is VideoInformation video)
             {
@@ -73,6 +77,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
             {
                 IsPgc = true;
+                SeasonId = einfo.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.SeasonId).ToString();
                 VideoTitle = einfo.Identifier.Title;
                 VideoCover = einfo.Identifier.Cover.Uri;
                 VideoDuration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(einfo.Duration ?? 0));
@@ -129,18 +134,16 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         }
         else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
         {
-            var hasEpid = einfo.Identifier.Id != "0";
-            if (hasEpid)
+            if (einfo.Identifier.Id == "0")
             {
-                var identifier = new MediaIdentifier(einfo.Identifier.Id, string.Empty, default);
-                var snapshot = new MediaSnapshot(default, new EpisodeInformation(identifier));
-                this.Get<AppViewModel>().OpenPlayerCommand.Execute(snapshot);
-            }
-            else
-            {
-                // 出差番剧，使用网页打开.
+                // 出差番剧没有可在站内播放的剧集号，使用网页打开.
                 OpenInBroswerCommand.Execute(default);
+                return;
             }
+
+            // 带上动态里的完整剧集信息：花絮、预告片等不在季度正片列表里的内容，
+            // 播放器需要按这个 ep 号取播放地址，而不是回退到正片第一集.
+            this.Get<AppViewModel>().OpenPlayerCommand.Execute(new MediaSnapshot(default, einfo));
         }
         else if (FindInnerContent<LiveInformation>() is LiveInformation linfo)
         {

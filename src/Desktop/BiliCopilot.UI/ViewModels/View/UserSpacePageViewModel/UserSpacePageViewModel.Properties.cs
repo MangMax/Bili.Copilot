@@ -46,6 +46,149 @@ public sealed partial class UserSpacePageViewModel
 
     private CancellationTokenSource? _searchCancellation;
 
+    /// <summary>
+    /// 顶部分区：主页、动态、投稿.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<UserSpaceTabViewModel> Tabs { get; set; } = [];
+
+    /// <summary>
+    /// 当前分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial UserSpaceTabViewModel? SelectedTab { get; set; }
+
+    /// <summary>
+    /// 当前是否主页分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsHomeTab { get; set; }
+
+    /// <summary>
+    /// 当前是否动态分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsMomentsTab { get; set; }
+
+    /// <summary>
+    /// 当前是否投稿分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSubmissionTab { get; set; }
+
+    /// <summary>
+    /// 动态分区使用的视图模型.
+    /// </summary>
+    [ObservableProperty]
+    public partial UserMomentDetailViewModel? MomentSection { get; set; }
+
+    /// <summary>
+    /// 动态分区的筛选：全部 / 视频.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<UserSpaceTabViewModel> MomentFilterTabs { get; set; } = [];
+
+    /// <summary>
+    /// 当前动态筛选.
+    /// </summary>
+    [ObservableProperty]
+    public partial UserSpaceTabViewModel? SelectedMomentFilter { get; set; }
+
+    /// <summary>
+    /// 当前是否展示全部动态.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsAllMomentFilter { get; set; } = true;
+
+    /// <summary>
+    /// 当前是否展示视频（视频投稿列表）.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsVideoMomentFilter { get; set; }
+
+    /// <summary>
+    /// 主页的最近投稿：首页到达时取一份快照，之后翻页不再改动.
+    /// </summary>
+    public ObservableCollection<VideoItemViewModel> HomeVideos { get; } = new();
+
+    /// <summary>
+    /// 主页的最近动态：随动态分区增量追加，到达上限后不再增长.
+    /// </summary>
+    public ObservableCollection<MomentItemViewModel> HomeMoments { get; } = new();
+
+    /// <summary>
+    /// 投稿分区：视频、专栏、动态.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<UserSpaceTabViewModel> SubmissionTabs { get; set; } = [];
+
+    /// <summary>
+    /// 当前投稿分区.
+    /// </summary>
+    [ObservableProperty]
+    public partial UserSpaceTabViewModel? SelectedSubmissionTab { get; set; }
+
+    /// <summary>
+    /// 投稿视频（分页）.
+    /// </summary>
+    public UserSpaceVideoFeedViewModel VideoFeed { get; }
+
+    /// <summary>
+    /// 投稿专栏（分页）.
+    /// </summary>
+    public UserSpaceArticleFeedViewModel ArticleFeed { get; }
+
+    /// <summary>
+    /// 投稿音频（分页）.
+    /// </summary>
+    public UserSpaceAudioFeedViewModel AudioFeed { get; }
+
+    /// <summary>
+    /// 用户合集（分页）.
+    /// </summary>
+    public UserSpaceCollectionFeedViewModel CollectionFeed { get; }
+
+    /// <summary>
+    /// 投稿动态（图文）：从动态分区增量过滤，不整份重建.
+    /// </summary>
+    public ObservableCollection<MomentItemViewModel> SubmissionMoments { get; } = new();
+
+    /// <summary>
+    /// 投稿动态是否为空；只在一次加载结束后更新，避免首屏加载时先闪一下空状态.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsSubmissionMomentsEmpty { get; set; }
+
+    /// <summary>
+    /// 当前展示投稿视频.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionVideos { get; set; } = true;
+
+    /// <summary>
+    /// 当前展示投稿专栏.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionArticles { get; set; }
+
+    /// <summary>
+    /// 当前展示投稿动态.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionMoments { get; set; }
+
+    /// <summary>
+    /// 当前展示投稿音频.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionAudio { get; set; }
+
+    /// <summary>
+    /// 当前展示合集.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionCollections { get; set; }
+
     [ObservableProperty]
     public partial List<UserMomentDetailViewModel> Sections { get; set; }
 
@@ -74,7 +217,18 @@ public sealed partial class UserSpacePageViewModel
     public partial bool IsSearchEmpty { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AvatarUri))]
     public partial UserCard Card { get; set; }
+
+    /// <summary>
+    /// 页头头像地址.
+    /// </summary>
+    /// <remarks>
+    /// 页面生命周期内始终优先使用导航参数里的头像：它就是用户点击的那张图，
+    /// 与卡片共用同一份 CDN 地址与磁盘缓存，既能让页头立即显示、避免闪变，
+    /// 也能让串联动画的目标保持稳定。卡片数据仍提供其余资料字段.
+    /// </remarks>
+    public Uri? AvatarUri => _profile?.Avatar?.Uri ?? Card?.Profile?.User.Avatar?.Uri;
 
     [ObservableProperty]
     public partial bool IsUserInformationLoading { get; set; }

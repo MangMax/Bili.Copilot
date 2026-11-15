@@ -111,6 +111,7 @@
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Core/NavigationViewModel.cs" Link="Navigation/NavigationViewModel.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/MainFrame.xaml.cs" Link="Navigation/MainFrame.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/OverlayFrame.xaml.cs" Link="Navigation/OverlayFrame.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/IRetainedOverlayPage.cs" Link="Navigation/IRetainedOverlayPage.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/IParameterPage.cs" Link="Navigation/IParameterPage.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Pages/IInitializePage.cs" Link="Navigation/IInitializePage.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/ICancelPageViewModel.cs" Link="Navigation/ICancelPageViewModel.cs" />
@@ -147,6 +148,10 @@
   <ItemGroup>
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/View/UserSpacePageViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserMomentDetailViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserSpaceVideoFeedViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserSpaceArticleFeedViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserSpaceAudioFeedViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/ViewModels/Components/UserSpaceCollectionFeedViewModel/*.cs" Link="UserSpace/%(Filename)%(Extension)" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/PinItem.cs" Link="UserSpace/PinItem.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/PinContentType.cs" Link="UserSpace/PinContentType.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/MomentCardStyle.cs" Link="UserSpace/MomentCardStyle.cs" />

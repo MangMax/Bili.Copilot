@@ -73,6 +73,8 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         if (cancelledGeneration != 0 && IsCurrentLoad(cancelledGeneration))
         {
             IsLoading = false;
+            IsInitialLoading = false;
+            IsLoadingMore = false;
         }
     }
 
@@ -110,6 +112,8 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     {
         _offset = default;
         IsEmpty = false;
+        IsInitialLoading = false;
+        IsLoadingMore = false;
         _preventLoadMore = false;
         Items = new System.Collections.ObjectModel.ObservableCollection<MomentItemViewModel>();
     }
@@ -129,6 +133,8 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         try
         {
             IsLoading = true;
+            IsInitialLoading = Items.Count == 0;
+            IsLoadingMore = !IsInitialLoading;
             var (moments, offset, hasMore) = _isVideo
                 ? await _service.GetUserVideoMomentsAsync(user, _offset, cancellation.Token)
                 : await _service.GetUserComprehensiveMomentsAsync(user, _offset, cancellation.Token);
@@ -177,6 +183,8 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
             {
                 IsEmpty = Items.Count == 0;
                 IsLoading = false;
+                IsInitialLoading = false;
+                IsLoadingMore = false;
             }
         }
     }

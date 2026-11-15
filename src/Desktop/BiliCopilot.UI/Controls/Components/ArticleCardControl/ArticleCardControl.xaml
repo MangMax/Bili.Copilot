@@ -34,7 +34,7 @@
                                 RowSpacing="4">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="40" />
-                                    <RowDefinition Height="46" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock
                                     Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}"
@@ -44,7 +44,7 @@
                                     Style="{StaticResource BodyStrongTextBlockStyle}"
                                     LineHeight="20"
                                     ToolTipService.ToolTip="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}" />
-                                <local:CardMetaPanel Grid.Row="1">
+                                <local:CardMetaPanel Grid.Row="1" ShowAuthor="{TemplateBinding ShowAuthor}">
                                     <local:CardMetaPanel.Avatar>
                                     <Button
                                         x:Name="UserButton"
@@ -73,6 +73,7 @@
                                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                             </Border>
                                             <controls:RecommendationCoverImage
+                                                x:Name="AvatarCover"
                                                 Width="40"
                                                 Height="40"
                                                 CornerRadius="20"
@@ -149,6 +150,15 @@
         x:Key="SearchArticleCardStyle"
         BasedOn="{StaticResource ArticleGridCardStyle}"
         TargetType="local:ArticleCardControl" />
+
+    <!--  用户空间里的专栏卡不再重复作者头像  -->
+    <Style
+        x:Key="UserSpaceArticleCardStyle"
+        BasedOn="{StaticResource SearchArticleCardStyle}"
+        TargetType="local:ArticleCardControl">
+        <Setter Property="ShowAuthor" Value="False" />
+        <Setter Property="ShowUserSpaceEntry" Value="False" />
+    </Style>
 
     <Style
         x:Key="HistoryArticleCardStyle"

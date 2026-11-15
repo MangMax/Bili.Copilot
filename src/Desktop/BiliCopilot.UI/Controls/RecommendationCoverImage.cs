@@ -35,6 +35,33 @@ public sealed partial class RecommendationCoverImage : UserControl
 
     public event EventHandler? ImageOpened;
 
+    /// <summary>
+    /// 当前已经显示的图片（可能是别处解码好的同源图片）.
+    /// </summary>
+    public ImageSource? DisplayedImage => _image.Source;
+
+    /// <summary>
+    /// 先用一张现成的图片占位，自己的解码结果稍后替换.
+    /// </summary>
+    /// <remarks>
+    /// 头像串联时目标头像需要按自己的尺寸重新解码，慢网络下会空白一段时间；
+    /// 用源头像已经解码好的图片先顶上，串联落地时就不会出现空位.
+    /// </remarks>
+    /// <param name="image">现成的图片.</param>
+    public void PrimeImage(ImageSource? image)
+    {
+        if (image is null || _image.Source is not null)
+        {
+            return;
+        }
+
+        _image.Source = image;
+        _placeholderPending = true;
+        _loading.IsActive = false;
+        _loading.Visibility = Visibility.Collapsed;
+        _retry.Visibility = Visibility.Collapsed;
+    }
+
     public uint SourcePixelWidth { get; private set; }
 
     public uint SourcePixelHeight { get; private set; }
@@ -44,6 +71,7 @@ public sealed partial class RecommendationCoverImage : UserControl
     private (Uri? Source, int Width, int Height) _requested;
     private Microsoft.UI.Dispatching.DispatcherQueueTimer? _resizeTimer;
     private (int Width, int Height) _pendingSize;
+    private bool _placeholderPending;
 
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
         nameof(Source), typeof(Uri), typeof(RecommendationCoverImage), new PropertyMetadata(null, OnSourceChanged));
@@ -108,6 +136,23 @@ public sealed partial class RecommendationCoverImage : UserControl
     {
         var cover = (RecommendationCoverImage)sender;
         cover._resizeTimer?.Stop();
+
+        // 叠层页会复用用户空间页面：控件在收起或零尺寸时更换 Source 也必须立即
+        // 丢弃上一位用户的位图并复位已请求状态，否则重新显示时旧图会被当成新图已就绪.
+        cover._request?.Cancel();
+        cover._request = null;
+        cover._requested = default;
+
+        // 头像串联会先用源头像占位；占位图一直保留到自己的解码结果落地，
+        // 中途的图源变化（包括先清空）都不能把它抹掉，否则串联后会先空一段时间.
+        if (!cover._placeholderPending)
+        {
+            cover._image.Source = null;
+        }
+
+        cover._retry.Visibility = Visibility.Collapsed;
+        cover._loading.IsActive = false;
+        cover._loading.Visibility = Visibility.Collapsed;
         cover.Reload();
     }
 
@@ -160,6 +205,7 @@ public sealed partial class RecommendationCoverImage : UserControl
         _request?.Cancel();
         _request = null;
         _requested = default;
+        _placeholderPending = false;
         _image.Source = null;
         _retry.Visibility = Visibility.Collapsed;
         _loading.IsActive = false;
@@ -178,6 +224,16 @@ public sealed partial class RecommendationCoverImage : UserControl
 
         var size = ((int)Math.Ceiling(ActualWidth * XamlRoot.RasterizationScale),
             (int)Math.Ceiling(ActualHeight * XamlRoot.RasterizationScale));
+
+        // Source 在收起或零尺寸时已经变化：尺寸恢复后立即加载新图，
+        // 不再等待 200ms 的尺寸去抖，否则复用页会继续显示旧头像.
+        if (_requested.Source != Source)
+        {
+            _resizeTimer?.Stop();
+            Reload();
+            return;
+        }
+
         if (size == (_requested.Width, _requested.Height))
         {
             _resizeTimer?.Stop();
@@ -276,6 +332,7 @@ public sealed partial class RecommendationCoverImage : UserControl
                 token.ThrowIfCancellationRequested();
                 if (ReferenceEquals(_request, request) && IsLoaded)
                 {
+                    _placeholderPending = false;
                     _image.Source = result;
                     SourcePixelWidth = decoder.OrientedPixelWidth;
                     SourcePixelHeight = decoder.OrientedPixelHeight;

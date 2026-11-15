@@ -6,7 +6,7 @@
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:moment="using:BiliCopilot.UI.Controls.Moment">
     <StackPanel Padding="22,20" Spacing="12">
-        <local:MomentAuthorHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+        <local:MomentAuthorHeader ShowAuthor="{x:Bind ShowAuthor, Mode=OneWay}" ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
         <local:EmoteTextBlock MaxLines="5" ExpandInline="True" FontSize="14"
             Text="{x:Bind ViewModel.Description, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.Description, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />

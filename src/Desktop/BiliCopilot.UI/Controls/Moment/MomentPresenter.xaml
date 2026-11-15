@@ -21,7 +21,7 @@
         </DataTemplate>
 
         <DataTemplate x:Key="EpisodeDataTemplate" x:DataType="items:EpisodeItemViewModel">
-            <component:EpisodeCardControl Style="{StaticResource MomentEpisodeCardStyle}" ViewModel="{x:Bind}" />
+            <component:EpisodeCardControl Margin="-8,-8,-8,0" Style="{StaticResource MomentEpisodeCardStyle}" ViewModel="{x:Bind}" />
         </DataTemplate>
 
         <DataTemplate x:Key="ImageDataTemplate">
