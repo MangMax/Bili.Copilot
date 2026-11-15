@@ -29,7 +29,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentItemViewModel"/> class.
     /// </summary>
-    public MomentItemViewModel(MomentInformation data, MomentCardStyle style, Action<MomentItemViewModel> showCommentAction)
+    public MomentItemViewModel(MomentInformation data, MomentCardStyle style, Action<MomentItemViewModel> showCommentAction, bool isForwarded = false)
         : base(data)
     {
         _showMomentAction = showCommentAction;
@@ -39,6 +39,9 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         LikeCount = data.CommunityInformation?.LikeCount;
         CommentCount = data.CommunityInformation?.CommentCount;
         Author = data.User?.Name?.TrimStart('@');
+        ForwardHint = isForwarded && !string.IsNullOrEmpty(Author)
+            ? string.Format(ResourceToolkit.GetLocalizedString(StringNames.ForwardedFromTemplate), Author)
+            : null;
         Avatar = data.User?.Avatar?.Uri;
         Tip = data.Tip;
         Description = data.Description;
@@ -49,12 +52,8 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             if (data.Data is MomentInformation forward)
             {
-                InnerContent = new MomentItemViewModel(forward, Style, showCommentAction);
-                var source = forward.User?.Name?.TrimStart('@');
-                if (!string.IsNullOrEmpty(source))
-                {
-                    ForwardHint = string.Format(ResourceToolkit.GetLocalizedString(StringNames.ForwardedFromTemplate), source);
-                }
+                // 被转发的动态自己带上来源提示，转发卡里显示「转发了 @作者」.
+                InnerContent = new MomentItemViewModel(forward, Style, showCommentAction, isForwarded: true);
             }
             else if (data.Data is VideoInformation video)
             {
