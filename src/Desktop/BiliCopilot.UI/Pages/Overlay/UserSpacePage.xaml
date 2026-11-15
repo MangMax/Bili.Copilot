@@ -300,7 +300,7 @@
                                         <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.ArticleFeed.Items, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserArticleGrid}">
                                             <repeater:AppRepeater.ItemTemplate>
                                                 <DataTemplate x:DataType="items:ArticleItemViewModel">
-                                                    <components:ArticleCardControl Style="{StaticResource SearchArticleCardStyle}" ViewModel="{x:Bind}" />
+                                                    <components:ArticleCardControl Style="{StaticResource UserSpaceArticleCardStyle}" ViewModel="{x:Bind}" />
                                                 </DataTemplate>
                                             </repeater:AppRepeater.ItemTemplate>
                                         </repeater:AppRepeater>

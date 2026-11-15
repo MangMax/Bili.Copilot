@@ -14,6 +14,26 @@ namespace BiliCopilot.UI.Controls.Components;
 /// </summary>
 public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemViewModel>
 {
+    public static readonly DependencyProperty ShowAuthorProperty = DependencyProperty.Register(
+        nameof(ShowAuthor), typeof(bool), typeof(ArticleCardControl), new PropertyMetadata(true));
+
+    /// <summary>Shows the author row; user-space lists already belong to one author.</summary>
+    public bool ShowAuthor
+    {
+        get => (bool)GetValue(ShowAuthorProperty);
+        set => SetValue(ShowAuthorProperty, value);
+    }
+
+    public static readonly DependencyProperty ShowUserSpaceEntryProperty = DependencyProperty.Register(
+        nameof(ShowUserSpaceEntry), typeof(bool), typeof(ArticleCardControl), new PropertyMetadata(true));
+
+    /// <summary>Shows「进入用户空间」in the card menu; hidden on user-space pages.</summary>
+    public bool ShowUserSpaceEntry
+    {
+        get => (bool)GetValue(ShowUserSpaceEntryProperty);
+        set => SetValue(ShowUserSpaceEntryProperty, value);
+    }
+
     private CardControl _rootCard;
     private Button? _userButton;
     private Button? _authorButton;
@@ -194,7 +214,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
     {
         var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreateOpenInBroswerItem());
-        if (ViewModel.CanOpenUserSpace)
+        if (ShowUserSpaceEntry && ViewModel.CanOpenUserSpace)
         {
             menuFlyout.Items.Add(CreateEnterUserSpaceItem());
         }
