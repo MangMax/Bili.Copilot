@@ -35,6 +35,32 @@ public sealed partial class RecommendationCoverImage : UserControl
 
     public event EventHandler? ImageOpened;
 
+    /// <summary>
+    /// 当前已经显示的图片（可能是别处解码好的同源图片）.
+    /// </summary>
+    public ImageSource? DisplayedImage => _image.Source;
+
+    /// <summary>
+    /// 先用一张现成的图片占位，自己的解码结果稍后替换.
+    /// </summary>
+    /// <remarks>
+    /// 头像串联时目标头像需要按自己的尺寸重新解码，慢网络下会空白一段时间；
+    /// 用源头像已经解码好的图片先顶上，串联落地时就不会出现空位.
+    /// </remarks>
+    /// <param name="image">现成的图片.</param>
+    public void PrimeImage(ImageSource? image)
+    {
+        if (image is null || _image.Source is not null)
+        {
+            return;
+        }
+
+        _image.Source = image;
+        _loading.IsActive = false;
+        _loading.Visibility = Visibility.Collapsed;
+        _retry.Visibility = Visibility.Collapsed;
+    }
+
     public uint SourcePixelWidth { get; private set; }
 
     public uint SourcePixelHeight { get; private set; }

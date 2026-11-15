@@ -457,6 +457,13 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             return;
         }
 
+        // 页头头像按自己的尺寸重新解码，慢网络下会空一段时间；
+        // 先把源头像已经解码好的位图顶上，串联落地时不会是空位.
+        if ((_activeHeader ?? FindChild<UserSpacePageHeader>(this)) is { } header)
+        {
+            AvatarConnectedAnimation.TryPrime(header.AvatarElement);
+        }
+
         // 新页面和复用页面都要等自身可见、页头完成布局后再启动，
         // 而不是依赖只触发一次的 Loaded。
         _avatarStartAttempts = 0;

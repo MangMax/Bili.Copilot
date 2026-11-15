@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Richasy.BiliKernel.Models.User;
 using Windows.UI.ViewManagement;
@@ -19,6 +20,11 @@ namespace BiliCopilot.UI.Toolkits;
 public static class AvatarConnectedAnimation
 {
     private const string AnimationKey = "user-space-avatar";
+
+    /// <summary>
+    /// 准备动画时源头像已经解码好的图片；目标头像先用它占位，避免慢网络下落地后仍是空位.
+    /// </summary>
+    private static ImageSource? _pendingSourceImage;
 
     /// <summary>
     /// 准备一次头像串联，同时取消之前尚未启动的动画.
@@ -46,8 +52,9 @@ public static class AvatarConnectedAnimation
         var sourceVisible = source is { IsLoaded: true, Visibility: Visibility.Visible }
             && source.ActualWidth > 0;
 
-        // 卡片可能仍在显示作者首字占位；只有已经显示图片的头像才值得串联.
-        var sourceHasImage = source is not RecommendationCoverImage cover || cover.Source is not null;
+        // 卡片可能仍在显示作者首字占位；只有已经解码出图片的头像才值得串联.
+        var coverImage = (source as RecommendationCoverImage)?.DisplayedImage;
+        var sourceHasImage = source is not RecommendationCoverImage || coverImage is not null;
         if (!AvatarTransitionPolicy.CanPrepare(
                 animationsEnabled,
                 sourceVisible,
@@ -64,6 +71,7 @@ public static class AvatarConnectedAnimation
             var animation = ConnectedAnimationService.GetForCurrentView()
                 .PrepareToAnimate(AnimationKey, source!);
             animation.Configuration = new BasicConnectedAnimationConfiguration();
+            _pendingSourceImage = coverImage;
             AvatarTransitionSession.Prepare(user!.Id, avatarUri!, DateTimeOffset.Now);
             return true;
         }
@@ -168,6 +176,8 @@ public static class AvatarConnectedAnimation
         string userId,
         Uri avatarUri)
     {
+        // 目标头像先顶上源头像的位图：目标尺寸不同会重新解码，慢网络下这段时间不能是空的.
+        TryPrime(destination);
         var request = AvatarTransitionSession.Current;
         if (request is null
             || !AvatarTransitionPolicy.CanStart(request, userId, avatarUri, DateTimeOffset.Now))
@@ -201,6 +211,7 @@ public static class AvatarConnectedAnimation
             }
 
             // 动画已交给系统播放，不再保留待启动状态.
+            _pendingSourceImage = null;
             AvatarTransitionSession.Clear();
             return true;
         }
@@ -212,10 +223,23 @@ public static class AvatarConnectedAnimation
     }
 
     /// <summary>
+    /// 用源头像已有的位图给目标头像占位；目标已经显示图片时不做任何事.
+    /// </summary>
+    /// <param name="destination">目标头像元素.</param>
+    public static void TryPrime(UIElement? destination)
+    {
+        if (_pendingSourceImage is { } image && destination is RecommendationCoverImage cover)
+        {
+            cover.PrimeImage(image);
+        }
+    }
+
+    /// <summary>
     /// 取消并释放尚未启动的动画.
     /// </summary>
     public static void Cancel()
     {
+        _pendingSourceImage = null;
         AvatarTransitionSession.Clear();
         try
         {
