@@ -46,8 +46,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         SubmissionNav.SelectionChanged += OnSubmissionSelectionChanged;
         SubmissionNavOverlayView.SelectionChanged += OnSubmissionSelectionChanged;
-        MomentFilterSelector.SelectionChanged += OnMomentFilterSelectionChanged;
-        UpdateMomentFilterTabs();
+        MomentFilterNav.SelectionChanged += OnMomentFilterSelectionChanged;
+        MomentFilterNavOverlay.SelectionChanged += OnMomentFilterSelectionChanged;
+        SyncMomentFilterSelection();
         QueueSubmissionSelectionSync();
         QueueScrollHostUpdate();
     }
@@ -57,7 +58,8 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         SubmissionNav.SelectionChanged -= OnSubmissionSelectionChanged;
         SubmissionNavOverlayView.SelectionChanged -= OnSubmissionSelectionChanged;
-        MomentFilterSelector.SelectionChanged -= OnMomentFilterSelectionChanged;
+        MomentFilterNav.SelectionChanged -= OnMomentFilterSelectionChanged;
+        MomentFilterNavOverlay.SelectionChanged -= OnMomentFilterSelectionChanged;
         LayoutUpdated -= OnSpaceLayoutUpdated;
         CancelAvatarTransition();
         DisconnectHeader();
@@ -75,9 +77,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         {
             QueueSubmissionSelectionSync();
         }
-        else if (e.PropertyName is nameof(UserSpacePageViewModel.MomentFilterTabs) or nameof(UserSpacePageViewModel.SelectedMomentFilter))
+        else if (e.PropertyName is nameof(UserSpacePageViewModel.SelectedMomentFilter))
         {
-            UpdateMomentFilterTabs();
+            SyncMomentFilterSelection();
         }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.IsSubmissionTab))
         {
@@ -85,17 +87,35 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
     }
 
-    private void UpdateMomentFilterTabs()
+    private void SyncMomentFilterSelection()
     {
-        var items = ViewModel.MomentFilterTabs
-            .Select(tab => new SelectorBarItem { Text = tab.Title, Tag = tab })
-            .ToList();
-        MomentFilterSelector.SetItems(items, ViewModel.SelectedMomentFilter);
+        if (!IsLoaded
+            || ViewModel.MomentFilterTabs is not { Count: > 0 } tabs
+            || ViewModel.SelectedMomentFilter is not { } selected)
+        {
+            return;
+        }
+
+        var index = tabs.IndexOf(selected);
+        if (index < 0)
+        {
+            return;
+        }
+
+        if (!ReferenceEquals(MomentFilterNav.SelectedItem, selected))
+        {
+            MomentFilterNav.Select(index);
+        }
+
+        if (!ReferenceEquals(MomentFilterNavOverlay.SelectedItem, selected))
+        {
+            MomentFilterNavOverlay.Select(index);
+        }
     }
 
-    private void OnMomentFilterSelectionChanged(object? sender, EventArgs e)
+    private void OnMomentFilterSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        if (MomentFilterSelector.SelectedItem is UserSpaceTabViewModel tab && !ReferenceEquals(tab, ViewModel.SelectedMomentFilter))
+        if (sender.SelectedItem is UserSpaceTabViewModel tab && !ReferenceEquals(tab, ViewModel.SelectedMomentFilter))
         {
             ViewModel.SelectMomentFilterCommand.Execute(tab);
         }
@@ -146,6 +166,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         {
             UserSpaceTabKind.Articles => FluentIcons.Common.Symbol.DocumentBulletList,
             UserSpaceTabKind.MomentPosts => FluentIcons.Common.Symbol.BubbleMultiple,
+            UserSpaceTabKind.AllMoments => FluentIcons.Common.Symbol.TextBulletList,
             UserSpaceTabKind.Audio => FluentIcons.Common.Symbol.MusicNote2,
             UserSpaceTabKind.Collections => FluentIcons.Common.Symbol.Collections,
             _ => FluentIcons.Common.Symbol.VideoClip,
@@ -157,26 +178,28 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     /// </summary>
     private void UpdateSubmissionOverlay()
     {
-        if (!ViewModel.IsSubmissionTab || _activeScroll is null || SubmissionPanel.ActualHeight <= 0)
+        var pinned = false;
+        if (_activeScroll is not null
+            && SectionHost.ActualHeight > 0
+            && _activeScroll.Content is UIElement contentRoot)
         {
-            SubmissionNavOverlay.Visibility = Visibility.Collapsed;
-            return;
+            var top = SectionHost.TransformToVisual(contentRoot).TransformPoint(default).Y;
+            pinned = _activeScroll.VerticalOffset > top + 1;
         }
 
-        if (_activeScroll.Content is not UIElement contentRoot)
-        {
-            return;
-        }
+        SetOverlayVisibility(SubmissionNavOverlay, pinned && ViewModel.IsSubmissionTab, SyncSubmissionSelection);
+        SetOverlayVisibility(MomentNavOverlay, pinned && ViewModel.IsMomentsTab, SyncMomentFilterSelection);
+    }
 
-        var top = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
-        var pinned = _activeScroll.VerticalOffset > top + 1;
-        var visibility = pinned ? Visibility.Visible : Visibility.Collapsed;
-        if (SubmissionNavOverlay.Visibility != visibility)
+    private static void SetOverlayVisibility(Grid overlay, bool show, Action sync)
+    {
+        var visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        if (overlay.Visibility != visibility)
         {
-            SubmissionNavOverlay.Visibility = visibility;
-            if (pinned)
+            overlay.Visibility = visibility;
+            if (show)
             {
-                SyncSubmissionSelection();
+                sync();
             }
         }
     }
@@ -352,7 +375,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
             // 叠层页会按类型缓存，复用页面不会再触发 Loaded；每次收到参数都重新等待布局。
             BeginAvatarTransition(profile);
             QueueSubmissionSelectionSync();
-            UpdateMomentFilterTabs();
+            SyncMomentFilterSelection();
         }
     }
 

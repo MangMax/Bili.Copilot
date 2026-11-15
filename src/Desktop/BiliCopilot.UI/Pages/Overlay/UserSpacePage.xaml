@@ -112,7 +112,7 @@
 
                     <moment:UserSpacePageHeader Margin="-20,0" />
 
-                    <Grid Grid.Row="1">
+                    <Grid x:Name="SectionHost" Grid.Row="1">
                         <!--  主页  -->
                         <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.IsHomeTab, Mode=OneWay}">
                             <TextBlock
@@ -147,12 +147,33 @@
 
                         <!--  动态  -->
                         <Grid MinHeight="160" Visibility="{x:Bind ViewModel.IsMomentsTab, Mode=OneWay}">
+                            <Grid ColumnSpacing="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!--  与投稿分区同一套侧栏：全部 / 视频  -->
+                                <Border
+                                    x:Name="MomentNavRail"
+                                    Padding="2,8,8,8"
+                                    VerticalAlignment="Top"
+                                    CornerRadius="12">
+                                    <ItemsView
+                                        x:Name="MomentFilterNav"
+                                        Padding="2,8,8,8"
+                                        AutomationProperties.AutomationId="UserMomentFilters"
+                                        ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
+                                        ItemsSource="{x:Bind ViewModel.MomentFilterTabs, Mode=OneWay}"
+                                        SelectionMode="Single"
+                                        ScrollViewer.HorizontalScrollMode="Disabled"
+                                        ScrollViewer.VerticalScrollMode="Disabled">
+                                        <ItemsView.Layout>
+                                            <StackLayout Spacing="8" />
+                                        </ItemsView.Layout>
+                                    </ItemsView>
+                                </Border>
+                                <Grid Grid.Column="1">
                             <StackPanel Spacing="12">
-                                <components:SlidingTabBar
-                                    x:Name="MomentFilterSelector"
-                                    Margin="8,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    AutomationProperties.AutomationId="UserMomentFilters" />
                                 <ItemsRepeater ItemsSource="{x:Bind ViewModel.MomentSection.Items, Mode=OneWay, FallbackValue={x:Null}}" Visibility="{x:Bind ViewModel.IsAllMomentFilter, Mode=OneWay}">
                                     <ItemsRepeater.Layout>
                                         <moment:MomentStaggeredLayout
@@ -203,6 +224,8 @@
                                 Emoji="&#x1F440;"
                                 Visibility="{x:Bind ViewModel.MomentSection.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
                             <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.MomentSection.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                </Grid>
+                            </Grid>
                         </Grid>
 
                         <!--  投稿：左侧分类侧栏 + 右侧内容，切换分类只换右栏  -->
@@ -481,6 +504,31 @@
                 </Grid>
             </controls:IncrementVerticalScrollControl.Element>
         </controls:IncrementVerticalScrollControl>
+
+        <!--  动态筛选栏的固定版本  -->
+        <Grid
+            x:Name="MomentNavOverlay"
+            Width="180"
+            Margin="20,8,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            CornerRadius="12"
+            Visibility="Collapsed">
+            <ItemsView
+                x:Name="MomentFilterNavOverlay"
+                Padding="2,8,8,8"
+                AutomationProperties.AutomationId="UserMomentFiltersSticky"
+                ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
+                ItemsSource="{x:Bind ViewModel.MomentFilterTabs, Mode=OneWay}"
+                SelectionMode="Single"
+                ScrollViewer.HorizontalScrollMode="Disabled"
+                ScrollViewer.VerticalScrollMode="Disabled">
+                <ItemsView.Layout>
+                    <StackLayout Spacing="8" />
+                </ItemsView.Layout>
+            </ItemsView>
+        </Grid>
 
         <!--  分类栏滚出视口后，用固定在左上角的同一组分类接替，避免跟着滚动做位移  -->
         <Grid
