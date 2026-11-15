@@ -15,7 +15,7 @@ namespace BiliCopilot.UI.Pages.Overlay;
 /// <summary>
 /// 番剧/电影/电视剧详情页.
 /// </summary>
-public sealed partial class PgcDetailPage : PgcDetailPageBase, IParameterPage, ICancelPageViewModel
+public sealed partial class PgcDetailPage : PgcDetailPageBase, IParameterPage, ICancelPageViewModel, IRetainedOverlayPage
 {
     private const int MaxCoverStartAttempts = 60;
 

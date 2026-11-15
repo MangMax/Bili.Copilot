@@ -148,43 +148,58 @@ public sealed class NavigationFrameTests
     }
 
     [Fact]
-    public void BackedParameterPageStaysInTreeAndIsReused()
+    public void BackedRetainedPageStaysInTreeAndIsReused()
+    {
+        var frame = new OverlayFrame();
+        frame.NavigateTo(typeof(UserSpacePage), "first");
+        var space = Assert.IsType<UserSpacePage>(frame.GetCurrentContent());
+        frame.GoBack();
+        Assert.Empty(frame.GetBackStack());
+        Assert.Null(frame.GetCurrentContent());
+
+        // 声明保留的页面返回后留在视觉树里，再次进入复用同一实例，
+        // 省掉重建与重新挂载的开销（头像串联动画依赖这一点）。
+        frame.NavigateTo(typeof(UserSpacePage), "second");
+        Assert.Same(space, frame.GetCurrentContent());
+        Assert.Equal("second", space.Parameter);
+        Assert.Equal(Visibility.Visible, space.Visibility);
+    }
+
+    [Fact]
+    public void BackedOrdinaryPageIsReleasedAndReconstructed()
     {
         var frame = new OverlayFrame();
         frame.NavigateTo(typeof(SearchPage), "first");
         var search = Assert.IsType<SearchPage>(frame.GetCurrentContent());
         frame.GoBack();
-        Assert.Empty(frame.GetBackStack());
-        Assert.Null(frame.GetCurrentContent());
 
-        // 返回后的页面留在视觉树里，再次进入同一页面复用同一实例，
-        // 省掉重建与重新挂载的开销（头像串联动画依赖这一点）。
+        // 未声明保留的页面返回即释放，下次进入重新构造.
         frame.NavigateTo(typeof(SearchPage), "second");
-        Assert.Same(search, frame.GetCurrentContent());
-        Assert.Equal("second", search.Parameter);
-        Assert.Equal(Visibility.Visible, search.Visibility);
+        Assert.NotSame(search, frame.GetCurrentContent());
     }
 
     [Fact]
-    public void RetainedPagesKeepOnlyTheMostRecentBackNavigations()
+    public void BackedPagesAreRetainedOnlyWhenDeclared()
     {
         var frame = new OverlayFrame();
         frame.NavigateTo(typeof(SearchPage));
         var search = Assert.IsType<SearchPage>(frame.GetCurrentContent());
         frame.NavigateTo(typeof(UserSpacePage));
+        var space = Assert.IsType<UserSpacePage>(frame.GetCurrentContent());
         frame.NavigateTo(typeof(ArticleReaderPage));
-        var article = Assert.IsType<ArticleReaderPage>(frame.GetCurrentContent());
+        frame.GoBack();
+        frame.GoBack();
+        frame.GoBack();
+        Assert.Empty(frame.GetBackStack());
 
-        frame.GoBack();
-        frame.GoBack();
-        frame.GoBack();
-
-        // 只保留最近两次返回的页面，更早的搜索页被真正移除。
-        frame.NavigateTo(typeof(ArticleReaderPage));
-        Assert.NotSame(article, frame.GetCurrentContent());
-        frame.GoBack();
+        // 未声明保留的页面返回即释放，下次进入重新构造。
         frame.NavigateTo(typeof(SearchPage));
-        Assert.Same(search, frame.GetCurrentContent());
+        Assert.NotSame(search, frame.GetCurrentContent());
+        frame.GoBack();
+
+        // 声明保留的页面仍复用同一实例。
+        frame.NavigateTo(typeof(UserSpacePage));
+        Assert.Same(space, frame.GetCurrentContent());
     }
 
     [Fact]

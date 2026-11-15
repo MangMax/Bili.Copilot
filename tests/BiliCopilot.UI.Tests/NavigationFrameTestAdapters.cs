@@ -88,7 +88,7 @@ namespace BiliCopilot.UI.Pages.Overlay
 #if !SEARCH_RECOVERY_INVESTIGATION
     public sealed class SearchPage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
 #endif
-    public sealed class UserSpacePage : NavigationTestPage { public NavigationSearchTarget ViewModel { get; } = new(); }
+    public sealed class UserSpacePage : NavigationTestPage, IRetainedOverlayPage { public NavigationSearchTarget ViewModel { get; } = new(); }
     public sealed class PgcDetailPage : NavigationTestPage { }
     public sealed class CollectionDetailPage : NavigationTestPage { }
     public sealed class ViewLaterPage : NavigationTestPage { }

@@ -20,7 +20,7 @@ namespace BiliCopilot.UI.Pages.Overlay;
 /// <summary>
 /// 用户空间页面.
 /// </summary>
-public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, ICancelPageViewModel
+public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, ICancelPageViewModel, IRetainedOverlayPage
 {
     private const int MaxAvatarStartAttempts = 60;
 

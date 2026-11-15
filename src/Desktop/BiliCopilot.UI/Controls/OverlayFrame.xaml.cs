@@ -9,10 +9,6 @@ namespace BiliCopilot.UI.Controls;
 
 public sealed partial class OverlayFrame : LayoutUserControlBase
 {
-    // 返回时把页面留在视觉树里，只把它从可见栈里摘掉：
-    // 叠层页重建要几百毫秒，重新挂载也要几十毫秒，留着它头像串联动画才不会先停住再飞.
-    private const int MaxCachedPages = 2;
-
     // 可见的返回栈；被返回的页面可能仍留在 RootGrid.Children 里等待复用，不算栈的一部分.
     private readonly List<UIElement> _backStack = new();
 
@@ -35,8 +31,8 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
             _backStack.RemoveAt(_backStack.Count - 1);
             removed.Visibility = Visibility.Collapsed;
 
-            // 只有实现参数接口的页面能复用，其余页面照旧真正移除.
-            if (removed is not IParameterPage)
+            // 声明保留的页面关闭后留在视觉树里复用，其他页面返回即移除.
+            if (removed is not IRetainedOverlayPage)
             {
                 RootGrid.Children.Remove(removed);
             }
@@ -45,11 +41,9 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
                 var index = RootGrid.Children.IndexOf(removed);
                 if (index >= 0 && RootGrid.Children.Count > 1)
                 {
-                    // 挪到最后，缓存按最近的返回顺序保留.
+                    // 挪到最后，保持可见栈的顺序.
                     RootGrid.Children.Move(Convert.ToUInt32(index), Convert.ToUInt32(RootGrid.Children.Count - 1));
                 }
-
-                TrimCachedPages();
             }
         }
 
@@ -157,28 +151,6 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
             if (child != targetElement && child is ICancelPageViewModel cancelPageViewModel)
             {
                 cancelPageViewModel.CancelLoading();
-            }
-        }
-    }
-
-    /// <summary>
-    /// 限制保留的缓存页面数量，超出时从最旧的开始移除.
-    /// </summary>
-    private void TrimCachedPages()
-    {
-        var cached = 0;
-        for (var i = RootGrid.Children.Count - 1; i >= 0; i--)
-        {
-            var child = RootGrid.Children[i];
-            if (_backStack.Contains(child) || child is not IParameterPage)
-            {
-                continue;
-            }
-
-            cached++;
-            if (cached > MaxCachedPages)
-            {
-                RootGrid.Children.RemoveAt(i);
             }
         }
     }
