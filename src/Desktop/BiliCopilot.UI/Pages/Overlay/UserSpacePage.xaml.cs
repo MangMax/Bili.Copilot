@@ -3,6 +3,7 @@
 using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Controls.Moment;
 using BiliCopilot.UI.Toolkits;
+using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.View;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
@@ -27,6 +28,10 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     private IncrementVerticalScrollControl? _activeScrollHost;
     private UserSpacePageHeader? _activeHeader;
     private UserProfile? _navigationProfile;
+    private const int MaxMomentAutoFillRounds = 10;
+
+    private UserMomentDetailViewModel? _momentSection;
+    private int _momentAutoFillRounds;
     private int _avatarStartAttempts;
     private bool _avatarStartInProgress;
 
@@ -49,6 +54,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         MomentFilterNav.SelectionChanged += OnMomentFilterSelectionChanged;
         MomentFilterNavOverlay.SelectionChanged += OnMomentFilterSelectionChanged;
         SyncMomentFilterSelection();
+        AttachMomentSection();
         QueueSubmissionSelectionSync();
         QueueScrollHostUpdate();
     }
@@ -60,6 +66,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         SubmissionNavOverlayView.SelectionChanged -= OnSubmissionSelectionChanged;
         MomentFilterNav.SelectionChanged -= OnMomentFilterSelectionChanged;
         MomentFilterNavOverlay.SelectionChanged -= OnMomentFilterSelectionChanged;
+        AttachMomentSection();
         LayoutUpdated -= OnSpaceLayoutUpdated;
         CancelAvatarTransition();
         DisconnectHeader();
@@ -80,11 +87,61 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         else if (e.PropertyName is nameof(UserSpacePageViewModel.SelectedMomentFilter))
         {
             SyncMomentFilterSelection();
+            _momentAutoFillRounds = 0;
+            QueueMomentItemsCheck();
+        }
+        else if (e.PropertyName is nameof(UserSpacePageViewModel.MomentSection))
+        {
+            AttachMomentSection();
+        }
+        else if (e.PropertyName is nameof(UserSpacePageViewModel.IsMomentsTab))
+        {
+            _momentAutoFillRounds = 0;
+            QueueMomentItemsCheck();
         }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.IsSubmissionTab))
         {
             UpdateSubmissionOverlay();
         }
+    }
+
+    private void AttachMomentSection()
+    {
+        var section = ViewModel.MomentSection;
+        if (ReferenceEquals(_momentSection, section))
+        {
+            return;
+        }
+
+        if (_momentSection is not null)
+        {
+            _momentSection.ListUpdated -= OnMomentSectionListUpdated;
+        }
+
+        _momentSection = section;
+        if (_momentSection is not null)
+        {
+            _momentSection.ListUpdated += OnMomentSectionListUpdated;
+        }
+    }
+
+    private void OnMomentSectionListUpdated(object? sender, EventArgs e) => QueueMomentItemsCheck();
+
+    /// <summary>
+    /// 动态加载一页后重新按视口判断：内容不够长时继续取下一页，
+    /// 否则矮内容（例如「视频」筛选）停在首屏、整个页面也没有滚动余量。
+    /// </summary>
+    private void QueueMomentItemsCheck()
+    {
+        // 筛选后当前列表可能比视口矮：补取几页把首屏填满，但设上限，
+        // 避免动态很多、视频很少的账号被自动翻完整个历史。
+        if (_activeScrollHost is not { } host || _momentAutoFillRounds >= MaxMomentAutoFillRounds)
+        {
+            return;
+        }
+
+        _momentAutoFillRounds++;
+        _ = host.DelayCheckItemsAsync();
     }
 
     private void SyncMomentFilterSelection()
@@ -370,12 +427,14 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
             // 记录本次页面发起的加载代次，卸载时只取消这一代，不影响新页面。
             _loadGeneration = ViewModel.CurrentLoadGeneration;
+            AttachMomentSection();
             ViewModel.InitializeUserInformationCommand.Execute(default);
 
             // 叠层页会按类型缓存，复用页面不会再触发 Loaded；每次收到参数都重新等待布局。
             BeginAvatarTransition(profile);
             QueueSubmissionSelectionSync();
             SyncMomentFilterSelection();
+            _momentAutoFillRounds = 0;
         }
     }
 
