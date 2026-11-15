@@ -868,6 +868,9 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
 
         public Task<(IReadOnlyList<UserCollectionInfo> Collections, int TotalCount)> GetUserCollectionInfosAsync(string userId, int pageNumber = 0, CancellationToken cancellationToken = default)
             => Task.FromResult(((IReadOnlyList<UserCollectionInfo>)[], 0));
+
+        public Task<(IReadOnlyList<VideoInformation> Videos, int TotalCount)> GetCollectionVideosAsync(string userId, string collectionId, bool isSeason, int pageNumber = 0, CancellationToken cancellationToken = default)
+            => Task.FromResult(((IReadOnlyList<VideoInformation>)[], 0));
     }
 
     private sealed class SearchRequest(string userId, string keyword, int pageNumber, CancellationToken token)

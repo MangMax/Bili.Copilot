@@ -1,11 +1,13 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
+using BiliCopilot.UI.ViewModels.Core;
+using BiliCopilot.UI.ViewModels.View;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models.User;
 using Richasy.WinUIKernel.Share.ViewModels;
-using Windows.System;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -54,18 +56,18 @@ public sealed partial class CollectionItemViewModel : ViewModelBase<UserCollecti
     public string Count { get; }
 
     /// <summary>
-    /// 打开合集页面.
+    /// 打开合集详情页.
     /// </summary>
-    /// <returns>打开任务.</returns>
     [RelayCommand]
-    private async Task OpenAsync()
+    private void Open()
     {
         if (string.IsNullOrEmpty(Data.Id))
         {
             return;
         }
 
-        var kind = Data.IsSeason ? "collectiondetail" : "seriesdetail";
-        await Launcher.LaunchUriAsync(new Uri($"https://space.bilibili.com/{_userId}/channel/{kind}?sid={Data.Id}"));
+        this.Get<NavigationViewModel>().NavigateToOver(
+            typeof(CollectionDetailPage),
+            new CollectionDetailParameter(_userId, Data.Id, Title, Data.Cover?.Uri, Data.IsSeason, Data.Count));
     }
 }

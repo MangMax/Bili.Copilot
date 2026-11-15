@@ -130,6 +130,7 @@ internal static class GlobalDependencies
             .AddSingleton<MessagePageViewModel>()
             .AddSingleton<SettingsPageViewModel>()
             .AddSingleton<UserSpacePageViewModel>()
+            .AddTransient<CollectionDetailPageViewModel>()
             .AddSingleton<PgcDetailPageViewModel>()
             .AddSingleton<NotificationViewModel>()
             .AddTransient<SubtitleViewModel>()
