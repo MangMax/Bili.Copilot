@@ -115,6 +115,16 @@ public sealed partial class UserSpacePageViewModel
     public UserSpaceArticleFeedViewModel ArticleFeed { get; }
 
     /// <summary>
+    /// 投稿音频（分页）.
+    /// </summary>
+    public UserSpaceAudioFeedViewModel AudioFeed { get; }
+
+    /// <summary>
+    /// 用户合集（分页）.
+    /// </summary>
+    public UserSpaceCollectionFeedViewModel CollectionFeed { get; }
+
+    /// <summary>
     /// 投稿动态（图文）：从动态分区增量过滤，不整份重建.
     /// </summary>
     public ObservableCollection<MomentItemViewModel> SubmissionMoments { get; } = new();
@@ -142,6 +152,18 @@ public sealed partial class UserSpacePageViewModel
     /// </summary>
     [ObservableProperty]
     public partial bool ShowSubmissionMoments { get; set; }
+
+    /// <summary>
+    /// 当前展示投稿音频.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionAudio { get; set; }
+
+    /// <summary>
+    /// 当前展示合集.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool ShowSubmissionCollections { get; set; }
 
     [ObservableProperty]
     public partial List<UserMomentDetailViewModel> Sections { get; set; }

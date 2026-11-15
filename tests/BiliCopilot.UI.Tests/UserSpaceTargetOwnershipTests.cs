@@ -862,6 +862,12 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
 
         public Task<IReadOnlyList<ArticleInformation>> GetUserArticlesAsync(string userId, int pageNumber = 0, CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyList<ArticleInformation>>([]);
+
+        public Task<(IReadOnlyList<AudioInformation> Audios, int TotalCount)> GetUserAudiosAsync(string userId, int pageNumber = 0, CancellationToken cancellationToken = default)
+            => Task.FromResult(((IReadOnlyList<AudioInformation>)[], 0));
+
+        public Task<(IReadOnlyList<UserCollectionInfo> Collections, int TotalCount)> GetUserCollectionInfosAsync(string userId, int pageNumber = 0, CancellationToken cancellationToken = default)
+            => Task.FromResult(((IReadOnlyList<UserCollectionInfo>)[], 0));
     }
 
     private sealed class SearchRequest(string userId, string keyword, int pageNumber, CancellationToken token)

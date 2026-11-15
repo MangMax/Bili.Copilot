@@ -9,7 +9,9 @@
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.Input;
+using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
+using Richasy.BiliKernel.Models.User;
 
 namespace BiliCopilot.UI.ViewModels.Items
 {
@@ -31,6 +33,28 @@ namespace BiliCopilot.UI.ViewModels.Items
 
         /// <summary>触发评论回调.</summary>
         public void ShowComment() => showCommentAction?.Invoke(this);
+    }
+
+    /// <summary>
+    /// Audio tile. The feed view model only constructs items; playback and
+    /// navigation live on the Windows surface.
+    /// </summary>
+    public sealed class AudioItemViewModel(AudioInformation data)
+    {
+        /// <summary>音频信息.</summary>
+        public AudioInformation Data { get; } = data;
+    }
+
+    /// <summary>
+    /// Collection tile. The feed view model only constructs items.
+    /// </summary>
+    public sealed class CollectionItemViewModel(UserCollectionInfo data, string userId)
+    {
+        /// <summary>合集信息.</summary>
+        public UserCollectionInfo Data { get; } = data;
+
+        /// <summary>所属用户.</summary>
+        public string UserId { get; } = userId;
     }
 }
 

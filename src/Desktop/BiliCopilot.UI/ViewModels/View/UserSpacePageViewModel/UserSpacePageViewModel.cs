@@ -46,6 +46,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         _logger = logger;
         VideoFeed = new UserSpaceVideoFeedViewModel(userService, logger);
         ArticleFeed = new UserSpaceArticleFeedViewModel(userService, logger);
+        AudioFeed = new UserSpaceAudioFeedViewModel(userService, logger);
+        CollectionFeed = new UserSpaceCollectionFeedViewModel(userService, logger);
         VideoFeed.FirstPageLoaded += OnVideoFirstPageLoaded;
     }
 
@@ -90,6 +92,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         VideoFeed.CancelLoad(VideoFeed.CurrentLoadGeneration);
         ArticleFeed.CancelLoad(ArticleFeed.CurrentLoadGeneration);
+        AudioFeed.CancelLoad(AudioFeed.CurrentLoadGeneration);
+        CollectionFeed.CancelLoad(CollectionFeed.CurrentLoadGeneration);
 
         InvalidateSearch();
         return true;
@@ -152,6 +156,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         VideoFeed.ResetCommand.Execute(profile);
         ArticleFeed.ResetCommand.Execute(profile);
+        AudioFeed.ResetCommand.Execute(profile);
+        CollectionFeed.ResetCommand.Execute(profile);
 
         EnsureTabs();
         SelectTab(Tabs[0]);
@@ -207,6 +213,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         ShowSubmissionVideos = tab.Kind == UserSpaceTabKind.Videos;
         ShowSubmissionArticles = tab.Kind == UserSpaceTabKind.Articles;
         ShowSubmissionMoments = tab.Kind == UserSpaceTabKind.MomentPosts;
+        ShowSubmissionAudio = tab.Kind == UserSpaceTabKind.Audio;
+        ShowSubmissionCollections = tab.Kind == UserSpaceTabKind.Collections;
         if (ShowSubmissionVideos && VideoFeed.Items.Count == 0)
         {
             _ = VideoFeed.LoadItemsCommand.ExecuteAsync(default);
@@ -214,6 +222,14 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         else if (ShowSubmissionArticles && ArticleFeed.Items.Count == 0)
         {
             _ = ArticleFeed.LoadItemsCommand.ExecuteAsync(default);
+        }
+        else if (ShowSubmissionAudio && AudioFeed.Items.Count == 0)
+        {
+            _ = AudioFeed.LoadItemsCommand.ExecuteAsync(default);
+        }
+        else if (ShowSubmissionCollections && CollectionFeed.Items.Count == 0)
+        {
+            _ = CollectionFeed.LoadItemsCommand.ExecuteAsync(default);
         }
     }
 
@@ -235,6 +251,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             new(ResourceToolkit.GetLocalizedString(StringNames.Video), UserSpaceTabKind.Videos),
             new(ResourceToolkit.GetLocalizedString(StringNames.SpecialColumn), UserSpaceTabKind.Articles),
             new(ResourceToolkit.GetLocalizedString(StringNames.DynamicFeed), UserSpaceTabKind.MomentPosts),
+            new(ResourceToolkit.GetLocalizedString(StringNames.Audio), UserSpaceTabKind.Audio),
+            new(ResourceToolkit.GetLocalizedString(StringNames.UgcSeason), UserSpaceTabKind.Collections),
         ];
     }
 
@@ -356,6 +374,12 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 case UserSpaceTabKind.Articles:
                     await ArticleFeed.RefreshCommand.ExecuteAsync(default);
                     break;
+                case UserSpaceTabKind.Audio:
+                    await AudioFeed.RefreshCommand.ExecuteAsync(default);
+                    break;
+                case UserSpaceTabKind.Collections:
+                    await CollectionFeed.RefreshCommand.ExecuteAsync(default);
+                    break;
                 case UserSpaceTabKind.MomentPosts:
                     if (SelectedSection is not null)
                     {
@@ -405,6 +429,12 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             case UserSpaceTabKind.Articles:
                 await ArticleFeed.LoadItemsCommand.ExecuteAsync(default);
+                break;
+            case UserSpaceTabKind.Audio:
+                await AudioFeed.LoadItemsCommand.ExecuteAsync(default);
+                break;
+            case UserSpaceTabKind.Collections:
+                await CollectionFeed.LoadItemsCommand.ExecuteAsync(default);
                 break;
             case UserSpaceTabKind.MomentPosts:
                 if (SelectedSection is not null)

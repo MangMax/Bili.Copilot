@@ -36,6 +36,16 @@ public enum UserSpaceTabKind
     /// 投稿下的图文动态.
     /// </summary>
     MomentPosts,
+
+    /// <summary>
+    /// 投稿下的音频.
+    /// </summary>
+    Audio,
+
+    /// <summary>
+    /// 投稿下的合集与系列.
+    /// </summary>
+    Collections,
 }
 
 /// <summary>

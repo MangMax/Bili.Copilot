@@ -146,6 +146,12 @@ public sealed class UserSpaceSubmissionFeedTests
             return request.Completion.Task;
         }
 
+        public Task<(IReadOnlyList<AudioInformation> Audios, int TotalCount)> GetUserAudiosAsync(string userId, int pageNumber = 0, CancellationToken cancellationToken = default)
+            => Task.FromResult(((IReadOnlyList<AudioInformation>)[], 0));
+
+        public Task<(IReadOnlyList<UserCollectionInfo> Collections, int TotalCount)> GetUserCollectionInfosAsync(string userId, int pageNumber = 0, CancellationToken cancellationToken = default)
+            => Task.FromResult(((IReadOnlyList<UserCollectionInfo>)[], 0));
+
         public Task<UserCard> GetUserInformationAsync(string userId, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
