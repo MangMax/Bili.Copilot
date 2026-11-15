@@ -43,6 +43,9 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     public static readonly DependencyProperty ShowAuthorProperty = DependencyProperty.Register(
         nameof(ShowAuthor), typeof(bool), typeof(MomentCardControl), new PropertyMetadata(true));
 
+    public static readonly DependencyProperty ShowUserSpaceEntryProperty = DependencyProperty.Register(
+        nameof(ShowUserSpaceEntry), typeof(bool), typeof(MomentCardControl), new PropertyMetadata(true));
+
     private bool _hovered;
     private VideoCardControl? _videoCard;
     private TranslateTransform? _lift;
@@ -53,6 +56,13 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         get => (bool)GetValue(ShowAuthorProperty);
         set => SetValue(ShowAuthorProperty, value);
+    }
+
+    /// <summary>Shows「进入用户空间」in the card menu; hidden on user-space pages.</summary>
+    public bool ShowUserSpaceEntry
+    {
+        get => (bool)GetValue(ShowUserSpaceEntryProperty);
+        set => SetValue(ShowUserSpaceEntryProperty, value);
     }
 
     /// <summary>Initializes a new instance of the <see cref="MomentCardControl"/> class.</summary>
@@ -233,7 +243,11 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         {
             menuFlyout.Items.Add(CreatePrivatePlayItem());
             menuFlyout.Items.Add(CreateOpenInBroswerItem());
-            menuFlyout.Items.Add(CreateUserSpaceItem());
+            if (ShowUserSpaceEntry)
+            {
+                menuFlyout.Items.Add(CreateUserSpaceItem());
+            }
+
             menuFlyout.Items.Add(CreateAddViewLaterItem());
             menuFlyout.Items.Add(CreateCopyUriItem());
         }

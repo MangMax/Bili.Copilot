@@ -130,13 +130,19 @@
                                 Margin="8,12,0,0"
                                 Style="{StaticResource SubtitleTextBlockStyle}"
                                 Text="{ext:Locale Name=RecentDynamics}" />
-                            <repeater:AppRepeater ItemsSource="{x:Bind ViewModel.HomeMoments, Mode=OneWay, FallbackValue={x:Null}}" Layout="{StaticResource UserMomentGrid}">
-                                <repeater:AppRepeater.ItemTemplate>
+                            <ItemsRepeater ItemsSource="{x:Bind ViewModel.HomeMoments, Mode=OneWay, FallbackValue={x:Null}}">
+                                <ItemsRepeater.Layout>
+                                    <moment:MomentStaggeredLayout
+                                        ColumnSpacing="16"
+                                        MinItemWidth="280"
+                                        RowSpacing="16" />
+                                </ItemsRepeater.Layout>
+                                <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="items:MomentItemViewModel">
-                                        <components:MomentCardControl ShowAuthor="False" Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
+                                        <components:MomentCardControl ShowAuthor="False" ShowUserSpaceEntry="False" Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
                                     </DataTemplate>
-                                </repeater:AppRepeater.ItemTemplate>
-                            </repeater:AppRepeater>
+                                </ItemsRepeater.ItemTemplate>
+                            </ItemsRepeater>
                         </StackPanel>
 
                         <!--  动态  -->
@@ -150,7 +156,7 @@
                                         <DataTemplate x:DataType="items:MomentItemViewModel">
                                             <components:MomentCardControl
                                                 Margin="0,0,0,18"
-                                                ShowAuthor="False"
+                                                ShowUserSpaceEntry="False"
                                                 Style="{StaticResource PersonalFullMomentCardStyle}"
                                                 ViewModel="{x:Bind}" />
                                         </DataTemplate>
@@ -209,13 +215,9 @@
                                 </ItemsView>
                             </Border>
 
-                            <Grid Grid.Column="1">
-                                <!--  分类内容在自己的滚动区里，分类侧栏固定在左侧  -->
-                                <controls:IncrementVerticalScrollControl
-                                    x:Name="SubmissionScroll"
-                                    LoadMoreCommand="{x:Bind ViewModel.LoadMoreCommand, Mode=OneWay}">
-                                    <controls:IncrementVerticalScrollControl.Element>
-                                        <Grid x:Name="SubmissionContent">
+                            <Grid
+                                x:Name="SubmissionContent"
+                                Grid.Column="1">
                                 <!--  视频  -->
                                 <Grid Visibility="{x:Bind ViewModel.ShowSubmissionVideos, Mode=OneWay}">
                                     <StackPanel Spacing="12">
@@ -295,7 +297,7 @@
                                             </ItemsRepeater.Layout>
                                             <ItemsRepeater.ItemTemplate>
                                                 <DataTemplate x:DataType="items:MomentItemViewModel">
-                                                    <components:MomentCardControl ShowAuthor="False" Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
+                                                    <components:MomentCardControl ShowAuthor="False" ShowUserSpaceEntry="False" Style="{StaticResource VideoMomentCardStyle}" ViewModel="{x:Bind}" />
                                                 </DataTemplate>
                                             </ItemsRepeater.ItemTemplate>
                                         </ItemsRepeater>
@@ -453,15 +455,37 @@
                                         Visibility="{x:Bind ViewModel.CollectionFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
                                     <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.CollectionFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
                                 </Grid>
-                                        </Grid>
-                                    </controls:IncrementVerticalScrollControl.Element>
-                                </controls:IncrementVerticalScrollControl>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
             </controls:IncrementVerticalScrollControl.Element>
         </controls:IncrementVerticalScrollControl>
+
+        <!--  分类栏滚出视口后，用固定在左上角的同一组分类接替，避免跟着滚动做位移  -->
+        <Grid
+            x:Name="SubmissionNavOverlay"
+            Width="180"
+            Margin="20,8,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            CornerRadius="12"
+            Visibility="Collapsed">
+            <ItemsView
+                x:Name="SubmissionNavOverlayView"
+                Padding="2,8,8,8"
+                AutomationProperties.AutomationId="UserSubmissionSectionsSticky"
+                ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
+                ItemsSource="{x:Bind ViewModel.SubmissionTabs, Mode=OneWay}"
+                SelectionMode="Single"
+                ScrollViewer.HorizontalScrollMode="Disabled"
+                ScrollViewer.VerticalScrollMode="Disabled">
+                <ItemsView.Layout>
+                    <StackLayout Spacing="8" />
+                </ItemsView.Layout>
+            </ItemsView>
+        </Grid>
 
         <moment:UserSpaceVideoSearchSection x:Name="SearchSection" Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}" />
         <comment:CommentOverlayPanel

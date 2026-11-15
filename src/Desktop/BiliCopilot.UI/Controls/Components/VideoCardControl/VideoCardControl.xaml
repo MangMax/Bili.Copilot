@@ -52,7 +52,7 @@
                                 RowSpacing="4">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="40" />
-                                    <RowDefinition Height="46" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock
                                     Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.Title}"
@@ -202,6 +202,7 @@
     <!--  用户空间里的视频卡不再重复作者头像与名称  -->
     <Style x:Key="UserSpaceVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}">
         <Setter Property="ShowAuthor" Value="False" />
+        <Setter Property="ShowUserSpaceEntry" Value="False" />
     </Style>
     <Style x:Key="ViewLaterVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}" />
     <Style x:Key="FavoriteVideoCardStyle" TargetType="local:VideoCardControl" BasedOn="{StaticResource FeedVideoCardStyle}" />

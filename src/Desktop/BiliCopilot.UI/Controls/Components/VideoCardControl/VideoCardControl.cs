@@ -49,6 +49,16 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         set => SetValue(ShowAuthorProperty, value);
     }
 
+    public static readonly DependencyProperty ShowUserSpaceEntryProperty = DependencyProperty.Register(
+        nameof(ShowUserSpaceEntry), typeof(bool), typeof(VideoCardControl), new PropertyMetadata(true));
+
+    /// <summary>Shows「进入用户空间」in the card menu; hidden on user-space pages.</summary>
+    public bool ShowUserSpaceEntry
+    {
+        get => (bool)GetValue(ShowUserSpaceEntryProperty);
+        set => SetValue(ShowUserSpaceEntryProperty, value);
+    }
+
     private ButtonBase _rootCard;
     private Button _userButton;
     private Button _authorButton;
@@ -323,7 +333,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreatePrivatePlayItem());
-        if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.CanOpenUserSpace)
+        if (ShowUserSpaceEntry && ViewModel.Style != VideoCardStyle.Moment && ViewModel.CanOpenUserSpace)
         {
             menuFlyout.Items.Add(CreateUserSpaceItem());
         }

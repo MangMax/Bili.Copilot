@@ -45,6 +45,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         UpdateBackdropColor();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         SubmissionNav.SelectionChanged += OnSubmissionSelectionChanged;
+        SubmissionNavOverlayView.SelectionChanged += OnSubmissionSelectionChanged;
         QueueSubmissionSelectionSync();
         QueueScrollHostUpdate();
     }
@@ -53,6 +54,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     {
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         SubmissionNav.SelectionChanged -= OnSubmissionSelectionChanged;
+        SubmissionNavOverlayView.SelectionChanged -= OnSubmissionSelectionChanged;
         LayoutUpdated -= OnSpaceLayoutUpdated;
         CancelAvatarTransition();
         DisconnectHeader();
@@ -72,7 +74,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
         else if (e.PropertyName is nameof(UserSpacePageViewModel.IsSubmissionTab))
         {
-            UpdateSubmissionLayout();
+            UpdateSubmissionOverlay();
         }
     }
 
@@ -81,9 +83,6 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         if (sender.SelectedItem is UserSpaceTabViewModel tab && !ReferenceEquals(tab, ViewModel.SelectedSubmissionTab))
         {
             ViewModel.SelectSubmissionTabCommand.Execute(tab);
-
-            // 切换分类回到列表起点，而不是停在上一个分类的滚动位置。
-            SubmissionScroll.ResetScrollPosition();
         }
     }
 
@@ -98,9 +97,19 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
 
         var index = tabs.IndexOf(selected);
-        if (index >= 0 && !ReferenceEquals(SubmissionNav.SelectedItem, selected))
+        if (index < 0)
+        {
+            return;
+        }
+
+        if (!ReferenceEquals(SubmissionNav.SelectedItem, selected))
         {
             SubmissionNav.Select(index);
+        }
+
+        if (!ReferenceEquals(SubmissionNavOverlayView.SelectedItem, selected))
+        {
+            SubmissionNavOverlayView.Select(index);
         }
     }
 
@@ -120,43 +129,32 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         };
 
     /// <summary>
-    /// 投稿分区用「左侧固定分类栏 + 右侧独立滚动区」的两栏布局：
-    /// 面板高度取视口减去页头，两栏内部各自滚动，侧栏不会跟着列表走。
+    /// 分类栏滚出视口后，用固定在页面左上角的同一组分类接替；
+    /// 两个入口只是同一个列表的两种呈现，不做任何位移计算。
     /// </summary>
-    private void UpdateSubmissionLayout()
+    private void UpdateSubmissionOverlay()
     {
-        if (!ViewModel.IsSubmissionTab)
+        if (!ViewModel.IsSubmissionTab || _activeScroll is null || SubmissionPanel.ActualHeight <= 0)
         {
-            SubmissionPanel.ClearValue(FrameworkElement.HeightProperty);
-            if (_activeScroll is not null)
+            SubmissionNavOverlay.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        if (_activeScroll.Content is not UIElement contentRoot)
+        {
+            return;
+        }
+
+        var top = SubmissionPanel.TransformToVisual(contentRoot).TransformPoint(default).Y;
+        var pinned = _activeScroll.VerticalOffset > top + 1;
+        var visibility = pinned ? Visibility.Visible : Visibility.Collapsed;
+        if (SubmissionNavOverlay.Visibility != visibility)
+        {
+            SubmissionNavOverlay.Visibility = visibility;
+            if (pinned)
             {
-                _activeScroll.VerticalScrollMode = ScrollingScrollMode.Enabled;
+                SyncSubmissionSelection();
             }
-
-            return;
-        }
-
-        if (_activeScroll is null)
-        {
-            return;
-        }
-
-        var headerHeight = _activeHeader?.ActualHeight ?? 0;
-        // 减去页头后的行距（16）和内容底边距（16），让外层刚好不出现滚动。
-        var available = _activeScroll.ViewportHeight - headerHeight - 32;
-        var height = Math.Max(320, available);
-        // Height 默认是 NaN，第一次必须无条件写入，否则永远不会生效.
-        if (!double.IsFinite(SubmissionPanel.Height) || Math.Abs(SubmissionPanel.Height - height) > 0.5)
-        {
-            SubmissionPanel.Height = height;
-        }
-
-        // 放得下时锁住外层滚动：页头和分类栏留在原位，只让分类内容滚动.
-        var fits = available >= 320;
-        _activeScroll.VerticalScrollMode = fits ? ScrollingScrollMode.Disabled : ScrollingScrollMode.Enabled;
-        if (fits && _activeScroll.VerticalOffset > 0)
-        {
-            _activeScroll.ScrollTo(0, 0);
         }
     }
 
@@ -186,11 +184,13 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         if (_activeScroll is not null)
         {
             _activeScroll.SizeChanged -= OnSpaceScrollSizeChanged;
+            _activeScroll.ViewChanged -= OnSpaceScrollViewChanged;
         }
 
         DisconnectHeader();
         _activeScroll = scroll;
         _activeScroll.SizeChanged += OnSpaceScrollSizeChanged;
+        _activeScroll.ViewChanged += OnSpaceScrollViewChanged;
         _activeScrollHost = host;
         _activeHeader = FindChild<UserSpacePageHeader>(scroll);
         if (_activeHeader is not null)
@@ -200,7 +200,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
 
         UpdateBackdropSize();
         ConnectBackdrop();
-        UpdateSubmissionLayout();
+        UpdateSubmissionOverlay();
     }
 
     private void DisconnectHeader()
@@ -224,12 +224,14 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
         }
     }
 
-    private void OnSpaceScrollSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSubmissionLayout();
+    private void OnSpaceScrollSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSubmissionOverlay();
+
+    private void OnSpaceScrollViewChanged(ScrollView sender, object args) => UpdateSubmissionOverlay();
 
     private void OnHeaderSizeChanged(object sender, SizeChangedEventArgs e)
     {
         UpdateBackdropSize();
-        UpdateSubmissionLayout();
+        UpdateSubmissionOverlay();
     }
 
     private void UpdateBackdropSize()
@@ -276,7 +278,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     {
         Backdrop.Width = e.NewSize.Width;
         PageLayout.Clip = new RectangleGeometry { Rect = new Windows.Foundation.Rect(0, 0, e.NewSize.Width, e.NewSize.Height) };
-        UpdateSubmissionLayout();
+        UpdateSubmissionOverlay();
     }
 
     private void OnPageThemeChanged(FrameworkElement sender, object args) => UpdateBackdropColor();

@@ -118,6 +118,7 @@ public sealed partial class CardMetaPanel : UserControl
         AvatarPresenter.Visibility = visibility;
         AuthorPresenter.Visibility = visibility;
         AuthorRow.Height = ShowAuthor ? new GridLength(20) : new GridLength(0);
+        MetaRoot.RowSpacing = ShowAuthor ? 4 : 0;
     }
 
     private void UpdateMetaMode()
