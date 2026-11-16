@@ -113,6 +113,21 @@ namespace BiliCopilot.UI.ViewModels.Core
             CoreRebuildCalls.Add(true);
             return Task.CompletedTask;
         }
+
+        // ---- #227 长暂停 loadfile 恢复的可注入缝 ----
+        private BiliCopilot.UI.Models.MediaSnapshot? _snapshot;
+        internal void SetSnapshot(BiliCopilot.UI.Models.MediaSnapshot? snapshot) => _snapshot = snapshot;
+        private static string DescribeSnapshot(BiliCopilot.UI.Models.MediaSnapshot snapshot)
+            => $"video:{snapshot.Video?.Identifier.Id ?? "unknown"}";
+
+        /// <summary>测试替身：生产由 <c>LongPauseSeverMonitor</c> 维护。</summary>
+        internal bool IsSeveredByLongPause { get; set; }
+        internal double? LongPausePendingResumePosition { get; set; }
+        internal void ClearLongPausePendingResume()
+        {
+            IsSeveredByLongPause = false;
+            LongPausePendingResumePosition = null;
+        }
     }
 }
 

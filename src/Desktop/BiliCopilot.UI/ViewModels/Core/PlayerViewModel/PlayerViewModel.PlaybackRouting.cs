@@ -5,6 +5,7 @@ using BiliCopilot.UI.Player;
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Resolvers;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using Richasy.MpvKernel;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.MpvKernel.Player.Models;
@@ -79,9 +80,45 @@ public sealed partial class PlayerViewModel
     private Task RefreshRecordedPlaybackAsync(MediaSourceResolverBase resolver, Func<bool> isCurrent)
         => _playbackRefresh.RefreshAsync(
             resolver.RefreshSourceAsync,
-            (source, token) => ReopenPlaybackAsync(source, token, isCurrent),
+            (source, token) => ReopenPlaybackAsync(source, token, isCurrent, explicitStartPosition: null),
             () => isCurrent() && ReferenceEquals(resolver, _sourceResolver),
             ReportPlaybackRefreshFailure);
+
+    /// <summary>
+    /// #227：长暂停断流后用户点继续。Idle + 待恢复位置时不 resume，而是复用刷新通道重新取址，
+    /// loadfile 回填断点位置继续，保留 pause/mute/倍速/音量。
+    /// </summary>
+    internal async Task<bool> ResumeFromLongPauseAsync()
+    {
+        if (_sourceResolver is not MediaSourceResolverBase resolver || _playbackRefresh.IsRefreshing)
+        {
+            return false;
+        }
+
+        var media = _snapshot is null ? "unknown" : DescribeSnapshot(_snapshot);
+        logger.LogInformation(
+            "长暂停断流后通过 loadfile 恢复播放：{Media} 位置 {Position:F1}s",
+            media,
+            LongPausePendingResumePosition ?? 0);
+        var isCurrent = CapturePlaybackValidity();
+        var resumed = false;
+        await _playbackRefresh.RefreshAsync(
+            resolver.RefreshSourceAsync,
+            async (source, token) =>
+            {
+                // 成功接纳 loadfile 后清除待恢复位置；loadfile 失败则保留以便重试。
+                await ReopenPlaybackAsync(source, token, isCurrent, LongPausePendingResumePosition);
+                resumed = true;
+            },
+            () => isCurrent() && ReferenceEquals(resolver, _sourceResolver),
+            ReportPlaybackRefreshFailure);
+        if (resumed)
+        {
+            ClearLongPausePendingResume();
+        }
+
+        return resumed;
+    }
 
     /// <summary>
     /// 直播刷新入口：手动刷新与错误自动恢复共用同一次准入（同一时刻只允许一次），
@@ -148,7 +185,7 @@ public sealed partial class PlayerViewModel
         }
     }
 
-    private async Task ReopenPlaybackAsync(MpvMediaSource source, CancellationToken cancellationToken, Func<bool> isCurrent)
+    private async Task ReopenPlaybackAsync(MpvMediaSource source, CancellationToken cancellationToken, Func<bool> isCurrent, double? explicitStartPosition)
     {
         var previousPosition = _positionChangesDrained;
         var previousSpeed = WaitForSpeedChangesAsync();
@@ -183,7 +220,7 @@ public sealed partial class PlayerViewModel
                 throw new InvalidOperationException("无法读取当前播放状态，请稍后重试。");
             }
 
-            source.Options.StartPosition = position.Value;
+            source.Options.StartPosition = explicitStartPosition ?? position.Value;
             source.Options.InitialSpeed = speed.Value;
             source.Options.InitialVolume = volume.Value;
             // loadfile preserves the client's pause/mute flags. ReplayAsync does not:

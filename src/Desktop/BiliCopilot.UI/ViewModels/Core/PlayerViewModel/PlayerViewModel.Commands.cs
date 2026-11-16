@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Controls.Danmaku;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Player;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -214,7 +215,20 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        if (Player is null || Player.PlaybackState == MpvPlayerState.Idle)
+        if (Player is null)
+        {
+            return;
+        }
+
+        // #227：断流后 mpv 处于 Idle，先判断是否走 loadfile 恢复，再走常规 Idle 早退。
+        if (LongPauseResumeDecision.ShouldResumeViaLoadfile(
+            Player.PlaybackState, IsSeveredByLongPause, LongPausePendingResumePosition)
+            && await ResumeFromLongPauseAsync())
+        {
+            return;
+        }
+
+        if (Player.PlaybackState == MpvPlayerState.Idle)
         {
             return;
         }
