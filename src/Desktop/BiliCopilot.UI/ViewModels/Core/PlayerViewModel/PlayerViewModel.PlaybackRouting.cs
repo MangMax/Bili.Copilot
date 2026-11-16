@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Live;
+using BiliCopilot.UI.Player;
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Resolvers;
 using CommunityToolkit.Mvvm.Input;
@@ -13,6 +14,12 @@ namespace BiliCopilot.UI.ViewModels.Core;
 
 public sealed partial class PlayerViewModel
 {
+    /// <summary>
+    /// 播放核心生死闸门：<c>MpvClient.Shutdown</c> 触发后置 dead，
+    /// 之后所有发往 <see cref="Client"/>/<see cref="Player"/> 的命令在入口短路。
+    /// #228 的重建路径在换成新客户端后调用 <see cref="PlaybackCoreGate.Reset"/>。
+    /// </summary>
+    private readonly PlaybackCoreGate _playbackCoreGate = new();
     private readonly LivePlaybackWatchdog _liveWatchdog = new();
     private int _liveNativeAttempt;
     private bool _resumeAfterLiveTerminal;
@@ -26,6 +33,7 @@ public sealed partial class PlayerViewModel
 
     private bool CanRefreshPlayback()
         => IsPlaybackRefreshAvailable && IsSessionCurrent()
+            && !IsPlaybackCommandBlocked()
             && !IsConnecting && !_playbackRefresh.IsRefreshing
             && (IsLive || Player?.IsPlaybackInitialized == true);
 
@@ -176,7 +184,7 @@ public sealed partial class PlayerViewModel
             await previousSpeed;
 #pragma warning restore VSTHRD003
             cancellationToken.ThrowIfCancellationRequested();
-            if (!isCurrent())
+            if (!isCurrent() || IsPlaybackCommandBlocked())
             {
                 return;
             }
@@ -248,7 +256,7 @@ public sealed partial class PlayerViewModel
             await previousTerminalPause;
 #pragma warning restore VSTHRD003
             cancellationToken.ThrowIfCancellationRequested();
-            if (!isCurrent())
+            if (!isCurrent() || IsPlaybackCommandBlocked())
             {
                 return;
             }
@@ -309,6 +317,11 @@ public sealed partial class PlayerViewModel
 
     internal async Task<bool> PreparePlaybackIntentAsync(bool changesPause = false)
     {
+        if (IsPlaybackCommandBlocked())
+        {
+            return false;
+        }
+
         var isCurrent = CapturePlaybackValidity();
         if (changesPause)
         {
@@ -317,8 +330,14 @@ public sealed partial class PlayerViewModel
 
         CancelPlaybackRefresh();
         await WaitForNativeRefreshAsync();
-        return isCurrent();
+        return isCurrent() && !IsPlaybackCommandBlocked();
     }
+
+    /// <summary>
+    /// 播放核心已退出（Shutdown）或客户端已释放时，一切命令必须短路，
+    /// 不再下发到已退出的 mpv 句柄。
+    /// </summary>
+    private bool IsPlaybackCommandBlocked() => _playbackCoreGate.ShouldShortCircuit(Client?.IsDisposed);
 
     /// <summary>
     /// 切换直播清晰度：只持久化清晰度标识，然后重新取址并原位重开。

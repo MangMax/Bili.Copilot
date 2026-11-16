@@ -114,6 +114,9 @@ public sealed partial class PlayerViewModel
             _mediaDisplaySource = new(Client, queue, Window!.BeginRatioMedia, Window.UpdateRatioMedia);
             Client.ErrorOccurred += OnClientErrorOccurred;
             Client.CacheStateChanged += OnClientCacheStateChanged;
+            Client.Shutdown += OnClientShutdown;
+            // 新建的 MpvClient 存活：复位死闸门，#228 的重建路径走这里恢复命令通道。
+            _playbackCoreGate.Reset();
             SetSubtitleDelaySecondsCommand.Execute(SubtitleDelaySeconds);
 
             if (decodeType == PreferDecodeType.Auto)
@@ -359,6 +362,35 @@ public sealed partial class PlayerViewModel
     private void OnClientCacheStateChanged(object? sender, MpvCacheStateEventArgs e)
         => CacheStateChanged?.Invoke(this, e);
 
+    /// <summary>
+    /// mpv 核心退出（MPV_EVENT_SHUTDOWN）时触发：标记会话 dead，
+    /// 后续一切发往 <see cref="Client"/>/<see cref="Player"/> 的命令在入口短路（#225），
+    /// 界面保持可交互并显示可重试错误，而不是冻死只能任务管理器强杀。
+    /// </summary>
+    private void OnClientShutdown(object? sender, EventArgs e)
+    {
+        // 会话级不可逆：首个 Shutdown 即把闸门置 dead，重复事件只走幂等分支。
+        var first = _playbackCoreGate.MarkDead();
+        if (first && logger.IsEnabled(LogLevel.Information))
+        {
+            var media = _snapshot is { } snapshot ? DescribeSnapshot(snapshot) : "unknown";
+            logger.LogInformation("播放核心已退出（MpvClient.Shutdown），会话已标记 dead：{Media}", media);
+        }
+
+        // MpvClient 在 mpv 事件线程上派发；错误状态只写可观察属性，
+        // CommunityToolkit 的生成代码会按所在线程派发 PropertyChanged，
+        // 这里统一回 UI 线程，避免从后台线程写绑定状态。
+        queue.TryEnqueue(() =>
+        {
+            IsConnecting = false;
+            _playbackUnavailableAction = PlaybackUnavailableAction.None;
+            ErrorActionText = default;
+            HasErrorAction = false;
+            ErrorMessage = ResourceToolkit.GetLocalizedString(StringNames.PlaybackCoreExited);
+            CheckBlackBackgroundVisible();
+        });
+    }
+
     private async void OnClientErrorOccurred(object? sender, MpvError e)
     {
         // 关闭或换集之后到达的错误只属于旧会话：既不重播，也不写旧会话的界面状态。
@@ -395,7 +427,7 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        if (isCurrent() && Player.Duration < 1 && !_isBroken)
+        if (isCurrent() && Player.Duration < 1 && !_isBroken && !IsPlaybackCommandBlocked())
         {
             _isBroken = true;
             await Player.ReplayAsync();
@@ -608,7 +640,7 @@ public sealed partial class PlayerViewModel
 
     private async Task ResetPlayerPresenterModeAsync()
     {
-        if (Window is null || Window.GetWindow() == null || Window.IsClosed)
+        if (Window is null || Window.GetWindow() == null || Window.IsClosed || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -876,13 +908,18 @@ public sealed partial class PlayerViewModel
                 CloseStatsOverlayAsync = async () =>
                 {
                     // 强制关闭可能开启的统计信息覆盖层.
+                    if (IsPlaybackCommandBlocked())
+                    {
+                        return;
+                    }
+
                     await Client!.SendKeyPressAsync("ESC");
                     IsStatsOverlayShown = false;
                 },
                 ResumeIfNeededAsync = async () =>
                 {
                     // Make sure playing.
-                    if (!_isPlaybackRefreshReload && Player.PlaybackState != MpvPlayerState.Playing)
+                    if (!_isPlaybackRefreshReload && !IsPlaybackCommandBlocked() && Player.PlaybackState != MpvPlayerState.Playing)
                     {
                         await Client!.ResumeAsync();
                     }
@@ -936,8 +973,8 @@ public sealed partial class PlayerViewModel
         _danmakuLoadSession?.Cancel();
         // 暂停/停止/初始化之间可能被关闭或再次换集打断，由 SwitchMediaAsync 逐步复查会话。
         await SwitchMediaAsync(
-            () => Client!.PauseAsync(),
-            () => Client!.StopAsync(),
+            () => IsPlaybackCommandBlocked() ? Task.CompletedTask : Client!.PauseAsync(),
+            () => IsPlaybackCommandBlocked() ? Task.CompletedTask : Client!.StopAsync(),
             () => InitializeAsync(e));
     }
 
@@ -1042,7 +1079,7 @@ public sealed partial class PlayerViewModel
                 Windows.System.VirtualKey.Number4 or
                 Windows.System.VirtualKey.Number5)
             {
-                if (!isCurrent())
+                if (!isCurrent() || IsPlaybackCommandBlocked())
                 {
                     return;
                 }
@@ -1367,7 +1404,7 @@ public sealed partial class PlayerViewModel
             item.IsSelected = item.Data.Equals(vm.Data);
         }
 
-        if (string.IsNullOrEmpty(vm._srtFilePath) || Client is null)
+        if (string.IsNullOrEmpty(vm._srtFilePath) || Client is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -1381,7 +1418,7 @@ public sealed partial class PlayerViewModel
         _rememberedSubtitleId = null;
         ClearSubtitleSelection();
 
-        if (Client is null)
+        if (Client is null || IsPlaybackCommandBlocked())
         {
             return;
         }

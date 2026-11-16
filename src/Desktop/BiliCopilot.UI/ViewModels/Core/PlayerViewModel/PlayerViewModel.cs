@@ -201,6 +201,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         {
             Client.ErrorOccurred -= OnClientErrorOccurred;
             Client.CacheStateChanged -= OnClientCacheStateChanged;
+            Client.Shutdown -= OnClientShutdown;
         }
     }
 
@@ -345,7 +346,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         BackwardTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.BackwardTemplate), SettingsToolkit.ReadLocalSetting(SettingNames.StepBackwardSecond, 10d));
         ForwardTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.ForwardTemplate), SettingsToolkit.ReadLocalSetting(SettingNames.StepForwardSecond, 30d));
         RequestHideNextTip?.Invoke(this, EventArgs.Empty);
-        if (Client != null)
+        if (Client != null && !IsPlaybackCommandBlocked())
         {
             // Finish old-media speed writes before loading another media on this client.
             await WaitForSpeedChangesAsync();
