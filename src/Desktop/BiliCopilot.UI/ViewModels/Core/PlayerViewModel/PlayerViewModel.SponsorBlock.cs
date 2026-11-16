@@ -336,7 +336,7 @@ public sealed partial class PlayerViewModel
 
     private async Task ApplySponsorBlockMuteAsync(bool isMuted)
     {
-        if (Client is null)
+        if (IsPlaybackCommandBlocked())
         {
             return;
         }

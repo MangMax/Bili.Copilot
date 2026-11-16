@@ -25,7 +25,7 @@ public sealed partial class PlayerViewModel
     {
         // Like CloseAsync/DisposeAsync, admission runs synchronously on the UI thread.
         // Capture the client before yielding; never send an old request to a replacement.
-        if (_isDanmakuClosed || Client is null || Player is null)
+        if (_isDanmakuClosed || Client is null || Player is null || IsPlaybackCommandBlocked())
         {
             return false;
         }
@@ -34,7 +34,7 @@ public sealed partial class PlayerViewModel
         var isCurrent = CapturePlaybackValidity();
         CancelPlaybackRefresh();
         await WaitForNativeRefreshAsync();
-        if (!isCurrent())
+        if (!isCurrent() || IsPlaybackCommandBlocked())
         {
             return false;
         }

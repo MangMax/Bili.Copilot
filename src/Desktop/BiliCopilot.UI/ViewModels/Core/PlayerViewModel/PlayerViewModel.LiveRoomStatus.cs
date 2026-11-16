@@ -77,7 +77,7 @@ public sealed partial class PlayerViewModel
             await previousPosition;
             await previousRefresh;
 #pragma warning restore VSTHRD003
-            if (isCurrent() && IsLiveRoomTerminal && ReferenceEquals(client, Client) && client?.IsDisposed == false)
+            if (isCurrent() && IsLiveRoomTerminal && ReferenceEquals(client, Client) && !IsPlaybackCommandBlocked())
             {
                 await client.PauseAsync();
             }

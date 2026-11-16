@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Controls.Danmaku;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Player;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -119,7 +120,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task BackToDefaultModeAsync()
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -214,7 +215,20 @@ public sealed partial class PlayerViewModel
             return;
         }
 
-        if (Player is null || Player.PlaybackState == MpvPlayerState.Idle)
+        if (Player is null)
+        {
+            return;
+        }
+
+        // #227：断流后 mpv 处于 Idle，先判断是否走 loadfile 恢复，再走常规 Idle 早退。
+        if (LongPauseResumeDecision.ShouldResumeViaLoadfile(
+            Player.PlaybackState, IsSeveredByLongPause, LongPausePendingResumePosition)
+            && await ResumeFromLongPauseAsync())
+        {
+            return;
+        }
+
+        if (Player.PlaybackState == MpvPlayerState.Idle)
         {
             return;
         }
@@ -225,18 +239,24 @@ public sealed partial class PlayerViewModel
         }
         else if (Player.IsStopped)
         {
-            await Player.ReplayAsync();
+            if (!IsPlaybackCommandBlocked())
+            {
+                await Player.ReplayAsync();
+            }
         }
         else
         {
-            await Client!.ResumeAsync();
+            if (!IsPlaybackCommandBlocked())
+            {
+                await Client!.ResumeAsync();
+            }
         }
     }
 
     [RelayCommand]
     private async Task ToggleFullScreenAsync()
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -248,7 +268,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ToggleCompactOverlayAsync()
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -335,7 +355,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ResetSubtitlePositionAsync()
     {
-        if (Client != null && Player != null)
+        if (Player != null && !IsPlaybackCommandBlocked())
         {
             SubtitlePosition = IsVerticalScreen ? _verticalSubtitlePosition : _horizontalSubtitlePosition;
             await Client.SetSubtitlePositionAsync(Convert.ToInt32(SubtitlePosition));
@@ -345,7 +365,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeSubtitlePositionAsync(double position)
     {
-        if (Client != null && Player != null && Math.Abs(SubtitlePosition - position) >= 1)
+        if (Player != null && !IsPlaybackCommandBlocked() && Math.Abs(SubtitlePosition - position) >= 1)
         {
             if (IsVerticalScreen)
             {
@@ -392,7 +412,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeSubtitleFontSizeAsync(double fontSize)
     {
-        if (Client != null && Player != null && Math.Abs(SubtitleFontSize - fontSize) >= 1)
+        if (Player != null && !IsPlaybackCommandBlocked() && Math.Abs(SubtitleFontSize - fontSize) >= 1)
         {
             SubtitleFontSize = fontSize;
             SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.SubtitleFontSize, fontSize);
@@ -403,7 +423,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeSubtitleFontFamilyAsync(string font)
     {
-        if (Client != null && Player != null && !string.IsNullOrEmpty(font) && SubtitleFontFamily != font && Window?.IsClosed == false)
+        if (Player != null && !IsPlaybackCommandBlocked() && !string.IsNullOrEmpty(font) && SubtitleFontFamily != font && Window?.IsClosed == false)
         {
             SubtitleFontFamily = font;
             SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.SubtitleFontFamily, font);
@@ -448,7 +468,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task SendKeyAsync(string key)
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -466,7 +486,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ToggleStatsOverlayAsync()
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -485,7 +505,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task SetSubtitleDelaySecondsAsync(double seconds)
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -504,7 +524,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ToggleSubtitleEnabledAsync()
     {
-        if (Client is null)
+        if (IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -534,6 +554,11 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task TogglePanscanAsync()
     {
+        if (IsPlaybackCommandBlocked())
+        {
+            return;
+        }
+
         var v = UsingPanscan ? 0 : 1;
         UsingPanscan = !UsingPanscan;
         try
@@ -587,7 +612,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task TakeScreenshotAsync()
     {
-        if (Player?.IsPlaybackInitialized != true)
+        if (Player?.IsPlaybackInitialized != true || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -675,13 +700,16 @@ public sealed partial class PlayerViewModel
         }
 
         IsPopupVisible = false;
-        await Client.ResumeAsync();
+        if (!IsPlaybackCommandBlocked())
+        {
+            await Client.ResumeAsync();
+        }
     }
 
     [RelayCommand]
     private async Task ChangeAnime4KModeAsync(Anime4KMode mode)
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -701,7 +729,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeArtCNNModeAsync(ArtCNNMode mode)
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -721,7 +749,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeNnedi3ModeAsync(Nnedi3Mode mode)
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -741,7 +769,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeRavuModeAsync(RavuMode mode)
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -761,7 +789,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeNvidiaVsrModeAsync(VsrScale scale)
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -830,7 +858,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ClearShadersAsync()
     {
-        if (Player is null)
+        if (Player is null || IsPlaybackCommandBlocked())
         {
             return;
         }

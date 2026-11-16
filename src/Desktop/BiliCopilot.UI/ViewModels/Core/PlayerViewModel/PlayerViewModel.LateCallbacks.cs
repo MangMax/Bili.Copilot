@@ -190,7 +190,7 @@ public sealed partial class PlayerViewModel
         }
 
         var position = player.Position;
-        if (!isCurrent())
+        if (!isCurrent() || IsPlaybackCommandBlocked())
         {
             return;
         }

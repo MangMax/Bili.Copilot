@@ -1,9 +1,11 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Live;
+using BiliCopilot.UI.Player;
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Resolvers;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using Richasy.MpvKernel;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.MpvKernel.Player.Models;
@@ -12,6 +14,12 @@ namespace BiliCopilot.UI.ViewModels.Core;
 
 public sealed partial class PlayerViewModel
 {
+    /// <summary>
+    /// 播放核心生死闸门：<c>MpvClient.Shutdown</c> 触发后置 dead，
+    /// 之后所有发往 <see cref="Client"/>/<see cref="Player"/> 的命令在入口短路。
+    /// #228 的重建路径在换成新客户端后调用 <see cref="PlaybackCoreGate.Reset"/>。
+    /// </summary>
+    private readonly PlaybackCoreGate _playbackCoreGate = new();
     private readonly LivePlaybackWatchdog _liveWatchdog = new();
     private int _liveNativeAttempt;
     private bool _resumeAfterLiveTerminal;
@@ -20,17 +28,34 @@ public sealed partial class PlayerViewModel
     private Task _nativeRefreshDrained = Task.CompletedTask;
     private bool _isPlaybackRefreshReload;
 
+    /// <summary>
+    /// 死核心重建编排（#228）：固定"取消未决 → 释放 player → 释放 client → 重新初始化"的顺序，
+    /// 单飞汇入；释放路径通过 <see cref="PlaybackCoreRebuildCoordinator.Drained"/> 与重建汇合。
+    /// 实现见 PlayerViewModel.CoreRebuild.cs。
+    /// </summary>
+    private readonly PlaybackCoreRebuildCoordinator _coreRebuild = new();
+
     /// <summary>Gets whether this media supports an explicit playurl refresh.</summary>
     public bool IsPlaybackRefreshAvailable => _sourceResolver is VideoMediaSourceResolver or PgcMediaSourceResolver { IsDashPlayback: true } or LiveMediaSourceResolver;
 
     private bool CanRefreshPlayback()
-        => IsPlaybackRefreshAvailable && IsSessionCurrent()
+        => IsSessionCurrent()
             && !IsConnecting && !_playbackRefresh.IsRefreshing
-            && (IsLive || Player?.IsPlaybackInitialized == true);
+            && (_playbackCoreGate.IsCoreDead
+                || (IsPlaybackRefreshAvailable
+                    && !IsPlaybackCommandBlocked()
+                    && (IsLive || Player?.IsPlaybackInitialized == true)));
 
     [RelayCommand(CanExecute = nameof(CanRefreshPlayback))]
     private async Task RefreshPlaybackAsync()
     {
+        // 核心已死：刷新按钮就是"重新加载"入口，走完整重建而不是取址刷新。
+        if (_playbackCoreGate.IsCoreDead)
+        {
+            await RebuildPlaybackCoreAsync();
+            return;
+        }
+
         if (!CanRefreshPlayback())
         {
             return;
@@ -55,9 +80,68 @@ public sealed partial class PlayerViewModel
     private Task RefreshRecordedPlaybackAsync(MediaSourceResolverBase resolver, Func<bool> isCurrent)
         => _playbackRefresh.RefreshAsync(
             resolver.RefreshSourceAsync,
-            (source, token) => ReopenPlaybackAsync(source, token, isCurrent),
+            (source, token) => ReopenPlaybackAsync(source, token, isCurrent, explicitStartPosition: null),
             () => isCurrent() && ReferenceEquals(resolver, _sourceResolver),
             ReportPlaybackRefreshFailure);
+
+    /// <summary>
+    /// #227：长暂停断流后用户点继续。Idle + 待恢复位置时不 resume，而是复用刷新通道重新取址，
+    /// loadfile 回填断点位置继续，保留 pause/mute/倍速/音量。
+    /// </summary>
+    internal async Task<bool> ResumeFromLongPauseAsync()
+    {
+        if (_sourceResolver is not MediaSourceResolverBase resolver || _playbackRefresh.IsRefreshing)
+        {
+            return false;
+        }
+
+        var media = _snapshot is null ? "unknown" : DescribeSnapshot(_snapshot);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation(
+                "长暂停断流后通过 loadfile 恢复播放：{Media} 位置 {Position:F1}s",
+                media,
+                LongPausePendingResumePosition ?? 0);
+        }
+
+        var isCurrent = CapturePlaybackValidity();
+        var resumed = false;
+        // loadfile 恢复会把 mpv 推进 paused→loadfile→playing 的状态序列：
+        // 期间的 paused 不是用户长暂停，抑制断流计时器，恢复结束再解除。
+        SuppressLongPauseSever();
+        try
+        {
+            await _playbackRefresh.RefreshAsync(
+                resolver.RefreshSourceAsync,
+                async (source, token) =>
+                {
+                    // 成功接纳 loadfile 后清除待恢复位置；loadfile 失败则保留以便重试。
+                    await ReopenPlaybackAsync(source, token, isCurrent, LongPausePendingResumePosition);
+                    resumed = true;
+                },
+                () => isCurrent() && ReferenceEquals(resolver, _sourceResolver),
+                ReportPlaybackRefreshFailure);
+        }
+        finally
+        {
+            UnsuppressLongPauseSever();
+        }
+
+        if (resumed)
+        {
+            ClearLongPausePendingResume();
+            // loadfile 保留 pause 标志，所以"继续"的意图必须显式 resume——
+            // 不读 PlaybackState：loadfile 完成后属性观察事件可能还没回流到 Player，
+            // 那时 PlaybackState 仍是恢复前残留的 Idle，按它判断会漏掉 resume。
+            // 即便实际已播放，ResumeAsync 也只是冗余地把 pause 再置 false，无害。
+            if (isCurrent() && !IsPlaybackCommandBlocked() && Client is not null)
+            {
+                await Client.ResumeAsync();
+            }
+        }
+
+        return resumed;
+    }
 
     /// <summary>
     /// 直播刷新入口：手动刷新与错误自动恢复共用同一次准入（同一时刻只允许一次），
@@ -124,7 +208,7 @@ public sealed partial class PlayerViewModel
         }
     }
 
-    private async Task ReopenPlaybackAsync(MpvMediaSource source, CancellationToken cancellationToken, Func<bool> isCurrent)
+    private async Task ReopenPlaybackAsync(MpvMediaSource source, CancellationToken cancellationToken, Func<bool> isCurrent, double? explicitStartPosition)
     {
         var previousPosition = _positionChangesDrained;
         var previousSpeed = WaitForSpeedChangesAsync();
@@ -139,7 +223,7 @@ public sealed partial class PlayerViewModel
             await previousSpeed;
 #pragma warning restore VSTHRD003
             cancellationToken.ThrowIfCancellationRequested();
-            if (!isCurrent())
+            if (!isCurrent() || IsPlaybackCommandBlocked())
             {
                 return;
             }
@@ -159,7 +243,7 @@ public sealed partial class PlayerViewModel
                 throw new InvalidOperationException("无法读取当前播放状态，请稍后重试。");
             }
 
-            source.Options.StartPosition = position.Value;
+            source.Options.StartPosition = explicitStartPosition ?? position.Value;
             source.Options.InitialSpeed = speed.Value;
             source.Options.InitialVolume = volume.Value;
             // loadfile preserves the client's pause/mute flags. ReplayAsync does not:
@@ -211,7 +295,7 @@ public sealed partial class PlayerViewModel
             await previousTerminalPause;
 #pragma warning restore VSTHRD003
             cancellationToken.ThrowIfCancellationRequested();
-            if (!isCurrent())
+            if (!isCurrent() || IsPlaybackCommandBlocked())
             {
                 return;
             }
@@ -272,6 +356,11 @@ public sealed partial class PlayerViewModel
 
     internal async Task<bool> PreparePlaybackIntentAsync(bool changesPause = false)
     {
+        if (IsPlaybackCommandBlocked())
+        {
+            return false;
+        }
+
         var isCurrent = CapturePlaybackValidity();
         if (changesPause)
         {
@@ -280,8 +369,21 @@ public sealed partial class PlayerViewModel
 
         CancelPlaybackRefresh();
         await WaitForNativeRefreshAsync();
-        return isCurrent();
+        return isCurrent() && !IsPlaybackCommandBlocked();
     }
+
+    /// <summary>
+    /// 播放核心已退出（Shutdown）或客户端已释放时，一切命令必须短路，
+    /// 不再下发到已退出的 mpv 句柄。
+    /// </summary>
+    private bool IsPlaybackCommandBlocked() => _playbackCoreGate.ShouldShortCircuit(Client?.IsDisposed);
+
+    /// <summary>
+    /// 死核心重建：先完整释放旧 <c>MpvPlayer</c>+<c>MpvClient</c>，再走
+    /// <c>InitializeAsync</c> 的 <c>Client?.IsDisposed != false</c> 分支重建（#228）。
+    /// 实现见 PlayerViewModel.CoreRebuild.cs（依赖真实 MpvPlayer/MpvClient，测试工程用替身实现）。
+    /// </summary>
+    private partial Task RebuildPlaybackCoreAsync();
 
     /// <summary>
     /// 切换直播清晰度：只持久化清晰度标识，然后重新取址并原位重开。

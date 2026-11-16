@@ -85,6 +85,10 @@ public sealed partial class PlayerViewModel
             case PlaybackUnavailableAction.OpenInBrowser:
                 _ = OpenLiveInBrowserAsync();
                 break;
+            case PlaybackUnavailableAction.ReloadCore:
+                // 播放核心已退出：「重新加载」走 #228 的完整重建入口。
+                _ = RebuildPlaybackCoreAsync();
+                break;
             default:
                 break;
         }

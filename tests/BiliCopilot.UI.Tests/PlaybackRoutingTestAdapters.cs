@@ -101,6 +101,38 @@ namespace BiliCopilot.UI.ViewModels.Core
         partial void ReportPlaybackRefreshFailure(Exception exception) => RefreshErrors.Add(exception);
         private BiliCopilot.UI.Resolvers.MediaSourceResolverBase? _sourceResolver;
         internal void SetRefreshResolver(BiliCopilot.UI.Resolvers.MediaSourceResolverBase resolver) => _sourceResolver = resolver;
+
+        /// <summary>#228：模拟 MpvClient.Shutdown——把生死闸门置 dead，之后的命令必须短路。</summary>
+        internal void SimulateCoreShutdown() => _playbackCoreGate.MarkDead();
+
+        /// <summary>#228：记录重建入口被调用的次数；生产实现在 PlayerViewModel.CoreRebuild.cs。</summary>
+        internal List<bool> CoreRebuildCalls { get; } = [];
+
+        private partial Task RebuildPlaybackCoreAsync()
+        {
+            CoreRebuildCalls.Add(true);
+            return Task.CompletedTask;
+        }
+
+        // ---- #227 长暂停 loadfile 恢复的可注入缝 ----
+        private BiliCopilot.UI.Models.MediaSnapshot? _snapshot;
+        internal void SetSnapshot(BiliCopilot.UI.Models.MediaSnapshot? snapshot) => _snapshot = snapshot;
+        private static string DescribeSnapshot(BiliCopilot.UI.Models.MediaSnapshot snapshot)
+            => $"video:{snapshot.Video?.Identifier.Id ?? "unknown"}";
+
+        /// <summary>测试替身：生产由 <c>LongPauseSeverMonitor</c> 维护。</summary>
+        internal bool IsSeveredByLongPause { get; set; }
+        internal double? LongPausePendingResumePosition { get; set; }
+        internal void ClearLongPausePendingResume()
+        {
+            IsSeveredByLongPause = false;
+            LongPausePendingResumePosition = null;
+        }
+
+        /// <summary>测试替身：记录断流抑制开关。</summary>
+        internal int SeverSuppressCount { get; private set; }
+        partial void SuppressLongPauseSever() => SeverSuppressCount++;
+        partial void UnsuppressLongPauseSever() => SeverSuppressCount--;
     }
 }
 
