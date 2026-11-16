@@ -101,6 +101,18 @@ namespace BiliCopilot.UI.ViewModels.Core
         partial void ReportPlaybackRefreshFailure(Exception exception) => RefreshErrors.Add(exception);
         private BiliCopilot.UI.Resolvers.MediaSourceResolverBase? _sourceResolver;
         internal void SetRefreshResolver(BiliCopilot.UI.Resolvers.MediaSourceResolverBase resolver) => _sourceResolver = resolver;
+
+        /// <summary>#228：模拟 MpvClient.Shutdown——把生死闸门置 dead，之后的命令必须短路。</summary>
+        internal void SimulateCoreShutdown() => _playbackCoreGate.MarkDead();
+
+        /// <summary>#228：记录重建入口被调用的次数；生产实现在 PlayerViewModel.CoreRebuild.cs。</summary>
+        internal List<bool> CoreRebuildCalls { get; } = [];
+
+        private partial Task RebuildPlaybackCoreAsync()
+        {
+            CoreRebuildCalls.Add(true);
+            return Task.CompletedTask;
+        }
     }
 }
 

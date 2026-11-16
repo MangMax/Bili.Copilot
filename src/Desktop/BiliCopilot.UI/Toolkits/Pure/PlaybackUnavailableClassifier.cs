@@ -64,6 +64,11 @@ public enum PlaybackUnavailableAction
     /// 在系统浏览器打开（直播兜底）.
     /// </summary>
     OpenInBrowser,
+
+    /// <summary>
+    /// 播放核心已退出：完整重建 MpvClient+MpvPlayer（#228）.
+    /// </summary>
+    ReloadCore,
 }
 
 /// <summary>

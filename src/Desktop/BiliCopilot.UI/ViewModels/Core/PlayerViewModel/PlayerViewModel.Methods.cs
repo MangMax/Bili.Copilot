@@ -383,10 +383,12 @@ public sealed partial class PlayerViewModel
         queue.TryEnqueue(() =>
         {
             IsConnecting = false;
-            _playbackUnavailableAction = PlaybackUnavailableAction.None;
-            ErrorActionText = default;
-            HasErrorAction = false;
+            // 错误操作按钮走「重新加载」：与标题栏刷新共用 #228 的完整重建入口。
+            _playbackUnavailableAction = PlaybackUnavailableAction.ReloadCore;
+            ErrorActionText = ResourceToolkit.GetLocalizedString(StringNames.RefreshPlayback);
+            HasErrorAction = true;
             ErrorMessage = ResourceToolkit.GetLocalizedString(StringNames.PlaybackCoreExited);
+            RefreshPlaybackCommand.NotifyCanExecuteChanged();
             CheckBlackBackgroundVisible();
         });
     }
@@ -454,7 +456,8 @@ public sealed partial class PlayerViewModel
                 _ => default,
             };
 
-            if (!string.IsNullOrEmpty(errorContent) && (Player.Duration < 1 || e == MpvError.PassthroughFormatUnsupported))
+            if (!string.IsNullOrEmpty(errorContent) && !_playbackCoreGate.IsCoreDead
+                && (Player.Duration < 1 || e == MpvError.PassthroughFormatUnsupported))
             {
                 ErrorMessage = errorContent;
             }

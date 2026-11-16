@@ -60,6 +60,8 @@ public sealed partial class PlayerViewModel
 #pragma warning disable VSTHRD003
         await WaitForSpeedChangesAsync();
         await WaitForPositionChangesAsync();
+        // 死核心重建可能正在 teardown 同一批 player/client 句柄：等它落停再做最终释放。
+        await _coreRebuild.Drained;
 #pragma warning restore VSTHRD003
         await releaseResources();
     }

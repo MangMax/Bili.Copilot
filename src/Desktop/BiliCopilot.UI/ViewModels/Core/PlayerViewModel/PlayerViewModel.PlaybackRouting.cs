@@ -27,18 +27,34 @@ public sealed partial class PlayerViewModel
     private Task _nativeRefreshDrained = Task.CompletedTask;
     private bool _isPlaybackRefreshReload;
 
+    /// <summary>
+    /// 死核心重建编排（#228）：固定"取消未决 → 释放 player → 释放 client → 重新初始化"的顺序，
+    /// 单飞汇入；释放路径通过 <see cref="PlaybackCoreRebuildCoordinator.Drained"/> 与重建汇合。
+    /// 实现见 PlayerViewModel.CoreRebuild.cs。
+    /// </summary>
+    private readonly PlaybackCoreRebuildCoordinator _coreRebuild = new();
+
     /// <summary>Gets whether this media supports an explicit playurl refresh.</summary>
     public bool IsPlaybackRefreshAvailable => _sourceResolver is VideoMediaSourceResolver or PgcMediaSourceResolver { IsDashPlayback: true } or LiveMediaSourceResolver;
 
     private bool CanRefreshPlayback()
-        => IsPlaybackRefreshAvailable && IsSessionCurrent()
-            && !IsPlaybackCommandBlocked()
+        => IsSessionCurrent()
             && !IsConnecting && !_playbackRefresh.IsRefreshing
-            && (IsLive || Player?.IsPlaybackInitialized == true);
+            && (_playbackCoreGate.IsCoreDead
+                || (IsPlaybackRefreshAvailable
+                    && !IsPlaybackCommandBlocked()
+                    && (IsLive || Player?.IsPlaybackInitialized == true)));
 
     [RelayCommand(CanExecute = nameof(CanRefreshPlayback))]
     private async Task RefreshPlaybackAsync()
     {
+        // 核心已死：刷新按钮就是"重新加载"入口，走完整重建而不是取址刷新。
+        if (_playbackCoreGate.IsCoreDead)
+        {
+            await RebuildPlaybackCoreAsync();
+            return;
+        }
+
         if (!CanRefreshPlayback())
         {
             return;
@@ -301,6 +317,13 @@ public sealed partial class PlayerViewModel
     /// 不再下发到已退出的 mpv 句柄。
     /// </summary>
     private bool IsPlaybackCommandBlocked() => _playbackCoreGate.ShouldShortCircuit(Client?.IsDisposed);
+
+    /// <summary>
+    /// 死核心重建：先完整释放旧 <c>MpvPlayer</c>+<c>MpvClient</c>，再走
+    /// <c>InitializeAsync</c> 的 <c>Client?.IsDisposed != false</c> 分支重建（#228）。
+    /// 实现见 PlayerViewModel.CoreRebuild.cs（依赖真实 MpvPlayer/MpvClient，测试工程用替身实现）。
+    /// </summary>
+    private partial Task RebuildPlaybackCoreAsync();
 
     /// <summary>
     /// 切换直播清晰度：只持久化清晰度标识，然后重新取址并原位重开。
