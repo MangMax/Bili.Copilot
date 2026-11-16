@@ -6,6 +6,7 @@ using BiliCopilot.UI.Logging;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Player;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;

@@ -96,10 +96,14 @@ public sealed partial class PlayerViewModel
         }
 
         var media = _snapshot is null ? "unknown" : DescribeSnapshot(_snapshot);
-        logger.LogInformation(
-            "长暂停断流后通过 loadfile 恢复播放：{Media} 位置 {Position:F1}s",
-            media,
-            LongPausePendingResumePosition ?? 0);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation(
+                "长暂停断流后通过 loadfile 恢复播放：{Media} 位置 {Position:F1}s",
+                media,
+                LongPausePendingResumePosition ?? 0);
+        }
+
         var isCurrent = CapturePlaybackValidity();
         var resumed = false;
         await _playbackRefresh.RefreshAsync(

@@ -25,7 +25,9 @@ internal sealed class PlaybackCoreRebuildCoordinator
     /// 重建汇合点：释放路径在最终释放原生资源前等它落停，
     /// 避免与重建争抢同一批 player/client 句柄。
     /// </summary>
+#pragma warning disable VSTHRD003 // 汇合点语义就是有意识地等待别处启动的重建任务。
     public Task Drained => _activeRebuild;
+#pragma warning restore VSTHRD003
 
     /// <summary>
     /// 死核心重建的唯一入口。

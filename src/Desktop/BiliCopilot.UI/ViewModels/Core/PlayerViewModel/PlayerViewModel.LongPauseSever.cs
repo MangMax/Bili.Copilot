@@ -65,11 +65,15 @@ public sealed partial class PlayerViewModel
         }
 
         var media = _snapshot is null ? "unknown" : DescribeSnapshot(_snapshot);
-        logger.LogInformation(
-            "长暂停超过阈值（{Threshold}）主动断流：{Media} 位置 {Position:F1}s",
-            LongPauseSeverPolicy.Threshold,
-            media,
-            position);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation(
+                "长暂停超过阈值（{Threshold}）主动断流：{Media} 位置 {Position:F1}s",
+                LongPauseSeverPolicy.Threshold,
+                media,
+                position);
+        }
+
         _ = Client.StopAsync();
     }
 
