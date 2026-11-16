@@ -1,6 +1,5 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.Player;
 using Microsoft.Extensions.Logging;
 
 namespace BiliCopilot.UI.ViewModels.Core;
