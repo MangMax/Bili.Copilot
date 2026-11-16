@@ -104,30 +104,18 @@ public sealed class LongPauseResumeTests
     // ---------- MoAppHang 回归：loadfile 遗留 paused 不能被当成新长暂停 ----------
 
     [Fact]
-    public async Task ResumedLoadfileStillPausedResumesPlayback()
+    public async Task ResumedLoadfileResumesPlayback()
     {
         var (vm, _) = await CreateSeveredPlayerAsync();
         vm.IsSeveredByLongPause = true;
         vm.LongPausePendingResumePosition = 100;
-        // loadfile 保留了断流时的 pause 标志 → 恢复后 Player 仍处于 Paused。
-        vm.Player.PlaybackState = MpvPlayerState.Paused;
+        // loadfile 完成后属性观察事件尚未回流，Player 仍是恢复前残留的 Idle。
+        vm.Player.PlaybackState = MpvPlayerState.Idle;
 
         await vm.ResumeFromLongPauseAsync();
 
+        // “继续”意图下必须无条件补 resume，不能按残留状态漏掉。
         Assert.Equal(1, vm.Client!.ResumeCount);
-    }
-
-    [Fact]
-    public async Task ResumedLoadfileAlreadyPlayingDoesNotResumeAgain()
-    {
-        var (vm, _) = await CreateSeveredPlayerAsync();
-        vm.IsSeveredByLongPause = true;
-        vm.LongPausePendingResumePosition = 100;
-        vm.Player.PlaybackState = MpvPlayerState.Playing;
-
-        await vm.ResumeFromLongPauseAsync();
-
-        Assert.Equal(0, vm.Client!.ResumeCount);
     }
 
     [Fact]

@@ -130,12 +130,13 @@ public sealed partial class PlayerViewModel
         if (resumed)
         {
             ClearLongPausePendingResume();
-            // loadfile 保留了断流时的 pause 标志；继续播放意图下补 resume，
-            // 否则遗留 paused 会被断流监测器当成新的长暂停再次计时（MoAppHang 回归）。
-            if (isCurrent() && !IsPlaybackCommandBlocked() && Player is not null
-                && LongPauseResumeDecision.NeedsResumeAfterLoadfile(Player.PlaybackState))
+            // loadfile 保留 pause 标志，所以"继续"的意图必须显式 resume——
+            // 不读 PlaybackState：loadfile 完成后属性观察事件可能还没回流到 Player，
+            // 那时 PlaybackState 仍是恢复前残留的 Idle，按它判断会漏掉 resume。
+            // 即便实际已播放，ResumeAsync 也只是冗余地把 pause 再置 false，无害。
+            if (isCurrent() && !IsPlaybackCommandBlocked() && Client is not null)
             {
-                await Client!.ResumeAsync();
+                await Client.ResumeAsync();
             }
         }
 
