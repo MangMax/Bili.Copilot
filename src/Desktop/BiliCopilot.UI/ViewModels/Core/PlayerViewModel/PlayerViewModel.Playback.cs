@@ -59,6 +59,7 @@ public sealed partial class PlayerViewModel
     public async Task ChangePositionAsync(double position)
     {
         if (!LiveCapabilities.SupportsTimeline || Player is null || Client is null || _isDanmakuClosed
+            || IsPlaybackCommandBlocked()
             || !double.IsFinite(position) || position < 0 || (Player.Duration > 0 && position > Player.Duration))
         {
             return;
@@ -79,7 +80,7 @@ public sealed partial class PlayerViewModel
         {
             // Admission and continuations run on the UI thread. Obsolete queued
             // requests must never write to the old or a replacement client.
-            if (!isCurrent() || seekVersion != _danmakuSeekVersion)
+            if (!isCurrent() || seekVersion != _danmakuSeekVersion || IsPlaybackCommandBlocked())
             {
                 return;
             }
