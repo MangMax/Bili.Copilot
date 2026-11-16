@@ -87,6 +87,18 @@ public sealed partial class PlayerViewModel
         => _longPauseSeverMonitor?.CancelTimer();
 
     /// <summary>
+    /// loadfile 恢复期间抑制断流计时（恢复的 paused 不是用户长暂停）。
+    /// </summary>
+    partial void SuppressLongPauseSever()
+        => _longPauseSeverMonitor?.Suppress();
+
+    /// <summary>
+    /// 解除 <see cref="SuppressLongPauseSever"/>；恢复结束（成功或失败）后调用。
+    /// </summary>
+    partial void UnsuppressLongPauseSever()
+        => _longPauseSeverMonitor?.Unsuppress();
+
+    /// <summary>
     /// 关闭/换集/初始化时重置长暂停断流状态（含待恢复位置与断流标记）。
     /// </summary>
     partial void ResetLongPauseSever()

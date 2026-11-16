@@ -17,6 +17,16 @@ public sealed partial class PlayerViewModel
     partial void ResetLongPauseSever();
 
     /// <summary>
+    /// loadfile 恢复期间抑制断流计时；测试工程用空实现替身。
+    /// </summary>
+    partial void SuppressLongPauseSever();
+
+    /// <summary>
+    /// 解除断流抑制；测试工程用空实现替身。
+    /// </summary>
+    partial void UnsuppressLongPauseSever();
+
+    /// <summary>
     /// 让视图模型立即失效：关闭、释放与初始化失败回滚都从这里开始。
     /// 只做幂等的状态失效，重复调用安全。
     /// </summary>

@@ -37,6 +37,7 @@ internal sealed class LongPauseSeverMonitor
     private readonly Action<double> _sever;
     private readonly TimeSpan _threshold;
     private ILongPauseSeverTimer? _timer;
+    private bool _suppressed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LongPauseSeverMonitor"/> class.
@@ -76,7 +77,7 @@ internal sealed class LongPauseSeverMonitor
     private void OnPaused(bool isLive)
     {
         CancelTimer();
-        if (isLive)
+        if (isLive || _suppressed)
         {
             return;
         }
@@ -101,6 +102,19 @@ internal sealed class LongPauseSeverMonitor
 
         CancelTimer();
     }
+
+    /// <summary>
+    /// loadfile 恢复期间抑制断流计时：恢复本身会把 mpv 推进 paused→loadfile→playing
+    /// 的状态序列，其中的 paused 不是用户长暂停，不该武装新计时。
+    /// 抑制仅作用于"进入 Paused 是否启动计时"，已存在的计时仍随状态变化正常取消。
+    /// </summary>
+    internal void Suppress() => _suppressed = true;
+
+    /// <summary>
+    /// 解除 <see cref="Suppress"/>：恢复流程结束（成功或失败）后调用，
+    /// 让后续真正的用户暂停重新纳入断流保护。
+    /// </summary>
+    internal void Unsuppress() => _suppressed = false;
 
     /// <summary>
     /// 任意非暂停的播放状态变化、恢复、seek、换集、关闭或释放时的统一取消入口。
@@ -140,11 +154,12 @@ internal sealed class LongPauseSeverMonitor
     }
 
     /// <summary>
-    /// 释放/关闭入口：取消计时并清空所有待恢复状态。
+    /// 释放/关闭入口：取消计时、解除抑制并清空所有待恢复状态。
     /// </summary>
     internal void Reset()
     {
         CancelTimer();
+        _suppressed = false;
         ClearPendingResume();
     }
 }

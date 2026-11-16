@@ -106,19 +106,37 @@ public sealed partial class PlayerViewModel
 
         var isCurrent = CapturePlaybackValidity();
         var resumed = false;
-        await _playbackRefresh.RefreshAsync(
-            resolver.RefreshSourceAsync,
-            async (source, token) =>
-            {
-                // 成功接纳 loadfile 后清除待恢复位置；loadfile 失败则保留以便重试。
-                await ReopenPlaybackAsync(source, token, isCurrent, LongPausePendingResumePosition);
-                resumed = true;
-            },
-            () => isCurrent() && ReferenceEquals(resolver, _sourceResolver),
-            ReportPlaybackRefreshFailure);
+        // loadfile 恢复会把 mpv 推进 paused→loadfile→playing 的状态序列：
+        // 期间的 paused 不是用户长暂停，抑制断流计时器，恢复结束再解除。
+        SuppressLongPauseSever();
+        try
+        {
+            await _playbackRefresh.RefreshAsync(
+                resolver.RefreshSourceAsync,
+                async (source, token) =>
+                {
+                    // 成功接纳 loadfile 后清除待恢复位置；loadfile 失败则保留以便重试。
+                    await ReopenPlaybackAsync(source, token, isCurrent, LongPausePendingResumePosition);
+                    resumed = true;
+                },
+                () => isCurrent() && ReferenceEquals(resolver, _sourceResolver),
+                ReportPlaybackRefreshFailure);
+        }
+        finally
+        {
+            UnsuppressLongPauseSever();
+        }
+
         if (resumed)
         {
             ClearLongPausePendingResume();
+            // loadfile 保留了断流时的 pause 标志；继续播放意图下补 resume，
+            // 否则遗留 paused 会被断流监测器当成新的长暂停再次计时（MoAppHang 回归）。
+            if (isCurrent() && !IsPlaybackCommandBlocked() && Player is not null
+                && LongPauseResumeDecision.NeedsResumeAfterLoadfile(Player.PlaybackState))
+            {
+                await Client!.ResumeAsync();
+            }
         }
 
         return resumed;

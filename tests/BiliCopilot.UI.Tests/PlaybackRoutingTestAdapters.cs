@@ -128,6 +128,11 @@ namespace BiliCopilot.UI.ViewModels.Core
             IsSeveredByLongPause = false;
             LongPausePendingResumePosition = null;
         }
+
+        /// <summary>测试替身：记录断流抑制开关。</summary>
+        internal int SeverSuppressCount { get; private set; }
+        partial void SuppressLongPauseSever() => SeverSuppressCount++;
+        partial void UnsuppressLongPauseSever() => SeverSuppressCount--;
     }
 }
 

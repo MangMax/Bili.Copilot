@@ -101,6 +101,95 @@ public sealed class LongPauseResumeTests
         Assert.Single(vm.RefreshErrors);
     }
 
+    // ---------- MoAppHang 回归：loadfile 遗留 paused 不能被当成新长暂停 ----------
+
+    [Fact]
+    public async Task ResumedLoadfileStillPausedResumesPlayback()
+    {
+        var (vm, _) = await CreateSeveredPlayerAsync();
+        vm.IsSeveredByLongPause = true;
+        vm.LongPausePendingResumePosition = 100;
+        // loadfile 保留了断流时的 pause 标志 → 恢复后 Player 仍处于 Paused。
+        vm.Player.PlaybackState = MpvPlayerState.Paused;
+
+        await vm.ResumeFromLongPauseAsync();
+
+        Assert.Equal(1, vm.Client!.ResumeCount);
+    }
+
+    [Fact]
+    public async Task ResumedLoadfileAlreadyPlayingDoesNotResumeAgain()
+    {
+        var (vm, _) = await CreateSeveredPlayerAsync();
+        vm.IsSeveredByLongPause = true;
+        vm.LongPausePendingResumePosition = 100;
+        vm.Player.PlaybackState = MpvPlayerState.Playing;
+
+        await vm.ResumeFromLongPauseAsync();
+
+        Assert.Equal(0, vm.Client!.ResumeCount);
+    }
+
+    [Fact]
+    public async Task LongPauseSeverSuppressedDuringLoadfileResume()
+    {
+        var (vm, _) = await CreateSeveredPlayerAsync();
+        vm.IsSeveredByLongPause = true;
+        vm.LongPausePendingResumePosition = 100;
+
+        await vm.ResumeFromLongPauseAsync();
+
+        // 抑制在恢复开始时开启、结束时解除，全程净变化为 0，且确实被调用过。
+        Assert.Equal(0, vm.SeverSuppressCount);
+    }
+
+    [Fact]
+    public void SuppressedPausedDoesNotArmSeverTimer()
+    {
+        var fixture = new SeverFixture();
+        var monitor = fixture.CreateMonitor();
+        monitor.Suppress();
+        monitor.OnPlaybackStateChanged(MpvPlayerState.Paused, isLive: false);
+        Assert.Empty(fixture.Timers);
+        Assert.False(monitor.IsPending);
+    }
+
+    [Fact]
+    public void UnsuppressReArmsOnNextPaused()
+    {
+        var fixture = new SeverFixture();
+        var monitor = fixture.CreateMonitor();
+        monitor.Suppress();
+        monitor.OnPlaybackStateChanged(MpvPlayerState.Paused, isLive: false);
+        monitor.Unsuppress();
+        monitor.OnPlaybackStateChanged(MpvPlayerState.Paused, isLive: false);
+        Assert.Single(fixture.Timers);
+        Assert.True(monitor.IsPending);
+    }
+
+    [Fact]
+    public void ResetClearsSuppression()
+    {
+        var fixture = new SeverFixture();
+        var monitor = fixture.CreateMonitor();
+        monitor.Suppress();
+        monitor.Reset();
+        monitor.OnPlaybackStateChanged(MpvPlayerState.Paused, isLive: false);
+        Assert.Single(fixture.Timers);
+    }
+
+    private sealed class SeverFixture
+    {
+        public List<FakeSeverTimer> Timers { get; } = [];
+        public LongPauseSeverMonitor CreateMonitor()
+            => new(LongPauseSeverPolicy.Threshold, delay => { var t = new FakeSeverTimer(); Timers.Add(t); return t; }, _ => { });
+    }
+
+    private sealed class FakeSeverTimer : ILongPauseSeverTimer
+    {
+        public void Cancel() { }
+    }
+
     private static DashSegmentInformation Segment(string id, string url)
         => new(id, url, 100, "", "avc", 0, 0, "", "", []);
 
