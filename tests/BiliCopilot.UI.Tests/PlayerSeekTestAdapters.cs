@@ -68,11 +68,16 @@ public sealed class SeekTestPlayer
     public double Volume { get; set; } = 100;
 
     public double Duration { get; set; } = 60;
+
+    /// <summary>测试替身：生产为 mpv 的 idle/stopped 语义；Idle 下默认已停止。</summary>
+    public bool IsStopped { get; set; }
 }
 
 public sealed class SeekTestClient
 {
     public bool IsDisposed { get; set; }
+    public int StopCount { get; private set; }
+    public Task StopAsync() { StopCount++; return Task.CompletedTask; }
     public int PauseCount { get; private set; }
     public Task PauseAsync() { PauseCount++; return Task.CompletedTask; }
     public int ResumeCount { get; private set; }

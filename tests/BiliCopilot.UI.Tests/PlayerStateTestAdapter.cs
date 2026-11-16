@@ -7,5 +7,6 @@ public enum MpvPlayerState
     Playing,
     Paused,
     Seeking,
+    Idle,
     End,
 }
