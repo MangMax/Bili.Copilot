@@ -947,6 +947,9 @@ public sealed partial class PlayerViewModel
                 CheckBlackBackgroundVisible();
             }
 
+            // 长暂停断流：进入 Paused 启动可取消计时，任何其他状态取消。
+            HandleLongPauseStateChange();
+
             _smtc?.PlaybackStatus = Player.PlaybackState switch
             {
                 MpvPlayerState.Playing => MediaPlaybackStatus.Playing,

@@ -7,6 +7,16 @@ namespace BiliCopilot.UI.ViewModels.Core;
 public sealed partial class PlayerViewModel
 {
     /// <summary>
+    /// 取消未决的长暂停断流计时（#226）；实现见 WinUI 分部文件，测试工程链接本文件即可编译。
+    /// </summary>
+    partial void CancelLongPauseSever();
+
+    /// <summary>
+    /// 重置长暂停断流状态（计时器、待恢复位置、断流标记）（#226）。
+    /// </summary>
+    partial void ResetLongPauseSever();
+
+    /// <summary>
     /// 让视图模型立即失效：关闭、释放与初始化失败回滚都从这里开始。
     /// 只做幂等的状态失效，重复调用安全。
     /// </summary>
@@ -16,6 +26,7 @@ public sealed partial class PlayerViewModel
         _isDanmakuClosed = true;
         CancelPlaybackRefresh();
         StopLiveRecoveryMonitor();
+        ResetLongPauseSever();
         _danmakuLoadSession?.Dispose();
         // 关闭窗口时取消仍在进行的直播地址请求与房间详情请求。
         if (_sourceResolver is LiveMediaSourceResolver liveResolver)
