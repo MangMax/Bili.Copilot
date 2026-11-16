@@ -59,7 +59,7 @@ public sealed partial class PlayerViewModel
 
     private void ExecuteLongPauseSever(double position)
     {
-        if (Client?.IsDisposed != false)
+        if (Client?.IsDisposed != false || IsPlaybackCommandBlocked())
         {
             return;
         }

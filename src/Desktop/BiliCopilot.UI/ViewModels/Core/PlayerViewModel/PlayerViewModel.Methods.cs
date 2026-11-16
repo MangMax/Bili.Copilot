@@ -922,7 +922,20 @@ public sealed partial class PlayerViewModel
                 ResumeIfNeededAsync = async () =>
                 {
                     // Make sure playing.
-                    if (!_isPlaybackRefreshReload && !IsPlaybackCommandBlocked() && Player.PlaybackState != MpvPlayerState.Playing)
+                    if (_isPlaybackRefreshReload || IsPlaybackCommandBlocked() || Player.PlaybackState == MpvPlayerState.Playing)
+                    {
+                        return;
+                    }
+
+                    // 长暂停断流后走 loadfile 回填断点，而不是对 Idle 死句柄 resume。
+                    if (LongPauseResumeDecision.ShouldResumeViaLoadfile(
+                        Player.PlaybackState, IsSeveredByLongPause, LongPausePendingResumePosition)
+                        && await ResumeFromLongPauseAsync())
+                    {
+                        return;
+                    }
+
+                    if (Player.PlaybackState != MpvPlayerState.Idle)
                     {
                         await Client!.ResumeAsync();
                     }
@@ -1407,7 +1420,7 @@ public sealed partial class PlayerViewModel
             item.IsSelected = item.Data.Equals(vm.Data);
         }
 
-        if (string.IsNullOrEmpty(vm._srtFilePath) || Client is null || IsPlaybackCommandBlocked())
+        if (string.IsNullOrEmpty(vm._srtFilePath) || IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -1421,7 +1434,7 @@ public sealed partial class PlayerViewModel
         _rememberedSubtitleId = null;
         ClearSubtitleSelection();
 
-        if (Client is null || IsPlaybackCommandBlocked())
+        if (IsPlaybackCommandBlocked())
         {
             return;
         }

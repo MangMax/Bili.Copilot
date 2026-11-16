@@ -239,11 +239,17 @@ public sealed partial class PlayerViewModel
         }
         else if (Player.IsStopped)
         {
-            await Player.ReplayAsync();
+            if (!IsPlaybackCommandBlocked())
+            {
+                await Player.ReplayAsync();
+            }
         }
         else
         {
-            await Client!.ResumeAsync();
+            if (!IsPlaybackCommandBlocked())
+            {
+                await Client!.ResumeAsync();
+            }
         }
     }
 
@@ -349,7 +355,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ResetSubtitlePositionAsync()
     {
-        if (Client != null && Player != null && !IsPlaybackCommandBlocked())
+        if (Player != null && !IsPlaybackCommandBlocked())
         {
             SubtitlePosition = IsVerticalScreen ? _verticalSubtitlePosition : _horizontalSubtitlePosition;
             await Client.SetSubtitlePositionAsync(Convert.ToInt32(SubtitlePosition));
@@ -359,7 +365,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeSubtitlePositionAsync(double position)
     {
-        if (Client != null && Player != null && !IsPlaybackCommandBlocked() && Math.Abs(SubtitlePosition - position) >= 1)
+        if (Player != null && !IsPlaybackCommandBlocked() && Math.Abs(SubtitlePosition - position) >= 1)
         {
             if (IsVerticalScreen)
             {
@@ -406,7 +412,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeSubtitleFontSizeAsync(double fontSize)
     {
-        if (Client != null && Player != null && !IsPlaybackCommandBlocked() && Math.Abs(SubtitleFontSize - fontSize) >= 1)
+        if (Player != null && !IsPlaybackCommandBlocked() && Math.Abs(SubtitleFontSize - fontSize) >= 1)
         {
             SubtitleFontSize = fontSize;
             SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.SubtitleFontSize, fontSize);
@@ -417,7 +423,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ChangeSubtitleFontFamilyAsync(string font)
     {
-        if (Client != null && Player != null && !IsPlaybackCommandBlocked() && !string.IsNullOrEmpty(font) && SubtitleFontFamily != font && Window?.IsClosed == false)
+        if (Player != null && !IsPlaybackCommandBlocked() && !string.IsNullOrEmpty(font) && SubtitleFontFamily != font && Window?.IsClosed == false)
         {
             SubtitleFontFamily = font;
             SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.SubtitleFontFamily, font);
@@ -518,7 +524,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private async Task ToggleSubtitleEnabledAsync()
     {
-        if (Client is null || IsPlaybackCommandBlocked())
+        if (IsPlaybackCommandBlocked())
         {
             return;
         }
@@ -694,7 +700,10 @@ public sealed partial class PlayerViewModel
         }
 
         IsPopupVisible = false;
-        await Client.ResumeAsync();
+        if (!IsPlaybackCommandBlocked())
+        {
+            await Client.ResumeAsync();
+        }
     }
 
     [RelayCommand]
