@@ -306,6 +306,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     {
         _mediaDisplaySource?.Suspend();
         StopLiveRecoveryMonitor();
+        ResetLongPauseSever();
         _resumeAfterLiveTerminal = false;
         ClearLiveRoomTerminal();
         CancelPlaybackRefresh();

@@ -65,6 +65,7 @@ public sealed partial class PlayerViewModel
         }
 
         CancelPlaybackRefresh();
+        CancelLongPauseSever();
         var player = Player;
         var client = Client;
         var isCurrent = CapturePlaybackValidity();
