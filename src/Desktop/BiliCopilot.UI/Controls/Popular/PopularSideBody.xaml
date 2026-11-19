@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:extensions="using:BiliCopilot.UI.Extensions"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
@@ -28,6 +29,7 @@
     <Grid>
         <ItemsView
             x:Name="SectionView"
+            controls:PageTransition.TrackSelection="True"
             Padding="2,8,8,8"
             ItemsSource="{x:Bind ViewModel.Sections, Mode=OneWay}"
             ScrollViewer.HorizontalScrollMode="Disabled"

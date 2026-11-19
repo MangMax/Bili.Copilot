@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:livepartition="using:BiliCopilot.UI.Controls.LivePartition"
@@ -55,18 +56,24 @@
             Grid.Row="2"
             Grid.Column="2"
             Margin="-6,0"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Sidebar"
             Visibility="{x:Bind ViewModel.IsSubNavEnabled, Mode=OneWay}" />
         <livepartition:LivePartitionMainHeader Grid.Column="4" Margin="-6,0,0,0" />
         <livepartition:LiveRecommendMainBody
             Grid.Row="2"
             Grid.Column="4"
             Margin="-6,0,0,0"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Sidebar"
             Visibility="{x:Bind ViewModel.SelectedDetail, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}" />
         <livepartition:LiveSubPartitionMainBody
             Grid.Row="2"
             Grid.Column="4"
             Margin="-6,0,0,0"
             ViewModel="{x:Bind ViewModel.SelectedDetail, Mode=OneWay}"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedDetail.CurrentTag, Mode=OneWay, FallbackValue={x:Null}}"
             Visibility="{x:Bind ViewModel.SelectedDetail, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
 
         <!--  左侧主分栏大小控制器  -->

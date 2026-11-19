@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:comment="using:BiliCopilot.UI.Controls.Comment"
     xmlns:components="using:BiliCopilot.UI.ViewModels.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:extensions="using:BiliCopilot.UI.Extensions"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
@@ -36,6 +37,8 @@
         <ContentControl
             Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
             ContentTemplateSelector="{StaticResource Selector}"
+            controls:PageTransition.Kind="Tab"
+            controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
             Style="{StaticResource AppContentControlStyle}" />
     </Grid>
 </local:PgcPlayerControlBase>

@@ -66,9 +66,15 @@ public sealed partial class MainFrame : LayoutUserControlBase
 
             var showOpacityAnimation = new OpacityAnimation
             {
-                Duration = TimeSpan.FromMilliseconds(200),
+                Duration = TimeSpan.FromMilliseconds(250),
                 From = 0,
                 To = 1,
+            };
+            var showTranslationAnimation = new TranslationAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(300),
+                From = "0,24,0",
+                To = "0,0,0",
             };
             var hideOpacityAnimation = new OpacityAnimation
             {
@@ -78,7 +84,8 @@ public sealed partial class MainFrame : LayoutUserControlBase
             };
             var showSet = new ImplicitAnimationSet
             {
-                showOpacityAnimation
+                showOpacityAnimation,
+                showTranslationAnimation,
             };
             var hideSet = new ImplicitAnimationSet
             {

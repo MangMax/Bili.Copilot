@@ -6,6 +6,7 @@
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:local="using:BiliCopilot.UI.Controls.Users"
@@ -16,6 +17,7 @@
     <Grid>
         <ItemsView
             x:Name="GroupView"
+            controls:PageTransition.TrackSelection="True"
             Padding="2,8,8,8"
             ItemsSource="{x:Bind ViewModel.Groups, Mode=OneWay}"
             ScrollViewer.HorizontalScrollMode="Disabled"

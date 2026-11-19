@@ -17,7 +17,13 @@ namespace CommunityToolkit.WinUI.Animations
         public double From { get; set; }
         public double To { get; set; }
     }
-    public sealed class ImplicitAnimationSet : List<OpacityAnimation> { }
+    public sealed class TranslationAnimation
+    {
+        public TimeSpan Duration { get; set; }
+        public string? From { get; set; }
+        public string? To { get; set; }
+    }
+    public sealed class ImplicitAnimationSet : List<object> { }
     public static class Implicit
     {
         public static void SetShowAnimations(UIElement element, ImplicitAnimationSet? animations)

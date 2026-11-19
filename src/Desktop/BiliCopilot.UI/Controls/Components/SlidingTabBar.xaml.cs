@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Toolkits;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.UI.ViewManagement;
 
@@ -19,6 +20,7 @@ public sealed partial class SlidingTabBar : UserControl
     private bool _animateNextLayout;
     private XamlRoot? _root;
     private int _mountVersion;
+    private int _lastSelectedIndex = -1;
 
     /// <summary>Initializes a new instance of the <see cref="SlidingTabBar"/> class.</summary>
     public SlidingTabBar()
@@ -52,6 +54,7 @@ public sealed partial class SlidingTabBar : UserControl
         finally
         {
             _synchronizing = false;
+            _lastSelectedIndex = PageTransitionPolicy.IndexOf(Selector.Items, Selector.SelectedItem);
         }
     }
 
@@ -128,7 +131,18 @@ public sealed partial class SlidingTabBar : UserControl
             return;
         }
 
+        // 先记下旧序号：内容宿主的触发器会在 SelectionChanged 之后同步更新.
+        var previousIndex = _lastSelectedIndex;
         SelectionUpdated();
+        if (previousIndex >= 0 && _lastSelectedIndex >= 0 && previousIndex != _lastSelectedIndex)
+        {
+            PageTransitionSession.Publish(
+                PageTransitionKind.Tab,
+                previousIndex,
+                _lastSelectedIndex,
+                DateTimeOffset.Now);
+        }
+
         if (sender.SelectedItem is not null)
         {
             SelectionChanged?.Invoke(this, EventArgs.Empty);
@@ -138,6 +152,7 @@ public sealed partial class SlidingTabBar : UserControl
     private void SelectionUpdated()
     {
         _animateNextLayout = _target is not null;
+        _lastSelectedIndex = PageTransitionPolicy.IndexOf(Selector.Items, Selector.SelectedItem);
         if (_attached)
         {
             Selector.SelectedItem?.StartBringIntoView();

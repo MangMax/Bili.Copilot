@@ -6,6 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:components1="using:BiliCopilot.UI.ViewModels.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:local="using:BiliCopilot.UI.Pages.Overlay"
@@ -97,6 +98,8 @@
             Margin="-6,0,0,0"
             Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
             ContentTemplateSelector="{StaticResource SectionSelector}"
+            controls:PageTransition.Kind="Sidebar"
+            controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
             Style="{StaticResource AppContentControlStyle}" />
 
         <!--  左侧分栏大小控制器  -->

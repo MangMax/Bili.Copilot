@@ -11,6 +11,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1" />
     <Using Include="Xunit" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/Components/SlidingTabBar.xaml.cs" Link="SlidingTabBar.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/Pure/PageTransitionPolicy.cs" Link="PageTransitionPolicy.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/Player/VideoPlayerSideHeader.xaml.cs" Link="VideoPlayerSideHeader.cs" />
   </ItemGroup>
 </Project>

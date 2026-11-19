@@ -33,7 +33,10 @@
             SkeletonTemplate="{StaticResource FeedVideoSkeletonTemplate}" />
     </UserControl.Resources>
 
-    <Grid>
+    <Grid
+        controls:PageTransition.Content="{x:Bind View, Mode=OneTime}"
+        controls:PageTransition.Kind="Sidebar"
+        controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedSection, Mode=OneWay}">
         <controls:IncrementVerticalScrollControl
             x:Name="View"
             LoadMoreCommand="{x:Bind ViewModel.LoadVideosCommand}">

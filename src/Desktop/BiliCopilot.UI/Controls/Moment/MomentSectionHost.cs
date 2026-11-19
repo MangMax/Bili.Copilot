@@ -1,10 +1,10 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Hosting;
 using System.Numerics;
-using Windows.UI.ViewManagement;
 
 namespace BiliCopilot.UI.Controls.Moment;
 
@@ -14,7 +14,6 @@ namespace BiliCopilot.UI.Controls.Moment;
 public sealed partial class MomentSectionHost : Grid
 {
     private readonly Dictionary<IMomentSectionDetailViewModel, FrameworkElement> _sections = new();
-    private readonly UISettings _uiSettings = new();
 
     public static readonly DependencyProperty SelectedSectionProperty = DependencyProperty.Register(
         nameof(SelectedSection), typeof(IMomentSectionDetailViewModel), typeof(MomentSectionHost),
@@ -60,22 +59,13 @@ public sealed partial class MomentSectionHost : Grid
         visual.Clip ??= visual.Compositor.CreateInsetClip();
         visual.StopAnimation(nameof(visual.Opacity));
         visual.Opacity = 1;
-        if (section is not null && animate && _uiSettings.AnimationsEnabled)
-        {
-            var animation = visual.Compositor.CreateScalarKeyFrameAnimation();
-            animation.Duration = TimeSpan.FromMilliseconds(200);
-            animation.InsertKeyFrame(0, 0.65f);
-            animation.InsertKeyFrame(1, 1);
-            visual.StartAnimation(nameof(visual.Opacity), animation);
 
-            var incoming = ElementCompositionPreview.GetElementVisual(_sections[section]);
-            var slide = visual.Compositor.CreateVector3KeyFrameAnimation();
-            slide.Duration = TimeSpan.FromMilliseconds(280);
-            var direction = section is VideoMomentSectionDetailViewModel ? -1 : 1;
-            slide.InsertKeyFrame(0, new Vector3(direction * 40, 0, 0));
-            slide.InsertKeyFrame(1, Vector3.Zero,
-                visual.Compositor.CreateCubicBezierEasingFunction(new Vector2(0.2f, 0), new Vector2(0, 1)));
-            incoming.StartAnimation("Translation", slide);
+        // 与其它标签栏共用同一套标签过渡：方向由 MomentHeader 的标签栏发布.
+        // 外框只淡入，滑动的始终是刚显示的分区，和原来的分区切换手感一致.
+        if (section is not null && animate)
+        {
+            PageTransition.SetContent(this, _sections[section]);
+            PageTransition.Play(this, PageTransitionKind.Tab);
         }
     }
 }

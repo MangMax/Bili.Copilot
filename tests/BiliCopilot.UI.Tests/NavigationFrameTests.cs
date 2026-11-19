@@ -1,6 +1,7 @@
 using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Pages.Overlay;
+using CommunityToolkit.WinUI.Animations;
 
 namespace BiliCopilot.UI.Tests;
 
@@ -108,6 +109,20 @@ public sealed class NavigationFrameTests
     }
 
     [Fact]
+    public void MainPageShowAnimationsFadeAndSlideWithinTheSameFrame()
+    {
+        var frame = new MainFrame();
+        frame.NavigateTo(typeof(PopularPage));
+        var page = Assert.IsType<PopularPage>(frame.GetCurrentContent());
+        Assert.NotNull(page.ShowAnimations);
+        Assert.NotNull(page.HideAnimations);
+        var show = page.ShowAnimations!;
+        Assert.Equal(2, show.Count);
+        Assert.Contains(show, animation => animation is OpacityAnimation { To: 1 });
+        Assert.Contains(show, animation => animation is TranslationAnimation { From: "0,24,0", To: "0,0,0" });
+    }
+
+    [Fact]
     public void OverlayRevisitMovesCachedPageToTopAndBackRevealsPreviousPage()
     {
         var frame = new OverlayFrame();
@@ -142,7 +157,7 @@ public sealed class NavigationFrameTests
         // 隐藏时页面会停在上一次隐藏动画的 0 不透明度；抑制淡入不能把显示动画设为 null，
         // 否则复用的页面整页透明（元素都在，画面是空的）。
         Assert.NotNull(space.ShowAnimations);
-        var show = Assert.Single(space.ShowAnimations!);
+        var show = Assert.IsType<OpacityAnimation>(Assert.Single(space.ShowAnimations!));
         Assert.Equal(1d, show.To);
         Assert.True(show.Duration <= TimeSpan.FromMilliseconds(1));
     }
@@ -231,13 +246,15 @@ public sealed class NavigationFrameTests
 
     private static bool IsInstantShow(NavigationTestPage page)
         => page.ShowAnimations is { Count: 1 } set
-            && set[0].To == 1
-            && set[0].Duration <= TimeSpan.FromMilliseconds(1);
+            && set[0] is OpacityAnimation show
+            && show.To == 1
+            && show.Duration <= TimeSpan.FromMilliseconds(1);
 
     private static bool IsFadingShow(NavigationTestPage page)
-        => page.ShowAnimations is { Count: 1 } set
-            && set[0].To == 1
-            && set[0].Duration >= TimeSpan.FromMilliseconds(100);
+        => page.ShowAnimations is { Count: 2 } set
+            && set.OfType<OpacityAnimation>().SingleOrDefault() is { To: 1 } opacity
+            && opacity.Duration >= TimeSpan.FromMilliseconds(100)
+            && set.OfType<TranslationAnimation>().SingleOrDefault() is { From: "0,24,0", To: "0,0,0" };
 
     [Fact]
     public void ClearedOverlayConstructsFreshPageAndNullNavigationLeavesContentUnchanged()

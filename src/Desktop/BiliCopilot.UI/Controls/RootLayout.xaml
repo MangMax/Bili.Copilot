@@ -98,7 +98,7 @@
             Style="{StaticResource MainNavigationViewStyle}">
             <Grid x:Name="MainGrid">
                 <Grid Visibility="{x:Bind _appViewModel.IsInitialLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
-                    <local:MainFrame x:Name="MainFrame" Visibility="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+                    <local:MainFrame x:Name="MainFrame" Visibility="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" local:PageTransition.AnimateOnShow="True" local:PageTransition.Kind="Page" />
                     <local:OverlayFrame x:Name="OverlayFrame" Visibility="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay}" />
                 </Grid>
             </Grid>
