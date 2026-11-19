@@ -6,6 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:live="using:BiliCopilot.UI.Live"
@@ -28,7 +29,9 @@
 
         <Grid
             x:Name="InteractionPanel"
-            Grid.Row="1">
+            Grid.Row="1"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Tab">
             <ScrollViewer
                 x:Name="ChatView"
                 Style="{StaticResource PageScrollViewerStyle}">
@@ -92,6 +95,8 @@
             Grid.Row="1"
             Padding="0"
             VerticalContentAlignment="Top"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Tab"
             Visibility="Collapsed">
             <StackPanel
                 Padding="16,2,16,16"

@@ -199,7 +199,8 @@ public sealed class NavigationViewModelTests : IDisposable
             _model.NavigateToOver(typeof(UserSpacePage), userA);
             var suppressed = Assert.IsType<UserSpacePage>(_overlay.GetCurrentContent()).ShowAnimations;
             Assert.NotNull(suppressed);
-            Assert.True(suppressed![0].Duration <= TimeSpan.FromMilliseconds(1));
+            var instant = Assert.IsType<CommunityToolkit.WinUI.Animations.OpacityAnimation>(Assert.Single(suppressed!));
+            Assert.True(instant.Duration <= TimeSpan.FromMilliseconds(1));
 
             // 请求属于 A：导航到 B 不得抑制 B 的淡入。
             _model.NavigateToOver(typeof(UserSpacePage), userB);

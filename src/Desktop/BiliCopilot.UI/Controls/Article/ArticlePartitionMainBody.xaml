@@ -14,7 +14,9 @@
     xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid
+        controls:PageTransition.Content="{x:Bind View, Mode=OneTime}"
+        controls:PageTransition.Trigger="{x:Bind ViewModel.CurrentPartition, Mode=OneWay}">
         <controls:IncrementVerticalScrollControl x:Name="View" LoadMoreCommand="{x:Bind ViewModel.LoadArticlesCommand, Mode=OneWay}">
             <controls:IncrementVerticalScrollControl.Element>
                 <Grid Margin="0,16">

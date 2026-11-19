@@ -6,6 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:community="using:CommunityToolkit.WinUI.Controls"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:local="using:BiliCopilot.UI.Pages"
@@ -47,6 +48,8 @@
             Grid.Row="2"
             Grid.Column="2"
             Margin="-6,0,0,0"
+            controls:PageTransition.Kind="Sidebar"
+            controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
             ViewModel="{x:Bind ViewModel.SelectedSection, Mode=OneWay}" />
 
         <!--  左侧分栏大小控制器  -->

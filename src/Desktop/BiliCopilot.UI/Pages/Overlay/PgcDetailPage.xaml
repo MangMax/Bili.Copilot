@@ -303,6 +303,8 @@
                 <!--  正片 / 花絮等分区内容  -->
                 <Grid
                     Margin="24,8,24,0"
+                    controls:PageTransition.Kind="Tab"
+                    controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedTab, Mode=OneWay}"
                     Visibility="{x:Bind ViewModel.HasEpisodes, Mode=OneWay}">
                     <ItemsRepeater ItemsSource="{x:Bind ViewModel.Episodes, Mode=OneWay}" Layout="{StaticResource EpisodeLayout}">
                         <ItemsRepeater.ItemTemplate>
@@ -351,6 +353,8 @@
                     MaxWidth="960"
                     HorizontalAlignment="Left"
                     Spacing="10"
+                    controls:PageTransition.Kind="Tab"
+                    controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedTab, Mode=OneWay}"
                     Visibility="{x:Bind ViewModel.ShowIntro, Mode=OneWay}">
                     <ItemsRepeater ItemTemplate="{StaticResource LaborTemplate}" ItemsSource="{x:Bind ViewModel.LaborItems, Mode=OneWay}" />
                 </StackPanel>
@@ -361,6 +365,8 @@
                     MaxWidth="960"
                     HorizontalAlignment="Left"
                     Spacing="14"
+                    controls:PageTransition.Kind="Tab"
+                    controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedTab, Mode=OneWay}"
                     Visibility="{x:Bind ViewModel.ShowReviews, Mode=OneWay}">
                     <ProgressRing
                         Width="32"

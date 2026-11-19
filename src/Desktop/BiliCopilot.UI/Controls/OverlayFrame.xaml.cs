@@ -71,9 +71,15 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
         {
             new OpacityAnimation
             {
-                Duration = TimeSpan.FromMilliseconds(200),
+                Duration = TimeSpan.FromMilliseconds(250),
                 From = 0,
                 To = 1,
+            },
+            new TranslationAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(300),
+                From = "0,24,0",
+                To = "0,0,0",
             },
         };
         var hideSet = new ImplicitAnimationSet

@@ -114,7 +114,11 @@
 
                     <moment:UserSpacePageHeader Margin="-20,0" />
 
-                    <Grid x:Name="SectionHost" Grid.Row="1">
+                    <Grid
+                        x:Name="SectionHost"
+                        Grid.Row="1"
+                        controls:PageTransition.Kind="Tab"
+                        controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedTab, Mode=OneWay}">
                         <!--  主页  -->
                         <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.IsHomeTab, Mode=OneWay}">
                             <TextBlock
@@ -164,6 +168,7 @@
                                         x:Name="MomentFilterNav"
                                         Padding="2,8,8,8"
                                         AutomationProperties.AutomationId="UserMomentFilters"
+                                        controls:PageTransition.TrackSelection="True"
                                         ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
                                         ItemsSource="{x:Bind ViewModel.MomentFilterTabs, Mode=OneWay}"
                                         SelectionMode="Single"
@@ -174,7 +179,9 @@
                                         </ItemsView.Layout>
                                     </ItemsView>
                                 </Border>
-                                <Grid Grid.Column="1">
+                                <Grid
+                                    Grid.Column="1"
+                                    controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedMomentFilter, Mode=OneWay}">
                             <StackPanel Spacing="12">
                                 <ItemsRepeater ItemsSource="{x:Bind ViewModel.MomentSection.Items, Mode=OneWay, FallbackValue={x:Null}}" Visibility="{x:Bind ViewModel.IsAllMomentFilter, Mode=OneWay}">
                                     <ItemsRepeater.Layout>
@@ -253,6 +260,7 @@
                                 <ItemsView
                                     x:Name="SubmissionNav"
                                     AutomationProperties.AutomationId="UserSubmissionSections"
+                                    controls:PageTransition.TrackSelection="True"
                                     ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
                                     ItemsSource="{x:Bind ViewModel.SubmissionTabs, Mode=OneWay}"
                                     SelectionMode="Single"
@@ -266,7 +274,8 @@
 
                             <Grid
                                 x:Name="SubmissionContent"
-                                Grid.Column="1">
+                                Grid.Column="1"
+                                controls:PageTransition.Trigger="{x:Bind ViewModel.SelectedSubmissionTab, Mode=OneWay}">
                                 <!--  视频  -->
                                 <Grid Visibility="{x:Bind ViewModel.ShowSubmissionVideos, Mode=OneWay}">
                                     <StackPanel Spacing="12">
@@ -527,6 +536,7 @@
                 x:Name="MomentFilterNavOverlay"
                 Padding="2,8,8,8"
                 AutomationProperties.AutomationId="UserMomentFiltersSticky"
+                controls:PageTransition.TrackSelection="True"
                 ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
                 ItemsSource="{x:Bind ViewModel.MomentFilterTabs, Mode=OneWay}"
                 SelectionMode="Single"
@@ -552,6 +562,7 @@
                 x:Name="SubmissionNavOverlayView"
                 Padding="2,8,8,8"
                 AutomationProperties.AutomationId="UserSubmissionSectionsSticky"
+                controls:PageTransition.TrackSelection="True"
                 ItemTemplate="{StaticResource UserSubmissionNavTemplate}"
                 ItemsSource="{x:Bind ViewModel.SubmissionTabs, Mode=OneWay}"
                 SelectionMode="Single"

@@ -94,7 +94,6 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             _videoCache[SelectedSection] = Videos.ToList();
         }
 
-        SelectedSection = vm;
         var version = ++_sectionVersion;
         IsVideoLoading = false;
         var sectionId = vm switch
@@ -105,6 +104,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         };
         SettingsToolkit.WriteLocalSetting(SettingNames.PopularPageLastSelectedSectionId, sectionId);
 
+        // 先换内容再切 SelectedSection：过渡由 SelectedSection 触发，
+        // 动画第一帧看到的已经应该是新分区的列表（缓存命中）或空列表/骨架，
+        // 否则会先把旧内容滑动一遍、新内容在动画快结束时才出现，看起来像弹了一下.
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
         {
             if (version != _sectionVersion)
@@ -121,10 +123,12 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
                     Videos.Add(video);
                 }
 
+                SelectedSection = vm;
                 VideoListUpdated?.Invoke(this, EventArgs.Empty);
             }
             else
             {
+                SelectedSection = vm;
                 await LoadVideosAsync();
             }
         });

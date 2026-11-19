@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:converters="using:BiliCopilot.UI.Converters"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
@@ -36,7 +37,8 @@
         <SelectorBar
             x:Name="SectionSelector"
             Grid.Column="1"
-            VerticalAlignment="Center" />
+            VerticalAlignment="Center"
+            controls:PageTransition.TrackSelection="True" />
         <animations:Implicit.ShowAnimations>
             <animations:TranslationAnimation
                 From="-20,0"
