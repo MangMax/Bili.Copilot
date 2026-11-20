@@ -11,98 +11,74 @@
     mc:Ignorable="d">
 
     <StackPanel Spacing="4">
-        <base:SettingsExpander
-            x:Name="AboutCard"
-            Description="{x:Bind ViewModel.Copyright, Mode=OneWay}"
-            Header="{ext:Locale Name=AppName}">
-            <base:SettingsExpander.HeaderIcon>
-                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/StoreLogo.png" />
-            </base:SettingsExpander.HeaderIcon>
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind ViewModel.PackageVersion, Mode=OneWay}" />
-                <Button
-                    AutomationProperties.AutomationId="CheckForUpdates"
-                    Padding="8,2"
-                    Command="{x:Bind Update.CheckCommand}"
-                    Content="{ext:Locale Name=CheckUpdate}" />
-            </StackPanel>
-            <base:SettingsExpander.Items>
-                <base:SettingsCard
-                    HorizontalContentAlignment="Stretch"
-                    ContentAlignment="Left"
-                    Header="{ext:Locale Name=UpdateInstalledNotes}"
-                    Visibility="{x:Bind Update.HasInstalledReleaseNotes, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
-                        <TextBlock Text="{x:Bind Update.InstalledReleaseNotes, Mode=OneTime}" TextWrapping="Wrap" />
-                    </ScrollViewer>
-                </base:SettingsCard>
-                <base:SettingsCard
-                    HorizontalContentAlignment="Stretch"
-                    ContentAlignment="Left"
-                    Description="{ext:Locale Name=UpdateMirrorPrefixesDescription}"
-                    Header="{ext:Locale Name=UpdateMirrorPrefixes}">
-                    <TextBox
-                        MaxHeight="120"
-                        AutomationProperties.AutomationId="UpdateMirrorPrefixes"
-                        AutomationProperties.Name="{ext:Locale Name=UpdateMirrorPrefixes}"
-                        AcceptsReturn="True"
-                        FontFamily="Consolas"
-                        Text="{x:Bind ViewModel.UpdateMirrorPrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap" />
-                </base:SettingsCard>
-                <base:SettingsCard HorizontalContentAlignment="Stretch" ContentAlignment="Left">
-                    <StackPanel x:Name="LinkContainer" Margin="-12,0,0,0">
-                        <HyperlinkButton Content="{ext:Locale Name=BiliHomePage}" NavigateUri="https://space.bilibili.com/5992670" />
-                        <HyperlinkButton Content="{ext:Locale Name=ProjectHomePage}" NavigateUri="https://github.com/MangMax/Bili.Copilot" />
-                    </StackPanel>
-                </base:SettingsCard>
-            </base:SettingsExpander.Items>
-        </base:SettingsExpander>
-
         <base:SettingsCard
-            HorizontalContentAlignment="Stretch"
-            ContentAlignment="Left"
-            Visibility="{x:Bind Update.HasStatus, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-            <StackPanel Spacing="8">
-                <TextBlock
-                    AutomationProperties.LiveSetting="Polite"
-                    Text="{x:Bind Update.StatusText, Mode=OneWay}"
-                    TextWrapping="Wrap" />
-                <ProgressBar
-                    IsIndeterminate="{x:Bind Update.IsIndeterminate, Mode=OneWay}"
-                    Value="{x:Bind Update.DownloadProgress, Mode=OneWay}"
-                    Visibility="{x:Bind Update.IsDownloading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Button
-                        AutomationProperties.AutomationId="SettingsUpdatePrimaryAction"
-                        Command="{x:Bind Update.PrimaryActionCommand}"
-                        Content="{x:Bind Update.ActionName, Mode=OneWay}"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Visibility="{x:Bind Update.CanRunPrimaryAction, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                    <HyperlinkButton
-                        AutomationProperties.AutomationId="SettingsUpdateRelease"
-                        Command="{x:Bind Update.OpenReleaseCommand}"
-                        Content="{ext:Locale Name=UpdateOpenReleaseAction}"
-                        Visibility="{x:Bind Update.CanOpenRelease, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                </StackPanel>
-                <Expander
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    AutomationProperties.AutomationId="SettingsUpdateReleaseNotes"
-                    Header="{ext:Locale Name=UpdateReleaseNotes}"
-                    Visibility="{x:Bind Update.HasReleaseNotes, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
-                        <TextBlock
-                            IsTextSelectionEnabled="True"
-                            Text="{x:Bind Update.ReleaseNotes, Mode=OneWay}"
-                            TextWrapping="Wrap" />
-                    </ScrollViewer>
-                </Expander>
-            </StackPanel>
+            Description="{x:Bind Update.VersionStatusText, Mode=OneWay}"
+            Header="{ext:Locale Name=AppName}">
+            <base:SettingsCard.HeaderIcon>
+                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/StoreLogo.png" />
+            </base:SettingsCard.HeaderIcon>
+            <Button
+                AutomationProperties.AutomationId="SettingsUpdatePrimaryAction"
+                Command="{x:Bind Update.SettingsActionCommand}"
+                Content="{x:Bind Update.SettingsActionName, Mode=OneWay}" />
         </base:SettingsCard>
+
+        <StackPanel Orientation="Horizontal" Spacing="4">
+            <Button
+                AutomationProperties.AutomationId="SettingsUpdateReleaseNotes"
+                Content="{ext:Locale Name=UpdateReleaseNotes}"
+                Style="{StaticResource SubtleButtonStyle}"
+                Visibility="{x:Bind Update.CanShowReleaseNotes, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Button.Flyout>
+                    <Flyout>
+                        <StackPanel MaxWidth="380" Spacing="8">
+                            <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
+                                <TextBlock
+                                    IsTextSelectionEnabled="True"
+                                    Text="{x:Bind Update.DisplayReleaseNotes, Mode=OneWay}"
+                                    TextWrapping="Wrap" />
+                            </ScrollViewer>
+                            <HyperlinkButton
+                                AutomationProperties.AutomationId="SettingsUpdateRelease"
+                                Command="{x:Bind Update.OpenReleaseCommand}"
+                                Content="{ext:Locale Name=UpdateOpenReleaseAction}" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <Button
+                AutomationProperties.AutomationId="SettingsUpdateMirrors"
+                Content="{ext:Locale Name=UpdateMirrorPrefixes}"
+                Style="{StaticResource SubtleButtonStyle}">
+                <Button.Flyout>
+                    <Flyout>
+                        <StackPanel MaxWidth="320" Spacing="8">
+                            <TextBlock Text="{ext:Locale Name=UpdateMirrorPrefixesDescription}" TextWrapping="Wrap" />
+                            <TextBox
+                                MaxHeight="120"
+                                AutomationProperties.AutomationId="UpdateMirrorPrefixes"
+                                AutomationProperties.Name="{ext:Locale Name=UpdateMirrorPrefixes}"
+                                AcceptsReturn="True"
+                                FontFamily="Consolas"
+                                Text="{x:Bind ViewModel.UpdateMirrorPrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <HyperlinkButton
+                AutomationProperties.AutomationId="AboutProjectHome"
+                Content="{ext:Locale Name=ProjectHomePage}"
+                NavigateUri="https://github.com/MangMax/Bili.Copilot" />
+            <HyperlinkButton
+                AutomationProperties.AutomationId="AboutBiliHome"
+                Content="{ext:Locale Name=BiliHomePage}"
+                NavigateUri="https://space.bilibili.com/5992670" />
+        </StackPanel>
+        <TextBlock
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Style="{StaticResource CaptionTextBlockStyle}"
+            Text="{x:Bind ViewModel.Copyright, Mode=OneWay}"
+            TextWrapping="Wrap" />
     </StackPanel>
 </local:SettingsPageControlBase>

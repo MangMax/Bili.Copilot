@@ -103,11 +103,23 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     /// </summary>
     public string InstalledReleaseNotes { get; } = string.Empty;
 
-    public bool HasInstalledReleaseNotes => !string.IsNullOrWhiteSpace(InstalledReleaseNotes);
+    public string DisplayReleaseNotes => string.IsNullOrWhiteSpace(ReleaseNotes) ? InstalledReleaseNotes : ReleaseNotes;
 
-    public bool HasReleaseNotes => !string.IsNullOrWhiteSpace(ReleaseNotes);
+    public bool CanShowReleaseNotes => !string.IsNullOrWhiteSpace(DisplayReleaseNotes);
 
-    public bool HasStatus => !string.IsNullOrEmpty(StatusText);
+    public string VersionStatusText => string.IsNullOrEmpty(StatusText)
+        ? AppUpdateService.CurrentVersion
+        : $"{AppUpdateService.CurrentVersion}\n{StatusText}";
+
+    public bool CanRunSettingsAction => CanRunPrimaryAction || CanCheck;
+
+    public string SettingsActionName => State switch
+    {
+        AppUpdateState.Checking => ResourceToolkit.GetLocalizedString(StringNames.CheckUpdate),
+        AppUpdateState.Downloading => ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadAction),
+        AppUpdateState.Installing => ResourceToolkit.GetLocalizedString(StringNames.UpdateInstallAction),
+        _ => ActionName,
+    };
 
     public bool CanCheck => AppUpdateService.SupportsUpdates
         && State is not (AppUpdateState.Checking or AppUpdateState.Downloading or AppUpdateState.Ready
@@ -116,9 +128,6 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     public bool CanRunPrimaryAction => State is AppUpdateState.Available or AppUpdateState.Ready or AppUpdateState.RestartRequired
         || (State == AppUpdateState.Failed && (CanRetryDownload || HasNoPackageForArchitecture));
-
-    public bool CanOpenRelease => _lastResult?.Release is not null
-        && !HasNoPackageForArchitecture && IsButtonVisible;
 
     /// <summary>
     /// 更新入口是否应当出现.
@@ -160,7 +169,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     /// <summary>
     /// 当前更新操作的无障碍名称.
     /// </summary>
-    public string ActionName => State is AppUpdateState.Downloading or AppUpdateState.Installing
+    public string ActionName => State is AppUpdateState.Checking or AppUpdateState.Downloading or AppUpdateState.Installing
         ? StatusText
         : ResourceToolkit.GetLocalizedString(State switch
     {
@@ -169,7 +178,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         AppUpdateState.RestartRequired => StringNames.UpdateRestartAction,
         AppUpdateState.Failed when HasNoPackageForArchitecture => StringNames.UpdateOpenReleaseAction,
         AppUpdateState.Failed when _downloaded is not null => StringNames.UpdateRetryInstallAction,
-        AppUpdateState.Failed => StringNames.UpdateRetryDownloadAction,
+        AppUpdateState.Failed when CanRetryDownload => StringNames.UpdateRetryDownloadAction,
         _ => StringNames.CheckUpdate,
     });
 
@@ -204,10 +213,13 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         => _lastResult is { Status: UpdateCheckStatus.Available, Selection.Asset: not null };
 
     /// <summary>
-    /// 检查更新.
+    /// 在设置页执行当前可用的更新操作.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
-    [RelayCommand(CanExecute = nameof(CanCheck))]
+    [RelayCommand(CanExecute = nameof(CanRunSettingsAction))]
+    private Task SettingsActionAsync()
+        => CanRunPrimaryAction ? PrimaryActionAsync() : CheckAsync();
+
     private async Task CheckAsync()
     {
         if (!CanCheck)
@@ -414,22 +426,23 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
         _failureDetail = ResourceToolkit.GetLocalizedString(StringNames.UpdateRestartFailed);
         OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(VersionStatusText));
         OnPropertyChanged(nameof(ToolTipTitle));
     }
 
     partial void OnStateChanged(AppUpdateState value)
     {
-        CheckCommand.NotifyCanExecuteChanged();
+        SettingsActionCommand.NotifyCanExecuteChanged();
         PrimaryActionCommand.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(CanRunPrimaryAction));
-        OnPropertyChanged(nameof(CanOpenRelease));
-        OnPropertyChanged(nameof(HasStatus));
         OnPropertyChanged(nameof(ActionName));
+        OnPropertyChanged(nameof(SettingsActionName));
         OnPropertyChanged(nameof(IsButtonVisible));
         OnPropertyChanged(nameof(IsDownloading));
         OnPropertyChanged(nameof(IconSymbol));
         OnPropertyChanged(nameof(HasNoPackageForArchitecture));
         OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(VersionStatusText));
         OnPropertyChanged(nameof(ToolTipTitle));
     }
 
@@ -439,16 +452,21 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         OnPropertyChanged(nameof(ActionName));
         OnPropertyChanged(nameof(ToolTipTitle));
         OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(VersionStatusText));
     }
 
     partial void OnAvailableVersionChanged(string value)
     {
         OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(VersionStatusText));
         OnPropertyChanged(nameof(ToolTipTitle));
     }
 
     partial void OnReleaseNotesChanged(string value)
-        => OnPropertyChanged(nameof(HasReleaseNotes));
+    {
+        OnPropertyChanged(nameof(DisplayReleaseNotes));
+        OnPropertyChanged(nameof(CanShowReleaseNotes));
+    }
 
     [ObservableProperty]
     public partial AppUpdateState State { get; set; }
