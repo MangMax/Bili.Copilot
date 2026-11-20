@@ -27,7 +27,7 @@
                     AutomationProperties.AutomationId="SettingsUpdatePrimaryAction"
                     Command="{x:Bind Update.PrimaryActionCommand}"
                     Content="{x:Bind Update.SettingsActionName, Mode=OneWay}"
-                    Visibility="{x:Bind Update.ShowsPrimaryAction, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    Visibility="{x:Bind Update.IsButtonVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
             </Grid>
         </base:SettingsCard>
 
@@ -55,7 +55,7 @@
                 </Button.Flyout>
             </Button>
             <Button
-                AutomationProperties.AutomationId="SettingsUpdateMirrors"
+                AutomationProperties.AutomationId="SettingsUpdatePreferences"
                 Content="{ext:Locale Name=UpdateSettings}"
                 Style="{StaticResource SubtleButtonStyle}">
                 <Button.Flyout>

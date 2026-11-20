@@ -16,49 +16,22 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// </summary>
 public enum AppUpdateState
 {
-    /// <summary>
-    /// 尚未检查.
-    /// </summary>
     Idle,
 
-    /// <summary>
-    /// 正在检查.
-    /// </summary>
     Checking,
 
-    /// <summary>
-    /// 已是最新版本.
-    /// </summary>
     UpToDate,
 
-    /// <summary>
-    /// 有新版本可下载.
-    /// </summary>
     Available,
 
-    /// <summary>
-    /// 正在下载安装包.
-    /// </summary>
     Downloading,
 
-    /// <summary>
-    /// 已下载完成，等待安装.
-    /// </summary>
     Ready,
 
-    /// <summary>
-    /// 正在安装.
-    /// </summary>
     Installing,
 
-    /// <summary>
-    /// 更新已登记，等待重启完成注册.
-    /// </summary>
     RestartRequired,
 
-    /// <summary>
-    /// 检查、下载或安装失败.
-    /// </summary>
     Failed,
 }
 
@@ -74,6 +47,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     private readonly UpdateDownloader _downloader;
     private readonly UpdateInstaller _installer;
     private readonly ILogger<AppUpdateViewModel> _logger;
+    private readonly string _installedReleaseNotes = string.Empty;
     private bool _hasAutoChecked;
     private PeriodicTimer? _updateTimer;
     private UpdateCheckResult? _lastResult;
@@ -82,9 +56,6 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     private string? _failureDetail;
     private string _failureTitle = string.Empty;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppUpdateViewModel"/> class.
-    /// </summary>
     public AppUpdateViewModel(
         AppUpdateService updateService,
         UpdateDownloader downloader,
@@ -98,26 +69,19 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         if (AppUpdateService.SupportsUpdates
             && SettingsToolkit.ReadLocalSetting(SettingNames.UpdateInstalledVersion, string.Empty) == AppUpdateService.CurrentVersion)
         {
-            InstalledReleaseNotes = SettingsToolkit.ReadLocalSetting(SettingNames.UpdateInstalledNotes, string.Empty);
+            _installedReleaseNotes = SettingsToolkit.ReadLocalSetting(SettingNames.UpdateInstalledNotes, string.Empty);
         }
     }
 
-    /// <summary>
-    /// 上次通过应用更新安装的当前版本说明.
-    /// </summary>
-    public string InstalledReleaseNotes { get; } = string.Empty;
-
-    public string DisplayReleaseNotes => string.IsNullOrWhiteSpace(ReleaseNotes) ? InstalledReleaseNotes : ReleaseNotes;
+    public string DisplayReleaseNotes => string.IsNullOrEmpty(AvailableVersion) ? _installedReleaseNotes : ReleaseNotes;
 
     public bool CanShowReleaseNotes => !string.IsNullOrWhiteSpace(DisplayReleaseNotes);
 
-    public string VersionStatusText => string.IsNullOrEmpty(StatusText)
-        ? AppUpdateService.CurrentVersion
-        : $"{AppUpdateService.CurrentVersion}\n{StatusText}";
+    public string VersionStatusText => StatusText is { Length: > 0 } status
+        ? $"{AppUpdateService.CurrentVersion}\n{status}"
+        : AppUpdateService.CurrentVersion;
 
-    public bool ShowsPrimaryAction => IsButtonVisible;
-
-    public bool ShowsCheckAction => !ShowsPrimaryAction;
+    public bool ShowsCheckAction => !IsButtonVisible;
 
     public bool AutoDownload
     {
@@ -175,27 +139,15 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         _ => ActionName,
     };
 
-    public bool CanCheck => AppUpdateService.SupportsUpdates
-        && State is not (AppUpdateState.Checking or AppUpdateState.Downloading or AppUpdateState.Ready
-            or AppUpdateState.Installing or AppUpdateState.RestartRequired)
-        && _downloaded is null;
+    private bool CanCheck => AppUpdateService.SupportsUpdates
+        && (State is AppUpdateState.Idle or AppUpdateState.UpToDate
+            || (State == AppUpdateState.Failed && !CanRunPrimaryAction));
 
-    public bool CanRunPrimaryAction => State is AppUpdateState.Available or AppUpdateState.Ready or AppUpdateState.RestartRequired
+    private bool CanRunPrimaryAction => State is AppUpdateState.Available or AppUpdateState.Ready or AppUpdateState.RestartRequired
         || (State == AppUpdateState.Failed && (CanRetryDownload || HasNoPackageForArchitecture));
 
-    /// <summary>
-    /// 更新入口是否应当出现.
-    /// </summary>
-    public bool IsButtonVisible => State is AppUpdateState.Available
-        or AppUpdateState.Downloading
-        or AppUpdateState.Ready
-        or AppUpdateState.Installing
-        or AppUpdateState.RestartRequired
-        || (State == AppUpdateState.Failed && (CanRetryDownload || HasNoPackageForArchitecture));
+    public bool IsButtonVisible => CanRunPrimaryAction || State is AppUpdateState.Downloading or AppUpdateState.Installing;
 
-    /// <summary>
-    /// 圆钮图标随状态变化：就绪与安装中换成重启语义.
-    /// </summary>
     public FluentIcons.Common.Symbol IconSymbol
         => State switch
         {
@@ -204,25 +156,11 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
             _ => FluentIcons.Common.Symbol.ArrowDownload,
         };
 
-    /// <summary>
-    /// 新版本没有适用于本架构的安装包：入口仍出现，但点击只会打开发布页.
-    /// </summary>
-    public bool HasNoPackageForArchitecture
+    private bool HasNoPackageForArchitecture
         => State == AppUpdateState.Failed && _lastResult?.Status == UpdateCheckStatus.NoAssetForArchitecture;
 
-    /// <summary>
-    /// 是否正在下载.
-    /// </summary>
     public bool IsDownloading => State == AppUpdateState.Downloading;
 
-    /// <summary>
-    /// 悬停提示的标题.
-    /// </summary>
-    public string ToolTipTitle => StatusText;
-
-    /// <summary>
-    /// 当前更新操作的无障碍名称.
-    /// </summary>
     public string ActionName => State is AppUpdateState.Checking or AppUpdateState.Downloading or AppUpdateState.Installing
         ? StatusText
         : ResourceToolkit.GetLocalizedString(State switch
@@ -236,9 +174,6 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         _ => StringNames.CheckUpdate,
     });
 
-    /// <summary>
-    /// 设置页的状态文案.
-    /// </summary>
     public string StatusText => State switch
     {
         AppUpdateState.Checking => ResourceToolkit.GetLocalizedString(StringNames.CheckingUpdate),
@@ -260,15 +195,9 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         _ => AppUpdateService.SupportsUpdates ? string.Empty : ResourceToolkit.GetLocalizedString(StringNames.UpdateUnsupportedPackage),
     };
 
-    /// <summary>
-    /// 已拿到安装包、但下载失败时可以原地重试.
-    /// </summary>
     private bool CanRetryDownload
         => _lastResult is { Status: UpdateCheckStatus.Available, Selection.Asset: not null };
 
-    /// <summary>
-    /// 从设置页检查更新.
-    /// </summary>
     [RelayCommand(CanExecute = nameof(CanCheck))]
     private async Task CheckAsync()
     {
@@ -289,7 +218,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         switch (result.Status)
         {
             case UpdateCheckStatus.Available:
-                AvailableVersion = result.Release!.Version;
+                AvailableVersion = result.Release!.Version.ToString();
                 ReleaseNotes = result.Release.Notes;
                 if (AutoDownload)
                 {
@@ -302,7 +231,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
                 break;
             case UpdateCheckStatus.NoAssetForArchitecture:
-                AvailableVersion = result.Release!.Version;
+                AvailableVersion = result.Release!.Version.ToString();
                 ReleaseNotes = result.Release.Notes;
                 State = AppUpdateState.Failed;
                 break;
@@ -316,10 +245,6 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         }
     }
 
-    /// <summary>
-    /// 启动应用的定期检查；每个进程只启动一次.
-    /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
     public async Task AutoCheckAsync()
     {
         if (_hasAutoChecked || !AppUpdateService.SupportsUpdates)
@@ -335,7 +260,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
             await CheckAsync();
             while (await timer.WaitForNextTickAsync())
             {
-                if (CanCheck && !CanRunPrimaryAction)
+                if (CanCheck)
                 {
                     await CheckAsync();
                 }
@@ -350,10 +275,6 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     private static TimeSpan GetCheckPeriod(double hours)
         => hours == 0 ? Timeout.InfiniteTimeSpan : TimeSpan.FromHours(hours);
 
-    /// <summary>
-    /// 主按钮的点击动作：按当前状态分发.
-    /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
     [RelayCommand(CanExecute = nameof(CanRunPrimaryAction))]
     private async Task PrimaryActionAsync()
     {
@@ -382,10 +303,6 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         }
     }
 
-    /// <summary>
-    /// 打开本次更新的发布页.
-    /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
     [RelayCommand]
     private async Task OpenReleaseAsync()
     {
@@ -508,32 +425,26 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         _failureDetail = ResourceToolkit.GetLocalizedString(StringNames.UpdateRestartFailed);
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
-        OnPropertyChanged(nameof(ToolTipTitle));
     }
 
     partial void OnStateChanged(AppUpdateState value)
     {
         CheckCommand.NotifyCanExecuteChanged();
         PrimaryActionCommand.NotifyCanExecuteChanged();
-        OnPropertyChanged(nameof(CanRunPrimaryAction));
         OnPropertyChanged(nameof(ActionName));
         OnPropertyChanged(nameof(SettingsActionName));
         OnPropertyChanged(nameof(ShowsCheckAction));
-        OnPropertyChanged(nameof(ShowsPrimaryAction));
         OnPropertyChanged(nameof(IsButtonVisible));
         OnPropertyChanged(nameof(IsDownloading));
         OnPropertyChanged(nameof(IconSymbol));
-        OnPropertyChanged(nameof(HasNoPackageForArchitecture));
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
-        OnPropertyChanged(nameof(ToolTipTitle));
     }
 
     partial void OnDownloadProgressChanged(double value)
     {
         OnPropertyChanged(nameof(IsIndeterminate));
         OnPropertyChanged(nameof(ActionName));
-        OnPropertyChanged(nameof(ToolTipTitle));
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
     }
@@ -542,29 +453,21 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
-        OnPropertyChanged(nameof(ToolTipTitle));
-    }
-
-    partial void OnReleaseNotesChanged(string value)
-    {
-        OnPropertyChanged(nameof(DisplayReleaseNotes));
-        OnPropertyChanged(nameof(CanShowReleaseNotes));
     }
 
     [ObservableProperty]
     public partial AppUpdateState State { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayReleaseNotes), nameof(CanShowReleaseNotes))]
     public partial string AvailableVersion { get; set; } = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayReleaseNotes), nameof(CanShowReleaseNotes))]
     public partial string ReleaseNotes { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial double DownloadProgress { get; set; }
 
-    /// <summary>
-    /// 下载总大小未知时进度不可确定.
-    /// </summary>
     public bool IsIndeterminate => DownloadProgress < 0;
 }

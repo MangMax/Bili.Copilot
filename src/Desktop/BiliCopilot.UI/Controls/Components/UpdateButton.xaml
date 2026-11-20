@@ -44,7 +44,7 @@
                     <StackPanel MaxWidth="320" Spacing="6">
                         <TextBlock
                             FontWeight="SemiBold"
-                            Text="{x:Bind ViewModel.ToolTipTitle, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
                             TextWrapping="Wrap" />
                         <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto">
                             <TextBlock

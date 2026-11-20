@@ -66,9 +66,6 @@ public sealed partial class SettingsPageViewModel
     public partial bool GlobalPlayerSpeed { get; set; }
 
     [ObservableProperty]
-    public partial string PackageVersion { get; set; }
-
-    [ObservableProperty]
     public partial string Copyright { get; set; }
 
     [ObservableProperty]
@@ -287,8 +284,8 @@ public sealed partial class SettingsPageViewModel
     /// 附加更新加速源，每行一个.
     /// </summary>
     [ObservableProperty]
-    public partial string UpdateMirrorPrefixes { get; set; }
+    public partial string UpdateMirrorPrefixes { get; set; } = string.Empty;
 
     partial void OnUpdateMirrorPrefixesChanged(string value)
-        => SettingsToolkit.WriteLocalSetting(SettingNames.UpdateMirrorPrefixes, value ?? string.Empty);
+        => SettingsToolkit.WriteLocalSetting(SettingNames.UpdateMirrorPrefixes, value);
 }

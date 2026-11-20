@@ -76,12 +76,14 @@ public sealed class AppUpdateService
     /// <summary>
     /// 当前安装的版本号，四段式.
     /// </summary>
-    public static string CurrentVersion
+    public static string CurrentVersion => InstalledVersion.ToString();
+
+    private static Version InstalledVersion
     {
         get
         {
             var version = Package.Current.Id.Version;
-            return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+            return new Version(version.Major, version.Minor, version.Build, version.Revision);
         }
     }
 
@@ -115,7 +117,7 @@ public sealed class AppUpdateService
                 return Failed(ResourceToolkit.GetLocalizedString(StringNames.UpdateFeedUnavailable));
             }
 
-            if (!UpdateVersionPolicy.IsRemoteNewer(CurrentVersion, release.Version))
+            if (release.Version <= InstalledVersion)
             {
                 return new UpdateCheckResult(UpdateCheckStatus.UpToDate, release, new(UpdateAssetKind.None, null), null);
             }

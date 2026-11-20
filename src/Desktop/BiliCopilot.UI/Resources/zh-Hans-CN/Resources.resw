@@ -3699,9 +3699,6 @@
   <data name="UpdatePackageIdentityMismatch" xml:space="preserve">
     <value>安装包与当前应用、处理器架构或目标版本不匹配，请重新下载。</value>
   </data>
-  <data name="UpdateInstalledNotes" xml:space="preserve">
-    <value>此版本的更新说明</value>
-  </data>
   <data name="UpdateReleaseNotes" xml:space="preserve">
     <value>更新说明</value>
   </data>

@@ -49,23 +49,8 @@ internal static class UpdateMirrorSettings
     public static IReadOnlyList<string> ReadUserPrefixes()
     {
         var raw = SettingsToolkit.ReadLocalSetting(SettingNames.UpdateMirrorPrefixes, string.Empty);
-        return ParseUserPrefixes(raw);
+        return UpdateMirrorPolicy.ParseUserPrefixes(raw);
     }
-
-    /// <summary>
-    /// 解析用户输入的加速源前缀，非法行被忽略.
-    /// </summary>
-    /// <param name="raw">每行一个前缀的文本.</param>
-    /// <returns>合法的 https 前缀.</returns>
-    public static IReadOnlyList<string> ParseUserPrefixes(string? raw)
-        => UpdateMirrorPolicy.ParseUserPrefixes(raw);
-
-    /// <summary>
-    /// 读取上次成功使用的下载源.
-    /// </summary>
-    /// <returns>上次的源地址；没有记录时返回空字符串.</returns>
-    public static string ReadRememberedSource()
-        => SettingsToolkit.ReadLocalSetting(SettingNames.UpdateLastSource, string.Empty);
 
     /// <summary>
     /// 记住本次使用的下载源，并记录时间戳供过期判断.
@@ -84,7 +69,7 @@ internal static class UpdateMirrorSettings
     /// <returns>未过期的上次源；过期或没有记录时返回空字符串.</returns>
     public static string ReadFreshSource(TimeSpan maxAge)
     {
-        var url = ReadRememberedSource();
+        var url = SettingsToolkit.ReadLocalSetting(SettingNames.UpdateLastSource, string.Empty);
         if (string.IsNullOrEmpty(url))
         {
             return string.Empty;

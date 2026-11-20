@@ -38,8 +38,7 @@ public class UpdateFeedParserTests
         var info = UpdateFeedParser.ParseLatest(Atom.Replace("v2.2610.2.0", "v2.2610.4.0", StringComparison.Ordinal));
 
         Assert.NotNull(info);
-        Assert.Equal("2.2610.4.0", info!.Version);
-        Assert.Equal(2026, info.PublishedAt!.Value.Year);
+        Assert.Equal(new Version(2, 2610, 4, 0), info!.Version);
     }
 
     [Fact]
@@ -68,14 +67,16 @@ public class UpdateFeedParserTests
     public void ParseLatest_WithMalformedXml_ReturnsNull()
         => Assert.Null(UpdateFeedParser.ParseLatest("not xml"));
 
-    [Fact]
-    public void ParseLatest_WithEmptyContent_ReturnsEmptyNotes()
+    [Theory]
+    [InlineData("<content type=\"html\"></content>")]
+    [InlineData("")]
+    public void ParseLatest_WithoutNotes_ReturnsEmptyNotes(string content)
     {
-        const string xml = """
+        var xml = $"""
             <feed xmlns="http://www.w3.org/2005/Atom">
               <entry>
                 <link rel="alternate" href="https://github.com/o/r/releases/tag/v1.2.3"/>
-                <content type="html"></content>
+                {content}
               </entry>
             </feed>
             """;
@@ -83,21 +84,7 @@ public class UpdateFeedParserTests
         var info = UpdateFeedParser.ParseLatest(xml);
 
         Assert.NotNull(info);
-        Assert.Equal("1.2.3.0", info!.Version);
+        Assert.Equal(new Version(1, 2, 3, 0), info!.Version);
         Assert.Equal(string.Empty, info.Notes);
-    }
-
-    [Fact]
-    public void ParseLatest_WithoutPublishedTimestamp_ReturnsNullTimestamp()
-    {
-        const string xml = """
-            <feed xmlns="http://www.w3.org/2005/Atom">
-              <entry>
-                <link rel="alternate" href="https://github.com/o/r/releases/tag/v1.2.3"/>
-              </entry>
-            </feed>
-            """;
-
-        Assert.Null(UpdateFeedParser.ParseLatest(xml)!.PublishedAt);
     }
 }

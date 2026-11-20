@@ -1,6 +1,5 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -11,10 +10,9 @@ namespace BiliCopilot.UI.Toolkits;
 /// Releases Atom Feed 的解析结果.
 /// </summary>
 /// <param name="Tag">原始 tag，例如 v2.2610.3.0.</param>
-/// <param name="Version">归一后的版本号，例如 2.2610.3.0.</param>
+/// <param name="Version">发布的 MSIX 包版本.</param>
 /// <param name="Notes">发布说明的纯文本.</param>
-/// <param name="PublishedAt">发布时间；无法解析时为 null.</param>
-public sealed record UpdateReleaseInfo(string Tag, string Version, string Notes, DateTimeOffset? PublishedAt);
+public sealed record UpdateReleaseInfo(string Tag, Version Version, string Notes);
 
 /// <summary>
 /// GitHub Releases Atom Feed 解析.
@@ -63,8 +61,7 @@ public static partial class UpdateFeedParser
         }
 
         var content = release.Entry.Element(ns + "content")?.Value;
-        var updated = release.Entry.Element(ns + "updated")?.Value;
-        return new UpdateReleaseInfo(tag, version.ToString(), ToPlainText(content), ParseTimestamp(updated));
+        return new UpdateReleaseInfo(tag, version, ToPlainText(content));
     }
 
     private static string? ExtractTag(XElement entry, XNamespace ns)
@@ -86,11 +83,6 @@ public static partial class UpdateFeedParser
 
         return null;
     }
-
-    private static DateTimeOffset? ParseTimestamp(string? value)
-        => DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var parsed)
-            ? parsed
-            : null;
 
     /// <summary>
     /// 把 release 正文的 HTML 转成便于展示的纯文本.
