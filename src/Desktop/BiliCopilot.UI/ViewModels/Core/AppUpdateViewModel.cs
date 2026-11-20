@@ -105,6 +105,8 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     public bool HasInstalledReleaseNotes => !string.IsNullOrWhiteSpace(InstalledReleaseNotes);
 
+    public bool HasReleaseNotes => !string.IsNullOrWhiteSpace(ReleaseNotes);
+
     public bool HasStatus => !string.IsNullOrEmpty(StatusText);
 
     public bool CanCheck => AppUpdateService.SupportsUpdates
@@ -444,6 +446,9 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(ToolTipTitle));
     }
+
+    partial void OnReleaseNotesChanged(string value)
+        => OnPropertyChanged(nameof(HasReleaseNotes));
 
     [ObservableProperty]
     public partial AppUpdateState State { get; set; }

@@ -3702,6 +3702,9 @@
   <data name="UpdateInstalledNotes" xml:space="preserve">
     <value>此版本的更新说明</value>
   </data>
+  <data name="UpdateReleaseNotes" xml:space="preserve">
+    <value>更新说明</value>
+  </data>
   <data name="UpdateDownloadWithRuntime" xml:space="preserve">
     <value>当前系统缺少更新所需的运行时。重试下载可获取含运行时的完整安装包。</value>
   </data>

@@ -81,6 +81,7 @@
                         AutomationProperties.AutomationId="SettingsUpdatePrimaryAction"
                         Command="{x:Bind Update.PrimaryActionCommand}"
                         Content="{x:Bind Update.ActionName, Mode=OneWay}"
+                        Style="{StaticResource AccentButtonStyle}"
                         Visibility="{x:Bind Update.CanRunPrimaryAction, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
                     <HyperlinkButton
                         AutomationProperties.AutomationId="SettingsUpdateRelease"
@@ -88,6 +89,19 @@
                         Content="{ext:Locale Name=UpdateOpenReleaseAction}"
                         Visibility="{x:Bind Update.CanOpenRelease, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
                 </StackPanel>
+                <Expander
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    AutomationProperties.AutomationId="SettingsUpdateReleaseNotes"
+                    Header="{ext:Locale Name=UpdateReleaseNotes}"
+                    Visibility="{x:Bind Update.HasReleaseNotes, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
+                        <TextBlock
+                            IsTextSelectionEnabled="True"
+                            Text="{x:Bind Update.ReleaseNotes, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </Expander>
             </StackPanel>
         </base:SettingsCard>
     </StackPanel>
