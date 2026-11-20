@@ -116,7 +116,6 @@ public sealed partial class AccountViewModel : ViewModelBase
         Introduce = string.IsNullOrEmpty(MyProfile.Introduce)
             ? ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NoSelfIntroduce)
             : MyProfile.Introduce;
-        this.Get<AppViewModel>().CheckUpateCommand.Execute(default);
         UpdateUnreadCommand.Execute(default);
     }
 

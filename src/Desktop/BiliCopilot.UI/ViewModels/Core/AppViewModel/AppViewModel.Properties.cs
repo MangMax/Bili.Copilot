@@ -23,9 +23,6 @@ public sealed partial class AppViewModel : ViewModelBase
     [ObservableProperty]
     public partial bool IsInitialLoading { get; set; }
 
-    [ObservableProperty]
-    public partial bool IsUpdateShown { get; set; }
-
     public List<PlayerViewModel> Players { get; } = [];
 
     /// <summary>

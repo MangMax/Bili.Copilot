@@ -132,7 +132,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 
         var copyrightTemplate = ResourceToolkit.GetLocalizedString(StringNames.Copyright);
         Copyright = string.Format(copyrightTemplate, 2024);
-        PackageVersion = this.Get<IAppToolkit>().GetPackageVersion();
+        UpdateMirrorPrefixes = SettingsToolkit.ReadLocalSetting(SettingNames.UpdateMirrorPrefixes, string.Empty);
         CheckMpvConfigVisible();
         LoadCustomLibmpvSettings();
         await LoadCacheSizeAsync();

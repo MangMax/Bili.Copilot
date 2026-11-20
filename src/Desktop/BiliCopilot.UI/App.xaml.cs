@@ -14,6 +14,7 @@ using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
 using Richasy.BiliKernel.Models.Media;
 using Serilog;
+using System.Diagnostics;
 using System.Text.Json;
 using WinUIEx;
 
@@ -106,6 +107,48 @@ public partial class App : Application
             _ = instance.RedirectActivationToAsync(activatedArgs).AsTask()
                 .ContinueWith(_ => _dispatcherQueue.TryEnqueue(() => Current.Exit()));
         }
+    }
+
+    internal async Task<bool> RestartAfterUpdateAsync()
+    {
+        if (GetMainWindow() is not { } window)
+        {
+            return false;
+        }
+
+        // The SDK restart API reopens the old executable path. Activate by
+        // package family after shutdown so Windows can register the staged version.
+        var appId = $"{Package.Current.Id.FamilyName}!App";
+        var start = new ProcessStartInfo
+        {
+            FileName = Path.Combine(Environment.SystemDirectory, @"WindowsPowerShell\v1.0\powershell.exe"),
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+        start.ArgumentList.Add("-NoProfile");
+        start.ArgumentList.Add("-NonInteractive");
+        start.ArgumentList.Add("-Command");
+        start.ArgumentList.Add(
+            $"Get-Process -Id {Environment.ProcessId} -ErrorAction SilentlyContinue | Wait-Process -Timeout 60 -ErrorAction Stop; " +
+            $@"& $env:windir\explorer.exe 'shell:AppsFolder\{appId}'");
+
+        using var relauncher = Process.Start(start);
+        if (relauncher is null)
+        {
+            return false;
+        }
+
+        if (await window.RequestExitAsync())
+        {
+            return true;
+        }
+
+        if (!relauncher.HasExited)
+        {
+            relauncher.Kill();
+        }
+
+        return false;
     }
 
     private static MainWindow? GetMainWindow()

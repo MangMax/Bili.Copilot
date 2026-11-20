@@ -1,6 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.MpvKernel;
 using Richasy.MpvKernel.Core.Enums;
@@ -63,9 +64,6 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     public partial bool GlobalPlayerSpeed { get; set; }
-
-    [ObservableProperty]
-    public partial string PackageVersion { get; set; }
 
     [ObservableProperty]
     public partial string Copyright { get; set; }
@@ -281,4 +279,13 @@ public sealed partial class SettingsPageViewModel
     /// GPU设备列表.
     /// </summary>
     public ObservableCollection<string> GpuDevices { get; } = [];
+
+    /// <summary>
+    /// 附加更新加速源，每行一个.
+    /// </summary>
+    [ObservableProperty]
+    public partial string UpdateMirrorPrefixes { get; set; } = string.Empty;
+
+    partial void OnUpdateMirrorPrefixesChanged(string value)
+        => SettingsToolkit.WriteLocalSetting(SettingNames.UpdateMirrorPrefixes, value);
 }
