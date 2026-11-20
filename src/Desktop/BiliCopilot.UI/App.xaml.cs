@@ -3,8 +3,10 @@
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
+using BiliCopilot.UI.ViewModels.View;
 using H.NotifyIcon;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -15,7 +17,6 @@ using Microsoft.Windows.AppNotifications;
 using Richasy.BiliKernel.Models.Media;
 using Serilog;
 using System.Diagnostics;
-using System.Text.Json;
 using WinUIEx;
 
 namespace BiliCopilot.UI;
@@ -28,6 +29,7 @@ public partial class App : Application
     private const string Id = "Richasy.BiliCopilot";
     private readonly DispatcherQueue _dispatcherQueue;
     private AppNotificationManager _notificationManager;
+    private AppNotificationActivatedEventArgs? _pendingNotification;
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -97,6 +99,7 @@ public partial class App : Application
             instance.Activated += OnInstanceActivated;
             Richasy.WinUIKernel.Share.Base.ImageExBase.EnableBackgroundDecoding = false;
             GlobalDependencies.Initialize();
+            _pendingNotification ??= instance.GetActivatedEventArgs().Data as AppNotificationActivatedEventArgs;
             GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
         }
         else
@@ -156,7 +159,14 @@ public partial class App : Application
 
     private void OnInstanceActivated(object? sender, AppActivationArguments e)
     {
-        _dispatcherQueue.TryEnqueue(() => TrayLifecycle?.Restore());
+        if (e.Data is AppNotificationActivatedEventArgs notification)
+        {
+            QueueNotificationActivation(notification);
+        }
+        else
+        {
+            _dispatcherQueue.TryEnqueue(() => TrayLifecycle?.Restore());
+        }
     }
 
     private static void RestoreMainWindow()
@@ -217,6 +227,7 @@ public partial class App : Application
     internal void ReleaseTrayResources()
     {
         TrayLifecycle?.Dispose();
+        GlobalDependencies.Kernel?.GetRequiredService<NotificationViewModel>().Stop();
         if (_notificationManager is not null)
         {
             _notificationManager.NotificationInvoked -= OnAppNotificationInvoked;
@@ -240,32 +251,90 @@ public partial class App : Application
     }
 
     private void OnAppNotificationInvoked(AppNotificationManager sender, AppNotificationActivatedEventArgs args)
+        => QueueNotificationActivation(args);
+
+    private void QueueNotificationActivation(AppNotificationActivatedEventArgs args)
     {
-        if (args.Arguments.TryGetValue("page", out var type))
+        _dispatcherQueue.TryEnqueue(() =>
         {
-            var argsStr = args.Arguments.TryGetValue("args", out var a) ? a : string.Empty;
-            if (string.IsNullOrEmpty(argsStr))
+            _pendingNotification = args;
+            OpenPendingNotification();
+        });
+    }
+
+    internal void OpenPendingNotification()
+    {
+        if (_pendingNotification is not { } pending || GlobalDependencies.Kernel is null
+            || TrayLifecycle?.IsExiting == true || GetMainWindow() is null)
+        {
+            return;
+        }
+
+        var appViewModel = this.Get<AppViewModel>();
+        if (appViewModel.IsInitialLoading)
+        {
+            return;
+        }
+
+        _pendingNotification = null;
+        var arguments = pending.Arguments;
+        if (!arguments.TryGetValue("page", out var type))
+        {
+            return;
+        }
+
+        try
+        {
+            if (type == AppUpdateViewModel.UpdateNotificationPage)
+            {
+                RestoreMainWindow();
+                this.Get<NavigationViewModel>().NavigateTo(typeof(SettingsPage));
+                return;
+            }
+
+            var accountId = this.Get<NotificationViewModel>().AccountId;
+            if (accountId <= 0 || !arguments.TryGetValue("account", out var account)
+                || !long.TryParse(account, out var targetAccount) || targetAccount != accountId)
             {
                 return;
             }
 
-            _dispatcherQueue.TryEnqueue(() =>
+            if (type == "moments")
             {
-                if (TrayLifecycle?.IsExiting == true)
+                RestoreMainWindow();
+                this.Get<NavigationViewModel>().NavigateTo(typeof(MomentPage));
+                this.Get<MomentPageViewModel>().ShowNotificationSummary(arguments.TryGetValue("section", out var section) && section == "video");
+                return;
+            }
+
+            if (type == "moment")
+            {
+                if (arguments.TryGetValue("id", out var id) && ulong.TryParse(id, out var dynamicId) && dynamicId > 0)
                 {
-                    return;
+                    RestoreMainWindow();
+                    _ = Windows.System.Launcher.LaunchUriAsync(new Uri(FormattableString.Invariant($"https://t.bilibili.com/{dynamicId}")));
                 }
 
-                var identifier = JsonSerializer.Deserialize(argsStr, GlobalSerializeContext.Default.MediaIdentifier);
-                if (type == "video")
-                {
-                    this.Get<AppViewModel>().OpenPlayerCommand.Execute(new MediaSnapshot(new VideoInformation(identifier, default)));
-                }
-                else if (type == "episode")
-                {
-                    this.Get<AppViewModel>().OpenPlayerCommand.Execute(new MediaSnapshot(default, new EpisodeInformation(identifier)));
-                }
-            });
+                return;
+            }
+
+            if (type is not ("video" or "episode"))
+            {
+                return;
+            }
+
+            if (arguments.TryGetValue("media", out var media) && long.TryParse(media, out var idValue) && idValue > 0)
+            {
+                var target = new MediaIdentifier(media, default, default);
+                RestoreMainWindow();
+                appViewModel.OpenPlayerCommand.Execute(type == "video"
+                    ? new MediaSnapshot(new VideoInformation(target, default))
+                    : new MediaSnapshot(default, new EpisodeInformation(target)));
+            }
+        }
+        catch (Exception ex)
+        {
+            this.Get<ILogger<App>>().LogWarning(ex, "无法打开应用通知。");
         }
     }
 

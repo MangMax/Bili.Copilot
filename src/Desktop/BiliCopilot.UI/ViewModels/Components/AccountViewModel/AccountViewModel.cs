@@ -201,6 +201,7 @@ public sealed partial class AccountViewModel : ViewModelBase
     [RelayCommand]
     private async Task SignOutAsync()
     {
+        await this.Get<NotificationViewModel>().ClearOnSignOutAsync();
         await this.Get<IAuthenticationService>().SignOutAsync().ConfigureAwait(false);
         MyProfile = null;
         this.Get<AppViewModel>().RestartCommand.Execute(default);

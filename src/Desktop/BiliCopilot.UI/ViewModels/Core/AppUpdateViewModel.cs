@@ -453,6 +453,8 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
+        this.Get<NavigationViewModel>().SetAppUpdateUnread(HasAvailableUpdate);
+        TryShowUpdateNotification();
     }
 
     [ObservableProperty]

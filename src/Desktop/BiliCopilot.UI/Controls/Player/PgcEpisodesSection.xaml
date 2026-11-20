@@ -80,7 +80,7 @@
             Visibility="{x:Bind ViewModel.HasMultipleGroups, Mode=OneWay}">
             <ComboBox.ItemTemplate>
                 <DataTemplate x:DataType="playervm:PgcPlayerEpisodeGroupViewModel">
-                    <TextBlock Text="{x:Bind Title, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind Title, Mode=OneTime}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

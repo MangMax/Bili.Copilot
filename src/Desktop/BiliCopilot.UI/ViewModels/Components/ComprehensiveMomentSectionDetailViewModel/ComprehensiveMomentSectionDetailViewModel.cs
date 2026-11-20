@@ -3,8 +3,8 @@
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Bili.Moment;
+using Richasy.BiliKernel.Models.Moment;
 
 namespace BiliCopilot.UI.ViewModels.Components;
 
@@ -20,7 +20,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel : LayoutPa
         IMomentDiscoveryService service)
     {
         _service = service;
-        _logger = this.Get<ILogger<VideoMomentSectionDetailViewModel>>();
+        _logger = this.Get<ILogger<ComprehensiveMomentSectionDetailViewModel>>();
     }
 
     /// <inheritdoc/>
@@ -30,36 +30,63 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel : LayoutPa
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        if (Upers.Count > 0)
+        if (Upers.Count == 0)
         {
-            return;
+            await RefreshAllAsync();
         }
-
-        IsLoading = true;
-        Upers.Add(new MomentUperSectionViewModel(default));
-        await LoadUpersAsync();
-        IsLoading = false;
-        SelectUper(Upers.First());
-
-        Initialized?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
     private void Refresh()
     {
-        if (SelectedUper.IsTotal)
+        if (SelectedUper?.IsTotal != false)
         {
-            Upers.Clear();
-            this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-            {
-                SelectedUper?.Items?.Clear();
-                SelectedUper = default;
-                await InitializeAsync();
-            });
+            RefreshAll();
         }
         else
         {
             SelectedUper.RefreshCommand.Execute(default);
+        }
+    }
+
+    internal void RefreshAll()
+        => _ = RefreshAllAsync();
+
+    internal async Task<MomentView?> RefreshAllAsync()
+    {
+        if (IsLoading)
+        {
+            return null;
+        }
+
+        IsLoading = true;
+        try
+        {
+            var response = await _service.GetComprehensiveMomentsAsync();
+            var total = new MomentUperSectionViewModel(default);
+            total.InjectFirstPageData(response);
+            Upers.Clear();
+            Upers.Add(total);
+            if (response.Users is { } upers)
+            {
+                foreach (var item in upers)
+                {
+                    Upers.Add(new MomentUperSectionViewModel(item));
+                }
+            }
+
+            SelectUper(total);
+            Initialized?.Invoke(this, EventArgs.Empty);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "尝试获取综合动态时发生错误.");
+            return null;
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
@@ -73,28 +100,5 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel : LayoutPa
 
         SelectedUper = item;
         SelectedUper.InitializeCommand.Execute(default);
-    }
-
-    private async Task LoadUpersAsync()
-    {
-        try
-        {
-            var response = await _service.GetComprehensiveMomentsAsync();
-            var upers = response.Users;
-            if (upers?.Count > 0)
-            {
-                foreach (var item in upers)
-                {
-                    Upers.Add(new MomentUperSectionViewModel(item));
-                }
-            }
-
-            var total = Upers.First();
-            total.InjectFirstPageData(response);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "尝试获取综合动态时发生错误.");
-        }
     }
 }

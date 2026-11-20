@@ -52,6 +52,8 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         HideWhenCloseWindow = SettingsToolkit.ReadLocalSetting(SettingNames.HideWhenCloseWindow, false);
         IsNotificationEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsNotificationEnabled, true);
         IsVideoMomentNotificationEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsVideoMomentNotificationEnabled, true);
+        IsOtherMomentNotificationEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsOtherMomentNotificationEnabled, false);
+        IsAppUpdateNotificationEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsAppUpdateNotificationEnabled, true);
         NoP2P = SettingsToolkit.ReadLocalSetting(SettingNames.PlayWithoutP2P, false);
         IsSponsorBlockEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.SponsorBlockEnabled, true);
         IsSponsorBlockMarkerVisible = SponsorBlockMarkerSettings.IsVisible;
@@ -456,10 +458,33 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         => ((App)Application.Current).SetTrayEnabled(value);
 
     partial void OnIsNotificationEnabledChanged(bool value)
-        => SettingsToolkit.WriteLocalSetting(SettingNames.IsNotificationEnabled, value);
+        => ApplyNotificationSetting(SettingNames.IsNotificationEnabled, value, defaultValue: true);
 
     partial void OnIsVideoMomentNotificationEnabledChanged(bool value)
-        => SettingsToolkit.WriteLocalSetting(SettingNames.IsVideoMomentNotificationEnabled, value);
+        => ApplyNotificationSetting(SettingNames.IsVideoMomentNotificationEnabled, value, defaultValue: true);
+
+    partial void OnIsOtherMomentNotificationEnabledChanged(bool value)
+        => ApplyNotificationSetting(SettingNames.IsOtherMomentNotificationEnabled, value, defaultValue: false);
+
+    partial void OnIsAppUpdateNotificationEnabledChanged(bool value)
+        => ApplyNotificationSetting(SettingNames.IsAppUpdateNotificationEnabled, value, defaultValue: true);
+
+    private void ApplyNotificationSetting(SettingNames name, bool value, bool defaultValue)
+    {
+        if (SettingsToolkit.ReadLocalSetting(name, defaultValue) != value)
+        {
+            SettingsToolkit.WriteLocalSetting(name, value);
+            if (name != SettingNames.IsAppUpdateNotificationEnabled)
+            {
+                this.Get<NotificationViewModel>().ApplySettings();
+            }
+
+            if (name is SettingNames.IsNotificationEnabled or SettingNames.IsAppUpdateNotificationEnabled)
+            {
+                this.Get<AppUpdateViewModel>().TryShowUpdateNotification();
+            }
+        }
+    }
 
     partial void OnBottomProgressVisibleChanged(bool value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.IsBottomProgressBarVisible, value);

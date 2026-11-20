@@ -1261,7 +1261,10 @@
     <value>通知设置</value>
   </data>
   <data name="NotificationSettingDescription" xml:space="preserve">
-    <value>在应用运行期间提醒你有新的内容</value>
+    <value>应用运行或在托盘常驻时发送已启用的 Windows 通知</value>
+  </data>
+  <data name="AppUpdateNotification" xml:space="preserve">
+    <value>应用更新</value>
   </data>
   <data name="NoTitleVideo" xml:space="preserve">
     <value>无标题视频</value>
@@ -2155,7 +2158,31 @@
     <value>视频数</value>
   </data>
   <data name="VideoDynamicNotification" xml:space="preserve">
-    <value>新视频动态通知</value>
+    <value>视频与追番更新</value>
+  </data>
+  <data name="OtherDynamicNotification" xml:space="preserve">
+    <value>其他关注动态</value>
+  </data>
+  <data name="RefreshNewMoments" xml:space="preserve">
+    <value>有新动态，点击刷新</value>
+  </data>
+  <data name="OtherDynamicNotificationDescription" xml:space="preserve">
+    <value>提醒关注的 UP 主发布的图文、专栏和转发</value>
+  </data>
+  <data name="MomentNotificationSummary" xml:space="preserve">
+    <value>关注更新</value>
+  </data>
+  <data name="MomentNotificationSummaryCount" xml:space="preserve">
+    <value>还有 {0} 条关注更新</value>
+  </data>
+  <data name="NewVideoMomentNotification" xml:space="preserve">
+    <value>{0}发布了新视频</value>
+  </data>
+  <data name="NewEpisodeMomentNotification" xml:space="preserve">
+    <value>{0}有新的番剧更新</value>
+  </data>
+  <data name="NewOtherMomentNotification" xml:space="preserve">
+    <value>{0}发布了新动态</value>
   </data>
   <data name="VideoInitializing" xml:space="preserve">
     <value>正在加载视频</value>

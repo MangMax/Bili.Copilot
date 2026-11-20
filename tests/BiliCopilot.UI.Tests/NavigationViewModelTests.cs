@@ -70,6 +70,26 @@ public sealed class NavigationViewModelTests : IDisposable
     }
 
     [Fact]
+    public void DynamicAndAppUpdateBadgesCanBeClearedIndependently()
+    {
+        Initialize();
+        var dynamicItem = Assert.Single(_model.MenuItems, item => item.PageKey == typeof(MomentPage).FullName);
+        var settingsItem = Assert.Single(_model.FooterItems, item => item.PageKey == typeof(SettingsPage).FullName);
+
+        _model.SetMomentUnread(true);
+        Assert.True(dynamicItem.ShowUnread);
+        Assert.False(settingsItem.ShowUnread);
+
+        _model.SetAppUpdateUnread(true);
+        _model.SetMomentUnread(false);
+        Assert.False(dynamicItem.ShowUnread);
+        Assert.True(settingsItem.ShowUnread);
+
+        _model.SetAppUpdateUnread(false);
+        Assert.False(settingsItem.ShowUnread);
+    }
+
+    [Fact]
     public void InitializeFallsBackFromHiddenSavedPageAndHonorsHiddenTopBar()
     {
         _settings.HiddenPage = "IsMomentPageVisible";

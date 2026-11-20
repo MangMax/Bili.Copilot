@@ -84,6 +84,12 @@ public sealed partial class SettingsPageViewModel
     public partial bool IsVideoMomentNotificationEnabled { get; set; }
 
     [ObservableProperty]
+    public partial bool IsOtherMomentNotificationEnabled { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsAppUpdateNotificationEnabled { get; set; }
+
+    [ObservableProperty]
     public partial bool BottomProgressVisible { get; set; }
 
     [ObservableProperty]

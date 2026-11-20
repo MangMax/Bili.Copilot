@@ -84,7 +84,8 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedFeaturePage, pageType.FullName);
         _navFrame.NavigateTo(pageType, parameter);
 
-        var item = MenuItems.Find(p => p.PageKey == pageType.FullName);
+        var item = MenuItems.Find(p => p.PageKey == pageType.FullName)
+            ?? FooterItems.FirstOrDefault(p => p.PageKey == pageType.FullName);
         if (item is not null && _navigationView.SelectedItem != item)
         {
             _navigationView.SelectedItem = item;
@@ -247,6 +248,22 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         foreach (var item in GetFooterItems())
         {
             FooterItems.Add(item);
+        }
+    }
+
+    internal void SetMomentUnread(bool hasUpdates)
+    {
+        if (MenuItems?.Find(item => item.PageKey == typeof(MomentPage).FullName) is { } item)
+        {
+            item.ShowUnread = hasUpdates;
+        }
+    }
+
+    internal void SetAppUpdateUnread(bool hasUpdate)
+    {
+        if (FooterItems.FirstOrDefault(item => item.PageKey == typeof(SettingsPage).FullName) is { } item)
+        {
+            item.ShowUnread = hasUpdate;
         }
     }
 

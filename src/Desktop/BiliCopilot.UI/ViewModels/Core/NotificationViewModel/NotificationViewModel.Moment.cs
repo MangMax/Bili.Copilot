@@ -1,188 +1,204 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.Toolkits;
-using CommunityToolkit.Mvvm.Input;
+using BiliCopilot.UI.Services.MomentNotifications;
 using Microsoft.Extensions.Logging;
 using Microsoft.Windows.AppNotifications;
-using Microsoft.Windows.AppNotifications.Builder;
-using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.Moment;
-using System.Security;
+using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text.Json;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
-/// <summary>
-/// 通知视图模型.
-/// </summary>
 public sealed partial class NotificationViewModel
 {
-    [RelayCommand]
-    private async Task TrySendVideoMomentNotificationsAsync()
+    private const string MomentGroupPrefix = "moments-";
+
+    private async Task CheckMomentsAsync(long accountId, bool videoEnabled, bool otherDynamicsEnabled, CancellationToken cancellationToken)
     {
-        var isVideoNotifyEnabled = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.IsVideoMomentNotificationEnabled, true);
-        if (!isVideoNotifyEnabled)
+        var path = StatePath(accountId);
+        var state = LoadState(path);
+        var webAvailable = _source.HasWebSession(accountId);
+        var fresh = new List<MomentNotice>();
+
+        if (otherDynamicsEnabled)
+        {
+            try
+            {
+                fresh.AddRange(await ScanAuthorsAsync(accountId, state, webAvailable, cancellationToken));
+            }
+            catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogWarning(ex, "获取关注列表失败，本轮保留原有扫描位置。");
+            }
+        }
+
+        if (videoEnabled)
+        {
+            try
+            {
+                var (scan, firstPage) = await _source.ScanVideosAsync(state.VideoBaseline, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                state.VideoBaseline = scan.Baseline;
+                fresh.AddRange(scan.Notices.Where(notice => notice.AuthorId != accountId));
+                UpdateMomentTiles(firstPage.Take(5));
+            }
+            catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogWarning(ex, "检查视频动态或更新动态磁贴失败。");
+            }
+        }
+
+        Dictionary<long, bool> redDots = [];
+        if (webAvailable && (fresh.Count > 0 || state.Active.Count > 0 || state.Summary.Count > 0 || state.Queue.Count > 0))
+        {
+            try
+            {
+                redDots = await _source.GetAuthorUpdatesAsync(cancellationToken);
+            }
+            catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogDebug(ex, "作者红点快照不可用，保留现有通知。");
+            }
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        if (AccountId != accountId)
         {
             return;
         }
 
-        try
+        bool InScope(MomentNoticeKind kind) => kind == MomentNoticeKind.Dynamic ? otherDynamicsEnabled : videoEnabled;
+        var manager = AppNotificationManager.Default;
+        if (manager.Setting == AppNotificationSetting.Enabled)
         {
-            var lastMoments = await _momentService.GetVideoMomentsAsync(default, default, new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token);
-            if (lastMoments is null || lastMoments.Moments.Count == 0)
-            {
-                return;
-            }
-
-            LoadLastTenMomentIds();
-
-            // 只取最新的三个动态.
-            var newMoments = lastMoments.Moments.Take(3).ToList();
-            foreach (var moment in newMoments)
-            {
-                if (_momentIds.Contains(moment.Id))
-                {
-                    continue;
-                }
-
-                var title = string.Empty;
-                var cover = string.Empty;
-                var avatar = string.Empty;
-                var publisher = string.Empty;
-                var pageType = string.Empty;
-                var arguments = string.Empty;
-                if (moment.Data is VideoInformation vinfo)
-                {
-                    title = vinfo.Identifier.Title;
-                    cover = vinfo.Identifier.Cover.Uri.ToString();
-                    pageType = "video";
-                    arguments = JsonSerializer.Serialize(vinfo.Identifier, GlobalSerializeContext.Default.MediaIdentifier);
-                }
-                else if (moment.Data is EpisodeInformation einfo)
-                {
-                    title = einfo.Identifier.Title;
-                    cover = einfo.Identifier.Cover.Uri.ToString();
-                    pageType = "episode";
-                    var hasEpid = einfo.Identifier.Id != "0";
-                    if (hasEpid)
-                    {
-                        var identifier = new MediaIdentifier(einfo.Identifier.Id, default, default);
-                        arguments = JsonSerializer.Serialize(identifier, GlobalSerializeContext.Default.MediaIdentifier);
-                    }
-                    else
-                    {
-                        arguments = string.Empty;
-                    }
-                }
-
-                avatar = moment.User.Avatar.Uri.ToString();
-                publisher = moment.User.Name;
-                var notification = new AppNotificationBuilder()
-                    .AddArgument("page", pageType)
-                    .AddArgument("args", arguments)
-                    .AddText(title)
-                    .AddText(publisher)
-                    .SetAppLogoOverride(new Uri(avatar), AppNotificationImageCrop.Circle)
-                    .SetHeroImage(new Uri(cover))
-                    .BuildNotification();
-
-                AppNotificationManager.Default.Show(notification);
-                await Task.Delay(1000);
-            }
-
-            // 尝试提取最新的10个动态id，如果不足10个，则从 _momentIds 中补充.
-            var newMomentIds = newMoments.Select(p => p.Id).ToList();
-            var momentIds = new List<string>();
-            momentIds.AddRange(newMomentIds);
-            momentIds.AddRange(_momentIds.Where(p => !newMomentIds.Contains(p)).Take(10 - newMomentIds.Count));
-
-            SaveLastTenMomentIds(momentIds);
-
-            var lastFiveMoments = lastMoments.Moments.Take(5).ToList();
-            UpdateMomentTiles(lastFiveMoments);
+            state.PrepareDelivery(fresh, InScope, redDots);
         }
-        catch (Exception ex)
+        else
         {
-            _logger.LogError(ex, "尝试发送视频动态通知时发生错误.");
+            state.Queue.Clear();
         }
+
+        SaveState(path, state);
+        await ReconcileAndDeliverAsync(manager, accountId, path, state, InScope, redDots, cancellationToken);
     }
 
-    /// <summary>
-    /// 这里会读取保存在本地的最近十个动态Id.
-    /// 如果新的动态Id不在这十个Id中,则会触发通知.
-    /// </summary>
-    private void LoadLastTenMomentIds()
+    private async Task<IReadOnlyList<MomentNotice>> ScanAuthorsAsync(
+        long accountId, MomentNotificationState state, bool webAvailable, CancellationToken cancellationToken)
     {
-        var lastTenMomentIds = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.LastTenMomentIds, string.Empty);
-        if (string.IsNullOrEmpty(lastTenMomentIds))
+        var authors = await _source.GetAuthorsAsync(accountId, cancellationToken);
+        var scanAll = true;
+        var now = DateTimeOffset.UtcNow;
+        if (webAvailable && state.ProbeBaseline is { } probe && authors.Count > 0
+            && state.LastFullAuthorScan is { } last && now - last < TimeSpan.FromHours(1))
         {
-            _momentIds = new List<string>();
+            try
+            {
+                scanAll = await _source.HasUpdatesAsync(probe, cancellationToken);
+            }
+            catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogDebug(ex, "动态更新检查不可用，改为扫描关注作者。");
+            }
+        }
+
+        var retained = state.Authors.Where(pair => authors.ContainsKey(pair.Key)).ToDictionary();
+        var targets = authors.Where(author => scanAll || !retained.ContainsKey(author.Key)).ToArray();
+        var results = new ConcurrentDictionary<long, MomentScanResult>();
+        await Parallel.ForEachAsync(targets, new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 4,
+            CancellationToken = cancellationToken,
+        }, async (author, token) =>
+        {
+            try
+            {
+                var baseline = retained.TryGetValue(author.Key, out var current) ? (ulong?)current : null;
+                results[author.Key] = await MomentNotificationScan.ReadAsync(baseline,
+                    (offset, page, ct) => _source.ReadAuthorAsync(author.Key, author.Value, offset, page, ct), token);
+            }
+            catch (Exception ex) when (!token.IsCancellationRequested)
+            {
+                _logger.LogWarning(ex, "获取作者 {AuthorId} 的动态失败，保留该作者的扫描位置。", author.Key);
+            }
+        });
+
+        if (results.Count != targets.Length)
+        {
+            state.ProbeBaseline = null;
+        }
+        else if (scanAll)
+        {
+            state.ProbeBaseline = retained.Values.DefaultIfEmpty().Max();
+            state.LastFullAuthorScan = now;
+        }
+
+        foreach (var (authorId, scan) in results)
+        {
+            retained[authorId] = scan.Baseline;
+        }
+
+        state.Authors = retained;
+        return results.Values.SelectMany(result => result.Notices).ToArray();
+    }
+
+    private static MomentNotificationState LoadState(string path)
+        => File.Exists(path)
+            ? JsonSerializer.Deserialize(File.ReadAllText(path), GlobalSerializeContext.Default.MomentNotificationState) ?? new()
+            : new();
+
+    private static void SaveState(string path, MomentNotificationState state)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        var temporary = path + ".tmp";
+        File.WriteAllText(temporary, JsonSerializer.Serialize(state, GlobalSerializeContext.Default.MomentNotificationState));
+        File.Move(temporary, path, overwrite: true);
+    }
+
+    private static string StatePath(long accountId)
+        => Path.Combine(Microsoft.Windows.Storage.ApplicationData.GetDefault().LocalFolder.Path, "MomentNotifications",
+            accountId.ToString(CultureInfo.InvariantCulture) + ".json");
+
+    private static string NotificationGroup(long accountId)
+        => MomentGroupPrefix + accountId.ToString(CultureInfo.InvariantCulture);
+
+    private async Task ApplyNotificationScopeAsync(long accountId, bool videoEnabled, bool otherDynamicsEnabled, CancellationToken cancellationToken)
+    {
+        var path = StatePath(accountId);
+        var state = LoadState(path);
+        bool InScope(MomentNoticeKind kind) => kind == MomentNoticeKind.Dynamic ? otherDynamicsEnabled : videoEnabled;
+        await ReconcileAndDeliverAsync(AppNotificationManager.Default, accountId, path, state, InScope,
+            new Dictionary<long, bool>(), cancellationToken, deliverQueued: false);
+    }
+
+    private static void ResetDisabledState(long accountId, bool videoEnabled, bool otherDynamicsEnabled)
+    {
+        var path = StatePath(accountId);
+        if (!File.Exists(path) || (videoEnabled && otherDynamicsEnabled))
+        {
             return;
         }
 
-        _momentIds = lastTenMomentIds.Split(',').ToList();
-    }
-
-    private void SaveLastTenMomentIds(List<string> momentIds)
-    {
-        _momentIds = momentIds;
-        var lastTenMomentIds = string.Join(',', momentIds);
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.LastTenMomentIds, lastTenMomentIds);
-    }
-
-    private void UpdateMomentTiles(List<MomentInformation> moments)
-    {
-        if (!_isTileSupport)
+        if (!videoEnabled && !otherDynamicsEnabled)
         {
+            File.Delete(path);
             return;
         }
 
-        foreach (var d in moments)
+        var state = LoadState(path);
+        if (!videoEnabled)
         {
-            var title = string.Empty;
-            var cover = string.Empty;
-            if (d.Data is VideoInformation videoInfo)
-            {
-                title = videoInfo.Identifier.Title;
-                cover = videoInfo.Identifier.Cover.SourceUri.ToString();
-            }
-            else if (d.Data is EpisodeInformation episodeInfo)
-            {
-                title = episodeInfo.Identifier.Title;
-                cover = episodeInfo.Identifier.Cover.SourceUri.ToString();
-            }
-
-            var avatar = d.User.Avatar.Uri;
-            var publisher = d.User.Name;
-
-            var xmlContent = $"""
-                <?xml version="1.0" encoding="utf-8"?>
-                <tile>
-                    <visual>
-                        <binding template="TileMedium" branding="name">
-                            <image src="{cover}" placement="background" hint-overlay="60" />
-                            <image src="{avatar}" placement="peek" hint-crop="circle" />
-                            <text hint-style="caption" hint-wrap="true">{SecurityElement.Escape(title)}</text>
-                        </binding>
-                        <binding template="TileWide" branding="nameAndLogo">
-                            <image src="{cover}" placement="background" hint-overlay="60" />
-                            <text hint-maxLines="2" hint-style="base" hint-wrap="true">{SecurityElement.Escape(title)}</text>
-                            <text hint-style="caption">{SecurityElement.Escape(publisher)}</text>
-                        </binding>
-                        <binding template="TileLarge" branding="nameAndLogo">
-                            <image src="{cover}" placement="background" hint-overlay="60" />
-                            <text hint-style="subtitle" hint-wrap="true">{SecurityElement.Escape(title)}</text>
-                            <text hint-style="base"></text>
-                            <text hint-style="base">{SecurityElement.Escape(publisher)}</text>
-                        </binding>
-                    </visual>
-                </tile>
-                """;
-            var xml = new XmlDocument();
-            xml.LoadXml(xmlContent);
-            TileUpdateManager.CreateTileUpdaterForApplication().Update(new TileNotification(xml) { Tag = d.Id });
+            state.VideoBaseline = null;
         }
+
+        if (!otherDynamicsEnabled)
+        {
+            state.Authors.Clear();
+            state.ProbeBaseline = null;
+            state.LastFullAuthorScan = null;
+        }
+
+        state.PrepareDelivery([], kind => kind == MomentNoticeKind.Dynamic ? otherDynamicsEnabled : videoEnabled,
+            new Dictionary<long, bool>());
+        SaveState(path, state);
     }
 }

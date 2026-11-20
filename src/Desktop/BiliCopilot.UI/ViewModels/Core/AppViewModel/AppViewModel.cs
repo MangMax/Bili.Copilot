@@ -383,7 +383,8 @@ public sealed partial class AppViewModel : ViewModelBase
     {
         if (!value)
         {
-            this.Get<NotificationViewModel>().TryStartCommand.Execute(default);
+            this.Get<NotificationViewModel>().Start();
+            ((App)Application.Current).OpenPendingNotification();
         }
     }
 }

@@ -16,7 +16,10 @@ public sealed partial class VideoMomentSectionDetailViewModel
 {
     private readonly IMomentDiscoveryService _service;
     private readonly ILogger<VideoMomentSectionDetailViewModel> _logger;
+    private readonly HashSet<string> _seenIds = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _seenOffsets = new(StringComparer.Ordinal);
 
+    private CancellationTokenSource? _loadCancellation;
     private bool _preventLoadMore;
     private string? _offset;
     private string? _baseline;

@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.ViewModels.View;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -26,6 +24,8 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
         _logger = this.Get<ILogger<VideoMomentSectionDetailViewModel>>();
     }
 
+    IRelayCommand IMomentSectionDetailViewModel.RefreshCommand => RefreshCommand;
+
     [RelayCommand]
     private async Task InitializeAsync()
     {
@@ -35,68 +35,75 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
         }
 
         await LoadItemsAsync();
-        SaveLastTenMomentIds();
     }
 
     [RelayCommand]
-    private void Refresh()
+    private async Task RefreshAsync()
     {
+        _loadCancellation?.Cancel();
+        _loadCancellation = null;
         _offset = default;
         _baseline = default;
         IsEmpty = false;
         _preventLoadMore = false;
+        _seenIds.Clear();
+        _seenOffsets.Clear();
         Items.Clear();
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            await LoadItemsAsync();
-            SaveLastTenMomentIds();
-        });
+        await LoadItemsAsync();
     }
 
     [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        if (IsEmpty || IsLoading || _preventLoadMore)
+        if (_loadCancellation is not null || _preventLoadMore)
         {
             return;
         }
 
+        using var cancellation = new CancellationTokenSource();
+        _loadCancellation = cancellation;
         try
         {
             IsLoading = true;
-            var view = await _service.GetVideoMomentsAsync(_offset, _baseline);
-            if (view is not null)
+            var initialCount = Items.Count;
+            do
             {
+                var view = await _service.GetVideoMomentsAsync(_offset, _baseline, cancellation.Token);
+                cancellation.Token.ThrowIfCancellationRequested();
+                _baseline ??= view.UpdateBaseline;
+                _preventLoadMore = view.HasMoreMoments != true
+                    || string.IsNullOrEmpty(view.Offset) || !_seenOffsets.Add(view.Offset);
                 _offset = view.Offset;
-                _baseline = view.UpdateBaseline;
-                _preventLoadMore = view.HasMoreMoments != true;
-                foreach (var item in view.Moments.Select(p => new MomentItemViewModel(p, Models.Constants.MomentCardStyle.Video, ShowComment)))
+                foreach (var item in view.Moments)
                 {
-                    Items.Add(item);
+                    if (_seenIds.Add(item.Id))
+                    {
+                        Items.Add(new MomentItemViewModel(item, Models.Constants.MomentCardStyle.Video, ShowComment));
+                    }
                 }
-
-                ListUpdated?.Invoke(this, EventArgs.Empty);
             }
+            while (!_preventLoadMore && Items.Count == initialCount);
+
+            ListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
         }
         catch (Exception ex)
         {
-            _preventLoadMore = true;
             _logger.LogError(ex, "加载动态列表失败.");
         }
         finally
         {
-            IsEmpty = Items.Count == 0;
-            IsLoading = false;
+            if (_loadCancellation == cancellation)
+            {
+                _loadCancellation = null;
+                IsEmpty = Items.Count == 0;
+                IsLoading = false;
+            }
         }
     }
 
     private void ShowComment(MomentItemViewModel item)
         => this.Get<MomentPageViewModel>().ShowCommentCommand.Execute(item.Data);
-
-    private void SaveLastTenMomentIds()
-    {
-        var momentIds = Items.Take(10).Select(p => p.Data.Id).ToList();
-        var lastTenMomentIds = string.Join(',', momentIds);
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.LastTenMomentIds, lastTenMomentIds);
-    }
 }
