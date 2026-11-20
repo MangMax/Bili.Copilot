@@ -11,12 +11,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
-using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Windows.Storage;
-using Windows.System;
 using Windows.Win32.UI.WindowsAndMessaging;
 using WinUIEx;
 
@@ -159,31 +157,6 @@ public sealed partial class AppViewModel : ViewModelBase
         }
 
         await session.Session.InitializeAsync(snapshot);
-    }
-
-    [RelayCommand]
-    private void CheckUpate()
-    {
-        var localVersion = SettingsToolkit.ReadLocalSetting(SettingNames.AppVersion, string.Empty);
-        var currentVersion = this.Get<IAppToolkit>().GetPackageVersion();
-        if (localVersion != currentVersion)
-        {
-            SettingsToolkit.WriteLocalSetting(SettingNames.AppVersion, currentVersion);
-            IsUpdateShown = true;
-        }
-    }
-
-    [RelayCommand]
-    private void HideUpdate()
-        => IsUpdateShown = false;
-
-    [RelayCommand]
-    private async Task ShowUpdateAsync()
-    {
-        var packVersion = this.Get<IAppToolkit>().GetPackageVersion();
-        var url = $"https://github.com/Richasy/Bili.Copilot/releases/tag/v{packVersion}";
-        await Launcher.LaunchUriAsync(new Uri(url));
-        HideUpdate();
     }
 
     [RelayCommand]

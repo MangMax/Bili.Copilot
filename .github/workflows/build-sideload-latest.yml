@@ -110,13 +110,14 @@ jobs:
           $sourceDir = Join-Path $env:GITHUB_WORKSPACE 'FinalPackages'
           New-Item -ItemType Directory -Path $sourceDir -Force | Out-Null
 
-          $msix = Get-ChildItem $appPackages -Filter *.msix -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-          if (-not $msix) {
-            Write-Error "未找到 msix，构建可能失败"
+          $packages = @(Get-ChildItem -LiteralPath $appPackages -Filter 'BiliCopilot.UI_*.msix' -File -Recurse -ErrorAction SilentlyContinue)
+          if ($packages.Count -ne 1) {
+            Write-Error "主程序 MSIX 应只有一个，实际找到 $($packages.Count) 个"
             Get-ChildItem $appPackages -Recurse -ErrorAction SilentlyContinue | Select-Object -First 20 FullName
             exit 1
           }
 
+          $msix = $packages[0]
           Copy-Item $msix.FullName $sourceDir -Force
           Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'signing.cer') $sourceDir -Force
           & (Join-Path $env:GITHUB_WORKSPACE 'scripts\package-sideload.ps1') `
@@ -125,11 +126,14 @@ jobs:
             -Version $version `
             -RepositoryRoot $env:GITHUB_WORKSPACE
 
+          $bareMsixName = "BiliCopilot_${version}_$($env:Platform).msix"
+          Copy-Item -LiteralPath $msix.FullName -Destination (Join-Path $sourceDir $bareMsixName) -Force
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: BiliCopilot-x64
-          path: ${{ github.workspace }}\FinalPackages\*.zip
+          path: ${{ github.workspace }}\FinalPackages\*
 
       - name: Create GitHub Release
         if: ${{ inputs.publish_release }}
@@ -138,7 +142,8 @@ jobs:
           tag_name: v${{ inputs.version }}
           name: Bili.Copilot ${{ inputs.version }}
           body: ${{ inputs.release_notes }}
-          files: ${{ github.workspace }}\FinalPackages\*.zip
+          files: ${{ github.workspace }}\FinalPackages\*
           prerelease: true
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
