@@ -192,4 +192,7 @@ public enum SettingNames
 
     UpdateInstalledVersion,
     UpdateInstalledNotes,
+    UpdateAutoDownload,
+    UpdateDownloadMode,
+    UpdateCheckIntervalHours,
 }

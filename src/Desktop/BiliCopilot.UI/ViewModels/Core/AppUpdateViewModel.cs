@@ -67,11 +67,15 @@ public enum AppUpdateState
 /// </summary>
 public sealed partial class AppUpdateViewModel : ViewModelBase
 {
+    private const int DefaultCheckIntervalHours = 4;
+    private const int MaxCheckIntervalHours = 168;
+
     private readonly AppUpdateService _updateService;
     private readonly UpdateDownloader _downloader;
     private readonly UpdateInstaller _installer;
     private readonly ILogger<AppUpdateViewModel> _logger;
     private bool _hasAutoChecked;
+    private PeriodicTimer? _updateTimer;
     private UpdateCheckResult? _lastResult;
     private UpdateDownloadResult? _downloaded;
     private UpdateAsset? _downloadAsset;
@@ -111,11 +115,61 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         ? AppUpdateService.CurrentVersion
         : $"{AppUpdateService.CurrentVersion}\n{StatusText}";
 
-    public bool CanRunSettingsAction => CanRunPrimaryAction || CanCheck;
+    public bool ShowsPrimaryAction => IsButtonVisible;
+
+    public bool ShowsCheckAction => !ShowsPrimaryAction;
+
+    public bool AutoDownload
+    {
+        get => SettingsToolkit.ReadLocalSetting(SettingNames.UpdateAutoDownload, false);
+        set => SettingsToolkit.WriteLocalSetting(SettingNames.UpdateAutoDownload, value);
+    }
+
+    public int DownloadSourceIndex
+    {
+        get => (int)UpdateMirrorSettings.DownloadMode;
+        set
+        {
+            if (value is >= (int)UpdateDownloadMode.Auto and <= (int)UpdateDownloadMode.Mirrors)
+            {
+                SettingsToolkit.WriteLocalSetting(SettingNames.UpdateDownloadMode, value);
+            }
+        }
+    }
+
+    public double CheckIntervalHours
+    {
+        get => Math.Clamp(
+            SettingsToolkit.ReadLocalSetting(SettingNames.UpdateCheckIntervalHours, DefaultCheckIntervalHours),
+            0,
+            MaxCheckIntervalHours);
+        set
+        {
+            if (!double.IsFinite(value))
+            {
+                OnPropertyChanged(nameof(CheckIntervalHours));
+                return;
+            }
+
+            var hours = (int)Math.Round(Math.Clamp(value, 0, MaxCheckIntervalHours));
+            if (hours != CheckIntervalHours)
+            {
+                SettingsToolkit.WriteLocalSetting(SettingNames.UpdateCheckIntervalHours, hours);
+                if (_updateTimer is not null)
+                {
+                    _updateTimer.Period = GetCheckPeriod(hours);
+                }
+            }
+
+            if (value != hours)
+            {
+                OnPropertyChanged(nameof(CheckIntervalHours));
+            }
+        }
+    }
 
     public string SettingsActionName => State switch
     {
-        AppUpdateState.Checking => ResourceToolkit.GetLocalizedString(StringNames.CheckUpdate),
         AppUpdateState.Downloading => ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadAction),
         AppUpdateState.Installing => ResourceToolkit.GetLocalizedString(StringNames.UpdateInstallAction),
         _ => ActionName,
@@ -213,13 +267,9 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         => _lastResult is { Status: UpdateCheckStatus.Available, Selection.Asset: not null };
 
     /// <summary>
-    /// 在设置页执行当前可用的更新操作.
+    /// 从设置页检查更新.
     /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
-    [RelayCommand(CanExecute = nameof(CanRunSettingsAction))]
-    private Task SettingsActionAsync()
-        => CanRunPrimaryAction ? PrimaryActionAsync() : CheckAsync();
-
+    [RelayCommand(CanExecute = nameof(CanCheck))]
     private async Task CheckAsync()
     {
         if (!CanCheck)
@@ -241,7 +291,15 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
             case UpdateCheckStatus.Available:
                 AvailableVersion = result.Release!.Version;
                 ReleaseNotes = result.Release.Notes;
-                State = AppUpdateState.Available;
+                if (AutoDownload)
+                {
+                    await DownloadAsync();
+                }
+                else
+                {
+                    State = AppUpdateState.Available;
+                }
+
                 break;
             case UpdateCheckStatus.NoAssetForArchitecture:
                 AvailableVersion = result.Release!.Version;
@@ -259,19 +317,38 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 自动检查一次；同一进程内只触发一次.
+    /// 启动应用的定期检查；每个进程只启动一次.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
     public async Task AutoCheckAsync()
     {
-        if (_hasAutoChecked)
+        if (_hasAutoChecked || !AppUpdateService.SupportsUpdates)
         {
             return;
         }
 
         _hasAutoChecked = true;
-        await CheckAsync();
+        using var timer = new PeriodicTimer(GetCheckPeriod(CheckIntervalHours));
+        _updateTimer = timer;
+        try
+        {
+            await CheckAsync();
+            while (await timer.WaitForNextTickAsync())
+            {
+                if (CanCheck && !CanRunPrimaryAction)
+                {
+                    await CheckAsync();
+                }
+            }
+        }
+        finally
+        {
+            _updateTimer = null;
+        }
     }
+
+    private static TimeSpan GetCheckPeriod(double hours)
+        => hours == 0 ? Timeout.InfiniteTimeSpan : TimeSpan.FromHours(hours);
 
     /// <summary>
     /// 主按钮的点击动作：按当前状态分发.
@@ -370,12 +447,14 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
             _failureDetail = installed.Error;
             if (installed.DependencyResolutionFailed && _downloadAsset?.IsMsix == true && _lastResult?.Archive is { } archive)
             {
+                _downloader.RemoveDownloadedFiles(_downloaded);
                 _downloadAsset = archive;
                 _downloaded = null;
                 _failureDetail = ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadWithRuntime);
             }
             else if (installed.RequiresNewDownload)
             {
+                _downloader.RemoveDownloadedFiles(_downloaded);
                 _downloaded = null;
             }
 
@@ -393,6 +472,8 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
             _logger.LogWarning(ex, "无法保存更新说明");
         }
 
+        _downloader.RemoveDownloadedFiles(_downloaded);
+        _downloaded = null;
         State = AppUpdateState.RestartRequired;
         _logger.LogInformation("更新已安装，重启应用以完成升级");
         await RestartApplicationAsync();
@@ -432,11 +513,13 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     partial void OnStateChanged(AppUpdateState value)
     {
-        SettingsActionCommand.NotifyCanExecuteChanged();
+        CheckCommand.NotifyCanExecuteChanged();
         PrimaryActionCommand.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(CanRunPrimaryAction));
         OnPropertyChanged(nameof(ActionName));
         OnPropertyChanged(nameof(SettingsActionName));
+        OnPropertyChanged(nameof(ShowsCheckAction));
+        OnPropertyChanged(nameof(ShowsPrimaryAction));
         OnPropertyChanged(nameof(IsButtonVisible));
         OnPropertyChanged(nameof(IsDownloading));
         OnPropertyChanged(nameof(IconSymbol));

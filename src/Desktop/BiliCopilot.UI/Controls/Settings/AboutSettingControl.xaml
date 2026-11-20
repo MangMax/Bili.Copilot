@@ -17,10 +17,18 @@
             <base:SettingsCard.HeaderIcon>
                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/StoreLogo.png" />
             </base:SettingsCard.HeaderIcon>
-            <Button
-                AutomationProperties.AutomationId="SettingsUpdatePrimaryAction"
-                Command="{x:Bind Update.SettingsActionCommand}"
-                Content="{x:Bind Update.SettingsActionName, Mode=OneWay}" />
+            <Grid>
+                <Button
+                    AutomationProperties.AutomationId="CheckForUpdates"
+                    Command="{x:Bind Update.CheckCommand}"
+                    Content="{ext:Locale Name=CheckUpdate}"
+                    Visibility="{x:Bind Update.ShowsCheckAction, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <Button
+                    AutomationProperties.AutomationId="SettingsUpdatePrimaryAction"
+                    Command="{x:Bind Update.PrimaryActionCommand}"
+                    Content="{x:Bind Update.SettingsActionName, Mode=OneWay}"
+                    Visibility="{x:Bind Update.ShowsPrimaryAction, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </Grid>
         </base:SettingsCard>
 
         <StackPanel Orientation="Horizontal" Spacing="4">
@@ -48,11 +56,32 @@
             </Button>
             <Button
                 AutomationProperties.AutomationId="SettingsUpdateMirrors"
-                Content="{ext:Locale Name=UpdateMirrorPrefixes}"
+                Content="{ext:Locale Name=UpdateSettings}"
                 Style="{StaticResource SubtleButtonStyle}">
                 <Button.Flyout>
                     <Flyout>
                         <StackPanel MaxWidth="320" Spacing="8">
+                            <NumberBox
+                                AutomationProperties.AutomationId="UpdateCheckInterval"
+                                Header="{ext:Locale Name=UpdateCheckInterval}"
+                                Minimum="0"
+                                Maximum="168"
+                                SmallChange="1"
+                                SpinButtonPlacementMode="Compact"
+                                Value="{x:Bind Update.CheckIntervalHours, Mode=TwoWay}" />
+                            <TextBlock Text="{ext:Locale Name=UpdateCheckIntervalDescription}" TextWrapping="Wrap" />
+                            <ToggleSwitch
+                                AutomationProperties.AutomationId="UpdateAutoDownload"
+                                Header="{ext:Locale Name=UpdateAutoDownload}"
+                                IsOn="{x:Bind Update.AutoDownload, Mode=TwoWay}" />
+                            <ComboBox
+                                AutomationProperties.AutomationId="UpdateDownloadSource"
+                                Header="{ext:Locale Name=UpdateDownloadSource}"
+                                SelectedIndex="{x:Bind Update.DownloadSourceIndex, Mode=TwoWay}">
+                                <ComboBoxItem Content="{ext:Locale Name=UpdateSourceAuto}" />
+                                <ComboBoxItem Content="{ext:Locale Name=UpdateSourceGitHub}" />
+                                <ComboBoxItem Content="{ext:Locale Name=UpdateSourceMirrors}" />
+                            </ComboBox>
                             <TextBlock Text="{ext:Locale Name=UpdateMirrorPrefixesDescription}" TextWrapping="Wrap" />
                             <TextBox
                                 MaxHeight="120"

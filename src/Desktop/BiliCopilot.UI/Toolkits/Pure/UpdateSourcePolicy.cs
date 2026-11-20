@@ -5,6 +5,16 @@ using System.Net.Http.Headers;
 namespace BiliCopilot.UI.Toolkits;
 
 /// <summary>
+/// 用户选择的安装包下载源.
+/// </summary>
+public enum UpdateDownloadMode
+{
+    Auto,
+    GitHub,
+    Mirrors,
+}
+
+/// <summary>
 /// 一次加速源探测的结果.
 /// </summary>
 /// <param name="Url">被探测的地址.</param>
@@ -41,21 +51,36 @@ public static class UpdateSourcePolicy
             && range.From == existing && range.To == range.Length - 1;
 
     /// <summary>
-    /// 按记忆源、可用源速度、其余候选源排列下载重试顺序；直连始终保留且只尝试一次.
+    /// 选择下载模式允许的候选地址.
+    /// </summary>
+    public static IReadOnlyList<string> GetDownloadCandidates(
+        string originalUrl,
+        IEnumerable<string?> mirrorPrefixes,
+        UpdateDownloadMode mode)
+        => mode switch
+        {
+            UpdateDownloadMode.GitHub => (string[])[originalUrl],
+            UpdateDownloadMode.Mirrors => BuildCandidates(originalUrl, mirrorPrefixes).Skip(1).ToArray(),
+            _ => BuildCandidates(originalUrl, mirrorPrefixes),
+        };
+
+    /// <summary>
+    /// 按记忆源、可用源速度、其余候选源排列重试顺序；允许直连时只尝试一次.
     /// </summary>
     /// <param name="probes">探测结果.</param>
     /// <param name="rememberedUrl">可续传的上次源.</param>
-    /// <param name="originalUrl">直连地址.</param>
+    /// <param name="originalUrl">允许直连时的地址.</param>
     /// <returns>去重后的候选源顺序.</returns>
     public static IReadOnlyList<string> GetDownloadOrder(
         IReadOnlyList<UpdateSourceProbe> probes,
         string? rememberedUrl,
-        string originalUrl)
+        string? originalUrl)
     {
         var first = Select(probes, rememberedUrl) ?? originalUrl;
         return new[] { first }
             .Concat(probes.Where(probe => probe.Succeeded).OrderBy(probe => probe.ElapsedMs).Select(probe => probe.Url))
             .Append(originalUrl)
+            .OfType<string>()
             .Concat(probes.Select(probe => probe.Url))
             .Distinct(StringComparer.Ordinal)
             .ToArray();

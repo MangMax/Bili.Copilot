@@ -3717,4 +3717,12 @@
   <data name="UpdateVerifying" xml:space="preserve">
     <value>正在校验安装包…</value>
   </data>
+  <data name="UpdateSettings" xml:space="preserve"><value>更新设置</value></data>
+  <data name="UpdateAutoDownload" xml:space="preserve"><value>自动下载更新</value></data>
+  <data name="UpdateDownloadSource" xml:space="preserve"><value>下载源</value></data>
+  <data name="UpdateSourceAuto" xml:space="preserve"><value>自动</value></data>
+  <data name="UpdateSourceGitHub" xml:space="preserve"><value>仅 GitHub</value></data>
+  <data name="UpdateSourceMirrors" xml:space="preserve"><value>仅镜像</value></data>
+  <data name="UpdateCheckInterval" xml:space="preserve"><value>检查周期（小时）</value></data>
+  <data name="UpdateCheckIntervalDescription" xml:space="preserve"><value>设为 0 时，只在启动时自动检查。</value></data>
 </root>

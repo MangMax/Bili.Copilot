@@ -66,15 +66,18 @@ public sealed class UpdateDownloader
         {
             var absoluteUrl = UpdateConstants.GitHubOrigin + asset.DownloadPath;
             var mirrors = UpdateMirrorSettings.DownloadMirrors.Concat(UpdateMirrorSettings.ReadUserPrefixes());
-            var candidates = UpdateSourcePolicy.BuildCandidates(absoluteUrl, mirrors);
-            var probes = await ProbeAsync(candidates, cancellationToken).ConfigureAwait(false);
+            var mode = UpdateMirrorSettings.DownloadMode;
+            var candidates = UpdateSourcePolicy.GetDownloadCandidates(absoluteUrl, mirrors, mode);
+            var probes = mode == UpdateDownloadMode.GitHub
+                ? Array.Empty<UpdateSourceProbe>()
+                : await ProbeAsync(candidates, cancellationToken).ConfigureAwait(false);
 
             var remembered = UpdateMirrorSettings.ReadFreshSource(SourceMemoryTtl);
             var directory = Path.Combine(ApplicationData.Current.LocalFolder.Path, "Updates");
             Directory.CreateDirectory(directory);
             var finalPath = Path.Combine(directory, asset.Name);
             var usableSources = probes.Where(probe => probe.Succeeded).Select(probe => probe.Url).ToHashSet(StringComparer.Ordinal);
-            var sources = UpdateSourcePolicy.GetDownloadOrder(probes, remembered, absoluteUrl)
+            var sources = UpdateSourcePolicy.GetDownloadOrder(probes, remembered, mode == UpdateDownloadMode.Mirrors ? null : absoluteUrl)
                 .OrderByDescending(source => usableSources.Contains(source) && File.Exists(GetPartialPath(finalPath, source)));
             string? error = null;
             foreach (var source in sources)
@@ -323,6 +326,19 @@ public sealed class UpdateDownloader
         await using var stream = File.OpenRead(path);
         var hash = await SHA256.HashDataAsync(stream, cancellationToken).ConfigureAwait(false);
         return Convert.ToHexString(hash);
+    }
+
+    internal void RemoveDownloadedFiles(UpdateDownloadResult download)
+    {
+        if (download.PackagePath is { } packagePath)
+        {
+            TryDelete(packagePath);
+        }
+
+        if (download.RuntimePath is { } runtimePath)
+        {
+            TryDelete(runtimePath);
+        }
     }
 
     private void TryDelete(string path)

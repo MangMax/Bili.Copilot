@@ -21,6 +21,29 @@ public class UpdateSourcePolicyTests
 
     private const string Url = "https://github.com/o/r/releases/download/v1/file.msix";
 
+    [Theory]
+    [InlineData(UpdateDownloadMode.Auto, true, true)]
+    [InlineData(UpdateDownloadMode.GitHub, true, false)]
+    [InlineData(UpdateDownloadMode.Mirrors, false, true)]
+    public void GetDownloadCandidates_RespectsTheSelectedSource(
+        UpdateDownloadMode mode, bool includesDirect, bool includesMirror)
+    {
+        const string mirror = "https://mirror.example/";
+        var candidates = UpdateSourcePolicy.GetDownloadCandidates(Url, [mirror], mode);
+
+        Assert.Equal(includesDirect, candidates.Contains(Url));
+        Assert.Equal(includesMirror, candidates.Contains(mirror + Url));
+    }
+
+    [Fact]
+    public void GetDownloadOrder_MirrorFailureDoesNotAddGitHub()
+    {
+        var mirror = "https://mirror.example/" + Url;
+        var probe = new UpdateSourceProbe(mirror, false, 0, false, 0);
+
+        Assert.Equal([mirror], UpdateSourcePolicy.GetDownloadOrder([probe], Url, originalUrl: null));
+    }
+
     [Fact]
     public void BuildCandidates_PutsDirectFirst()
     {

@@ -14,6 +14,14 @@ namespace BiliCopilot.UI.Update;
 /// </remarks>
 internal static class UpdateMirrorSettings
 {
+    public static UpdateDownloadMode DownloadMode
+        => (UpdateDownloadMode)SettingsToolkit.ReadLocalSetting(SettingNames.UpdateDownloadMode, (int)UpdateDownloadMode.Auto) switch
+        {
+            UpdateDownloadMode.GitHub => UpdateDownloadMode.GitHub,
+            UpdateDownloadMode.Mirrors => UpdateDownloadMode.Mirrors,
+            _ => UpdateDownloadMode.Auto,
+        };
+
     /// <summary>Atom Feed 可用的内置镜像.</summary>
     public static readonly string[] FeedMirrors = ["https://gh-proxy.com/"];
 
