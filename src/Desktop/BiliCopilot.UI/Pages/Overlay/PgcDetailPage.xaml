@@ -33,46 +33,46 @@
                     Height="36"
                     VerticalAlignment="Top"
                     CornerRadius="18"
-                    Source="{x:Bind Avatar, Mode=OneWay, FallbackValue={x:Null}}" />
+                    Source="{x:Bind Avatar, Mode=OneTime, FallbackValue={x:Null}}" />
                 <StackPanel Grid.Column="1" Spacing="4">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock
                             FontSize="13"
                             FontWeight="SemiBold"
-                            Text="{x:Bind AuthorName, Mode=OneWay}" />
+                            Text="{x:Bind AuthorName, Mode=OneTime}" />
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                            Text="{x:Bind ScoreText, Mode=OneWay}"
-                            Visibility="{x:Bind ScoreText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
+                            Text="{x:Bind ScoreText, Mode=OneTime}"
+                            Visibility="{x:Bind ScoreText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneTime}" />
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                            Text="{x:Bind TimeText, Mode=OneWay}" />
+                            Text="{x:Bind TimeText, Mode=OneTime}" />
                     </StackPanel>
                     <TextBlock
                         FontWeight="SemiBold"
-                        Text="{x:Bind Title, Mode=OneWay}"
+                        Text="{x:Bind Title, Mode=OneTime}"
                         TextWrapping="Wrap"
-                        Visibility="{x:Bind Title, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
+                        Visibility="{x:Bind Title, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneTime}" />
                     <TextBlock
                         IsTextSelectionEnabled="True"
                         MaxLines="8"
-                        Text="{x:Bind Content, Mode=OneWay}"
+                        Text="{x:Bind Content, Mode=OneTime}"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="Wrap" />
                     <StackPanel Orientation="Horizontal" Spacing="14">
                         <TextBlock
                             FontSize="12"
                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                            Text="{x:Bind Progress, Mode=OneWay}"
-                            Visibility="{x:Bind Progress, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}" />
+                            Text="{x:Bind Progress, Mode=OneTime}"
+                            Visibility="{x:Bind Progress, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneTime}" />
                         <StackPanel
                             Orientation="Horizontal"
                             Spacing="4"
-                            Visibility="{x:Bind LikeText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
+                            Visibility="{x:Bind LikeText, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneTime}">
                             <ic:SymbolIcon
                                 VerticalAlignment="Center"
                                 FontSize="11"
@@ -82,7 +82,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="12"
                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                Text="{x:Bind LikeText, Mode=OneWay}" />
+                                Text="{x:Bind LikeText, Mode=OneTime}" />
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
@@ -93,10 +93,10 @@
                 <TextBlock
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind Title, Mode=OneWay}" />
+                    Text="{x:Bind Title, Mode=OneTime}" />
                 <TextBlock
                     IsTextSelectionEnabled="True"
-                    Text="{x:Bind Content, Mode=OneWay}"
+                    Text="{x:Bind Content, Mode=OneTime}"
                     TextWrapping="Wrap" />
             </StackPanel>
         </DataTemplate>

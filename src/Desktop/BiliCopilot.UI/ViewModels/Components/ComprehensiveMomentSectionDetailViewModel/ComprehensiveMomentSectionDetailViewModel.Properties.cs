@@ -15,10 +15,7 @@ namespace BiliCopilot.UI.ViewModels.Components;
 public sealed partial class ComprehensiveMomentSectionDetailViewModel
 {
     private readonly IMomentDiscoveryService _service;
-    private readonly ILogger<VideoMomentSectionDetailViewModel> _logger;
-
-    [ObservableProperty]
-    public partial bool IsEmpty { get; set; }
+    private readonly ILogger<ComprehensiveMomentSectionDetailViewModel> _logger;
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }

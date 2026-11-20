@@ -134,7 +134,6 @@ internal static class GlobalDependencies
             .AddSingleton<UserSpacePageViewModel>()
             .AddTransient<CollectionDetailPageViewModel>()
             .AddSingleton<PgcDetailPageViewModel>()
-            .AddSingleton<NotificationViewModel>()
             .AddTransient<SubtitleViewModel>()
             .AddTransient<AIViewModel>()
             .AddTransient<UserMomentDetailViewModel>()
@@ -163,7 +162,8 @@ internal static class GlobalDependencies
 
     public static IKernelBuilder AddNotificationViewModel(this IKernelBuilder builder)
     {
-        builder.Services.AddSingleton<INotificationViewModel, NotificationViewModel>();
+        builder.Services.AddSingleton<NotificationViewModel>()
+            .AddSingleton<INotificationViewModel>(services => services.GetRequiredService<NotificationViewModel>());
         return builder;
     }
 

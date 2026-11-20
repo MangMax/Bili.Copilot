@@ -5,6 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:comment="using:BiliCopilot.UI.Controls.Comment"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:moment="using:BiliCopilot.UI.Controls.Moment"
@@ -25,6 +27,28 @@
         <moment:MomentSectionHost
             Grid.Row="2"
             SelectedSection="{x:Bind ViewModel.SelectedSection, Mode=OneWay}" />
+        <Button
+            Grid.Row="2"
+            MinHeight="40"
+            Margin="16,0,16,24"
+            Padding="16,8"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            AutomationProperties.AutomationId="RefreshNewMomentsButton"
+            AutomationProperties.Name="{ext:Locale Name=RefreshNewMoments}"
+            Command="{x:Bind ViewModel.RefreshNewMomentsCommand, Mode=OneWay}"
+            CornerRadius="{StaticResource OverlayCornerRadius}"
+            Style="{StaticResource AccentButtonStyle}"
+            Translation="0,0,16"
+            Visibility="{x:Bind ViewModel.HasNewMoments, Mode=OneWay}">
+            <Button.Shadow>
+                <ThemeShadow />
+            </Button.Shadow>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <ic:SymbolIcon VerticalAlignment="Center" FontSize="14" Symbol="ArrowSync" />
+                <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=RefreshNewMoments}" />
+            </StackPanel>
+        </Button>
         <comment:CommentOverlayPanel
             x:Name="CommentPanel"
             Grid.RowSpan="3"

@@ -2,6 +2,7 @@
 
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.ViewModels.Core;
+using BiliCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -39,6 +40,8 @@ public sealed partial class RootLayout : RootLayoutBase
     protected override void OnControlLoaded()
     {
         ViewModel.Initialize(NavView, MainFrame, OverlayFrame);
+        ViewModel.SetMomentUnread(this.Get<MomentPageViewModel>().HasNewMoments);
+        ViewModel.SetAppUpdateUnread(this.Get<AppUpdateViewModel>().HasAvailableUpdate);
         var selectedItem = ViewModel.MenuItems.FirstOrDefault(p => p.IsSelected);
         if (selectedItem is not null)
         {

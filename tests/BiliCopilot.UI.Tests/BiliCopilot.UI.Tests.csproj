@@ -78,6 +78,8 @@
   -->
   <ItemGroup>
     <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Toolkits\Pure\*.cs" Link="Toolkits\Pure\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Services\MomentNotifications\MomentNotificationScan.cs" Link="MomentNotifications\MomentNotificationScan.cs" />
+    <Compile Include="..\..\src\Desktop\BiliCopilot.UI\Services\MomentNotifications\MomentNotificationState.cs" Link="MomentNotifications\MomentNotificationState.cs" />
   </ItemGroup>
 
   <!--

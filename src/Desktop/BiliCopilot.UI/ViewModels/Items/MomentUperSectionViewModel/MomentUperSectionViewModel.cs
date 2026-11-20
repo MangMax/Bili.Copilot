@@ -33,20 +33,17 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
 
     internal void InjectFirstPageData(MomentView momentView)
     {
-        IsEmpty = false;
-        _preventLoadMore = momentView.HasMoreMoments != true;
+        IsEmpty = momentView.Moments.Count == 0;
+        _preventLoadMore = momentView.HasMoreMoments != true || string.IsNullOrEmpty(momentView.Offset);
         _offset = momentView.Offset;
         _baseline = momentView.UpdateBaseline;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
+        Items.Clear();
+        foreach (var item in momentView.Moments.DistinctBy(item => item.Id))
         {
-            Items.Clear();
-            foreach (var item in momentView.Moments)
-            {
-                Items.Add(new MomentItemViewModel(item, MomentCardStyle.Comprehensive, ShowComment));
-            }
+            Items.Add(new MomentItemViewModel(item, MomentCardStyle.Comprehensive, ShowComment));
+        }
 
-            ListUpdated?.Invoke(this, EventArgs.Empty);
-        });
+        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () => ListUpdated?.Invoke(this, EventArgs.Empty));
     }
 
     [RelayCommand]
@@ -83,7 +80,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
     [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        if (IsEmpty || IsLoading || _preventLoadMore)
+        if (IsLoading || _preventLoadMore || (IsEmpty && !IsTotal))
         {
             return;
         }

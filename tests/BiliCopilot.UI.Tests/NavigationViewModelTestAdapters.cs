@@ -47,6 +47,7 @@ namespace Richasy.WinUIKernel.Share.ViewModels
         public string PageKey { get; } = pageType.FullName!;
         public bool IsSelected { get; set; } = isSelected;
         public bool IsVisible { get; set; } = isVisible;
+        public bool ShowUnread { get; set; }
     }
 }
 namespace BiliCopilot.UI.Pages.Overlay

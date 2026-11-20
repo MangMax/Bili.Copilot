@@ -15,10 +15,31 @@
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="AlertOn" />
         </base:SettingsExpander.HeaderIcon>
-        <ToggleSwitch IsOn="{x:Bind ViewModel.IsNotificationEnabled, Mode=TwoWay}" />
+        <ToggleSwitch
+            AutomationProperties.AutomationId="NotificationToggle"
+            AutomationProperties.Name="{ext:Locale Name=NotificationSetting}"
+            IsOn="{x:Bind ViewModel.IsNotificationEnabled, Mode=TwoWay}" />
         <base:SettingsExpander.Items>
+            <base:SettingsCard Header="{ext:Locale Name=AppUpdateNotification}">
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="AppUpdateNotificationToggle"
+                    AutomationProperties.Name="{ext:Locale Name=AppUpdateNotification}"
+                    IsEnabled="{x:Bind ViewModel.IsNotificationEnabled, Mode=OneWay}"
+                    IsOn="{x:Bind ViewModel.IsAppUpdateNotificationEnabled, Mode=TwoWay}" />
+            </base:SettingsCard>
             <base:SettingsCard Header="{ext:Locale Name=VideoDynamicNotification}">
-                <ToggleSwitch IsEnabled="{x:Bind ViewModel.IsNotificationEnabled, Mode=OneWay}" IsOn="{x:Bind ViewModel.IsVideoMomentNotificationEnabled, Mode=TwoWay}" />
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="VideoDynamicNotificationToggle"
+                    AutomationProperties.Name="{ext:Locale Name=VideoDynamicNotification}"
+                    IsEnabled="{x:Bind ViewModel.IsNotificationEnabled, Mode=OneWay}"
+                    IsOn="{x:Bind ViewModel.IsVideoMomentNotificationEnabled, Mode=TwoWay}" />
+            </base:SettingsCard>
+            <base:SettingsCard Header="{ext:Locale Name=OtherDynamicNotification}" Description="{ext:Locale Name=OtherDynamicNotificationDescription}">
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="OtherDynamicNotificationToggle"
+                    AutomationProperties.Name="{ext:Locale Name=OtherDynamicNotification}"
+                    IsEnabled="{x:Bind ViewModel.IsNotificationEnabled, Mode=OneWay}"
+                    IsOn="{x:Bind ViewModel.IsOtherMomentNotificationEnabled, Mode=TwoWay}" />
             </base:SettingsCard>
         </base:SettingsExpander.Items>
     </base:SettingsExpander>

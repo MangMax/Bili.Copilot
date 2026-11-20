@@ -13,6 +13,11 @@ namespace BiliCopilot.UI.ViewModels.View;
 public sealed partial class MomentPageViewModel
 {
     private readonly IMomentDiscoveryService _momentDiscoveryService;
+    private ulong _latestMomentId;
+    private long _updatesAccountId;
+
+    [ObservableProperty]
+    public partial bool HasNewMoments { get; set; }
 
     [ObservableProperty]
     public partial List<IMomentSectionDetailViewModel> Sections { get; set; }
