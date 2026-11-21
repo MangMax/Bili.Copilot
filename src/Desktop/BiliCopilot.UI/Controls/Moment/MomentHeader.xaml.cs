@@ -5,6 +5,7 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
+using System.ComponentModel;
 
 namespace BiliCopilot.UI.Controls.Moment;
 
@@ -13,6 +14,8 @@ namespace BiliCopilot.UI.Controls.Moment;
 /// </summary>
 public sealed partial class MomentHeader : MomentHeaderBase
 {
+    private bool _attached;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentHeader"/> class.
     /// </summary>
@@ -21,17 +24,30 @@ public sealed partial class MomentHeader : MomentHeaderBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
+        if (_attached)
+        {
+            return;
+        }
+
+        _attached = true;
         Selector.SelectionChanged += OnSelectorChanged;
-        ViewModel.Initialized += OnViewModelInitialized;
+        if (ViewModel is not null)
+        {
+            ViewModel.Initialized += OnViewModelInitialized;
+            ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        }
+
         InitializeChildPartitions();
     }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
+        _attached = false;
         if (ViewModel is not null)
         {
             ViewModel.Initialized -= OnViewModelInitialized;
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
         Selector.SelectionChanged -= OnSelectorChanged;
@@ -47,6 +63,14 @@ public sealed partial class MomentHeader : MomentHeaderBase
 
     private void OnViewModelInitialized(object? sender, EventArgs e)
         => InitializeChildPartitions();
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(MomentPageViewModel.SelectedSection))
+        {
+            Selector.Select(ViewModel.SelectedSection);
+        }
+    }
 
     private void OnSelectorChanged(object? sender, EventArgs args)
     {

@@ -52,10 +52,15 @@ public sealed partial class MomentPageViewModel : ViewModelBase
             {
                 _updatesAccountId = accountId;
                 _latestMomentId = 0;
+                _latestVideoMomentId = 0;
+                _latestNonVideoMomentId = 0;
             }
 
             var seen = ReadSeenMoment(accountId);
-            _latestMomentId = Math.Max(_latestMomentId, LatestId(view));
+            var (latestAll, latestVideo, latestNonVideo) = MomentRefreshPolicy.ExtractLatestIds(view);
+            _latestMomentId = Math.Max(_latestMomentId, latestAll);
+            _latestVideoMomentId = Math.Max(_latestVideoMomentId, latestVideo);
+            _latestNonVideoMomentId = Math.Max(_latestNonVideoMomentId, latestNonVideo);
             if (seen is null)
             {
                 WriteSeenMoment(accountId, _latestMomentId);
@@ -73,24 +78,62 @@ public sealed partial class MomentPageViewModel : ViewModelBase
     private async Task RefreshNewMomentsAsync()
     {
         var accountId = _updatesAccountId;
-        if (!HasNewMoments || Sections?.LastOrDefault() is not ComprehensiveMomentSectionDetailViewModel section)
+        if (!HasNewMoments || Sections?.Count is not > 0)
         {
             return;
         }
 
-        if (section.InitializeCommand.ExecutionTask is { IsCompleted: false } initialization)
-        {
-            await initialization;
-        }
+        var seenBefore = ReadSeenMoment(accountId).GetValueOrDefault();
+        var checkedLatestAll = _latestMomentId;
+        var checkedLatestVideo = _latestVideoMomentId;
+        var checkedLatestNonVideo = _latestNonVideoMomentId;
+        var refreshVideo = MomentRefreshPolicy.ShouldRefreshVideoSection(
+            SelectedSection is VideoMomentSectionDetailViewModel,
+            seenBefore,
+            checkedLatestVideo,
+            checkedLatestNonVideo);
 
-        var view = await section.RefreshAllAsync();
-        if (view is null || this.Get<IBiliTokenResolver>().GetToken()?.UserId != accountId)
+        MomentView? view;
+        if (refreshVideo && Sections.OfType<VideoMomentSectionDetailViewModel>().FirstOrDefault() is { } videoSection)
+        {
+            if (videoSection.InitializeCommand.ExecutionTask is { IsCompleted: false } initialization)
+            {
+                await initialization;
+            }
+
+            view = await videoSection.RefreshWithResultAsync();
+            if (view is null || this.Get<IBiliTokenResolver>().GetToken()?.UserId != accountId)
+            {
+                return;
+            }
+        }
+        else if (Sections.OfType<ComprehensiveMomentSectionDetailViewModel>().FirstOrDefault() is { } comprehensiveSection)
+        {
+            refreshVideo = false;
+            if (comprehensiveSection.InitializeCommand.ExecutionTask is { IsCompleted: false } initialization)
+            {
+                await initialization;
+            }
+
+            view = await comprehensiveSection.RefreshAllAsync();
+            if (view is null || this.Get<IBiliTokenResolver>().GetToken()?.UserId != accountId)
+            {
+                return;
+            }
+
+            SelectSection(comprehensiveSection);
+        }
+        else
         {
             return;
         }
 
-        SelectSection(section);
-        var seen = Math.Max(ReadSeenMoment(accountId).GetValueOrDefault(), LatestId(view));
+        var seen = MomentRefreshPolicy.ResolveSeenAfterRefresh(
+            refreshVideo,
+            ReadSeenMoment(accountId).GetValueOrDefault(),
+            MomentRefreshPolicy.LatestId(view),
+            checkedLatestAll,
+            checkedLatestVideo);
         WriteSeenMoment(accountId, seen);
         SetHasNewMoments(_latestMomentId > seen);
     }
@@ -100,9 +143,6 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         HasNewMoments = value;
         this.Get<NavigationViewModel>().SetMomentUnread(value);
     }
-
-    private static ulong LatestId(MomentView view)
-        => view.Moments.Select(moment => ulong.TryParse(moment.Id, out var id) ? id : 0UL).DefaultIfEmpty().Max();
 
     private ulong? ReadSeenMoment(long accountId)
         => ulong.TryParse(this.Get<ISettingsToolkit>().ReadLocalSetting($"LastSeenMoment_{accountId}", string.Empty), out var id) ? id : null;
