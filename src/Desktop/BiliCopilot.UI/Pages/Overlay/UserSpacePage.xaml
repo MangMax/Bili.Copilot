@@ -9,7 +9,6 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Pages.Overlay"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -63,10 +62,11 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="16"
-                        Symbol="{x:Bind local:UserSpacePage.GetSubmissionIcon(Kind), Mode=OneTime}" />
+                        Glyph="{x:Bind local:UserSpacePage.GetSubmissionIcon(Kind), Mode=OneTime}" />
                     <TextBlock
                         Grid.Column="1"
                         VerticalAlignment="Center"

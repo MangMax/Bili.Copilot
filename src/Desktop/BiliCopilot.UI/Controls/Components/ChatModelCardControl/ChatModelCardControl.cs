@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Toolkits;
 using Richasy.WinUIKernel.AI.ViewModels;
 using Richasy.WinUIKernel.Share.Base;
@@ -111,7 +112,7 @@ public sealed partial class ChatModelCardControl : LayoutControlBase<ChatModelIt
         {
             Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Modify),
             MinWidth = 160,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Edit },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Edit },
             Tag = nameof(ViewModel.ModifyCommand),
             Command = ViewModel.ModifyCommand,
         });
@@ -120,7 +121,7 @@ public sealed partial class ChatModelCardControl : LayoutControlBase<ChatModelIt
         {
             Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Delete),
             MinWidth = 160,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
             Tag = nameof(ViewModel.DeleteCommand),
             Command = ViewModel.DeleteCommand,
         });

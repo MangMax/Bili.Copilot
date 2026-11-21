@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using Microsoft.UI.Xaml.Data;
 using Richasy.BiliKernel.Models.User;
 
@@ -12,9 +13,9 @@ internal sealed partial class NotifyMessageIconConverter : IValueConverter
         var type = (NotifyMessageType)value;
         return type switch
         {
-            NotifyMessageType.Reply => FluentIcons.Common.Symbol.Comment,
-            NotifyMessageType.At => FluentIcons.Common.Symbol.CallConnecting,
-            NotifyMessageType.Like => FluentIcons.Common.Symbol.ThumbLike,
+            NotifyMessageType.Reply => IconGlyph.Comment,
+            NotifyMessageType.At => IconGlyph.CallConnecting,
+            NotifyMessageType.Like => IconGlyph.ThumbLike,
             _ => throw new Exception("Unknown type."),
         };
     }

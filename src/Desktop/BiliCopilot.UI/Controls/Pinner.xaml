@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PinnerBase
     x:Class="BiliCopilot.UI.Controls.Pinner"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,7 +8,6 @@
     xmlns:converters="using:BiliCopilot.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:BiliCopilot.UI.Models"
@@ -43,13 +42,14 @@
                         VerticalAlignment="Center"
                         MaxLines="2"
                         Text="{x:Bind Title, Mode=OneTime}" />
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         Grid.Column="2"
                         Margin="12,0,0,0"
                         VerticalAlignment="Center"
                         FontSize="16"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Symbol="{x:Bind Type, Converter={StaticResource IconConverter}}" />
+                        Glyph="{x:Bind Type, Converter={StaticResource IconConverter}}" />
                 </Grid>
                 <Button.ContextFlyout>
                     <MenuFlyout>
@@ -58,7 +58,7 @@
                             Click="OnRemoveItemClick"
                             Text="{ext:Locale Name=UnfixContent}">
                             <MenuFlyoutItem.Icon>
-                                <ic:SymbolIcon Foreground="{ThemeResource SystemFillColorCriticalBrush}" Symbol="Delete" />
+                                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Foreground="{ThemeResource SystemFillColorCriticalBrush}" Glyph="{StaticResource IconDelete}" />
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                     </MenuFlyout>
@@ -73,10 +73,10 @@
         CornerRadius="14"
         Style="{StaticResource IconButtonStyle}"
         ToolTipService.ToolTip="{ext:Locale Name=FixContent}">
-        <ic:SymbolIcon
+        <FontIcon
+            FontFamily="{StaticResource BiliIconsFontFamily}"
             FontSize="14"
-            IconVariant="Filled"
-            Symbol="Pin" />
+            Glyph="{StaticResource IconPinFilled}" />
         <Button.Flyout>
             <Flyout
                 x:Name="ItemsFlyout"

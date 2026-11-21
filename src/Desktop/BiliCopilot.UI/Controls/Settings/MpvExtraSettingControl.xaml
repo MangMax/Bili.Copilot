@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:SettingsPageControlBase
     x:Class="BiliCopilot.UI.Controls.Settings.MpvExtraSettingControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,7 +6,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -18,7 +17,7 @@
         IsEnabled="{x:Bind ViewModel.IsMpvCustomOptionVisible, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
         IsExpanded="{x:Bind ViewModel.IsMpvExtraSettingExpanded, Mode=TwoWay}">
         <base:SettingsExpander.HeaderIcon>
-            <ImageIcon Source="ms-appx:///Assets/mpv.png" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconPlayCircle}" />
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
             <base:SettingsCard
@@ -150,10 +149,11 @@
                             Click="OnRemoveCacheDirButtonClick"
                             Style="{StaticResource SmallIconButtonStyle}"
                             ToolTipService.ToolTip="{ext:Locale Name=RestoreDefault}">
-                            <ic:SymbolIcon
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
                                 FontSize="14"
                                 Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                Symbol="ArrowUndo" />
+                                Glyph="{StaticResource IconArrowUndo}" />
                         </Button>
                     </StackPanel>
                 </Grid>

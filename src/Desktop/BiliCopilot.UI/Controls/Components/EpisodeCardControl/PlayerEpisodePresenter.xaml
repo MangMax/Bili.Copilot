@@ -7,7 +7,6 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -90,11 +89,12 @@
                     Spacing="4"
                     ToolTipService.ToolTip="{ext:Locale Name=LikeCount}"
                     Visibility="{x:Bind ViewModel.LikeCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
-                        FontSize="10"
+                        FontSize="12"
                         Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                        Symbol="ThumbLike" />
+                        Glyph="{StaticResource IconThumbLike}" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -108,11 +108,12 @@
                     Spacing="4"
                     ToolTipService.ToolTip="{ext:Locale Name=CoinCount}"
                     Visibility="{x:Bind ViewModel.CoinCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
-                        FontSize="10"
+                        FontSize="12"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Symbol="Blur" />
+                        Glyph="{StaticResource IconReward}" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"

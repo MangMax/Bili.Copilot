@@ -114,7 +114,7 @@
             Click="OnScrollLeftClick"
             Style="{StaticResource SubtleButtonStyle}"
             Visibility="Collapsed">
-            <FontIcon FontSize="12" Glyph="&#xE0E2;" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="12" Glyph="{StaticResource IconChevronLeft}" />
         </Button>
         <ScrollViewer
             x:Name="Scroller"
@@ -156,7 +156,7 @@
             Click="OnScrollRightClick"
             Style="{StaticResource SubtleButtonStyle}"
             Visibility="Collapsed">
-            <FontIcon FontSize="12" Glyph="&#xE0E3;" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="12" Glyph="{StaticResource IconChevronRight}" />
         </Button>
     </Grid>
 </UserControl>

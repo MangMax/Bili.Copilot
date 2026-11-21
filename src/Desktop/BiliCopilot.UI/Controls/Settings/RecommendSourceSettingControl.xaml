@@ -6,7 +6,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -15,7 +14,7 @@
         Description="{ext:Locale Name=RecommendSourceDescription}"
         Header="{ext:Locale Name=RecommendSource}">
         <base:SettingsCard.HeaderIcon>
-            <ic:SymbolIcon Symbol="Stream" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconStream}" />
         </base:SettingsCard.HeaderIcon>
         <ComboBox
             MinWidth="150"

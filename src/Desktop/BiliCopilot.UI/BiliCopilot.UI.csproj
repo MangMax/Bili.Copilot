@@ -356,6 +356,7 @@
 
   <ItemGroup>
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\BiliIcons.ttf" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

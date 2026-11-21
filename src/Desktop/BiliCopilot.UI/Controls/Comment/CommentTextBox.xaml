@@ -7,7 +7,6 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Comment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -51,7 +50,7 @@
                 BorderThickness="0"
                 Command="{x:Bind ResetSelectedCommand, Mode=OneWay}"
                 CornerRadius="10">
-                <ic:SymbolIcon FontSize="10" Symbol="Dismiss" />
+                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="10" Glyph="{StaticResource IconDismiss}" />
             </Button>
         </Grid>
         <AutoSuggestBox
@@ -75,7 +74,7 @@
                 </Style>
             </AutoSuggestBox.TextBoxStyle>
             <AutoSuggestBox.QueryIcon>
-                <ic:SymbolIcon FontSize="14" Symbol="Send" />
+                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconSend}" />
             </AutoSuggestBox.QueryIcon>
         </AutoSuggestBox>
         <Button
@@ -85,7 +84,7 @@
             VerticalAlignment="Top"
             Style="{StaticResource SmallIconButtonStyle}"
             ToolTipService.ToolTip="{ext:Locale Name=Emote}">
-            <ic:SymbolIcon FontSize="14" Symbol="Emoji" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconEmoji}" />
             <Button.Flyout>
                 <Flyout Closed="OnFlyoutClosed" Opened="OnFlyoutOpened">
                     <Flyout.FlyoutPresenterStyle>

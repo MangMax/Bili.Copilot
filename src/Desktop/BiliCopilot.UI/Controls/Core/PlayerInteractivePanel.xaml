@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -44,7 +43,7 @@
                 Style="{StaticResource ContextMenuFlyoutItemStyle}"
                 Text="{ext:Locale Name=Screenshot}">
                 <MenuFlyoutItem.Icon>
-                    <ic:SymbolIcon Symbol="Screenshot" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconScreenshot}" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem
@@ -52,7 +51,7 @@
                 Style="{StaticResource ContextMenuFlyoutItemStyle}"
                 Text="{x:Bind local:PlayerInteractivePanel.GetPanscanText(ViewModel.UsingPanscan), Mode=OneWay}">
                 <MenuFlyoutItem.Icon>
-                    <ic:SymbolIcon Symbol="ScanTable" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconScanTable}" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem
@@ -60,13 +59,13 @@
                 Style="{StaticResource ContextMenuFlyoutItemStyle}"
                 Text="{ext:Locale Name=SendDanmaku}">
                 <MenuFlyoutItem.Icon>
-                    <ic:SymbolIcon Symbol="TextBulletList" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconTextBulletList}" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator />
             <MenuFlyoutSubItem Style="{StaticResource ContextMenuFlyoutSubItemStyle}" Text="{ext:Locale Name=Shaders}">
                 <MenuFlyoutSubItem.Icon>
-                    <ic:SymbolIcon Symbol="VideoClipWand" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconVideoClipWand}" />
                 </MenuFlyoutSubItem.Icon>
                 <MenuFlyoutItem
                     Command="{x:Bind ViewModel.ClearShadersCommand, Mode=OneWay}"
@@ -314,7 +313,7 @@
                 Text="{ext:Locale Name=NvidiaVsr}"
                 Visibility="{x:Bind ViewModel.HasNvidiaGpu, Mode=OneWay}">
                 <MenuFlyoutSubItem.Icon>
-                    <ImageIcon Source="ms-appx:///Assets/nvidia-logo.png" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconGpu}" />
                 </MenuFlyoutSubItem.Icon>
                 <RadioMenuFlyoutItem
                     Click="OnNvidiaVsrItemClick"
@@ -368,7 +367,7 @@
                     Style="{StaticResource SidePlayerButtonStyle}"
                     ToolTipService.ToolTip="{ext:Locale Name=ShowMenu}"
                     Visibility="{x:Bind ViewModel.IsTouchControlsVisible, Mode=OneWay}">
-                    <ic:FluentIcon FontSize="14" Icon="HandPoint" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconHandPoint}" />
                 </Button>
             </Border>
         </Border>

@@ -12,32 +12,21 @@
     mc:Ignorable="d">
 
     <StackPanel Orientation="Horizontal" Spacing="12">
-        <base:IconTextBlock
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
-            Symbol="PlayCircle"
-            Text="{x:Bind ViewModel.PlayCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{ext:Locale Name=PlayCount}" />
-        <base:IconTextBlock
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
-            Symbol="Comment"
-            Text="{x:Bind ViewModel.CommentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{ext:Locale Name=ReplyCount}" />
-        <base:IconTextBlock
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
-            Symbol="TextBulletList"
-            Text="{x:Bind ViewModel.DanmakuCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{ext:Locale Name=DanmakuCount}" />
-        <base:IconTextBlock
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
-            Symbol="Eye"
-            Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay}" />
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4" ToolTipService.ToolTip="{ext:Locale Name=PlayCount}">
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconPlayCircle}" FontSize="12" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+            <TextBlock VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind ViewModel.PlayCount, Mode=OneWay, Converter={StaticResource CountConverter}}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
+        </StackPanel>
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4" ToolTipService.ToolTip="{ext:Locale Name=ReplyCount}">
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconComment}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind ViewModel.CommentCount, Mode=OneWay, Converter={StaticResource CountConverter}}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
+        </StackPanel>
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4" ToolTipService.ToolTip="{ext:Locale Name=DanmakuCount}">
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDanmaku}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind ViewModel.DanmakuCount, Mode=OneWay, Converter={StaticResource CountConverter}}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
+        </StackPanel>
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4">
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconEye}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
+        </StackPanel>
     </StackPanel>
 </local:VideoPlayerControlBase>

@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.Extensions.Logging;
@@ -137,14 +138,14 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     }
 
 #pragma warning disable CA1822
-    private FluentIcons.Common.Symbol GetPlayPauseSymbol(MpvPlayerState state)
-        => state == MpvPlayerState.Playing ? FluentIcons.Common.Symbol.Pause : FluentIcons.Common.Symbol.Play;
+    private string GetPlayPauseSymbol(MpvPlayerState state)
+        => state == MpvPlayerState.Playing ? IconGlyph.PauseFilled : IconGlyph.PlayFilled;
 
-    private FluentIcons.Common.Symbol GetCompactOverlaySymbol(bool isCompactOverlay)
-        => isCompactOverlay ? FluentIcons.Common.Symbol.ContractDownLeft : FluentIcons.Common.Symbol.ContractUpRight;
+    private string GetCompactOverlaySymbol(bool isCompactOverlay)
+        => isCompactOverlay ? IconGlyph.ExitCompactOverlay : IconGlyph.EnterCompactOverlay;
 
-    private FluentIcons.Common.Symbol GetFullScreenSymbol(bool isFullScreen)
-        => isFullScreen ? FluentIcons.Common.Symbol.FullScreenMinimize : FluentIcons.Common.Symbol.FullScreenMaximize;
+    private string GetFullScreenSymbol(bool isFullScreen)
+        => isFullScreen ? IconGlyph.FullScreenMinimize : IconGlyph.FullScreenMaximize;
 
     private bool IsPlayPauseEnabled(MpvPlayerState state)
         => state is MpvPlayerState.Playing or MpvPlayerState.Paused or MpvPlayerState.End;

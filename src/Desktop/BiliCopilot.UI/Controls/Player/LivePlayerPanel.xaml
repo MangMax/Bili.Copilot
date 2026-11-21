@@ -6,7 +6,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -44,7 +43,7 @@
                     BorderThickness="0"
                     Command="{x:Bind ViewModel.OpenInBrowserCommand, Mode=OneWay}"
                     ToolTipService.ToolTip="{ext:Locale Name=OpenInBrowser}">
-                    <ic:SymbolIcon FontSize="14" Symbol="Globe" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconGlobe}" />
                 </Button>
             </Grid>
 
@@ -84,11 +83,12 @@
                     Orientation="Horizontal"
                     Spacing="4"
                     Visibility="{x:Bind ViewModel.PopularityText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Symbol="Heart" />
+                        Glyph="{StaticResource IconHeart}" />
                     <TextBlock
                         VerticalAlignment="Center"
                         FontSize="12"
@@ -99,11 +99,12 @@
                     Orientation="Horizontal"
                     Spacing="4"
                     Visibility="{x:Bind ViewModel.ViewerCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Symbol="People" />
+                        Glyph="{StaticResource IconPeople}" />
                     <TextBlock
                         VerticalAlignment="Center"
                         FontSize="12"
@@ -114,11 +115,12 @@
                     Orientation="Horizontal"
                     Spacing="4"
                     Visibility="{x:Bind ViewModel.UptimeText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Symbol="Clock" />
+                        Glyph="{StaticResource IconClock}" />
                     <TextBlock
                         VerticalAlignment="Center"
                         FontSize="12"

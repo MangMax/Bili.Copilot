@@ -10,7 +10,6 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -79,7 +78,7 @@
                     Style="{StaticResource CustomButtonStyle}"
                     ToolTipService.ToolTip="{ext:Locale Name=ZoomIn}">
                     <AppBarButton.Icon>
-                        <ic:SymbolIcon Symbol="ZoomIn" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconZoomIn}" />
                     </AppBarButton.Icon>
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator
@@ -101,7 +100,7 @@
                     Style="{StaticResource CustomButtonStyle}"
                     ToolTipService.ToolTip="{ext:Locale Name=ZoomOut}">
                     <AppBarButton.Icon>
-                        <ic:SymbolIcon Symbol="ZoomOut" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconZoomOut}" />
                     </AppBarButton.Icon>
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator
@@ -117,7 +116,7 @@
                     Style="{StaticResource CustomButtonStyle}"
                     ToolTipService.ToolTip="{ext:Locale Name=CopyToClipboard}">
                     <AppBarButton.Icon>
-                        <ic:SymbolIcon Symbol="Copy" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconCopy}" />
                     </AppBarButton.Icon>
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator
@@ -132,7 +131,7 @@
                     Style="{StaticResource CustomButtonStyle}"
                     ToolTipService.ToolTip="{ext:Locale Name=SaveTo}">
                     <AppBarButton.Icon>
-                        <ic:SymbolIcon Symbol="Save" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconSave}" />
                     </AppBarButton.Icon>
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator
@@ -148,18 +147,18 @@
                             <MenuFlyout>
                                 <MenuFlyoutItem Click="OnSettingToBackgroundClickAsync" Text="{ext:Locale Name=SettingToBackground}">
                                     <MenuFlyoutItem.Icon>
-                                        <ic:SymbolIcon Symbol="VideoBackgroundEffect" />
+                                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconVideoBackgroundEffect}" />
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem Click="OnSettingToLockScreenClickAsync" Text="{ext:Locale Name=SettingToLockScreen}">
                                     <MenuFlyoutItem.Icon>
-                                        <ic:SymbolIcon Symbol="LockClosed" />
+                                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconLockClosed}" />
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
                             </MenuFlyout>
                         </AppBarButton.Flyout>
                         <AppBarButton.Icon>
-                            <ic:SymbolIcon Symbol="ImageArrowForward" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconImageArrowForward}" />
                         </AppBarButton.Icon>
                     </AppBarButton>
                 </CommandBar.SecondaryCommands>

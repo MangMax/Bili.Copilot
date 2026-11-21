@@ -6,7 +6,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Article"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -18,12 +17,12 @@
                 KeyboardAcceleratorTextOverride="Ctrl + C"
                 Text="{ext:Locale Name=CopyToClipboard}">
                 <MenuFlyoutItem.Icon>
-                    <ic:SymbolIcon Symbol="Copy" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconCopy}" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem Click="OnSearchItemClickAsync" Text="{ext:Locale Name=SearchInWeb}">
                 <MenuFlyoutItem.Icon>
-                    <ic:SymbolIcon Symbol="GlobeSearch" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconGlobeSearch}" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
         </MenuFlyout>

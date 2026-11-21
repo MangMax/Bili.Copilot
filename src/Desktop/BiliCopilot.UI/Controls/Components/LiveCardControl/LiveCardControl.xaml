@@ -5,7 +5,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
 
     <!--
@@ -136,8 +135,9 @@
                                                 AutomationProperties.AutomationId="LiveMore"
                                                 AutomationProperties.Name="{ext:Locale Name=MoreOptions}"
                                                 ToolTipService.ToolTip="{ext:Locale Name=MoreOptions}">
-                                                <ic:SymbolIcon
-                                                    Symbol="MoreVertical"
+                                                <FontIcon
+                                                    FontFamily="{StaticResource BiliIconsFontFamily}"
+                                                    Glyph="{StaticResource IconMoreVertical}"
                                                     FontSize="12"
                                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                             </Button>

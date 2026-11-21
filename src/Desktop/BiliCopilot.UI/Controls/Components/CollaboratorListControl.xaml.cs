@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using System.Collections;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Automation;
@@ -179,7 +180,7 @@ public sealed partial class CollaboratorListControl : UserControl
         incoming.Visibility = Visibility.Visible;
         Scroller.ChangeView(0, null, null, true);
 
-        ExpandIcon.Symbol = _isExpanded ? FluentIcons.Common.Symbol.ChevronUp : FluentIcons.Common.Symbol.ChevronDown;
+        ExpandIcon.Glyph = _isExpanded ? IconGlyph.ChevronUp : IconGlyph.ChevronDown;
         RefreshExpandLabel();
 
         // 保持当前高度并直接测量目标高度，避免测量时出现一帧完整高度的闪烁.

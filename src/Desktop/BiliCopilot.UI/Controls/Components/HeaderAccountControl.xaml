@@ -6,7 +6,6 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -47,7 +46,7 @@
                         KeyboardAcceleratorTextOverride="{x:Bind ViewModel.MomentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
                         Text="{ext:Locale Name=MyDynamic}">
                         <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="DesignIdeas" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDesignIdeas}" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutItem
@@ -55,7 +54,7 @@
                         KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FollowCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
                         Text="{ext:Locale Name=MyFollow}">
                         <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="PeopleEye" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconPeopleEye}" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutItem
@@ -63,28 +62,28 @@
                         KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FansCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
                         Text="{ext:Locale Name=MyFans}">
                         <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="PeopleCommunity" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconPeopleCommunity}" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem Command="{x:Bind ViewModel.OpenPersonalWebsiteCommand}" Text="{ext:Locale Name=Personal}">
                         <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="Person" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconPerson}" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFavoritesCommand}" Text="{ext:Locale Name=MyFavorite}">
                         <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="StarLineHorizontal3" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconStarLineHorizontal3}" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutItem Command="{x:Bind ViewModel.ShowViewLaterCommand}" Text="{ext:Locale Name=ViewLater}">
                         <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="CalendarClock" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconCalendarClock}" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutItem Command="{x:Bind ViewModel.ShowHistoryCommand}" Text="{ext:Locale Name=ViewHistory}">
                         <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="History" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconHistory}" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                 </MenuFlyout>

@@ -9,7 +9,6 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.Pgc"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -21,7 +20,7 @@
         <DataTemplate x:Name="SectionTemplate" x:DataType="items:IPgcSectionDetailViewModel">
             <SelectorBarItem Tag="{x:Bind}" ToolTipService.ToolTip="{x:Bind SectionType, Converter={StaticResource SectionTextConverter}}">
                 <SelectorBarItem.Icon>
-                    <ic:SymbolIcon FontSize="16" Symbol="{x:Bind SectionType, Converter={StaticResource SectionIconConverter}}" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind SectionType, Converter={StaticResource SectionIconConverter}}" />
                 </SelectorBarItem.Icon>
             </SelectorBarItem>
         </DataTemplate>

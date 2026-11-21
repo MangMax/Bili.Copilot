@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.AI.Prompts;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -19,14 +20,14 @@ public sealed partial class AIViewModel
         var videoEvaluationPrompt = await _promptTemplates.GetTemplateAsync(AIPromptKind.VideoEvaluation);
 
         var videoSummaryItem = new AIQuickItemViewModel(
-            FluentIcons.Common.Symbol.TextBulletListSquareSparkle,
+            IconGlyph.TextBulletListSquareSparkle,
             ResourceToolkit.GetLocalizedString(StringNames.VideoSummarize),
             "根据视频字幕及简介总结视频内容",
             "总结《{0}》的内容",
             videoSummarizePrompt,
             SummaryVideoAsync);
         var videoEvaluationItem = new AIQuickItemViewModel(
-            FluentIcons.Common.Symbol.ChatSparkle,
+            IconGlyph.ChatSparkle,
             ResourceToolkit.GetLocalizedString(StringNames.VideoEvaluation),
             "根据视频内容及热门评论评价视频",
             "评价《{0}》的内容",
@@ -45,14 +46,14 @@ public sealed partial class AIViewModel
         var articleEvaluationPrompt = await _promptTemplates.GetTemplateAsync(AIPromptKind.ArticleEvaluation);
 
         var articleSummaryItem = new AIQuickItemViewModel(
-            FluentIcons.Common.Symbol.DocumentOnePageSparkle,
+            IconGlyph.DocumentOnePageSparkle,
             "文章总结",
             "根据文章内容总结文章",
             "总结《{0}》的内容",
             articleSummarizePrompt,
             SummaryArticleAsync);
         var articleEvaluationItem = new AIQuickItemViewModel(
-            FluentIcons.Common.Symbol.ChatSparkle,
+            IconGlyph.ChatSparkle,
             "文章评价",
             "根据文章内容及热门评论评价文章",
             "评价《{0}》的内容",
@@ -75,7 +76,7 @@ public sealed partial class AIViewModel
     private AIQuickItemViewModel GetCustomQuestionQuickItem()
     {
         return new AIQuickItemViewModel(
-            FluentIcons.Common.Symbol.Question,
+            IconGlyph.Question,
             "举手提问",
             default,
             default,

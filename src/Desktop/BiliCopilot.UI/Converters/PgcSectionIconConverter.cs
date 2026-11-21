@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Models.Constants;
 using Microsoft.UI.Xaml.Data;
 
@@ -12,11 +13,11 @@ internal sealed partial class PgcSectionIconConverter : IValueConverter
         var sectionType = (PgcSectionType)value;
         return sectionType switch
         {
-            PgcSectionType.Timeline => FluentIcons.Common.Symbol.Timeline,
-            PgcSectionType.Anime => FluentIcons.Common.Symbol.Dust,
-            PgcSectionType.Movie => FluentIcons.Common.Symbol.MoviesAndTv,
-            PgcSectionType.TV => FluentIcons.Common.Symbol.Tv,
-            PgcSectionType.Documentary => FluentIcons.Common.Symbol.EarthLeaf,
+            PgcSectionType.Timeline => IconGlyph.Timeline,
+            PgcSectionType.Anime => IconGlyph.Dust,
+            PgcSectionType.Movie => IconGlyph.MoviesAndTv,
+            PgcSectionType.TV => IconGlyph.Tv,
+            PgcSectionType.Documentary => IconGlyph.EarthLeaf,
             _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null)
         };
     }

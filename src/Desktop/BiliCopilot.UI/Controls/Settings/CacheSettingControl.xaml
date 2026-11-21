@@ -6,7 +6,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -16,7 +15,7 @@
         Description="{x:Bind ViewModel.TotalImageCacheSize, Mode=OneWay}"
         Header="{ext:Locale Name=ImageCache}">
         <base:SettingsCard.HeaderIcon>
-            <ic:SymbolIcon Symbol="SaveImage" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconSaveImage}" />
         </base:SettingsCard.HeaderIcon>
         <Button
             MinWidth="120"

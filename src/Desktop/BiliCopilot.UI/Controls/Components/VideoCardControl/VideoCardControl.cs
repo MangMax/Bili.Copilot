@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Models.Constants;
 using Microsoft.Extensions.Logging;
 using BiliCopilot.UI.ViewModels.Components;
@@ -238,7 +239,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.PlayInPrivate),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.EyeOff },
             Tag = nameof(ViewModel.PlayInPrivateCommand),
         };
     }
@@ -248,7 +249,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.EnterUserSpace),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Person },
             Tag = nameof(ViewModel.ShowUserSpaceCommand),
         };
     }
@@ -258,7 +259,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.AddToViewLater),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.CalendarAdd },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.CalendarAdd },
             Tag = nameof(ViewModel.AddToViewLaterCommand),
         };
     }
@@ -268,7 +269,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.Remove),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
             Tag = nameof(ViewModel.RemoveViewLaterCommand),
         };
     }
@@ -278,14 +279,14 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.Remove),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
             Tag = nameof(ViewModel.RemoveHistoryCommand),
         };
     }
 
     private MenuFlyoutItem CreateRemoveFavoriteItem()
     {
-        return new MenuFlyoutItem() { Text = ResourceToolkit.GetLocalizedString(StringNames.Remove), Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") }, Tag = nameof(ViewModel.RemoveFavoriteCommand) };
+        return new MenuFlyoutItem() { Text = ResourceToolkit.GetLocalizedString(StringNames.Remove), Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") }, Tag = nameof(ViewModel.RemoveFavoriteCommand) };
     }
 
     private static MenuFlyoutItem CreateOpenInBroswerItem()
@@ -293,7 +294,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -303,7 +304,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.CopyVideoUrl),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Copy },
             Tag = nameof(ViewModel.CopyUriCommand),
         };
     }
@@ -368,7 +369,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
                 {
                     Text = ResourceToolkit.GetLocalizedString(reason.Operation == RecommendationFeedbackOperation.AvoidPublisher
                         ? StringNames.AvoidPublisherRecommendation : StringNames.NotInterestedRecommendation),
-                    Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
+                    Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.EyeOff },
                     Tag = nameof(ViewModel.SubmitRecommendationFeedbackCommand),
                     CommandParameter = reason,
                 };

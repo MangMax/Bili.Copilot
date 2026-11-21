@@ -50,6 +50,15 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     internal static Visibility IsTopMostButtonVisible(bool isFullScreen, bool isAot)
         => (isFullScreen || isAot) ? Visibility.Collapsed : Visibility.Visible;
 
+    internal static float GetTopMostIconRotation(bool isTopMost)
+        => isTopMost ? 35f : 0f;
+
+    internal static double GetTopMostOutlineOpacity(bool isTopMost)
+        => isTopMost ? 0d : 1d;
+
+    internal static double GetTopMostFilledOpacity(bool isTopMost)
+        => isTopMost ? 1d : 0d;
+
     protected override void OnControlLoaded()
     {
         AttachTitleBar();

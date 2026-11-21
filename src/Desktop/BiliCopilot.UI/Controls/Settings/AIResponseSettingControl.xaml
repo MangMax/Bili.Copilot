@@ -6,7 +6,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -14,7 +13,7 @@
     <base:SettingsCard Description="{ext:Locale Name=UseStreamResponseDescription}" Header="{ext:Locale Name=UseStreamResponse}">
         <ToggleSwitch IsOn="{x:Bind ViewModel.IsAIStreamingResponse, Mode=TwoWay}" />
         <base:SettingsCard.HeaderIcon>
-            <ic:SymbolIcon Symbol="Stream" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconStream}" />
         </base:SettingsCard.HeaderIcon>
     </base:SettingsCard>
 </local:SettingsPageControlBase>

@@ -6,14 +6,13 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <base:SettingsCard Description="{ext:Locale Name=ShowSearchRecommendDescription}" Header="{ext:Locale Name=ShowSearchRecommend}">
         <base:SettingsCard.HeaderIcon>
-            <ic:SymbolIcon Symbol="Search" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconSearch}" />
         </base:SettingsCard.HeaderIcon>
         <ToggleSwitch IsOn="{x:Bind ViewModel.ShowSearchRecommend, Mode=TwoWay}" />
     </base:SettingsCard>

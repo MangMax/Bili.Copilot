@@ -6,14 +6,13 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <base:SettingsExpander Description="{ext:Locale Name=AppThemeDescription}" Header="{ext:Locale Name=AppTheme}">
         <base:SettingsExpander.HeaderIcon>
-            <ic:SymbolIcon Symbol="Color" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconColor}" />
         </base:SettingsExpander.HeaderIcon>
         <TextBlock Text="{x:Bind ViewModel.AppThemeText, Mode=OneWay}" />
 

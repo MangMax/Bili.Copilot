@@ -7,7 +7,6 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:settings="using:BiliCopilot.UI.Controls.Settings"
@@ -146,7 +145,7 @@
                     Message="{ext:Locale Name=AISettingHeaderDescription}"
                     Severity="Informational">
                     <InfoBar.IconSource>
-                        <ic:SymbolIconSource Symbol="Sparkle" />
+                        <FontIconSource FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconSparkle}" />
                     </InfoBar.IconSource>
                     <InfoBar.ActionButton>
                         <HyperlinkButton Content="{ext:Locale Name=SeeDetail}" NavigateUri="https://agent.richasy.net/chat-config" />

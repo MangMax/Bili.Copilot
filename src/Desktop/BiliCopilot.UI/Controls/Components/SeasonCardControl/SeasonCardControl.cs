@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -59,7 +60,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -69,7 +70,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.Follow),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Heart },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Heart },
             Tag = nameof(ViewModel.FollowCommand),
         };
     }
@@ -79,7 +80,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -89,7 +90,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWantWatch),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Thinking },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Thinking },
             Tag = nameof(ViewModel.MarkWantWatchCommand),
         };
     }
@@ -99,7 +100,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWatching),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Eye },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Eye },
             Tag = nameof(ViewModel.MarkWatchingCommand),
         };
     }
@@ -109,7 +110,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWatched),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Checkmark },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Checkmark },
             Tag = nameof(ViewModel.MarkWatchedCommand),
         };
     }
@@ -119,7 +120,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.Unfollow),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.HeartBroken, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.HeartBroken, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
             Tag = nameof(ViewModel.UnfollowCommand),
         };
     }

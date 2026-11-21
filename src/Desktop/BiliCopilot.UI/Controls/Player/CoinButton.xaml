@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <base:LayoutUserControlBase
     x:Class="BiliCopilot.UI.Controls.Player.CoinButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,7 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:icons="using:BiliCopilot.UI.Icons"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -28,10 +28,10 @@
                 IsEnabled="True"
                 ToolTipService.ToolTip="{ext:Locale Name=Coin}"
                 Unchecked="OnUnchecked">
-                <ic:SymbolIcon
-                    FontSize="16"
-                    IconVariant="{x:Bind IsCoined, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
-                    Symbol="Blur" />
+                <FontIcon
+                    FontFamily="{StaticResource BiliIconsFontFamily}"
+                    FontSize="20"
+                    Glyph="{x:Bind icons:IconGlyph.SelectReward(IsCoined), Mode=OneWay}" />
             </ToggleButton>
             <TextBlock
                 HorizontalAlignment="Center"

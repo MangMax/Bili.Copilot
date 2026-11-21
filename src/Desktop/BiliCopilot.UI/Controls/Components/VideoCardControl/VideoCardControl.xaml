@@ -5,7 +5,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
 
     <Style
@@ -176,8 +175,9 @@
                                                 AutomationProperties.AutomationId="VideoCardMore"
                                                 AutomationProperties.Name="{ext:Locale Name=MoreOptions}"
                                                 ToolTipService.ToolTip="{ext:Locale Name=MoreOptions}">
-                                                <ic:SymbolIcon
-                                                    Symbol="MoreVertical"
+                                                <FontIcon
+                                                    FontFamily="{StaticResource BiliIconsFontFamily}"
+                                                    Glyph="{StaticResource IconMoreVertical}"
                                                     FontSize="12"
                                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                             </Button>
@@ -307,11 +307,12 @@
                                         Orientation="Horizontal"
                                         Spacing="4"
                                         ToolTipService.ToolTip="{ext:Locale Name=PlayCount}">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="10"
                                             Foreground="{ThemeResource AccentTextFillColorTertiaryBrush}"
-                                            Symbol="PlayCircle" />
+                                            Glyph="{StaticResource IconPlayCircle}" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -386,11 +387,12 @@
                                         Orientation="Horizontal"
                                         Spacing="4"
                                         ToolTipService.ToolTip="{ext:Locale Name=PlayCount}">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="10"
                                             Foreground="{ThemeResource AccentTextFillColorTertiaryBrush}"
-                                            Symbol="PlayCircle" />
+                                            Glyph="{StaticResource IconPlayCircle}" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -477,11 +479,12 @@
                                         Orientation="Horizontal"
                                         Spacing="4"
                                         ToolTipService.ToolTip="{ext:Locale Name=PlayCount}">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="10"
                                             Foreground="{ThemeResource AccentTextFillColorTertiaryBrush}"
-                                            Symbol="PlayCircle" />
+                                            Glyph="{StaticResource IconPlayCircle}" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -495,11 +498,12 @@
                                         Spacing="4"
                                         ToolTipService.ToolTip="{ext:Locale Name=DanmakuCount}"
                                         Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.DanmakuCount, Converter={StaticResource ObjectToVisibilityConverter}}">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="10"
                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                            Symbol="TextBulletList" />
+                                            Glyph="{StaticResource IconTextBulletList}" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -589,11 +593,12 @@
                                         Orientation="Horizontal"
                                         Spacing="4"
                                         ToolTipService.ToolTip="{ext:Locale Name=PlayCount}">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="10"
                                             Foreground="{ThemeResource AccentTextFillColorTertiaryBrush}"
-                                            Symbol="PlayCircle" />
+                                            Glyph="{StaticResource IconPlayCircle}" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -607,11 +612,12 @@
                                         Spacing="4"
                                         ToolTipService.ToolTip="{ext:Locale Name=DanmakuCount}"
                                         Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.DanmakuCount, Converter={StaticResource ObjectToVisibilityConverter}}">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="10"
                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                            Symbol="TextBulletList" />
+                                            Glyph="{StaticResource IconTextBulletList}" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -708,11 +714,12 @@
                                         Orientation="Horizontal"
                                         Spacing="4"
                                         ToolTipService.ToolTip="{ext:Locale Name=PlayCount}">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="10"
                                             Foreground="{ThemeResource AccentTextFillColorTertiaryBrush}"
-                                            Symbol="PlayCircle" />
+                                            Glyph="{StaticResource IconPlayCircle}" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -726,11 +733,12 @@
                                         Spacing="4"
                                         ToolTipService.ToolTip="{ext:Locale Name=DanmakuCount}"
                                         Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ViewModel.DanmakuCount, Converter={StaticResource ObjectToVisibilityConverter}}">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="10"
                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                            Symbol="TextBulletList" />
+                                            Glyph="{StaticResource IconTextBulletList}" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"

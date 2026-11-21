@@ -7,7 +7,6 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.VideoPartition"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Richasy.BiliKernel.Models"
@@ -96,11 +95,12 @@
                         <CompositeTransform />
                     </Button.RenderTransform>
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                            Symbol="ArrowUndo" />
+                            Glyph="{StaticResource IconArrowUndo}" />
                         <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=UndoRefresh}" />
                     </StackPanel>
                 </Button>
@@ -117,12 +117,13 @@
                             Height="14"
                             VerticalAlignment="Center">
                             <!--  图标与进度环原位交叉淡入淡出，切换时不闪断。  -->
-                            <ic:SymbolIcon
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 FontSize="12"
                                 Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                Symbol="ArrowSync"
+                                Glyph="{StaticResource IconArrowSync}"
                                 Visibility="{x:Bind ViewModel.IsRecommendRefreshing, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
                             <ProgressRing
                                 Width="14"
@@ -172,11 +173,12 @@
                     Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}"
                     ToolTipService.ToolTip="{ext:Locale Name=Refresh}"
                     Visibility="{x:Bind ViewModel.IsRecommend, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                        Symbol="ArrowSync" />
+                        Glyph="{StaticResource IconArrowSync}" />
                     <animations:Implicit.ShowAnimations>
                         <animations:OpacityAnimation
                             From="0"

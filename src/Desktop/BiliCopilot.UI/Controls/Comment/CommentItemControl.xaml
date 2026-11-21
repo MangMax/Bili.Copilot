@@ -8,7 +8,6 @@
     xmlns:converters="using:BiliCopilot.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Comment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -134,7 +133,7 @@
                     Style="{StaticResource SmallIconButtonStyle}"
                     ToolTipService.ToolTip="{ext:Locale Name=Reply}"
                     Visibility="{x:Bind IsMoreEnabled, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ic:SymbolIcon FontSize="12" Symbol="CommentMention" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="12" Glyph="{StaticResource IconCommentMention}" />
                 </Button>
             </Grid>
         </Grid>

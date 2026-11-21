@@ -8,7 +8,6 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="using:Richasy.WinUIKernel.Share.ViewModels"
@@ -21,7 +20,7 @@
                 IsSelected="{x:Bind IsSelected, Mode=TwoWay}"
                 SelectsOnInvoked="True"
                 ShowUnread="{x:Bind ShowUnread, Mode=OneWay}"
-                Style="{StaticResource MainNavigationViewItemStyle}"
+                Style="{StaticResource BiliIconsNavigationViewItemStyle}"
                 Symbol="{x:Bind Symbol, Mode=OneTime}"
                 Tag="{x:Bind}"
                 Visibility="{x:Bind IsVisible, Mode=OneWay}" />

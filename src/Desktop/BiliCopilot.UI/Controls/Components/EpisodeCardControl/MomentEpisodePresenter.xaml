@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -56,11 +55,12 @@
                         Orientation="Horizontal"
                         Spacing="4"
                         Visibility="{x:Bind ViewModel.PlayCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             VerticalAlignment="Center"
                             FontSize="10"
                             Foreground="{StaticResource CardMediaForeground}"
-                            Symbol="PlayCircle" />
+                            Glyph="{StaticResource IconPlayCircle}" />
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="11.5"

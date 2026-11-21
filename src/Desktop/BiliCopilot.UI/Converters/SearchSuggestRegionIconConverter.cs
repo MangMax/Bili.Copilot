@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using Microsoft.UI.Xaml.Data;
 
 namespace BiliCopilot.UI.Converters;
@@ -11,9 +12,9 @@ internal sealed partial class SearchSuggestRegionIconConverter : IValueConverter
         var id = value as string;
         return id switch
         {
-            "space" => FluentIcons.Common.Symbol.Person,
-            "history" => FluentIcons.Common.Symbol.History,
-            _ => FluentIcons.Common.Symbol.Search,
+            "space" => IconGlyph.Person,
+            "history" => IconGlyph.History,
+            _ => IconGlyph.Search,
         };
     }
 
