@@ -115,6 +115,7 @@ public sealed partial class VideoConnectorViewModel
         HasCollaborators = false;
         IsFollow = false;
         PlayCount = 0;
+        OnlineCountText = default;
         DanmakuCount = 0;
         CommentCount = 0;
         LikeCount = 0;

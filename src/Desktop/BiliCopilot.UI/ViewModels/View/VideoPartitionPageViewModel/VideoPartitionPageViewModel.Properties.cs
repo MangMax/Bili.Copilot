@@ -23,6 +23,9 @@ public sealed partial class VideoPartitionPageViewModel
     public partial bool IsPartitionLoading { get; set; }
 
     [ObservableProperty]
+    public partial bool HasPartitionLoadFailed { get; set; }
+
+    [ObservableProperty]
     public partial VideoPartitionDetailViewModel? SelectedPartition { get; set; }
 
     /// <summary>

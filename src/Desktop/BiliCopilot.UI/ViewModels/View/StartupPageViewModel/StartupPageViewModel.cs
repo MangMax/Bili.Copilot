@@ -1,11 +1,11 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
-using BiliCopilot.UI.ViewModels.Core;
+using BiliCopilot.UI.Forms;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Richasy.BiliKernel.Bili.Authorization;
+using Richasy.BiliKernel.Bili;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -20,14 +20,14 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="StartupPageViewModel"/> class.
     /// </summary>
     public StartupPageViewModel(
-        IAuthenticationService authenticationService,
         ILogger<StartupPageViewModel> logger,
         DispatcherQueue dispatcherQueue)
     {
-        _authenticationService = authenticationService;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
     }
+
+    internal StartupWindow? SignInWindow { get; set; }
 
     /// <summary>
     /// 初始化视图模型.
@@ -41,86 +41,109 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         await ReloadQRCodeAsync();
     }
 
-    [RelayCommand]
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task ReloadQRCodeAsync()
     {
-        if (_cancellationTokenSource is not null)
+        var previous = _cancellationTokenSource;
+        using var attempt = new CancellationTokenSource();
+        _cancellationTokenSource = attempt;
+        ErrorTip = null;
+        IsQRCodeLoading = true;
+        if (QRCodeImage is not null)
         {
-            await _cancellationTokenSource.CancelAsync();
-            _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = null;
+            QRCodeImage.Source = null;
         }
-
-        _cancellationTokenSource = new CancellationTokenSource();
         try
         {
-            IsQRCodeLoading = true;
-            await _authenticationService.SignInAsync(cancellationToken: _cancellationTokenSource.Token);
-            var isSignedIn = await CheckAuthorizeStatusAsync();
-            if (isSignedIn)
+            previous?.Cancel();
+            var settings = new AuthorizeExecutionSettings
             {
-                ExitCommand.Execute(true);
-            }
-            else
+                RenderQRCodeAsync = image => RenderQRCodeAsync(image, attempt.Token),
+            };
+            await GlobalDependencies.Accounts.SignInAsync(settings, SignInWindow?.ExpectedUid, attempt.Token,
+                activateOnSuccess: SignInWindow?.ExpectedUid.HasValue == true);
+            if (ReferenceEquals(_cancellationTokenSource, attempt))
             {
-                _logger.LogWarning("未能成功获取授权信息，扫码可能出现了异常.");
+                await ExitAsync(true);
             }
+        }
+        catch (OperationCanceledException) when (attempt.IsCancellationRequested)
+        {
         }
         catch (Exception ex)
         {
-            IsQRCodeLoading = false;
-            ErrorTip = ex.Message;
-            _logger.LogInformation(ex, "登录过程中出现异常.");
+            if (ReferenceEquals(_cancellationTokenSource, attempt))
+            {
+                ErrorTip = ex.Message;
+                _logger.LogWarning("二维码登录失败 ({ExceptionType})", ex.GetType().Name);
+            }
+        }
+        finally
+        {
+            if (ReferenceEquals(_cancellationTokenSource, attempt))
+            {
+                _cancellationTokenSource = null;
+                IsQRCodeLoading = false;
+            }
         }
     }
 
     [RelayCommand]
-    private async Task ExitAsync(bool shouldRestart)
+    private async Task ExitAsync(bool completeSignIn)
     {
-        if (_cancellationTokenSource is not null)
+        var attempt = _cancellationTokenSource;
+        _cancellationTokenSource = null;
+        IsQRCodeLoading = false;
+        if (attempt is not null)
         {
-            await _cancellationTokenSource.CancelAsync();
-            _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = null;
+            await attempt.CancelAsync();
         }
 
-        if (shouldRestart)
+        if (completeSignIn)
         {
-            this.Get<AppViewModel>().RestartCommand.Execute(default);
+            SignInWindow?.Close();
         }
     }
 
-    [RelayCommand]
-    private void RenderQRCode(byte[] imageData)
+    internal Task RenderQRCodeAsync(byte[] imageData)
+        => _cancellationTokenSource is { } attempt
+            ? RenderQRCodeAsync(imageData, attempt.Token)
+            : Task.CompletedTask;
+
+    private Task RenderQRCodeAsync(byte[] imageData, CancellationToken cancellationToken)
     {
-        if (QRCodeImage is null)
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        if (!_dispatcherQueue.TryEnqueue(async () =>
         {
-            throw new InvalidOperationException("二维码图片控件尚未就绪，请初始化模块.");
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                using var stream = new MemoryStream(imageData);
+                using var source = stream.AsRandomAccessStream();
+                var bitmap = new BitmapImage();
+                await bitmap.SetSourceAsync(source).AsTask(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (QRCodeImage is { } image)
+                {
+                    image.Source = bitmap;
+                    IsQRCodeLoading = false;
+                }
+
+                completion.SetResult();
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                completion.SetCanceled(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                completion.SetException(ex);
+            }
+        }))
+        {
+            completion.SetException(new InvalidOperationException("登录窗口已关闭"));
         }
 
-        _dispatcherQueue.TryEnqueue(async () =>
-        {
-            using var stream = new MemoryStream(imageData);
-            var bitmap = new BitmapImage();
-            await bitmap.SetSourceAsync(stream.AsRandomAccessStream()).AsTask();
-            QRCodeImage.Source = bitmap;
-            IsQRCodeLoading = false;
-        });
-    }
-
-    private async Task<bool> CheckAuthorizeStatusAsync()
-    {
-        var tokenResolver = this.Get<IAuthenticationService>();
-        try
-        {
-            await tokenResolver.EnsureTokenAsync(_cancellationTokenSource?.Token ?? default).ConfigureAwait(false);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "检查授权状态时出现异常.");
-        }
-
-        return false;
+        return completion.Task;
     }
 }

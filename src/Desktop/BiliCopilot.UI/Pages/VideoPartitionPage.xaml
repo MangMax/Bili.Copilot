@@ -47,6 +47,20 @@
             Grid.Column="2"
             Margin="-6,0,0,0"
             ViewModel="{x:Bind ViewModel.SelectedPartition, Mode=OneWay}" />
+        <InfoBar
+            Grid.Row="2"
+            Grid.Column="2"
+            Margin="16"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsClosable="False"
+            IsOpen="{x:Bind ViewModel.HasPartitionLoadFailed, Mode=OneWay}"
+            Message="{ext:Locale Name=PartitionRequestFailed}"
+            Severity="Error">
+            <InfoBar.ActionButton>
+                <Button Command="{x:Bind ViewModel.InitializeCommand}" Content="{ext:Locale Name=Retry}" />
+            </InfoBar.ActionButton>
+        </InfoBar>
 
         <!--  左侧分栏大小控制器  -->
         <base:ColumnSplitter

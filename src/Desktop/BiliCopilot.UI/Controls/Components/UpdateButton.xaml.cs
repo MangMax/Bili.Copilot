@@ -1,5 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Pages;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -18,6 +20,9 @@ public sealed partial class UpdateButton : UpdateButtonBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
         => _ = ViewModel.AutoCheckAsync();
+
+    private void OnUpdateButtonClick(object sender, RoutedEventArgs e)
+        => this.Get<NavigationViewModel>().NavigateTo(typeof(SettingsPage), SettingsSection.Update);
 }
 
 /// <summary>

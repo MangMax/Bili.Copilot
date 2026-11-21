@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Accounts;
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Live;
@@ -25,7 +26,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// 播放器视图模型.
 /// </summary>
 [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", Justification = "原生资源由 ReleaseSessionAsync 通过播放会话的释放闸门只释放一次。")]
-public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<PlayerViewModel> logger) : ViewModelBase, IAsyncDisposable
+public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<PlayerViewModel> logger, DanmakuSendViewModel danmakuSend) : ViewModelBase, IAsyncDisposable
 {
     private PlaybackSession<PlayerViewModel>? _session;
     private InputPointerSource? _pointerSource;
@@ -45,12 +46,26 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
     /// </summary>
     /// <param name="session">播放会话。</param>
     internal void AttachSession(PlaybackSession<PlayerViewModel> session)
-        => _session = session ?? throw new ArgumentNullException(nameof(session));
+    {
+        _session = session ?? throw new ArgumentNullException(nameof(session));
+        AccountSession.Find(this)?.Bind(DanmakuSend);
+    }
 
     /// <summary>
     /// 原生关闭、返回和应用退出共享同一个任务，完成后才从播放器集合移除。
     /// </summary>
     public Task CloseAsync() => Session.CloseAsync(PrepareCloseAsync);
+
+    internal Task CloseForAccountSwitchAsync() => Session.CloseAsync(async () =>
+    {
+        InvalidateForRelease();
+        if (Window?.IsClosed == false)
+        {
+            Window.GetWindow().Hide();
+        }
+
+        await DisposeAsync();
+    });
 
     private async Task PrepareCloseAsync()
     {

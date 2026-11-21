@@ -11,4 +11,11 @@ public sealed partial class PgcOperationControl : PgcPlayerControlBase
     /// Initializes a new instance of the <see cref="PgcOperationControl"/> class.
     /// </summary>
     public PgcOperationControl() => InitializeComponent();
+
+    private void OnFollowedClick(SplitButton sender, SplitButtonClickEventArgs args)
+    {
+        var button = (ToggleSplitButton)sender;
+        button.IsChecked = true;
+        button.Flyout.ShowAt(button);
+    }
 }

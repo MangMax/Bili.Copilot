@@ -14,4 +14,15 @@ public sealed partial class FollowsMainHeader : FollowsPageControlBase
     {
         InitializeComponent();
     }
+
+    private void OnSearchSubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        => ViewModel.SearchCommand.Execute(args.QueryText);
+
+    private void OnSearchTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+    {
+        if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput && sender.Text.Length == 0)
+        {
+            ViewModel.SearchCommand.Execute(string.Empty);
+        }
+    }
 }

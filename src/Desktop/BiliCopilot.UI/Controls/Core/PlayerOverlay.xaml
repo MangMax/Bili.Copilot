@@ -569,7 +569,7 @@
                             Foreground="White"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="NoWrap"
-                            Text="{x:Bind ViewModel.Title, Mode=OneWay}" />
+                            Text="{x:Bind ViewModel.PlaybackHeaderTitle, Mode=OneWay}" />
                         <StackPanel x:Name="HeaderActions" Grid.Column="2" Margin="0,0,12,0" Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock

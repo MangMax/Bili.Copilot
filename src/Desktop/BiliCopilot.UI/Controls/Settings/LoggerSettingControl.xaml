@@ -30,6 +30,7 @@
                     MinWidth="120"
                     AutomationProperties.AutomationId="AppLogLevelComboBox"
                     AutomationProperties.Name="{ext:Locale Name=AppLogLevel}"
+                    Loaded="OnAppLevelLoaded"
                     SelectionChanged="OnAppLevelChanged">
                     <ComboBoxItem Content="{ext:Locale Name=Error}" Tag="Error" />
                     <ComboBoxItem Content="{ext:Locale Name=Warn}" Tag="Warning" />
@@ -45,6 +46,7 @@
                     MinWidth="120"
                     AutomationProperties.AutomationId="MpvLogLevelComboBox"
                     AutomationProperties.Name="{ext:Locale Name=MpvLogLevel}"
+                    Loaded="OnMpvLevelLoaded"
                     SelectionChanged="OnMpvLevelChanged">
                     <ComboBoxItem Content="{ext:Locale Name=Error}" Tag="Error" />
                     <ComboBoxItem Content="{ext:Locale Name=Warn}" Tag="Warn" />

@@ -9,5 +9,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <components:SlidingTabBar x:Name="Selector" Margin="8,0" HorizontalAlignment="Center" AutomationProperties.AutomationId="PgcPlayerSectionTabs" />
+    <components:SlidingTabBar
+        x:Name="Selector"
+        Margin="8,0"
+        HorizontalAlignment="Center"
+        AutomationProperties.AutomationId="PgcPlayerSectionTabs" />
 </local:PgcPlayerControlBase>

@@ -24,7 +24,11 @@
             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDanmaku}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             <TextBlock VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind ViewModel.DanmakuCount, Mode=OneWay, Converter={StaticResource CountConverter}}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
         </StackPanel>
-        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4">
+        <StackPanel
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="4"
+            Visibility="{x:Bind ViewModel.OnlineCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconEye}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             <TextBlock VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
         </StackPanel>

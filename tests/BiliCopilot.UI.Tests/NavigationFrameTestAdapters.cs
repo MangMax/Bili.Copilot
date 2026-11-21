@@ -1,4 +1,25 @@
 // Only Windows/XAML and animation surfaces are adapted; both frame implementations are linked unchanged.
+namespace BiliCopilot.UI.Accounts
+{
+    internal sealed class AccountSession
+    {
+        public static AccountSession? Find(object owner) => null;
+
+        public T Create<T>(Func<T> create) => create();
+    }
+
+    internal sealed class AccountCoordinator
+    {
+        public AccountSession? Current { get; set; }
+    }
+}
+namespace BiliCopilot.UI
+{
+    internal static class GlobalDependencies
+    {
+        public static Accounts.AccountCoordinator Accounts { get; } = new();
+    }
+}
 namespace Microsoft.UI.Xaml
 {
     public enum Visibility { Visible, Collapsed }
@@ -82,7 +103,16 @@ namespace BiliCopilot.UI.Pages
     public sealed class CinemaPage : NavigationTestPage { }
     public sealed class ArticlePartitionPage : NavigationTestPage { }
     public sealed class MessagePage : NavigationTestPage { }
-    public sealed class SettingsPage : NavigationTestPage { }
+    public sealed class SettingsPage : NavigationTestPage
+    {
+        public int BackNavigationCount { get; private set; }
+
+        internal bool TryNavigateBack()
+        {
+            BackNavigationCount++;
+            return true;
+        }
+    }
  }
 namespace BiliCopilot.UI.Pages.Overlay
 {

@@ -283,7 +283,7 @@
     <value>点赞数</value>
   </data>
   <data name="BiliHomePage" xml:space="preserve">
-    <value>开发者B站主页</value>
+    <value>原开发者 B 站主页</value>
   </data>
   <data name="Billion" xml:space="preserve">
     <value>亿</value>
@@ -978,9 +978,6 @@
   <data name="IsNeedFeedbackDescription" xml:space="preserve">
     <value>需要反馈应用使用过程中的问题？</value>
   </data>
-  <data name="JoinQQGroup" xml:space="preserve">
-    <value>加入 QQ 群</value>
-  </data>
   <data name="Khaki" xml:space="preserve">
     <value>土黄色</value>
   </data>
@@ -1071,6 +1068,24 @@
   <data name="LoginFailed" xml:space="preserve">
     <value>登录失败，请稍后重试</value>
   </data>
+  <data name="PasswordOrSmsSignIn" xml:space="preserve">
+    <value>密码 / 短信登录</value>
+  </data>
+  <data name="QrSignInMode" xml:space="preserve"><value>扫码</value></data>
+  <data name="PasswordSignInMode" xml:space="preserve"><value>密码</value></data>
+  <data name="SmsSignInMode" xml:space="preserve"><value>短信</value></data>
+  <data name="NativeSignInAccount" xml:space="preserve"><value>手机号或邮箱</value></data>
+  <data name="NativeSignInRegion" xml:space="preserve"><value>国家或地区</value></data>
+  <data name="NativeSignInPhone" xml:space="preserve"><value>手机号</value></data>
+  <data name="NativeSignInCode" xml:space="preserve"><value>短信验证码</value></data>
+  <data name="NativeSignInCaptcha" xml:space="preserve"><value>完成安全验证</value></data>
+  <data name="AddBiliAccount" xml:space="preserve"><value>添加账户</value></data>
+  <data name="BiliAccountAdded" xml:space="preserve"><value>账户已添加，可在头像菜单中切换。</value></data>
+  <data name="SwitchBiliAccount" xml:space="preserve"><value>切换账户</value></data>
+  <data name="PlaybackAccountTitle" xml:space="preserve"><value>{0}  ·  播放账户 {1}</value></data>
+  <data name="SwitchBiliAccountFailed" xml:space="preserve"><value>暂时无法切换账户，请稍后重试。</value></data>
+  <data name="LoadBiliAccountsFailed" xml:space="preserve"><value>无法启动账户会话。请关闭窗口后重试，账户文件仍保留。</value></data>
+  <data name="NativeSignInSendCode" xml:space="preserve"><value>获取验证码</value></data>
   <data name="MainEpisode" xml:space="preserve">
     <value>正片</value>
   </data>
@@ -1211,6 +1226,15 @@
   </data>
   <data name="NoFollows" xml:space="preserve">
     <value>空无一人的关注列表~</value>
+  </data>
+  <data name="SearchAllFollows" xml:space="preserve">
+    <value>按昵称搜索全部关注</value>
+  </data>
+  <data name="FollowSearchResults" xml:space="preserve">
+    <value>关注搜索结果</value>
+  </data>
+  <data name="NoFollowSearchResults" xml:space="preserve">
+    <value>没有找到昵称匹配的关注用户</value>
   </data>
   <data name="NoHistoryArticles" xml:space="preserve">
     <value>没有最近的文章历史记录</value>
@@ -1541,6 +1565,9 @@
   </data>
   <data name="ProjectHomePage" xml:space="preserve">
     <value>项目主页</value>
+  </data>
+  <data name="OriginalProjectHomePage" xml:space="preserve">
+    <value>原项目主页</value>
   </data>
   <data name="ProtocolLaunch" xml:space="preserve">
     <value>协议启动</value>
@@ -2321,6 +2348,21 @@
   </data>
   <data name="PgcFollowCount" xml:space="preserve">
     <value>追番数</value>
+  </data>
+  <data name="PgcFollow" xml:space="preserve">
+    <value>追番</value>
+  </data>
+  <data name="PgcFollowed" xml:space="preserve">
+    <value>已追番</value>
+  </data>
+  <data name="PgcUnfollow" xml:space="preserve">
+    <value>取消追番</value>
+  </data>
+  <data name="PgcUnfollowed" xml:space="preserve">
+    <value>已取消追番</value>
+  </data>
+  <data name="PgcStatusMarked" xml:space="preserve">
+    <value>已更新追番状态</value>
   </data>
   <data name="PrevPage" xml:space="preserve">
     <value>上一页</value>
@@ -3749,4 +3791,30 @@
   <data name="UpdateSourceMirrors" xml:space="preserve"><value>仅镜像</value></data>
   <data name="UpdateCheckInterval" xml:space="preserve"><value>检查周期（小时）</value></data>
   <data name="UpdateCheckIntervalDescription" xml:space="preserve"><value>设为 0 时，只在启动时自动检查。</value></data>
+  <data name="SettingsGroupExperience" xml:space="preserve"><value>偏好与体验</value></data>
+  <data name="SettingsGroupContentRecommend" xml:space="preserve"><value>推荐与搜索</value></data>
+  <data name="SettingsGroupSystemServices" xml:space="preserve"><value>系统与服务</value></data>
+  <data name="SettingsCategoryPlayback" xml:space="preserve"><value>播放设置</value></data>
+  <data name="SettingsCategoryPlaybackDescription" xml:space="preserve"><value>播放控制、画质与行为、MPV 附加设置与空降助手</value></data>
+  <data name="SettingsCategoryAppearanceNavigation" xml:space="preserve"><value>外观与导航</value></data>
+  <data name="SettingsCategoryAppearanceNavigationDescription" xml:space="preserve"><value>应用主题、顶部与侧边导航栏显示、滚动加速</value></data>
+  <data name="SettingsCategoryStorageDownload" xml:space="preserve"><value>下载与存储</value></data>
+  <data name="SettingsCategoryStorageDownloadDescription" xml:space="preserve"><value>下载目录与参数、截图设置与图片缓存</value></data>
+  <data name="SettingsCategorySystemNotification" xml:space="preserve"><value>通知与系统</value></data>
+  <data name="SettingsCategorySystemNotificationDescription" xml:space="preserve"><value>动态与更新通知、托盘驻留与日志排查</value></data>
+  <data name="SettingsCategoryUpdate" xml:space="preserve"><value>应用更新</value></data>
+  <data name="SettingsCategoryUpdateDescription" xml:space="preserve"><value>检查应用更新、更新说明、自动下载与下载源</value></data>
+  <data name="SettingsCategoryAIService" xml:space="preserve"><value>AI 服务</value></data>
+  <data name="SettingsCategoryAIServiceDescription" xml:space="preserve"><value>流式响应、自定义提示词与模型服务配置</value></data>
+  <data name="SettingsSubsectionPlaybackBasic" xml:space="preserve"><value>基础播放</value></data>
+  <data name="SettingsSubsectionPlaybackEngine" xml:space="preserve"><value>引擎与增强</value></data>
+  <data name="SettingsSubsectionAppearance" xml:space="preserve"><value>外观</value></data>
+  <data name="SettingsSubsectionNavigationInteraction" xml:space="preserve"><value>导航与交互</value></data>
+  <data name="SettingsSubsectionDownloadScreenshot" xml:space="preserve"><value>下载与截图</value></data>
+  <data name="SettingsSubsectionCache" xml:space="preserve"><value>缓存管理</value></data>
+  <data name="SettingsSubsectionNotificationWindow" xml:space="preserve"><value>通知与窗口</value></data>
+  <data name="SettingsSubsectionDiagnostics" xml:space="preserve"><value>诊断与日志</value></data>
+  <data name="SettingsSubsectionUpdatePreferences" xml:space="preserve"><value>更新偏好</value></data>
+  <data name="UpdateAutoDownloadDescription" xml:space="preserve"><value>检测到新版本后自动在后台下载安装包</value></data>
+  <data name="UpdateDownloadSourceDescription" xml:space="preserve"><value>选择检查和下载更新包时优先使用的来源</value></data>
 </root>

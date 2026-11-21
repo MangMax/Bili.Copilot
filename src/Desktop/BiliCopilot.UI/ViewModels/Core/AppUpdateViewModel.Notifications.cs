@@ -10,9 +10,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 
 public sealed partial class AppUpdateViewModel
 {
-    internal const string UpdateNotificationPage = "settings-update";
-
-    internal bool HasAvailableUpdate => !string.IsNullOrEmpty(AvailableVersion);
+    public bool HasAvailableUpdate => !string.IsNullOrEmpty(AvailableVersion);
 
     internal void TryShowUpdateNotification()
     {
@@ -40,7 +38,7 @@ public sealed partial class AppUpdateViewModel
             var notification = new AppNotificationBuilder()
                 .SetGroup("app-update")
                 .SetTag("available")
-                .AddArgument("page", UpdateNotificationPage)
+                .AddArgument("page", SettingsNavigationPolicy.UpdateNotificationRoute)
                 .AddText(ResourceToolkit.GetLocalizedString(StringNames.AppUpdateNotification))
                 .AddText(string.Format(ResourceToolkit.GetLocalizedString(StringNames.UpdateAvailableFormat), AvailableVersion))
                 .BuildNotification();

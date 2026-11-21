@@ -6,7 +6,6 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
 
@@ -35,15 +34,14 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        if (Groups.Count > 0)
+        if (IsGroupLoading || Groups.Count > 0)
         {
             return;
         }
 
         await LoadGroupsAsync();
-        await Task.Delay(200);
         var lastSelectedGroupId = SettingsToolkit.ReadLocalSetting(SettingNames.FollowsPageLastSelectedGroupId, string.Empty);
-        var group = Groups.FirstOrDefault(p => p.Id == lastSelectedGroupId) ?? Groups.FirstOrDefault(p => p.TotalCount > 0) ?? Groups.First();
+        var group = Groups.FirstOrDefault(p => p.Id == lastSelectedGroupId) ?? Groups.FirstOrDefault(p => p.TotalCount > 0) ?? Groups.FirstOrDefault();
         SelectGroupCommand.Execute(group);
         GroupInitialized?.Invoke(this, EventArgs.Empty);
     }
@@ -56,89 +54,163 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        if (Users.Count > 0)
-        {
-            _userCache[SelectedGroup] = Users.ToList();
-        }
-
+        CacheSelectedGroup();
+        SearchKeyword = string.Empty;
+        SearchText = string.Empty;
         SelectedGroup = group;
         SettingsToolkit.WriteLocalSetting(SettingNames.FollowsPageLastSelectedGroupId, group.Id);
-
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Users.Clear();
-            if (_userCache.TryGetValue(group, out var list))
-            {
-                foreach (var user in list)
-                {
-                    Users.Add(user);
-                }
-
-                UserListUpdated?.Invoke(this, EventArgs.Empty);
-            }
-            else
-            {
-                await LoadUsersAsync();
-            }
-
-            IsEmpty = Users.Count == 0;
-        });
+        RestoreGroup();
     }
 
     [RelayCommand]
+    private void Search(string? text)
+    {
+        var keyword = text?.Trim() ?? string.Empty;
+        if (keyword.Length == 0)
+        {
+            if (SearchKeyword.Length > 0)
+            {
+                SearchKeyword = string.Empty;
+                RestoreGroup();
+            }
+
+            return;
+        }
+
+        CacheSelectedGroup();
+        SearchKeyword = keyword;
+        ResetUserList();
+        _searchPage = 1;
+        _searchHasMore = true;
+        LoadUsersCommand.Execute(default);
+    }
+
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task LoadUsersAsync()
     {
-        if (IsUserLoading || SelectedGroup is null)
+        var isSearch = SearchKeyword.Length > 0;
+        if (IsUserLoading || (isSearch ? !_searchHasMore : SelectedGroup is null || Users.Count >= SelectedGroup.TotalCount))
         {
             return;
         }
 
-        if (Users.Count >= SelectedGroup.TotalCount)
-        {
-            return;
-        }
-
+        using var load = new CancellationTokenSource();
+        _listLoad = load;
         IsUserLoading = true;
         try
         {
-            var pn = 0;
-            if (_offsetCache.TryGetValue(SelectedGroup, out var value))
+            IReadOnlyList<UserCard> users;
+            if (isSearch)
             {
-                pn = value;
+                var (matches, hasMore) = await _service.SearchMyFollowingsAsync(SearchKeyword, _searchPage, load.Token);
+                load.Token.ThrowIfCancellationRequested();
+                users = matches;
+                _searchHasMore = hasMore;
+                _searchPage++;
+            }
+            else
+            {
+                var group = SelectedGroup;
+                var (members, nextOffset) = await _service.GetMyFollowUserGroupDetailAsync(group.Id, _offsetCache.GetValueOrDefault(group), load.Token);
+                load.Token.ThrowIfCancellationRequested();
+                users = members;
+                _offsetCache[group] = nextOffset;
             }
 
-            var (users, nextOffset) = await _service.GetMyFollowUserGroupDetailAsync(SelectedGroup.Id, pn);
-            _offsetCache[SelectedGroup] = nextOffset;
-            if (users != null)
+            foreach (var item in users)
             {
-                foreach (var item in users)
-                {
-                    Users.Add(new UserItemViewModel(item));
-                }
+                Users.Add(new UserItemViewModel(item));
             }
+
+            IsEmpty = Users.Count == 0;
+            if (users.Count > 0)
+            {
+                UserListUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        catch (OperationCanceledException) when (load.IsCancellationRequested)
+        {
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载关注用户时出错.");
+            if (!load.IsCancellationRequested)
+            {
+                _logger.LogError(ex, "尝试加载关注用户时出错.");
+                if (isSearch)
+                {
+                    _searchHasMore = false;
+                    IsSearchFailed = true;
+                }
+            }
         }
         finally
         {
-            IsUserLoading = false;
+            if (_listLoad == load)
+            {
+                _listLoad = null;
+                IsUserLoading = false;
+            }
         }
     }
 
     [RelayCommand]
-    private void Refresh()
+    private async Task RefreshAsync()
     {
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        if (SearchKeyword.Length > 0)
         {
-            Users.Clear();
+            Search(SearchKeyword);
+            return;
+        }
+
+        if (!IsGroupLoading)
+        {
+            ResetUserList();
             Groups.Clear();
             _userCache.Clear();
             _offsetCache.Clear();
             SelectedGroup = default;
             await InitializeAsync();
-        });
+        }
+    }
+
+    private void CacheSelectedGroup()
+    {
+        if (SearchKeyword.Length == 0 && SelectedGroup is { } group && Users.Count > 0)
+        {
+            _userCache[group] = Users.ToList();
+        }
+    }
+
+    private void RestoreGroup()
+    {
+        ResetUserList();
+        if (SelectedGroup is { } group && _userCache.TryGetValue(group, out var users))
+        {
+            foreach (var user in users)
+            {
+                Users.Add(user);
+            }
+
+            UserListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        else if (SelectedGroup is { TotalCount: > 0 })
+        {
+            LoadUsersCommand.Execute(default);
+        }
+        else
+        {
+            IsEmpty = true;
+        }
+    }
+
+    private void ResetUserList()
+    {
+        _listLoad?.Cancel();
+        _listLoad = null;
+        IsUserLoading = false;
+        IsSearchFailed = false;
+        IsEmpty = false;
+        Users.Clear();
     }
 
     private async Task LoadGroupsAsync()

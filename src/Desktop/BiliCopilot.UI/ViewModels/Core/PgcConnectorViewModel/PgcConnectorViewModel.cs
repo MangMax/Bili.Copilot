@@ -15,6 +15,7 @@ public sealed partial class PgcConnectorViewModel : ViewModelBase, IPlayerConnec
 {
     public PgcConnectorViewModel(PlayerViewModel parent)
     {
+        Accounts.AccountSession.Find(parent)?.Bind(this);
         Parent = parent;
         _comments = this.Get<CommentMainViewModel>();
         Downloader = this.Get<DownloadViewModel>();

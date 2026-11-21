@@ -13,7 +13,7 @@ public sealed partial class ChapterSegmentBar
 {
     private async void OnPointerPressed(object sender, PointerRoutedEventArgs e)
     {
-        if (!IsInteractive)
+        if (!IsInteractive || Duration <= 0)
         {
             return;
         }
@@ -80,7 +80,7 @@ public sealed partial class ChapterSegmentBar
 
     private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
     {
-        if (!IsInteractive)
+        if (!IsInteractive || Duration <= 0)
         {
             return;
         }

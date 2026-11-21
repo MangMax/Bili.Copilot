@@ -165,6 +165,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         CornerRadius = new CornerRadius(ThumbCornerRadius),
         BorderThickness = new Thickness(1),
         IsHitTestVisible = false,
+        Visibility = Visibility.Collapsed,
     };
 
     private readonly Border _hoverPopup = new()
@@ -361,7 +362,14 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
         set => SetValue(IsInteractiveProperty, value);
     }
 
-    private double Duration => ViewModel?.Player?.Duration ?? 0;
+    private double Duration
+    {
+        get
+        {
+            var duration = ViewModel?.Player?.Duration ?? 0;
+            return double.IsFinite(duration) && duration > 0 ? duration : 0;
+        }
+    }
 
     private double Position => ViewModel?.Player?.Position ?? 0;
 
@@ -430,18 +438,18 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
     {
         var duration = Duration;
         var width = _canvas.ActualWidth;
-        if (duration <= 0 || width <= 0)
+        if (width <= 0)
         {
             return;
         }
 
-        if (_segments.Count == 0)
+        if (_segments.Count == 0 || duration != _lastAppliedDuration)
         {
             Rebuild();
             return;
         }
 
-        var position = ResolveDisplayPosition();
+        var position = duration > 0 ? ResolveDisplayPosition() : 0;
         if (Math.Abs(position - _lastAppliedPosition) < 0.04
             && Math.Abs(width - _lastAppliedWidth) < 0.5
             && Math.Abs(duration - _lastAppliedDuration) < 0.001)
@@ -602,8 +610,7 @@ public sealed partial class ChapterSegmentBar : PlayerControlBase
             // 切换视频后，上一个视频的跳转目标已无意义.
             _pendingSeekPosition = null;
 
-            // 标记的像素位置取决于总时长，时长变化后需要重新映射.
-            RebuildMarkers();
+            Rebuild();
         }
     }
 

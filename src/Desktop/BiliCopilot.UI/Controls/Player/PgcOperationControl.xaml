@@ -33,20 +33,46 @@
         <Button
             Padding="16,8"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Center"
-            Command="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}">
+            AutomationProperties.AutomationId="PgcPlayerFollow"
+            Command="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
+            IsEnabled="{x:Bind ViewModel.CanChangeFollowStatus, Mode=OneWay, FallbackValue=False}"
+            Visibility="{x:Bind ViewModel.IsFollow, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Collapsed}">
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <FontIcon
                     FontFamily="{StaticResource BiliIconsFontFamily}"
                     VerticalAlignment="Center"
                     FontSize="14"
-                    Glyph="{x:Bind icons:IconGlyph.SelectHeart(ViewModel.IsFollow), Mode=OneWay}" />
-                <Grid VerticalAlignment="Center">
-                    <TextBlock Text="{ext:Locale Name=Follow}" Visibility="{x:Bind ViewModel.IsFollow, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-                    <TextBlock Text="{ext:Locale Name=Followed}" Visibility="{x:Bind ViewModel.IsFollow, Mode=OneWay}" />
-                </Grid>
+                    Glyph="{StaticResource IconHeart}" />
+                <TextBlock Text="{ext:Locale Name=PgcFollow}" />
             </StackPanel>
         </Button>
+        <ToggleSplitButton
+            Padding="16,8"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            AutomationProperties.AutomationId="PgcPlayerFollowMenu"
+            AutomationProperties.Name="{ext:Locale Name=PgcFollowed}"
+            Click="OnFollowedClick"
+            IsChecked="True"
+            IsEnabled="{x:Bind ViewModel.CanChangeFollowStatus, Mode=OneWay, FallbackValue=False}"
+            Visibility="{x:Bind ViewModel.IsFollow, Mode=OneWay, FallbackValue=Collapsed}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <FontIcon
+                    FontFamily="{StaticResource BiliIconsFontFamily}"
+                    FontSize="14"
+                    Glyph="{x:Bind icons:IconGlyph.Checkmark, Mode=OneTime}" />
+                <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=PgcFollowed}" />
+            </StackPanel>
+            <ToggleSplitButton.Flyout>
+                <MenuFlyout Placement="Bottom">
+                    <MenuFlyoutItem Command="{x:Bind ViewModel.MarkWantWatchCommand, Mode=OneWay}" Text="{ext:Locale Name=MarkWantWatch}" />
+                    <MenuFlyoutItem Command="{x:Bind ViewModel.MarkWatchingCommand, Mode=OneWay}" Text="{ext:Locale Name=MarkWatching}" />
+                    <MenuFlyoutItem Command="{x:Bind ViewModel.MarkWatchedCommand, Mode=OneWay}" Text="{ext:Locale Name=MarkWatched}" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem Command="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}" Text="{ext:Locale Name=PgcUnfollow}" />
+                </MenuFlyout>
+            </ToggleSplitButton.Flyout>
+        </ToggleSplitButton>
         <local:DownloadButton ViewModel="{x:Bind ViewModel.Downloader, Mode=OneWay}" />
         <StackPanel Spacing="4">
             <TextBlock

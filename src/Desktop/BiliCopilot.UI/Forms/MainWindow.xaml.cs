@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -25,6 +26,7 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
     private bool _isFirstActivated = true;
     private bool _forceClose;
     private InputKeyboardSource? _keyboardSource;
+    private RootLayout RootLayout { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.
@@ -32,6 +34,8 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
     public MainWindow()
     {
         InitializeComponent();
+        RootLayout = new RootLayout();
+        AccountLayoutHost.Children.Add(RootLayout);
         SetTitleBar(RootLayout.GetMainTitleBar());
         Title = ResourceToolkit.GetLocalizedString(StringNames.AppName);
         this.SetIcon("Assets/logo.ico");
@@ -42,6 +46,30 @@ public sealed partial class MainWindow : WindowBase, ITipWindow
         Activated += OnActivated;
         Closed += OnClosed;
         ((App)Application.Current).InitializeTrayLifecycle();
+    }
+
+    internal void ApplyAccountLayout(RootLayout layout)
+    {
+        var previous = RootLayout;
+        layout.RestoreAccountRoute = previous.GetAccountRoute();
+        layout.RequestedTheme = previous.RequestedTheme;
+        AccountLayoutHost.Children.Clear();
+        try
+        {
+            RootLayout = layout;
+            AccountLayoutHost.Children.Add(layout);
+            SetTitleBar(layout.GetMainTitleBar());
+        }
+        catch
+        {
+            AccountLayoutHost.Children.Clear();
+            RootLayout = previous;
+            AccountLayoutHost.Children.Add(previous);
+            SetTitleBar(previous.GetMainTitleBar());
+            throw;
+        }
+
+        previous.ReleaseAccountPages();
     }
 
     /// <inheritdoc/>

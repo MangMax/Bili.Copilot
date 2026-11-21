@@ -7,6 +7,7 @@ using BiliCopilot.UI.ViewModels.Components;
 using Microsoft.Extensions.Logging.Abstractions;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
+using Richasy.BiliKernel.Models.Authorization;
 using Richasy.BiliKernel.Models.Media;
 
 namespace BiliCopilot.UI.Tests;
@@ -57,7 +58,7 @@ public sealed class PlaybackRoutingResolverTests
         }
         else
         {
-            var source = new VideoMediaSourceResolver(service, cookies, NullLogger<VideoMediaSourceResolver>.Instance);
+            var source = new VideoMediaSourceResolver(service, cookies, new AnonymousTokenResolver(), NullLogger<VideoMediaSourceResolver>.Instance);
             source.Initialize(snapshot, new(new("1", "Part", null), 1, 60));
             resolver = source;
         }
@@ -246,13 +247,22 @@ public sealed class PlaybackRoutingResolverTests
             resolver.Initialize(snapshot, snapshot.Episode);
             return resolver;
         }
-        var video = new VideoMediaSourceResolver(service, cookies, NullLogger<VideoMediaSourceResolver>.Instance);
+        var video = new VideoMediaSourceResolver(service, cookies, new AnonymousTokenResolver(), NullLogger<VideoMediaSourceResolver>.Instance);
         video.Initialize(snapshot, new(new("1", "Part", null), 1, 60));
         return video;
     }
 
     private static DashSegmentInformation Segment(string id, string url, IList<string> backups)
         => new(id, url, 100, "", "avc", 0, 0, "", "", backups);
+
+    private sealed class AnonymousTokenResolver : IBiliTokenResolver
+    {
+        public BiliToken? GetToken() => null;
+
+        public void SaveToken(BiliToken token) => throw new NotSupportedException();
+
+        public void RemoveToken() => throw new NotSupportedException();
+    }
 
     public class PlaybackService : DispatchProxy
     {

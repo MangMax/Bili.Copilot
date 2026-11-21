@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.Models.Constants;
@@ -99,6 +99,15 @@ public sealed partial class NotificationViewModel : ViewModelBase
         }
 
         _scanCancellation?.Cancel();
+    }
+
+    internal async Task StopAndWaitAsync()
+    {
+        Stop();
+        if (_checkTask is { } check)
+        {
+            await check;
+        }
     }
 
     internal async Task ClearOnSignOutAsync()

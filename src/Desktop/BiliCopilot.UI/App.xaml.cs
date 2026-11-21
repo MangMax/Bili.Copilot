@@ -83,7 +83,7 @@ public partial class App : Application
     /// Invoked when the application is launched.
     /// </summary>
     /// <param name="args">Details about the launch request and process.</param>
-    protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         var instance = Microsoft.Windows.AppLifecycle.AppInstance.FindOrRegisterForKey(Id);
         if (instance.IsCurrent)
@@ -100,7 +100,16 @@ public partial class App : Application
             Richasy.WinUIKernel.Share.Base.ImageExBase.EnableBackgroundDecoding = false;
             GlobalDependencies.Initialize();
             _pendingNotification ??= instance.GetActivatedEventArgs().Data as AppNotificationActivatedEventArgs;
-            GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
+            try
+            {
+                await GlobalDependencies.Accounts.InitializeAsync();
+                await GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.ExecuteAsync(default);
+            }
+            catch (Exception ex)
+            {
+                this.Get<ILogger<App>>().LogError(ex, "启动账户会话失败。");
+                ShowAccountStartupFailure();
+            }
         }
         else
         {
@@ -110,6 +119,23 @@ public partial class App : Application
             _ = instance.RedirectActivationToAsync(activatedArgs).AsTask()
                 .ContinueWith(_ => _dispatcherQueue.TryEnqueue(() => Current.Exit()));
         }
+    }
+
+    private static void ShowAccountStartupFailure()
+    {
+        var window = new WinUIEx.WindowEx
+        {
+            Title = ResourceToolkit.GetLocalizedString(StringNames.AppName),
+            Width = 520,
+            Height = 180,
+            Content = new TextBlock
+            {
+                Margin = new Thickness(24),
+                TextWrapping = TextWrapping.Wrap,
+                Text = ResourceToolkit.GetLocalizedString(StringNames.LoadBiliAccountsFailed),
+            },
+        };
+        window.Activate();
     }
 
     internal async Task<bool> RestartAfterUpdateAsync()
@@ -227,7 +253,7 @@ public partial class App : Application
     internal void ReleaseTrayResources()
     {
         TrayLifecycle?.Dispose();
-        GlobalDependencies.Kernel?.GetRequiredService<NotificationViewModel>().Stop();
+        GlobalDependencies.Accounts.Current?.Get<NotificationViewModel>().Stop();
         if (_notificationManager is not null)
         {
             _notificationManager.NotificationInvoked -= OnAppNotificationInvoked;
@@ -285,10 +311,10 @@ public partial class App : Application
 
         try
         {
-            if (type == AppUpdateViewModel.UpdateNotificationPage)
+            if (type == SettingsNavigationPolicy.UpdateNotificationRoute)
             {
                 RestoreMainWindow();
-                this.Get<NavigationViewModel>().NavigateTo(typeof(SettingsPage));
+                this.Get<NavigationViewModel>().NavigateTo(typeof(SettingsPage), SettingsSection.Update);
                 return;
             }
 

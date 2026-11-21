@@ -429,7 +429,7 @@
                             AutomationProperties.AccessibilityView="Raw"
                             Foreground="{TemplateBinding Foreground}"
                             FontFamily="{StaticResource BiliIconsFontFamily}"
-                            FontSize="8"
+                            FontSize="12"
                             Glyph="{StaticResource IconChevronDown}"
                             IsTextScaleFactorEnabled="False" />
                         <VisualStateManager.VisualStateGroups>
@@ -613,14 +613,7 @@
         </Setter>
         <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
         <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Offset="0.0" Color="{ThemeResource SystemAccentColorLight1}" />
-                    <GradientStop Offset="1.0" Color="{ThemeResource SystemAccentColorDark2}" />
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="BorderBrush" Value="{ThemeResource AccentFillColorDefaultBrush}" />
         <Setter Property="BorderThickness" Value="4" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -670,16 +663,6 @@
                                                 </DiscreteObjectKeyFrame.Value>
                                             </DiscreteObjectKeyFrame>
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0.7,0.9">
-                                                        <GradientStop Offset="0.0" Color="{ThemeResource SystemAccentColorLight2}" />
-                                                        <GradientStop Offset="1.0" Color="{ThemeResource SystemAccentColorDark1}" />
-                                                    </LinearGradientBrush>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -696,16 +679,6 @@
                                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                         <GradientStop Offset="0.0" Color="{ThemeResource ControlSolidFillColorDefault}" />
                                                         <GradientStop Offset="1.0" Color="{ThemeResource SolidBackgroundFillColorBaseAlt}" />
-                                                    </LinearGradientBrush>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0.9,1">
-                                                        <GradientStop Offset="0.0" Color="{ThemeResource SystemAccentColorLight1}" />
-                                                        <GradientStop Offset="1.0" Color="{ThemeResource SystemAccentColorDark2}" />
                                                     </LinearGradientBrush>
                                                 </DiscreteObjectKeyFrame.Value>
                                             </DiscreteObjectKeyFrame>

@@ -35,7 +35,6 @@
                         FallbackColor="#2C2C2C"
                         TintColor="#2C2C2C"
                         TintOpacity="0.65" />
-                    <BitmapImage x:Key="QQGroup" UriSource="ms-appx:///Assets/qq_group_dark.jpg" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <media:AcrylicBrush
@@ -43,11 +42,9 @@
                         FallbackColor="#FCFCFC"
                         TintColor="#F9F9F9"
                         TintOpacity="0.65" />
-                    <BitmapImage x:Key="QQGroup" UriSource="ms-appx:///Assets/qq_group_light.jpg" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="HighContrast">
                     <SolidColorBrush x:Key="AcrylicInAppFillColorCustomBrush" Color="{ThemeResource SystemColorWindowColor}" />
-                    <BitmapImage x:Key="QQGroup" UriSource="ms-appx:///Assets/qq_group_dark.jpg" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 

@@ -82,12 +82,17 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         ? $"{AppUpdateService.CurrentVersion}\n{status}"
         : AppUpdateService.CurrentVersion;
 
-    public bool ShowsCheckAction => !IsButtonVisible;
-
     public bool AutoDownload
     {
         get => SettingsToolkit.ReadLocalSetting(SettingNames.UpdateAutoDownload, false);
-        set => SettingsToolkit.WriteLocalSetting(SettingNames.UpdateAutoDownload, value);
+        set
+        {
+            if (value != AutoDownload)
+            {
+                SettingsToolkit.WriteLocalSetting(SettingNames.UpdateAutoDownload, value);
+                OnPropertyChanged(nameof(AutoDownload));
+            }
+        }
     }
 
     public int DownloadSourceIndex
@@ -95,9 +100,11 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         get => (int)UpdateMirrorSettings.DownloadMode;
         set
         {
-            if (value is >= (int)UpdateDownloadMode.Auto and <= (int)UpdateDownloadMode.Mirrors)
+            if (value is >= (int)UpdateDownloadMode.Auto and <= (int)UpdateDownloadMode.Mirrors
+                && value != DownloadSourceIndex)
             {
                 SettingsToolkit.WriteLocalSetting(SettingNames.UpdateDownloadMode, value);
+                OnPropertyChanged(nameof(DownloadSourceIndex));
             }
         }
     }
@@ -161,6 +168,13 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         => State == AppUpdateState.Failed && _lastResult?.Status == UpdateCheckStatus.NoAssetForArchitecture;
 
     public bool IsDownloading => State == AppUpdateState.Downloading;
+
+    public bool IsProgressVisible => State is AppUpdateState.Checking or AppUpdateState.Downloading or AppUpdateState.Installing;
+
+    public bool IsProgressIndeterminate => State is AppUpdateState.Checking or AppUpdateState.Installing
+        || (State == AppUpdateState.Downloading && (IsIndeterminate || DownloadProgress >= 100));
+
+    public double DisplayDownloadProgress => Math.Clamp(DownloadProgress, 0, 100);
 
     public string ActionName => State is AppUpdateState.Checking or AppUpdateState.Downloading or AppUpdateState.Installing
         ? StatusText
@@ -434,9 +448,10 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         PrimaryActionCommand.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(ActionName));
         OnPropertyChanged(nameof(SettingsActionName));
-        OnPropertyChanged(nameof(ShowsCheckAction));
         OnPropertyChanged(nameof(IsButtonVisible));
         OnPropertyChanged(nameof(IsDownloading));
+        OnPropertyChanged(nameof(IsProgressVisible));
+        OnPropertyChanged(nameof(IsProgressIndeterminate));
         OnPropertyChanged(nameof(IconSymbol));
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
@@ -445,6 +460,8 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     partial void OnDownloadProgressChanged(double value)
     {
         OnPropertyChanged(nameof(IsIndeterminate));
+        OnPropertyChanged(nameof(IsProgressIndeterminate));
+        OnPropertyChanged(nameof(DisplayDownloadProgress));
         OnPropertyChanged(nameof(ActionName));
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
@@ -452,6 +469,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     partial void OnAvailableVersionChanged(string value)
     {
+        OnPropertyChanged(nameof(HasAvailableUpdate));
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
         this.Get<NavigationViewModel>().SetAppUpdateUnread(HasAvailableUpdate);

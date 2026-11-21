@@ -34,6 +34,8 @@ public sealed partial class PgcDetailPage : PgcDetailPageBase, IParameterPage, I
         TabSelector.SelectionChanged += OnTabSelectionChanged;
     }
 
+    internal string? SeasonId => _seasonId;
+
     /// <inheritdoc/>
     public void SetParameter(object? parameter)
     {
@@ -51,6 +53,13 @@ public sealed partial class PgcDetailPage : PgcDetailPageBase, IParameterPage, I
 
     /// <inheritdoc/>
     protected override void OnPageUnloaded() => CancelLoading();
+
+    private void OnFollowedClick(SplitButton sender, SplitButtonClickEventArgs args)
+    {
+        var button = (ToggleSplitButton)sender;
+        button.IsChecked = true;
+        button.Flyout.ShowAt(button);
+    }
 
     private void OnPageLoaded(object sender, RoutedEventArgs e)
     {

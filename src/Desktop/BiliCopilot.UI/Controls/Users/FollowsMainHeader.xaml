@@ -12,14 +12,27 @@
     <Grid Padding="16,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
+            <ColumnDefinition Width="2*" MaxWidth="280" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <TextBlock
             VerticalAlignment="Center"
             Style="{StaticResource BodyStrongTextBlockStyle}"
-            Text="{x:Bind ViewModel.SelectedGroup.Name, Mode=OneWay, FallbackValue=''}" />
-        <Button
+            Text="{x:Bind ViewModel.ListTitle, Mode=OneWay}"
+            TextTrimming="CharacterEllipsis" />
+        <AutoSuggestBox
             Grid.Column="1"
+            Margin="8,0"
+            VerticalAlignment="Center"
+            AutomationProperties.AutomationId="FollowSearchBox"
+            AutomationProperties.Name="{ext:Locale Name=SearchAllFollows}"
+            PlaceholderText="{ext:Locale Name=SearchAllFollows}"
+            QueryIcon="Find"
+            QuerySubmitted="OnSearchSubmitted"
+            Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            TextChanged="OnSearchTextChanged" />
+        <Button
+            Grid.Column="2"
             VerticalAlignment="Center"
             AutomationProperties.Name="{ext:Locale Name=Refresh}"
             Command="{x:Bind ViewModel.RefreshCommand}">

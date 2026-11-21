@@ -115,7 +115,16 @@ public sealed class NavigationViewModelTests : IDisposable
         object replacement = name == "MenuItems" ? new List<AppNavigationItemViewModel>() : true;
         var events = new List<(string, object?)>();
         _model.PropertyChanging += (_, e) => { Assert.Equal(name, e.PropertyName); events.Add(("changing", property.GetValue(_model))); };
-        _model.PropertyChanged += (_, e) => { Assert.Equal(name, e.PropertyName); events.Add(("changed", property.GetValue(_model))); };
+        _model.PropertyChanged += (_, e) =>
+        {
+            if (name == "IsOverlayOpen" && e.PropertyName == "CanGoBack")
+            {
+                return;
+            }
+
+            Assert.Equal(name, e.PropertyName);
+            events.Add(("changed", property.GetValue(_model)));
+        };
         property.SetValue(_model, replacement);
         property.SetValue(_model, replacement);
         Assert.Equal(new (string, object?)[] { ("changed", replacement) }, events);
@@ -167,7 +176,7 @@ public sealed class NavigationViewModelTests : IDisposable
         var events = new List<string?>();
         _model.PropertyChanged += (_, e) => events.Add(e.PropertyName);
         service.NavigateTo(typeof(MomentPage), new object());
-        Assert.Equal(new[] { "IsOverlayOpen", "IsTemporaryOverlayClosed", "IsFavoritesPage" }, events);
+        Assert.Equal(new[] { "IsOverlayOpen", "CanGoBack", "IsTemporaryOverlayClosed", "IsFavoritesPage" }, events);
         Assert.Same(main, _main.GetCurrentContent());
         Assert.Same(parameter, main.Parameter);
         Assert.Equal(1, main.CancelCount);
@@ -263,6 +272,58 @@ public sealed class NavigationViewModelTests : IDisposable
         {
             AvatarTransitionSession.Clear();
         }
+    }
+
+    [Fact]
+    public void SettingsNavigationWithParameterUpdatesActiveSettingsPageDirectly()
+    {
+        Initialize();
+        _model.NavigateTo(typeof(SettingsPage));
+        var settings = Assert.IsType<SettingsPage>(_main.GetCurrentContent());
+        var settingsItem = Assert.Single(_model.FooterItems, item => item.PageKey == typeof(SettingsPage).FullName);
+        Assert.Same(settingsItem, _view.SelectedItem);
+        Assert.Null(settings.Parameter);
+
+        // 已在设置页时，带参数跳转到更新设置应直接转发参数而不触发 CancelLoading 回首页。
+        _model.NavigateTo(typeof(SettingsPage), SettingsNavigationPolicy.UpdateNotificationRoute);
+        Assert.Same(settings, _main.GetCurrentContent());
+        Assert.Equal(SettingsNavigationPolicy.UpdateNotificationRoute, settings.Parameter);
+        Assert.Equal(0, settings.CancelCount);
+
+        // 叠层页打开在设置页之上时，同样关闭叠层并把更新路由送达设置页。
+        _model.NavigateToOver(typeof(FavoritesPage));
+        Assert.True(_model.IsOverlayOpen);
+        _model.NavigateTo(typeof(SettingsPage), SettingsSection.Update);
+        Assert.False(_model.IsOverlayOpen);
+        Assert.Same(settings, _main.GetCurrentContent());
+        Assert.Equal(SettingsSection.Update, settings.Parameter);
+        Assert.Equal(0, settings.CancelCount);
+
+        // 不带参数再次点击侧栏设置项时，仍走 CancelLoading 收回二级页。
+        _model.NavigateTo(typeof(SettingsPage));
+        Assert.Equal(1, settings.CancelCount);
+    }
+
+    [Fact]
+    public void BackUsesTopBarToReturnFromSettingsSubpageWhenNoOverlayIsOpen()
+    {
+        Initialize();
+        _model.NavigateTo(typeof(SettingsPage), SettingsNavigationPolicy.UpdateNotificationRoute);
+        var settings = Assert.IsType<SettingsPage>(_main.GetCurrentContent());
+
+        _model.IsSettingsSubpageOpen = true;
+        Assert.True(_model.CanGoBack);
+
+        _model.Back();
+        Assert.Equal(1, settings.BackNavigationCount);
+
+        // 叠层页打开时，顶栏返回先关闭叠层页，不误触设置页返回。
+        _model.NavigateToOver(typeof(FavoritesPage));
+        Assert.True(_model.CanGoBack);
+        _model.Back();
+        Assert.False(_model.IsOverlayOpen);
+        Assert.True(_model.CanGoBack);
+        Assert.Equal(1, settings.BackNavigationCount);
     }
 
     [Fact]

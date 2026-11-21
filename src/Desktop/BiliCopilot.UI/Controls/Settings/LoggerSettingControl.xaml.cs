@@ -25,11 +25,11 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
         _ = await Launcher.LaunchFolderAsync(folder).AsTask();
     }
 
-    protected override void OnControlLoaded()
-    {
-        SelectByTag(AppLevelComboBox, ViewModel.AppLogLevel.ToString());
-        SelectByTag(MpvLevelComboBox, ViewModel.MpvLogLevel.ToString());
-    }
+    private void OnAppLevelLoaded(object sender, RoutedEventArgs e)
+        => SelectByTag(AppLevelComboBox, ViewModel.AppLogLevel.ToString());
+
+    private void OnMpvLevelLoaded(object sender, RoutedEventArgs e)
+        => SelectByTag(MpvLevelComboBox, ViewModel.MpvLogLevel.ToString());
 
     private void OnAppLevelChanged(object sender, SelectionChangedEventArgs e)
     {

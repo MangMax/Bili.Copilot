@@ -56,7 +56,8 @@
                 Style="{StaticResource CaptionTextBlockStyle}"
                 Text="{x:Bind ViewModel.MyProfile.Introduce, Mode=OneWay, FallbackValue=''}"
                 TextTrimming="CharacterEllipsis"
-                TextWrapping="NoWrap">
+                TextWrapping="NoWrap"
+                Visibility="{x:Bind local:AccountCard.GetIntroductionVisibility(ViewModel.MyProfile.Introduce), Mode=OneWay, FallbackValue=Collapsed}">
                 <ToolTipService.ToolTip>
                     <ToolTip Content="{x:Bind ViewModel.MyProfile.Introduce, Mode=OneWay, FallbackValue=''}" IsEnabled="{x:Bind IntroduceBlock.IsTextTrimmed, Mode=OneWay}" />
                 </ToolTipService.ToolTip>

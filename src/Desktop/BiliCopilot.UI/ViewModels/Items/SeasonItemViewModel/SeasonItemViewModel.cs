@@ -62,13 +62,26 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     private Task OpenInBroswerAsync()
         => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
 
+    internal async Task<bool?> GetTrackingStateAsync()
+    {
+        try
+        {
+            return await this.Get<IEntertainmentDiscoveryService>().GetPgcTrackingStateAsync(Data.Identifier.Id);
+        }
+        catch (Exception ex)
+        {
+            this.Get<ILogger<SeasonItemViewModel>>().LogWarning(ex, "获取追番状态失败");
+            return null;
+        }
+    }
+
     [RelayCommand]
     private async Task FollowAsync()
     {
         try
         {
             await this.Get<IEntertainmentDiscoveryService>().FollowAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success));
+            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.PgcFollowed), InfoType.Success));
         }
         catch (Exception ex)
         {
@@ -83,7 +96,8 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         try
         {
             await this.Get<IEntertainmentDiscoveryService>().UnfollowAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Unfollowed), InfoType.Success));
+            _removeAction?.Invoke(this);
+            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.PgcUnfollowed), InfoType.Success));
         }
         catch (Exception ex)
         {

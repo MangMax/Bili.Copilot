@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
+using System.Windows.Input;
 
 namespace BiliCopilot.UI.Controls.Components;
 
@@ -55,146 +56,75 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         }
     }
 
-    private static MenuFlyoutItem CreateOpenInBroswerItem()
+    private async void OnContextRequested(UIElement sender, ContextRequestedEventArgs args)
     {
-        return new MenuFlyoutItem()
-        {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Globe },
-            Tag = nameof(ViewModel.OpenInBroswerCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateFollowItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.Follow),
-            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Heart },
-            Tag = nameof(ViewModel.FollowCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreatePinItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Pin },
-            Tag = nameof(ViewModel.PinCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateMarkWantWatchItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWantWatch),
-            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Thinking },
-            Tag = nameof(ViewModel.MarkWantWatchCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateMarkWatchingItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWatching),
-            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Eye },
-            Tag = nameof(ViewModel.MarkWatchingCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateMarkWatchedItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWatched),
-            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Checkmark },
-            Tag = nameof(ViewModel.MarkWatchedCommand),
-        };
-    }
-
-    private MenuFlyoutItem CreateUnfollowItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.Unfollow),
-            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.HeartBroken, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
-            Tag = nameof(ViewModel.UnfollowCommand),
-        };
-    }
-
-    private void OnContextRequested(UIElement sender, ContextRequestedEventArgs args)
-    {
-        if (ContextFlyout is null)
-        {
-            CreateContextFlyout();
-            args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(this, new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point });
-        }
-
-        RelocateCommands();
-        args.Handled = true;
-    }
-
-    private void CreateContextFlyout()
-    {
-        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
-        menuFlyout.Items.Add(CreateOpenInBroswerItem());
-        if (ViewModel.Style != SeasonCardStyle.Favorite)
-        {
-            menuFlyout.Items.Add(CreateFollowItem());
-            menuFlyout.Items.Add(CreatePinItem());
-        }
-        else
-        {
-            menuFlyout.Items.Add(CreatePinItem());
-            menuFlyout.Items.Add(CreateMarkWantWatchItem());
-            menuFlyout.Items.Add(CreateMarkWatchingItem());
-            menuFlyout.Items.Add(CreateMarkWatchedItem());
-            menuFlyout.Items.Add(CreateUnfollowItem());
-        }
-
-        ContextFlyout = menuFlyout;
-    }
-
-    private void RelocateCommands()
-    {
-        if (ContextFlyout is not MenuFlyout flyout)
+        if (ViewModel is not { } viewModel)
         {
             return;
         }
 
-        foreach (var item in flyout.Items.OfType<MenuFlyoutItem>())
+        args.Handled = true;
+        var flyout = new MenuFlyout { ShouldConstrainToRootBounds = false };
+        flyout.Items.Add(CreateItem(StringNames.OpenInBrowser, IconGlyph.Globe, viewModel.OpenInBroswerCommand));
+
+        var isFavorite = viewModel.Style == SeasonCardStyle.Favorite;
+        var trackingItem = new MenuFlyoutItem { Text = ResourceToolkit.GetLocalizedString(StringNames.Loading), IsEnabled = false };
+
+        if (!isFavorite)
         {
-            switch (item.Tag.ToString())
+            flyout.Items.Add(trackingItem);
+        }
+
+        flyout.Items.Add(CreateItem(StringNames.FixContent, IconGlyph.Pin, viewModel.PinCommand));
+        if (isFavorite)
+        {
+            flyout.Items.Add(CreateItem(StringNames.MarkWantWatch, IconGlyph.Thinking, viewModel.MarkWantWatchCommand, viewModel.InWantWatch != true));
+            flyout.Items.Add(CreateItem(StringNames.MarkWatching, IconGlyph.Eye, viewModel.MarkWatchingCommand, viewModel.InWatching != true));
+            flyout.Items.Add(CreateItem(StringNames.MarkWatched, IconGlyph.Checkmark, viewModel.MarkWatchedCommand, viewModel.InWatched != true));
+            SetTrackingItem(trackingItem, viewModel, true);
+            flyout.Items.Add(trackingItem);
+        }
+
+        var options = new FlyoutShowOptions();
+        if (args.TryGetPosition(this, out var point))
+        {
+            options.Position = point;
+        }
+
+        flyout.ShowAt(this, options);
+        if (!isFavorite)
+        {
+            if (await viewModel.GetTrackingStateAsync() is { } isTracking)
             {
-                case nameof(ViewModel.OpenInBroswerCommand):
-                    item.Command = ViewModel.OpenInBroswerCommand;
-                    break;
-                case nameof(ViewModel.FollowCommand):
-                    item.Command = ViewModel.FollowCommand;
-                    break;
-                case nameof(ViewModel.PinCommand):
-                    item.Command = ViewModel.PinCommand;
-                    break;
-                case nameof(ViewModel.MarkWantWatchCommand):
-                    item.IsEnabled = !(ViewModel.InWantWatch ?? false);
-                    item.Command = ViewModel.MarkWantWatchCommand;
-                    break;
-                case nameof(ViewModel.MarkWatchingCommand):
-                    item.IsEnabled = !(ViewModel.InWatching ?? false);
-                    item.Command = ViewModel.MarkWatchingCommand;
-                    break;
-                case nameof(ViewModel.MarkWatchedCommand):
-                    item.IsEnabled = !(ViewModel.InWatched ?? false);
-                    item.Command = ViewModel.MarkWatchedCommand;
-                    break;
-                case nameof(ViewModel.UnfollowCommand):
-                    item.Command = ViewModel.UnfollowCommand;
-                    break;
+                SetTrackingItem(trackingItem, viewModel, isTracking);
+            }
+            else
+            {
+                trackingItem.Text = ResourceToolkit.GetLocalizedString(StringNames.RequestPgcFailed);
             }
         }
     }
+
+    private void SetTrackingItem(MenuFlyoutItem item, SeasonItemViewModel viewModel, bool isTracking)
+    {
+        item.Text = ResourceToolkit.GetLocalizedString(isTracking ? StringNames.PgcUnfollow : StringNames.PgcFollow);
+        var icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = isTracking ? IconGlyph.HeartBroken : IconGlyph.Heart };
+        if (isTracking)
+        {
+            icon.Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush");
+        }
+
+        item.Icon = icon;
+        item.Command = isTracking ? viewModel.UnfollowCommand : viewModel.FollowCommand;
+        item.IsEnabled = true;
+    }
+
+    private static MenuFlyoutItem CreateItem(StringNames label, string glyph, ICommand command, bool isEnabled = true)
+        => new()
+        {
+            Text = ResourceToolkit.GetLocalizedString(label),
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = glyph },
+            Command = command,
+            IsEnabled = isEnabled,
+        };
 }

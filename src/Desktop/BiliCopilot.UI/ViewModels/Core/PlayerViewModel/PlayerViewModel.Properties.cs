@@ -71,7 +71,16 @@ public sealed partial class PlayerViewModel
     public partial MpvPlayer Player { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PlaybackHeaderTitle))]
     public partial string? Title { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PlaybackHeaderTitle))]
+    public partial string? PlaybackAccount { get; set; }
+
+    public string? PlaybackHeaderTitle => PlaybackAccount is null
+        ? Title
+        : string.Format(ResourceToolkit.GetLocalizedString(StringNames.PlaybackAccountTitle), Title, PlaybackAccount);
 
     [ObservableProperty]
     public partial string? PositionText { get; set; }
@@ -312,7 +321,7 @@ public sealed partial class PlayerViewModel
 
     public DanmakuRenderViewModel Danmaku { get; } = new();
 
-    public DanmakuSendViewModel DanmakuSend { get; } = GlobalDependencies.Kernel.GetRequiredService<DanmakuSendViewModel>();
+    public DanmakuSendViewModel DanmakuSend { get; } = danmakuSend;
 
     public ObservableCollection<SourceItemViewModel> Sources { get; } = [];
 
