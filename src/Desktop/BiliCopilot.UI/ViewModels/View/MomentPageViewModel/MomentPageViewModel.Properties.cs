@@ -16,6 +16,7 @@ public sealed partial class MomentPageViewModel
     private ulong _latestMomentId;
     private ulong _latestVideoMomentId;
     private ulong _latestNonVideoMomentId;
+    private ulong _loadedVideoMomentId;
     private long _updatesAccountId;
 
     [ObservableProperty]

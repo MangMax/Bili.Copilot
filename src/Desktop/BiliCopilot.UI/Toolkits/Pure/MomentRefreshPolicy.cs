@@ -67,30 +67,23 @@ public static class MomentRefreshPolicy
         return (latestAll, latestVideo, latestNonVideo);
     }
 
-    /// <summary>
-    /// 决定点击「有新动态，点击刷新」时是否应停留在视频分区刷新.
-    /// </summary>
-    /// <param name="isCurrentlyVideoSection">当前是否处于视频分区.</param>
-    /// <param name="seenMomentId">已读动态水位.</param>
-    /// <param name="latestVideoMomentId">已检测到的最新视频动态 Id.</param>
-    /// <param name="latestNonVideoMomentId">已检测到的最新非视频动态 Id.</param>
-    /// <returns>应刷新视频分区时返回 <c>true</c>，应刷新综合分区时返回 <c>false</c>.</returns>
+    public static bool HasUnreadMoments(
+        ulong seenMomentId,
+        ulong loadedVideoMomentId,
+        ulong latestVideoMomentId,
+        ulong latestNonVideoMomentId)
+        => latestVideoMomentId > Math.Max(seenMomentId, loadedVideoMomentId)
+            || latestNonVideoMomentId > seenMomentId;
+
     public static bool ShouldRefreshVideoSection(
         bool isCurrentlyVideoSection,
         ulong seenMomentId,
         ulong latestVideoMomentId,
-        ulong latestNonVideoMomentId)
-    {
-        if (!isCurrentlyVideoSection)
-        {
-            // 当前在综合页：综合页同时展示视频与其他动态，留在综合页刷新即可。
-            return false;
-        }
-
-        // 当前在视频页：只要检测到新视频（含番剧），留在视频页刷新；
-        // 仅当新动态全是非视频动态时，才切换到综合页。
-        return latestVideoMomentId > seenMomentId || latestNonVideoMomentId <= seenMomentId;
-    }
+        ulong latestNonVideoMomentId,
+        ulong loadedVideoMomentId = 0)
+        => isCurrentlyVideoSection
+            && (latestVideoMomentId > Math.Max(seenMomentId, loadedVideoMomentId)
+                || latestNonVideoMomentId <= seenMomentId);
 
     /// <summary>
     /// 计算刷新完成后应落盘的已读动态水位.
