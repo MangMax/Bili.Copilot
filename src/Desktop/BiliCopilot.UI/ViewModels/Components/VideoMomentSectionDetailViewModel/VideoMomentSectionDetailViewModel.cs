@@ -4,6 +4,7 @@ using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.ViewModels.View;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.Moment;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -15,13 +16,17 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// </summary>
 public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, IMomentSectionDetailViewModel
 {
+    private readonly Action<long, MomentView> _onFeedLoaded;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoMomentSectionDetailViewModel"/> class.
     /// </summary>
     public VideoMomentSectionDetailViewModel(
-        IMomentDiscoveryService service)
+        IMomentDiscoveryService service,
+        Action<long, MomentView> onFeedLoaded)
     {
         _service = service;
+        _onFeedLoaded = onFeedLoaded;
         _logger = this.Get<ILogger<VideoMomentSectionDetailViewModel>>();
     }
 
@@ -73,6 +78,7 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
         try
         {
             IsLoading = true;
+            var accountId = _offset is null ? this.Get<IBiliTokenResolver>().GetToken()?.UserId : null;
             var initialCount = Items.Count;
             do
             {
@@ -96,6 +102,11 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
                 }
             }
             while (!_preventLoadMore && Items.Count == initialCount);
+
+            if (accountId is { } id && firstView is not null)
+            {
+                _onFeedLoaded(id, firstView);
+            }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);
             return firstView;

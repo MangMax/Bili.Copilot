@@ -3,6 +3,7 @@
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.Moment;
 
@@ -13,13 +14,17 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// </summary>
 public sealed partial class ComprehensiveMomentSectionDetailViewModel : LayoutPageViewModelBase, IMomentSectionDetailViewModel
 {
+    private readonly Action<long, MomentView> _onFeedLoaded;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ComprehensiveMomentSectionDetailViewModel"/> class.
     /// </summary>
     public ComprehensiveMomentSectionDetailViewModel(
-        IMomentDiscoveryService service)
+        IMomentDiscoveryService service,
+        Action<long, MomentView> onFeedLoaded)
     {
         _service = service;
+        _onFeedLoaded = onFeedLoaded;
         _logger = this.Get<ILogger<ComprehensiveMomentSectionDetailViewModel>>();
     }
 
@@ -62,6 +67,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel : LayoutPa
         IsLoading = true;
         try
         {
+            var accountId = this.Get<IBiliTokenResolver>().GetToken()?.UserId;
             var response = await _service.GetComprehensiveMomentsAsync();
             var total = new MomentUperSectionViewModel(default);
             total.InjectFirstPageData(response);
@@ -76,6 +82,11 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel : LayoutPa
             }
 
             SelectUper(total);
+            if (accountId is { } id)
+            {
+                _onFeedLoaded(id, response);
+            }
+
             Initialized?.Invoke(this, EventArgs.Empty);
             return response;
         }

@@ -48,6 +48,26 @@ public sealed class MomentRefreshPolicyTests
     }
 
     [Fact]
+    public void ColdStartWithLatestVideoAlreadyLoadedHasNoUnreadMoments()
+        => Assert.False(MomentRefreshPolicy.HasUnreadMoments(
+            seenMomentId: 100, loadedVideoMomentId: 105, latestVideoMomentId: 105, latestNonVideoMomentId: 99));
+
+    [Fact]
+    public void VideoLoadedOnColdStartDoesNotHideUnseenNonVideoMoments()
+    {
+        Assert.True(MomentRefreshPolicy.HasUnreadMoments(
+            seenMomentId: 100, loadedVideoMomentId: 108, latestVideoMomentId: 108, latestNonVideoMomentId: 105));
+        Assert.False(MomentRefreshPolicy.ShouldRefreshVideoSection(
+            isCurrentlyVideoSection: true, seenMomentId: 100, latestVideoMomentId: 108,
+            latestNonVideoMomentId: 105, loadedVideoMomentId: 108));
+    }
+
+    [Fact]
+    public void ANewerVideoStillTriggersThePromptAfterInitialLoad()
+        => Assert.True(MomentRefreshPolicy.HasUnreadMoments(
+            seenMomentId: 100, loadedVideoMomentId: 105, latestVideoMomentId: 110, latestNonVideoMomentId: 99));
+
+    [Fact]
     public void VideoTabStaysOnVideoWhenNewVideoArrives()
     {
         Assert.True(MomentRefreshPolicy.ShouldRefreshVideoSection(

@@ -48,13 +48,7 @@ public sealed partial class MomentPageViewModel : ViewModelBase
                 return;
             }
 
-            if (_updatesAccountId != accountId)
-            {
-                _updatesAccountId = accountId;
-                _latestMomentId = 0;
-                _latestVideoMomentId = 0;
-                _latestNonVideoMomentId = 0;
-            }
+            UseUpdatesAccount(accountId);
 
             var seen = ReadSeenMoment(accountId);
             var (latestAll, latestVideo, latestNonVideo) = MomentRefreshPolicy.ExtractLatestIds(view);
@@ -66,7 +60,7 @@ public sealed partial class MomentPageViewModel : ViewModelBase
                 WriteSeenMoment(accountId, _latestMomentId);
             }
 
-            SetHasNewMoments(seen is { } id && _latestMomentId > id);
+            UpdateUnread(seen ?? _latestMomentId);
         }
         catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
         {
@@ -91,7 +85,8 @@ public sealed partial class MomentPageViewModel : ViewModelBase
             SelectedSection is VideoMomentSectionDetailViewModel,
             seenBefore,
             checkedLatestVideo,
-            checkedLatestNonVideo);
+            checkedLatestNonVideo,
+            _loadedVideoMomentId);
 
         MomentView? view;
         if (refreshVideo && Sections.OfType<VideoMomentSectionDetailViewModel>().FirstOrDefault() is { } videoSection)
@@ -135,8 +130,54 @@ public sealed partial class MomentPageViewModel : ViewModelBase
             checkedLatestAll,
             checkedLatestVideo);
         WriteSeenMoment(accountId, seen);
-        SetHasNewMoments(_latestMomentId > seen);
+        UpdateUnread(seen);
     }
+
+    private void RecordLoadedMoments(long accountId, MomentView view, bool videoOnly)
+    {
+        if (this.Get<IBiliTokenResolver>().GetToken()?.UserId != accountId)
+        {
+            return;
+        }
+
+        var latest = MomentRefreshPolicy.LatestId(view);
+        if (latest == 0)
+        {
+            return;
+        }
+
+        UseUpdatesAccount(accountId);
+        var seen = ReadSeenMoment(accountId).GetValueOrDefault();
+        if (videoOnly)
+        {
+            _loadedVideoMomentId = Math.Max(_loadedVideoMomentId, latest);
+        }
+        else if (latest > seen)
+        {
+            seen = latest;
+            WriteSeenMoment(accountId, seen);
+        }
+
+        UpdateUnread(seen);
+    }
+
+    private void UseUpdatesAccount(long accountId)
+    {
+        if (_updatesAccountId == accountId)
+        {
+            return;
+        }
+
+        _updatesAccountId = accountId;
+        _latestMomentId = 0;
+        _latestVideoMomentId = 0;
+        _latestNonVideoMomentId = 0;
+        _loadedVideoMomentId = 0;
+    }
+
+    private void UpdateUnread(ulong seen)
+        => SetHasNewMoments(MomentRefreshPolicy.HasUnreadMoments(
+            seen, _loadedVideoMomentId, _latestVideoMomentId, _latestNonVideoMomentId));
 
     private void SetHasNewMoments(bool value)
     {
@@ -184,8 +225,10 @@ public sealed partial class MomentPageViewModel : ViewModelBase
 
         Sections = new List<IMomentSectionDetailViewModel>
         {
-            new VideoMomentSectionDetailViewModel(_momentDiscoveryService),
-            new ComprehensiveMomentSectionDetailViewModel(_momentDiscoveryService),
+            new VideoMomentSectionDetailViewModel(_momentDiscoveryService,
+                (accountId, view) => RecordLoadedMoments(accountId, view, videoOnly: true)),
+            new ComprehensiveMomentSectionDetailViewModel(_momentDiscoveryService,
+                (accountId, view) => RecordLoadedMoments(accountId, view, videoOnly: false)),
         };
 
         var isLastVideoSection = videoOnly ?? SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.LastMomentSectionIsVideo, true);
