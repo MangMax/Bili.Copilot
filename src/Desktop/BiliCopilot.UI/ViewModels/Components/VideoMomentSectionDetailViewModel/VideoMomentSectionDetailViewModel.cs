@@ -5,6 +5,7 @@ using BiliCopilot.UI.ViewModels.View;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Moment;
+using Richasy.BiliKernel.Models.Moment;
 using Richasy.WinUIKernel.Share.ViewModels;
 
 namespace BiliCopilot.UI.ViewModels.Components;
@@ -38,7 +39,10 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    private Task RefreshAsync()
+        => RefreshWithResultAsync();
+
+    internal Task<MomentView?> RefreshWithResultAsync()
     {
         _loadCancellation?.Cancel();
         _loadCancellation = null;
@@ -49,19 +53,23 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
         _seenIds.Clear();
         _seenOffsets.Clear();
         Items.Clear();
-        await LoadItemsAsync();
+        return LoadItemsCoreAsync();
     }
 
     [RelayCommand]
-    private async Task LoadItemsAsync()
+    private Task LoadItemsAsync()
+        => LoadItemsCoreAsync();
+
+    private async Task<MomentView?> LoadItemsCoreAsync()
     {
         if (_loadCancellation is not null || _preventLoadMore)
         {
-            return;
+            return null;
         }
 
         using var cancellation = new CancellationTokenSource();
         _loadCancellation = cancellation;
+        MomentView? firstView = null;
         try
         {
             IsLoading = true;
@@ -70,6 +78,11 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
             {
                 var view = await _service.GetVideoMomentsAsync(_offset, _baseline, cancellation.Token);
                 cancellation.Token.ThrowIfCancellationRequested();
+                if (firstView is null || (firstView.Moments.Count == 0 && view.Moments.Count > 0))
+                {
+                    firstView = view;
+                }
+
                 _baseline ??= view.UpdateBaseline;
                 _preventLoadMore = view.HasMoreMoments != true
                     || string.IsNullOrEmpty(view.Offset) || !_seenOffsets.Add(view.Offset);
@@ -85,13 +98,16 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
             while (!_preventLoadMore && Items.Count == initialCount);
 
             ListUpdated?.Invoke(this, EventArgs.Empty);
+            return firstView;
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
+            return null;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "加载动态列表失败.");
+            return null;
         }
         finally
         {
