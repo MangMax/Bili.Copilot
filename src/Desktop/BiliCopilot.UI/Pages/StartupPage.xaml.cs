@@ -1,8 +1,10 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.View;
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml.Navigation;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.System;
 
@@ -19,24 +21,33 @@ public sealed partial class StartupPage : StartupPageBase
     public StartupPage()
     {
         InitializeComponent();
+        Unloaded += DisposeNativeSignIn;
     }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded()
     {
+        InitializeNativeSignIn();
         ViewModel.InitializeCommand.Execute(QRCodeImage);
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+        ViewModel.SignInWindow = e.Parameter as StartupWindow;
     }
 
     private void OnWebSignInButtonClick(object sender, RoutedEventArgs e)
     {
-        var window = this.Get<AppViewModel>().Windows.FirstOrDefault(p => p is WebSignInWindow);
+        var window = this.Get<AppViewModel>().Windows.OfType<WebSignInWindow>()
+            .FirstOrDefault(window => window.Startup == ViewModel);
         if (window is not null)
         {
             window.Activate();
         }
         else
         {
-            new WebSignInWindow().Activate();
+            new WebSignInWindow(ViewModel, ViewModel.SignInWindow?.ExpectedUid).Activate();
         }
     }
 
@@ -58,5 +69,6 @@ public abstract class StartupPageBase : LayoutPageBase<StartupPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPageBase"/> class.
     /// </summary>
-    public StartupPageBase() => ViewModel = this.Get<StartupPageViewModel>();
+    public StartupPageBase()
+        => ViewModel = new StartupPageViewModel(this.Get<ILogger<StartupPageViewModel>>(), this.Get<Microsoft.UI.Dispatching.DispatcherQueue>());
 }

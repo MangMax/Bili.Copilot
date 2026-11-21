@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using System.Collections.Specialized;
+
 namespace BiliCopilot.UI.Controls.Users;
 
 /// <summary>
@@ -16,12 +18,22 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
     protected override void OnControlLoaded()
     {
         ViewModel.UserListUpdated += OnUserListUpdatedAsync;
+        ViewModel.Users.CollectionChanged += OnUsersChanged;
     }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
         ViewModel.UserListUpdated -= OnUserListUpdatedAsync;
+        ViewModel.Users.CollectionChanged -= OnUsersChanged;
+    }
+
+    private void OnUsersChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Reset)
+        {
+            View.ResetScrollPosition();
+        }
     }
 
     private async void OnUserListUpdatedAsync(object? sender, EventArgs e)

@@ -38,20 +38,37 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
             return;
         }
 
+        HasPartitionLoadFailed = false;
         IsPartitionLoading = true;
-        var partitions = await _service.GetVideoPartitionsAsync();
-        if (partitions != null)
+        try
         {
+            var partitions = await _service.GetVideoPartitionsAsync();
+            if (partitions is not { Count: > 0 })
+            {
+                HasPartitionLoadFailed = true;
+                return;
+            }
+
             foreach (var item in partitions)
             {
                 Partitions.Add(new PartitionViewModel(item));
             }
         }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "加载视频分区失败。");
+            HasPartitionLoadFailed = true;
+            return;
+        }
+        finally
+        {
+            IsPartitionLoading = false;
+        }
 
-        IsPartitionLoading = false;
         await Task.Delay(200);
-        var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(SettingNames.VideoPartitionPageLastSelectedPartitionId, Partitions.First().Data.Id);
-        var partition = Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId) ?? Partitions.First();
+        var first = Partitions[0];
+        var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(SettingNames.VideoPartitionPageLastSelectedPartitionId, first.Data.Id);
+        var partition = Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId) ?? first;
         SelectPartition(partition);
         PartitionInitialized?.Invoke(this, EventArgs.Empty);
     }

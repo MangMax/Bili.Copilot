@@ -1,5 +1,6 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Accounts;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Pages.Overlay;
@@ -7,10 +8,8 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.WinUIKernel.Share.ViewModels;
-using Windows.System;
 
 namespace BiliCopilot.UI.ViewModels.Components;
 
@@ -64,18 +63,28 @@ public sealed partial class AccountViewModel : ViewModelBase
     /// </remarks>
     private async Task LoadProfileAsync()
     {
-        while (true)
+        var session = AccountSession.Find(this);
+        while (ReferenceEquals(GlobalDependencies.Accounts.Current, session))
         {
             this.Get<AppViewModel>().IsInitialLoading = true;
             AccountProfileLoadFailureKind failureKind;
             try
             {
                 await ApplyProfileAsync();
-                this.Get<AppViewModel>().IsInitialLoading = false;
+                if (ReferenceEquals(GlobalDependencies.Accounts.Current, session))
+                {
+                    this.Get<AppViewModel>().IsInitialLoading = false;
+                }
+
                 return;
             }
             catch (Exception ex)
             {
+                if (!ReferenceEquals(GlobalDependencies.Accounts.Current, session))
+                {
+                    return;
+                }
+
                 failureKind = AccountProfileLoadFailureClassifier.Classify(ex);
                 if (failureKind == AccountProfileLoadFailureKind.AuthenticationExpired)
                 {
@@ -91,12 +100,17 @@ public sealed partial class AccountViewModel : ViewModelBase
             }
 
             var chosePrimaryButton = await ShowProfileLoadFailureDialogAsync(failureKind);
+            if (!ReferenceEquals(GlobalDependencies.Accounts.Current, session))
+            {
+                return;
+            }
+
             switch (AccountProfileLoadPolicy.Decide(failureKind, chosePrimaryButton))
             {
                 case AccountProfileLoadDecision.Retry:
                     continue;
                 case AccountProfileLoadDecision.SignOutAndRestart:
-                    await SignOutAsync();
+                    GlobalDependencies.Accounts.OpenSignIn(GlobalDependencies.Accounts.CurrentUid);
                     return;
                 default:
                     // 用户放弃：只按原有托盘退出语义离开，绝不清理登录态.
@@ -112,11 +126,21 @@ public sealed partial class AccountViewModel : ViewModelBase
     /// </summary>
     private async Task ApplyProfileAsync()
     {
-        MyProfile = await _myProfileService.GetMyProfileAsync();
+        var profile = await _myProfileService.GetMyProfileAsync();
+        if (AccountSession.Find(this) is { } session && ReferenceEquals(GlobalDependencies.Accounts.Current, session))
+        {
+            ApplyPreparedProfile(profile);
+            await GlobalDependencies.Accounts.SaveProfileAsync(session, profile);
+            UpdateUnreadCommand.Execute(default);
+        }
+    }
+
+    internal void ApplyPreparedProfile(Richasy.BiliKernel.Models.User.UserDetailProfile profile)
+    {
+        MyProfile = profile;
         Introduce = string.IsNullOrEmpty(MyProfile.Introduce)
             ? ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NoSelfIntroduce)
             : MyProfile.Introduce;
-        UpdateUnreadCommand.Execute(default);
     }
 
     /// <summary>
@@ -201,21 +225,19 @@ public sealed partial class AccountViewModel : ViewModelBase
     [RelayCommand]
     private async Task SignOutAsync()
     {
-        await this.Get<NotificationViewModel>().ClearOnSignOutAsync();
-        await this.Get<IAuthenticationService>().SignOutAsync().ConfigureAwait(false);
-        MyProfile = null;
-        this.Get<AppViewModel>().RestartCommand.Execute(default);
+        if (AccountSession.Find(this) is { } session)
+        {
+            await GlobalDependencies.Accounts.SignOutAsync(session);
+        }
     }
 
     [RelayCommand]
-    private async Task OpenPersonalWebsiteAsync()
+    private void ShowOwnUserSpace()
     {
-        if (MyProfile is null)
+        if (MyProfile is { } profile)
         {
-            return;
+            _navService.NavigateToOver(typeof(UserSpacePage), profile.User);
         }
-
-        await Launcher.LaunchUriAsync(new Uri($"https://space.bilibili.com/{MyProfile.User.Id}"));
     }
 
     [RelayCommand]
@@ -225,10 +247,6 @@ public sealed partial class AccountViewModel : ViewModelBase
     [RelayCommand]
     private void ShowFollows()
         => _navService.NavigateToOver(typeof(FollowsPage), MyProfile.User.Id);
-
-    [RelayCommand]
-    private void ShowMoments()
-        => _navService.NavigateToOver(typeof(UserSpacePage), MyProfile.User);
 
     [RelayCommand]
     private void ShowViewLater()
@@ -248,7 +266,10 @@ public sealed partial class AccountViewModel : ViewModelBase
         try
         {
             var unreadInfo = await _messageService.GetUnreadInformationAsync();
-            _navService.FooterItems.First(p => p.PageKey == typeof(MessagePage).FullName).ShowUnread = unreadInfo.Total > 0;
+            if (_navService.FooterItems.FirstOrDefault(p => p.PageKey == typeof(MessagePage).FullName) is { } entry)
+            {
+                entry.ShowUnread = unreadInfo.Total > 0;
+            }
         }
         catch (Exception ex)
         {

@@ -15,9 +15,6 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     public static readonly DependencyProperty LeftElementProperty =
         DependencyProperty.Register(nameof(LeftElement), typeof(object), typeof(OverlayTransportControls), new PropertyMetadata(default));
 
-    public static readonly DependencyProperty ProgressBarVisibleProperty =
-        DependencyProperty.Register(nameof(ProgressBarVisible), typeof(bool), typeof(OverlayTransportControls), new PropertyMetadata(true));
-
     public static readonly DependencyProperty IsSkipButtonsVisibleProperty =
         DependencyProperty.Register(nameof(IsSkipButtonsVisible), typeof(bool), typeof(OverlayTransportControls), new PropertyMetadata(true));
 
@@ -46,12 +43,6 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         set => SetValue(LeftElementProperty, value);
     }
 
-    public bool ProgressBarVisible
-    {
-        get => (bool)GetValue(ProgressBarVisibleProperty);
-        set => SetValue(ProgressBarVisibleProperty, value);
-    }
-
     public bool IsSkipButtonsVisible
     {
         get => (bool)GetValue(IsSkipButtonsVisibleProperty);
@@ -66,6 +57,7 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         }
 
         _isOverlayActive = true;
+        ProgressSlider.ViewModel = ViewModel;
         _appliedLayout = null;
         _speedChangeTimer.Tick += OnSpeedChangeTick;
         if (ViewModel is not null)
@@ -95,6 +87,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     protected override void OnViewModelChanged(PlayerViewModel? oldValue, PlayerViewModel? newValue)
     {
+        if (ProgressSlider is not null)
+        {
+            ProgressSlider.ViewModel = newValue;
+        }
+
         _appliedLayout = null;
         _speedChangeTimer.Stop();
         _pendingSpeed = null;
@@ -155,6 +152,9 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private bool IsLoading(MpvPlayerState state, bool isLoading)
         => state is MpvPlayerState.Seeking or MpvPlayerState.Buffering || isLoading;
+
+    private bool CanSeekTimeline(bool isLoading, double duration)
+        => !isLoading && double.IsFinite(duration) && duration > 0;
 
     private string GetTimeText(double seconds)
         => TimeSpan.FromSeconds(seconds).ToString(@"hh\:mm\:ss");

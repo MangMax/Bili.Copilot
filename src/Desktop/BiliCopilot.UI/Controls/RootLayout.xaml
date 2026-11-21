@@ -37,7 +37,7 @@
             x:Name="MainTitleBar"
             Title="{ext:Locale Name=AppName}"
             BackRequested="OnBackRequested"
-            IsBackButtonVisible="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay}"
+            IsBackButtonVisible="{x:Bind ViewModel.CanGoBack, Mode=OneWay}"
             IsBackEnabled="True">
             <base:AppTitleBar.IconElement>
                 <ImageIcon Source="ms-appx:///Assets/StoreLogo.png" />

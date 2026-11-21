@@ -8,6 +8,8 @@ using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Media;
+using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -154,34 +156,79 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     /// 追番/取消追番.
     /// </summary>
     [RelayCommand]
-    private async Task ToggleFollowAsync()
+    private Task ToggleFollowAsync()
+        => ChangeFollowStatusAsync();
+
+    [RelayCommand]
+    private Task MarkWantWatchAsync()
+        => ChangeFollowStatusAsync(PgcFavoriteStatus.Want);
+
+    [RelayCommand]
+    private Task MarkWatchingAsync()
+        => ChangeFollowStatusAsync(PgcFavoriteStatus.Watching);
+
+    [RelayCommand]
+    private Task MarkWatchedAsync()
+        => ChangeFollowStatusAsync(PgcFavoriteStatus.Watched);
+
+    private async Task ChangeFollowStatusAsync(PgcFavoriteStatus? status = null)
     {
-        if (_view is null)
+        if (_view is null || !CanChangeFollowStatus || (status.HasValue && !IsFollowed))
         {
             return;
         }
 
-        var seasonId = _view.Information.Identifier.Id;
+        var season = _view.Information.Identifier;
+        var generation = _loadGeneration;
+        var wasFollowed = IsFollowed;
+        CanChangeFollowStatus = false;
         try
         {
-            if (IsFollowed)
+            StringNames message;
+            if (status is { } favoriteStatus)
             {
-                await _entertainmentService.UnfollowAsync(seasonId);
-                IsFollowed = false;
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Unfollowed), InfoType.Success));
+                await this.Get<IFavoriteService>().MarkPgcAsync(season, favoriteStatus);
+                message = StringNames.PgcStatusMarked;
+            }
+            else if (wasFollowed)
+            {
+                await _entertainmentService.UnfollowAsync(season.Id);
+                message = StringNames.PgcUnfollowed;
             }
             else
             {
-                await _entertainmentService.FollowAsync(seasonId);
-                IsFollowed = true;
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success));
+                await _entertainmentService.FollowAsync(season.Id);
+                message = StringNames.PgcFollowed;
+            }
+
+            if (generation == _loadGeneration)
+            {
+                if (!status.HasValue)
+                {
+                    IsFollowed = !wasFollowed;
+                    if (_view is { } view)
+                    {
+                        view.Information.IsTracking = IsFollowed;
+                    }
+                }
+
+                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(message), InfoType.Success));
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "切换追番状态失败");
-            var message = ResourceToolkit.GetLocalizedString(IsFollowed ? StringNames.FailedToUnfollowPgc : StringNames.FailedToFollowPgc);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((message, InfoType.Error));
+            if (generation == _loadGeneration)
+            {
+                var message = status.HasValue
+                    ? StringNames.FailedToMarkPgc
+                    : wasFollowed ? StringNames.FailedToUnfollowPgc : StringNames.FailedToFollowPgc;
+                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(message), InfoType.Error));
+            }
+        }
+        finally
+        {
+            CanChangeFollowStatus = true;
         }
     }
 

@@ -19,15 +19,17 @@ public sealed partial class ChapterSegmentBar
     {
         var duration = Duration;
         var width = _canvas.ActualWidth;
-        if (ViewModel is null || duration <= 0 || width <= 0)
+        if (width <= 0)
         {
             // 切换分 P 时总时长会短暂归零，必须同时清掉上一个分 P 的片段标记.
             ClearMarkers();
             return;
         }
 
-        var spans = ResolveSpans(duration);
+        var hasTimeline = duration > 0;
+        var spans = hasTimeline ? ResolveSpans(duration) : [(0d, 0d, null)];
         ApplyThumbBrushes();
+        _thumb.Opacity = hasTimeline ? 1 : 0.6;
 
         while (_segments.Count > spans.Count)
         {
@@ -50,12 +52,23 @@ public sealed partial class ChapterSegmentBar
             // 这样两端不留缝、分段之间的缝隙也保持均匀.
             var isFirst = i == 0;
             var isLast = i == spans.Count - 1;
-            var left = (start / duration * width) + (isFirst ? 0d : SegmentGap / 2d);
-            var right = (end / duration * width) - (isLast ? 0d : SegmentGap / 2d);
+            var left = hasTimeline ? (start / duration * width) + (isFirst ? 0d : SegmentGap / 2d) : 0d;
+            var right = hasTimeline ? (end / duration * width) - (isLast ? 0d : SegmentGap / 2d) : width;
             var segmentWidth = Math.Max(right - left, MinSegmentWidth);
 
             _segments[i].Update(start, end, title, left, segmentWidth);
             LayoutTrack(_segments[i], TrackHeight);
+        }
+
+        if (!hasTimeline)
+        {
+            _hasChapters = false;
+            _segments[0].Cache.Width = 0;
+            _segments[0].Played.Width = 0;
+            HideHoverPopup();
+            ClearMarkers();
+            ApplyFill(0, duration, width);
+            return;
         }
 
         UpdateCache();
@@ -187,7 +200,7 @@ public sealed partial class ChapterSegmentBar
             segment.Played.Width = Math.Clamp(playedSeconds / span * segWidth, 0, segWidth);
         }
 
-        var ratio = Math.Clamp(position / duration, 0, 1);
+        var ratio = duration > 0 ? Math.Clamp(position / duration, 0, 1) : 0d;
         var thumbVisibility = ShowThumb ? Visibility.Visible : Visibility.Collapsed;
         if (_thumb.Visibility != thumbVisibility)
         {

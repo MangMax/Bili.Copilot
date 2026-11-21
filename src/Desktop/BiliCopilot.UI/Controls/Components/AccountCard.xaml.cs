@@ -11,4 +11,7 @@ public sealed partial class AccountCard : HeaderAccountControlBase
     /// Initializes a new instance of the <see cref="AccountCard"/> class.
     /// </summary>
     public AccountCard() => InitializeComponent();
+
+    private static Visibility GetIntroductionVisibility(string? introduction)
+        => string.IsNullOrWhiteSpace(introduction) ? Visibility.Collapsed : Visibility.Visible;
 }

@@ -18,6 +18,7 @@ public sealed partial class VideoConnectorViewModel : ViewModelBase, IPlayerConn
 {
     public VideoConnectorViewModel(PlayerViewModel parent)
     {
+        Accounts.AccountSession.Find(parent)?.Bind(this);
         Parent = parent;
         _comments = this.Get<CommentMainViewModel>();
         Downloader = this.Get<DownloadViewModel>();
@@ -142,11 +143,28 @@ public sealed partial class VideoConnectorViewModel : ViewModelBase, IPlayerConn
             _comments?.Initialize(_view.Information.Identifier.Id, Richasy.BiliKernel.Models.CommentTargetType.Video, Richasy.BiliKernel.Models.CommentSortType.Hot);
             InitializeSections();
             AI.InjectVideoAsync(_view, _part);
+            if (_part is { } part)
+            {
+                _ = LoadOnlineCountAsync(service, _view, part);
+            }
         }
         catch (Exception ex)
         {
             this.Get<ILogger<VideoConnectorViewModel>>().LogError(ex, "获取视频信息失败");
         }
+    }
+
+    private async Task LoadOnlineCountAsync(IPlayerService service, VideoPlayerView view, VideoPart part)
+    {
+        var viewers = await service.GetOnlineViewerAsync(view.Information.Identifier.Id, part.Identifier.Id, CancellationToken.None);
+        if (!ReferenceEquals(_view, view) || !ReferenceEquals(_part, part))
+        {
+            return;
+        }
+
+        OnlineCountText = viewers.Text is { Length: > 0 } text && text != "--"
+            ? text
+            : viewers.Count > 0 ? viewers.Count.ToString() : null;
     }
 
     private VideoPart? FindInitialPart(string? initialPartId = default)

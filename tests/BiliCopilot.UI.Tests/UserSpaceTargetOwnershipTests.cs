@@ -822,6 +822,9 @@ public sealed class UserSpaceTargetOwnershipTests : IDisposable
         public Task<IReadOnlyList<UserGroup>> GetMyFollowUserGroupsAsync(CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
+        public Task<(IReadOnlyList<UserCard> Users, bool HasMore)> SearchMyFollowingsAsync(string keyword, int pageNumber = 1, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public Task<(IReadOnlyList<UserCard> Users, int NextPageNumber)> GetMyFollowUserGroupDetailAsync(string groupId, int pageNumber = 0, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 

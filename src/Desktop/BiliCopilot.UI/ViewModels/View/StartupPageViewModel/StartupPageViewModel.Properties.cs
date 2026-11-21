@@ -1,9 +1,8 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using Richasy.BiliKernel.Bili.Authorization;
 
 namespace BiliCopilot.UI.ViewModels.View;
 
@@ -13,7 +12,6 @@ namespace BiliCopilot.UI.ViewModels.View;
 public sealed partial class StartupPageViewModel
 {
     private readonly ILogger<StartupPageViewModel> _logger;
-    private readonly IAuthenticationService _authenticationService;
     private readonly DispatcherQueue _dispatcherQueue;
 
     private CancellationTokenSource? _cancellationTokenSource;
@@ -22,7 +20,7 @@ public sealed partial class StartupPageViewModel
     public partial string Version { get; set; }
 
     [ObservableProperty]
-    public partial string ErrorTip { get; set; }
+    public partial string? ErrorTip { get; set; }
 
     [ObservableProperty]
     public partial bool IsQRCodeLoading { get; set; }
@@ -31,4 +29,6 @@ public sealed partial class StartupPageViewModel
     /// 二维码图片控件.
     /// </summary>
     public Image? QRCodeImage { get; private set; }
+
+    internal bool IsQRCodeSignInSelected { get; set; } = true;
 }

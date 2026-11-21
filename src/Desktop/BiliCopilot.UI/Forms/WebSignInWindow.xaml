@@ -14,6 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <base:AppTitleBar x:Name="TitleBar" Title="{ext:Locale Name=AppName}">
             <base:AppTitleBar.IconElement>
@@ -27,5 +28,11 @@
             VerticalAlignment="Stretch"
             Loaded="OnLoadedAsync"
             NavigationCompleted="OnNavigationCompletedAsync" />
+        <InfoBar
+            x:Name="SignInError"
+            Grid.Row="2"
+            IsClosable="True"
+            Message="{ext:Locale Name=LoginFailed}"
+            Severity="Error" />
     </Grid>
 </base:WindowBase>

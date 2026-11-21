@@ -1315,12 +1315,13 @@
                         Text="{x:Bind GetTimeText(ViewModel.Player.Position), Mode=OneWay}"
                         Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay, FallbackValue=Visible}" />
                     <Border
+                        x:Name="LiveProgressBadge"
                         Padding="6,1"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
+                        x:Load="{x:Bind ViewModel.IsLive, Mode=OneWay}"
                         Background="{ThemeResource AccentFillColorDefaultBrush}"
-                        CornerRadius="{StaticResource ControlCornerRadius}"
-                        Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}">
+                        CornerRadius="{StaticResource ControlCornerRadius}">
                         <TextBlock
                             FontSize="10"
                             FontWeight="SemiBold"
@@ -1355,8 +1356,7 @@
                     Margin="0,0,4,0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
-                    IsEnabled="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}, FallbackValue=False}"
-                    ViewModel="{x:Bind ViewModel, Mode=OneWay}"
+                    IsEnabled="{x:Bind CanSeekTimeline(ViewModel.Player.IsLoading, ViewModel.Player.Duration), Mode=OneWay, FallbackValue=False}"
                     Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay, FallbackValue=Collapsed}" />
                 <TextBlock
                     Grid.Column="2"
@@ -1370,22 +1370,24 @@
                     Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay, FallbackValue=Visible}" />
                 <!--  直播态：强调色静态轨道，无圆点、无填充追赶；右侧是开播时长.  -->
                 <Border
+                    x:Name="LiveProgressTrack"
                     Grid.Column="1"
                     Height="4"
                     VerticalAlignment="Center"
+                    x:Load="{x:Bind ViewModel.IsLive, Mode=OneWay}"
                     Background="{ThemeResource AccentFillColorDefaultBrush}"
-                    CornerRadius="2"
-                    Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
+                    CornerRadius="2" />
                 <TextBlock
+                    x:Name="LiveProgressElapsed"
                     Grid.Column="2"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    x:Load="{x:Bind ViewModel.IsLive, Mode=OneWay}"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                     IsTextScaleFactorEnabled="False"
                     RequestedTheme="Dark"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind ViewModel.LiveConnector.LiveElapsedSeconds, Mode=OneWay, Converter={StaticResource PlayerPositionConverter}, FallbackValue=0}"
-                    Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
+                    Text="{x:Bind ViewModel.LiveConnector.LiveElapsedSeconds, Mode=OneWay, Converter={StaticResource PlayerPositionConverter}, FallbackValue=0}" />
             </Grid>
 
 

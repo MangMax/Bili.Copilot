@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Accounts;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.ViewModels.View;
 using CommunityToolkit.WinUI.Animations;
@@ -19,6 +20,11 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
 
     public void ClearBackStack()
     {
+        foreach (var page in RootGrid.Children.OfType<ICancelPageViewModel>())
+        {
+            page.CancelLoading();
+        }
+
         _backStack.Clear();
         RootGrid.Children.Clear();
     }
@@ -122,7 +128,9 @@ public sealed partial class OverlayFrame : LayoutUserControlBase
         if (targetElement == null)
         {
             // 未找到，创建新实例
-            var element = NavigationPageFactory.Create(pageType);
+            var element = AccountSession.Find(this) is { } session
+                ? session.Create(() => NavigationPageFactory.Create(pageType))
+                : NavigationPageFactory.Create(pageType);
             targetElement = element;
             // 如果实现了 IMainFramePage，则调用 SetParameter
             if (element is IParameterPage mainFramePage)

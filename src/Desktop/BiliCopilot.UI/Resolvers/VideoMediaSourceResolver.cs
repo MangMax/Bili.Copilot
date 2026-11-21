@@ -5,7 +5,6 @@ using BiliCopilot.UI.PlaybackRouting;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
-using BiliCopilot.UI.ViewModels.Components;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
@@ -16,7 +15,8 @@ using Richasy.MpvKernel.Player.Models;
 
 namespace BiliCopilot.UI.Resolvers;
 
-internal sealed partial class VideoMediaSourceResolver(IPlayerService playerService, IBiliCookiesResolver cookiesResolver, ILogger<VideoMediaSourceResolver> logger) : MediaSourceResolverBase
+internal sealed partial class VideoMediaSourceResolver(IPlayerService playerService, IBiliCookiesResolver cookiesResolver, IBiliTokenResolver tokenResolver,
+    ILogger<VideoMediaSourceResolver> logger) : MediaSourceResolverBase
 {
     private MediaSnapshot _snapshot;
     private VideoPart _part;
@@ -56,7 +56,8 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
     internal PlayerFormatInformation? GetCurrentFormat()
     {
         // 作者例外：UP 主本人可以看到未解锁清晰度，其他人只看已解锁的。
-        var isVideoAuthor = _snapshot.Video.Publisher?.User?.Id == this.Get<AccountViewModel>().MyProfile.User.Id;
+        var isVideoAuthor = tokenResolver.GetToken() is { UserId: > 0 } token
+            && _snapshot.Video.Publisher?.User?.Id == token.UserId.ToString(System.Globalization.CultureInfo.InvariantCulture);
         var selection = QualitySelectionAdapter.SelectFormat(
             _requiredQuality is { } quality ? _playbackInfo?.Formats?.Where(p => p.Quality == quality).ToList() : _playbackInfo?.Formats,
             isVideoAuthor ? QualityEntitlement.VideoAuthor : QualityEntitlement.Standard,
@@ -79,7 +80,7 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
         var generation = ++_sourceGeneration;
         _initCts?.Cancel();
         // A private request keeps the current playable cache intact on failure.
-        var fresh = new VideoMediaSourceResolver(playerService, cookiesResolver, logger);
+        var fresh = new VideoMediaSourceResolver(playerService, cookiesResolver, tokenResolver, logger);
         fresh.Initialize(_snapshot, _part);
         fresh.WindowHandle = WindowHandle;
         fresh._requiredQuality = quality;

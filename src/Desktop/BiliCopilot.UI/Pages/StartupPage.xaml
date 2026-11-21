@@ -5,6 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:local="using:BiliCopilot.UI.Pages"
@@ -45,92 +47,149 @@
                 Grid.Column="1"
                 Width="1"
                 Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
-            <StackPanel
+            <Grid
                 Grid.Column="2"
-                VerticalAlignment="Center"
-                Spacing="12">
-                <TextBlock
-                    x:Name="TipBlock"
+                Width="288"
+                Margin="0,32,0,8"
+                HorizontalAlignment="Center"
+                RowDefinitions="Auto,*"
+                RowSpacing="8">
+                <components:SlidingTabBar
+                    x:Name="LoginMethods"
                     HorizontalAlignment="Center"
-                    Foreground="{ThemeResource TextFillColorDisabledBrush}"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{ext:Locale Name=QRLoginTip}"
-                    TextWrapping="Wrap" />
-                <Grid
-                    x:Name="QRLoginContainer"
-                    Width="220"
-                    HorizontalAlignment="Center"
-                    RowSpacing="12">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid CornerRadius="{StaticResource ControlCornerRadius}">
-                        <Image
-                            x:Name="QRCodeImage"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Stretch="Uniform"
-                            Visibility="{x:Bind ViewModel.IsQRCodeLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
-                            <animations:Implicit.ShowAnimations>
-                                <animations:OpacityAnimation
-                                    From="0.0"
-                                    To="1.0"
-                                    Duration="0:0:0.4" />
-                            </animations:Implicit.ShowAnimations>
-                            <animations:Implicit.HideAnimations>
-                                <animations:OpacityAnimation
-                                    From="1.0"
-                                    To="0.0"
-                                    Duration="0:0:0.4" />
-                            </animations:Implicit.HideAnimations>
-                        </Image>
-                    </Grid>
-                    <Grid
-                        x:Name="QRMaskContainer"
-                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                        CornerRadius="{ThemeResource ControlCornerRadius}"
-                        Visibility="{x:Bind ViewModel.ErrorTip, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    AutomationProperties.AutomationId="LoginMethodTabs"
+                    SelectionChanged="OnLoginMethodChanged" />
+                <ScrollViewer
+                    x:Name="LoginFormViewport"
+                    Grid.Row="1"
+                    VerticalContentAlignment="Center"
+                    controls:PageTransition.Content="{x:Bind LoginFormContent, Mode=OneTime}"
+                    controls:PageTransition.Kind="Tab"
+                    HorizontalScrollMode="Disabled"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollMode="Auto"
+                    VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="LoginFormContent" Spacing="8">
+                        <StackPanel x:Name="QrSignInPanel" Spacing="8">
                             <TextBlock
-                                x:Name="QRTipBlock"
-                                MaxWidth="200"
+                                x:Name="TipBlock"
                                 HorizontalAlignment="Center"
-                                Style="{StaticResource BodyTextBlockStyle}"
-                                TextAlignment="Center"
+                                Foreground="{ThemeResource TextFillColorDisabledBrush}"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{ext:Locale Name=QRLoginTip}"
                                 TextWrapping="Wrap" />
+                            <Grid
+                                x:Name="QRLoginContainer"
+                                Width="220"
+                                HorizontalAlignment="Center"
+                                RowSpacing="12">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid CornerRadius="{StaticResource ControlCornerRadius}">
+                                    <Image
+                                        x:Name="QRCodeImage"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Stretch="Uniform"
+                                        Visibility="{x:Bind ViewModel.IsQRCodeLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                                        <animations:Implicit.ShowAnimations>
+                                            <animations:OpacityAnimation
+                                                From="0.0"
+                                                To="1.0"
+                                                Duration="0:0:0.4" />
+                                        </animations:Implicit.ShowAnimations>
+                                        <animations:Implicit.HideAnimations>
+                                            <animations:OpacityAnimation
+                                                From="1.0"
+                                                To="0.0"
+                                                Duration="0:0:0.4" />
+                                        </animations:Implicit.HideAnimations>
+                                    </Image>
+                                </Grid>
+                                <Grid
+                                    x:Name="QRMaskContainer"
+                                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                                    CornerRadius="{ThemeResource ControlCornerRadius}"
+                                    Visibility="{x:Bind ViewModel.ErrorTip, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock
+                                            x:Name="QRTipBlock"
+                                            MaxWidth="200"
+                                            HorizontalAlignment="Center"
+                                            Style="{StaticResource BodyTextBlockStyle}"
+                                            Text="{x:Bind ViewModel.ErrorTip, Mode=OneWay}"
+                                            TextAlignment="Center"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <animations:Implicit.ShowAnimations>
+                                        <animations:OpacityAnimation
+                                            From="0.0"
+                                            To="1.0"
+                                            Duration="0:0:0.4" />
+                                    </animations:Implicit.ShowAnimations>
+                                    <animations:Implicit.HideAnimations>
+                                        <animations:OpacityAnimation
+                                            From="1.0"
+                                            To="0.0"
+                                            Duration="0:0:0.4" />
+                                    </animations:Implicit.HideAnimations>
+                                </Grid>
+                                <base:Shimmer
+                                    x:Name="QRLoadingShimmer"
+                                    Width="220"
+                                    Height="220"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    CornerRadius="{StaticResource ControlCornerRadius}"
+                                    IsActive="{x:Bind ViewModel.IsQRCodeLoading, Mode=OneWay}" />
+                                <HyperlinkButton
+                                    x:Name="RefreshQRButton"
+                                    Grid.Row="1"
+                                    HorizontalAlignment="Stretch"
+                                    Click="OnRefreshQRButtonClick"
+                                    Content="{ext:Locale Name=Refresh}" />
+                            </Grid>
                         </StackPanel>
-                        <animations:Implicit.ShowAnimations>
-                            <animations:OpacityAnimation
-                                From="0.0"
-                                To="1.0"
-                                Duration="0:0:0.4" />
-                        </animations:Implicit.ShowAnimations>
-                        <animations:Implicit.HideAnimations>
-                            <animations:OpacityAnimation
-                                From="1.0"
-                                To="0.0"
-                                Duration="0:0:0.4" />
-                        </animations:Implicit.HideAnimations>
-                    </Grid>
-
-                    <base:Shimmer
-                        x:Name="QRLoadingShimmer"
-                        Width="220"
-                        Height="220"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        CornerRadius="{StaticResource ControlCornerRadius}"
-                        IsActive="{x:Bind ViewModel.IsQRCodeLoading, Mode=OneWay}" />
-                    <HyperlinkButton
-                        x:Name="RefreshQRButton"
-                        Grid.Row="1"
-                        HorizontalAlignment="Stretch"
-                        Click="OnRefreshQRButtonClick"
-                        Content="{ext:Locale Name=Refresh}"
-                        IsEnabled="{x:Bind ViewModel.IsQRCodeLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}" />
-                </Grid>
-            </StackPanel>
+                        <StackPanel x:Name="PasswordSignInPanel" Spacing="10" Visibility="Collapsed">
+                            <TextBox x:Name="LoginAccount" Header="{ext:Locale Name=NativeSignInAccount}" />
+                            <PasswordBox x:Name="LoginPassword" Header="{ext:Locale Name=Password}" />
+                            <Button
+                                x:Name="PasswordSubmit"
+                                HorizontalAlignment="Stretch"
+                                Click="OnPasswordSubmitAsync"
+                                Content="{ext:Locale Name=Login}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="SmsSignInPanel" Spacing="10" Visibility="Collapsed">
+                            <ComboBox x:Name="PhoneRegion" Header="{ext:Locale Name=NativeSignInRegion}" HorizontalAlignment="Stretch" />
+                            <TextBox x:Name="LoginPhone" Header="{ext:Locale Name=NativeSignInPhone}" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="LoginSmsCode" Header="{ext:Locale Name=NativeSignInCode}" MaxLength="6" />
+                                <Button
+                                    x:Name="RequestSmsCode"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Bottom"
+                                    Click="OnRequestSmsCodeAsync"
+                                    Content="{ext:Locale Name=NativeSignInSendCode}" />
+                            </Grid>
+                            <Button
+                                x:Name="SmsSubmit"
+                                HorizontalAlignment="Stretch"
+                                Click="OnSmsSubmitAsync"
+                                Content="{ext:Locale Name=Login}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                        </StackPanel>
+                        <ProgressBar x:Name="NativeSignInProgress" IsIndeterminate="True" Visibility="Collapsed" />
+                        <TextBlock x:Name="NativeSignInStatus" TextWrapping="Wrap" Visibility="Collapsed" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
         </Grid>
 
         <Grid

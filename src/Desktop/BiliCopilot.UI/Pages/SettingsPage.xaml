@@ -3,7 +3,7 @@
     x:Class="BiliCopilot.UI.Pages.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:components="using:BiliCopilot.UI.Controls.Components"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
@@ -12,33 +12,66 @@
     xmlns:settings="using:BiliCopilot.UI.Controls.Settings"
     mc:Ignorable="d">
 
-    <Grid>
+    <Page.KeyboardAccelerators>
+        <KeyboardAccelerator
+            Key="Left"
+            Invoked="OnBackAcceleratorInvoked"
+            Modifiers="Menu" />
+    </Page.KeyboardAccelerators>
+
+    <Grid PointerPressed="OnRootPointerPressed">
         <Grid.RowDefinitions>
             <RowDefinition Height="56" />
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock
-            Margin="16,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Style="{StaticResource BodyStrongTextBlockStyle}"
-            Text="{ext:Locale Name=Settings}" />
 
-        <components:SlidingTabBar
-            x:Name="SectionSelector"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            AutomationProperties.AutomationId="SettingsSectionTabs"
-            SelectionChanged="OnSectionSelectorChangedAsync" />
+        <Grid Margin="16,0" VerticalAlignment="Center">
+            <TextBlock
+                x:Name="RootTitleBlock"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="{ext:Locale Name=Settings}" />
+
+            <StackPanel
+                x:Name="SubpageHeaderPanel"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="4"
+                Visibility="Collapsed">
+                <Button
+                    x:Name="RootBreadcrumbButton"
+                    Padding="6,4"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="SettingsBreadcrumbRoot"
+                    Click="OnBackButtonClick"
+                    Content="{ext:Locale Name=Settings}"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource SubtleButtonStyle}" />
+                <FontIcon
+                    VerticalAlignment="Center"
+                    FontFamily="{StaticResource BiliIconsFontFamily}"
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                    Glyph="{StaticResource IconChevronRight}" />
+                <TextBlock
+                    x:Name="SubpageTitleBlock"
+                    Margin="4,0,0,0"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource BodyStrongTextBlockStyle}" />
+            </StackPanel>
+        </Grid>
 
         <Border
             Grid.Row="1"
             Height="1"
             HorizontalAlignment="Stretch"
             Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
+
         <ScrollView
-            x:Name="GenericContainer"
+            x:Name="RootContainer"
             Grid.Row="2"
             Padding="16,0"
             controls:PageTransition.AnimateOnShow="True"
@@ -48,35 +81,120 @@
                 <StackPanel.ChildrenTransitions>
                     <RepositionThemeTransition IsStaggeringEnabled="False" />
                 </StackPanel.ChildrenTransitions>
+
                 <TextBlock
                     Margin="0,8,0,4"
                     HorizontalAlignment="Left"
-                    Text="{ext:Locale Name=Player}" />
-                <settings:PlayerControlSettingControl />
-                <settings:PlayerBehaviorSettingControl />
-                <settings:MpvExtraSettingControl />
-                <settings:ScreenshotSettingControl />
-                <settings:DownloadSettingControl />
+                    Text="{ext:Locale Name=SettingsGroupExperience}" />
+
+                <base:SettingsCard
+                    AutomationProperties.AutomationId="SettingsCategoryPlaybackCard"
+                    Click="OnSectionCardClick"
+                    Description="{ext:Locale Name=SettingsCategoryPlaybackDescription}"
+                    Header="{ext:Locale Name=SettingsCategoryPlayback}"
+                    IsClickEnabled="True"
+                    Tag="Playback">
+                    <base:SettingsCard.HeaderIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconVideoPlayPause}" />
+                    </base:SettingsCard.HeaderIcon>
+                    <base:SettingsCard.ActionIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconChevronRight}" />
+                    </base:SettingsCard.ActionIcon>
+                </base:SettingsCard>
+
+                <base:SettingsCard
+                    AutomationProperties.AutomationId="SettingsCategoryAppearanceNavigationCard"
+                    Click="OnSectionCardClick"
+                    Description="{ext:Locale Name=SettingsCategoryAppearanceNavigationDescription}"
+                    Header="{ext:Locale Name=SettingsCategoryAppearanceNavigation}"
+                    IsClickEnabled="True"
+                    Tag="AppearanceAndNavigation">
+                    <base:SettingsCard.HeaderIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconColor}" />
+                    </base:SettingsCard.HeaderIcon>
+                    <base:SettingsCard.ActionIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconChevronRight}" />
+                    </base:SettingsCard.ActionIcon>
+                </base:SettingsCard>
+
+                <base:SettingsCard
+                    AutomationProperties.AutomationId="SettingsCategoryStorageDownloadCard"
+                    Click="OnSectionCardClick"
+                    Description="{ext:Locale Name=SettingsCategoryStorageDownloadDescription}"
+                    Header="{ext:Locale Name=SettingsCategoryStorageDownload}"
+                    IsClickEnabled="True"
+                    Tag="StorageAndDownload">
+                    <base:SettingsCard.HeaderIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconArrowDownload}" />
+                    </base:SettingsCard.HeaderIcon>
+                    <base:SettingsCard.ActionIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconChevronRight}" />
+                    </base:SettingsCard.ActionIcon>
+                </base:SettingsCard>
+
                 <TextBlock
-                    Margin="0,8,0,4"
+                    Margin="0,12,0,4"
                     HorizontalAlignment="Left"
-                    Text="{ext:Locale Name=Generic}" />
-                <settings:ThemeSettingControl />
-                <settings:LayoutSettingSection />
-                <settings:CacheSettingControl />
-                <settings:NavigationSettingControl />
-                <settings:ScrollSettingControl />
-                <settings:SearchRecommendSettingSection />
-                <settings:IncrementalRecommendRefreshSettingControl />
+                    Text="{ext:Locale Name=SettingsGroupContentRecommend}" />
                 <settings:RecommendSourceSettingControl />
-                <settings:CloseBehaviorSettingControl />
-                <settings:NotificationSettingControl />
-                <settings:LoggerSettingControl />
+                <settings:IncrementalRecommendRefreshSettingControl />
+                <settings:SearchRecommendSettingSection />
+
                 <TextBlock
-                    Margin="0,8,0,4"
+                    Margin="0,12,0,4"
                     HorizontalAlignment="Left"
-                    Text="{ext:Locale Name=Advanced}" />
-                <settings:SponsorBlockSettingControl />
+                    Text="{ext:Locale Name=SettingsGroupSystemServices}" />
+
+                <base:SettingsCard
+                    AutomationProperties.AutomationId="SettingsCategorySystemNotificationCard"
+                    Click="OnSectionCardClick"
+                    Description="{ext:Locale Name=SettingsCategorySystemNotificationDescription}"
+                    Header="{ext:Locale Name=SettingsCategorySystemNotification}"
+                    IsClickEnabled="True"
+                    Tag="SystemAndNotification">
+                    <base:SettingsCard.HeaderIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconAlertOn}" />
+                    </base:SettingsCard.HeaderIcon>
+                    <base:SettingsCard.ActionIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconChevronRight}" />
+                    </base:SettingsCard.ActionIcon>
+                </base:SettingsCard>
+
+                <base:SettingsCard
+                    AutomationProperties.AutomationId="SettingsCategoryUpdateCard"
+                    Click="OnSectionCardClick"
+                    Description="{ext:Locale Name=SettingsCategoryUpdateDescription}"
+                    Header="{ext:Locale Name=SettingsCategoryUpdate}"
+                    IsClickEnabled="True"
+                    Tag="Update">
+                    <base:SettingsCard.HeaderIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconArrowSync}" />
+                    </base:SettingsCard.HeaderIcon>
+                    <base:SettingsCard.ActionIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconChevronRight}" />
+                    </base:SettingsCard.ActionIcon>
+                    <TextBlock
+                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="{x:Bind Update.StatusText, Mode=OneWay}"
+                        Visibility="{x:Bind Update.IsButtonVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                </base:SettingsCard>
+
+                <base:SettingsCard
+                    AutomationProperties.AutomationId="SettingsCategoryAIServiceCard"
+                    Click="OnSectionCardClick"
+                    Description="{ext:Locale Name=SettingsCategoryAIServiceDescription}"
+                    Header="{ext:Locale Name=SettingsCategoryAIService}"
+                    IsClickEnabled="True"
+                    Tag="AIService">
+                    <base:SettingsCard.HeaderIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconSparkle}" />
+                    </base:SettingsCard.HeaderIcon>
+                    <base:SettingsCard.ActionIcon>
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconChevronRight}" />
+                    </base:SettingsCard.ActionIcon>
+                </base:SettingsCard>
+
                 <TextBlock
                     Margin="0,16,0,8"
                     HorizontalAlignment="Left"
@@ -88,29 +206,7 @@
                     Spacing="4">
                     <HyperlinkButton
                         Padding="8,4"
-                        HorizontalAlignment="Left"
-                        Click="OnJoinGroupButtonClick"
-                        Content="{ext:Locale Name=JoinQQGroup}">
-                        <FlyoutBase.AttachedFlyout>
-                            <Flyout>
-                                <Flyout.FlyoutPresenterStyle>
-                                    <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
-                                        <Setter Property="Padding" Value="0" />
-                                    </Style>
-                                </Flyout.FlyoutPresenterStyle>
-                                <Image
-                                    MaxWidth="240"
-                                    Source="{ThemeResource QQGroup}"
-                                    Stretch="Uniform" />
-                            </Flyout>
-                        </FlyoutBase.AttachedFlyout>
-                    </HyperlinkButton>
-                    <StackPanel
-                        Width="1"
-                        Height="16"
-                        Background="{ThemeResource ControlStrokeColorDefaultBrush}" />
-                    <HyperlinkButton
-                        Padding="8,4"
+                        AutomationProperties.AutomationId="SettingsSendFeedback"
                         Content="{ext:Locale Name=SendFeedback}"
                         NavigateUri="https://github.com/MangMax/Bili.Copilot/issues/new/choose" />
                     <StackPanel
@@ -119,11 +215,135 @@
                         Background="{ThemeResource ControlStrokeColorDefaultBrush}" />
                     <HyperlinkButton
                         Padding="8,4"
+                        AutomationProperties.AutomationId="SettingsReadDocument"
                         Content="{ext:Locale Name=ReadDocument}"
                         NavigateUri="https://bili.richasy.net" />
                 </StackPanel>
             </StackPanel>
         </ScrollView>
+
+        <ScrollView
+            x:Name="PlaybackContainer"
+            Grid.Row="2"
+            Padding="16,0"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Tab"
+            Style="{StaticResource PageScrollViewStyle}"
+            Visibility="Collapsed">
+            <StackPanel Margin="0,12" Spacing="4">
+                <StackPanel.ChildrenTransitions>
+                    <RepositionThemeTransition IsStaggeringEnabled="False" />
+                </StackPanel.ChildrenTransitions>
+                <TextBlock
+                    Margin="0,8,0,4"
+                    HorizontalAlignment="Left"
+                    Text="{ext:Locale Name=SettingsSubsectionPlaybackBasic}" />
+                <settings:PlayerControlSettingControl />
+                <settings:PlayerBehaviorSettingControl />
+                <TextBlock
+                    Margin="0,12,0,4"
+                    HorizontalAlignment="Left"
+                    Text="{ext:Locale Name=SettingsSubsectionPlaybackEngine}" />
+                <settings:MpvExtraSettingControl />
+                <settings:SponsorBlockSettingControl />
+            </StackPanel>
+        </ScrollView>
+
+        <ScrollView
+            x:Name="AppearanceNavigationContainer"
+            Grid.Row="2"
+            Padding="16,0"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Tab"
+            Style="{StaticResource PageScrollViewStyle}"
+            Visibility="Collapsed">
+            <StackPanel Margin="0,12" Spacing="4">
+                <StackPanel.ChildrenTransitions>
+                    <RepositionThemeTransition IsStaggeringEnabled="False" />
+                </StackPanel.ChildrenTransitions>
+                <TextBlock
+                    Margin="0,8,0,4"
+                    HorizontalAlignment="Left"
+                    Text="{ext:Locale Name=SettingsSubsectionAppearance}" />
+                <settings:ThemeSettingControl />
+                <TextBlock
+                    Margin="0,12,0,4"
+                    HorizontalAlignment="Left"
+                    Text="{ext:Locale Name=SettingsSubsectionNavigationInteraction}" />
+                <settings:LayoutSettingSection />
+                <settings:NavigationSettingControl />
+                <settings:ScrollSettingControl />
+            </StackPanel>
+        </ScrollView>
+
+        <ScrollView
+            x:Name="StorageDownloadContainer"
+            Grid.Row="2"
+            Padding="16,0"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Tab"
+            Style="{StaticResource PageScrollViewStyle}"
+            Visibility="Collapsed">
+            <StackPanel Margin="0,12" Spacing="4">
+                <StackPanel.ChildrenTransitions>
+                    <RepositionThemeTransition IsStaggeringEnabled="False" />
+                </StackPanel.ChildrenTransitions>
+                <TextBlock
+                    Margin="0,8,0,4"
+                    HorizontalAlignment="Left"
+                    Text="{ext:Locale Name=SettingsSubsectionDownloadScreenshot}" />
+                <settings:DownloadSettingControl />
+                <settings:ScreenshotSettingControl />
+                <TextBlock
+                    Margin="0,12,0,4"
+                    HorizontalAlignment="Left"
+                    Text="{ext:Locale Name=SettingsSubsectionCache}" />
+                <settings:CacheSettingControl />
+            </StackPanel>
+        </ScrollView>
+
+        <ScrollView
+            x:Name="SystemNotificationContainer"
+            Grid.Row="2"
+            Padding="16,0"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Tab"
+            Style="{StaticResource PageScrollViewStyle}"
+            Visibility="Collapsed">
+            <StackPanel Margin="0,12" Spacing="4">
+                <StackPanel.ChildrenTransitions>
+                    <RepositionThemeTransition IsStaggeringEnabled="False" />
+                </StackPanel.ChildrenTransitions>
+                <TextBlock
+                    Margin="0,8,0,4"
+                    HorizontalAlignment="Left"
+                    Text="{ext:Locale Name=SettingsSubsectionNotificationWindow}" />
+                <settings:NotificationSettingControl />
+                <settings:CloseBehaviorSettingControl />
+                <TextBlock
+                    Margin="0,12,0,4"
+                    HorizontalAlignment="Left"
+                    Text="{ext:Locale Name=SettingsSubsectionDiagnostics}" />
+                <settings:LoggerSettingControl />
+            </StackPanel>
+        </ScrollView>
+
+        <ScrollView
+            x:Name="UpdateContainer"
+            Grid.Row="2"
+            Padding="16,0"
+            controls:PageTransition.AnimateOnShow="True"
+            controls:PageTransition.Kind="Tab"
+            Style="{StaticResource PageScrollViewStyle}"
+            Visibility="Collapsed">
+            <StackPanel Margin="0,12" Spacing="4">
+                <StackPanel.ChildrenTransitions>
+                    <RepositionThemeTransition IsStaggeringEnabled="False" />
+                </StackPanel.ChildrenTransitions>
+                <settings:UpdateSettingControl />
+            </StackPanel>
+        </ScrollView>
+
         <ScrollView
             x:Name="AIContainer"
             Grid.Row="2"
@@ -148,7 +368,10 @@
                         <FontIconSource FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconSparkle}" />
                     </InfoBar.IconSource>
                     <InfoBar.ActionButton>
-                        <HyperlinkButton Content="{ext:Locale Name=SeeDetail}" NavigateUri="https://agent.richasy.net/chat-config" />
+                        <HyperlinkButton
+                            AutomationProperties.AutomationId="SettingsAISeeDetail"
+                            Content="{ext:Locale Name=SeeDetail}"
+                            NavigateUri="https://agent.richasy.net/chat-config" />
                     </InfoBar.ActionButton>
                 </InfoBar>
                 <settings:AIResponseSettingControl Margin="0,0,0,4" />

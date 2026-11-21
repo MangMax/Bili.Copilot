@@ -32,7 +32,10 @@ public sealed partial class PgcConnectorViewModel
         }
 
         SeasonId = view.Information.Identifier.Id;
-        IsFollow = view.Information.IsTracking ?? false;
+        var snapshotSeason = _snapshot.Season;
+        IsFollow = (snapshotSeason is not null && snapshotSeason.Identifier.Id == SeasonId ? snapshotSeason.IsTracking : null)
+            ?? view.Information.IsTracking
+            ?? false;
         PlayCount = view.Information.CommunityInformation.PlayCount ?? 0;
         DanmakuCount = view.Information.CommunityInformation.DanmakuCount ?? 0;
         CommentCount = view.Information.CommunityInformation.CommentCount ?? 0;

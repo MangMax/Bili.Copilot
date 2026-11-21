@@ -52,6 +52,8 @@ public sealed partial class MomentPageViewModel : ViewModelBase
 
             var seen = ReadSeenMoment(accountId);
             var (latestAll, latestVideo, latestNonVideo) = MomentRefreshPolicy.ExtractLatestIds(view);
+            // The first successful check establishes the baseline for in-app updates in this session.
+            _startupMomentId ??= latestAll;
             _latestMomentId = Math.Max(_latestMomentId, latestAll);
             _latestVideoMomentId = Math.Max(_latestVideoMomentId, latestVideo);
             _latestNonVideoMomentId = Math.Max(_latestNonVideoMomentId, latestNonVideo);
@@ -83,7 +85,7 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         var checkedLatestNonVideo = _latestNonVideoMomentId;
         var refreshVideo = MomentRefreshPolicy.ShouldRefreshVideoSection(
             SelectedSection is VideoMomentSectionDetailViewModel,
-            seenBefore,
+            GetUnreadBaseline(seenBefore),
             checkedLatestVideo,
             checkedLatestNonVideo,
             _loadedVideoMomentId);
@@ -169,6 +171,7 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         }
 
         _updatesAccountId = accountId;
+        _startupMomentId = null;
         _latestMomentId = 0;
         _latestVideoMomentId = 0;
         _latestNonVideoMomentId = 0;
@@ -177,7 +180,10 @@ public sealed partial class MomentPageViewModel : ViewModelBase
 
     private void UpdateUnread(ulong seen)
         => SetHasNewMoments(MomentRefreshPolicy.HasUnreadMoments(
-            seen, _loadedVideoMomentId, _latestVideoMomentId, _latestNonVideoMomentId));
+            GetUnreadBaseline(seen), _loadedVideoMomentId, _latestVideoMomentId, _latestNonVideoMomentId));
+
+    private ulong GetUnreadBaseline(ulong seen)
+        => Math.Max(seen, _startupMomentId.GetValueOrDefault());
 
     private void SetHasNewMoments(bool value)
     {

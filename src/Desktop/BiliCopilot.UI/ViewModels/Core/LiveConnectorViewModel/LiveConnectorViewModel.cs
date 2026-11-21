@@ -34,6 +34,7 @@ public sealed partial class LiveConnectorViewModel : ViewModelBase, IPlayerConne
     /// <param name="parent">播放器视图模型.</param>
     public LiveConnectorViewModel(PlayerViewModel parent)
     {
+        Accounts.AccountSession.Find(parent)?.Bind(this);
         Parent = parent;
         _logger = this.Get<ILogger<LiveConnectorViewModel>>();
     }

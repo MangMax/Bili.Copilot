@@ -55,7 +55,7 @@
             AutomationProperties.Name="{x:Bind ViewModel.ActionName, Mode=OneWay}"
             Background="Transparent"
             BorderThickness="0"
-            Command="{x:Bind ViewModel.PrimaryActionCommand}"
+            Click="OnUpdateButtonClick"
             CornerRadius="14"
             Padding="0">
             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{x:Bind ViewModel.IconSymbol, Mode=OneWay}" />

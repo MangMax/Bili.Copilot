@@ -1,5 +1,6 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Accounts;
 using BiliCopilot.UI.AI.Chat;
 using BiliCopilot.UI.AI.Conversation;
 using BiliCopilot.UI.AI.Context;
@@ -19,6 +20,8 @@ using Microsoft.UI.Dispatching;
 using Richasy.AgentKernel;
 using Richasy.AgentKernel.Chat;
 using Richasy.BiliKernel;
+using Richasy.BiliKernel.Authorizers.TV;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
@@ -53,34 +56,10 @@ internal static class GlobalDependencies
             .AddConfigManager()
             .AddXamlRootProvider()
 
-            .AddBiliClient()
-            .AddBiliAuthenticator()
-            .AddWinUICookiesResolver()
-            .AddWinUITokenResolver()
-            .AddWinUIQRCodeResolver(RenderQRCodeAsync)
-            .AddTVAuthenticationService()
-            .AddMyProfileService()
-            .AddUserService()
-            .AddRelationshipService()
-            .AddViewLaterService()
-            .AddViewHistoryService()
-            .AddCommentService()
-            .AddVideoDiscoveryService()
-            .AddLiveDiscoveryService()
-            .AddEntertainmentDiscoveryService()
-            .AddArticleDiscoveryService()
-            .AddArticleOperationService()
-            .AddMomentDiscoveryService()
-            .AddMomentOperationService()
-            .AddMessageService()
-            .AddFavoriteService()
-            .AddSearchService()
-            .AddDanmakuService()
-            .AddSubtitleService()
-            .AddPlayerService()
-            .AddLiveDanmakuService()
             .AddSponsorBlockService()
-            .AddAIConversation()
+            .AddUpdateViewModel()
+            .AddSingleton<AppViewModel>()
+            .AddSingleton<SettingsPageViewModel>()
 
             .AddOpenAIChatService()
             .AddAzureOpenAIChatService()
@@ -105,13 +84,65 @@ internal static class GlobalDependencies
             .AddMistralChatService()
             .AddPerplexityChatService()
 
+            .Build();
+
+        Kernel.InitializeShareKernel(Kernel.Get<ILogger<App>>());
+        Kernel.InitializeAIKernel();
+    }
+
+    internal static AccountSessionManager Accounts { get; } = new();
+
+    internal static ServiceProvider CreateAccountProvider(AccountCredentials credentials)
+    {
+        var builder = Kernel.CreateBuilder();
+        builder.Services.AddLogging();
+        Share<ILoggerFactory>(builder);
+        Share<DispatcherQueue>(builder);
+        Share<IAppToolkit>(builder);
+        Share<ISettingsToolkit>(builder);
+        Share<IFileToolkit>(builder);
+        Share<IResourceToolkit>(builder);
+        Share<IFontToolkit>(builder);
+        Share<IChatConfigManager>(builder);
+        Share<IXamlRootProvider>(builder);
+        Share<AppViewModel>(builder);
+        Share<AppUpdateViewModel>(builder);
+        Share<SettingsPageViewModel>(builder);
+        Share<SponsorBlockService>(builder);
+        builder.Services.AddSingleton<IBiliTokenResolver>(credentials);
+        builder.Services.AddSingleton<IBiliCookiesResolver>(credentials);
+        builder.Services.AddSingleton(credentials);
+        builder.Services.AddSingleton<TVAuthenticationService>();
+        builder.Services.AddSingleton<IAuthenticationService, AccountAuthenticationService>();
+
+        builder.AddWinUIQRCodeResolver(static _ => Task.CompletedTask)
+            .AddBiliClient()
+            .AddBiliAuthenticator()
+            .AddMyProfileService()
+            .AddUserService()
+            .AddRelationshipService()
+            .AddViewLaterService()
+            .AddViewHistoryService()
+            .AddCommentService()
+            .AddVideoDiscoveryService()
+            .AddLiveDiscoveryService()
+            .AddEntertainmentDiscoveryService()
+            .AddArticleDiscoveryService()
+            .AddArticleOperationService()
+            .AddMomentDiscoveryService()
+            .AddMomentOperationService()
+            .AddMessageService()
+            .AddFavoriteService()
+            .AddSearchService()
+            .AddDanmakuService()
+            .AddSubtitleService()
+            .AddPlayerService()
+            .AddLiveDanmakuService()
+            .AddAIConversation()
+            .AddSingleton<EmoteModuleViewModel>()
             .AddTransient<CommentMainViewModel>()
             .AddSingleton<PinnerViewModel>()
-            .AddSingleton<AppViewModel>()
-            .AddUpdateViewModel()
-            .AddSingleton<EmoteModuleViewModel>()
             .AddSingleton<NavigationViewModel>()
-            .AddSingleton<StartupPageViewModel>()
             .AddSingleton<AccountViewModel>()
             .AddVideoCardServices()
             .AddSingleton<SearchBoxViewModel>()
@@ -130,7 +161,6 @@ internal static class GlobalDependencies
             .AddSingleton<HistoryPageViewModel>()
             .AddSingleton<FavoritesPageViewModel>()
             .AddSingleton<MessagePageViewModel>()
-            .AddSingleton<SettingsPageViewModel>()
             .AddSingleton<UserSpacePageViewModel>()
             .AddTransient<CollectionDetailPageViewModel>()
             .AddSingleton<PgcDetailPageViewModel>()
@@ -146,12 +176,12 @@ internal static class GlobalDependencies
             .AddTransient<LiveMediaHistoryResolver>()
             .AddTransient<PlayerViewModel>()
             .AddTransient<DanmakuSendViewModel>()
-            .AddNotificationViewModel()
-            .Build();
-
-        Kernel.InitializeShareKernel(Kernel.Get<ILogger<App>>());
-        Kernel.InitializeAIKernel();
+            .AddNotificationViewModel();
+        return builder.Services.BuildServiceProvider();
     }
+
+    private static void Share<T>(IKernelBuilder builder) where T : class
+        => builder.Services.AddSingleton(Kernel.GetRequiredService<T>());
 
     public static IKernelBuilder AddDispatcherQueue(this IKernelBuilder builder)
     {
@@ -282,12 +312,17 @@ internal static class GlobalDependencies
 
     public static T Get<T>(this object ele)
         where T : class
-        => Kernel.GetRequiredService<T>();
-
-    private static Task RenderQRCodeAsync(byte[] imageData)
     {
-        var vm = Kernel.GetRequiredService<StartupPageViewModel>();
-        vm.RenderQRCodeCommand.Execute(imageData);
-        return Task.CompletedTask;
+        if (typeof(T) == typeof(AppViewModel) || typeof(T) == typeof(IAppToolkit)
+            || typeof(T) == typeof(IFileToolkit) || typeof(T) == typeof(ISettingsToolkit)
+            || typeof(T) == typeof(DispatcherQueue)
+            || (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(ILogger<>)))
+        {
+            return Kernel.GetRequiredService<T>();
+        }
+
+        var session = AccountSession.Find(ele) ?? Accounts.Current;
+        session?.Bind(ele);
+        return session?.Get<T>() ?? Kernel.GetRequiredService<T>();
     }
 }

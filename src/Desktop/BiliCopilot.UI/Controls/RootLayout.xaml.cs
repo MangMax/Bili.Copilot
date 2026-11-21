@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Accounts;
 using BiliCopilot.UI.Pages.Overlay;
+using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
@@ -25,6 +27,9 @@ public sealed partial class RootLayout : RootLayoutBase
     {
         _appViewModel = this.Get<AppViewModel>();
         InitializeComponent();
+        var owner = AccountSession.Find(this);
+        owner?.Bind(MainFrame);
+        owner?.Bind(OverlayFrame);
     }
 
     /// <summary>
@@ -36,10 +41,31 @@ public sealed partial class RootLayout : RootLayoutBase
     public void TryFocusSearchBox()
         => SearchBox.Focus(FocusState.Programmatic);
 
+    internal (Type Page, string? Parameter)? RestoreAccountRoute { get; set; }
+
+    internal (Type Page, string? Parameter)? GetAccountRoute() => OverlayFrame.GetCurrentContent() switch
+    {
+        FavoritesPage => (typeof(FavoritesPage), null),
+        ViewLaterPage => (typeof(ViewLaterPage), null),
+        HistoryPage => (typeof(HistoryPage), null),
+        PgcDetailPage { SeasonId: { } seasonId } => (typeof(PgcDetailPage), seasonId),
+        _ => null,
+    };
+
+    internal void ReleaseAccountPages()
+    {
+        ViewModel.TryClearOverlayPages();
+        MainFrame.ReleaseAccountPages();
+    }
+
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
         ViewModel.Initialize(NavView, MainFrame, OverlayFrame);
+        if (this.Get<AccountViewModel>() is { MyProfile: not null } account)
+        {
+            account.UpdateUnreadCommand.Execute(default);
+        }
         ViewModel.SetMomentUnread(this.Get<MomentPageViewModel>().HasNewMoments);
         ViewModel.SetAppUpdateUnread(this.Get<AppUpdateViewModel>().HasAvailableUpdate);
         var selectedItem = ViewModel.MenuItems.FirstOrDefault(p => p.IsSelected);
@@ -47,6 +73,12 @@ public sealed partial class RootLayout : RootLayoutBase
         {
             NavView.SelectedItem = selectedItem;
             selectedItem.NavigateCommand.Execute(default);
+        }
+
+        if (RestoreAccountRoute is { } route)
+        {
+            RestoreAccountRoute = null;
+            ViewModel.NavigateToOver(route.Page, route.Parameter);
         }
     }
 

@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
@@ -18,6 +20,9 @@ public sealed partial class FollowsPageViewModel
     private readonly ILogger<FollowsPageViewModel> _logger;
     private readonly Dictionary<UserGroup, List<UserItemViewModel>> _userCache = new();
     private readonly Dictionary<UserGroup, int> _offsetCache = new();
+    private CancellationTokenSource? _listLoad;
+    private int _searchPage;
+    private bool _searchHasMore;
 
     [ObservableProperty]
     public partial bool IsGroupLoading { get; set; }
@@ -29,7 +34,25 @@ public sealed partial class FollowsPageViewModel
     public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ListTitle))]
     public partial UserGroup SelectedGroup { get; set; }
+
+    [ObservableProperty]
+    public partial string SearchText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ListTitle))]
+    [NotifyPropertyChangedFor(nameof(EmptyDescription))]
+    private partial string SearchKeyword { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial bool IsSearchFailed { get; set; }
+
+    public string ListTitle => SearchKeyword.Length == 0
+        ? SelectedGroup?.Name ?? string.Empty
+        : ResourceToolkit.GetLocalizedString(StringNames.FollowSearchResults);
+
+    public string EmptyDescription => ResourceToolkit.GetLocalizedString(SearchKeyword.Length == 0 ? StringNames.NoFollows : StringNames.NoFollowSearchResults);
 
     /// <summary>
     /// 分组加载完成.

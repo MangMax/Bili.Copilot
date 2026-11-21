@@ -55,6 +55,9 @@ public sealed partial class PgcConnectorViewModel
     public partial bool IsFollow { get; set; }
 
     [ObservableProperty]
+    public partial bool CanChangeFollowStatus { get; set; } = true;
+
+    [ObservableProperty]
     public partial double PlayCount { get; set; }
 
     [ObservableProperty]

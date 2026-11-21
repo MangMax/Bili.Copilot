@@ -116,6 +116,12 @@ public sealed partial class PgcDetailPageViewModel : ViewModelBase
     public partial bool IsFollowed { get; set; }
 
     /// <summary>
+    /// 是否可以操作追番状态.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool CanChangeFollowStatus { get; set; } = true;
+
+    /// <summary>
     /// 分区列表：正片、花絮等附加内容，以及最后的评价分区.
     /// </summary>
     [ObservableProperty]

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Accounts;
 using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models.Constants;
@@ -26,7 +27,14 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     private OverlayFrame? _overFrame;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanGoBack))]
     public partial bool IsOverlayOpen { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanGoBack))]
+    internal partial bool IsSettingsSubpageOpen { get; set; }
+
+    public bool CanGoBack => IsOverlayOpen || IsSettingsSubpageOpen;
 
     /// <summary>
     /// 导航条目列表.
@@ -57,6 +65,11 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     /// <inheritdoc/>
     public void NavigateTo(Type pageType, object? parameter = null)
     {
+        if (AccountSession.Find(this) is { } owner && !ReferenceEquals(owner, GlobalDependencies.Accounts.Current))
+        {
+            return;
+        }
+
         if (_navFrame is null)
         {
             throw new InvalidOperationException("导航框架未初始化.");
@@ -71,9 +84,16 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             CheckSubPageStatus();
         }
 
-        if (lastSelectedPage == pageType.FullName && _navFrame.GetCurrentContent() is not null && _navFrame.GetCurrentContent().GetType().FullName == lastSelectedPage)
+        if (lastSelectedPage == pageType.FullName && _navFrame.GetCurrentContent() is { } currentContent && currentContent.GetType().FullName == lastSelectedPage)
         {
-            if (_navFrame.GetCurrentContent() is ICancelPageViewModel cancelPage)
+            if (currentContent is SettingsPage settingsPage && parameter is not null)
+            {
+                settingsPage.SetParameter(parameter);
+                SelectNavigationItem(pageType);
+                return;
+            }
+
+            if (currentContent is ICancelPageViewModel cancelPage)
             {
                 cancelPage.CancelLoading();
             }
@@ -83,7 +103,11 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
         SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedFeaturePage, pageType.FullName);
         _navFrame.NavigateTo(pageType, parameter);
+        SelectNavigationItem(pageType);
+    }
 
+    private void SelectNavigationItem(Type pageType)
+    {
         var item = MenuItems.Find(p => p.PageKey == pageType.FullName)
             ?? FooterItems.FirstOrDefault(p => p.PageKey == pageType.FullName);
         if (item is not null && _navigationView.SelectedItem != item)
@@ -94,11 +118,6 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
     public void TryClearOverlayPages()
     {
-        if (_overFrame?.GetCurrentContent() is ICancelPageViewModel cancelPage)
-        {
-            cancelPage.CancelLoading();
-        }
-
         IsOverlayOpen = false;
         IsTemporaryOverlayClosed = false;
         _overFrame?.ClearBackStack();
@@ -107,6 +126,11 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     /// <inheritdoc/>
     public void NavigateToOver(Type pageType, object? parameter = null)
     {
+        if (AccountSession.Find(this) is { } owner && !ReferenceEquals(owner, GlobalDependencies.Accounts.Current))
+        {
+            return;
+        }
+
         if (_overFrame is null)
         {
             throw new InvalidOperationException("导航框架未初始化.");
@@ -210,6 +234,16 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     /// </summary>
     public void Back()
     {
+        if (!IsOverlayOpen)
+        {
+            if (_navFrame?.GetCurrentContent() is SettingsPage settings)
+            {
+                settings.TryNavigateBack();
+            }
+
+            return;
+        }
+
         if (_overFrame is not null)
         {
             if (_overFrame.GetCurrentContent() is ICancelPageViewModel cancelPage)

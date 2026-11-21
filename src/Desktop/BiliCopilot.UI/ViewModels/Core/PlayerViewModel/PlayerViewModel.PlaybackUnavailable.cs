@@ -156,13 +156,15 @@ public sealed partial class PlayerViewModel
 
     private void OpenSignInWindow()
     {
-        var window = this.Get<AppViewModel>().Windows.FirstOrDefault(p => p is WebSignInWindow);
+        var uid = Accounts.AccountSession.Find(this)?.Credentials.GetToken()?.UserId;
+        var window = this.Get<AppViewModel>().Windows.OfType<WebSignInWindow>()
+            .FirstOrDefault(window => window.ExpectedUid == uid);
         if (window is not null)
         {
             window.Activate();
             return;
         }
 
-        new WebSignInWindow().Activate();
+        new WebSignInWindow(null, uid).Activate();
     }
 }

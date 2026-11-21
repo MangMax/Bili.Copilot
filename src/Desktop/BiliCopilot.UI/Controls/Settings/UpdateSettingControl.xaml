@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:SettingsPageControlBase
+    x:Class="BiliCopilot.UI.Controls.Settings.UpdateSettingControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:local="using:BiliCopilot.UI.Controls.Settings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel Spacing="4">
+        <Button
+            MinWidth="120"
+            HorizontalAlignment="Right"
+            AutomationProperties.AutomationId="SettingsUpdatePrimaryAction"
+            Command="{x:Bind Update.PrimaryActionCommand}"
+            Content="{x:Bind Update.SettingsActionName, Mode=OneWay}"
+            Style="{StaticResource AccentButtonStyle}"
+            Visibility="{x:Bind Update.IsButtonVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+        <Border
+            Padding="16,12"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="{StaticResource ControlCornerRadius}"
+            Visibility="{x:Bind Update.IsProgressVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ProgressBar
+                AutomationProperties.AutomationId="SettingsUpdateDownloadProgress"
+                IsIndeterminate="{x:Bind Update.IsProgressIndeterminate, Mode=OneWay}"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind Update.DisplayDownloadProgress, Mode=OneWay}" />
+        </Border>
+
+        <base:SettingsExpander
+            Header="{ext:Locale Name=UpdateReleaseNotes}"
+            IsExpanded="{x:Bind Update.HasAvailableUpdate, Mode=OneWay}"
+            Visibility="{x:Bind Update.CanShowReleaseNotes, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <base:SettingsExpander.HeaderIcon>
+                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDocumentBulletList}" />
+            </base:SettingsExpander.HeaderIcon>
+            <HyperlinkButton
+                AutomationProperties.AutomationId="SettingsUpdateRelease"
+                Command="{x:Bind Update.OpenReleaseCommand}"
+                Content="{ext:Locale Name=UpdateOpenReleaseAction}" />
+            <base:SettingsExpander.ItemsFooter>
+                <ScrollViewer
+                    MaxHeight="280"
+                    Padding="16,12"
+                    VerticalScrollBarVisibility="Auto">
+                    <TextBlock
+                        AutomationProperties.AutomationId="SettingsUpdateReleaseNotes"
+                        IsTextSelectionEnabled="True"
+                        Text="{x:Bind Update.DisplayReleaseNotes, Mode=OneWay}"
+                        TextWrapping="Wrap" />
+                </ScrollViewer>
+            </base:SettingsExpander.ItemsFooter>
+        </base:SettingsExpander>
+
+        <TextBlock
+            Margin="0,12,0,4"
+            HorizontalAlignment="Left"
+            Text="{ext:Locale Name=SettingsSubsectionUpdatePreferences}" />
+
+        <base:SettingsCard
+            Description="{ext:Locale Name=UpdateCheckIntervalDescription}"
+            Header="{ext:Locale Name=UpdateCheckInterval}">
+            <base:SettingsCard.HeaderIcon>
+                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconClock}" />
+            </base:SettingsCard.HeaderIcon>
+            <NumberBox
+                MinWidth="120"
+                AutomationProperties.AutomationId="UpdateCheckInterval"
+                AutomationProperties.Name="{ext:Locale Name=UpdateCheckInterval}"
+                Maximum="168"
+                Minimum="0"
+                SmallChange="1"
+                SpinButtonPlacementMode="Compact"
+                Value="{x:Bind Update.CheckIntervalHours, Mode=TwoWay}" />
+        </base:SettingsCard>
+
+        <base:SettingsCard
+            Description="{ext:Locale Name=UpdateAutoDownloadDescription}"
+            Header="{ext:Locale Name=UpdateAutoDownload}">
+            <base:SettingsCard.HeaderIcon>
+                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconArrowDownload}" />
+            </base:SettingsCard.HeaderIcon>
+            <ToggleSwitch
+                AutomationProperties.AutomationId="UpdateAutoDownload"
+                AutomationProperties.Name="{ext:Locale Name=UpdateAutoDownload}"
+                IsOn="{x:Bind Update.AutoDownload, Mode=TwoWay}" />
+        </base:SettingsCard>
+
+        <base:SettingsExpander
+            Description="{ext:Locale Name=UpdateDownloadSourceDescription}"
+            Header="{ext:Locale Name=UpdateDownloadSource}"
+            IsExpanded="True">
+            <base:SettingsExpander.HeaderIcon>
+                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconGlobe}" />
+            </base:SettingsExpander.HeaderIcon>
+            <ComboBox
+                MinWidth="140"
+                AutomationProperties.AutomationId="UpdateDownloadSource"
+                AutomationProperties.Name="{ext:Locale Name=UpdateDownloadSource}"
+                SelectedIndex="{x:Bind Update.DownloadSourceIndex, Mode=TwoWay}">
+                <ComboBoxItem Content="{ext:Locale Name=UpdateSourceAuto}" />
+                <ComboBoxItem Content="{ext:Locale Name=UpdateSourceGitHub}" />
+                <ComboBoxItem Content="{ext:Locale Name=UpdateSourceMirrors}" />
+            </ComboBox>
+            <base:SettingsExpander.ItemsFooter>
+                <StackPanel Padding="16,12" Spacing="8">
+                    <TextBlock
+                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                        Text="{ext:Locale Name=UpdateMirrorPrefixes}" />
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="{ext:Locale Name=UpdateMirrorPrefixesDescription}"
+                        TextWrapping="Wrap" />
+                    <TextBox
+                        MinHeight="88"
+                        MaxHeight="160"
+                        AcceptsReturn="True"
+                        AutomationProperties.AutomationId="UpdateMirrorPrefixes"
+                        AutomationProperties.Name="{ext:Locale Name=UpdateMirrorPrefixes}"
+                        FontFamily="Consolas"
+                        PlaceholderText="https://gh-proxy.com/"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        Text="{x:Bind ViewModel.UpdateMirrorPrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </base:SettingsExpander.ItemsFooter>
+        </base:SettingsExpander>
+    </StackPanel>
+</local:SettingsPageControlBase>

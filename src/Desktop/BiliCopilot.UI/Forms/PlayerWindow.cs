@@ -3,6 +3,7 @@ using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI;
+using Microsoft.UI.Content;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
@@ -46,6 +47,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _rootGrid = new CursorGrid();
         _xamlSource = new DesktopWindowXamlSource();
         _xamlSource.Initialize(_rootWindow.Id);
+        _xamlSource.SiteBridge.ResizePolicy = ContentSizePolicy.ResizeContentToParentWindow;
         _xamlSource.Content = _rootGrid;
 
         _inputActivationListener = InputActivationListener.GetForWindowId(_rootWindow.Id);
@@ -138,7 +140,6 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (_isFirstActivated)
         {
             _rootWindow.Changed += OnWindowChanged;
-            UpdateXamlSourcePosition();
             if (PInvoke.GetForegroundWindow() == Handle)
             {
                 PInvoke.SetFocus(new(Win32Interop.GetWindowFromWindowId(_xamlSource.SiteBridge.WindowId)));
@@ -313,7 +314,6 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         if (args.DidSizeChange || args.DidVisibilityChange || args.DidPresenterChange)
         {
-            UpdateXamlSourcePosition();
             _presentation.GeometryChanged();
         }
 
@@ -325,7 +325,6 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (args.DidPresenterChange && sender.Presenter.Kind == AppWindowPresenterKind.Overlapped)
         {
             ResetWindowMinSize();
-            UpdateXamlSourcePosition();
         }
 
         if (args.DidPositionChange)
@@ -356,23 +355,6 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         // An OS-initiated close reaches here before the HWND is gone; the island must not
         // outlive it or the next input dispatch faults in CoreMessagingXP.
         DisposeXamlSource();
-    }
-
-    internal void UpdateXamlSourcePosition()
-    {
-        if (_xamlSourceDisposed)
-        {
-            return;
-        }
-
-        var size = _rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen
-            ? _rootWindow.Size
-            : _rootWindow.ClientSize;
-        _xamlSource?.SiteBridge?.MoveAndResize(new Windows.Graphics.RectInt32(
-            0,
-            0,
-            size.Width,
-            size.Height));
     }
 
     internal void SetTopMost(bool isTopMost)

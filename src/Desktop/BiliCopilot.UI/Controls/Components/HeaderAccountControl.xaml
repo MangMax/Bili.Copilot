@@ -18,7 +18,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             IsActive="{x:Bind ViewModel.IsInitializing, Mode=OneWay}" />
-        <Button Style="{StaticResource AvatarButtonStyle}">
+        <Button AutomationProperties.AutomationId="AccountMenu" Style="{StaticResource AvatarButtonStyle}">
             <controls:BasicCoverImage
                 x:Name="Avatar"
                 Width="28"
@@ -40,9 +40,28 @@
                             </ControlTemplate>
                         </MenuFlyoutItem.Template>
                     </MenuFlyoutItem>
+                    <MenuFlyoutSubItem
+                        x:Name="AccountSwitchMenu"
+                        Loaded="OnAccountSwitchMenuLoaded"
+                        Text="{ext:Locale Name=SwitchBiliAccount}">
+                        <MenuFlyoutSubItem.Icon>
+                            <PathIcon
+                                Width="16"
+                                Height="16"
+                                Data="M6,1.95A2.9,2.9 0 1,1 6,7.75A2.9,2.9 0 1,1 6,1.95Z M6,3.35A1.5,1.5 0 1,0 6,6.35A1.5,1.5 0 1,0 6,3.35Z M1.12,13.42A4.9,4.9 0 0,1 6.68,9A0.7,0.7 0 0,1 6.49,10.38A3.5,3.5 0 0,0 2.51,13.54A0.7,0.7 0 0,1 1.12,13.42Z M8.95,8.77L12.44,8.77L12,8.34A0.68,0.68 0 0,1 12.94,7.36L14.59,8.96A0.68,0.68 0 0,1 14.12,10.13L8.95,10.13A0.68,0.68 0 0,1 8.95,8.77Z M14.12,12.78L10.63,12.78L11.07,13.21A0.68,0.68 0 0,1 10.13,14.19L8.48,12.59A0.68,0.68 0 0,1 8.95,11.42L14.12,11.42A0.68,0.68 0 0,1 14.12,12.78Z" />
+                        </MenuFlyoutSubItem.Icon>
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutItem Click="OnAddAccountClick" Text="{ext:Locale Name=AddBiliAccount}">
+                        <MenuFlyoutItem.Icon>
+                            <PathIcon
+                                Width="16"
+                                Height="16"
+                                Data="M6,1.95A2.9,2.9 0 1,1 6,7.75A2.9,2.9 0 1,1 6,1.95Z M6,3.35A1.5,1.5 0 1,0 6,6.35A1.5,1.5 0 1,0 6,3.35Z M1.12,13.42A4.9,4.9 0 0,1 7.68,9.25A0.7,0.7 0 0,1 7.2,10.56A3.5,3.5 0 0,0 2.51,13.54A0.7,0.7 0 0,1 1.12,13.42Z M11.25,9.3A0.7,0.7 0 0,1 12.65,9.3L12.65,10.75L14.1,10.75A0.7,0.7 0 0,1 14.1,12.15L12.65,12.15L12.65,13.6A0.7,0.7 0 0,1 11.25,13.6L11.25,12.15L9.8,12.15A0.7,0.7 0 0,1 9.8,10.75L11.25,10.75Z" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
-                        Command="{x:Bind ViewModel.ShowMomentsCommand}"
+                        Command="{x:Bind ViewModel.ShowOwnUserSpaceCommand}"
                         KeyboardAcceleratorTextOverride="{x:Bind ViewModel.MomentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
                         Text="{ext:Locale Name=MyDynamic}">
                         <MenuFlyoutItem.Icon>
@@ -66,7 +85,7 @@
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutSeparator />
-                    <MenuFlyoutItem Command="{x:Bind ViewModel.OpenPersonalWebsiteCommand}" Text="{ext:Locale Name=Personal}">
+                    <MenuFlyoutItem Command="{x:Bind ViewModel.ShowOwnUserSpaceCommand}" Text="{ext:Locale Name=Personal}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconPerson}" />
                         </MenuFlyoutItem.Icon>

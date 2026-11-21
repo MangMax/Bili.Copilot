@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Accounts;
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
@@ -9,7 +10,6 @@ using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
-using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
 using System.Diagnostics;
@@ -29,11 +29,9 @@ public sealed partial class AppViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="AppViewModel"/> class.
     /// </summary>
     public AppViewModel(
-        ILogger<AppViewModel> logger,
-        IBiliTokenResolver tokenResolver)
+        ILogger<AppViewModel> logger)
     {
         _logger = logger;
-        _tokenResolver = tokenResolver;
         // 播放会话的创建、登记与注销都收口在工厂里；视图模型只负责自己的原生资源。
         _playerSessions = new PlaybackSessionFactory<PlayerViewModel>(
             session =>
@@ -44,7 +42,11 @@ public sealed partial class AppViewModel : ViewModelBase
             },
             player => player.ReleaseSessionAsync(),
             player => Players.Add(player),
-            player => Players.Remove(player));
+            player =>
+            {
+                Players.Remove(player);
+                _ = GlobalDependencies.Accounts.CollectRetiredAsync(AccountSession.Find(player));
+            });
     }
 
     public bool IsMainWindowVisible()
@@ -93,16 +95,21 @@ public sealed partial class AppViewModel : ViewModelBase
 
         // 清除所有之前的badges.
         //BadgeNotificationManager.Current.ClearBadge();
-        if (_tokenResolver.GetToken() is not null)
+        if (GlobalDependencies.Accounts.Current is not null)
         {
             IsInitialLoading = true;
-            new MainWindow().Activate();
-            InitializeExternalCommand.Execute(default);
+            ShowMainWindowAfterSignIn();
         }
         else
         {
             new StartupWindow().Activate();
         }
+    }
+
+    internal void ShowMainWindowAfterSignIn()
+    {
+        new MainWindow().Activate();
+        InitializeExternalCommand.Execute(default);
     }
 
     [RelayCommand]

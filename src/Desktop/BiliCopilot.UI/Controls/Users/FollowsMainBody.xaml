@@ -36,10 +36,18 @@
         </controls:IncrementVerticalScrollControl>
 
         <base:EmptyHolder
-            Description="{ext:Locale Name=NoFollows}"
+            Description="{x:Bind ViewModel.EmptyDescription, Mode=OneWay}"
             Emoji="&#x1F92A;"
             Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
         <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsUserLoading, Mode=OneWay}" />
+
+        <InfoBar
+            Margin="16"
+            VerticalAlignment="Top"
+            IsClosable="False"
+            IsOpen="{x:Bind ViewModel.IsSearchFailed, Mode=OneWay}"
+            Severity="Warning"
+            Title="{ext:Locale Name=RequestSearchResultFailed}" />
     </Grid>
 </local:FollowsPageControlBase>
