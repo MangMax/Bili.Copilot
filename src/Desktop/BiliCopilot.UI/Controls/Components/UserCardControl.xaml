@@ -7,7 +7,6 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -87,10 +86,11 @@
                         VerticalContentAlignment="Center"
                         Command="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
                         CornerRadius="10">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             x:Name="FollowIcon"
                             FontSize="10"
-                            Symbol="Heart"
+                            Glyph="{StaticResource IconHeart}"
                             ToolTipService.ToolTip="{ext:Locale Name=Follow}" />
                     </ToggleButton>
                 </Grid>

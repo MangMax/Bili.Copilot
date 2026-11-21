@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -55,7 +56,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -65,7 +66,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }

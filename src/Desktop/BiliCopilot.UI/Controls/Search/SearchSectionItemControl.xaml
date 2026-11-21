@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:BiliCopilot.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Search"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -20,10 +19,11 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <ic:SymbolIcon
+        <FontIcon
+            FontFamily="{StaticResource BiliIconsFontFamily}"
             VerticalAlignment="Center"
             FontSize="14"
-            Symbol="{x:Bind ViewModel.SectionType, Mode=OneWay, Converter={StaticResource IconConverter}}" />
+            Glyph="{x:Bind ViewModel.SectionType, Mode=OneWay, Converter={StaticResource IconConverter}}" />
         <TextBlock
             Grid.Column="1"
             VerticalAlignment="Center"

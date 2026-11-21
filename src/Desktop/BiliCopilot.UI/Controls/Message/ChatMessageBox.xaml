@@ -6,7 +6,6 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Message"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -26,7 +25,7 @@
             VerticalContentAlignment="Center"
             IsEnabled="{x:Bind ViewModel.IsSending, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
             ToolTipService.ToolTip="{ext:Locale Name=Emote}">
-            <ic:SymbolIcon FontSize="14" Symbol="Emoji" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconEmoji}" />
             <Button.Flyout>
                 <Flyout Closed="OnFlyoutClosed">
                     <Flyout.FlyoutPresenterStyle>
@@ -66,7 +65,7 @@
             Command="{x:Bind ViewModel.SendMessageCommand, Mode=OneWay}"
             Style="{StaticResource AccentButtonStyle}"
             ToolTipService.ToolTip="{ext:Locale Name=SendMessage}">
-            <ic:SymbolIcon FontSize="16" Symbol="Send" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconSend}" />
         </Button>
     </Grid>
 </local:ChatMessageControlBase>

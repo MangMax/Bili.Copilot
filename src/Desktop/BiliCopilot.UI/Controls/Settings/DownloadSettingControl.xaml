@@ -6,14 +6,13 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <base:SettingsExpander Description="{ext:Locale Name=DownloadSettingDescription}" Header="{ext:Locale Name=DownloadSetting}">
         <base:SettingsExpander.HeaderIcon>
-            <ic:SymbolIcon Symbol="ArrowDownload" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconArrowDownload}" />
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
             <base:SettingsCard Description="{x:Bind ViewModel.DefaultDownloadPath, Mode=OneWay}" Header="{ext:Locale Name=DefaultDownloadFolder}">
@@ -28,7 +27,7 @@
                         Command="{x:Bind ViewModel.OpenDownloadFolderCommand}"
                         Style="{StaticResource IconButtonStyle}"
                         ToolTipService.ToolTip="{ext:Locale Name=OpenFolder}">
-                        <ic:SymbolIcon FontSize="14" Symbol="FolderOpen" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconFolderOpen}" />
                     </Button>
                 </StackPanel>
             </base:SettingsCard>

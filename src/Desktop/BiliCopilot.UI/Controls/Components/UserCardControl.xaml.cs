@@ -1,5 +1,6 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -65,7 +66,7 @@ public sealed partial class UserCardControl : UserCardControlBase
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -87,7 +88,7 @@ public sealed partial class UserCardControl : UserCardControlBase
 
         if (FollowIcon is not null)
         {
-            FollowIcon.IconVariant = ViewModel?.IsFollowed == true ? FluentIcons.Common.IconVariant.Filled : FluentIcons.Common.IconVariant.Regular;
+            FollowIcon.Glyph = IconGlyph.SelectHeart(ViewModel?.IsFollowed == true);
         }
     }
 

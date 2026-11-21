@@ -6,7 +6,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Moment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -19,11 +18,12 @@
         </Grid.ColumnDefinitions>
 
         <Grid VerticalAlignment="Center">
-            <ic:SymbolIcon
+            <FontIcon
+                FontFamily="{StaticResource BiliIconsFontFamily}"
                 Margin="4,0,6,0"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Symbol="BubbleMultiple"
+                Glyph="{StaticResource IconBubbleMultiple}"
                 Visibility="{x:Bind ViewModel.IsTotal, Mode=OneWay}" />
             <controls:BasicCoverImage
                 Width="28"

@@ -7,7 +7,6 @@
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -68,12 +67,13 @@
                     <Border
                         Background="{ThemeResource ControlFillColorSecondaryBrush}"
                         CornerRadius="16">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             FontSize="14"
                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                            Symbol="Person" />
+                            Glyph="{StaticResource IconPerson}" />
                     </Border>
                     <controls:RecommendationCoverImage
                         Width="32"

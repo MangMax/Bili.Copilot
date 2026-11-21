@@ -7,7 +7,6 @@
     xmlns:community="using:CommunityToolkit.WinUI.Controls"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:repeater="using:Richasy.WinUIKernel.Share.Base.Repeater"
@@ -88,11 +87,12 @@
                         x:Name="ExpandLabel"
                         FontSize="12"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         x:Name="ExpandIcon"
                         FontSize="10"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Symbol="ChevronDown" />
+                        Glyph="{StaticResource IconChevronDown}" />
                 </StackPanel>
             </Button>
         </Grid>
@@ -139,9 +139,9 @@
                     ToolTipService.ToolTip="{x:Bind ScrollLeftText, Mode=OneWay}"
                     Visibility="Collapsed">
                     <FontIcon
-                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         FontSize="8"
-                        Glyph="&#xEDD9;"
+                        Glyph="{StaticResource IconChevronLeft}"
                         MirroredWhenRightToLeft="True" />
                 </Button>
                 <Button
@@ -163,9 +163,9 @@
                     ToolTipService.ToolTip="{x:Bind ScrollRightText, Mode=OneWay}"
                     Visibility="Collapsed">
                     <FontIcon
-                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         FontSize="8"
-                        Glyph="&#xEDDA;"
+                        Glyph="{StaticResource IconChevronRight}"
                         MirroredWhenRightToLeft="True" />
                 </Button>
             </Grid>

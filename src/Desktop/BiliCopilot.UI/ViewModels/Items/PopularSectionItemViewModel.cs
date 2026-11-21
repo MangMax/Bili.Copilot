@@ -14,7 +14,7 @@ public sealed partial class PopularSectionItemViewModel : ViewModelBase, IPopula
     /// Initializes a new instance of the <see cref="PopularSectionItemViewModel"/> class.
     /// </summary>
     public PopularSectionItemViewModel(
-        FluentIcons.Common.Symbol symbol,
+        string symbol,
         string title,
         PopularSectionType type)
     {
@@ -26,7 +26,7 @@ public sealed partial class PopularSectionItemViewModel : ViewModelBase, IPopula
     /// <summary>
     /// 图标.
     /// </summary>
-    public FluentIcons.Common.Symbol Icon { get; init; }
+    public string Icon { get; init; }
 
     /// <summary>
     /// 标题.

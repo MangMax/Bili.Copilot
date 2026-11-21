@@ -8,7 +8,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:danmaku="using:BiliCopilot.UI.Controls.Danmaku"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -91,8 +90,7 @@
                         <Setter Target="ForwardButton.Visibility" Value="Visible" />
                         <Setter Target="PrevButton.Visibility" Value="Collapsed" />
                         <Setter Target="NextButton.Visibility" Value="Visible" />
-                        <Setter Target="DanmakuToggleButton.Visibility" Value="Collapsed" />
-                        <Setter Target="DanmakuOptionButton.Visibility" Value="Collapsed" />
+                        <Setter Target="DanmakuButton.Visibility" Value="Collapsed" />
                         <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
                         <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
                         <Setter Target="FullScreenButton.Visibility" Value="Collapsed" />
@@ -109,8 +107,7 @@
                         <Setter Target="ForwardButton.Visibility" Value="Visible" />
                         <Setter Target="PrevButton.Visibility" Value="Collapsed" />
                         <Setter Target="NextButton.Visibility" Value="Visible" />
-                        <Setter Target="DanmakuToggleButton.Visibility" Value="Collapsed" />
-                        <Setter Target="DanmakuOptionButton.Visibility" Value="Collapsed" />
+                        <Setter Target="DanmakuButton.Visibility" Value="Collapsed" />
                         <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
                         <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
                         <Setter Target="FullScreenButton.Visibility" Value="Collapsed" />
@@ -144,7 +141,6 @@
                         <Setter Target="RightPanel.Margin" Value="0" />
                         <Setter Target="FullVolumeContainer.Visibility" Value="Collapsed" />
                         <Setter Target="SlimVolumeButton.Visibility" Value="Visible" />
-                        <Setter Target="DanmakuOptionButton.Visibility" Value="Collapsed" />
                         <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
                         <Setter Target="FullScreenButton.Visibility" Value="Collapsed" />
                         <Setter Target="OverflowButton.Visibility" Value="Visible" />
@@ -194,7 +190,7 @@
                         <Setter Target="SpeedButton.Margin" Value="0" />
                         <Setter Target="SubtitleButton.Margin" Value="0" />
                         <Setter Target="OverflowButton.Margin" Value="0" />
-                        <Setter Target="DanmakuToggleButton.Margin" Value="0" />
+                        <Setter Target="DanmakuButton.Margin" Value="0" />
                         <Setter Target="ChapterFlyout.Placement" Value="Left" />
                         <Setter Target="ChapterFlyout.ShouldConstrainToRootBounds" Value="True" />
                         <Setter Target="VolumeFlyout.Placement" Value="Left" />
@@ -203,12 +199,15 @@
                         <Setter Target="SpeedFlyout.ShouldConstrainToRootBounds" Value="True" />
                         <Setter Target="SubtitleFlyout.Placement" Value="Left" />
                         <Setter Target="SubtitleFlyout.ShouldConstrainToRootBounds" Value="True" />
+                        <Setter Target="DanmakuFlyout.Placement" Value="Left" />
+                        <Setter Target="DanmakuFlyout.ShouldConstrainToRootBounds" Value="True" />
                         <Setter Target="OverflowFlyout.Placement" Value="Left" />
                         <Setter Target="OverflowFlyout.ShouldConstrainToRootBounds" Value="True" />
                         <Setter Target="ChapterFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
                         <Setter Target="VolumeFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
                         <Setter Target="SpeedFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
                         <Setter Target="SubtitleFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
+                        <Setter Target="DanmakuFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
                         <Setter Target="OverflowFlyout.MenuFlyoutPresenterStyle" Value="{StaticResource PortraitMenuPresenter}" />
                         <Setter Target="SpeedPresets.ColumnSpacing" Value="0" />
                         <Setter Target="SpeedPresets.RowSpacing" Value="4" />
@@ -334,10 +333,10 @@
                         Style="{StaticResource BasicPlayerIconButtonStyle}"
                         ToolTipService.ToolTip="{x:Bind ViewModel.PrevButtonToolTip, Mode=OneWay}"
                         Visibility="{x:Bind ViewModel.IsVideoNavigationAvailable, Mode=OneWay}">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             FontSize="16"
-                            IconVariant="Filled"
-                            Symbol="Previous" />
+                            Glyph="{StaticResource IconPreviousFilled}" />
                     </Button>
                     <!--  直播没有前进/后退：只包住这两个按钮，避免窄态 VisualState 的 Setter 又把它们显示出来。  -->
                     <StackPanel
@@ -350,10 +349,10 @@
                             Style="{StaticResource BasicPlayerIconButtonStyle}"
                             ToolTipService.ToolTip="{x:Bind ViewModel.BackwardTip, Mode=OneWay}"
                             Visibility="{x:Bind IsSkipButtonsVisible, Mode=OneWay}">
-                            <ic:SymbolIcon
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
                                 FontSize="16"
-                                IconVariant="Filled"
-                                Symbol="ArrowStepBack" />
+                                Glyph="{StaticResource IconSeekBackward}" />
                         </Button>
                     </StackPanel>
                     <Grid>
@@ -363,10 +362,10 @@
                             IsEnabled="{x:Bind IsPlayPauseEnabled(ViewModel.Player.PlaybackState), Mode=OneWay}"
                             Style="{StaticResource PrimaryPlayerButtonStyle}"
                             ToolTipService.ToolTip="{x:Bind GetPlayPauseTip(ViewModel.Player.IsPlaying), Mode=OneWay}">
-                            <ic:SymbolIcon
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
                                 FontSize="22"
-                                IconVariant="Filled"
-                                Symbol="{x:Bind GetPlayPauseSymbol(ViewModel.Player.PlaybackState), Mode=OneWay}" />
+                                Glyph="{x:Bind GetPlayPauseSymbol(ViewModel.Player.PlaybackState), Mode=OneWay}" />
                         </Button>
                         <ProgressRing
                             Width="52"
@@ -386,10 +385,10 @@
                             Style="{StaticResource BasicPlayerIconButtonStyle}"
                             ToolTipService.ToolTip="{x:Bind ViewModel.ForwardTip, Mode=OneWay}"
                             Visibility="{x:Bind IsSkipButtonsVisible, Mode=OneWay}">
-                            <ic:SymbolIcon
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
                                 FontSize="16"
-                                IconVariant="Filled"
-                                Symbol="ArrowStepOver" />
+                                Glyph="{StaticResource IconSeekForward}" />
                         </Button>
                     </StackPanel>
                     <Button
@@ -400,10 +399,10 @@
                         Style="{StaticResource BasicPlayerIconButtonStyle}"
                         ToolTipService.ToolTip="{x:Bind ViewModel.NextButtonToolTip, Mode=OneWay}"
                         Visibility="{x:Bind ViewModel.IsVideoNavigationAvailable, Mode=OneWay}">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             FontSize="16"
-                            IconVariant="Filled"
-                            Symbol="Next" />
+                            Glyph="{StaticResource IconNextFilled}" />
                     </Button>
                 </StackPanel>
             </UserControl>
@@ -457,7 +456,7 @@
                             Command="{x:Bind ViewModel.RefreshPlaybackCommand, Mode=OneWay}"
                             ToolTipService.ToolTip="{ext:Locale Name=RefreshPlayback}"
                             Visibility="{x:Bind ViewModel.IsPlaybackRefreshAvailable, Mode=OneWay}">
-                            <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconArrowSync}" FontSize="14" />
                         </Button>
                     </Grid>
                     <Button
@@ -533,10 +532,11 @@
                                 </ScrollViewer>
                             </Flyout>
                         </Button.Flyout>
-                        <ic:SymbolIcon
-                            FontSize="14"
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
+                            FontSize="16"
                             RequestedTheme="Dark"
-                            Symbol="List" />
+                            Glyph="{StaticResource IconList}" />
                     </Button>
                     <StackPanel
                         x:Name="FullVolumeContainer"
@@ -551,20 +551,22 @@
                             CornerRadius="16"
                             Style="{StaticResource BasicPlayerIconButtonStyle}">
                             <Grid>
-                                <ic:SymbolIcon
+                                <FontIcon
+                                    FontFamily="{StaticResource BiliIconsFontFamily}"
                                     VerticalAlignment="Center"
-                                    FontSize="14"
+                                    FontSize="18"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     RequestedTheme="Dark"
-                                    Symbol="Speaker2"
+                                    Glyph="{StaticResource IconSpeaker2}"
                                     ToolTipService.ToolTip="{ext:Locale Name=CurrentVolume}"
                                     Visibility="{x:Bind ViewModel.IsMute, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-                                <ic:SymbolIcon
+                                <FontIcon
+                                    FontFamily="{StaticResource BiliIconsFontFamily}"
                                     VerticalAlignment="Center"
-                                    FontSize="14"
+                                    FontSize="18"
                                     Foreground="{ThemeResource SystemFillColorCriticalBrush}"
                                     RequestedTheme="Dark"
-                                    Symbol="SpeakerMute"
+                                    Glyph="{StaticResource IconSpeakerMute}"
                                     ToolTipService.ToolTip="{ext:Locale Name=Mute}"
                                     Visibility="{x:Bind ViewModel.IsMute, Mode=OneWay}" />
                             </Grid>
@@ -651,20 +653,22 @@
                                             HorizontalAlignment="Center"
                                             AutomationProperties.Name="{ext:Locale Name=Mute}">
                                             <Grid>
-                                                <ic:SymbolIcon
+                                                <FontIcon
+                                                    FontFamily="{StaticResource BiliIconsFontFamily}"
                                                     VerticalAlignment="Center"
-                                                    FontSize="14"
+                                                    FontSize="18"
                                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                     RequestedTheme="Dark"
-                                                    Symbol="Speaker2"
+                                                    Glyph="{StaticResource IconSpeaker2}"
                                                     ToolTipService.ToolTip="{ext:Locale Name=CurrentVolume}"
                                                     Visibility="{x:Bind ViewModel.IsMute, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-                                                <ic:SymbolIcon
+                                                <FontIcon
+                                                    FontFamily="{StaticResource BiliIconsFontFamily}"
                                                     VerticalAlignment="Center"
-                                                    FontSize="14"
+                                                    FontSize="18"
                                                     Foreground="{ThemeResource SystemFillColorCriticalBrush}"
                                                     RequestedTheme="Dark"
-                                                    Symbol="SpeakerMute"
+                                                    Glyph="{StaticResource IconSpeakerMute}"
                                                     ToolTipService.ToolTip="{ext:Locale Name=Mute}"
                                                     Visibility="{x:Bind ViewModel.IsMute, Mode=OneWay}" />
                                             </Grid>
@@ -685,14 +689,16 @@
                             </Flyout>
                         </Button.Flyout>
                         <Grid>
-                            <ic:SymbolIcon
-                                FontSize="14"
-                                Symbol="Speaker2"
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
+                                FontSize="18"
+                                Glyph="{StaticResource IconSpeaker2}"
                                 Visibility="{x:Bind ViewModel.IsMute, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-                            <ic:SymbolIcon
-                                FontSize="14"
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
+                                FontSize="18"
                                 Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                                Symbol="SpeakerMute"
+                                Glyph="{StaticResource IconSpeakerMute}"
                                 Visibility="{x:Bind ViewModel.IsMute, Mode=OneWay}" />
                         </Grid>
                     </Button>
@@ -857,7 +863,7 @@
                                 </ScrollViewer>
                             </Flyout>
                         </Button.Flyout>
-                        <ic:SymbolIcon FontSize="14" Symbol="TopSpeed" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconTopSpeed}" />
                     </Button>
                     <Button
                         x:Name="SubtitleButton"
@@ -1017,7 +1023,7 @@
                                                     Click="OnSubtitleParameterBackClick"
                                                     CornerRadius="{StaticResource ControlCornerRadius}"
                                                     ToolTipService.ToolTip="{ext:Locale Name=Back}">
-                                                    <ic:SymbolIcon FontSize="12" Symbol="ChevronLeft" />
+                                                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="12" Glyph="{StaticResource IconChevronLeft}" />
                                                 </Button>
                                                 <TextBlock
                                                     Grid.Column="1"
@@ -1152,64 +1158,65 @@
                         </Button.Flyout>
                         <Grid>
                             <!--  字幕开关打开时用主题色点亮图标，关闭时回到默认前景色  -->
-                            <ic:SymbolIcon
-                                FontSize="14"
-                                Symbol="Subtitles"
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
+                                FontSize="16"
+                                Glyph="{StaticResource IconSubtitles}"
                                 Visibility="{x:Bind ViewModel.IsSubtitleEnabled, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-                            <ic:SymbolIcon
-                                FontSize="14"
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
+                                FontSize="16"
                                 Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                IconVariant="Filled"
-                                Symbol="Subtitles"
+                                Glyph="{StaticResource IconSubtitlesFilled}"
                                 Visibility="{x:Bind ViewModel.IsSubtitleEnabled, Mode=OneWay}" />
                         </Grid>
                     </Button>
-                    <StackPanel
-                        Orientation="Horizontal"
-                        Spacing="6"
+                    <Button
+                        x:Name="DanmakuButton"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="DanmakuButton"
+                        AutomationProperties.Name="{ext:Locale Name=Danmaku}"
+                        IsEnabled="{x:Bind ViewModel.IsDanmakuLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                        Style="{StaticResource BasicPlayerIconButtonStyle}"
+                        ToolTipService.ToolTip="{ext:Locale Name=Danmaku}"
                         Visibility="{x:Bind ViewModel.IsDanmakuControlVisible, Mode=OneWay}">
-                        <ToggleButton
-                            x:Name="DanmakuToggleButton"
-                            Margin="0,0,8,0"
-                            AutomationProperties.Name="{ext:Locale Name=DanmakuSwitch}"
-                            Content="弹"
-                            FontSize="12"
-                            FontWeight="Black"
-                            IsChecked="{x:Bind ViewModel.Danmaku.IsShowDanmaku, Mode=TwoWay, FallbackValue=False}"
-                            IsEnabled="{x:Bind ViewModel.IsDanmakuLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
-                            Style="{StaticResource TogglePlayerIconButtonStyle}"
-                            ToolTipService.ToolTip="{ext:Locale Name=DanmakuSwitch}" />
-                        <Button
-                            x:Name="DanmakuOptionButton"
-                            Margin="0,0,8,0"
-                            AutomationProperties.Name="{ext:Locale Name=DanmakuDisplaySettings}"
-                            IsEnabled="{x:Bind ViewModel.IsDanmakuLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
-                            Style="{StaticResource BasicPlayerIconButtonStyle}"
-                            ToolTipService.ToolTip="{ext:Locale Name=DanmakuDisplaySettings}">
-                            <Button.Flyout>
-                                <Flyout
-                                    x:Name="DanmakuFlyout"
-                                    Placement="Top"
-                                    Opened="OnDisplayFlyoutOpened"
-                                    Closed="OnDanmakuOptionsClosed"
-                                    AreOpenCloseAnimationsEnabled="False"
-                                    ShouldConstrainToRootBounds="True"
-                                    FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
-                                    <ScrollViewer
-                                        x:Name="DanmakuPopup"
-                                        HorizontalScrollMode="Disabled"
-                                        HorizontalScrollBarVisibility="Disabled"
-                                        VerticalScrollBarVisibility="Auto">
-                                        <danmaku:DanmakuDisplayOptions
-                                            x:Name="DanmakuContent"
-                                            Width="280"
-                                            ViewModel="{x:Bind ViewModel.Danmaku, Mode=OneWay}" />
-                                    </ScrollViewer>
-                                </Flyout>
-                            </Button.Flyout>
-                            <ic:SymbolIcon FontSize="14" Symbol="ContentSettings" />
-                        </Button>
-                    </StackPanel>
+                        <Button.Flyout>
+                            <Flyout
+                                x:Name="DanmakuFlyout"
+                                Placement="Top"
+                                Opened="OnDisplayFlyoutOpened"
+                                Closed="OnDanmakuOptionsClosed"
+                                AreOpenCloseAnimationsEnabled="False"
+                                ShouldConstrainToRootBounds="True"
+                                FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
+                                <ScrollViewer
+                                    x:Name="DanmakuPopup"
+                                    HorizontalScrollMode="Disabled"
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    VerticalScrollBarVisibility="Auto">
+                                    <danmaku:DanmakuDisplayOptions
+                                        x:Name="DanmakuContent"
+                                        Width="280"
+                                        ViewModel="{x:Bind ViewModel.Danmaku, Mode=OneWay}" />
+                                </ScrollViewer>
+                            </Flyout>
+                        </Button.Flyout>
+                        <Grid>
+                            <!--  弹幕开关打开时用主题色点亮图标，关闭时回到默认前景色  -->
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
+                                FontSize="16"
+                                Glyph="{StaticResource IconDanmakuSwitch}"
+                                Visibility="{x:Bind ViewModel.Danmaku.IsShowDanmaku, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Visible}" />
+                            <FontIcon
+                                FontFamily="{StaticResource BiliIconsFontFamily}"
+                                FontSize="16"
+                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                Glyph="{StaticResource IconDanmakuSwitchFilled}"
+                                Visibility="{x:Bind ViewModel.Danmaku.IsShowDanmaku, Mode=OneWay, FallbackValue=Collapsed}" />
+                        </Grid>
+                    </Button>
                     <Button
                         x:Name="CompactOverlayButton"
                         Margin="0,0,8,0"
@@ -1217,7 +1224,7 @@
                         Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}"
                         Style="{StaticResource BasicPlayerIconButtonStyle}"
                         ToolTipService.ToolTip="{x:Bind GetCompactOverlayTip(ViewModel.Player.IsCompactOverlay), Mode=OneWay}">
-                        <ic:SymbolIcon FontSize="14" Symbol="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
                     </Button>
                     <Button
                         x:Name="FullScreenButton"
@@ -1226,7 +1233,7 @@
                         Command="{x:Bind ViewModel.ToggleFullScreenCommand, Mode=OneWay}"
                         Style="{StaticResource BasicPlayerIconButtonStyle}"
                         ToolTipService.ToolTip="{x:Bind GetFullScreenTip(ViewModel.Player.IsFullScreen), Mode=OneWay}">
-                        <ic:SymbolIcon FontSize="14" Symbol="{x:Bind GetFullScreenSymbol(ViewModel.Player.IsFullScreen), Mode=OneWay}" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetFullScreenSymbol(ViewModel.Player.IsFullScreen), Mode=OneWay}" />
                     </Button>
                     <Button
                         x:Name="OverflowButton"
@@ -1246,17 +1253,17 @@
                                 MenuFlyoutPresenterStyle="{StaticResource PlayerMenuPresenter}">
                                 <MenuFlyoutItem Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}" Text="{x:Bind GetCompactOverlayTip(ViewModel.Player.IsCompactOverlay), Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
-                                        <ic:SymbolIcon FontSize="14" Symbol="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
+                                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem Command="{x:Bind ViewModel.ToggleFullScreenCommand, Mode=OneWay}" Text="{x:Bind GetFullScreenTip(ViewModel.Player.IsFullScreen), Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
-                                        <ic:SymbolIcon FontSize="14" Symbol="{x:Bind GetFullScreenSymbol(ViewModel.Player.IsFullScreen), Mode=OneWay}" />
+                                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetFullScreenSymbol(ViewModel.Player.IsFullScreen), Mode=OneWay}" />
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
                             </MenuFlyout>
                         </Button.Flyout>
-                        <ic:SymbolIcon FontSize="14" Symbol="MoreVertical" />
+                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconMoreVertical}" />
                     </Button>
                 </StackPanel>
             </ScrollViewer>

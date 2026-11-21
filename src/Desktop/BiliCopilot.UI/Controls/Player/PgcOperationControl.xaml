@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:icons="using:BiliCopilot.UI.Icons"
     xmlns:local="using:BiliCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -36,11 +36,11 @@
             VerticalAlignment="Center"
             Command="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}">
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <ic:SymbolIcon
+                <FontIcon
+                    FontFamily="{StaticResource BiliIconsFontFamily}"
                     VerticalAlignment="Center"
                     FontSize="14"
-                    IconVariant="{x:Bind ViewModel.IsFollow, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
-                    Symbol="Heart" />
+                    Glyph="{x:Bind icons:IconGlyph.SelectHeart(ViewModel.IsFollow), Mode=OneWay}" />
                 <Grid VerticalAlignment="Center">
                     <TextBlock Text="{ext:Locale Name=Follow}" Visibility="{x:Bind ViewModel.IsFollow, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
                     <TextBlock Text="{ext:Locale Name=Followed}" Visibility="{x:Bind ViewModel.IsFollow, Mode=OneWay}" />

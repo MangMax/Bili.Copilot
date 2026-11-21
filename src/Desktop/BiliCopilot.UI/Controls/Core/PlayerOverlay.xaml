@@ -10,7 +10,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:danmaku="using:BiliCopilot.UI.Controls.Danmaku"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -64,11 +63,12 @@
                     HorizontalContentAlignment="Left"
                     ToolTipService.ToolTip="{ext:Locale Name=Quality}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             VerticalAlignment="Center"
                             FontSize="14"
                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                            Symbol="PlayCircle" />
+                            Glyph="{StaticResource IconPlayCircle}" />
                         <base:TrimTextBlock
                             MaxWidth="160"
                             VerticalAlignment="Center"
@@ -124,11 +124,12 @@
                     HorizontalContentAlignment="Left"
                     ToolTipService.ToolTip="{ext:Locale Name=PlayLine}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             VerticalAlignment="Center"
                             FontSize="14"
                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                            Symbol="Globe" />
+                            Glyph="{StaticResource IconGlobe}" />
                         <base:TrimTextBlock
                             MaxWidth="160"
                             VerticalAlignment="Center"
@@ -550,7 +551,7 @@
                                     Style="{StaticResource LeftEdgeButtonStyle}"
                                     ToolTipService.ToolTip="{ext:Locale Name=Back}"
                                     Visibility="{x:Bind ViewModel.UseIntegrationOperation, Mode=OneWay}">
-                                    <ic:SymbolIcon FontSize="14" Symbol="ArrowLeft" />
+                                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconArrowLeft}" />
                                 </Button>
                             </Grid>
                             <Button
@@ -558,7 +559,7 @@
                                 Style="{StaticResource LeftEdgeButtonStyle}"
                                 ToolTipService.ToolTip="{ext:Locale Name=ExitCompactOverlay}"
                                 Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, FallbackValue=Collapsed}">
-                                <ic:SymbolIcon FontSize="14" Symbol="ContractDownLeft" />
+                                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="18" Glyph="{StaticResource IconExitCompactOverlay}" />
                             </Button>
                         </Grid>
                         <TextBlock
@@ -590,11 +591,12 @@
                                     VerticalContentAlignment="Center"
                                     x:Load="{x:Bind ViewModel.IsSourceSelectable, Mode=OneWay}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <ic:SymbolIcon
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
                                             VerticalAlignment="Center"
                                             FontSize="14"
                                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                            Symbol="PlayCircle" />
+                                            Glyph="{StaticResource IconPlayCircle}" />
                                         <base:TrimTextBlock
                                             MaxWidth="220"
                                             VerticalAlignment="Center"
@@ -672,7 +674,7 @@
                                     Command="{x:Bind ViewModel.RefreshPlaybackCommand, Mode=OneWay}"
                                     ToolTipService.ToolTip="{ext:Locale Name=RefreshPlayback}"
                                     Visibility="{x:Bind ViewModel.IsPlaybackRefreshAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconArrowSync}" FontSize="14" />
                                 </Button>
                                 <Button
                                     Width="32"
@@ -680,20 +682,37 @@
                                     Margin="8,0,0,0"
                                     Padding="0"
                                     VerticalAlignment="Center"
+                                    AutomationProperties.Name="{ext:Locale Name=TopWindow}"
                                     Command="{x:Bind ViewModel.ToggleTopMostCommand, Mode=OneWay}"
                                     ToolTipService.ToolTip="{ext:Locale Name=TopWindow}"
                                     Visibility="{x:Bind local:PlayerOverlay.IsTopMostButtonVisible(ViewModel.Player.IsFullScreen, ViewModel.Player.IsCompactOverlay), Mode=OneWay}">
-                                    <Grid>
-                                        <ic:SymbolIcon
-                                            FontSize="14"
-                                            Symbol="Pin"
-                                            Visibility="{x:Bind ViewModel.IsTopMost, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-                                        <ic:SymbolIcon
-                                            FontSize="14"
+                                    <Grid
+                                        Width="20"
+                                        Height="20"
+                                        CenterPoint="10,10,0"
+                                        Rotation="{x:Bind local:PlayerOverlay.GetTopMostIconRotation(ViewModel.IsTopMost), Mode=OneWay}">
+                                        <Grid.RotationTransition>
+                                            <ScalarTransition Duration="0:0:0.2" />
+                                        </Grid.RotationTransition>
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
+                                            FontSize="18"
+                                            Glyph="{StaticResource IconWindowPushpin}"
+                                            Opacity="{x:Bind local:PlayerOverlay.GetTopMostOutlineOpacity(ViewModel.IsTopMost), Mode=OneWay}">
+                                            <FontIcon.OpacityTransition>
+                                                <ScalarTransition Duration="0:0:0.16" />
+                                            </FontIcon.OpacityTransition>
+                                        </FontIcon>
+                                        <FontIcon
+                                            FontFamily="{StaticResource BiliIconsFontFamily}"
+                                            FontSize="18"
                                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                            IconVariant="Filled"
-                                            Symbol="Pin"
-                                            Visibility="{x:Bind ViewModel.IsTopMost, Mode=OneWay}" />
+                                            Glyph="{StaticResource IconWindowPushpinFilled}"
+                                            Opacity="{x:Bind local:PlayerOverlay.GetTopMostFilledOpacity(ViewModel.IsTopMost), Mode=OneWay}">
+                                            <FontIcon.OpacityTransition>
+                                                <ScalarTransition Duration="0:0:0.16" />
+                                            </FontIcon.OpacityTransition>
+                                        </FontIcon>
                                     </Grid>
                                 </Button>
                                 <Button
@@ -703,10 +722,10 @@
                                     Click="OnCloseButtonClick"
                                     Style="{StaticResource AccentButtonStyle}"
                                     Visibility="{x:Bind ViewModel.Player.IsFullScreen, Mode=OneWay, FallbackValue=Collapsed}">
-                                    <base:IconTextBlock
-                                        IconBrush="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
-                                        Symbol="Dismiss"
-                                        Text="{ext:Locale Name=CloseWindow}" />
+                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4">
+                                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDismiss}" FontSize="10" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                                        <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=CloseWindow}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
+                                    </StackPanel>
                                 </Button>
                             </StackPanel>
                         </StackPanel>

@@ -14,7 +14,7 @@ public sealed partial class AIQuickItemViewModel : ViewModelBase
     private readonly Func<AIQuickItemViewModel, Task> _action;
 
     [ObservableProperty]
-    public partial FluentIcons.Common.Symbol Symbol { get; set; }
+    public partial string Symbol { get; set; }
 
     [ObservableProperty]
     public partial string Title { get; set; }
@@ -26,7 +26,7 @@ public sealed partial class AIQuickItemViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="AIQuickItemViewModel"/> class.
     /// </summary>
     public AIQuickItemViewModel(
-        FluentIcons.Common.Symbol symbol,
+        string symbol,
         string title,
         string desc,
         string requestTemplate,

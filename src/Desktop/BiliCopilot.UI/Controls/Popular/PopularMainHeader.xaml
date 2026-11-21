@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:PopularPageControlBase
     x:Class="BiliCopilot.UI.Controls.Popular.PopularMainHeader"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,7 +6,6 @@
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:extensions="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.Popular"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -62,11 +61,12 @@
                     <CompositeTransform />
                 </Button.RenderTransform>
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                        Symbol="ArrowUndo" />
+                        Glyph="{StaticResource IconArrowUndo}" />
                     <TextBlock VerticalAlignment="Center" Text="{extensions:Locale Name=UndoRefresh}" />
                 </StackPanel>
             </Button>
@@ -81,12 +81,13 @@
                         Height="14"
                         VerticalAlignment="Center">
                         <!--  图标与进度环原位交叉淡入淡出，切换时不闪断。  -->
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                            Symbol="ArrowSync"
+                            Glyph="{StaticResource IconArrowSync}"
                             Visibility="{x:Bind ViewModel.IsRecommendRefreshing, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
                         <ProgressRing
                             Width="14"

@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Favorites"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -39,11 +38,12 @@
                 Command="{x:Bind ViewModel.PlayCurrentListCommand, Mode=OneWay}"
                 IsEnabled="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                        Symbol="NavigationPlay" />
+                        Glyph="{StaticResource IconNavigationPlay}" />
                     <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=PlayCurrentList}" />
                 </StackPanel>
             </Button>
@@ -52,11 +52,12 @@
                 Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}"
                 IsEnabled="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                        Symbol="ArrowSync" />
+                        Glyph="{StaticResource IconArrowSync}" />
                     <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=Refresh}" />
                 </StackPanel>
             </Button>

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Models.Constants;
 using Microsoft.UI.Xaml.Data;
 
@@ -12,12 +13,12 @@ internal sealed partial class SearchSectionIconConverter : IValueConverter
         var sectionType = (SearchSectionType)value;
         return sectionType switch
         {
-            SearchSectionType.Video => FluentIcons.Common.Symbol.VideoClip,
-            SearchSectionType.Anime => FluentIcons.Common.Symbol.Dust,
-            SearchSectionType.Live => FluentIcons.Common.Symbol.Live,
-            SearchSectionType.User => FluentIcons.Common.Symbol.People,
-            SearchSectionType.Cinema => FluentIcons.Common.Symbol.MoviesAndTv,
-            SearchSectionType.Article => FluentIcons.Common.Symbol.DocumentBulletList,
+            SearchSectionType.Video => IconGlyph.VideoClip,
+            SearchSectionType.Anime => IconGlyph.Dust,
+            SearchSectionType.Live => IconGlyph.Live,
+            SearchSectionType.User => IconGlyph.People,
+            SearchSectionType.Cinema => IconGlyph.MoviesAndTv,
+            SearchSectionType.Article => IconGlyph.DocumentBulletList,
             _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null)
         };
     }

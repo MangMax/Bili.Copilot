@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls.Components;
@@ -48,6 +49,10 @@ public sealed partial class TopNavigationItem : LayoutUserControlBase
         get => (FluentIcons.Common.Symbol)GetValue(SymbolProperty);
         set => SetValue(SymbolProperty, value);
     }
+
+    private static string GetIconGlyph(FluentIcons.Common.Symbol symbol) => IconGlyph.FromNavigationSymbol(symbol);
+
+    private static string GetSelectedIconGlyph(FluentIcons.Common.Symbol symbol) => IconGlyph.FromNavigationSymbol(symbol, filled: true);
 
     private void OnItemClick(object sender, RoutedEventArgs e)
     {

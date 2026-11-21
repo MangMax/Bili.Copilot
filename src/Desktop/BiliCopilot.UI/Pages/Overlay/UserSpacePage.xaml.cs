@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Controls;
 using BiliCopilot.UI.Controls.Moment;
 using BiliCopilot.UI.Toolkits;
@@ -297,15 +298,15 @@ public sealed partial class UserSpacePage : UserSpacePageBase, IParameterPage, I
     /// </summary>
     /// <param name="kind">分区类型.</param>
     /// <returns>图标.</returns>
-    public static FluentIcons.Common.Symbol GetSubmissionIcon(UserSpaceTabKind kind)
+    public static string GetSubmissionIcon(UserSpaceTabKind kind)
         => kind switch
         {
-            UserSpaceTabKind.Articles => FluentIcons.Common.Symbol.DocumentBulletList,
-            UserSpaceTabKind.MomentPosts => FluentIcons.Common.Symbol.BubbleMultiple,
-            UserSpaceTabKind.AllMoments => FluentIcons.Common.Symbol.TextBulletList,
-            UserSpaceTabKind.Audio => FluentIcons.Common.Symbol.MusicNote2,
-            UserSpaceTabKind.Collections => FluentIcons.Common.Symbol.Collections,
-            _ => FluentIcons.Common.Symbol.VideoClip,
+            UserSpaceTabKind.Articles => IconGlyph.DocumentBulletList,
+            UserSpaceTabKind.MomentPosts => IconGlyph.BubbleMultiple,
+            UserSpaceTabKind.AllMoments => IconGlyph.TextBulletList,
+            UserSpaceTabKind.Audio => IconGlyph.MusicNote2,
+            UserSpaceTabKind.Collections => IconGlyph.Collections,
+            _ => IconGlyph.VideoClip,
         };
 
     /// <summary>

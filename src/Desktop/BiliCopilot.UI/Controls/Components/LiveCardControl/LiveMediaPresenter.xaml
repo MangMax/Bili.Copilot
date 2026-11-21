@@ -4,7 +4,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
     <local:CardMediaFrame Cover="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}">
         <local:CardMediaFrame.BottomStart>
@@ -12,11 +11,12 @@
                 Text="{x:Bind ViewModel.ViewerCount, Converter={StaticResource CountConverter}, Mode=OneWay, FallbackValue={x:Null}}"
                 ToolTipService.ToolTip="{ext:Locale Name=Viewer}">
                 <local:CardStatControl.Icon>
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="#F2FFFFFF"
-                        Symbol="Fire" />
+                        Glyph="{StaticResource IconFire}" />
                 </local:CardStatControl.Icon>
             </local:CardStatControl>
         </local:CardMediaFrame.BottomStart>

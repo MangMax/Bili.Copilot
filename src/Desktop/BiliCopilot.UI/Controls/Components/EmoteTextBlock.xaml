@@ -7,7 +7,6 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -67,7 +66,7 @@
             Padding="6,4"
             BorderThickness="0"
             Visibility="Collapsed">
-            <ic:SymbolIcon FontSize="12" Symbol="MoreHorizontal" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="12" Glyph="{StaticResource IconMoreHorizontal}" />
             <Button.Flyout>
                 <Flyout Opened="OnOverflowFlyoutOpened" ShouldConstrainToRootBounds="False">
                     <RichTextBlock

@@ -84,7 +84,7 @@
                 CornerRadius="16"
                 Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <FontIcon FontSize="10" Glyph="&#xE74B;" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="10" Glyph="{StaticResource IconChevronDown}" />
                     <TextBlock FontSize="12" Text="{ext:Locale Name=LiveChatBackToBottom}" />
                 </StackPanel>
             </Button>

@@ -11,6 +11,32 @@
     mc:Ignorable="d">
 
     <StackPanel Padding="8,4" Spacing="12">
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                VerticalAlignment="Center"
+                FontWeight="SemiBold"
+                Text="{ext:Locale Name=Danmaku}" />
+            <ToggleSwitch
+                Grid.Column="1"
+                MinWidth="0"
+                MinHeight="0"
+                Margin="0"
+                Padding="0"
+                VerticalAlignment="Center"
+                AutomationProperties.AutomationId="DanmakuEnabledSwitch"
+                AutomationProperties.Name="{ext:Locale Name=DanmakuSwitch}"
+                IsOn="{x:Bind ViewModel.IsShowDanmaku, Mode=TwoWay}"
+                OffContent=""
+                OnContent="" />
+        </Grid>
+        <Border
+            Height="1"
+            HorizontalAlignment="Stretch"
+            Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
         <ComboBox
             x:Name="RendererComboBox"
             HorizontalAlignment="Stretch"

@@ -7,7 +7,7 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:icons="using:BiliCopilot.UI.Icons"
     xmlns:local="using:BiliCopilot.UI.Controls.Moment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -272,9 +272,10 @@
                     ToolTipService.ToolTip="{ext:Locale Name=ExitSearch}"
                     AutomationProperties.Name="{ext:Locale Name=ExitSearch}"
                     AutomationProperties.AutomationId="ExitSpaceSearch">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         FontSize="16"
-                        Symbol="Dismiss" />
+                        Glyph="{StaticResource IconDismiss}" />
                 </Button>
             </Grid>
             <StackPanel
@@ -291,11 +292,11 @@
                     <StackPanel
                         Orientation="Horizontal"
                         Spacing="8">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             FontSize="16"
-                            Symbol="Heart"
-                            VerticalAlignment="Center"
-                            IconVariant="{x:Bind ViewModel.IsFollowed, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}" />
+                            Glyph="{x:Bind icons:IconGlyph.SelectHeart(ViewModel.IsFollowed), Mode=OneWay}"
+                            VerticalAlignment="Center" />
                         <TextBlock
                             x:Name="FollowText"
                             Text="{x:Bind local:UserSpacePageHeader.GetFollowLabel(ViewModel.IsFollowed), Mode=OneWay}" />
@@ -307,9 +308,10 @@
                     ToolTipService.ToolTip="{ext:Locale Name=FixedContent}"
                     AutomationProperties.Name="{ext:Locale Name=FixedContent}"
                     AutomationProperties.AutomationId="PinSpaceUser">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         FontSize="16"
-                        Symbol="Pin" />
+                        Glyph="{StaticResource IconPin}" />
                 </Button>
                 <Button
                     Command="{x:Bind ViewModel.RefreshCommand}"
@@ -319,9 +321,10 @@
                     <StackPanel
                         Orientation="Horizontal"
                         Spacing="8">
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             FontSize="16"
-                            Symbol="ArrowSync"
+                            Glyph="{StaticResource IconArrowSync}"
                             VerticalAlignment="Center" />
                         <TextBlock
                             x:Name="RefreshText"

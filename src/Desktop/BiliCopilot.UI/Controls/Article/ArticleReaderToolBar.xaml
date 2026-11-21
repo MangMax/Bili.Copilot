@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:ArticleReaderPageControlBase
     x:Class="BiliCopilot.UI.Controls.Article.ArticleReaderToolBar"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,7 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:icons="using:BiliCopilot.UI.Icons"
     xmlns:local="using:BiliCopilot.UI.Controls.Article"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:CommunityToolkit.WinUI.Media"
@@ -77,11 +77,11 @@
                 IsChecked="{x:Bind ViewModel.IsLiked, Mode=OneWay}"
                 Style="{StaticResource IconToggleButtonStyle}">
                 <StackPanel Spacing="4">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         HorizontalAlignment="Center"
                         FontSize="14"
-                        IconVariant="{x:Bind ViewModel.IsLiked, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
-                        Symbol="ThumbLike" />
+                        Glyph="{x:Bind icons:IconGlyph.SelectThumbLike(ViewModel.IsLiked), Mode=OneWay}" />
                     <base:TrimTextBlock
                         HorizontalAlignment="Center"
                         FontSize="12"
@@ -94,11 +94,11 @@
                 IsChecked="{x:Bind ViewModel.IsCommentsOpened, Mode=OneWay}"
                 Style="{StaticResource IconToggleButtonStyle}">
                 <StackPanel Spacing="4">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         HorizontalAlignment="Center"
                         FontSize="14"
-                        IconVariant="{x:Bind ViewModel.IsCommentsOpened, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
-                        Symbol="ChatEmpty" />
+                        Glyph="{x:Bind icons:IconGlyph.SelectChatEmpty(ViewModel.IsCommentsOpened), Mode=OneWay}" />
                     <base:TrimTextBlock
                         HorizontalAlignment="Center"
                         FontSize="12"
@@ -116,11 +116,11 @@
                 IsChecked="{x:Bind ViewModel.IsFavorited, Mode=OneWay}"
                 Style="{StaticResource IconToggleButtonStyle}">
                 <StackPanel Spacing="4">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         HorizontalAlignment="Center"
                         FontSize="14"
-                        IconVariant="{x:Bind ViewModel.IsFavorited, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
-                        Symbol="Star" />
+                        Glyph="{x:Bind icons:IconGlyph.SelectStar(ViewModel.IsFavorited), Mode=OneWay}" />
                     <base:TrimTextBlock
                         HorizontalAlignment="Center"
                         FontSize="12"
@@ -133,11 +133,11 @@
                 IsChecked="{x:Bind ViewModel.IsAIOverlayOpened, Mode=OneWay}"
                 Style="{StaticResource IconToggleButtonStyle}">
                 <StackPanel Spacing="4">
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         HorizontalAlignment="Center"
                         FontSize="16"
-                        IconVariant="{x:Bind ViewModel.IsAIOverlayOpened, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
-                        Symbol="Sparkle" />
+                        Glyph="{x:Bind icons:IconGlyph.SelectSparkle(ViewModel.IsAIOverlayOpened), Mode=OneWay}" />
                     <TextBlock
                         HorizontalAlignment="Center"
                         FontSize="12"

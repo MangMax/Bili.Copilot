@@ -7,7 +7,6 @@
     xmlns:converters="using:BiliCopilot.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -27,11 +26,12 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ic:SymbolIcon
+                <FontIcon
+                    FontFamily="{StaticResource BiliIconsFontFamily}"
                     VerticalAlignment="Center"
                     FontSize="14"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                    Symbol="{x:Bind RegionId, Converter={StaticResource IconConverter}}" />
+                    Glyph="{x:Bind RegionId, Converter={StaticResource IconConverter}}" />
                 <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
@@ -97,7 +97,7 @@
                     IsEnabled="True"
                     Modifiers="Control" />
             </Button.KeyboardAccelerators>
-            <ic:SymbolIcon FontSize="12" Symbol="Reward" />
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconFire}" />
             <Button.Flyout>
                 <Flyout
                     x:Name="HotSearchFlyout"

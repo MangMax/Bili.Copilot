@@ -11,7 +11,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <ResourceDictionary Source="ms-appx:///Styles/BiliIconsResources.xaml" />
                 <ResourceDictionary Source="ms-appx:///Richasy.WinUIKernel.Share/Base/CustomNavigationViewResources.xaml" />
+                <ResourceDictionary Source="ms-appx:///Styles/BiliIconsNavigation.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/Overrides.xaml" />
                 <ResourceDictionary Source="ms-appx:///Controls/InlineTextButton.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/Repeater.xaml" />
@@ -61,7 +63,6 @@
             <converters:ObjectToBoolConverter x:Key="ObjectToBoolReverseConverter" IsReverse="True" />
             <converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
             <converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityReverseConverter" IsReverse="True" />
-            <converters:BoolToIconVariantConverter x:Key="BoolToIconVariantConverter" />
             <localConverters:UriToBitmapConverter x:Key="BitmapConverter" />
             <localConverters:LevelImageConverter x:Key="LevelImageConverter" />
             <localConverters:CountConverter x:Key="CountConverter" />

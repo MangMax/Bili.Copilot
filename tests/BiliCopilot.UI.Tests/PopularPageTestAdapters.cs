@@ -123,9 +123,9 @@ namespace BiliCopilot.UI.Models.Constants { public enum StringNames { LiveRoomCu
 namespace BiliCopilot.UI.ViewModels.Items
 {
     public interface IPopularSectionItemViewModel { }
-    public sealed class PopularSectionItemViewModel(FluentIcons.Common.Symbol icon, string title, PopularSectionType type) : IPopularSectionItemViewModel
+    public sealed class PopularSectionItemViewModel(string icon, string title, PopularSectionType type) : IPopularSectionItemViewModel
     {
-        public FluentIcons.Common.Symbol Icon { get; } = icon;
+        public string Icon { get; } = icon;
         public string Title { get; } = title;
         public PopularSectionType Type { get; } = type;
     }

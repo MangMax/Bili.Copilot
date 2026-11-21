@@ -7,7 +7,7 @@
     <XamlUICommand x:Key="QuitCommand" Label="{ext:Locale Name=QuitApp}" />
     <XamlUICommand x:Key="ShowHideWindowCommand" Label="{ext:Locale Name=ShowMainWindow}">
         <XamlUICommand.IconSource>
-            <SymbolIconSource Symbol="OpenPane" />
+            <FontIconSource FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconOpenPane}" />
         </XamlUICommand.IconSource>
         <XamlUICommand.KeyboardAccelerators>
             <KeyboardAccelerator Key="S" Modifiers="Control" />

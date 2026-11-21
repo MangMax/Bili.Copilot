@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -24,19 +23,20 @@
                 RadiusX="4"
                 RadiusY="4"
                 Visibility="{x:Bind IsSelected, Mode=OneWay}" />
-            <ic:SymbolIcon
+            <FontIcon
+                FontFamily="{StaticResource BiliIconsFontFamily}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                FontSize="14"
-                Symbol="{x:Bind Symbol, Mode=OneWay}"
+                FontSize="16"
+                Glyph="{x:Bind local:TopNavigationItem.GetIconGlyph(Symbol), Mode=OneWay}"
                 Visibility="{x:Bind IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
-            <ic:SymbolIcon
+            <FontIcon
+                FontFamily="{StaticResource BiliIconsFontFamily}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                FontSize="14"
+                FontSize="16"
                 Foreground="{ThemeResource TextOnAccentAAFillColorPrimaryBrush}"
-                IconVariant="Filled"
-                Symbol="{x:Bind Symbol, Mode=OneWay}"
+                Glyph="{x:Bind local:TopNavigationItem.GetSelectedIconGlyph(Symbol), Mode=OneWay}"
                 Visibility="{x:Bind IsSelected, Mode=OneWay}" />
         </Grid>
     </Button>

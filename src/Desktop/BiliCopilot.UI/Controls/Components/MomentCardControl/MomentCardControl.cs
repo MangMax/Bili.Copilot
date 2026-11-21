@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -182,7 +183,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.PlayInPrivate),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.EyeOff },
             Tag = nameof(ViewModel.PlayInPrivateCommand),
         };
     }
@@ -192,7 +193,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.EnterUserSpace),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Person },
             Tag = nameof(ViewModel.ShowUserSpaceCommand),
         };
     }
@@ -202,7 +203,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.AddToViewLater),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.CalendarAdd },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.CalendarAdd },
             Tag = nameof(ViewModel.AddToViewLaterCommand),
         };
     }
@@ -212,7 +213,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -222,7 +223,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.CopyVideoUrl),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Copy },
             Tag = nameof(ViewModel.CopyUrlCommand),
         };
     }
@@ -259,7 +260,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         menuFlyout.Items.Add(new MenuFlyoutItem
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.ShareLink),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Share },
+            Icon = new FontIcon { FontFamily = IconGlyph.FontFamily, Glyph = IconGlyph.Share },
             Command = ViewModel.CopyMomentLinkCommand,
         });
         ContextFlyout = menuFlyout;

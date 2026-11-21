@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.Update;
@@ -148,12 +149,12 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     public bool IsButtonVisible => CanRunPrimaryAction || State is AppUpdateState.Downloading or AppUpdateState.Installing;
 
-    public FluentIcons.Common.Symbol IconSymbol
+    public string IconSymbol
         => State switch
         {
-            AppUpdateState.Ready or AppUpdateState.Installing or AppUpdateState.RestartRequired => FluentIcons.Common.Symbol.ArrowRotateClockwise,
-            AppUpdateState.Failed => FluentIcons.Common.Symbol.ArrowSync,
-            _ => FluentIcons.Common.Symbol.ArrowDownload,
+            AppUpdateState.Ready or AppUpdateState.Installing or AppUpdateState.RestartRequired => IconGlyph.ArrowRotateClockwise,
+            AppUpdateState.Failed => IconGlyph.ArrowSync,
+            _ => IconGlyph.ArrowDownload,
         };
 
     private bool HasNoPackageForArchitecture

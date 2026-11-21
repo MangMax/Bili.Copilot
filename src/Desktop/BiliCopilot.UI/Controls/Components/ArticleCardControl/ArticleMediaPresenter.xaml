@@ -4,7 +4,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:BiliCopilot.UI.Controls.Components">
     <local:CardMediaFrame Cover="{x:Bind ViewModel.Cover, Mode=OneWay, FallbackValue={x:Null}}">
         <local:CardMediaFrame.Placeholder>
@@ -12,12 +11,13 @@
                 Background="{ThemeResource ControlFillColorSecondaryBrush}"
                 CornerRadius="{StaticResource CardCoverRadius}"
                 Visibility="{x:Bind ViewModel.HasCover, Converter={StaticResource BoolToVisibilityReverseConverter}, Mode=OneWay, FallbackValue=Visible}">
-                <ic:SymbolIcon
+                <FontIcon
+                    FontFamily="{StaticResource BiliIconsFontFamily}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     FontSize="28"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                    Symbol="Book" />
+                    Glyph="{StaticResource IconBook}" />
             </Border>
         </local:CardMediaFrame.Placeholder>
         <local:CardMediaFrame.BottomStart>
@@ -30,11 +30,12 @@
                     ToolTipService.ToolTip="{ext:Locale Name=ReadCount}"
                     Visibility="{x:Bind ViewModel.HasViewCount, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
                     <local:CardStatControl.Icon>
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="#F2FFFFFF"
-                            Symbol="Eye" />
+                            Glyph="{StaticResource IconEye}" />
                     </local:CardStatControl.Icon>
                 </local:CardStatControl>
                 <local:CardStatControl
@@ -42,11 +43,12 @@
                     ToolTipService.ToolTip="{ext:Locale Name=ReplyCount}"
                     Visibility="{x:Bind ViewModel.HasReplyCount, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
                     <local:CardStatControl.Icon>
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="#F2FFFFFF"
-                            Symbol="Comment" />
+                            Glyph="{StaticResource IconComment}" />
                     </local:CardStatControl.Icon>
                 </local:CardStatControl>
                 <local:CardStatControl
@@ -54,11 +56,12 @@
                     ToolTipService.ToolTip="{ext:Locale Name=LikeCount}"
                     Visibility="{x:Bind ViewModel.HasLikeCount, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
                     <local:CardStatControl.Icon>
-                        <ic:SymbolIcon
+                        <FontIcon
+                            FontFamily="{StaticResource BiliIconsFontFamily}"
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="#F2FFFFFF"
-                            Symbol="ThumbLike" />
+                            Glyph="{StaticResource IconThumbLike}" />
                     </local:CardStatControl.Icon>
                 </local:CardStatControl>
             </StackPanel>

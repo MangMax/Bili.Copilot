@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <local:AIControlBase
     x:Class="BiliCopilot.UI.Controls.AI.AIBody"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,8 +7,8 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
+    xmlns:icons="using:BiliCopilot.UI.Icons"
     xmlns:local="using:BiliCopilot.UI.Controls.AI"
     xmlns:markdown="using:BiliCopilot.UI.Controls.Markdown"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -23,12 +23,12 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <ic:SymbolIcon
+                    <FontIcon
+                        FontFamily="{StaticResource BiliIconsFontFamily}"
                         Margin="0,4,0,0"
                         VerticalAlignment="Top"
                         FontSize="14"
-                        IconVariant="Filled"
-                        Symbol="{x:Bind Symbol, Mode=OneTime}" />
+                        Glyph="{x:Bind icons:IconGlyph.ToFilled(Symbol), Mode=OneTime}" />
                     <StackPanel Grid.Column="1" Spacing="8">
                         <TextBlock
                             Style="{StaticResource BodyStrongTextBlockStyle}"
