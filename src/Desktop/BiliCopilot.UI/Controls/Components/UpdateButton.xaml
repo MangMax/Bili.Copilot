@@ -13,7 +13,28 @@
         Height="32"
         Margin="0,0,8,0"
         VerticalAlignment="Center"
+        Background="Transparent"
         Visibility="{x:Bind ViewModel.IsButtonVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+        <ToolTipService.ToolTip>
+            <ToolTip Placement="Bottom">
+                <StackPanel MaxWidth="320" Spacing="6">
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
+                        TextWrapping="Wrap" />
+                    <ScrollViewer
+                        MaxHeight="220"
+                        VerticalScrollBarVisibility="Auto"
+                        Visibility="{x:Bind ViewModel.CanShowReleaseNotes, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind ViewModel.ReleaseNotes, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </StackPanel>
+            </ToolTip>
+        </ToolTipService.ToolTip>
+
         <ProgressRing
             x:Name="DownloadRing"
             Width="32"
@@ -38,22 +59,6 @@
             CornerRadius="14"
             Padding="0">
             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{x:Bind ViewModel.IconSymbol, Mode=OneWay}" />
-            <ToolTipService.ToolTip>
-                <ToolTip Placement="Bottom">
-                    <StackPanel MaxWidth="320" Spacing="6">
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
-                            TextWrapping="Wrap" />
-                        <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto">
-                            <TextBlock
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Text="{x:Bind ViewModel.ReleaseNotes, Mode=OneWay}"
-                                TextWrapping="Wrap" />
-                        </ScrollViewer>
-                    </StackPanel>
-                </ToolTip>
-            </ToolTipService.ToolTip>
         </Button>
     </Grid>
 </local:UpdateButtonBase>

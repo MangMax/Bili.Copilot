@@ -32,7 +32,7 @@
                 <MenuFlyout
                     Closed="OnFlyoutClosed"
                     Opened="OnFlyoutOpened"
-                    Placement="BottomEdgeAlignedRight">
+                    Placement="Bottom">
                     <MenuFlyoutItem>
                         <MenuFlyoutItem.Template>
                             <ControlTemplate>
