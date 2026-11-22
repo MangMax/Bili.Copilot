@@ -7,6 +7,7 @@ using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Appearance;
@@ -123,6 +124,138 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     [RelayCommand]
     private void ShowComment()
         => _showMomentAction?.Invoke(this);
+
+    /// <summary>
+    /// 补充收藏数。动态流本身只带点赞/评论数，收藏数要按视频详情补取一次。
+    /// </summary>
+    public async Task LoadFavoriteCountAsync()
+    {
+        if (FavoriteCount is not null || GetFavoriteAid() is not { } aid)
+        {
+            return;
+        }
+
+        MediaIdentifier? identifier = FindInnerContent<VideoInformation>()?.Identifier;
+        if (identifier is null && FindInnerContent<EpisodeInformation>() is EpisodeInformation episode)
+        {
+            identifier = new MediaIdentifier(aid, episode.Identifier.Title, episode.Identifier.Cover);
+        }
+
+        if (identifier is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var metadata = await this.Get<VideoCardMetadataProvider>().GetAsync(identifier.Value);
+            if (metadata.FavoriteCount is >= 0)
+            {
+                FavoriteCount = metadata.FavoriteCount;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "获取视频收藏数失败");
+        }
+    }
+
+    [RelayCommand]
+    private async Task InitializeFavoritesAsync()
+    {
+        if (_favoriteFolders is not null || GetFavoriteAid() is not { } aid)
+        {
+            return;
+        }
+
+        try
+        {
+            IsLoadingFavorites = true;
+            IsFavoriteFoldersLoadFailed = false;
+            var (folders, ids) = await this.Get<IFavoriteService>().GetPlayingVideoFavoriteFoldersAsync(aid);
+            IsFavorited = ids.Count > 0;
+            _favoriteFolders = folders.Select(p => new PlayerFavoriteFolderViewModel(p, ids.Contains(p.Id))).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "尝试获取收藏夹列表时失败");
+            IsFavoriteFoldersLoadFailed = true;
+        }
+        finally
+        {
+            IsLoadingFavorites = false;
+            ApplyFavoriteSearch();
+        }
+    }
+
+    /// <summary>
+    /// 按搜索词刷新过滤后的收藏夹列表.
+    /// </summary>
+    private void ApplyFavoriteSearch()
+    {
+        if (_favoriteFolders is null)
+        {
+            FilteredFavoriteFolders = default;
+            HasNoFavoriteFolderResults = false;
+            return;
+        }
+
+        var keyword = FavoriteSearchText.Trim();
+        FilteredFavoriteFolders = string.IsNullOrEmpty(keyword)
+            ? _favoriteFolders.ToList()
+            : _favoriteFolders.Where(p => p.Data.Title?.Contains(keyword, StringComparison.OrdinalIgnoreCase) == true).ToList();
+        HasNoFavoriteFolderResults = FilteredFavoriteFolders.Count == 0;
+    }
+
+    /// <summary>
+    /// 放弃这次打开弹窗产生的临时选择；下次重新从服务端读取收藏夹.
+    /// </summary>
+    public void DiscardFavoriteFolders()
+    {
+        _favoriteFolders = null;
+        IsFavoriteFoldersLoadFailed = false;
+        FavoriteSearchText = string.Empty;
+        ApplyFavoriteSearch();
+    }
+
+    partial void OnFavoriteSearchTextChanged(string value)
+        => ApplyFavoriteSearch();
+
+    [RelayCommand]
+    private async Task FavoriteAsync()
+    {
+        if (_favoriteFolders is null || GetFavoriteAid() is not { } aid)
+        {
+            return;
+        }
+
+        var selectedFolders = _favoriteFolders.Where(p => p.IsSelected).Select(p => p.Data.Id).ToList();
+        var unselectedFolders = _favoriteFolders.Where(p => !p.IsSelected).Select(p => p.Data.Id).ToList();
+        try
+        {
+            var wasFavorited = IsFavorited;
+            await this.Get<IPlayerService>().FavoriteVideoAsync(aid, selectedFolders, unselectedFolders);
+            var nowFavorited = selectedFolders.Count != 0;
+            if (FavoriteCount is >= 0 && wasFavorited != nowFavorited)
+            {
+                FavoriteCount = Math.Max(0, FavoriteCount.Value + (nowFavorited ? 1 : -1));
+            }
+
+            IsFavorited = nowFavorited;
+            DiscardFavoriteFolders();
+            if (nowFavorited || wasFavorited)
+            {
+                this.Get<AppViewModel>().ShowTipCommand.Execute((
+                    ResourceToolkit.GetLocalizedString(nowFavorited ? StringNames.FavoriteSucceed : StringNames.UnFavoriteSucceed),
+                    InfoType.Success));
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "尝试收藏视频时失败");
+            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FavoriteFailed), InfoType.Error));
+        }
+    }
 
     [RelayCommand]
     private async Task ActivateAsync()
@@ -244,6 +377,23 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
         }
+    }
+
+    private string? GetFavoriteAid()
+    {
+        if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
+        {
+            return vinfo.Identifier.Id;
+        }
+
+        if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
+        {
+            // 番剧收藏沿用播放器的做法：按剧集关联的稿件 Id 收藏到视频收藏夹.
+            var aid = einfo.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid);
+            return aid > 0 ? aid.ToString() : null;
+        }
+
+        return null;
     }
 
     private string? GetMediaUrl()
