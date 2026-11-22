@@ -173,7 +173,6 @@ public sealed class LiveEventPump : IAsyncDisposable
             if (!_stopped && ReferenceEquals(_source, source) && !source.IsCancellationRequested)
             {
                 _session = session;
-                _pumpTask = PumpAsync(session, source.Token);
                 accepted = true;
             }
         }
@@ -187,7 +186,17 @@ public sealed class LiveEventPump : IAsyncDisposable
             return false;
         }
 
+        // 先报告已连接，再启动事件泵：事件流可能在 PumpAsync 内立即结束，
+        // 若顺序反过来，泵的 Closed 会被这里的 Connected 覆盖。
         SetState(LiveDanmakuConnectionState.Connected);
+        lock (_gate)
+        {
+            if (!_stopped && ReferenceEquals(_source, source) && !source.IsCancellationRequested)
+            {
+                _pumpTask = PumpAsync(session, source.Token);
+            }
+        }
+
         return true;
     }
 
