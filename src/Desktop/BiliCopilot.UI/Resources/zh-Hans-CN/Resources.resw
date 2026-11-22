@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -3693,11 +3693,14 @@
   <data name="AlreadyUpToDate" xml:space="preserve">
     <value>已是最新版本</value>
   </data>
+  <data name="UpdateCancelAction" xml:space="preserve">
+    <value>取消更新</value>
+  </data>
+  <data name="UpdateInstallShort" xml:space="preserve">
+    <value>安装更新</value>
+  </data>
   <data name="UpdateAvailableFormat" xml:space="preserve">
     <value>发现新版本 {0}</value>
-  </data>
-  <data name="UpdateDownloadingFormat" xml:space="preserve">
-    <value>正在下载更新 {0}%</value>
   </data>
   <data name="UpdateReadyToInstall" xml:space="preserve">
     <value>下载和校验已完成，可安装并重启</value>
@@ -3722,9 +3725,6 @@
   </data>
   <data name="UpdateDownloadAction" xml:space="preserve">
     <value>下载更新</value>
-  </data>
-  <data name="UpdateInstallAction" xml:space="preserve">
-    <value>安装更新并重启</value>
   </data>
   <data name="UpdateRetryInstallAction" xml:space="preserve">
     <value>重试安装更新</value>

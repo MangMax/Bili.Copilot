@@ -11,55 +11,6 @@
     mc:Ignorable="d">
 
     <StackPanel Spacing="4">
-        <Button
-            MinWidth="120"
-            HorizontalAlignment="Right"
-            AutomationProperties.AutomationId="SettingsUpdatePrimaryAction"
-            Command="{x:Bind Update.PrimaryActionCommand}"
-            Content="{x:Bind Update.SettingsActionName, Mode=OneWay}"
-            Style="{StaticResource AccentButtonStyle}"
-            Visibility="{x:Bind Update.IsButtonVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-
-        <Border
-            Padding="16,12"
-            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-            BorderThickness="1"
-            CornerRadius="{StaticResource ControlCornerRadius}"
-            Visibility="{x:Bind Update.IsProgressVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-            <ProgressBar
-                AutomationProperties.AutomationId="SettingsUpdateDownloadProgress"
-                IsIndeterminate="{x:Bind Update.IsProgressIndeterminate, Mode=OneWay}"
-                Maximum="100"
-                Minimum="0"
-                Value="{x:Bind Update.DisplayDownloadProgress, Mode=OneWay}" />
-        </Border>
-
-        <base:SettingsExpander
-            Header="{ext:Locale Name=UpdateReleaseNotes}"
-            IsExpanded="{x:Bind Update.HasAvailableUpdate, Mode=OneWay}"
-            Visibility="{x:Bind Update.CanShowReleaseNotes, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-            <base:SettingsExpander.HeaderIcon>
-                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDocumentBulletList}" />
-            </base:SettingsExpander.HeaderIcon>
-            <HyperlinkButton
-                AutomationProperties.AutomationId="SettingsUpdateRelease"
-                Command="{x:Bind Update.OpenReleaseCommand}"
-                Content="{ext:Locale Name=UpdateOpenReleaseAction}" />
-            <base:SettingsExpander.ItemsFooter>
-                <ScrollViewer
-                    MaxHeight="280"
-                    Padding="16,12"
-                    VerticalScrollBarVisibility="Auto">
-                    <TextBlock
-                        AutomationProperties.AutomationId="SettingsUpdateReleaseNotes"
-                        IsTextSelectionEnabled="True"
-                        Text="{x:Bind Update.DisplayReleaseNotes, Mode=OneWay}"
-                        TextWrapping="Wrap" />
-                </ScrollViewer>
-            </base:SettingsExpander.ItemsFooter>
-        </base:SettingsExpander>
-
         <TextBlock
             Margin="0,12,0,4"
             HorizontalAlignment="Left"

@@ -178,7 +178,7 @@ public sealed class SettingsNavigationPolicyTests
     }
 
     [Fact]
-    public void UpdateControls_ConsolidatePreferencesIntoUpdateSettingControlWithoutFlyout()
+    public void UpdateControls_SurfaceVersionAndNotesOutsideUpdateSettingControlWithoutFlyout()
     {
         var repoRoot = FindRepoRoot();
         var aboutPath = Path.Combine(repoRoot, "src", "Desktop", "BiliCopilot.UI", "Controls", "Settings", "AboutSettingControl.xaml");
@@ -193,17 +193,23 @@ public sealed class SettingsNavigationPolicyTests
             e => (string?)e.Attribute("AutomationProperties.AutomationId") == "CheckForUpdates");
         Assert.Contains(
             aboutDoc.Descendants(),
-            e => (string?)e.Attribute("AutomationProperties.AutomationId") == "AboutOpenUpdateSettings"
-                 && (string?)e.Attribute("IsClickEnabled") == "True");
+            e => (string?)e.Attribute("AutomationProperties.AutomationId") == "AboutAppVersion"
+                 && (string?)e.Attribute("IsClickEnabled") != "True");
+        Assert.Contains(
+            aboutDoc.Descendants(),
+            e => (string?)e.Attribute("AutomationProperties.AutomationId") == "AboutUpdateNotes"
+                 && (string?)e.Attribute("IsExpanded") == "True");
+        Assert.Contains(
+            aboutDoc.Descendants(),
+            e => (string?)e.Attribute("AutomationProperties.AutomationId") == "AboutUpdateReleaseNotes");
         Assert.DoesNotContain(updateDoc.Descendants(), e => (string?)e.Attribute("AutomationProperties.AutomationId") == "CheckForUpdates");
         Assert.DoesNotContain(updateDoc.Descendants(), e => (string?)e.Attribute("Header") == "{ext:Locale Name=AppName}");
+        Assert.DoesNotContain(updateDoc.Descendants(), e => (string?)e.Attribute("AutomationProperties.AutomationId") == "SettingsUpdateReleaseNotes");
+        Assert.DoesNotContain(updateDoc.Descendants(), e => (string?)e.Attribute("AutomationProperties.AutomationId") == "SettingsUpdateDownloadProgress");
 
         string[] expectedUpdateAutomationIds =
         [
-            "SettingsUpdatePrimaryAction",
-            "SettingsUpdateDownloadProgress",
-            "SettingsUpdateRelease",
-            "SettingsUpdateReleaseNotes",
+            "UpdateCheckInterval",
             "UpdateCheckInterval",
             "UpdateAutoDownload",
             "UpdateDownloadSource",

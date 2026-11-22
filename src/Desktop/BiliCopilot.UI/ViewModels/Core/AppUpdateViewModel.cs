@@ -54,6 +54,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     private UpdateCheckResult? _lastResult;
     private UpdateDownloadResult? _downloaded;
     private UpdateAsset? _downloadAsset;
+    private CancellationTokenSource? _downloadCancellation;
     private string? _failureDetail;
     private string _failureTitle = string.Empty;
 
@@ -79,7 +80,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     public bool CanShowReleaseNotes => !string.IsNullOrWhiteSpace(DisplayReleaseNotes);
 
     public string VersionStatusText => StatusText is { Length: > 0 } status
-        ? $"{AppUpdateService.CurrentVersion}\n{status}"
+        ? $"{AppUpdateService.CurrentVersion} · {status}"
         : AppUpdateService.CurrentVersion;
 
     public bool AutoDownload
@@ -140,19 +141,14 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         }
     }
 
-    public string SettingsActionName => State switch
-    {
-        AppUpdateState.Downloading => ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadAction),
-        AppUpdateState.Installing => ResourceToolkit.GetLocalizedString(StringNames.UpdateInstallAction),
-        _ => ActionName,
-    };
-
     private bool CanCheck => AppUpdateService.SupportsUpdates
         && (State is AppUpdateState.Idle or AppUpdateState.UpToDate
             || (State == AppUpdateState.Failed && !CanRunPrimaryAction));
 
     private bool CanRunPrimaryAction => State is AppUpdateState.Available or AppUpdateState.Ready or AppUpdateState.RestartRequired
         || (State == AppUpdateState.Failed && (CanRetryDownload || HasNoPackageForArchitecture));
+
+    private bool CanRunMainAction => CanCheck || CanRunPrimaryAction || State == AppUpdateState.Downloading;
 
     public bool IsButtonVisible => CanRunPrimaryAction || State is AppUpdateState.Downloading or AppUpdateState.Installing;
 
@@ -169,25 +165,26 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     public bool IsDownloading => State == AppUpdateState.Downloading;
 
-    public bool IsProgressVisible => State is AppUpdateState.Checking or AppUpdateState.Downloading or AppUpdateState.Installing;
-
     public bool IsProgressIndeterminate => State is AppUpdateState.Checking or AppUpdateState.Installing
         || (State == AppUpdateState.Downloading && (IsIndeterminate || DownloadProgress >= 100));
 
     public double DisplayDownloadProgress => Math.Clamp(DownloadProgress, 0, 100);
 
-    public string ActionName => State is AppUpdateState.Checking or AppUpdateState.Downloading or AppUpdateState.Installing
-        ? StatusText
-        : ResourceToolkit.GetLocalizedString(State switch
+    /// <summary>
+    /// 更新主按钮的文案：检查 → 下载 → 取消 → 安装，随状态切换.
+    /// </summary>
+    public string MainActionText => State switch
     {
-        AppUpdateState.Available => StringNames.UpdateDownloadAction,
-        AppUpdateState.Ready => StringNames.UpdateInstallAction,
-        AppUpdateState.RestartRequired => StringNames.UpdateRestartAction,
-        AppUpdateState.Failed when HasNoPackageForArchitecture => StringNames.UpdateOpenReleaseAction,
-        AppUpdateState.Failed when _downloaded is not null => StringNames.UpdateRetryInstallAction,
-        AppUpdateState.Failed when CanRetryDownload => StringNames.UpdateRetryDownloadAction,
-        _ => StringNames.CheckUpdate,
-    });
+        AppUpdateState.Checking or AppUpdateState.Installing => StatusText,
+        AppUpdateState.Downloading => ResourceToolkit.GetLocalizedString(StringNames.UpdateCancelAction),
+        AppUpdateState.Available => ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadAction),
+        AppUpdateState.Ready => ResourceToolkit.GetLocalizedString(StringNames.UpdateInstallShort),
+        AppUpdateState.RestartRequired => ResourceToolkit.GetLocalizedString(StringNames.UpdateRestartAction),
+        AppUpdateState.Failed when HasNoPackageForArchitecture => ResourceToolkit.GetLocalizedString(StringNames.UpdateOpenReleaseAction),
+        AppUpdateState.Failed when _downloaded is not null => ResourceToolkit.GetLocalizedString(StringNames.UpdateRetryInstallAction),
+        AppUpdateState.Failed when CanRetryDownload => ResourceToolkit.GetLocalizedString(StringNames.UpdateRetryDownloadAction),
+        _ => ResourceToolkit.GetLocalizedString(StringNames.CheckUpdate),
+    };
 
     public string StatusText => State switch
     {
@@ -197,10 +194,7 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
             ResourceToolkit.GetLocalizedString(StringNames.UpdateAvailableFormat),
             AvailableVersion),
         AppUpdateState.Downloading when DownloadProgress >= 100 => ResourceToolkit.GetLocalizedString(StringNames.UpdateVerifying),
-        AppUpdateState.Downloading when IsIndeterminate => ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadingUnknown),
-        AppUpdateState.Downloading => string.Format(
-            ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadingFormat),
-            Math.Round(DownloadProgress)),
+        AppUpdateState.Downloading => ResourceToolkit.GetLocalizedString(StringNames.UpdateDownloadingUnknown),
         AppUpdateState.Ready => ResourceToolkit.GetLocalizedString(StringNames.UpdateReadyToInstall),
         AppUpdateState.Installing => ResourceToolkit.GetLocalizedString(StringNames.UpdateInstalling),
         AppUpdateState.RestartRequired => string.IsNullOrEmpty(_failureDetail)
@@ -213,7 +207,26 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     private bool CanRetryDownload
         => _lastResult is { Status: UpdateCheckStatus.Available, Selection.Asset: not null };
 
-    [RelayCommand(CanExecute = nameof(CanCheck))]
+    // 下载中再次点击用于取消，命令必须允许并发执行，否则按钮会在下载期间被禁用.
+    [RelayCommand(CanExecute = nameof(CanRunMainAction), AllowConcurrentExecutions = true)]
+    private async Task MainActionAsync()
+    {
+        switch (State)
+        {
+            case AppUpdateState.Downloading:
+                _downloadCancellation?.Cancel();
+                break;
+            case AppUpdateState.Idle:
+            case AppUpdateState.UpToDate:
+            case AppUpdateState.Failed when !CanRunPrimaryAction:
+                await CheckAsync();
+                break;
+            default:
+                await PrimaryActionAsync();
+                break;
+        }
+    }
+
     private async Task CheckAsync()
     {
         if (!CanCheck)
@@ -290,7 +303,6 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
     private static TimeSpan GetCheckPeriod(double hours)
         => hours == 0 ? Timeout.InfiniteTimeSpan : TimeSpan.FromHours(hours);
 
-    [RelayCommand(CanExecute = nameof(CanRunPrimaryAction))]
     private async Task PrimaryActionAsync()
     {
         switch (State)
@@ -348,16 +360,31 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
                 DownloadProgress = value;
             }
         });
-        var result = await _downloader.DownloadAsync(asset, progress, CancellationToken.None);
-        if (result.PackagePath is null)
+        using var cancellation = new CancellationTokenSource();
+        _downloadCancellation = cancellation;
+        try
         {
-            _failureDetail = result.Error;
-            State = AppUpdateState.Failed;
-            return;
-        }
+            var result = await _downloader.DownloadAsync(asset, progress, cancellation.Token);
+            if (result.PackagePath is null)
+            {
+                _failureDetail = result.Error;
+                State = AppUpdateState.Failed;
+                return;
+            }
 
-        _downloaded = result;
-        State = AppUpdateState.Ready;
+            _downloaded = result;
+            State = AppUpdateState.Ready;
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+            // 用户主动取消：回到「可下载」，已下载的部分保留用于续传.
+            DownloadProgress = -1;
+            State = AppUpdateState.Available;
+        }
+        finally
+        {
+            _downloadCancellation = null;
+        }
     }
 
     private async Task InstallAsync()
@@ -444,13 +471,10 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
 
     partial void OnStateChanged(AppUpdateState value)
     {
-        CheckCommand.NotifyCanExecuteChanged();
-        PrimaryActionCommand.NotifyCanExecuteChanged();
-        OnPropertyChanged(nameof(ActionName));
-        OnPropertyChanged(nameof(SettingsActionName));
+        MainActionCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(MainActionText));
         OnPropertyChanged(nameof(IsButtonVisible));
         OnPropertyChanged(nameof(IsDownloading));
-        OnPropertyChanged(nameof(IsProgressVisible));
         OnPropertyChanged(nameof(IsProgressIndeterminate));
         OnPropertyChanged(nameof(IconSymbol));
         OnPropertyChanged(nameof(StatusText));
@@ -462,7 +486,6 @@ public sealed partial class AppUpdateViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsIndeterminate));
         OnPropertyChanged(nameof(IsProgressIndeterminate));
         OnPropertyChanged(nameof(DisplayDownloadProgress));
-        OnPropertyChanged(nameof(ActionName));
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(VersionStatusText));
     }

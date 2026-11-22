@@ -12,23 +12,58 @@
 
     <StackPanel Spacing="4">
         <base:SettingsCard
-            AutomationProperties.AutomationId="AboutOpenUpdateSettings"
-            Click="OnOpenUpdateSettingsClick"
+            AutomationProperties.AutomationId="AboutAppVersion"
             Description="{x:Bind Update.VersionStatusText, Mode=OneWay}"
-            Header="{ext:Locale Name=AppName}"
-            IsClickEnabled="True">
+            Header="{ext:Locale Name=AppName}">
             <base:SettingsCard.HeaderIcon>
                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/StoreLogo.png" />
             </base:SettingsCard.HeaderIcon>
-            <base:SettingsCard.ActionIcon>
-                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconChevronRight}" />
-            </base:SettingsCard.ActionIcon>
-            <Button
-                MinWidth="120"
-                AutomationProperties.AutomationId="CheckForUpdates"
-                Command="{x:Bind Update.CheckCommand}"
-                Content="{ext:Locale Name=CheckUpdate}" />
+            <StackPanel
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="8">
+                <ProgressBar
+                    Width="120"
+                    AutomationProperties.AutomationId="AboutUpdateProgress"
+                    IsIndeterminate="{x:Bind Update.IsProgressIndeterminate, Mode=OneWay}"
+                    Maximum="100"
+                    Minimum="0"
+                    Value="{x:Bind Update.DisplayDownloadProgress, Mode=OneWay}"
+                    Visibility="{x:Bind Update.IsDownloading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <Button
+                    MinWidth="120"
+                    AutomationProperties.AutomationId="CheckForUpdates"
+                    AutomationProperties.Name="{x:Bind Update.MainActionText, Mode=OneWay}"
+                    Command="{x:Bind Update.MainActionCommand}"
+                    Content="{x:Bind Update.MainActionText, Mode=OneWay}" />
+            </StackPanel>
         </base:SettingsCard>
+
+        <base:SettingsExpander
+            AutomationProperties.AutomationId="AboutUpdateNotes"
+            Header="{ext:Locale Name=UpdateReleaseNotes}"
+            IsExpanded="True"
+            Visibility="{x:Bind Update.CanShowReleaseNotes, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <base:SettingsExpander.HeaderIcon>
+                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDocumentBulletList}" />
+            </base:SettingsExpander.HeaderIcon>
+            <HyperlinkButton
+                AutomationProperties.AutomationId="AboutUpdateRelease"
+                Command="{x:Bind Update.OpenReleaseCommand}"
+                Content="{ext:Locale Name=UpdateOpenReleaseAction}" />
+            <base:SettingsExpander.ItemsFooter>
+                <ScrollViewer
+                    MaxHeight="280"
+                    Padding="16,12"
+                    VerticalScrollBarVisibility="Auto">
+                    <TextBlock
+                        AutomationProperties.AutomationId="AboutUpdateReleaseNotes"
+                        IsTextSelectionEnabled="True"
+                        Text="{x:Bind Update.DisplayReleaseNotes, Mode=OneWay}"
+                        TextWrapping="Wrap" />
+                </ScrollViewer>
+            </base:SettingsExpander.ItemsFooter>
+        </base:SettingsExpander>
 
         <StackPanel Orientation="Horizontal" Spacing="4">
             <HyperlinkButton
