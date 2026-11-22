@@ -13,7 +13,7 @@ public sealed class VideoCardMetadataProviderTests
     public void MetadataPreservesVideoCountsAndIntroduction()
     {
         var info = Video("123");
-        info.CommunityInformation = new("123", 12345, 678);
+        info.CommunityInformation = new("123", 12345, 678, favoriteCount: 4321);
         info.AddExtensionIfNotNull(VideoExtensionDataId.Description, "An introduction distinct from dynamic text.");
 
         var metadata = VideoCardMetadata.FromVideo(info);
@@ -21,6 +21,7 @@ public sealed class VideoCardMetadataProviderTests
         Assert.Equal("Video", metadata.Title);
         Assert.Equal(12345, metadata.PlayCount);
         Assert.Equal(678, metadata.DanmakuCount);
+        Assert.Equal(4321, metadata.FavoriteCount);
         Assert.Equal("An introduction distinct from dynamic text.", metadata.Description);
     }
 

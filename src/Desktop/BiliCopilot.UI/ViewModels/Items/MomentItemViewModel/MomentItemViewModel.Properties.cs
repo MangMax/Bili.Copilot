@@ -18,6 +18,9 @@ public sealed partial class MomentItemViewModel
     private readonly ILogger<MomentItemViewModel> _logger;
     private readonly Action<MomentItemViewModel> _showMomentAction;
 
+    /// <summary>未过滤的收藏夹列表，仅用于生成 <see cref="FilteredFavoriteFolders"/>.</summary>
+    private List<PlayerFavoriteFolderViewModel>? _favoriteFolders;
+
     [ObservableProperty]
     public partial double? LikeCount { get; set; }
 
@@ -29,6 +32,48 @@ public sealed partial class MomentItemViewModel
 
     [ObservableProperty]
     public partial bool IsPgc { get; set; }
+
+    /// <summary>
+    /// 是否已收藏（仅视频/番剧动态有意义）.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsFavorited { get; set; }
+
+    /// <summary>
+    /// 收藏数；动态接口不返回该字段，打开卡片后按需补取.
+    /// </summary>
+    [ObservableProperty]
+    public partial double? FavoriteCount { get; set; }
+
+    /// <summary>
+    /// 按搜索词过滤后的收藏夹列表.
+    /// </summary>
+    [ObservableProperty]
+    public partial List<PlayerFavoriteFolderViewModel>? FilteredFavoriteFolders { get; set; }
+
+    /// <summary>
+    /// 收藏夹搜索词.
+    /// </summary>
+    [ObservableProperty]
+    public partial string FavoriteSearchText { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 过滤后的收藏夹列表是否为空.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool HasNoFavoriteFolderResults { get; set; }
+
+    /// <summary>
+    /// 是否正在加载收藏夹列表.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsLoadingFavorites { get; set; }
+
+    /// <summary>
+    /// 收藏夹列表是否加载失败.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsFavoriteFoldersLoadFailed { get; set; }
 
     /// <summary>
     /// 作者.
@@ -97,4 +142,7 @@ public sealed partial class MomentItemViewModel
 
     /// <summary>Pure-video cards expose their dynamic text without changing the grid height.</summary>
     public bool HasDescriptionPreview => Style == MomentCardStyle.Video && !string.IsNullOrWhiteSpace(Description?.Text);
+
+    /// <summary>只有能定位到稿件的动态才显示收藏入口.</summary>
+    public bool CanFavorite => GetFavoriteAid() is not null;
 }

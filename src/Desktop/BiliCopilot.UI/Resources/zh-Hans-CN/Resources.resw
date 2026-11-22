@@ -714,8 +714,14 @@
   <data name="FavoriteFailed" xml:space="preserve">
     <value>收藏失败</value>
   </data>
+  <data name="FavoriteFoldersLoadFailed" xml:space="preserve">
+    <value>收藏夹加载失败</value>
+  </data>
   <data name="FavoriteHaveNoVideos" xml:space="preserve">
     <value>收藏夹内没有视频</value>
+  </data>
+  <data name="FavoriteSucceed" xml:space="preserve">
+    <value>收藏成功</value>
   </data>
   <data name="FavoriteTip" xml:space="preserve">
     <value>选择一个或多个收藏夹收藏视频吧！</value>
@@ -1217,6 +1223,9 @@
   </data>
   <data name="NoFeaturedVideo" xml:space="preserve">
     <value>没有获取到精选视频</value>
+  </data>
+  <data name="NoMatchFavoriteFolder" xml:space="preserve">
+    <value>没有找到匹配的收藏夹</value>
   </data>
   <data name="NoFiles" xml:space="preserve">
     <value>没有文件</value>
@@ -1821,6 +1830,9 @@
   <data name="Search" xml:space="preserve">
     <value>搜索</value>
   </data>
+  <data name="SearchFavoriteFolder" xml:space="preserve">
+    <value>搜索收藏夹</value>
+  </data>
   <data name="SearchInWeb" xml:space="preserve">
     <value>在网页中搜索</value>
   </data>
@@ -2120,6 +2132,9 @@
   </data>
   <data name="UnFavorite" xml:space="preserve">
     <value>取消收藏</value>
+  </data>
+  <data name="UnFavoriteSucceed" xml:space="preserve">
+    <value>取消收藏成功</value>
   </data>
   <data name="UnFavoriteWarning" xml:space="preserve">
     <value>是否不再关注该收藏夹？</value>
