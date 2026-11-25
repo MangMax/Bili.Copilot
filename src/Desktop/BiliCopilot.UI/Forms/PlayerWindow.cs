@@ -58,6 +58,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _ratio = new CompactOverlayRatio(SettingsToolkit.CompactOverlayRatio);
         _presentation = new(new PlayerWindowSurface(this, _logger), new PlayerWindowState(this),
             _ratio, _logger);
+        _rootWindow.Changed += OnWindowChanged;
     }
 
     /// <summary>
@@ -139,7 +140,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
 
         if (_isFirstActivated)
         {
-            _rootWindow.Changed += OnWindowChanged;
+            SyncXamlSourceSize();
             if (PInvoke.GetForegroundWindow() == Handle)
             {
                 PInvoke.SetFocus(new(Win32Interop.GetWindowFromWindowId(_xamlSource.SiteBridge.WindowId)));
@@ -304,6 +305,17 @@ public sealed partial class PlayerWindow : IAsyncDisposable
             return;
         }
 
+        if (args.DidSizeChange || args.DidPresenterChange)
+        {
+            SyncXamlSourceSize();
+        }
+
+        // Initial geometry can change before Show; only the island needs those events.
+        if (_isFirstActivated)
+        {
+            return;
+        }
+
         if (args.DidSizeChange)
         {
             var size = _rootWindow.Presenter.Kind is AppWindowPresenterKind.FullScreen or AppWindowPresenterKind.CompactOverlay
@@ -330,6 +342,30 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (args.DidPositionChange)
         {
             _presentation.GeometryChanged();
+        }
+    }
+
+    private void SyncXamlSourceSize()
+    {
+        if (_xamlSourceDisposed)
+        {
+            return;
+        }
+
+        var bridge = _xamlSource.SiteBridge;
+        if (_rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen)
+        {
+            // The automatic resize can retain the client size sampled before the
+            // presenter removes the non-client frame.
+            bridge.ResizePolicy = ContentSizePolicy.None;
+            var size = _rootWindow.Size;
+            bridge.MoveAndResize(new Windows.Graphics.RectInt32(0, 0, size.Width, size.Height));
+        }
+        else if (bridge.ResizePolicy != ContentSizePolicy.ResizeContentToParentWindow)
+        {
+            bridge.ResizePolicy = ContentSizePolicy.ResizeContentToParentWindow;
+            var size = _rootWindow.ClientSize;
+            bridge.MoveAndResize(new Windows.Graphics.RectInt32(0, 0, size.Width, size.Height));
         }
     }
 
