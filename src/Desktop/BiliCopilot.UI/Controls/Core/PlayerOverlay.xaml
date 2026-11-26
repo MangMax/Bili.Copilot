@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:core="using:BiliCopilot.UI.ViewModels.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -257,18 +258,12 @@
             VerticalAlignment="Stretch"
             Fill="Transparent"
             Visibility="{x:Bind ViewModel.IsWindowDeactivated, Mode=OneWay}" />
-        <base:LoadingWidget
+        <components:LoadingWidget
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Text="{ext:Locale Name=Connecting}"
-            Visibility="{x:Bind ViewModel.IsConnecting, Mode=OneWay}" />
-        <Grid Visibility="{x:Bind ViewModel.IsConnecting, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
-            <base:LoadingWidget
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Text="{ext:Locale Name=Loading}"
-                Visibility="{x:Bind ViewModel.Player.IsLoading, Mode=OneWay, FallbackValue=Collapsed}" />
-        </Grid>
+            Foreground="{ThemeResource BasicPlayerButtonForeground}"
+            Text="{x:Bind ViewModel.PlaybackLoadingText, Mode=OneWay}"
+            Visibility="{x:Bind ViewModel.IsPlaybackLoading, Mode=OneWay}" />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="60" />
