@@ -4,7 +4,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
-    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:BiliCopilot.UI.ViewModels.Components"
     xmlns:components1="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
@@ -57,11 +56,9 @@
                 <StackLayout Spacing="8" />
             </ItemsView.Layout>
         </ItemsView>
-        <components1:SideBottomLoadingWidget
-            VerticalAlignment="Bottom"
+        <components1:LoadingWidget
             Text="{ext:Locale Name=LoadingAndWait}"
-            Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
-        <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsChatSessionLoading, Mode=OneWay}" />
+            Visibility="{x:Bind local:MessagePageSideBody.GetLoadingVisibility(ViewModel.IsLoading, ViewModel.IsChatSessionLoading), Mode=OneWay}" />
         <animations:Implicit.ShowAnimations>
             <animations:TranslationAnimation
                 From="-20,0"

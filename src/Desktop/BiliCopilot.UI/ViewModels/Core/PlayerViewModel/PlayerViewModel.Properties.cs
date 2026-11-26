@@ -67,6 +67,7 @@ public sealed partial class PlayerViewModel
     public bool IsNextTipShownInThisMedia { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsPlaybackLoading))]
     public partial MpvPlayer Player { get; set; }
 
     [ObservableProperty]
@@ -163,7 +164,12 @@ public sealed partial class PlayerViewModel
     public partial bool IsHoldingSpeedChanging { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsPlaybackLoading), nameof(PlaybackLoadingText))]
     public partial bool IsConnecting { get; set; }
+
+    public bool IsPlaybackLoading => IsConnecting || Player?.IsLoading == true;
+
+    public string PlaybackLoadingText => ResourceToolkit.GetLocalizedString(IsConnecting ? StringNames.Connecting : StringNames.Loading);
 
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }

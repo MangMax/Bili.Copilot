@@ -41,7 +41,7 @@
                 <HyperlinkButton Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}" Content="{ext:Locale Name=Refresh}" />
             </base:EmptyHolder.ActionElement>
         </base:EmptyHolder>
-        <base:LoadingWidget
+        <components:LoadingWidget
             HorizontalAlignment="Center"
             Text="{ext:Locale Name=LoadingAndWait}"
             Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />

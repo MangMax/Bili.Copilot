@@ -48,6 +48,6 @@
             Emoji="&#x1F92A;"
             Visibility="{x:Bind ViewModel.ShowEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-        <base:LoadingWidget Grid.Row="1" Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
+        <components:LoadingWidget Grid.Row="1" Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
     </Grid>
 </local:ViewLaterPageControlBase>

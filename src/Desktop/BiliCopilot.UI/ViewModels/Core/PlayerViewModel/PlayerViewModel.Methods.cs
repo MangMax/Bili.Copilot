@@ -740,6 +740,11 @@ public sealed partial class PlayerViewModel
             return;
         }
 
+        if (e.PropertyName == nameof(Player.IsLoading))
+        {
+            OnPropertyChanged(nameof(IsPlaybackLoading));
+        }
+
         if (e.PropertyName == nameof(Player.IsPlaybackInitialized))
         {
             OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));

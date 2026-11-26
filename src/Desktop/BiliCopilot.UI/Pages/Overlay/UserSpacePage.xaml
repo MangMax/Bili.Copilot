@@ -236,7 +236,12 @@
                                 Description="{ext:Locale Name=NoSpecificData}"
                                 Emoji="&#x1F440;"
                                 Visibility="{x:Bind ViewModel.MomentSection.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-                            <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.MomentSection.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                            <Grid VerticalAlignment="Top" Visibility="{x:Bind ViewModel.IsAllMomentFilter, Mode=OneWay}">
+                                <ProgressBar
+                                    VerticalAlignment="Top"
+                                    IsIndeterminate="True"
+                                    Visibility="{x:Bind ViewModel.MomentSection.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                            </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -306,7 +311,10 @@
                                         Description="{ext:Locale Name=NoSpecificData}"
                                         Emoji="&#x1F3AC;"
                                         Visibility="{x:Bind ViewModel.VideoFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-                                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.VideoFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                    <ProgressBar
+                                        VerticalAlignment="Top"
+                                        IsIndeterminate="True"
+                                        Visibility="{x:Bind ViewModel.VideoFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
                                 </Grid>
 
                                 <!--  专栏  -->
@@ -339,7 +347,10 @@
                                         Description="{ext:Locale Name=NoSpecificData}"
                                         Emoji="&#x1F4C4;"
                                         Visibility="{x:Bind ViewModel.ArticleFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-                                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.ArticleFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                    <ProgressBar
+                                        VerticalAlignment="Top"
+                                        IsIndeterminate="True"
+                                        Visibility="{x:Bind ViewModel.ArticleFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
                                 </Grid>
 
                                 <!--  动态（图文）：按列高排布的瀑布流  -->
@@ -450,7 +461,10 @@
                                         Description="{ext:Locale Name=NoSpecificData}"
                                         Emoji="&#x1F3B5;"
                                         Visibility="{x:Bind ViewModel.AudioFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-                                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.AudioFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                    <ProgressBar
+                                        VerticalAlignment="Top"
+                                        IsIndeterminate="True"
+                                        Visibility="{x:Bind ViewModel.AudioFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
                                 </Grid>
 
                                 <!--  合集  -->
@@ -513,7 +527,10 @@
                                         Description="{ext:Locale Name=NoSpecificData}"
                                         Emoji="&#x1F4C1;"
                                         Visibility="{x:Bind ViewModel.CollectionFeed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-                                    <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.CollectionFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
+                                    <ProgressBar
+                                        VerticalAlignment="Top"
+                                        IsIndeterminate="True"
+                                        Visibility="{x:Bind ViewModel.CollectionFeed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
                                 </Grid>
                             </Grid>
                         </Grid>
