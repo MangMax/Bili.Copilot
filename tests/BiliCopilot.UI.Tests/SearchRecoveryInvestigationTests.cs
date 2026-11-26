@@ -699,12 +699,25 @@ public sealed class SearchRecoveryInvestigationTests : IDisposable
         Assert.Equal($"SearchSubmission {id} submitted", Assert.Single(_logger.Entries).Message);
         Assert.Empty(_service.Requests);
         Assert.Null(_overlay.GetCurrentContent());
-        _box.SubmitSearch(new SearchSuggestItemViewModel(new SearchSuggestItem("secret", "secret")), id);
+        await _box.SubmitSearchAsync("secret", id);
         Assert.Contains(_logger.Entries, e => e.Message == $"SearchSubmission {id} command");
         Assert.IsType<SearchPage>(_overlay.GetCurrentContent()).Load();
         await Complete(0);
         Assert.Contains(_logger.Entries, e => e.Message == $"SearchSubmission {id} page");
         Assert.Contains(_logger.Entries, e => e.Message.Contains($" submission {id}"));
+    }
+
+    [Fact]
+    public async Task ChosenSuggestionUsesItsKeywordEvenWhenItLooksLikeALink()
+    {
+        const string keyword = "https://www.bilibili.com/video/av123";
+        var selection = new SearchSuggestItemViewModel(new SearchSuggestItem("联想词", keyword));
+
+        await _box.SubmitSearchAsync("当前输入", _box.BeginSubmission(), selection);
+
+        Assert.IsType<SearchPage>(_overlay.GetCurrentContent()).Load();
+        Assert.Equal(keyword, Assert.Single(_service.Requests).Keyword);
+        await Complete(0);
     }
 
     private sealed class CaptureLogger : ILogger<SearchPageViewModel>, ILogger<SearchBoxViewModel>

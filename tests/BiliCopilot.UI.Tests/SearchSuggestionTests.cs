@@ -1,5 +1,7 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Services.Search;
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Search;
@@ -130,6 +132,152 @@ public sealed class SearchSuggestionTests
         await Task.WhenAll(first, second, last);
         Assert.Equal("bili", Assert.Single(service.Requests).Keyword);
         Assert.Equal("bili", Assert.Single(model.Suggestion).Keyword);
+    }
+
+    [Fact]
+    public async Task LinkInputSkipsSuggestionsAndKeywordsStillFetchThem()
+    {
+        var service = new SearchService { CompleteImmediately = true };
+        var model = new SearchBoxViewModel(service, new SearchLogger())
+        {
+            Keyword = "https://www.bilibili.com/video/av123",
+        };
+
+        await model.ReloadSuggestionsCommand.ExecuteAsync(null);
+        await model.DebounceSuggestionsCommand.ExecuteAsync(null);
+        Assert.Empty(model.Suggestion);
+        Assert.Empty(service.Requests);
+
+        model.Keyword = "视频";
+        await model.ReloadSuggestionsCommand.ExecuteAsync(null);
+        Assert.Equal("视频", Assert.Single(service.Requests).Keyword);
+        Assert.Equal("视频", Assert.Single(model.Suggestion).Keyword);
+    }
+
+    [Theory]
+    [InlineData("unchanged", true)]
+    [InlineData("edited", false)]
+    [InlineData("unloaded", false)]
+    [InlineData("resubmitted", false)]
+    public async Task PendingShortLinkUsesSubmissionLifecycle(string action, bool opens)
+    {
+        const string shortLink = "https://b23.tv/abc123";
+        var model = new SearchBoxViewModel(new SearchService(), new SearchLogger()) { Keyword = shortLink };
+        var navigator = new LinkNavigator();
+        using var handler = new RedirectHandler();
+        using var resolver = new SearchLinkResolver(new HttpClient(handler));
+        var previous = NavigationTestServices.Current.Value;
+        NavigationTestServices.Current.Value = new()
+        {
+            [typeof(SearchLinkResolver)] = resolver,
+            [typeof(ISearchLinkNavigator)] = navigator,
+        };
+        try
+        {
+            var submission = model.SubmitSearchAsync(shortLink, model.BeginSubmission());
+            Assert.Equal(shortLink, handler.RequestUri?.AbsoluteUri);
+            await model.ReloadSuggestionsCommand.ExecuteAsync(null);
+            switch (action)
+            {
+                case "edited":
+                    model.Keyword = "新的关键词";
+                    break;
+                case "unloaded":
+                    model.CancelPendingSubmission();
+                    break;
+                case "resubmitted":
+                    await model.SubmitSearchAsync("https://live.bilibili.com/456", model.BeginSubmission());
+                    Assert.Equal("456", Assert.Single(navigator.Opened).Id);
+                    navigator.Opened.Clear();
+                    break;
+            }
+
+            Assert.Equal(!opens, handler.RequestToken.IsCancellationRequested);
+            handler.RedirectTo("https://www.bilibili.com/read/cv123");
+            await submission;
+            if (opens)
+            {
+                var link = Assert.Single(navigator.Opened);
+                Assert.Equal(BiliSearchLinkKind.Article, link.Kind);
+                Assert.Equal("123", link.Id);
+            }
+            else
+            {
+                Assert.Empty(navigator.Opened);
+            }
+
+            Assert.Equal(0, navigator.Failures);
+        }
+        finally
+        {
+            NavigationTestServices.Current.Value = previous;
+        }
+    }
+
+    [Fact]
+    public async Task ShortLinkToUnsupportedHostReportsFailureWithoutOpening()
+    {
+        var model = new SearchBoxViewModel(new SearchService(), new SearchLogger());
+        var navigator = new LinkNavigator();
+        using var handler = new RedirectHandler();
+        using var resolver = new SearchLinkResolver(new HttpClient(handler));
+        var previous = NavigationTestServices.Current.Value;
+        NavigationTestServices.Current.Value = new()
+        {
+            [typeof(SearchLinkResolver)] = resolver,
+            [typeof(ISearchLinkNavigator)] = navigator,
+        };
+        try
+        {
+            var submission = model.SubmitSearchAsync("https://b23.tv/abc123", model.BeginSubmission());
+            handler.RedirectTo("https://example.com/video/av123");
+            await submission;
+            Assert.Empty(navigator.Opened);
+            Assert.Equal(1, navigator.Failures);
+        }
+        finally
+        {
+            NavigationTestServices.Current.Value = previous;
+        }
+    }
+
+    private sealed class LinkNavigator : ISearchLinkNavigator
+    {
+        public List<BiliSearchLink> Opened { get; } = [];
+
+        public int Failures { get; private set; }
+
+        public Task OpenAsync(BiliSearchLink link)
+        {
+            Opened.Add(link);
+            return Task.CompletedTask;
+        }
+
+        public void ShowFailure() => Failures++;
+    }
+
+    private sealed class RedirectHandler : HttpMessageHandler
+    {
+        private readonly TaskCompletionSource<HttpResponseMessage> _response = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public Uri? RequestUri { get; private set; }
+
+        public CancellationToken RequestToken { get; private set; }
+
+        public void RedirectTo(string destination)
+        {
+            var response = new HttpResponseMessage(System.Net.HttpStatusCode.Redirect);
+            response.Headers.Location = new Uri(destination);
+            _response.SetResult(response);
+        }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            Assert.Null(RequestUri);
+            RequestUri = request.RequestUri;
+            RequestToken = cancellationToken;
+            return _response.Task;
+        }
     }
 
     [Fact]
@@ -316,9 +464,10 @@ public sealed class SearchSuggestionTests
     }
 
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task NormalCancellationIsQuietIncludingTransportWrappedCancellation(bool wrapped)
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public async Task NormalCancellationIsQuietIncludingTransportWrappedCancellation(bool wrapped, bool hasTransportCause)
     {
         var service = new SearchService();
         var logger = new SearchLogger();
@@ -326,7 +475,9 @@ public sealed class SearchSuggestionTests
         var loading = model.ReloadSuggestionsCommand.ExecuteAsync(null);
         var request = Assert.Single(service.Requests);
         model.TryCancelSuggestCommand.Execute(null);
-        Exception error = new OperationCanceledException(request.Token);
+        Exception error = hasTransportCause
+            ? new TaskCanceledException("Request was cancelled", new IOException("Connection aborted"), request.Token)
+            : new OperationCanceledException(request.Token);
         if (wrapped) error = new Exception("Transport wrapper", error);
         request.Completion.SetException(error);
         await loading;

@@ -1,5 +1,6 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Services.Search;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.Items;
@@ -41,6 +42,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 
     partial void OnKeywordChanged(string value)
     {
+        CancelPendingSubmission();
         TryCancelSuggest();
         Suggestion.Clear();
     }
@@ -56,10 +58,16 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     private async Task LoadSuggestionsAsync(bool debounce)
     {
         TryCancelSuggest();
+        var keyword = Keyword;
+        if (BiliSearchLink.Parse(keyword) is not null)
+        {
+            Suggestion.Clear();
+            return;
+        }
+
         using var source = new CancellationTokenSource();
         _cancellationTokenSource = source;
         var token = source.Token;
-        var keyword = Keyword;
         try
         {
             if (debounce)
@@ -126,7 +134,8 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 }
             }
         }
-        catch (Exception ex) when (token.IsCancellationRequested && ex.GetBaseException() is OperationCanceledException)
+        catch (Exception ex) when (token.IsCancellationRequested
+            && (ex is OperationCanceledException || ex.GetBaseException() is OperationCanceledException))
         {
             // BiliHttpClient can wrap cancellation in KernelException. Real failures still log below.
         }
@@ -176,10 +185,15 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         source?.Cancel();
     }
 
-    [RelayCommand]
-    private void Search(SearchSuggestItemViewModel vm)
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private Task SearchAsync(SearchSuggestItemViewModel vm)
+        => SubmitSearchAsync(null, BeginSubmission(), vm);
+
+    internal void CancelPendingSubmission()
     {
-        SubmitSearch(vm, BeginSubmission());
+        var source = _pendingLinkSubmission;
+        _pendingLinkSubmission = null;
+        source?.Cancel();
     }
 
     /// <summary>Record input before UI suppression or navigation can fail.</summary>
@@ -199,17 +213,22 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     }
 
     /// <summary>Submit using the identity captured at the input event.</summary>
-    public void SubmitSearch(SearchSuggestItemViewModel vm, Guid submissionId)
+    public async Task SubmitSearchAsync(string? text, Guid submissionId, SearchSuggestItemViewModel? selection = null)
     {
+        CancelPendingSubmission();
         RecordSubmission(submissionId, "command");
-        var keyword = vm.Keyword;
+        var keyword = selection is null ? text : selection.Keyword;
         if (string.IsNullOrEmpty(keyword))
         {
             RecordSubmission(submissionId, "empty");
             return;
         }
 
-        if (string.IsNullOrEmpty(vm.RegionId) || vm.RegionId == "global")
+        if (selection is null && BiliSearchLink.Parse(keyword) is { } link)
+        {
+            await OpenLinkAsync(link, submissionId);
+        }
+        else if (string.IsNullOrEmpty(selection?.RegionId) || selection.RegionId == "global")
         {
             this.Get<NavigationViewModel>().Search(keyword, submissionId);
         }
@@ -217,6 +236,48 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         {
             RecordSubmission(submissionId, "region");
             this.Get<NavigationViewModel>().SearchInRegion(keyword);
+        }
+    }
+
+    private async Task OpenLinkAsync(BiliSearchLink link, Guid submissionId)
+    {
+        var navigator = this.Get<ISearchLinkNavigator>();
+        using var source = new CancellationTokenSource();
+        _pendingLinkSubmission = source;
+        try
+        {
+            RecordSubmission(submissionId, "link");
+            var target = link.Kind == BiliSearchLinkKind.Short
+                ? await this.Get<SearchLinkResolver>().ResolveAsync(link, source.Token)
+                : link;
+
+            source.Token.ThrowIfCancellationRequested();
+            if (target is not null)
+            {
+                await navigator.OpenAsync(target);
+                return;
+            }
+        }
+        catch (OperationCanceledException) when (source.IsCancellationRequested)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning("打开搜索框链接失败 ({ErrorType})", ex.GetType().Name);
+        }
+        finally
+        {
+            if (ReferenceEquals(_pendingLinkSubmission, source))
+            {
+                _pendingLinkSubmission = null;
+            }
+        }
+
+        if (!source.IsCancellationRequested)
+        {
+            RecordSubmission(submissionId, "link-failed");
+            navigator.ShowFailure();
         }
     }
 }

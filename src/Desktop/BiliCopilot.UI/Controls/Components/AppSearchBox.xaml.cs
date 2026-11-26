@@ -37,6 +37,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 
     private void OnSearchBoxUnloaded(object sender, RoutedEventArgs e)
     {
+        ViewModel.CancelPendingSubmission();
         _suggestionInteractionVersion++;
         ViewModel.TryCancelSuggestCommand.Execute(default);
         ViewModel.Suggestion.Clear();
@@ -155,7 +156,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         HotSearchFlyout.Hide();
     }
 
-    private void OnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    private async void OnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
         var submissionId = ViewModel.BeginSubmission();
         _suggestionInteractionVersion++;
@@ -165,24 +166,17 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         _suggestionSuppressionTimer.Stop();
         _suggestionSuppressionTimer.Start();
 
-        if (args.ChosenSuggestion is SearchSuggestItemViewModel item)
-        {
-            // UpdateTextOnSelect 已关闭，选择联想项时需要手动把展示文本写回输入框.
-            if (!string.IsNullOrEmpty(item.SearchContent))
-            {
-                ViewModel.Keyword = item.SearchContent;
-            }
-
-            ViewModel.SubmitSearch(item, submissionId);
-        }
-        else if (!string.IsNullOrEmpty(args.QueryText))
-        {
-            var vm = new SearchSuggestItemViewModel(new SearchSuggestItem(args.QueryText, args.QueryText));
-            ViewModel.SubmitSearch(vm, submissionId);
-        }
-
         ViewModel.TryCancelSuggestCommand.Execute(default);
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, ViewModel.Suggestion.Clear);
+
+        var selection = args.ChosenSuggestion as SearchSuggestItemViewModel;
+        if (!string.IsNullOrEmpty(selection?.SearchContent))
+        {
+            // UpdateTextOnSelect 已关闭，选择联想项时手动写回展示文本。
+            ViewModel.Keyword = selection.SearchContent;
+        }
+
+        await ViewModel.SubmitSearchAsync(args.QueryText, submissionId, selection);
     }
 }
 
