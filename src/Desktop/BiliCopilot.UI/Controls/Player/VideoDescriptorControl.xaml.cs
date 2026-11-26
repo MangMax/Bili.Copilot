@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.ViewModels.Components;
+using BiliCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Base;
+using Richasy.BiliKernel.Models.Search;
 
 namespace BiliCopilot.UI.Controls.Player;
 
@@ -17,7 +19,9 @@ public sealed partial class VideoDescriptorControl : VideoPlayerControlBase
 
     private void OnTagButtonClick(object sender, RoutedEventArgs e)
     {
-        var data = (sender as FrameworkElement).DataContext as BiliTag;
-        this.Get<SearchBoxViewModel>().SearchCommand.Execute(data.Name);
+        if (sender is FrameworkElement { DataContext: BiliTag tag })
+        {
+            this.Get<SearchBoxViewModel>().SearchCommand.Execute(new SearchSuggestItemViewModel(new SearchSuggestItem(tag.Name, tag.Name)));
+        }
     }
 }

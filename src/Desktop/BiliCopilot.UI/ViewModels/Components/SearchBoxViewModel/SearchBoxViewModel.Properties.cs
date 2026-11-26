@@ -19,6 +19,7 @@ public sealed partial class SearchBoxViewModel
     private readonly ILogger<SearchBoxViewModel> _logger;
     private readonly List<SearchRecommendItem> _recommendItems = new();
     private CancellationTokenSource? _cancellationTokenSource;
+    private CancellationTokenSource? _pendingLinkSubmission;
     private string _extraRegionId = string.Empty;
     private string _extraRegionName = string.Empty;
 

@@ -8,6 +8,7 @@ using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Logging;
 using BiliCopilot.UI.Resolvers;
 using BiliCopilot.UI.Services.AI;
+using BiliCopilot.UI.Services.Search;
 using BiliCopilot.UI.SponsorBlock;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.Update;
@@ -145,7 +146,7 @@ internal static class GlobalDependencies
             .AddSingleton<NavigationViewModel>()
             .AddSingleton<AccountViewModel>()
             .AddVideoCardServices()
-            .AddSingleton<SearchBoxViewModel>()
+            .AddSearchBox()
             .AddSingleton<PopularPageViewModel>()
             .AddSingleton<MomentPageViewModel>()
             .AddSingleton<VideoPartitionPageViewModel>()
@@ -217,6 +218,15 @@ internal static class GlobalDependencies
     {
         // 使用工厂注册，避免 DI 尝试注入可选参数中的 HttpClient.
         builder.Services.AddSingleton(_ => new SponsorBlockService());
+        return builder;
+    }
+
+    private static IKernelBuilder AddSearchBox(this IKernelBuilder builder)
+    {
+        builder.Services
+            .AddSingleton<SearchBoxViewModel>()
+            .AddSingleton<SearchLinkResolver>()
+            .AddSingleton<ISearchLinkNavigator, SearchLinkNavigator>();
         return builder;
     }
 

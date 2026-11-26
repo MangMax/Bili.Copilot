@@ -3447,6 +3447,9 @@
   <data name="SearchFailed" xml:space="preserve">
     <value>搜索失败，请稍后点击刷新重试。</value>
   </data>
+  <data name="SearchLinkOpenFailed" xml:space="preserve">
+    <value>无法打开此哔哩哔哩链接，请检查链接后重试。</value>
+  </data>
   <data name="ArticleLikeStateUnknown" xml:space="preserve">
     <value>点赞状态未知，暂时无法点赞或取消点赞</value>
   </data>
