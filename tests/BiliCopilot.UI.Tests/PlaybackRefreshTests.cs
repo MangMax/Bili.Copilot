@@ -43,6 +43,21 @@ public sealed class PlaybackRefreshTests
     }
 
     [Fact]
+    public async Task VideoPreviewPlaysTheProvidedClipWithoutOfferingDashRefresh()
+    {
+        var api = DispatchProxy.Create<IPlayerService, PlaybackRoutingResolverTests.PlaybackService>();
+        var service = (PlaybackRoutingResolverTests.PlaybackService)(object)api;
+        service.Information = new(null, null, null, isPreview: true, previewUrls: ["https://preview.example/video"]);
+        var resolver = PlaybackRoutingResolverTests.CreateResolver(false, api);
+
+        Assert.Equal("https://preview.example/video", (await resolver.GetSourceAsync()).Url);
+        var vm = new PlayerViewModel();
+        vm.SetRefreshResolver(resolver);
+        Assert.False(vm.IsPlaybackRefreshAvailable);
+        Assert.False(vm.RefreshPlaybackCommand.CanExecute(null));
+    }
+
+    [Fact]
     public async Task PlayerRefresh_PgcDashOffersAndExecutesRefresh()
     {
         var api = DispatchProxy.Create<IPlayerService, PlaybackRoutingResolverTests.PlaybackService>();

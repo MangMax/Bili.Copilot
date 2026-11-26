@@ -750,14 +750,18 @@ public sealed partial class PlayerViewModel
         {
             if (!LiveCapabilities.SupportsTimeline)
             {
-                // 直播没有时间轴：不更新进度文案、不判结束、不跑空降与章节。
-                _prevPosition = Player.Position;
                 return;
             }
 
             IsPreviewProgressChanging = false;
             PositionText = TimeSpan.FromSeconds(Player.Position).ToString(@"hh\:mm\:ss");
             ProgressChanged?.Invoke(this, Player.Position);
+            if (IsVideoPreview)
+            {
+                UpdateVideoPreviewEnd();
+                return;
+            }
+
             CheckSponsorBlock(Player.Position);
             // 按“当前时间落在哪个章节区间”判定正在播放的章节.
             // 旧实现用 |Position - 章节起点| < 2，只在经过起点前后两秒内为真，
@@ -830,8 +834,6 @@ public sealed partial class PlayerViewModel
                 {
                     _isTlsFailed = false;
                 }
-
-                _prevPosition = Player.Position;
             }
             else if (Player.Duration < 5)
             {
@@ -883,7 +885,6 @@ public sealed partial class PlayerViewModel
             // 初始化事件可能被关闭或换集追上：每步 await 之后复查，失效即停止。
             var isCurrent = CapturePlaybackValidity();
             ErrorMessage = default;
-            _prevPosition = 0;
             CheckBlackBackgroundVisible();
             CheckBottomProgressBarVisible();
             ResetSubtitlePositionCommand.Execute(default);
@@ -963,6 +964,8 @@ public sealed partial class PlayerViewModel
                 ErrorMessage = default;
                 CheckBlackBackgroundVisible();
             }
+
+            UpdateVideoPreviewEnd();
 
             // 长暂停断流：进入 Paused 启动可取消计时，任何其他状态取消。
             HandleLongPauseStateChange();
@@ -1208,7 +1211,7 @@ public sealed partial class PlayerViewModel
 
     private async Task VerifyChaptersAsync()
     {
-        if (Player is null || _isChapterInitialized)
+        if (Player is null || _isChapterInitialized || IsVideoPreview)
         {
             return;
         }
@@ -1281,7 +1284,7 @@ public sealed partial class PlayerViewModel
 
                 var c = ((VideoConnectorViewModel)Connector);
                 DanmakuSend.ResetData(c._view.Information.Identifier.Id, c._part.Identifier.Id);
-                c.InitializeDownloader(sources);
+                c.InitializeDownloader(IsVideoPreview ? null : sources);
             }
             else if (_sourceResolver is PgcMediaSourceResolver pgcResolver)
             {

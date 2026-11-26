@@ -15,12 +15,14 @@ internal sealed partial class VideoMediaHistoryResolver(IPlayerService playerSer
     private VideoPlayerView _view;
     private VideoPart _part;
     private MediaSnapshot _snapshot;
+    private bool _isPreview;
 
-    public void Initialize(VideoPlayerView view, VideoPart part, MediaSnapshot snapshot)
+    public void Initialize(VideoPlayerView view, VideoPart part, MediaSnapshot snapshot, bool isPreview)
     {
         _view = view;
         _part = part;
         _snapshot = snapshot;
+        _isPreview = isPreview;
     }
 
     public Task<double> GetStartPositionAsync()
@@ -30,6 +32,11 @@ internal sealed partial class VideoMediaHistoryResolver(IPlayerService playerSer
             throw new InvalidOperationException("视频信息未初始化.");
         }
 
+        if (_isPreview)
+        {
+            return Task.FromResult(0d);
+        }
+
         var progress = _snapshot.StartPosition == null ? _view.Progress?.Progress ?? 0d : _snapshot.StartPosition.Value;
         return Task.FromResult(progress >= _view.Information.Duration - 5 ? 0d : progress);
     }
@@ -37,7 +44,7 @@ internal sealed partial class VideoMediaHistoryResolver(IPlayerService playerSer
     public async Task SaveHistoryAsync(double position, double duration, MpvPlayerState state, bool isExiting = false)
     {
         var shouldReport = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.ShouldReportProgress, true);
-        if (!shouldReport || _snapshot.IsPrivate || position == 0 || (state == MpvPlayerState.Paused && !isExiting))
+        if (_isPreview || !shouldReport || _snapshot.IsPrivate || position == 0 || (state == MpvPlayerState.Paused && !isExiting))
         {
             return;
         }

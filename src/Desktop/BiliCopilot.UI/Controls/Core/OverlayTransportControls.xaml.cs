@@ -159,6 +159,14 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private string GetTimeText(double seconds)
         => TimeSpan.FromSeconds(seconds).ToString(@"hh\:mm\:ss");
 
+    private string GetTimelineDurationText(double seconds, bool isVideoPreview)
+    {
+        var duration = GetTimeText(seconds);
+        return isVideoPreview
+            ? string.Format(ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.VideoPreviewDuration), duration)
+            : duration;
+    }
+
     private string GetSpeedText(double speed)
         => $"{ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.PlaybackRate)}: {Math.Round(speed, 2)}x";
 
