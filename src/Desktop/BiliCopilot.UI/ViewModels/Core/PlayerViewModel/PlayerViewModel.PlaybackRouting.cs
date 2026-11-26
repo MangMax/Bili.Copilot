@@ -36,7 +36,7 @@ public sealed partial class PlayerViewModel
     private readonly PlaybackCoreRebuildCoordinator _coreRebuild = new();
 
     /// <summary>Gets whether this media supports an explicit playurl refresh.</summary>
-    public bool IsPlaybackRefreshAvailable => _sourceResolver is VideoMediaSourceResolver or PgcMediaSourceResolver { IsDashPlayback: true } or LiveMediaSourceResolver;
+    public bool IsPlaybackRefreshAvailable => _sourceResolver is VideoMediaSourceResolver { IsPreviewPlayback: false } or PgcMediaSourceResolver { IsDashPlayback: true } or LiveMediaSourceResolver;
 
     private bool CanRefreshPlayback()
         => IsSessionCurrent()

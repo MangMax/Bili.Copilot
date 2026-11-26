@@ -41,6 +41,35 @@ public sealed partial class PlayerViewModel
     [ObservableProperty]
     public partial bool IsPreviewPlayback { get; set; }
 
+    /// <summary>当前投稿只可试看。</summary>
+    [ObservableProperty]
+    public partial bool IsVideoPreview { get; set; }
+
+    /// <summary>投稿的试看片段已播放结束。</summary>
+    [ObservableProperty]
+    public partial bool IsVideoPreviewEnded { get; set; }
+
+    private void UpdateVideoPreviewEnd()
+    {
+        if (!IsVideoPreview || IsConnecting)
+        {
+            return;
+        }
+
+        if (Player.PlaybackState == MpvPlayerState.End && Player.Duration > 0 && Player.Position > 0
+            && Player.Position >= Player.Duration - 1 && !_isTlsFailed && string.IsNullOrEmpty(ErrorMessage))
+        {
+            IsVideoPreviewEnded = true;
+            IsEnd = true;
+            IsControlsVisible = true;
+        }
+        else if (IsVideoPreviewEnded && Player.PlaybackState == MpvPlayerState.Playing)
+        {
+            IsVideoPreviewEnded = false;
+            IsEnd = false;
+        }
+    }
+
     /// <summary>
     /// 展示播放不可用的原因与可执行操作.
     /// </summary>

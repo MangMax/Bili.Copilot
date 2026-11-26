@@ -46,7 +46,6 @@ public sealed partial class PlayerViewModel
     private const int VolumeCommitDelay = 500;
     private bool _isRightKeyDown;
     private bool _isTlsFailed;
-    private double _prevPosition;
     private bool _isBroken;
     private bool _liveProfileApplied;
 

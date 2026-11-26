@@ -40,9 +40,14 @@ public sealed partial class VideoConnectorViewModel : ViewModelBase, IPlayerConn
         IsLoading = false;
     }
 
-    public void InitializeDownloader(List<PlayerFormatInformation> formats)
+    public void InitializeDownloader(List<PlayerFormatInformation>? formats)
     {
         Downloader.Clear();
+        if (formats is not { Count: > 0 })
+        {
+            return;
+        }
+
         Downloader.InitializeMetas(
             GetWebLink(),
             formats.AsReadOnly(),

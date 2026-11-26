@@ -335,6 +335,8 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         ErrorActionText = default;
         HasErrorAction = false;
         IsPreviewPlayback = false;
+        IsVideoPreview = false;
+        IsVideoPreviewEnded = false;
         CacheSpeedText = default;
         ShowPlayerWindow();
         IsConnecting = true;
@@ -345,7 +347,6 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         IsStatsOverlayShown = false;
         IsEnd = false;
         _isTlsFailed = false;
-        _prevPosition = 0;
         ResetSponsorBlock();
         IsSubtitleEmpty = true;
         ApplySubtitleEnabledPreference(SettingsToolkit.ReadLocalSetting(SettingNames.IsSubtitleEnabled, true), persist: false);
@@ -392,11 +393,6 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             }
         }
 
-        if (LiveCapabilities.RunsSponsorBlock)
-        {
-            StartSponsorBlockLoading();
-        }
-
         Title = Connector switch
         {
             VideoConnectorViewModel videoVM => videoVM.Title,
@@ -420,6 +416,20 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                     var connector = Connector as VideoConnectorViewModel;
                     resolver.Initialize(_snapshot, connector._part);
                     _sourceResolver = resolver;
+                    await resolver.LoadMediaInfoAsync();
+                    if (Window.IsClosed || Session.IsClosing || Session.IsReleased)
+                    {
+                        return;
+                    }
+
+                    IsVideoPreview = resolver.IsPreviewPlayback;
+                    if (IsVideoPreview && !resolver.HasPreviewSource)
+                    {
+                        IsConnecting = false;
+                        ErrorMessage = ResourceToolkit.GetLocalizedString(StringNames.VideoPreviewUnavailable);
+                        CheckBlackBackgroundVisible();
+                        return;
+                    }
                 }
                 break;
             case BiliMediaType.Pgc:
@@ -487,6 +497,11 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                 break;
         }
 
+        if (LiveCapabilities.RunsSponsorBlock && !IsVideoPreview)
+        {
+            StartSponsorBlockLoading();
+        }
+
         OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));
         RefreshPlaybackCommand.NotifyCanExecuteChanged();
         _sourceResolver.WindowHandle = Window!.Handle;
@@ -504,7 +519,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                 {
                     var resolver = this.Get<VideoMediaHistoryResolver>();
                     var connector = Connector as VideoConnectorViewModel;
-                    resolver.Initialize(connector._view, connector._part, _snapshot);
+                    resolver.Initialize(connector._view, connector._part, _snapshot, IsVideoPreview);
                     _historyResolver = resolver;
                 }
                 break;
@@ -600,6 +615,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
 
         IsConnecting = false;
+        UpdateVideoPreviewEnd();
         RefreshPlaybackCommand.NotifyCanExecuteChanged();
     }
 

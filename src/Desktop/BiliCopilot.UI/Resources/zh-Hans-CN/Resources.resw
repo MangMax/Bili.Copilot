@@ -3516,6 +3516,9 @@
   <data name="EpisodeAccessFreeAutomation" xml:space="preserve"><value>免费观看</value></data>
   <data name="EpisodeAccessLimitedFreeAutomation" xml:space="preserve"><value>限时免费</value></data>
   <data name="EpisodeAccessPreviewAutomation" xml:space="preserve"><value>预告片</value></data>
+  <data name="VideoPreviewDuration" xml:space="preserve"><value>试看 {0}</value></data>
+  <data name="VideoPreviewEnded" xml:space="preserve"><value>试看结束</value></data>
+  <data name="VideoPreviewUnavailable" xml:space="preserve"><value>该视频暂无可播放的试看片段。</value></data>
   <data name="PreviewPlayback" xml:space="preserve"><value>试看</value></data>
   <data name="PreviewPlaybackAutomation" xml:space="preserve"><value>正在播放试看片段</value></data>
   <data name="OpenVipPage" xml:space="preserve"><value>开通大会员</value></data>

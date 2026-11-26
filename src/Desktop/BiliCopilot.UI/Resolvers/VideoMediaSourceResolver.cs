@@ -33,6 +33,11 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
     private string? _videoHost;
     private string? _audioHost;
 
+    internal bool IsPreviewPlayback => _playbackInfo?.IsPreview == true;
+
+    internal bool HasPreviewSource => _playbackInfo?.PreviewUrls is { Count: > 0 }
+        || _playbackInfo?.Videos is { Count: > 0 };
+
     public void Initialize(MediaSnapshot snapshot, VideoPart part)
     {
         _sourceGeneration++;
@@ -144,6 +149,11 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
             throw new OperationCanceledException();
         }
 
+        if (_playbackInfo?.PreviewUrls?.FirstOrDefault() is { } previewUrl)
+        {
+            return new MpvMediaSource(previewUrl, _snapshot.Video.Identifier.Id, _snapshot.Video.Identifier.Title, options);
+        }
+
         var (videoUrl, audioUrl, selectedVideo) = GetPlayUrls();
         var fileUrl = string.Empty;
         if (!string.IsNullOrEmpty(videoUrl))
@@ -173,7 +183,7 @@ internal sealed partial class VideoMediaSourceResolver(IPlayerService playerServ
     public async Task<List<PlayerFormatInformation>?> GetSourcesAsync()
     {
         await LoadMediaInfoAsync();
-        return [.. _playbackInfo?.Formats];
+        return _playbackInfo?.PreviewUrls is { Count: > 0 } ? null : _playbackInfo?.Formats?.ToList();
     }
 
     /// <summary>

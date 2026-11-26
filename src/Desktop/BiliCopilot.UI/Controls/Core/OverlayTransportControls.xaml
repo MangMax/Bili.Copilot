@@ -1366,7 +1366,7 @@
                     IsTextScaleFactorEnabled="False"
                     RequestedTheme="Dark"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind GetTimeText(ViewModel.Player.Duration), Mode=OneWay}"
+                    Text="{x:Bind GetTimelineDurationText(ViewModel.Player.Duration, ViewModel.IsVideoPreview), Mode=OneWay, FallbackValue=''}"
                     Visibility="{x:Bind ViewModel.IsTimelineProgressVisible, Mode=OneWay, FallbackValue=Visible}" />
                 <!--  直播态：强调色静态轨道，无圆点、无填充追赶；右侧是开播时长.  -->
                 <Border
