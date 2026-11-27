@@ -39,7 +39,6 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
         }
 
         HasPartitionLoadFailed = false;
-        IsPartitionLoading = true;
         try
         {
             var partitions = await _service.GetVideoPartitionsAsync();
@@ -59,10 +58,6 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
             _logger.LogWarning(ex, "加载视频分区失败。");
             HasPartitionLoadFailed = true;
             return;
-        }
-        finally
-        {
-            IsPartitionLoading = false;
         }
 
         await Task.Delay(200);

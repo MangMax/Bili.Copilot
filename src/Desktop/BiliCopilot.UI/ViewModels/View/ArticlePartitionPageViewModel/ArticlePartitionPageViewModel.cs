@@ -41,7 +41,6 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
             return;
         }
 
-        IsPartitionLoading = true;
         var hotPartition = new Partition("-", ResourceToolkit.GetLocalizedString(StringNames.HotArticle));
         Partitions.Add(new PartitionViewModel(hotPartition));
         var partitions = await _service.GetPartitionsAsync();
@@ -53,7 +52,6 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
             }
         }
 
-        IsPartitionLoading = false;
         this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(SettingNames.ArticlePartitionPageLastSelectedPartitionId, Partitions.First().Data.Id);

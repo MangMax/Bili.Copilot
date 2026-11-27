@@ -36,7 +36,6 @@
             Emoji="&#x1F6F8;"
             Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}" />
 
-        <components:SideBottomLoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}" />
 
         <animations:Implicit.ShowAnimations>
             <animations:TranslationAnimation

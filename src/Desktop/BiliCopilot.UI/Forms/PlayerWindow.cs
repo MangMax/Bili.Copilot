@@ -130,24 +130,50 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     }
 
     /// <summary>
-    /// 显示窗口.
+    /// 显示窗口，并返回它是否已恢复到前台.
     /// </summary>
-    public void Show(bool restorePosition = true)
+    public bool Show(bool restorePosition = true)
     {
-        _presentation.Show(restorePosition, activate: true);
-        PInvoke.SetForegroundWindow(new(Handle));
-        PInvoke.SetFocus(new(Handle));
+        if (IsClosed || IsDisposed)
+        {
+            return false;
+        }
 
-        if (_isFirstActivated)
+        if (_rootWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter)
+        {
+            presenter.Restore();
+        }
+
+        var wasVisible = _rootWindow.IsVisible;
+        _presentation.Show(restorePosition, activate: true);
+        if (wasVisible)
+        {
+            ActivateWindow();
+        }
+
+        var isForeground = _rootWindow.IsVisible
+            && !PInvoke.IsIconic(new(Handle))
+            && PInvoke.GetForegroundWindow() == Handle;
+        if (_isFirstActivated && _rootWindow.IsVisible)
         {
             SyncXamlSourceSize();
-            if (PInvoke.GetForegroundWindow() == Handle)
+            if (isForeground)
             {
                 PInvoke.SetFocus(new(Win32Interop.GetWindowFromWindowId(_xamlSource.SiteBridge.WindowId)));
                 ResetFocus();
             }
 
             _isFirstActivated = false;
+        }
+
+        return isForeground;
+    }
+
+    private void ActivateWindow()
+    {
+        if (PInvoke.SetForegroundWindow(new(Handle)))
+        {
+            PInvoke.SetFocus(new(Handle));
         }
     }
 
@@ -188,11 +214,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     public void ShowCursor()
         => _rootGrid?.ShowCursor();
 
-    public void EnterFullScreen()
+    public Task EnterFullScreenAsync()
     {
         if (IsClosed || IsDisposed)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         if (_rootWindow.Presenter.Kind != AppWindowPresenterKind.FullScreen)
@@ -202,8 +228,10 @@ public sealed partial class PlayerWindow : IAsyncDisposable
                 SetTopMost(false);
             }
 
-            _ = _presentation.RequestModeAsync(WindowPresentationMode.FullScreen);
+            return _presentation.RequestModeAsync(WindowPresentationMode.FullScreen);
         }
+
+        return Task.CompletedTask;
     }
 
     public void ExitFullScreen()
@@ -219,11 +247,11 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         }
     }
 
-    public void EnterCompactOverlay()
+    public Task EnterCompactOverlayAsync()
     {
         if (IsClosed || IsDisposed)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         if (_rootWindow.Presenter.Kind != AppWindowPresenterKind.CompactOverlay)
@@ -233,8 +261,10 @@ public sealed partial class PlayerWindow : IAsyncDisposable
                 SetTopMost(false);
             }
 
-            _ = _presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
+            return _presentation.RequestModeAsync(WindowPresentationMode.CompactOverlay);
         }
+
+        return Task.CompletedTask;
     }
 
     public void ExitCompactOverlay()

@@ -43,6 +43,7 @@
         </base:EmptyHolder>
         <components:LoadingWidget
             HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
             Text="{ext:Locale Name=LoadingAndWait}"
             Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
         <local:CommentTextBox

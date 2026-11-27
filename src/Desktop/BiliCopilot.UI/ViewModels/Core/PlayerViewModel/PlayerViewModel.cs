@@ -338,7 +338,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         IsVideoPreview = false;
         IsVideoPreviewEnded = false;
         CacheSpeedText = default;
-        ShowPlayerWindow();
+        await ShowPlayerWindowAsync();
         IsConnecting = true;
         IsSourceSelectable = false;
         IsDanmakuEnabled = false;
@@ -639,7 +639,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         }
     }
 
-    private void ShowPlayerWindow()
+    private async Task ShowPlayerWindowAsync()
     {
         if (Window?.IsDisposed != false)
         {
@@ -656,6 +656,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         var hideMainWindowOnPlay = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true);
         var isFirstLoad = !_uiElementSetted;
+        MainWindow? mainWindowToHide = null;
 
         // Prepare content and the initial presenter while the window is still hidden, so
         // the first visible frame is already the requested mode and geometry.
@@ -683,7 +684,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         if (hideMainWindowOnPlay && isFirstLoad)
         {
-            var mainWnd = this.Get<Core.AppViewModel>().Windows.First(p => p is MainWindow);
+            var mainWnd = this.Get<Core.AppViewModel>().Windows.OfType<MainWindow>().First();
             if (mainWnd.AppWindow.IsVisible)
             {
                 var scaleFactor = HwndExtensions.GetDpiForWindow(mainWnd.GetWindowHandle()) / 96d;
@@ -697,31 +698,40 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
                     (Window.GetWindow().Presenter as OverlappedPresenter)?.Maximize();
                 }
 
-                mainWnd.Hide();
+                mainWindowToHide = mainWnd;
             }
         }
 
+        var window = Window!;
         if (isFirstLoad)
         {
             var defaultPresenter = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerPresenterMode, PlayerPresenterMode.Default);
             if (defaultPresenter == PlayerPresenterMode.FullScreen)
             {
-                Window.EnterFullScreen();
+                await window.EnterFullScreenAsync();
             }
             else if (defaultPresenter == PlayerPresenterMode.CompactOverlay)
             {
-                Window.EnterCompactOverlay();
+                await window.EnterCompactOverlayAsync();
             }
         }
 
-        if (!Window.GetWindow().IsVisible)
+        if (window.IsClosed || window.IsDisposed)
         {
-            Window!.Show(Player == null && !hideMainWindowOnPlay);
+            throw new OperationCanceledException();
         }
 
-        IsVerticalScreen = Window!.GetWindow().Presenter.Kind is Microsoft.UI.Windowing.AppWindowPresenterKind.FullScreen or Microsoft.UI.Windowing.AppWindowPresenterKind.CompactOverlay
-            ? Window.GetWindow().Size.Height > Window.GetWindow().Size.Width
-            : Window.GetWindow().Size.Height >= Window.GetWindow().Size.Width;
+        var playerWindow = window.GetWindow();
+        if ((!playerWindow.IsVisible || isFirstLoad
+             || playerWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized })
+            && window.Show(Player == null && !hideMainWindowOnPlay))
+        {
+            mainWindowToHide?.Hide();
+        }
+
+        IsVerticalScreen = playerWindow.Presenter.Kind is AppWindowPresenterKind.FullScreen or AppWindowPresenterKind.CompactOverlay
+            ? playerWindow.Size.Height > playerWindow.Size.Width
+            : playerWindow.Size.Height >= playerWindow.Size.Width;
         CheckBlackBackgroundVisible();
     }
 
