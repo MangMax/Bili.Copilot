@@ -669,7 +669,7 @@ public sealed partial class PlayerViewModel
 
         if (Player.IsFullScreen && Window.GetWindow().Presenter.Kind != AppWindowPresenterKind.FullScreen)
         {
-            Window.EnterFullScreen();
+            _ = Window.EnterFullScreenAsync();
         }
         else if (!Player.IsFullScreen && Window.GetWindow().Presenter.Kind == AppWindowPresenterKind.FullScreen)
         {
@@ -686,7 +686,7 @@ public sealed partial class PlayerViewModel
 
         if (Player.IsCompactOverlay && Window.GetWindow().Presenter.Kind != AppWindowPresenterKind.CompactOverlay)
         {
-            Window.EnterCompactOverlay();
+            _ = Window.EnterCompactOverlayAsync();
         }
         else if (!Player.IsCompactOverlay && Window.GetWindow().Presenter.Kind == AppWindowPresenterKind.CompactOverlay)
         {

@@ -20,9 +20,6 @@ public sealed partial class ArticlePartitionPageViewModel
     private readonly Dictionary<Partition, ArticlePartitionDetailViewModel> _partitionCache = new();
 
     [ObservableProperty]
-    public partial bool IsPartitionLoading { get; set; }
-
-    [ObservableProperty]
     public partial ArticlePartitionDetailViewModel? SelectedPartition { get; set; }
 
     /// <summary>

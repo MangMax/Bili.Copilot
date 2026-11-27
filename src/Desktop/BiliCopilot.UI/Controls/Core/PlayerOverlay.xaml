@@ -19,6 +19,11 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
+        <Style x:Key="PlaybackLoadingTextBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardOverlayBadgeBackground}" />
+            <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+            <Setter Property="Padding" Value="12,4" />
+        </Style>
         <Style
             x:Key="DropDownFlyoutStyle"
             BasedOn="{StaticResource DefaultFlyoutPresenterStyle}"
@@ -263,6 +268,7 @@
             VerticalAlignment="Center"
             Foreground="{ThemeResource BasicPlayerButtonForeground}"
             Text="{x:Bind ViewModel.PlaybackLoadingText, Mode=OneWay}"
+            TextBorderStyle="{StaticResource PlaybackLoadingTextBorderStyle}"
             Visibility="{x:Bind ViewModel.IsPlaybackLoading, Mode=OneWay}" />
         <Grid>
             <Grid.RowDefinitions>

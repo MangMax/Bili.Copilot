@@ -20,9 +20,6 @@ public sealed partial class VideoPartitionPageViewModel
     private readonly Dictionary<Partition, VideoPartitionDetailViewModel> _partitionCache = new();
 
     [ObservableProperty]
-    public partial bool IsPartitionLoading { get; set; }
-
-    [ObservableProperty]
     public partial bool HasPartitionLoadFailed { get; set; }
 
     [ObservableProperty]

@@ -83,6 +83,5 @@
             Description="{ext:Locale Name=NoSpecificData}"
             Emoji="&#x1F4C1;"
             Visibility="{x:Bind ViewModel.Feed.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-        <components:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.Feed.IsInitialLoading, Mode=OneWay, FallbackValue=Collapsed}" />
     </Grid>
 </local:CollectionDetailPageBase>

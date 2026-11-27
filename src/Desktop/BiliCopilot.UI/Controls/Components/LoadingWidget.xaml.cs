@@ -11,6 +11,10 @@ public sealed partial class LoadingWidget : UserControl
     public static readonly DependencyProperty TextProperty =
         DependencyProperty.Register(nameof(Text), typeof(string), typeof(LoadingWidget), new PropertyMetadata(string.Empty));
 
+    /// <summary>The optional style for the border around the status message.</summary>
+    public static readonly DependencyProperty TextBorderStyleProperty =
+        DependencyProperty.Register(nameof(TextBorderStyle), typeof(Style), typeof(LoadingWidget), new PropertyMetadata(null));
+
     /// <summary>Initializes a new instance of the <see cref="LoadingWidget"/> class.</summary>
     public LoadingWidget() => InitializeComponent();
 
@@ -19,6 +23,13 @@ public sealed partial class LoadingWidget : UserControl
     {
         get => (string)GetValue(TextProperty);
         set => SetValue(TextProperty, value);
+    }
+
+    /// <summary>Gets or sets the style for the border around the status message.</summary>
+    public Style? TextBorderStyle
+    {
+        get => (Style?)GetValue(TextBorderStyleProperty);
+        set => SetValue(TextBorderStyleProperty, value);
     }
 
     private static bool IsVisible(Visibility visibility) => visibility == Visibility.Visible;

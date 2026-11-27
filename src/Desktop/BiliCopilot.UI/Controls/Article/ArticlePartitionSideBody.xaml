@@ -7,7 +7,6 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.Article"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -38,10 +37,6 @@
                 <StackLayout Spacing="8" />
             </ItemsView.Layout>
         </ItemsView>
-        <components:SideBottomLoadingWidget
-            VerticalAlignment="Bottom"
-            Text="{ext:Locale Name=GettingPartitions}"
-            Visibility="{x:Bind ViewModel.IsPartitionLoading, Mode=OneWay}" />
         <animations:Implicit.ShowAnimations>
             <animations:TranslationAnimation
                 From="-20,0"

@@ -13,12 +13,16 @@
             Height="32"
             HorizontalAlignment="Center"
             IsActive="{x:Bind local:LoadingWidget.IsVisible(Visibility), Mode=OneWay}" />
-        <TextBlock
-            AutomationProperties.LiveSetting="Polite"
-            Foreground="{x:Bind Foreground, Mode=OneWay}"
-            Style="{StaticResource BodyTextBlockStyle}"
-            Text="{x:Bind Text, Mode=OneWay}"
-            TextAlignment="Center"
-            TextWrapping="Wrap" />
+        <Border
+            HorizontalAlignment="Center"
+            Style="{x:Bind TextBorderStyle, Mode=OneWay}">
+            <TextBlock
+                AutomationProperties.LiveSetting="Polite"
+                Foreground="{x:Bind Foreground, Mode=OneWay}"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="{x:Bind Text, Mode=OneWay}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+        </Border>
     </StackPanel>
 </UserControl>

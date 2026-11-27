@@ -504,9 +504,6 @@
     <Page Update="Controls\Components\SeasonCardControl\SeasonCardControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\Components\SideBottomLoadingWidget.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="Controls\Components\TimelineControl.xaml">
       <SubType>Designer</SubType>
     </Page>

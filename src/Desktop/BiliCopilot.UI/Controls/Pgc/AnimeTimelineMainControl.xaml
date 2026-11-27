@@ -38,6 +38,5 @@
             Emoji="&#x1F92A;"
             Visibility="{x:Bind ViewModel.SelectedTimeline.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
 
-        <components:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}" />
     </Grid>
 </local:AnimeTimelineControlBase>

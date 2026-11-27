@@ -37,6 +37,5 @@
             Emoji="&#x1F92A;"
             Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-        <components:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
     </Grid>
 </local:UgcFavoriteControlBase>

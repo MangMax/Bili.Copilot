@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:components="using:BiliCopilot.UI.ViewModels.Components"
-    xmlns:components1="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ext="using:BiliCopilot.UI.Extensions"
@@ -56,9 +55,6 @@
                 <StackLayout Spacing="8" />
             </ItemsView.Layout>
         </ItemsView>
-        <components1:LoadingWidget
-            Text="{ext:Locale Name=LoadingAndWait}"
-            Visibility="{x:Bind local:MessagePageSideBody.GetLoadingVisibility(ViewModel.IsLoading, ViewModel.IsChatSessionLoading), Mode=OneWay}" />
         <animations:Implicit.ShowAnimations>
             <animations:TranslationAnimation
                 From="-20,0"

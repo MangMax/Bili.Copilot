@@ -129,8 +129,6 @@
 
     <Style TargetType="components:LoadingWidget">
         <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="Margin" Value="20" />
     </Style>
 

@@ -115,8 +115,7 @@ public sealed partial class PlayerWindow
             owner._rootWindow.Show(activate);
             if (activate)
             {
-                PInvoke.SetForegroundWindow(new(owner.Handle));
-                PInvoke.SetFocus(new(owner.Handle));
+                owner.ActivateWindow();
             }
         }
 
@@ -208,8 +207,7 @@ public sealed partial class PlayerWindow
 
                 if (_restoreForeground)
                 {
-                    PInvoke.SetForegroundWindow(new(owner.Handle));
-                    PInvoke.SetFocus(new(owner.Handle));
+                    owner.ActivateWindow();
                 }
             }
 

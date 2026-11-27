@@ -6,7 +6,6 @@
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:BiliCopilot.UI.Extensions"
     xmlns:items="using:BiliCopilot.UI.ViewModels.Items"
     xmlns:local="using:BiliCopilot.UI.Controls.LivePartition"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -30,6 +29,5 @@
                 </Grid>
             </controls:IncrementVerticalScrollControl.Element>
         </controls:IncrementVerticalScrollControl>
-        <components:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLiveLoading, Mode=OneWay}" />
     </Grid>
 </local:LiveSubPartitionControlBase>

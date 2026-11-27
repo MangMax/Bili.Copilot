@@ -42,7 +42,6 @@
                             Emoji="&#x1F39E;"
                             Visibility="{x:Bind ViewModel.IsSearchEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-                        <components:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}" Visibility="{x:Bind ViewModel.IsSearching, Mode=OneWay}" />
                     </Grid>
                 </Grid>
             </controls:IncrementVerticalScrollControl.Element>

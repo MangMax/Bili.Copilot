@@ -34,9 +34,6 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
         SectionView.ScrollView.ViewChanged -= OnViewChanged;
     }
 
-    private static Visibility GetLoadingVisibility(bool isLoading, bool isChatSessionLoading)
-        => isLoading || isChatSessionLoading ? Visibility.Visible : Visibility.Collapsed;
-
     private void OnSectionInitialized(object? sender, EventArgs e)
         => CheckSectionSelection();
 
