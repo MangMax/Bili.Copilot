@@ -166,7 +166,7 @@ public sealed partial class PlayerViewModel
     [RelayCommand]
     private Task SkipForwardAsync()
     {
-        var forwardSeconds = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.StepForwardSecond, 30d);
+        var forwardSeconds = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.StepForwardSecond, 10d);
         IsProgressChanging = true;
         LastProgressChangingTime = DateTimeOffset.Now;
         return ChangePositionAsync(Math.Min(Player.Position + forwardSeconds, Player.Duration - 1));
@@ -262,7 +262,9 @@ public sealed partial class PlayerViewModel
         }
 
         IsExtraPanelVisible = false;
-        await Client!.SetFullScreenStateAsync(!Player.IsFullScreen);
+        var entering = !Player.IsFullScreen;
+        await Client!.SetFullScreenStateAsync(entering);
+        PersistPresenterMode(entering ? PlayerPresenterMode.FullScreen : PlayerPresenterMode.Default);
     }
 
     [RelayCommand]
@@ -274,8 +276,14 @@ public sealed partial class PlayerViewModel
         }
 
         IsExtraPanelVisible = false;
-        await Client!.SetCompactOverlayStateAsync(!Player.IsCompactOverlay);
+        var entering = !Player.IsCompactOverlay;
+        await Client!.SetCompactOverlayStateAsync(entering);
+        PersistPresenterMode(entering ? PlayerPresenterMode.CompactOverlay : PlayerPresenterMode.Default);
     }
+
+    // 记录用户手动选择的窗口模式，供“记忆上次”启动偏好读取。
+    private static void PersistPresenterMode(PlayerPresenterMode mode)
+        => SettingsToolkit.WriteLocalSetting(SettingNames.LastPlayerPresenterMode, mode);
 
     [RelayCommand]
     private async Task PlayNextAsync()
@@ -327,7 +335,7 @@ public sealed partial class PlayerViewModel
 
         _lastSpeed = Player.PlaybackRate;
         IsHoldingSpeedChanging = true;
-        if (!await ChangeSpeedAsync(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.TempPlaybackRate, 3d)))
+        if (!await ChangeSpeedAsync(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.TempPlaybackRate, 2d)))
         {
             return;
         }
@@ -678,18 +686,18 @@ public sealed partial class PlayerViewModel
         try
         {
             await Client.PauseAsync();
-            var dialog = new DanmakuSendDialog(DanmakuSend, () => IsPopupVisible = true)
+            var dialog = new DanmakuSendDialog(DanmakuSend)
             {
                 XamlRoot = Window!.XamlRoot,
             };
+            IsPopupVisible = true;
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
                 var input = dialog.GetInputText();
                 if (!string.IsNullOrEmpty(input))
                 {
-                    await DanmakuSend.SendDanmakuAsync(input, Convert.ToInt32(Player.Position));
-                    Danmaku.AddDanmaku(input);
+                    await SendDanmakuAtCurrentPositionAsync(input);
                 }
             }
         }
@@ -704,6 +712,45 @@ public sealed partial class PlayerViewModel
         {
             await Client.ResumeAsync();
         }
+    }
+
+    internal async Task<bool> TrySendInlineDanmakuAsync(string text)
+    {
+        try
+        {
+            if (!await PreparePlaybackIntentAsync() || Player is null || IsConnecting || IsDanmakuLoading)
+            {
+                return false;
+            }
+
+            return await SendDanmakuAtCurrentPositionAsync(text);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Send danmaku failed");
+            Window?.ShowTip(ex.Message, InfoType.Error);
+            return false;
+        }
+    }
+
+    private async Task<bool> SendDanmakuAtCurrentPositionAsync(string text)
+    {
+        var isCurrent = CapturePlaybackValidity();
+        var sentColor = await DanmakuSend.SendDanmakuAsync(text, Convert.ToInt32(Player.Position));
+        if (isCurrent())
+        {
+            if (sentColor is { } color)
+            {
+                var argb = ArgbColorUtility.ToArgb(color);
+                Danmaku.AddDanmaku(text, argb);
+            }
+            else
+            {
+                Window?.ShowTip(ResourceToolkit.GetLocalizedString(StringNames.FailedToSendMessage), InfoType.Error);
+            }
+        }
+
+        return sentColor.HasValue;
     }
 
     [RelayCommand]

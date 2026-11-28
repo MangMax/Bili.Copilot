@@ -4,9 +4,9 @@ using BiliCopilot.UI.Icons;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml.Automation;
 using Richasy.MpvKernel.Core.Enums;
 using Richasy.WinUIKernel.Share.Toolkits;
-using System.ComponentModel;
 
 namespace BiliCopilot.UI.Controls.Core;
 
@@ -23,6 +23,16 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
     private double? _pendingSpeed;
     private Func<bool>? _speedPlaybackValidity;
     private readonly DispatcherTimer _speedChangeTimer;
+    private OverlayPresentation _presentation;
+
+    public static readonly DependencyProperty DetailsQualityElementProperty =
+        DependencyProperty.Register(nameof(DetailsQualityElement), typeof(object), typeof(OverlayTransportControls), new PropertyMetadata(null));
+
+    public object? DetailsQualityElement
+    {
+        get => GetValue(DetailsQualityElementProperty);
+        set => SetValue(DetailsQualityElementProperty, value);
+    }
     private bool _isFirstChangeVolume = true;
     private bool _isOverlayActive;
     private XamlRoot? _observedRoot;
@@ -35,6 +45,54 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         // The base removes its lifecycle handlers after the first unload.
         Loaded += OnOverlayLoaded;
         Unloaded += OnOverlayUnloaded;
+    }
+
+    public event EventHandler? PlaybackLayoutToggleRequested;
+
+    internal void ApplyPresentation(OverlayPresentation presentation)
+    {
+        if (_presentation == presentation)
+        {
+            return;
+        }
+
+        _presentation = presentation;
+        var text = ResourceToolkit.GetLocalizedString(presentation.UsesDefaultLayout
+            ? Models.Constants.StringNames.PlayerFillLayout
+            : Models.Constants.StringNames.Default);
+        ToolTipService.SetToolTip(PlaybackLayoutButton, text);
+        AutomationProperties.SetName(PlaybackLayoutButton, text);
+        PlaybackLayoutMenuText.Text = text;
+        var template = (DataTemplate)Resources[presentation.UsesDefaultLayout ? "PlayerFillLayoutIconTemplate" : "PlayerDefaultLayoutIconTemplate"];
+        PlaybackLayoutIcon.ContentTemplate = PlaybackLayoutMenuIcon.ContentTemplate = template;
+        PlaybackLayoutButton.Visibility = PlaybackLayoutMenuItem.Visibility =
+            presentation.CanToggleLayout ? Visibility.Visible : Visibility.Collapsed;
+        UpdateLayoutState();
+    }
+
+    private void OnPlaybackLayoutClick(object sender, RoutedEventArgs e)
+        => PlaybackLayoutToggleRequested?.Invoke(this, EventArgs.Empty);
+
+    private void OnOverflowActionClick(object sender, RoutedEventArgs e)
+    {
+        OverflowFlyout.Hide();
+        if (ReferenceEquals(sender, PlaybackLayoutMenuItem))
+        {
+            OnPlaybackLayoutClick(sender, e);
+            return;
+        }
+
+        var flyout = sender switch
+        {
+            var action when ReferenceEquals(action, OverflowVolumeAction) => VolumeFlyout,
+            var action when ReferenceEquals(action, OverflowSpeedAction) => SpeedFlyout,
+            var action when ReferenceEquals(action, OverflowChapterAction) => ChapterFlyout,
+            _ => null,
+        };
+        if (flyout is not null)
+        {
+            DispatcherQueue.TryEnqueue(() => flyout.ShowAt(OverflowButton));
+        }
     }
 
     public object LeftElement
@@ -73,11 +131,6 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         {
             _observedRoot.Changed += OnRootChanged;
         }
-        if (ViewModel?.Player is not null)
-        {
-            ViewModel.Player.PropertyChanged += OnPlayerPropertyChanged;
-        }
-
         UpdateLayoutState();
     }
 
@@ -96,14 +149,8 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         _speedChangeTimer.Stop();
         _pendingSpeed = null;
         _speedPlaybackValidity = null;
-        if (oldValue != null)
-        {
-            oldValue.Player.PropertyChanged -= OnPlayerPropertyChanged;
-        }
-
         if (_isOverlayActive && newValue != null)
         {
-            newValue.Player.PropertyChanged += OnPlayerPropertyChanged;
             UpdateLayoutState();
         }
     }
@@ -119,10 +166,6 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         {
             _observedRoot.Changed -= OnRootChanged;
             _observedRoot = null;
-        }
-        if (ViewModel?.Player is not null)
-        {
-            ViewModel.Player.PropertyChanged -= OnPlayerPropertyChanged;
         }
         _isOverlayActive = false;
         _appliedLayout = null;
@@ -140,6 +183,9 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private string GetCompactOverlaySymbol(bool isCompactOverlay)
         => isCompactOverlay ? IconGlyph.ExitCompactOverlay : IconGlyph.EnterCompactOverlay;
+
+    private string GetTimelineText(double position, double duration, bool isVideoPreview)
+        => $"{GetTimeText(position)} / {GetTimelineDurationText(duration, isVideoPreview)}";
 
     private string GetFullScreenSymbol(bool isFullScreen)
         => isFullScreen ? IconGlyph.FullScreenMinimize : IconGlyph.FullScreenMaximize;
@@ -243,27 +289,9 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void OnRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => UpdateLayoutState();
 
-    private void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == nameof(ViewModel.Player.IsCompactOverlay))
-        {
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                if (_isOverlayActive)
-                {
-                    UpdateLayoutState();
-                }
-            });
-        }
-    }
-
-    private OverlayControlMode CurrentMode => OverlayControlLayout.SelectMode(
-        ViewModel?.Player?.IsCompactOverlay == true, XamlRoot?.Size.Width ?? ActualWidth, XamlRoot?.Size.Height ?? ActualHeight);
-
-    public bool ContainsInteractivePoint(Windows.Foundation.Point point)
+    public bool ContainsInteractivePoint(Windows.Foundation.Point point, double width, double height)
         => ViewModel?.Player is not null
-            && OverlayControlLayout.Contains(CurrentMode, XamlRoot?.Size.Width ?? ActualWidth,
-                XamlRoot?.Size.Height ?? ActualHeight, point.X, point.Y);
+            && OverlayControlLayout.Contains(_presentation.Mode, width, height, point.X, point.Y);
 
     private void UpdateLayoutState()
     {
@@ -272,12 +300,18 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
         // Reconcile from arranged geometry, both on first layout and later resizes.
         var width = RootGrid.ActualWidth;
         var height = XamlRoot?.Size.Height ?? ActualHeight;
-        var mode = OverlayControlLayout.SelectMode(ViewModel.Player?.IsCompactOverlay == true, width, height);
+        var mode = _presentation.Mode;
         var layout = (Mode: mode, Width: width, Height: height, Danmaku: ViewModel.IsDanmakuControlVisible);
         if (_appliedLayout == layout) return;
-        var state = OverlayControlLayout.StateName(mode, width, layout.Danmaku);
-        if (!VisualStateManager.GoToState(this, state, false)) return;
+        var states = OverlayControlLayout.SelectVisualStates(mode, width, layout.Danmaku);
+        if (!VisualStateManager.GoToState(this, states.Layout, false)
+            || !VisualStateManager.GoToState(this, states.Controls, false))
+        {
+            return;
+        }
+
         _appliedLayout = layout;
+        DetailsPlaybackTime.Visibility = OverlayControlLayout.ShowsDetailsTime(mode, width) ? Visibility.Visible : Visibility.Collapsed;
         // Constrain content, not merely popup placement. The visual state owns
         // preferred dimensions and orientation; these limits only reflect the viewport.
         var maxWidth = Math.Max(1, width - 16);
@@ -303,6 +337,11 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void BalanceLeftRightWidth()
     {
+        if (_presentation.UsesDefaultLayout)
+        {
+            return;
+        }
+
         var width = Math.Min(LeftHolderGrid.ActualWidth, RightPanel.ActualWidth);
         if (width == 0 && RightPanel.ActualWidth > 0)
         {
@@ -346,7 +385,8 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void CheckSpeedButtonState()
     {
-        if (ViewModel is null)
+        // 打开视频的最初一瞬 Player 尚未创建，滑条按 FallbackValue 触发 ValueChanged，此时不能解引用 Player。
+        if (ViewModel?.Player is null)
         {
             return;
         }
@@ -356,6 +396,12 @@ public sealed partial class OverlayTransportControls : PlayerControlBase
 
     private void ApplySpeedSelection(double speed)
     {
+        // 与弹窗容器同理：模板尚未加载时按钮可能为 null。
+        if (HalfSpeedButton is null)
+        {
+            return;
+        }
+
         HalfSpeedButton.IsChecked = Math.Abs(speed - 0.5) < PlaybackRateTolerance;
         DefaultSpeedButton.IsChecked = Math.Abs(speed - 1) < PlaybackRateTolerance;
         OneTwoFiveSpeedButton.IsChecked = Math.Abs(speed - 1.25) < PlaybackRateTolerance;

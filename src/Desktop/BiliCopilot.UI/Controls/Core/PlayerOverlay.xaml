@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:community="using:CommunityToolkit.WinUI.Controls"
     xmlns:components="using:BiliCopilot.UI.Controls.Components"
     xmlns:controls="using:BiliCopilot.UI.Controls"
     xmlns:core="using:BiliCopilot.UI.ViewModels.Core"
@@ -24,6 +25,81 @@
             <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
             <Setter Property="Padding" Value="12,4" />
         </Style>
+        <DataTemplate x:Key="PlaybackSourceTemplate" x:DataType="core:PlayerViewModel">
+            <Button
+                Width="Auto"
+                Padding="8,0"
+                AutomationProperties.AutomationId="PlaybackQualityButton"
+                AutomationProperties.Name="{ext:Locale Name=Quality}"
+                Style="{StaticResource BasicPlayerIconButtonStyle}"
+                ToolTipService.ToolTip="{x:Bind SelectedSource.Name, Mode=OneWay, FallbackValue=''}"
+                Visibility="{x:Bind IsSourceSelectable, Mode=OneWay}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock
+                        MaxWidth="108"
+                        Text="{x:Bind SelectedSource.Name, Mode=OneWay, FallbackValue=''}"
+                        TextTrimming="CharacterEllipsis" />
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="12" Glyph="{StaticResource IconChevronDown}" />
+                </StackPanel>
+                <Button.Flyout>
+                    <Flyout
+                        Closed="OnSourceFlyoutClosed"
+                        Opened="OnSourceFlyoutOpened"
+                        FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
+                        Placement="Bottom">
+                        <ItemsRepeater
+                            MaxWidth="360"
+                            ItemsSource="{x:Bind Sources, Mode=OneWay}">
+                            <ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="items:SourceItemViewModel">
+                                    <Button
+                                        AutomationProperties.AutomationId="{x:Bind Id, Mode=OneTime}"
+                                        Click="OnSourceItemClick"
+                                        DataContext="{x:Bind}"
+                                        Style="{StaticResource ItemButtonStyle}">
+                                        <Grid>
+                                            <Rectangle
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                Fill="{ThemeResource ControlFillColorDefaultBrush}"
+                                                RadiusX="4"
+                                                RadiusY="4"
+                                                Visibility="{x:Bind IsSelected, Mode=OneWay}" />
+                                            <Grid Margin="0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="4" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <Rectangle
+                                                    Width="4"
+                                                    Height="20"
+                                                    VerticalAlignment="Center"
+                                                    Fill="{ThemeResource AccentFillColorDefaultBrush}"
+                                                    RadiusX="2"
+                                                    RadiusY="2"
+                                                    Visibility="{x:Bind IsSelected, Mode=OneWay}" />
+                                                <Grid Grid.Column="1" Margin="12,0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <base:TrimTextBlock MaxLines="2" Text="{x:Bind Name, Mode=OneWay}" />
+
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+                            <ItemsRepeater.Layout>
+                                <StackLayout Spacing="4" />
+                            </ItemsRepeater.Layout>
+                        </ItemsRepeater>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </DataTemplate>
+
         <Style
             x:Key="DropDownFlyoutStyle"
             BasedOn="{StaticResource DefaultFlyoutPresenterStyle}"
@@ -213,477 +289,730 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid x:Name="RootGrid">
-        <danmaku:VideoDanmakuPanel
-            x:Name="DanmakuPanel"
-            Margin="4"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            x:Load="{x:Bind ViewModel.IsDanmakuControlVisible, Mode=OneWay}"
-            ViewModel="{x:Bind ViewModel.Danmaku, Mode=OneWay}" />
-        <Rectangle
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Fill="Black"
-            Visibility="{x:Bind ViewModel.IsBlackBackgroundVisible, Mode=OneWay}" />
-        <local:PlayerInteractivePanel ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
-        <StackPanel
-            Margin="0,14,18,0"
-            HorizontalAlignment="Right"
+    <Grid x:Name="RootGrid" SizeChanged="OnPlayerRootSizeChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition x:Name="DetailsColumn" Width="0" />
+        </Grid.ColumnDefinitions>
+        <Border
+            x:Name="DetailsBackground"
+            Grid.ColumnSpan="2"
+            Height="54"
+            Margin="0,0,-1,0"
             VerticalAlignment="Top"
-            Orientation="Horizontal"
-            Spacing="6"
-            Visibility="{x:Bind ViewModel.IsPreviewPlayback, Mode=OneWay}">
-            <Border
-                MinHeight="24"
-                Padding="10,0"
-                VerticalAlignment="Center"
-                AutomationProperties.Name="{ext:Locale Name=PreviewPlaybackAutomation}"
-                CornerRadius="4">
-                <Border.Background>
-                    <SolidColorBrush Opacity="0.72" Color="Black" />
-                </Border.Background>
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="12"
-                    Foreground="White"
-                    Text="{ext:Locale Name=PreviewPlayback}"
-                    TextAlignment="Center" />
-            </Border>
-            <HyperlinkButton
-                Padding="8,2"
-                AutomationProperties.Name="{ext:Locale Name=OpenVipPage}"
-                Command="{x:Bind ViewModel.OpenVipPageCommand, Mode=OneWay}"
-                Content="{ext:Locale Name=OpenVipPage}"
-                Foreground="White" />
-        </StackPanel>
-        <Rectangle
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Fill="Transparent"
-            Visibility="{x:Bind ViewModel.IsWindowDeactivated, Mode=OneWay}" />
-        <components:LoadingWidget
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource BasicPlayerButtonForeground}"
-            Text="{x:Bind ViewModel.PlaybackLoadingText, Mode=OneWay}"
-            TextBorderStyle="{StaticResource PlaybackLoadingTextBorderStyle}"
-            Visibility="{x:Bind ViewModel.IsPlaybackLoading, Mode=OneWay}" />
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="60" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="1">
-                <local:OverlayTransportControls
-                    x:Name="TransportControls"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            Visibility="Collapsed" />
+        <Border
+            x:Name="DetailsLeftGutter"
+            Width="17"
+            Margin="0,54,0,0"
+            HorizontalAlignment="Left"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            Visibility="Collapsed" />
+        <Border
+            x:Name="DetailsRightGutter"
+            Grid.RowSpan="2"
+            Width="18"
+            Margin="0,54,-1,0"
+            HorizontalAlignment="Right"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            Visibility="Collapsed" />
+        <Border x:Name="VideoViewportFrame">
+            <Grid x:Name="VideoViewport" SizeChanged="OnVideoViewportSizeChanged">
+                <danmaku:VideoDanmakuPanel
+                    x:Name="DanmakuPanel"
+                    Margin="4"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    ViewModel="{x:Bind ViewModel, Mode=OneWay}">
-                    <local:OverlayTransportControls.LeftElement>
-                        <ContentControl
+                    x:Load="{x:Bind ViewModel.IsDanmakuControlVisible, Mode=OneWay}"
+                    ViewModel="{x:Bind ViewModel.Danmaku, Mode=OneWay}" />
+                <Rectangle
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Fill="Black"
+                    Visibility="{x:Bind ViewModel.IsBlackBackgroundVisible, Mode=OneWay}" />
+                <local:PlayerInteractivePanel ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                <StackPanel
+                    Margin="0,14,18,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Orientation="Horizontal"
+                    Spacing="6"
+                    Visibility="{x:Bind ViewModel.IsPreviewPlayback, Mode=OneWay}">
+                    <Border
+                        MinHeight="24"
+                        Padding="10,0"
+                        VerticalAlignment="Center"
+                        AutomationProperties.Name="{ext:Locale Name=PreviewPlaybackAutomation}"
+                        CornerRadius="4">
+                        <Border.Background>
+                            <SolidColorBrush Opacity="0.72" Color="Black" />
+                        </Border.Background>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Foreground="White"
+                            Text="{ext:Locale Name=PreviewPlayback}"
+                            TextAlignment="Center" />
+                    </Border>
+                    <HyperlinkButton
+                        Padding="8,2"
+                        AutomationProperties.AutomationId="OpenVipPageButton"
+                        AutomationProperties.Name="{ext:Locale Name=OpenVipPage}"
+                        Command="{x:Bind ViewModel.OpenVipPageCommand, Mode=OneWay}"
+                        Content="{ext:Locale Name=OpenVipPage}"
+                        Foreground="White" />
+                </StackPanel>
+                <Rectangle
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Fill="Transparent"
+                    Visibility="{x:Bind ViewModel.IsWindowDeactivated, Mode=OneWay}" />
+                <components:LoadingWidget
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{ThemeResource BasicPlayerButtonForeground}"
+                    Text="{x:Bind ViewModel.PlaybackLoadingText, Mode=OneWay}"
+                    TextBorderStyle="{StaticResource PlaybackLoadingTextBorderStyle}"
+                    Visibility="{x:Bind ViewModel.IsPlaybackLoading, Mode=OneWay}" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="1">
+                        <local:OverlayTransportControls
+                            x:Name="TransportControls"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            Content="{x:Bind ViewModel.Connector, Mode=OneWay}"
-                            ContentTemplateSelector="{StaticResource WidgetSelector}"
-                            IsTabStop="False" />
-                    </local:OverlayTransportControls.LeftElement>
-                </local:OverlayTransportControls>
-                <!--
-                    两张提示卡片同为 320 宽，纵向排在同一列：NextTip 固定占顶部槽位，
-                    空降提示紧随其下，两者间距恒为 8px。
-                    用布局而非固定 Margin 让位，是因为 NextTip 的文案来自
-                    NextButtonToolTip，换行行数随语言 / 标题长度变化，
-                    固定偏移量在长文案下仍会与下一张卡片重叠；StackPanel 会随实测高度顺延。
-                    收起的那张（RootPanel 为 Collapsed）高度为 0，不会留下空档.
-                -->
-                <StackPanel
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Spacing="8">
-                    <local:NextTip
-                        x:Name="NextTip"
-                        HorizontalAlignment="Center"
-                        ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
-                    <local:SponsorBlockSkipTip
-                        x:Name="SponsorBlockTip"
-                        HorizontalAlignment="Center"
-                        ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
-                </StackPanel>
-            </Grid>
-            <Grid
-                x:Name="TestRect"
-                Height="1"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Bottom"
-                Background="#01000000"
-                Visibility="Collapsed">
-                <!--  必须要有动画触发刷新才会隐藏光标  -->
-                <animations:Implicit.ShowAnimations>
-                    <animations:OpacityAnimation
-                        From="0.0"
-                        To="1.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,80,0"
-                        To="0,0,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.ShowAnimations>
-                <animations:Implicit.HideAnimations>
-                    <animations:OpacityAnimation
-                        From="1.0"
-                        To="0.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,0,0"
-                        To="0,80,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.HideAnimations>
-            </Grid>
-            <Border
-                x:Name="VideoPreviewEndNotice"
-                Grid.RowSpan="2"
-                Padding="16,8"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                x:Load="{x:Bind ViewModel.IsVideoPreviewEnded, Mode=OneWay}"
-                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                CornerRadius="{ThemeResource ControlCornerRadius}"
-                IsHitTestVisible="False">
-                <TextBlock
-                    AutomationProperties.LiveSetting="Polite"
-                    Style="{StaticResource BodyTextBlockStyle}"
-                    Text="{ext:Locale Name=VideoPreviewEnded}" />
-            </Border>
-            <!--  直播终态（已下播 / 被切断）：房间事件是权威状态，给返回与浏览器兜底。  -->
-            <local:LiveRoomTerminalState
-                x:Name="LiveRoomTerminalOverlay"
-                Grid.RowSpan="2"
-                x:Load="{x:Bind ViewModel.IsLive, Mode=OneWay}"
-                ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
-            <base:EmptyHolder
-                Title="{ext:Locale Name=MpvError}"
-                Grid.RowSpan="2"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Description="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
-                Emoji="&#x1F494;"
-                Visibility="{x:Bind ViewModel.ErrorMessage, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
-                <base:EmptyHolder.ActionElement>
-                    <HyperlinkButton
+                            PlaybackLayoutToggleRequested="OnLayoutToggleRequested"
+                            ViewModel="{x:Bind ViewModel, Mode=OneWay}">
+                            <local:OverlayTransportControls.DetailsQualityElement>
+                                <ContentControl
+                                    Content="{x:Bind ViewModel, Mode=OneWay}"
+                                    ContentTemplate="{StaticResource PlaybackSourceTemplate}"
+                                    IsTabStop="False" />
+                            </local:OverlayTransportControls.DetailsQualityElement>
+                            <local:OverlayTransportControls.LeftElement>
+                                <ContentControl
+                                    x:Name="PlaybackWidget"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Content="{x:Bind ViewModel.Connector, Mode=OneWay}"
+                                    ContentTemplateSelector="{StaticResource WidgetSelector}"
+                                    IsTabStop="False" />
+                            </local:OverlayTransportControls.LeftElement>
+                        </local:OverlayTransportControls>
+                        <!--
+                            两张提示卡片同为 320 宽，纵向排在同一列：NextTip 固定占顶部槽位，
+                            空降提示紧随其下，两者间距恒为 8px。
+                            用布局而非固定 Margin 让位，是因为 NextTip 的文案来自
+                            NextButtonToolTip，换行行数随语言 / 标题长度变化，
+                            固定偏移量在长文案下仍会与下一张卡片重叠；StackPanel 会随实测高度顺延。
+                            收起的那张（RootPanel 为 Collapsed）高度为 0，不会留下空档.
+                        -->
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Spacing="8">
+                            <local:NextTip
+                                x:Name="NextTip"
+                                HorizontalAlignment="Center"
+                                ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                            <local:SponsorBlockSkipTip
+                                x:Name="SponsorBlockTip"
+                                HorizontalAlignment="Center"
+                                ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid
+                        x:Name="TestRect"
+                        Height="1"
                         HorizontalAlignment="Stretch"
-                        Command="{x:Bind ViewModel.RunPlaybackErrorActionCommand, Mode=OneWay}"
-                        Content="{x:Bind ViewModel.ErrorActionText, Mode=OneWay}"
-                        Visibility="{x:Bind ViewModel.HasErrorAction, Mode=OneWay}" />
-                </base:EmptyHolder.ActionElement>
-            </base:EmptyHolder>
-            <controls:OverlayPanel
-                Grid.RowSpan="2"
-                IsShow="{x:Bind ViewModel.IsExtraPanelVisible, Mode=TwoWay}"
-                PanelAlignment="Left">
-                <controls:OverlayPanel.Element>
-                    <ContentControl
-                        x:Name="ExtraPanelContent"
-                        Content="{x:Bind ViewModel.Connector, Mode=OneWay}"
-                        ContentTemplateSelector="{StaticResource PanelSelector}"
-                        IsTabStop="False"
-                        Style="{StaticResource AppContentControlStyle}" />
-                </controls:OverlayPanel.Element>
-            </controls:OverlayPanel>
-            <StackPanel
-                Grid.Row="1"
-                Margin="0,12,0,0"
-                Padding="20,12"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
-                CornerRadius="20"
-                Orientation="Horizontal"
-                Visibility="{x:Bind ViewModel.IsProgressChanging, Mode=OneWay}">
-                <TextBlock VerticalAlignment="Center" Text="{x:Bind GetTimeText(ViewModel.Player.Position), Mode=OneWay}" />
-                <TextBlock
-                    Margin="8,0"
-                    VerticalAlignment="Center"
-                    Text="/" />
-                <TextBlock VerticalAlignment="Center" Text="{x:Bind GetTimeText(ViewModel.Player.Duration), Mode=OneWay}" />
-                <animations:Implicit.ShowAnimations>
-                    <animations:OpacityAnimation
-                        From="0.0"
-                        To="1.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,-40,0"
-                        To="0,0,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.ShowAnimations>
-                <animations:Implicit.HideAnimations>
-                    <animations:OpacityAnimation
-                        From="1.0"
-                        To="0.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,0,0"
-                        To="0,-40,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.HideAnimations>
-            </StackPanel>
-
-            <StackPanel
-                Grid.Row="1"
-                Margin="0,12,0,0"
-                Padding="20,12"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
-                CornerRadius="20"
-                Orientation="Horizontal"
-                Spacing="12"
-                Visibility="{x:Bind ViewModel.IsSpeedChanging, Mode=OneWay}">
-                <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=PlaySpeed}" />
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                    Text="{x:Bind GetSpeedText(ViewModel.Player.PlaybackRate), Mode=OneWay}" />
-                <animations:Implicit.ShowAnimations>
-                    <animations:OpacityAnimation
-                        From="0.0"
-                        To="1.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,-40,0"
-                        To="0,0,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.ShowAnimations>
-                <animations:Implicit.HideAnimations>
-                    <animations:OpacityAnimation
-                        From="1.0"
-                        To="0.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,0,0"
-                        To="0,-40,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.HideAnimations>
-            </StackPanel>
-
-            <Grid
-                Grid.Row="1"
-                Width="48"
-                Height="200"
-                Margin="12,0,0,0"
-                Padding="12,16"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
-                CornerRadius="24"
-                RowSpacing="8"
-                Visibility="{x:Bind local:PlayerOverlay.IsVolumeIndicatorVisible(ViewModel.IsControlsVisible, ViewModel.IsVolumeChanging), Mode=OneWay}">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid
-                    x:Name="VolumeContainer"
-                    Width="4"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Stretch"
-                    Background="{ThemeResource ProgressBarBackgroundThemeBrush}"
-                    CornerRadius="2">
-                    <Border
-                        x:Name="VolumeThumb"
-                        Width="4"
                         VerticalAlignment="Bottom"
-                        Background="{ThemeResource AccentFillColorDefaultBrush}"
-                        CornerRadius="2" />
+                        Background="#01000000"
+                        Visibility="Collapsed">
+                        <!--  必须要有动画触发刷新才会隐藏光标  -->
+                        <animations:Implicit.ShowAnimations>
+                            <animations:OpacityAnimation
+                                From="0.0"
+                                To="1.0"
+                                Duration="0:0:0.2" />
+                            <animations:TranslationAnimation
+                                From="0,80,0"
+                                To="0,0,0"
+                                Duration="0:0:0.25" />
+                        </animations:Implicit.ShowAnimations>
+                        <animations:Implicit.HideAnimations>
+                            <animations:OpacityAnimation
+                                From="1.0"
+                                To="0.0"
+                                Duration="0:0:0.2" />
+                            <animations:TranslationAnimation
+                                From="0,0,0"
+                                To="0,80,0"
+                                Duration="0:0:0.25" />
+                        </animations:Implicit.HideAnimations>
+                    </Grid>
+                    <Border
+                        x:Name="VideoPreviewEndNotice"
+                        Grid.RowSpan="2"
+                        Padding="16,8"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        x:Load="{x:Bind ViewModel.IsVideoPreviewEnded, Mode=OneWay}"
+                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                        IsHitTestVisible="False">
+                        <TextBlock
+                            AutomationProperties.LiveSetting="Polite"
+                            Style="{StaticResource BodyTextBlockStyle}"
+                            Text="{ext:Locale Name=VideoPreviewEnded}" />
+                    </Border>
+                    <!--  直播终态（已下播 / 被切断）：房间事件是权威状态，给返回与浏览器兜底。  -->
+                    <local:LiveRoomTerminalState
+                        x:Name="LiveRoomTerminalOverlay"
+                        Grid.RowSpan="2"
+                        x:Load="{x:Bind ViewModel.IsLive, Mode=OneWay}"
+                        ViewModel="{x:Bind ViewModel, Mode=OneWay}" />
+                    <base:EmptyHolder
+                        Title="{ext:Locale Name=MpvError}"
+                        Grid.RowSpan="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Description="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+                        Emoji="&#x1F494;"
+                        Visibility="{x:Bind ViewModel.ErrorMessage, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
+                        <base:EmptyHolder.ActionElement>
+                            <HyperlinkButton
+                                HorizontalAlignment="Stretch"
+                                AutomationProperties.AutomationId="PlaybackErrorActionButton"
+                                Command="{x:Bind ViewModel.RunPlaybackErrorActionCommand, Mode=OneWay}"
+                                Content="{x:Bind ViewModel.ErrorActionText, Mode=OneWay}"
+                                Visibility="{x:Bind ViewModel.HasErrorAction, Mode=OneWay}" />
+                        </base:EmptyHolder.ActionElement>
+                    </base:EmptyHolder>
+                    <controls:OverlayPanel
+                        Grid.RowSpan="2"
+                        IsShow="{x:Bind ViewModel.IsExtraPanelVisible, Mode=TwoWay}"
+                        PanelAlignment="Left">
+                        <controls:OverlayPanel.Element>
+                            <ContentControl
+                                x:Name="ExtraPanelContent"
+                                Width="360"
+                                Content="{x:Bind ViewModel.Connector, Mode=OneWay}"
+                                ContentTemplateSelector="{StaticResource PanelSelector}"
+                                IsTabStop="False"
+                                Style="{StaticResource AppContentControlStyle}" />
+                        </controls:OverlayPanel.Element>
+                    </controls:OverlayPanel>
+                    <StackPanel
+                        Grid.Row="1"
+                        Margin="0,12,0,0"
+                        Padding="20,12"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
+                        CornerRadius="20"
+                        Orientation="Horizontal"
+                        Visibility="{x:Bind ViewModel.IsProgressChanging, Mode=OneWay}">
+                        <TextBlock VerticalAlignment="Center" Text="{x:Bind GetTimeText(ViewModel.Player.Position), Mode=OneWay}" />
+                        <TextBlock
+                            Margin="8,0"
+                            VerticalAlignment="Center"
+                            Text="/" />
+                        <TextBlock VerticalAlignment="Center" Text="{x:Bind GetTimeText(ViewModel.Player.Duration), Mode=OneWay}" />
+                        <animations:Implicit.ShowAnimations>
+                            <animations:OpacityAnimation
+                                From="0.0"
+                                To="1.0"
+                                Duration="0:0:0.2" />
+                            <animations:TranslationAnimation
+                                From="0,-40,0"
+                                To="0,0,0"
+                                Duration="0:0:0.25" />
+                        </animations:Implicit.ShowAnimations>
+                        <animations:Implicit.HideAnimations>
+                            <animations:OpacityAnimation
+                                From="1.0"
+                                To="0.0"
+                                Duration="0:0:0.2" />
+                            <animations:TranslationAnimation
+                                From="0,0,0"
+                                To="0,-40,0"
+                                Duration="0:0:0.25" />
+                        </animations:Implicit.HideAnimations>
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Row="1"
+                        Margin="0,12,0,0"
+                        Padding="20,12"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
+                        CornerRadius="20"
+                        Orientation="Horizontal"
+                        Spacing="12"
+                        Visibility="{x:Bind ViewModel.IsSpeedChanging, Mode=OneWay}">
+                        <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=PlaySpeed}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                            Text="{x:Bind GetSpeedText(ViewModel.Player.PlaybackRate), Mode=OneWay}" />
+                        <animations:Implicit.ShowAnimations>
+                            <animations:OpacityAnimation
+                                From="0.0"
+                                To="1.0"
+                                Duration="0:0:0.2" />
+                            <animations:TranslationAnimation
+                                From="0,-40,0"
+                                To="0,0,0"
+                                Duration="0:0:0.25" />
+                        </animations:Implicit.ShowAnimations>
+                        <animations:Implicit.HideAnimations>
+                            <animations:OpacityAnimation
+                                From="1.0"
+                                To="0.0"
+                                Duration="0:0:0.2" />
+                            <animations:TranslationAnimation
+                                From="0,0,0"
+                                To="0,-40,0"
+                                Duration="0:0:0.25" />
+                        </animations:Implicit.HideAnimations>
+                    </StackPanel>
+
+                    <Grid
+                        Grid.Row="1"
+                        Width="48"
+                        Height="200"
+                        Margin="12,0,0,0"
+                        Padding="12,16"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Background="{ThemeResource AcrylicInAppFillColorCustomBrush}"
+                        CornerRadius="24"
+                        RowSpacing="8"
+                        Visibility="{x:Bind local:PlayerOverlay.IsVolumeIndicatorVisible(ViewModel.IsControlsVisible, ViewModel.IsVolumeChanging), Mode=OneWay}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid
+                            x:Name="VolumeContainer"
+                            Width="4"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Stretch"
+                            Background="{ThemeResource ProgressBarBackgroundThemeBrush}"
+                            CornerRadius="2">
+                            <Border
+                                x:Name="VolumeThumb"
+                                Width="4"
+                                VerticalAlignment="Bottom"
+                                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                CornerRadius="2" />
+                        </Grid>
+                        <TextBlock
+                            Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind GetVolumeText(ViewModel.Player.Volume), Mode=OneWay}" />
+                        <animations:Implicit.ShowAnimations>
+                            <animations:OpacityAnimation
+                                From="0.0"
+                                To="1.0"
+                                Duration="0:0:0.2" />
+                            <animations:TranslationAnimation
+                                From="-40,0,0"
+                                To="0,0,0"
+                                Duration="0:0:0.25" />
+                        </animations:Implicit.ShowAnimations>
+                        <animations:Implicit.HideAnimations>
+                            <animations:OpacityAnimation
+                                From="1.0"
+                                To="0.0"
+                                Duration="0:0:0.2" />
+                            <animations:TranslationAnimation
+                                From="0,0,0"
+                                To="-40,0,0"
+                                Duration="0:0:0.25" />
+                        </animations:Implicit.HideAnimations>
+                    </Grid>
+                    <Grid
+                        Grid.Row="1"
+                        VerticalAlignment="Bottom"
+                        Visibility="{x:Bind local:PlayerOverlay.IsBottomProgressShouldDisplay(ViewModel.Player.IsCompactOverlay, ViewModel.Player.IsFullScreen, ViewModel.Player.IsLoading, ViewModel.Player.PlaybackState), Mode=OneWay}">
+                        <!--  迷你进度条仅用于展示：关闭指针交互、悬浮层与圆点  -->
+                        <local:ChapterSegmentBar
+                            VerticalAlignment="Bottom"
+                            Compact="True"
+                            IsHitTestVisible="False"
+                            IsInteractive="False"
+                            ShowThumb="False"
+                            ViewModel="{x:Bind ViewModel, Mode=OneWay}"
+                            Visibility="{x:Bind ViewModel.IsBottomProgressBarVisible, Mode=OneWay}" />
+                    </Grid>
+                    <Grid
+                        x:Name="TipContainer"
+                        Grid.RowSpan="2"
+                        Visibility="Collapsed" />
                 </Grid>
-                <TextBlock
-                    Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind GetVolumeText(ViewModel.Player.Volume), Mode=OneWay}" />
-                <animations:Implicit.ShowAnimations>
-                    <animations:OpacityAnimation
-                        From="0.0"
-                        To="1.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="-40,0,0"
-                        To="0,0,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.ShowAnimations>
-                <animations:Implicit.HideAnimations>
-                    <animations:OpacityAnimation
-                        From="1.0"
-                        To="0.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,0,0"
-                        To="-40,0,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.HideAnimations>
             </Grid>
-            <Grid
-                Grid.Row="1"
+        </Border>
+        <Grid x:Name="VideoCornerMask" IsHitTestVisible="False" Visibility="Collapsed">
+            <Path
+                Width="8"
+                Height="8"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Data="M 0,0 L 8,0 A 8,8 0 0 0 0,8 Z"
+                Fill="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                RenderTransformOrigin="0.5,0.5" />
+            <Path
+                Width="8"
+                Height="8"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Data="M 0,0 L 8,0 A 8,8 0 0 0 0,8 Z"
+                Fill="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                RenderTransformOrigin="0.5,0.5">
+                <Path.RenderTransform>
+                    <ScaleTransform ScaleX="-1" ScaleY="1" />
+                </Path.RenderTransform>
+            </Path>
+            <Path
+                Width="8"
+                Height="8"
+                HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
-                Visibility="{x:Bind local:PlayerOverlay.IsBottomProgressShouldDisplay(ViewModel.Player.IsCompactOverlay, ViewModel.Player.IsFullScreen, ViewModel.Player.IsLoading, ViewModel.Player.PlaybackState), Mode=OneWay}">
-                <!--  迷你进度条仅用于展示：关闭指针交互、悬浮层与圆点  -->
-                <local:ChapterSegmentBar
-                    VerticalAlignment="Bottom"
-                    Compact="True"
-                    IsHitTestVisible="False"
-                    IsInteractive="False"
-                    ShowThumb="False"
-                    ViewModel="{x:Bind ViewModel, Mode=OneWay}"
-                    Visibility="{x:Bind ViewModel.IsBottomProgressBarVisible, Mode=OneWay}" />
+                Data="M 0,0 L 8,0 A 8,8 0 0 0 0,8 Z"
+                Fill="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                RenderTransformOrigin="0.5,0.5">
+                <Path.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="-1" />
+                </Path.RenderTransform>
+            </Path>
+            <Path
+                Width="8"
+                Height="8"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Data="M 0,0 L 8,0 A 8,8 0 0 0 0,8 Z"
+                Fill="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                RenderTransformOrigin="0.5,0.5">
+                <Path.RenderTransform>
+                    <ScaleTransform ScaleX="-1" ScaleY="-1" />
+                </Path.RenderTransform>
+            </Path>
+        </Grid>
+        <Grid
+            x:Name="DetailsDanmakuBar"
+            Grid.Row="1"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            Visibility="Collapsed">
+            <Grid Margin="16,8,16,12" ColumnSpacing="8" Visibility="{x:Bind ViewModel.IsDanmakuControlVisible, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton
+                    AutomationProperties.AutomationId="DetailsDanmakuToggle"
+                    AutomationProperties.Name="{ext:Locale Name=DanmakuSwitch}"
+                    IsChecked="{x:Bind ViewModel.Danmaku.IsShowDanmaku, Mode=TwoWay, FallbackValue=False}"
+                    ToolTipService.ToolTip="{ext:Locale Name=DanmakuSwitch}">
+                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconDanmakuSwitch}" />
+                </ToggleButton>
+                <Button
+                    Grid.Column="1"
+                    AutomationProperties.AutomationId="DetailsDanmakuSettingsButton"
+                    AutomationProperties.Name="{ext:Locale Name=DanmakuSendSettings}"
+                    ToolTipService.ToolTip="{ext:Locale Name=DanmakuSendSettings}">
+                    <Button.Flyout>
+                        <Flyout
+                            Closed="OnSourceFlyoutClosed"
+                            Opened="OnSourceFlyoutOpened"
+                            Placement="Top"
+                            ShouldConstrainToRootBounds="True">
+                            <ScrollViewer
+                                HorizontalScrollMode="Disabled"
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Auto">
+                                <danmaku:DanmakuSendSettings Width="320" ViewModel="{x:Bind ViewModel.DanmakuSend, Mode=OneWay}" />
+                            </ScrollViewer>
+                        </Flyout>
+                    </Button.Flyout>
+                    <PathIcon
+                        Width="16"
+                        Height="16"
+                        Data="M 3.5,2 H 12.5 Q 14.5,2 14.5,4 V 10 Q 14.5,12 12.5,12 H 8 L 4.5,14.5 V 12 H 3.5 Q 1.5,12 1.5,10 V 4 Q 1.5,2 3.5,2 Z M 3.5,3.5 Q 3,3.5 3,4 V 10 Q 3,10.5 3.5,10.5 H 6 V 11.6 L 7.55,10.5 H 12.5 Q 13,10.5 13,10 V 4 Q 13,3.5 12.5,3.5 Z M 4,5.25 H 5.5 V 4.5 H 7 V 5.25 H 12 V 6.5 H 7 V 7.25 H 5.5 V 6.5 H 4 Z M 4,8 H 9 V 7.25 H 10.5 V 8 H 12 V 9.25 H 10.5 V 10 H 9 V 9.25 H 4 Z" />
+                </Button>
+                <TextBox
+                    x:Name="DetailsDanmakuInput"
+                    Grid.Column="2"
+                    AutomationProperties.AutomationId="DetailsDanmakuInput"
+                    AutomationProperties.Name="{ext:Locale Name=SendDanmaku}"
+                    IsEnabled="{x:Bind ViewModel.IsDanmakuLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                    KeyDown="OnDetailsDanmakuKeyDown"
+                    MaxLength="100"
+                    PlaceholderText="{ext:Locale Name=DanmakuPlaceholder}"
+                    TextChanged="OnDetailsDanmakuTextChanged" />
+                <Button
+                    x:Name="DetailsDanmakuSendButton"
+                    Grid.Column="3"
+                    AutomationProperties.AutomationId="DetailsDanmakuSendButton"
+                    Click="OnDetailsDanmakuSendClick"
+                    Content="{ext:Locale Name=SendDanmaku}"
+                    IsEnabled="False" />
             </Grid>
-            <Grid Height="60" Visibility="{x:Bind ViewModel.IsControlsVisible, Mode=OneWay}">
-                <Grid.Background>
+        </Grid>
+        <Grid
+            x:Name="DetailsSidebarSurface"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="0,54,0,0"
+            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+            IsHitTestVisible="False"
+            Visibility="Collapsed">
+            <Border
+                Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}"
+                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                BorderThickness="1,1,0,0"
+                CornerRadius="8,0,0,0" />
+        </Grid>
+        <Grid
+            x:Name="DetailsSidebar"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="0,54,0,0"
+            Visibility="Collapsed">
+            <ContentControl
+                x:Name="DockedSidebarContent"
+                ContentTemplateSelector="{StaticResource PanelSelector}"
+                Style="{StaticResource AppContentControlStyle}" />
+        </Grid>
+        <community:PropertySizer
+            x:Name="DetailsSplitter"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="-10,54,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            AutomationProperties.AutomationId="Sizer"
+            Binding="400"
+            IsDragInverted="True"
+            IsTabStop="False"
+            Maximum="560"
+            Minimum="400"
+            Style="{StaticResource SidebarEdgeSizerStyle}"
+            Visibility="Collapsed" />
+        <Grid
+            x:Name="DetailsSidebarToggleHost"
+            Grid.RowSpan="2"
+            Margin="0,54,0,0"
+            HorizontalAlignment="Right"
+            Visibility="Collapsed">
+            <Grid>
+                <base:VisibilityToggleButton
+                    x:Name="DetailsSidebarToggle"
+                    AutomationProperties.AutomationId="PlayerSidebarToggle"
+                    CornerRadius="6,0,0,6"
+                    Direction="RightToLeftVisible"
+                    HideTip="{ext:Locale Name=Show}"
+                    ShowTip="{ext:Locale Name=Hide}" />
+            </Grid>
+        </Grid>
+        <Grid
+            x:Name="HeaderOverlay"
+            Grid.ColumnSpan="2"
+            Height="60"
+            VerticalAlignment="Top"
+            Visibility="Collapsed">
+            <Rectangle x:Name="HeaderGradient">
+                <Rectangle.Fill>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                         <LinearGradientBrush.GradientStops>
                             <GradientStop Offset="0.0" Color="#FF000000" />
                             <GradientStop Offset="1" Color="#00000000" />
                         </LinearGradientBrush.GradientStops>
                     </LinearGradientBrush>
-                </Grid.Background>
-                <Grid x:Name="HeaderBar" Height="44" VerticalAlignment="Top">
+                </Rectangle.Fill>
+            </Rectangle>
+            <Grid x:Name="HeaderBar" Height="44" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="HeaderLeftInset" Width="0" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="HeaderRightInset" Width="0" />
+                </Grid.ColumnDefinitions>
+                <Grid x:Name="HeaderContent" Grid.Column="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition x:Name="HeaderLeftInset" Width="0" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition x:Name="HeaderRightInset" Width="0" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid x:Name="HeaderNavigation">
-                            <Grid Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Collapsed}">
-                                <Button
-                                    Command="{x:Bind ViewModel.BackCommand, Mode=OneWay}"
-                                    Style="{StaticResource LeftEdgeButtonStyle}"
-                                    ToolTipService.ToolTip="{ext:Locale Name=Back}"
-                                    Visibility="{x:Bind ViewModel.UseIntegrationOperation, Mode=OneWay}">
-                                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconArrowLeft}" />
-                                </Button>
-                            </Grid>
+                    <Grid x:Name="HeaderNavigation">
+                        <Grid Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}, FallbackValue=Collapsed}">
                             <Button
-                                Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}"
+                                Command="{x:Bind ViewModel.BackCommand, Mode=OneWay}"
                                 Style="{StaticResource LeftEdgeButtonStyle}"
-                                ToolTipService.ToolTip="{ext:Locale Name=ExitCompactOverlay}"
-                                Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, FallbackValue=Collapsed}">
-                                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="18" Glyph="{StaticResource IconExitCompactOverlay}" />
+                                ToolTipService.ToolTip="{ext:Locale Name=Back}"
+                                Visibility="{x:Bind ViewModel.UseIntegrationOperation, Mode=OneWay}">
+                                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconArrowLeft}" />
                             </Button>
                         </Grid>
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="24,0,8,0"
-                            VerticalAlignment="Center"
-                            Foreground="White"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="NoWrap"
-                            Text="{x:Bind ViewModel.PlaybackHeaderTitle, Mode=OneWay}" />
-                        <StackPanel x:Name="HeaderActions" Grid.Column="2" Margin="0,0,12,0" Orientation="Horizontal">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontSize="12"
-                                    Foreground="White"
-                                    Text="{x:Bind ViewModel.CacheSpeedText, Mode=OneWay}"
-                                    Visibility="{x:Bind ViewModel.CacheSpeedText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
-                                <ContentControl
-                                    Margin="12,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Content="{x:Bind ViewModel.Connector, Mode=OneWay}"
-                                    ContentTemplate="{StaticResource LiveHeaderSelectorTemplate}"
-                                    Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
-                                <DropDownButton
-                                    x:Name="SourceSelector"
-                                    Margin="12,0,0,0"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Center"
-                                    x:Load="{x:Bind ViewModel.IsSourceSelectable, Mode=OneWay}">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <FontIcon
-                                            FontFamily="{StaticResource BiliIconsFontFamily}"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                            Glyph="{StaticResource IconPlayCircle}" />
-                                        <base:TrimTextBlock
-                                            MaxWidth="220"
-                                            VerticalAlignment="Center"
-                                            MaxLines="1"
-                                            Text="{x:Bind ViewModel.SelectedSource.Name, Mode=OneWay, FallbackValue=''}" />
-                                    </StackPanel>
+                        <Button
+                            AutomationProperties.AutomationId="ExitCompactOverlayButton"
+                            AutomationProperties.Name="{ext:Locale Name=ExitCompactOverlay}"
+                            Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}"
+                            Style="{StaticResource LeftEdgeButtonStyle}"
+                            ToolTipService.ToolTip="{ext:Locale Name=ExitCompactOverlay}"
+                            Visibility="{x:Bind ViewModel.Player.IsCompactOverlay, Mode=OneWay, FallbackValue=Collapsed}">
+                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="18" Glyph="{StaticResource IconExitCompactOverlay}" />
+                        </Button>
+                    </Grid>
+                    <TextBlock
+                        x:Name="OverlayTitle"
+                        Grid.Column="1"
+                        Margin="24,0,8,0"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap"
+                        Text="{x:Bind ViewModel.PlaybackHeaderTitle, Mode=OneWay}" />
+                    <TextBlock
+                        x:Name="DetailsWindowTitle"
+                        Grid.Column="1"
+                        AutomationProperties.AutomationId="PlaybackDetailsTitle"
+                        Margin="16,0,8,0"
+                        VerticalAlignment="Center"
+                        Text="{x:Bind ViewModel.PlaybackHeaderTitle, Mode=OneWay}"
+                        TextTrimming="CharacterEllipsis"
+                        Visibility="Collapsed" />
+                    <StackPanel x:Name="HeaderActions" Grid.Column="2" Margin="0,0,12,0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <StackPanel x:Name="HeaderQuality" Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="White"
+                                Text="{x:Bind ViewModel.CacheSpeedText, Mode=OneWay}"
+                                Visibility="{x:Bind ViewModel.CacheSpeedText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
+                            <ContentControl
+                                Margin="12,0,0,0"
+                                VerticalAlignment="Center"
+                                Content="{x:Bind ViewModel.Connector, Mode=OneWay}"
+                                ContentTemplate="{StaticResource LiveHeaderSelectorTemplate}"
+                                Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
+                            <DropDownButton
+                                x:Name="SourceSelector"
+                                AutomationProperties.AutomationId="SourceSelector"
+                                Margin="12,0,0,0"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                x:Load="{x:Bind ViewModel.IsSourceSelectable, Mode=OneWay}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon
+                                        FontFamily="{StaticResource BiliIconsFontFamily}"
+                                        VerticalAlignment="Center"
+                                        FontSize="14"
+                                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                        Glyph="{StaticResource IconPlayCircle}" />
+                                    <base:TrimTextBlock
+                                        MaxWidth="220"
+                                        VerticalAlignment="Center"
+                                        MaxLines="1"
+                                        Text="{x:Bind ViewModel.SelectedSource.Name, Mode=OneWay, FallbackValue=''}" />
+                                </StackPanel>
 
-                                    <DropDownButton.Flyout>
-                                        <Flyout
-                                            x:Name="SourceFlyout"
-                                            FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
-                                            Placement="Bottom">
-                                            <ItemsRepeater
-                                                x:Name="SourceListView"
-                                                MaxWidth="360"
-                                                ItemsSource="{x:Bind ViewModel.Sources, Mode=OneWay}">
-                                                <ItemsRepeater.ItemTemplate>
-                                                    <DataTemplate x:DataType="items:SourceItemViewModel">
-                                                        <Button
-                                                            Click="OnSourceItemClick"
-                                                            DataContext="{x:Bind}"
-                                                            Style="{StaticResource ItemButtonStyle}">
-                                                            <Grid>
+                                <DropDownButton.Flyout>
+                                    <Flyout
+                                        x:Name="SourceFlyout"
+                                        Closed="OnSourceFlyoutClosed"
+                                        Opened="OnSourceFlyoutOpened"
+                                        FlyoutPresenterStyle="{StaticResource DropDownFlyoutStyle}"
+                                        Placement="Bottom">
+                                        <ItemsRepeater
+                                            x:Name="SourceListView"
+                                            MaxWidth="360"
+                                            ItemsSource="{x:Bind ViewModel.Sources, Mode=OneWay}">
+                                            <ItemsRepeater.ItemTemplate>
+                                                <DataTemplate x:DataType="items:SourceItemViewModel">
+                                                    <Button
+                                                        AutomationProperties.AutomationId="{x:Bind Id, Mode=OneTime}"
+                                                        Click="OnSourceItemClick"
+                                                        DataContext="{x:Bind}"
+                                                        Style="{StaticResource ItemButtonStyle}">
+                                                        <Grid>
+                                                            <Rectangle
+                                                                HorizontalAlignment="Stretch"
+                                                                VerticalAlignment="Stretch"
+                                                                Fill="{ThemeResource ControlFillColorDefaultBrush}"
+                                                                RadiusX="4"
+                                                                RadiusY="4"
+                                                                Visibility="{x:Bind IsSelected, Mode=OneWay}" />
+                                                            <Grid Margin="0,8">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="4" />
+                                                                    <ColumnDefinition />
+                                                                </Grid.ColumnDefinitions>
                                                                 <Rectangle
-                                                                    HorizontalAlignment="Stretch"
-                                                                    VerticalAlignment="Stretch"
-                                                                    Fill="{ThemeResource ControlFillColorDefaultBrush}"
-                                                                    RadiusX="4"
-                                                                    RadiusY="4"
+                                                                    Width="4"
+                                                                    Height="20"
+                                                                    VerticalAlignment="Center"
+                                                                    Fill="{ThemeResource AccentFillColorDefaultBrush}"
+                                                                    RadiusX="2"
+                                                                    RadiusY="2"
                                                                     Visibility="{x:Bind IsSelected, Mode=OneWay}" />
-                                                                <Grid Margin="0,8">
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="4" />
-                                                                        <ColumnDefinition />
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <Rectangle
-                                                                        Width="4"
-                                                                        Height="20"
-                                                                        VerticalAlignment="Center"
-                                                                        Fill="{ThemeResource AccentFillColorDefaultBrush}"
-                                                                        RadiusX="2"
-                                                                        RadiusY="2"
-                                                                        Visibility="{x:Bind IsSelected, Mode=OneWay}" />
-                                                                    <Grid Grid.Column="1" Margin="12,0">
-                                                                        <Grid.RowDefinitions>
-                                                                            <RowDefinition />
-                                                                            <RowDefinition Height="Auto" />
-                                                                        </Grid.RowDefinitions>
-                                                                        <base:TrimTextBlock MaxLines="2" Text="{x:Bind Name, Mode=OneWay}" />
+                                                                <Grid Grid.Column="1" Margin="12,0">
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition />
+                                                                        <RowDefinition Height="Auto" />
+                                                                    </Grid.RowDefinitions>
+                                                                    <base:TrimTextBlock MaxLines="2" Text="{x:Bind Name, Mode=OneWay}" />
 
-                                                                    </Grid>
                                                                 </Grid>
                                                             </Grid>
-                                                        </Button>
-                                                    </DataTemplate>
-                                                </ItemsRepeater.ItemTemplate>
-                                                <ItemsRepeater.Layout>
-                                                    <StackLayout Spacing="4" />
-                                                </ItemsRepeater.Layout>
-                                            </ItemsRepeater>
-                                        </Flyout>
-                                    </DropDownButton.Flyout>
-                                </DropDownButton>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
+                                                        </Grid>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsRepeater.ItemTemplate>
+                                            <ItemsRepeater.Layout>
+                                                <StackLayout Spacing="4" />
+                                            </ItemsRepeater.Layout>
+                                        </ItemsRepeater>
+                                    </Flyout>
+                                </DropDownButton.Flyout>
+                            </DropDownButton>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                CornerRadius="{StaticResource ControlCornerRadius}"
+                                Orientation="Horizontal"
+                                Spacing="2">
+                                <Button
+                                    x:Name="DetailsCompactButton"
+                                    Style="{StaticResource IconButtonStyle}"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.AutomationId="DetailsCompactButton"
+                                    AutomationProperties.Name="{ext:Locale Name=EnterCompactOverlay}"
+                                    Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}"
+                                    ToolTipService.ToolTip="{ext:Locale Name=EnterCompactOverlay}"
+                                    Visibility="Collapsed">
+                                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="&#xE097;" FontSize="14" />
+                                </Button>
                                 <Button
                                     x:Name="RefreshPlaybackButton"
-                                    Width="32"
-                                    Height="32"
-                                    Margin="8,0,0,0"
-                                    Padding="0"
+                                    Style="{StaticResource IconButtonStyle}"
                                     VerticalAlignment="Center"
                                     AutomationProperties.AutomationId="RefreshPlaybackButton"
                                     AutomationProperties.Name="{ext:Locale Name=RefreshPlayback}"
@@ -693,10 +1022,7 @@
                                     <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconArrowSync}" FontSize="14" />
                                 </Button>
                                 <Button
-                                    Width="32"
-                                    Height="32"
-                                    Margin="8,0,0,0"
-                                    Padding="0"
+                                    Style="{StaticResource IconButtonStyle}"
                                     VerticalAlignment="Center"
                                     AutomationProperties.Name="{ext:Locale Name=TopWindow}"
                                     Command="{x:Bind ViewModel.ToggleTopMostCommand, Mode=OneWay}"
@@ -731,48 +1057,45 @@
                                         </FontIcon>
                                     </Grid>
                                 </Button>
-                                <Button
-                                    Height="32"
-                                    Margin="20,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Click="OnCloseButtonClick"
-                                    Style="{StaticResource AccentButtonStyle}"
-                                    Visibility="{x:Bind ViewModel.Player.IsFullScreen, Mode=OneWay, FallbackValue=Collapsed}">
-                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4">
-                                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDismiss}" FontSize="10" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
-                                        <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=CloseWindow}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
-                                    </StackPanel>
-                                </Button>
                             </StackPanel>
+                            <Button
+                                Height="32"
+                                Margin="20,0,0,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.AutomationId="FullScreenCloseButton"
+                                AutomationProperties.Name="{ext:Locale Name=CloseWindow}"
+                                Click="OnCloseButtonClick"
+                                Style="{StaticResource AccentButtonStyle}"
+                                Visibility="{x:Bind ViewModel.Player.IsFullScreen, Mode=OneWay, FallbackValue=Collapsed}">
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4">
+                                    <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconDismiss}" FontSize="10" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=CloseWindow}" TextLineBounds="Tight" Style="{StaticResource CaptionTextBlockStyle}" />
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
-                    </Grid>
+                    </StackPanel>
                 </Grid>
-                <animations:Implicit.ShowAnimations>
-                    <animations:OpacityAnimation
-                        From="0.0"
-                        To="1.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,-40,0"
-                        To="0,0,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.ShowAnimations>
-                <animations:Implicit.HideAnimations>
-                    <animations:OpacityAnimation
-                        From="1.0"
-                        To="0.0"
-                        Duration="0:0:0.2" />
-                    <animations:TranslationAnimation
-                        From="0,0,0"
-                        To="0,-40,0"
-                        Duration="0:0:0.25" />
-                </animations:Implicit.HideAnimations>
             </Grid>
-
-            <Grid
-                x:Name="TipContainer"
-                Grid.RowSpan="2"
-                Visibility="Collapsed" />
+            <animations:Implicit.ShowAnimations>
+                <animations:OpacityAnimation
+                    From="0.0"
+                    To="1.0"
+                    Duration="0:0:0.2" />
+                <animations:TranslationAnimation
+                    From="0,-40,0"
+                    To="0,0,0"
+                    Duration="0:0:0.25" />
+            </animations:Implicit.ShowAnimations>
+            <animations:Implicit.HideAnimations>
+                <animations:OpacityAnimation
+                    From="1.0"
+                    To="0.0"
+                    Duration="0:0:0.2" />
+                <animations:TranslationAnimation
+                    From="0,0,0"
+                    To="0,-40,0"
+                    Duration="0:0:0.25" />
+            </animations:Implicit.HideAnimations>
         </Grid>
     </Grid>
 </local:PlayerControlBase>

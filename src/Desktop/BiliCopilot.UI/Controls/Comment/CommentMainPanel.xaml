@@ -22,9 +22,10 @@
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Padding="16,0" Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">
+        <Grid Padding="16,0" ColumnSpacing="6" Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
@@ -34,9 +35,19 @@
                 FontSize="14"
                 Style="{StaticResource SubtitleTextBlockStyle}"
                 Text="{ext:Locale Name=Comments}" />
+            <Button
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                AutomationProperties.AutomationId="RefreshCommentsButton"
+                AutomationProperties.Name="{ext:Locale Name=Refresh}"
+                Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}"
+                IsEnabled="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                ToolTipService.ToolTip="{ext:Locale Name=Refresh}">
+                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconArrowSync}" />
+            </Button>
             <ComboBox
                 x:Name="SortTypeComboBox"
-                Grid.Column="1"
+                Grid.Column="2"
                 MinWidth="100"
                 VerticalAlignment="Center"
                 IsEnabled="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"

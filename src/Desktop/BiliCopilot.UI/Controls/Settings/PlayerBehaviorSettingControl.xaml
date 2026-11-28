@@ -14,59 +14,16 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:PreferQualityTypeConverter x:Key="PreferQualityConverter" />
-            <converters:ExternalPlayerTypeConverter x:Key="ExternalPlayerTypeConverter" />
-            <converters:DisplayModeConverter x:Key="DisplayModeConverter" />
             <converters:PreferDecodeTypeConverter x:Key="PreferDecodeConverter" />
+            <converters:PreferCodecTypeConverter x:Key="PreferCodecConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <base:SettingsExpander Description="{ext:Locale Name=PlayerBehaviorDescription}" Header="{ext:Locale Name=PlayerBehavior}">
+    <base:SettingsExpander Description="{ext:Locale Name=PlaybackNetworkQualityDescription}" Header="{ext:Locale Name=SettingsSubsectionPlaybackNetworkQuality}">
         <base:SettingsExpander.HeaderIcon>
             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconReplay}" />
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
-            <base:SettingsCard
-                Header="{ext:Locale Name=AutoCompactOverlayRatio}"
-                Description="{ext:Locale Name=AutoCompactOverlayRatioDescription}">
-                <ToggleSwitch
-                    AutomationProperties.AutomationId="AutoCompactOverlayRatioToggle"
-                    AutomationProperties.Name="{ext:Locale Name=AutoCompactOverlayRatio}"
-                    IsOn="{x:Bind ViewModel.AutoCompactOverlayRatio, Mode=TwoWay}" />
-            </base:SettingsCard>
-            <base:SettingsCard
-                x:Name="HideMain"
-                Description="{ext:Locale Name=HideMainWindowOnPlayDescription}"
-                Header="{ext:Locale Name=HideMainWindowOnPlay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.HideMainWindowOnPlay, Mode=TwoWay}" />
-            </base:SettingsCard>
-            <base:SettingsCard
-                x:Name="Integration"
-                Description="{ext:Locale Name=UseIntegrationBehaviorDescription}"
-                Header="{ext:Locale Name=UseIntegrationBehavior}"
-                Visibility="{x:Bind ViewModel.HideMainWindowOnPlay, Mode=OneWay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.UseIntegrationWhenSinglePlayWindow, Mode=TwoWay}" />
-            </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=PreferDecodeDescription}" Header="{ext:Locale Name=PreferDecode}">
-                <ComboBox
-                    MinWidth="120"
-                    ItemsSource="{x:Bind ViewModel.PreferDecodeCollection, Mode=OneWay}"
-                    SelectedItem="{x:Bind ViewModel.PreferDecode, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="constants:PreferDecodeType">
-                            <TextBlock Text="{x:Bind Converter={StaticResource PreferDecodeConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </base:SettingsCard>
-            <base:SettingsCard
-                Description="{ext:Locale Name=CustomMpvConfigDescription}"
-                Header="{ext:Locale Name=CustomMpvConfig}"
-                Visibility="{x:Bind ViewModel.IsMpvCustomOptionVisible, Mode=OneWay}">
-                <Button
-                    MinWidth="120"
-                    Command="{x:Bind ViewModel.OpenMpvConfigInEditorCommand, Mode=OneWay}"
-                    Content="{ext:Locale Name=OpenConfig}" />
-            </base:SettingsCard>
             <base:SettingsCard Header="{ext:Locale Name=PreferQuality}">
                 <ComboBox
                     MinWidth="120"
@@ -79,29 +36,29 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=DefaultPlayerDisplayMode}">
+            <base:SettingsCard Description="{ext:Locale Name=PreferCodecDescription}" Header="{ext:Locale Name=PreferCodec}">
                 <ComboBox
                     MinWidth="120"
-                    ItemsSource="{x:Bind ViewModel.PlayerDisplayModeCollection, Mode=OneWay}"
-                    SelectedItem="{x:Bind ViewModel.DefaultPlayerDisplayMode, Mode=TwoWay}">
+                    ItemsSource="{x:Bind ViewModel.PreferCodecCollection, Mode=OneWay}"
+                    SelectedItem="{x:Bind ViewModel.PreferCodec, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="constants:PlayerDisplayMode">
-                            <TextBlock Text="{x:Bind Converter={StaticResource DisplayModeConverter}}" />
+                        <DataTemplate x:DataType="constants:PreferCodecType">
+                            <TextBlock Text="{x:Bind Converter={StaticResource PreferCodecConverter}}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard
-                x:Name="ShowNextTip"
-                Description="{ext:Locale Name=PlayNextWithoutTipDescription}"
-                Header="{ext:Locale Name=PlayNextWithoutTip}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.PlayNextWithoutTip, Mode=TwoWay}" />
-            </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=AutoNextRelatedVideoDescription}" Header="{ext:Locale Name=AutoNextRelatedVideo}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsAutoPlayNextRecommendVideo, Mode=TwoWay}" />
-            </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=StopWhenEndOfPlaylistDescription}" Header="{ext:Locale Name=StopWhenEndOfPlaylist}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.EndWithPlaylist, Mode=TwoWay}" />
+            <base:SettingsCard Description="{ext:Locale Name=PreferDecodeDescription}" Header="{ext:Locale Name=PreferDecode}">
+                <ComboBox
+                    MinWidth="120"
+                    ItemsSource="{x:Bind ViewModel.PreferDecodeCollection, Mode=OneWay}"
+                    SelectedItem="{x:Bind ViewModel.PreferDecode, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="constants:PreferDecodeType">
+                            <TextBlock Text="{x:Bind Converter={StaticResource PreferDecodeConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </base:SettingsCard>
             <base:SettingsCard
                 Header="{ext:Locale Name=PlaybackRoute}"

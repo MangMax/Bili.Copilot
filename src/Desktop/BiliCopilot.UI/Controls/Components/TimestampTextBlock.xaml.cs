@@ -1,5 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Models.Constants;
+using BiliCopilot.UI.Toolkits;
 using Microsoft.UI.Xaml.Documents;
 using System.Windows.Input;
 
@@ -10,15 +12,17 @@ namespace BiliCopilot.UI.Controls.Components;
 /// </summary>
 /// <remarks>
 /// 通过共享呈现器把纯文本写入 <see cref="RichTextBlock"/>，其中的时间戳呈现为可点击链接；
-/// 文本可选择、自动换行、保留原有换行，且默认不截断.
+/// 文本可选择、保留原有换行，并支持在三行预览和全文之间切换.
 /// </remarks>
 public sealed partial class TimestampTextBlock : UserControl
 {
+    private const int PreviewLines = 3;
+
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(string), typeof(TimestampTextBlock), new PropertyMetadata(default, OnContentChanged));
+        DependencyProperty.Register(nameof(Text), typeof(string), typeof(TimestampTextBlock), new PropertyMetadata(default, OnTextChanged));
 
     /// <summary>
     /// <see cref="SeekCommand"/> 的依赖属性.
@@ -32,7 +36,11 @@ public sealed partial class TimestampTextBlock : UserControl
     /// <summary>
     /// Initializes a new instance of the <see cref="TimestampTextBlock"/> class.
     /// </summary>
-    public TimestampTextBlock() => InitializeComponent();
+    public TimestampTextBlock()
+    {
+        InitializeComponent();
+        SetExpanded(false);
+    }
 
     /// <summary>
     /// 待呈现的文本.
@@ -51,6 +59,32 @@ public sealed partial class TimestampTextBlock : UserControl
         get => (ICommand?)GetValue(SeekCommandProperty);
         set => SetValue(SeekCommandProperty, value);
     }
+
+    private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var control = (TimestampTextBlock)d;
+        control.SetExpanded(false);
+        control.Render();
+    }
+
+    private void OnExpansionClick(object sender, RoutedEventArgs e)
+        => SetExpanded(RichBlock.MaxLines != 0);
+
+    private void OnTextTrimmedChanged(RichTextBlock sender, IsTextTrimmedChangedEventArgs args)
+        => UpdateExpansionVisibility();
+
+    private void SetExpanded(bool expanded)
+    {
+        RichBlock.MaxLines = expanded ? 0 : PreviewLines;
+        ExpansionButton.Content = ResourceToolkit.GetLocalizedString(
+            expanded ? StringNames.CollapseMomentText : StringNames.ExpandMomentText);
+        UpdateExpansionVisibility();
+    }
+
+    private void UpdateExpansionVisibility()
+        => ExpansionButton.Visibility = RichBlock.IsTextTrimmed || RichBlock.MaxLines == 0
+            ? Visibility.Visible
+            : Visibility.Collapsed;
 
     private static void OnContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         => ((TimestampTextBlock)d).Render();

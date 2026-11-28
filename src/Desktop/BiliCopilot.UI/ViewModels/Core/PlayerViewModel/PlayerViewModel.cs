@@ -87,7 +87,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
             {
                 if (Window?.IsClosed == false)
                 {
-                    Window.Close();
+                    Window.GetWindow().Hide();
                 }
 
                 await DisposeAsync();
@@ -151,7 +151,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         if (Window?.IsDisposed == false)
         {
             Window.SizeChanged -= OnWindowSizeChanged;
-            Window.GetWindow().Destroying -= OnWindowDestroying;
+            Window.GetWindow().Closing -= OnWindowClosing;
             await TryCleanupAsync(() => Window.DisposeAsync().AsTask());
         }
     }
@@ -360,7 +360,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         UseIntegrationOperation = SettingsToolkit.ReadLocalSetting(SettingNames.HideMainWindowOnPlay, true)
             && SettingsToolkit.ReadLocalSetting(SettingNames.UseIntegrationWhenSinglePlayWindow, true);
         BackwardTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.BackwardTemplate), SettingsToolkit.ReadLocalSetting(SettingNames.StepBackwardSecond, 10d));
-        ForwardTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.ForwardTemplate), SettingsToolkit.ReadLocalSetting(SettingNames.StepForwardSecond, 30d));
+        ForwardTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.ForwardTemplate), SettingsToolkit.ReadLocalSetting(SettingNames.StepForwardSecond, 10d));
         RequestHideNextTip?.Invoke(this, EventArgs.Empty);
         if (!IsPlaybackCommandBlocked())
         {
@@ -504,7 +504,9 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
 
         OnPropertyChanged(nameof(IsPlaybackRefreshAvailable));
         RefreshPlaybackCommand.NotifyCanExecuteChanged();
-        _sourceResolver.WindowHandle = Window!.Handle;
+        _sourceResolver.WindowHandle = Connector is VideoConnectorViewModel or PgcConnectorViewModel
+            ? Window!.VideoHandle
+            : Window!.Handle;
         _sourceResolver.PublishDisplayDimensionsAsync = _mediaDisplaySource?.CreateMetadataPublisher();
 
         if (_historyResolver != null && Player != null)
@@ -645,7 +647,7 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         {
             Window = new PlayerWindow();
             Window.SetActiveAction(isActive => queue.TryEnqueue(DispatcherQueuePriority.Low, () => IsWindowDeactivated = !isActive));
-            Window.GetWindow().Destroying += OnWindowDestroying;
+            Window.GetWindow().Closing += OnWindowClosing;
             Window.SizeChanged += OnWindowSizeChanged;
             _pointerSource = InputPointerSource.GetForIsland(Window.XamlRoot?.ContentIsland);
             _pointerSource.PointerReleased += OnWindowPointerReleased;
@@ -705,12 +707,15 @@ public sealed partial class PlayerViewModel(DispatcherQueue queue, ILogger<Playe
         var window = Window!;
         if (isFirstLoad)
         {
-            var defaultPresenter = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerPresenterMode, PlayerPresenterMode.Default);
-            if (defaultPresenter == PlayerPresenterMode.FullScreen)
+            // 启动播放模式：按用户偏好（记忆上次/总是普通/总是全屏/总是小窗）决定初始呈现方式.
+            var presenterPreference = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerPresenterModePreference, PlayerPresenterModePreference.Remember);
+            var lastPresenter = SettingsToolkit.ReadLocalSetting(SettingNames.LastPlayerPresenterMode, PlayerPresenterMode.Default);
+            var startupPresenter = PlayerWindowPreferenceResolver.ResolveStartupPresenter(presenterPreference, lastPresenter);
+            if (startupPresenter == PlayerPresenterMode.FullScreen)
             {
                 await window.EnterFullScreenAsync();
             }
-            else if (defaultPresenter == PlayerPresenterMode.CompactOverlay)
+            else if (startupPresenter == PlayerPresenterMode.CompactOverlay)
             {
                 await window.EnterCompactOverlayAsync();
             }

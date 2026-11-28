@@ -81,6 +81,6 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerControlBase
             }
         }
 
-        Selector.SetItems(items, ViewModel.SelectedSection);
+        Selector.SetItems(items, ViewModel?.SelectedSection);
     }
 }

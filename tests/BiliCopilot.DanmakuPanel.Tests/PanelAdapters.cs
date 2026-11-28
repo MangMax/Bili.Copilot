@@ -3,6 +3,7 @@ using System.ComponentModel;
 using BiliCopilot.UI.ViewModels.Core;
 namespace Microsoft.UI.Xaml { public class RoutedEventArgs : EventArgs { } public delegate void RoutedEventHandler(object sender, RoutedEventArgs e); }
 namespace Microsoft.UI { public static class Colors { public static object Gray => "gray"; public static object White => "white"; } }
+namespace Windows.UI { public record struct Color(string Value) { public byte A, R, G, B; public static Color FromArgb(byte a, byte r, byte g, byte b) => new($"#{a:x2}{r:x2}{g:x2}{b:x2}") { A = a, R = r, G = g, B = b }; } }
 namespace Microsoft.UI.Dispatching
 {
     public enum DispatcherQueuePriority { Low }
@@ -30,7 +31,7 @@ namespace BiliCopilot.UI.Toolkits
 {
     public static class TestServices { public static T Get<T>(this object owner) => (T)Activator.CreateInstance(typeof(Microsoft.Extensions.Logging.TestLogger<>).MakeGenericType(typeof(T).GenericTypeArguments))!; }
     public static class SettingsToolkit { public static T ReadLocalSetting<T>(Models.Constants.SettingNames key, T value) => value; }
-    public static class AppToolkit { public static object HexToColor(string s) => s; }
+    public static class AppToolkit { public static Windows.UI.Color HexToColor(string s) => new(s); }
 }
 namespace Richasy.Danmaku.Enums { public enum DanmakuMode { Scroll } }
 namespace Richasy.Danmaku.Models { public sealed class DanmakuItem { public uint StartMs; public Enums.DanmakuMode Mode; public object? TextColor; public int BaseFontSize; public string? Text; public bool HasOutline, HasBorder; } }
@@ -69,11 +70,11 @@ namespace BiliCopilot.UI.ViewModels.Core
         bool visible = true; public bool IsShowDanmaku { get => visible; set { visible = value; PropertyChanged?.Invoke(this, new(nameof(IsShowDanmaku))); if (value) Redraw(); } }
         public bool IsPaused, IsDanmakuBold, IsRollingEnabled, IsTopEnabled, IsBottomEnabled; public double DanmakuOpacity, DanmakuArea, DanmakuFontSize, OutlineSize, DanmakuSpeed, ExtraSpeed; public string DanmakuFontFamily = "test"; public int Position; public List<int> GetCachedDanmakus() => [];
         public event EventHandler? RequestClearDanmaku, PauseDanmaku, ResumeDanmaku, RequestResetStyle, ExtraSpeedChanged, RequestRedrawDanmaku;
-        public event EventHandler<int>? ProgressChanged, SeekRequested; public event EventHandler<string>? RequestAddSingleDanmaku;
+        public event EventHandler<int>? ProgressChanged, SeekRequested; public event EventHandler<(string Text, uint? ArgbColor)>? RequestAddSingleDanmaku;
         public void Progress(int p) { Position = p; ProgressChanged?.Invoke(this, p); }
         public void Seek(int p) { Position = p; SeekRequested?.Invoke(this, p); }
         public void Redraw() => RequestRedrawDanmaku?.Invoke(this, EventArgs.Empty);
-        public void OtherInputs() { PauseDanmaku?.Invoke(this, EventArgs.Empty); ResumeDanmaku?.Invoke(this, EventArgs.Empty); RequestResetStyle?.Invoke(this, EventArgs.Empty); ExtraSpeedChanged?.Invoke(this, EventArgs.Empty); RequestAddSingleDanmaku?.Invoke(this, "text"); RequestClearDanmaku?.Invoke(this, EventArgs.Empty); }
+        public void OtherInputs() { PauseDanmaku?.Invoke(this, EventArgs.Empty); ResumeDanmaku?.Invoke(this, EventArgs.Empty); RequestResetStyle?.Invoke(this, EventArgs.Empty); ExtraSpeedChanged?.Invoke(this, EventArgs.Empty); RequestAddSingleDanmaku?.Invoke(this, ("text", null)); RequestClearDanmaku?.Invoke(this, EventArgs.Empty); }
     }
 }
 namespace BiliCopilot.UI.Controls.Danmaku

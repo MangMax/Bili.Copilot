@@ -1,8 +1,11 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.Items;
+using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
@@ -20,11 +23,20 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     private bool _isTouch;
     private bool _isInTransportControls;
     private bool _isInTitleBar;
+    private bool _isSendingDetailsDanmaku;
+    private bool _useDefaultLayout;
+    private long _splitterHideToken;
+    private long _splitterWidthToken;
+    private OverlayPresentation _presentation;
     private Point _lastPointerPosition;
 
     public PlayerOverlay()
     {
         InitializeComponent();
+        // 初始布局：按用户偏好（记忆上次/总是铺满/总是默认布局）决定.
+        var layoutPreference = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerLayoutPreference, Models.Constants.PlayerLayoutPreference.Remember);
+        var lastUseDefaultLayout = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.LastPlayerUseDefaultLayout, false);
+        _useDefaultLayout = BiliCopilot.UI.Player.PlayerWindowPreferenceResolver.ResolveInitialDefaultLayout(layoutPreference, lastUseDefaultLayout);
         _controlTimer = DispatcherQueue.CreateTimer();
         _controlTimer.Interval = TimeSpan.FromMilliseconds(1500);
         _controlTimer.Tick += OnControlTimerTick;
@@ -62,6 +74,9 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     protected override void OnControlLoaded()
     {
         AttachTitleBar();
+        _splitterHideToken = DetailsSidebarToggle.RegisterPropertyChangedCallback(VisibilityToggleButton.IsHideProperty, OnDetailsSplitterPropertyChanged);
+        _splitterWidthToken = DetailsSplitter.RegisterPropertyChangedCallback(PropertySizer.BindingProperty, OnDetailsSplitterPropertyChanged);
+        UpdatePlaybackLayout();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         ViewModel.WarningOccurred += OnWarningOccurred;
         ViewModel.RequestShowNextTip += OnRequestShowNextTip;
@@ -73,6 +88,8 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     protected override void OnControlUnloaded()
     {
         DetachTitleBar();
+        DetailsSidebarToggle.UnregisterPropertyChangedCallback(VisibilityToggleButton.IsHideProperty, _splitterHideToken);
+        DetailsSplitter.UnregisterPropertyChangedCallback(PropertySizer.BindingProperty, _splitterWidthToken);
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         ViewModel.WarningOccurred -= OnWarningOccurred;
         ViewModel.RequestShowNextTip -= OnRequestShowNextTip;
@@ -86,7 +103,6 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         _controlTimer.Stop();
         _cursorTimer.Tick -= OnCursorTimerTick;
         _cursorTimer.Stop();
-        SourceListView?.ItemsSource = default;
     }
 
     private void OnRequestHideNextTip(object? sender, EventArgs e)
@@ -125,8 +141,11 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         // 控件一旦 Collapsed，挂在它上面的 Flyout 会跟着关闭，正在操作的面板就被抢走了.
         if (!_isTouch && !ViewModel.IsExtraPanelVisible && !ViewModel.IsPopupVisible)
         {
-            _isInTitleBar = position.Y <= HeaderBarHeight && position.Y >= 0;
-            _isInTransportControls = TransportControls?.ContainsInteractivePoint(position) == true;
+            var videoPosition = e.GetCurrentPoint(VideoViewport).Position;
+            _isInTitleBar = !_presentation.UsesDefaultLayout && videoPosition.Y >= 0 && videoPosition.Y <= HeaderBarHeight
+                && videoPosition.X >= 0 && videoPosition.X <= VideoViewport.ActualWidth;
+            _isInTransportControls = TransportControls?.ContainsInteractivePoint(
+                videoPosition, VideoViewport.ActualWidth, VideoViewport.ActualHeight) == true;
             if (_isInTitleBar || _isInTransportControls)
             {
                 // If the pointer is in the title bar or transport controls, show controls immediately.
@@ -148,6 +167,7 @@ public sealed partial class PlayerOverlay : PlayerControlBase
     {
         if (e.PropertyName == nameof(ViewModel.IsControlsVisible))
         {
+            UpdateHeaderVisibility();
             UpdateTitleBarRegions();
             if (!ViewModel.IsControlsVisible && !_controlTimer.IsRunning)
             {
@@ -162,11 +182,145 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         {
             UpdateTitleBarRegions();
         }
+        else if (e.PropertyName == nameof(ViewModel.Connector))
+        {
+            UpdatePlaybackLayout();
+        }
         else if (e.PropertyName == nameof(ViewModel.CurrentVolume))
         {
             var thumbHeight = VolumeContainer.ActualHeight * (ViewModel.CurrentVolume / ViewModel.MaxVolume);
             VolumeThumb?.Height = Math.Max(0, thumbHeight);
         }
+    }
+
+    private void OnLayoutToggleRequested(object? sender, EventArgs e)
+    {
+        _useDefaultLayout = !_useDefaultLayout;
+        // 记住用户手动选择的布局，供“记忆上次”初始布局偏好读取.
+        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.LastPlayerUseDefaultLayout, _useDefaultLayout);
+        ViewModel.IsExtraPanelVisible = false;
+        UpdatePlaybackLayout();
+    }
+
+    private void UpdatePlaybackLayout()
+    {
+        UpdatePresentation();
+        var detailsVisibility = _presentation.UsesDefaultLayout ? Visibility.Visible : Visibility.Collapsed;
+        DetailsBackground.Visibility = DetailsLeftGutter.Visibility = DetailsRightGutter.Visibility = detailsVisibility;
+        DetailsDanmakuBar.Visibility = detailsVisibility;
+        VideoViewportFrame.CornerRadius = new CornerRadius(_presentation.UsesDefaultLayout ? 8 : 0);
+        VideoCornerMask.Visibility = detailsVisibility;
+        VideoCornerMask.Margin = VideoViewportFrame.Margin = _presentation.UsesDefaultLayout ? new Thickness(16, 54, 16, 0) : new Thickness(0);
+        OverlayTitle.Visibility = PlaybackWidget.Visibility = _presentation.UsesDefaultLayout ? Visibility.Collapsed : Visibility.Visible;
+        UpdateDetailsSidebar();
+        HeaderQuality.Visibility = _presentation.UsesDefaultLayout ? Visibility.Collapsed : Visibility.Visible;
+        DetailsCompactButton.Visibility = detailsVisibility;
+        DetailsWindowTitle.Visibility = detailsVisibility;
+        HeaderGradient.Visibility = _presentation.UsesDefaultLayout ? Visibility.Collapsed : Visibility.Visible;
+        UpdateHeaderVisibility();
+        UpdateTitleBarRegions();
+        UpdateVideoViewport();
+    }
+
+    private void UpdatePresentation()
+    {
+        var window = ViewModel?.Window?.GetWindow().Presenter.Kind switch
+        {
+            AppWindowPresenterKind.CompactOverlay => OverlayWindowMode.Compact,
+            AppWindowPresenterKind.FullScreen => OverlayWindowMode.FullScreen,
+            AppWindowPresenterKind.Overlapped => OverlayWindowMode.Overlapped,
+            _ => OverlayWindowMode.Other,
+        };
+        _presentation = OverlayControlLayout.Resolve(window,
+            ViewModel?.Connector is VideoConnectorViewModel or PgcConnectorViewModel,
+            _useDefaultLayout, RootGrid.ActualWidth, RootGrid.ActualHeight);
+        TransportControls.ApplyPresentation(_presentation);
+    }
+
+    private void OnPlayerRootSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        UpdatePresentation();
+        UpdateDetailsSidebar();
+    }
+
+    private void OnDetailsSplitterPropertyChanged(DependencyObject sender, DependencyProperty property)
+        => UpdateDetailsSidebar();
+
+    private void UpdateDetailsSidebar()
+    {
+        var width = OverlayControlLayout.GetSidebarWidth(_presentation, RootGrid.ActualWidth, RootGrid.ActualHeight,
+            DetailsSplitter.Minimum, DetailsSplitter.Binding);
+        var canShowSidebar = width > 0;
+        var showSidebar = canShowSidebar && !DetailsSidebarToggle.IsHide;
+        DetailsSidebarToggleHost.Visibility = canShowSidebar ? Visibility.Visible : Visibility.Collapsed;
+        DetailsSplitter.Visibility = DetailsSidebarSurface.Visibility = DetailsSidebar.Visibility =
+            showSidebar ? Visibility.Visible : Visibility.Collapsed;
+        DetailsColumn.Width = new GridLength(showSidebar ? width : 0);
+        DockedSidebarContent.Content = showSidebar ? ViewModel?.Connector : null;
+    }
+
+    private void UpdateHeaderVisibility()
+    {
+        HeaderBar.Height = _presentation.UsesDefaultLayout ? 48 : 44;
+        HeaderOverlay.Height = _presentation.UsesDefaultLayout ? HeaderBar.Height : 60;
+        HeaderOverlay.Visibility = _presentation.UsesDefaultLayout || ViewModel.IsControlsVisible ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void OnDetailsDanmakuTextChanged(object sender, TextChangedEventArgs e)
+        => UpdateDetailsDanmakuSendButton();
+
+    private async void OnDetailsDanmakuSendClick(object sender, RoutedEventArgs e)
+        => await SendDetailsDanmakuAsync();
+
+    private async void OnDetailsDanmakuKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == Windows.System.VirtualKey.Enter)
+        {
+            e.Handled = true;
+            await SendDetailsDanmakuAsync();
+        }
+    }
+
+    private async Task SendDetailsDanmakuAsync()
+    {
+        if (_isSendingDetailsDanmaku || string.IsNullOrWhiteSpace(DetailsDanmakuInput.Text))
+        {
+            return;
+        }
+
+        var text = DetailsDanmakuInput.Text;
+        _isSendingDetailsDanmaku = true;
+        UpdateDetailsDanmakuSendButton();
+        try
+        {
+            if (await ViewModel.TrySendInlineDanmakuAsync(text.Trim()) && DetailsDanmakuInput.Text == text)
+            {
+                DetailsDanmakuInput.Text = string.Empty;
+            }
+        }
+        finally
+        {
+            _isSendingDetailsDanmaku = false;
+            UpdateDetailsDanmakuSendButton();
+        }
+    }
+
+    private void UpdateDetailsDanmakuSendButton()
+        => DetailsDanmakuSendButton.IsEnabled = !_isSendingDetailsDanmaku && !string.IsNullOrWhiteSpace(DetailsDanmakuInput.Text);
+
+    private void OnVideoViewportSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        VideoViewport.Clip = new RectangleGeometry { Rect = new Rect(0, 0, e.NewSize.Width, e.NewSize.Height) };
+        UpdateVideoViewport();
+    }
+
+    private void UpdateVideoViewport()
+    {
+        var scale = XamlRoot?.RasterizationScale ?? 1d;
+        var margin = VideoViewportFrame.Margin;
+        ViewModel?.Window?.SetVideoViewport(_presentation.UsesDefaultLayout
+            ? new Rect(margin.Left * scale, margin.Top * scale, VideoViewport.ActualWidth * scale, VideoViewport.ActualHeight * scale)
+            : null);
     }
 
     private void OnControlTimerTick(DispatcherQueueTimer sender, object args)
@@ -272,11 +426,18 @@ public sealed partial class PlayerOverlay : PlayerControlBase
         return Visibility.Visible;
     }
 
+    private void OnSourceFlyoutOpened(object sender, object e) => ViewModel.IsPopupVisible = true;
+
+    private void OnSourceFlyoutClosed(object sender, object e) => ViewModel.IsPopupVisible = false;
+
     private void OnSourceItemClick(object sender, RoutedEventArgs e)
     {
         var selectedSource = (sender as FrameworkElement)?.DataContext as SourceItemViewModel;
         selectedSource?.ActiveCommand.Execute(default);
-        SourceFlyout?.Hide();
+        if (sender is FrameworkElement element)
+        {
+            CloseAncestorFlyout(element);
+        }
     }
 
     private void OnLiveQualityItemClick(object sender, RoutedEventArgs e)

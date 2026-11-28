@@ -730,8 +730,12 @@ public sealed partial class PlayerViewModel
         });
     }
 
-    private void OnWindowDestroying(AppWindow sender, object args)
-        => Close();
+    private void OnWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
+    {
+        args.Cancel = true;
+        // Start teardown after the native close notification returns.
+        queue.TryEnqueue(Close);
+    }
 
     private async void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -1038,7 +1042,7 @@ public sealed partial class PlayerViewModel
 
     private void OnWindowKeyDown(InputKeyboardSource sender, KeyEventArgs args)
     {
-        if (IsControlsVisible || IsPopupVisible || IsExtraPanelVisible)
+        if (IsControlsVisible || IsPopupVisible || IsExtraPanelVisible || Window?.IsTextInputFocused == true)
         {
             return;
         }
@@ -1064,7 +1068,7 @@ public sealed partial class PlayerViewModel
 
     private async void OnWindowKeyUp(InputKeyboardSource sender, KeyEventArgs args)
     {
-        if (IsPopupVisible || IsExtraPanelVisible)
+        if (IsPopupVisible || IsExtraPanelVisible || Window?.IsTextInputFocused == true)
         {
             return;
         }

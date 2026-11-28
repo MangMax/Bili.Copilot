@@ -16,7 +16,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// </summary>
 /// <remarks>
 /// 连接开始于房间详情成功之后，停止于关闭/换房；注入只调用共用的
-/// <see cref="DanmakuRenderViewModel.AddDanmaku(string)"/>，不新写渲染器。
+/// <see cref="DanmakuRenderViewModel.AddDanmaku"/>，不新写渲染器。
 /// 上屏在固定节拍里批量投递到 UI 线程（每个节拍最多一次调度），不存在逐条调度。
 /// 扩展接缝：#197 订阅 <see cref="DanmakuPump"/> 的 <see cref="LiveEventPump.EventReceived"/> 构建聊天流；
 /// #198 订阅同一事件流与 <see cref="LiveEventPump.StateChanged"/> 驱动房间状态与连接提示。

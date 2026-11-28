@@ -58,13 +58,23 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         IsSponsorBlockEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.SponsorBlockEnabled, true);
         IsSponsorBlockMarkerVisible = SponsorBlockMarkerSettings.IsVisible;
         InitializeSponsorBlockSettings();
-        PlayerDisplayModeCollection = Enum.GetValues<PlayerDisplayMode>().ToList();
         PreferCodecCollection = Enum.GetValues<PreferCodecType>().ToList();
         PreferQualityCollection = Enum.GetValues<PreferQualityType>().ToList();
         PreferDecodeCollection = Enum.GetValues<PreferDecodeType>().ToList();
-        MTCBehaviorCollection = Enum.GetValues<MTCBehavior>().ToList();
         AutoCompactOverlayRatio = SettingsToolkit.CompactOverlayRatio.Enabled;
-        DefaultPlayerDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
+        PlayerWindowModeIndex = HideMainWindowOnPlay ? 0 : 1;
+        PlayerLayoutPreferenceIndex = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerLayoutPreference, (int)PlayerLayoutPreference.Remember);
+        StartupPresenterIndex = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerPresenterModePreference, (int)PlayerPresenterModePreference.Remember);
+        if (!Enum.IsDefined((PlayerLayoutPreference)PlayerLayoutPreferenceIndex))
+        {
+            PlayerLayoutPreferenceIndex = (int)PlayerLayoutPreference.Remember;
+        }
+
+        if (!Enum.IsDefined((PlayerPresenterModePreference)StartupPresenterIndex))
+        {
+            StartupPresenterIndex = (int)PlayerPresenterModePreference.Remember;
+        }
+
         PreferCodec = SettingsToolkit.ReadLocalSetting(SettingNames.PreferCodec, PreferCodecType.H264);
         PreferQuality = SettingsToolkit.ReadLocalSetting(SettingNames.PreferQuality, PreferQualityType.Auto);
         IsPopularNavVisible = this.Get<ISettingsToolkit>().ReadLocalSetting($"Is{typeof(PopularPage).Name}Visible", true);
@@ -75,7 +85,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         IsCinemaNavVisible = this.Get<ISettingsToolkit>().ReadLocalSetting($"Is{typeof(CinemaPage).Name}Visible", true);
         IsArticleNavVisible = this.Get<ISettingsToolkit>().ReadLocalSetting($"Is{typeof(ArticlePartitionPage).Name}Visible", true);
         StepBackwardSecond = SettingsToolkit.ReadLocalSetting(SettingNames.StepBackwardSecond, 10d);
-        StepForwardSecond = SettingsToolkit.ReadLocalSetting(SettingNames.StepForwardSecond, 30d);
+        StepForwardSecond = SettingsToolkit.ReadLocalSetting(SettingNames.StepForwardSecond, 10d);
         PreferAudioChannelLayout = SettingsToolkit.ReadLocalSetting(SettingNames.PreferAudioChannelLayout, Richasy.MpvKernel.Core.Enums.AudioChannelLayoutType.Auto);
         MpvBuiltInProfile = SettingsToolkit.ReadLocalSetting(SettingNames.MpvBuiltInProfile, MpvBuiltInProfile.HighQuality);
         UseIntegrationWhenSinglePlayWindow = SettingsToolkit.ReadLocalSetting(SettingNames.UseIntegrationWhenSinglePlayWindow, true);
@@ -89,7 +99,7 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         var cacheDir = SettingsToolkit.ReadLocalSetting(SettingNames.CacheDir, string.Empty);
         HasCustomCacheDir = !string.IsNullOrEmpty(cacheDir);
         CacheDirDescription = string.IsNullOrEmpty(cacheDir) ? "--demuxer-cache-dir" : cacheDir;
-        TempPlaybackRate = SettingsToolkit.ReadLocalSetting(SettingNames.TempPlaybackRate, 3.0);
+        TempPlaybackRate = SettingsToolkit.ReadLocalSetting(SettingNames.TempPlaybackRate, 2.0);
         try
         {
             PreferDecode = SettingsToolkit.ReadLocalSetting(SettingNames.PreferDecode, PreferDecodeType.Auto);
@@ -100,7 +110,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
             PreferDecode = PreferDecodeType.Auto;
         }
 
-        MTCBehavior = SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic);
         BottomProgressVisible = SettingsToolkit.ReadLocalSetting(SettingNames.IsBottomProgressBarVisible, true);
         DefaultDownloadPath = SettingsToolkit.ReadLocalSetting(SettingNames.DownloadFolder, string.Empty);
         UseExternalBBDown = SettingsToolkit.ReadLocalSetting(SettingNames.UseExternalBBDown, false);
@@ -417,8 +426,26 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
     partial void OnAutoCompactOverlayRatioChanged(bool value)
         => SettingsToolkit.CompactOverlayRatio.SetEnabled(value);
 
-    partial void OnDefaultPlayerDisplayModeChanged(PlayerDisplayMode value)
-        => SettingsToolkit.WriteLocalSetting(SettingNames.DefaultPlayerDisplayMode, value);
+    partial void OnPlayerWindowModeIndexChanged(int value)
+    {
+        HideMainWindowOnPlay = value == 0;
+    }
+
+    partial void OnPlayerLayoutPreferenceIndexChanged(int value)
+    {
+        if (Enum.IsDefined((PlayerLayoutPreference)value))
+        {
+            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerLayoutPreference, value);
+        }
+    }
+
+    partial void OnStartupPresenterIndexChanged(int value)
+    {
+        if (Enum.IsDefined((PlayerPresenterModePreference)value))
+        {
+            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerPresenterModePreference, value);
+        }
+    }
 
     partial void OnPreferCodecChanged(PreferCodecType value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.PreferCodec, value);
@@ -527,9 +554,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         SettingsToolkit.WriteLocalSetting(SettingNames.IsTopNavBarShown, value);
         this.Get<NavigationViewModel>().IsTopNavBarShown = value;
     }
-
-    partial void OnMTCBehaviorChanged(MTCBehavior value)
-        => SettingsToolkit.WriteLocalSetting(SettingNames.MTCBehavior, value);
 
     partial void OnIsAIStreamingResponseChanged(bool value)
         => SettingsToolkit.WriteLocalSetting(SettingNames.IsAIStreamingResponse, value);

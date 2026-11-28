@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -522,6 +522,12 @@
   <data name="DanmakuMerge" xml:space="preserve">
     <value>弹幕合并</value>
   </data>
+  <data name="DanmakuColorHex" xml:space="preserve">
+    <value>弹幕颜色（十六进制色号）</value>
+  </data>
+  <data name="DanmakuColorLevelRequired" xml:space="preserve">
+    <value>账号达到 Lv2 后可发送彩色弹幕</value>
+  </data>
   <data name="DanmakuOpacity" xml:space="preserve">
     <value>弹幕不透明度</value>
   </data>
@@ -572,9 +578,6 @@
   </data>
   <data name="DefaultFavorite" xml:space="preserve">
     <value>默认收藏夹</value>
-  </data>
-  <data name="DefaultPlayerDisplayMode" xml:space="preserve">
-    <value>默认播放器显示模式</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>删除</value>
@@ -1480,7 +1483,7 @@
     <value>播放器控制</value>
   </data>
   <data name="PlayerControlDescription" xml:space="preserve">
-    <value>包含优先解码以及一些媒体控制器的设置</value>
+    <value>快进/快退步长、临时倍速、全局倍速与底部进度条</value>
   </data>
   <data name="PlayerControlMode" xml:space="preserve">
     <value>播放控制器操作模式</value>
@@ -2804,12 +2807,6 @@
   <data name="StopWhenEndOfPlaylistDescription" xml:space="preserve">
     <value>当播放到播放列表最后一个视频时，不再切换到其它视频</value>
   </data>
-  <data name="SingleLoop" xml:space="preserve">
-    <value>单个循环</value>
-  </data>
-  <data name="ListLoop" xml:space="preserve">
-    <value>列表循环</value>
-  </data>
   <data name="NoLoop" xml:space="preserve">
     <value>不循环</value>
   </data>
@@ -2836,12 +2833,6 @@
   </data>
   <data name="CanNotSeek" xml:space="preserve">
     <value>当前状态不支持跳转</value>
-  </data>
-  <data name="MTCBehavior" xml:space="preserve">
-    <value>播放控制器显示方式</value>
-  </data>
-  <data name="MTCBehaviorDescription" xml:space="preserve">
-    <value>选择自动弹出（鼠标移动即显示）还是手动呼出（点击播放器才显示）</value>
   </data>
   <data name="UseStreamResponse" xml:space="preserve">
     <value>使用流式响应（打字机模式）</value>
@@ -3827,8 +3818,6 @@
   <data name="SettingsCategoryUpdateDescription" xml:space="preserve"><value>检查应用更新、更新说明、自动下载与下载源</value></data>
   <data name="SettingsCategoryAIService" xml:space="preserve"><value>AI 服务</value></data>
   <data name="SettingsCategoryAIServiceDescription" xml:space="preserve"><value>流式响应、自定义提示词与模型服务配置</value></data>
-  <data name="SettingsSubsectionPlaybackBasic" xml:space="preserve"><value>基础播放</value></data>
-  <data name="SettingsSubsectionPlaybackEngine" xml:space="preserve"><value>引擎与增强</value></data>
   <data name="SettingsSubsectionAppearance" xml:space="preserve"><value>外观</value></data>
   <data name="SettingsSubsectionNavigationInteraction" xml:space="preserve"><value>导航与交互</value></data>
   <data name="SettingsSubsectionDownloadScreenshot" xml:space="preserve"><value>下载与截图</value></data>
@@ -3838,4 +3827,28 @@
   <data name="SettingsSubsectionUpdatePreferences" xml:space="preserve"><value>更新偏好</value></data>
   <data name="UpdateAutoDownloadDescription" xml:space="preserve"><value>检测到新版本后自动在后台下载安装包</value></data>
   <data name="UpdateDownloadSourceDescription" xml:space="preserve"><value>选择检查和下载更新包时优先使用的来源</value></data>
+  <data name="PlayerFillLayout" xml:space="preserve">
+    <value>铺满</value>
+  </data>
+  <data name="SettingsSubsectionPlaybackNetworkQuality" xml:space="preserve"><value>网络与画质</value></data>
+  <data name="SettingsSubsectionPlaybackContinuous" xml:space="preserve"><value>字幕与连播</value></data>
+  <data name="SettingsSubsectionPlayerWindow" xml:space="preserve"><value>播放窗口</value></data>
+  <data name="PlayerWindowMode" xml:space="preserve"><value>播放窗口模式</value></data>
+  <data name="PlayerWindowModeDescription" xml:space="preserve"><value>单窗口隐藏主窗口并将播放窗口作为主界面；独立窗口不隐藏主窗口，可同时打开多个播放窗口</value></data>
+  <data name="PlayerWindowModeSingle" xml:space="preserve"><value>单窗口</value></data>
+  <data name="PlayerWindowModeIndependent" xml:space="preserve"><value>独立窗口</value></data>
+  <data name="PlayerLayoutPreference" xml:space="preserve"><value>初始布局</value></data>
+  <data name="PlayerLayoutPreferenceDescription" xml:space="preserve"><value>每次打开播放窗口时使用的界面布局</value></data>
+  <data name="PlayerLayoutRemember" xml:space="preserve"><value>记忆上次</value></data>
+  <data name="PlayerLayoutFill" xml:space="preserve"><value>总是铺满</value></data>
+  <data name="PlayerLayoutDefault" xml:space="preserve"><value>总是默认布局</value></data>
+  <data name="StartupPresenterMode" xml:space="preserve"><value>初始播放模式</value></data>
+  <data name="StartupPresenterModeDescription" xml:space="preserve"><value>每次打开播放窗口时进入的窗口模式</value></data>
+  <data name="PresenterRemember" xml:space="preserve"><value>记忆上次</value></data>
+  <data name="PresenterFullScreen" xml:space="preserve"><value>总是全屏</value></data>
+  <data name="PresenterCompactOverlay" xml:space="preserve"><value>总是小窗</value></data>
+  <data name="PresenterNormal" xml:space="preserve"><value>总是普通窗口</value></data>
+  <data name="PlaybackNetworkQualityDescription" xml:space="preserve"><value>画质偏好、解码方式、播放线路与编码器</value></data>
+  <data name="PlaybackContinuousDescription" xml:space="preserve"><value>自动连播与播完行为</value></data>
+  <data name="PlaybackWindowDescription" xml:space="preserve"><value>窗口形态、初始布局与初始播放模式</value></data>
 </root>

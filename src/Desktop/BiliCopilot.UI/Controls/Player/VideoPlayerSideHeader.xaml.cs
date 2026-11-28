@@ -95,7 +95,7 @@ public sealed partial class VideoPlayerSideHeader : VideoPlayerControlBase
             AutomationProperties.SetAutomationId(item, $"VideoPlayerSection{index}");
             AutomationProperties.SetName(item, section.Title ?? string.Empty);
             return item;
-        }) ?? Enumerable.Empty<SelectorBarItem>();
+        }).ToArray() ?? [];
         Tabs.SetItems(items, ViewModel?.SelectedSection);
     }
 }

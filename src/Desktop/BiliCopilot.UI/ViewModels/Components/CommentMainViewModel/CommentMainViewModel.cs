@@ -3,7 +3,6 @@
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Models;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -33,10 +32,12 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     /// </summary>
     public void Initialize(string sourceId, CommentTargetType targetType, CommentSortType sortType)
     {
+        _sourceVersion++;
         Clear();
         Id = sourceId;
         _targetType = targetType;
         SortType = sortType;
+        IsLoading = false;
         Initialized?.Invoke(this, EventArgs.Empty);
     }
 
@@ -54,13 +55,12 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        var targetId = Id;
-        var targetType = _targetType;
-        var sortType = SortType;
+        if (IsLoading || string.IsNullOrEmpty(Id))
+        {
+            return;
+        }
+
         Clear();
-        Id = targetId;
-        _targetType = targetType;
-        SortType = sortType;
         await LoadItemsAsync();
     }
 
@@ -72,10 +72,16 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             return;
         }
 
+        var sourceVersion = _sourceVersion;
         try
         {
             IsLoading = true;
             var view = await _service.GetCommentsAsync(Id, _targetType, SortType, _offset);
+            if (sourceVersion != _sourceVersion)
+            {
+                return;
+            }
+
             _preventLoadMore = view.IsEnd;
             if (view.TopComment is not null)
             {
@@ -96,18 +102,29 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         catch (Exception ex)
         {
             _logger.LogError(ex, "尝试加载评论时失败");
-            _preventLoadMore = true;
+            if (sourceVersion == _sourceVersion)
+            {
+                _preventLoadMore = true;
+            }
         }
         finally
         {
-            IsLoading = false;
-            IsEmpty = TopItem is null && Comments.Count == 0;
+            if (sourceVersion == _sourceVersion)
+            {
+                IsEmpty = TopItem is null && Comments.Count == 0;
+                IsLoading = false;
+            }
         }
     }
 
     [RelayCommand]
     private async Task ChangeSortTypeAsync(CommentSortType type)
     {
+        if (IsLoading)
+        {
+            return;
+        }
+
         SortType = type;
         await RefreshAsync();
     }
@@ -173,12 +190,9 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             }
         }
 
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, Comments.Clear);
+        Comments.Clear();
         _offset = 0;
         _preventLoadMore = false;
-        Id = default;
-        _targetType = default;
-        SortType = default;
         IsEmpty = false;
         TopItem = default;
         SelectedItem = default;

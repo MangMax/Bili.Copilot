@@ -7,9 +7,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <RichTextBlock
-        x:Name="RichBlock"
-        IsTextSelectionEnabled="True"
-        LineHeight="28"
-        TextWrapping="Wrap" />
+    <StackPanel Spacing="4">
+        <RichTextBlock
+            x:Name="RichBlock"
+            IsTextSelectionEnabled="True"
+            IsTextTrimmedChanged="OnTextTrimmedChanged"
+            LineHeight="28"
+            TextTrimming="CharacterEllipsis"
+            TextWrapping="Wrap" />
+        <Button
+            x:Name="ExpansionButton"
+            Padding="6,4"
+            AutomationProperties.AutomationId="DescriptionExpandButton"
+            BorderThickness="0"
+            Click="OnExpansionClick"
+            Visibility="Collapsed" />
+    </StackPanel>
 </UserControl>

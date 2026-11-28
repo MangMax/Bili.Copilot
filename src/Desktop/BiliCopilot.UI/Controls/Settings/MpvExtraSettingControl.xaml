@@ -21,6 +21,17 @@
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
             <base:SettingsCard
+                Description="{ext:Locale Name=CustomMpvConfigDescription}"
+                Header="{ext:Locale Name=CustomMpvConfig}"
+                Visibility="{x:Bind ViewModel.IsMpvCustomOptionVisible, Mode=OneWay}">
+                <Button
+                    MinWidth="120"
+                    AutomationProperties.AutomationId="OpenMpvConfigButton"
+                    AutomationProperties.Name="{ext:Locale Name=OpenConfig}"
+                    Command="{x:Bind ViewModel.OpenMpvConfigInEditorCommand, Mode=OneWay}"
+                    Content="{ext:Locale Name=OpenConfig}" />
+            </base:SettingsCard>
+            <base:SettingsCard
                 x:Name="D3D11Adapter"
                 Description="--d3d11-adapter"
                 Header="{ext:Locale Name=D3D11Adapter}">

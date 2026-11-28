@@ -16,6 +16,15 @@
     x:Class="BiliCopilot.UI.Controls.Core.OverlayTransportControls"
     mc:Ignorable="d">
     <UserControl.Resources>
+        <DataTemplate x:Key="PlayerDefaultLayoutIconTemplate">
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconLayoutColumnTwo}" />
+        </DataTemplate>
+        <DataTemplate x:Key="PlayerFillLayoutIconTemplate">
+            <PathIcon
+                Width="16"
+                Height="16"
+                Data="M 1,2.5 H 2.5 V 13.5 H 1 Z M 13.5,2.5 H 15 V 13.5 H 13.5 Z M 6.1,4.5 L 7.15,5.55 L 5.45,7.25 H 10.55 L 8.85,5.55 L 9.9,4.5 L 13.4,8 L 9.9,11.5 L 8.85,10.45 L 10.55,8.75 H 5.45 L 7.15,10.45 L 6.1,11.5 L 2.6,8 Z" />
+        </DataTemplate>
         <Style
             x:Key="PlayerSettingsPresenter"
             TargetType="FlyoutPresenter"
@@ -30,30 +39,17 @@
             <Setter Property="local:PlayerFlyoutMotion.Origin" Value="Bottom" />
         </Style>
         <Style
-            x:Key="PlayerMenuPresenter"
-            TargetType="MenuFlyoutPresenter"
-            BasedOn="{StaticResource DefaultMenuFlyoutPresenterStyle}">
-            <Setter Property="Padding" Value="8" />
-            <Setter Property="Background" Value="{ThemeResource SolidBackgroundFillColorBaseBrush}" />
-            <Setter Property="MinWidth" Value="0" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-            <Setter Property="SystemBackdrop" Value="{x:Null}" />
-            <Setter Property="local:PlayerFlyoutMotion.MoveDuration" Value="{StaticResource ControlFastAnimationDuration}" />
-            <Setter Property="local:PlayerFlyoutMotion.FadeDuration" Value="{StaticResource ControlFasterAnimationDuration}" />
-            <Setter Property="local:PlayerFlyoutMotion.Origin" Value="Bottom" />
-        </Style>
-        <Style
             x:Key="PortraitSettingsPresenter"
             TargetType="FlyoutPresenter"
             BasedOn="{StaticResource PlayerSettingsPresenter}">
             <Setter Property="local:PlayerFlyoutMotion.Origin" Value="Right" />
         </Style>
-        <Style
-            x:Key="PortraitMenuPresenter"
-            TargetType="MenuFlyoutPresenter"
-            BasedOn="{StaticResource PlayerMenuPresenter}">
-            <Setter Property="local:PlayerFlyoutMotion.Origin" Value="Right" />
+        <Style x:Key="OverflowActionStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
     </UserControl.Resources>
     <Grid
@@ -69,19 +65,101 @@
         </Grid.RowDefinitions>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
+                <VisualState x:Name="OverlayLayout" />
+                <VisualState x:Name="OverlayWithoutCardLayout">
+                    <VisualState.Setters>
+                        <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
+                        <Setter Target="LeftColumn.Width" Value="Auto" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CompactControlsLayout">
+                    <VisualState.Setters>
+                        <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
+                        <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
+                        <Setter Target="LeftColumn.Width" Value="Auto" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CompactPortraitLayout">
+                    <VisualState.Setters>
+                        <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
+                        <Setter Target="LeftColumn.Width" Value="*" />
+                        <Setter Target="RightColumn.Width" Value="Auto" />
+                        <Setter Target="TransportHost.(Grid.Column)" Value="0" />
+                        <Setter Target="TransportHost.HorizontalAlignment" Value="Center" />
+                        <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
+                        <Setter Target="ProgressPanel.Margin" Value="12,0,12,12" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="DefaultLayout">
+                    <VisualState.Setters>
+                        <Setter Target="TransportHost.(Grid.Column)" Value="0" />
+                        <Setter Target="TransportHost.HorizontalAlignment" Value="Left" />
+                        <Setter Target="LeftColumn.Width" Value="Auto" />
+                        <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
+                        <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
+                        <Setter Target="RightColumn.Width" Value="Auto" />
+                        <Setter Target="ProgressPanel.Margin" Value="16,0,16,0" />
+                        <Setter Target="ProgressHost.(Grid.Row)" Value="0" />
+                        <Setter Target="ProgressHost.(Grid.RowSpan)" Value="2" />
+                        <Setter Target="ControlsGrid.(Grid.Row)" Value="1" />
+                        <Setter Target="MiddleColumn.Width" Value="*" />
+                        <Setter Target="ProgressHost.VerticalAlignment" Value="Bottom" />
+                        <Setter Target="ProgressHost.Height" Value="34" />
+                        <Setter Target="ProgressHost.Margin" Value="0,0,0,40" />
+                        <Setter Target="ControlsGrid.Height" Value="40" />
+                        <Setter Target="ControlsGrid.Margin" Value="0,0,0,8" />
+                        <Setter Target="PositionColumn.Width" Value="0" />
+                        <Setter Target="DurationColumn.Width" Value="0" />
+                        <Setter Target="DetailsQualityHost.Visibility" Value="Visible" />
+                        <Setter Target="OverflowCompactOverlayItem.Visibility" Value="Collapsed" />
+                        <Setter Target="PlayPauseLoadingRing.Width" Value="40" />
+                        <Setter Target="PlayPauseLoadingRing.Height" Value="40" />
+                        <Setter Target="PlayPauseButton.HorizontalAlignment" Value="Center" />
+                        <Setter Target="PlayPauseButton.Style" Value="{StaticResource BasicPlayerIconButtonStyle}" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup>
                 <VisualState x:Name="WideState" />
+                <VisualState x:Name="DefaultWideState">
+                    <VisualState.Setters>
+                        <Setter Target="DetailsCacheSpeedHost.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="DefaultNarrowState">
+                    <VisualState.Setters>
+                        <Setter Target="FullVolumeContainer.Visibility" Value="Collapsed" />
+                        <Setter Target="SlimVolumeButton.Visibility" Value="Visible" />
+                        <Setter Target="DanmakuButton.Visibility" Value="Collapsed" />
+                        <Setter Target="FullScreenButton.Visibility" Value="Collapsed" />
+                        <Setter Target="LayoutButtonHost.Visibility" Value="Collapsed" />
+                        <Setter Target="OverflowButton.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="DefaultMinimumWidthState">
+                    <VisualState.Setters>
+                        <Setter Target="FullVolumeContainer.Visibility" Value="Collapsed" />
+                        <Setter Target="SlimVolumeButton.Visibility" Value="Collapsed" />
+                        <Setter Target="ChapterListButton.Visibility" Value="Collapsed" />
+                        <Setter Target="PrevButton.Visibility" Value="Collapsed" />
+                        <Setter Target="NextButton.Visibility" Value="Collapsed" />
+                        <Setter Target="SpeedButton.Visibility" Value="Collapsed" />
+                        <Setter Target="OverflowVolumeAction.Visibility" Value="Visible" />
+                        <Setter Target="OverflowSpeedAction.Visibility" Value="Visible" />
+                        <Setter Target="OverflowChapterHost.Visibility" Value="Visible" />
+                        <Setter Target="DanmakuButton.Visibility" Value="Collapsed" />
+                        <Setter Target="FullScreenButton.Visibility" Value="Collapsed" />
+                        <Setter Target="LayoutButtonHost.Visibility" Value="Collapsed" />
+                        <Setter Target="OverflowButton.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
                 <VisualState x:Name="BelowWideState">
                     <VisualState.Setters>
                         <Setter Target="FullVolumeContainer.Visibility" Value="Collapsed" />
                         <Setter Target="SlimVolumeButton.Visibility" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
-                <VisualState x:Name="MediumState">
-                    <VisualState.Setters>
-                        <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
-                        <Setter Target="LeftColumn.Width" Value="Auto" />
-                    </VisualState.Setters>
-                </VisualState>
+                <VisualState x:Name="MediumState" />
                 <VisualState x:Name="NarrowState">
                     <VisualState.Setters>
                         <Setter Target="FullVolumeContainer.Visibility" Value="Collapsed" />
@@ -91,28 +169,9 @@
                         <Setter Target="PrevButton.Visibility" Value="Collapsed" />
                         <Setter Target="NextButton.Visibility" Value="Visible" />
                         <Setter Target="DanmakuButton.Visibility" Value="Collapsed" />
-                        <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
-                        <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
                         <Setter Target="FullScreenButton.Visibility" Value="Collapsed" />
+                        <Setter Target="LayoutButtonHost.Visibility" Value="Collapsed" />
                         <Setter Target="OverflowButton.Visibility" Value="Visible" />
-                        <Setter Target="LeftColumn.Width" Value="Auto" />
-                        <Setter Target="RootGrid.Height" Value="120" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="CompactLandscapeState">
-                    <VisualState.Setters>
-                        <Setter Target="FullVolumeContainer.Visibility" Value="Collapsed" />
-                        <Setter Target="SlimVolumeButton.Visibility" Value="Visible" />
-                        <Setter Target="BackwardButton.Visibility" Value="Collapsed" />
-                        <Setter Target="ForwardButton.Visibility" Value="Visible" />
-                        <Setter Target="PrevButton.Visibility" Value="Collapsed" />
-                        <Setter Target="NextButton.Visibility" Value="Visible" />
-                        <Setter Target="DanmakuButton.Visibility" Value="Collapsed" />
-                        <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
-                        <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
-                        <Setter Target="FullScreenButton.Visibility" Value="Collapsed" />
-                        <Setter Target="OverflowButton.Visibility" Value="Visible" />
-                        <Setter Target="LeftColumn.Width" Value="Auto" />
                         <Setter Target="RootGrid.Height" Value="120" />
                     </VisualState.Setters>
                 </VisualState>
@@ -123,13 +182,8 @@
                         <Setter Target="ControlsBackdrop.Height" Value="160" />
                         <Setter Target="ControlsBackdrop.VerticalAlignment" Value="Bottom" />
                         <Setter Target="ControlsGrid.Padding" Value="0" />
-                        <Setter Target="LeftPresenter.Visibility" Value="Collapsed" />
-                        <Setter Target="LeftColumn.Width" Value="*" />
-                        <Setter Target="RightColumn.Width" Value="Auto" />
                         <Setter Target="TransportHost.(Grid.Row)" Value="1" />
-                        <Setter Target="TransportHost.(Grid.Column)" Value="0" />
                         <Setter Target="TransportHost.(Grid.ColumnSpan)" Value="3" />
-                        <Setter Target="TransportHost.HorizontalAlignment" Value="Center" />
                         <Setter Target="TransportHost.Margin" Value="0,8,0,16" />
                         <Setter Target="AccessoriesHost.VerticalAlignment" Value="Bottom" />
                         <Setter Target="AccessoriesHost.Margin" Value="0,0,8,0" />
@@ -141,10 +195,9 @@
                         <Setter Target="RightPanel.Margin" Value="0" />
                         <Setter Target="FullVolumeContainer.Visibility" Value="Collapsed" />
                         <Setter Target="SlimVolumeButton.Visibility" Value="Visible" />
-                        <Setter Target="CompactOverlayButton.Visibility" Value="Collapsed" />
                         <Setter Target="FullScreenButton.Visibility" Value="Collapsed" />
+                        <Setter Target="LayoutButtonHost.Visibility" Value="Collapsed" />
                         <Setter Target="OverflowButton.Visibility" Value="Visible" />
-                        <Setter Target="ProgressPanel.Margin" Value="12,0,12,12" />
                         <Setter Target="AccessoriesEnter.From" Value="60,0,0" />
                         <Setter Target="AccessoriesExit.To" Value="60,0,0" />
                         <Setter Target="VolumeContent.Width" Value="64" />
@@ -208,7 +261,7 @@
                         <Setter Target="SpeedFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
                         <Setter Target="SubtitleFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
                         <Setter Target="DanmakuFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
-                        <Setter Target="OverflowFlyout.MenuFlyoutPresenterStyle" Value="{StaticResource PortraitMenuPresenter}" />
+                        <Setter Target="OverflowFlyout.FlyoutPresenterStyle" Value="{StaticResource PortraitSettingsPresenter}" />
                         <Setter Target="SpeedPresets.ColumnSpacing" Value="0" />
                         <Setter Target="SpeedPresets.RowSpacing" Value="4" />
                     </VisualState.Setters>
@@ -368,6 +421,7 @@
                                 Glyph="{x:Bind GetPlayPauseSymbol(ViewModel.Player.PlaybackState), Mode=OneWay}" />
                         </Button>
                         <ProgressRing
+                            x:Name="PlayPauseLoadingRing"
                             Width="52"
                             Height="52"
                             HorizontalAlignment="Center"
@@ -404,6 +458,13 @@
                             FontSize="16"
                             Glyph="{StaticResource IconNextFilled}" />
                     </Button>
+                    <TextBlock
+                        x:Name="DetailsPlaybackTime"
+                        Margin="12,0,0,0"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="{x:Bind GetTimelineText(ViewModel.Player.Position, ViewModel.Player.Duration, ViewModel.IsVideoPreview), Mode=OneWay, FallbackValue=''}"
+                        Visibility="Collapsed" />
                 </StackPanel>
             </UserControl>
             <!--  右侧附加控制  -->
@@ -445,6 +506,19 @@
                     VerticalAlignment="Center"
                     Orientation="Horizontal"
                     SizeChanged="OnRightPanelSizeChanged">
+                    <Border x:Name="DetailsCacheSpeedHost" Visibility="Collapsed">
+                        <TextBlock
+                            AutomationProperties.AutomationId="DetailsCacheSpeed"
+                            Margin="0,0,8,0"
+                            MaxWidth="84"
+                            VerticalAlignment="Center"
+                            Foreground="{ThemeResource BasicPlayerButtonForeground}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind ViewModel.CacheSpeedText, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            Visibility="{x:Bind ViewModel.CacheSpeedText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
+                    </Border>
+                    <ContentPresenter x:Name="DetailsQualityHost" Margin="0,0,8,0" Content="{x:Bind DetailsQualityElement, Mode=OneWay}" Visibility="Collapsed" />
                     <Grid
                         x:Name="CompactRefreshHost"
                         Margin="0,0,8,0"
@@ -1226,6 +1300,18 @@
                         ToolTipService.ToolTip="{x:Bind GetCompactOverlayTip(ViewModel.Player.IsCompactOverlay), Mode=OneWay}">
                         <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
                     </Button>
+                    <Grid x:Name="LayoutButtonHost">
+                        <Button
+                            x:Name="PlaybackLayoutButton"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            AutomationProperties.AutomationId="PlaybackLayoutButton"
+                            Click="OnPlaybackLayoutClick"
+                            Style="{StaticResource BasicPlayerIconButtonStyle}"
+                            Visibility="Collapsed">
+                            <ContentPresenter x:Name="PlaybackLayoutIcon" Width="16" Height="16" Content="Layout" ContentTemplate="{StaticResource PlayerDefaultLayoutIconTemplate}" />
+                        </Button>
+                    </Grid>
                     <Button
                         x:Name="FullScreenButton"
                         Margin="0,0,8,0"
@@ -1243,25 +1329,67 @@
                         ToolTipService.ToolTip="{ext:Locale Name=MoreOptions}"
                         Visibility="Collapsed">
                         <Button.Flyout>
-                            <MenuFlyout
+                            <Flyout
+                                x:Name="OverflowFlyout"
+                                AreOpenCloseAnimationsEnabled="False"
                                 Closed="OnFlyoutClosed"
                                 Opened="OnDisplayFlyoutOpened"
                                 ShouldConstrainToRootBounds="True"
-                                x:Name="OverflowFlyout"
-                                AreOpenCloseAnimationsEnabled="False"
                                 Placement="Top"
-                                MenuFlyoutPresenterStyle="{StaticResource PlayerMenuPresenter}">
-                                <MenuFlyoutItem Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}" Text="{x:Bind GetCompactOverlayTip(ViewModel.Player.IsCompactOverlay), Mode=OneWay}">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                                <MenuFlyoutItem Command="{x:Bind ViewModel.ToggleFullScreenCommand, Mode=OneWay}" Text="{x:Bind GetFullScreenTip(ViewModel.Player.IsFullScreen), Mode=OneWay}">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetFullScreenSymbol(ViewModel.Player.IsFullScreen), Mode=OneWay}" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                            </MenuFlyout>
+                                FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
+                                <StackPanel MinWidth="144" Spacing="2">
+                                    <Button x:Name="OverflowBackwardAction" AutomationProperties.AutomationId="OverflowBackwardAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.SkipBackwardCommand, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconSeekBackward}" />
+                                            <TextBlock Text="{x:Bind ViewModel.BackwardTip, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="OverflowForwardAction" AutomationProperties.AutomationId="OverflowForwardAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.SkipForwardCommand, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconSeekForward}" />
+                                            <TextBlock Text="{x:Bind ViewModel.ForwardTip, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="OverflowVolumeAction" AutomationProperties.AutomationId="OverflowVolumeAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconSpeaker2}" />
+                                            <TextBlock Text="{ext:Locale Name=CurrentVolume}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="OverflowSpeedAction" AutomationProperties.AutomationId="OverflowSpeedAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconTopSpeed}" />
+                                            <TextBlock Text="{x:Bind GetSpeedText(ViewModel.Player.PlaybackRate), Mode=OneWay}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Border x:Name="OverflowChapterHost" Visibility="Collapsed">
+                                        <Button x:Name="OverflowChapterAction" AutomationProperties.AutomationId="OverflowChapterAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="{x:Bind ViewModel.IsChapterListAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                                <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconList}" />
+                                                <TextBlock Text="{ext:Locale Name=ChapterList}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </Border>
+                                    <Button x:Name="OverflowCompactOverlayItem" AutomationProperties.AutomationId="OverflowCompactOverlayItem" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
+                                            <TextBlock Text="{x:Bind GetCompactOverlayTip(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="PlaybackLayoutMenuItem" AutomationProperties.AutomationId="PlaybackLayoutMenuItem" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <ContentPresenter x:Name="PlaybackLayoutMenuIcon" Width="16" Height="16" Content="Layout" ContentTemplate="{StaticResource PlayerDefaultLayoutIconTemplate}" />
+                                            <TextBlock x:Name="PlaybackLayoutMenuText" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="OverflowFullScreenAction" AutomationProperties.AutomationId="OverflowFullScreenAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.ToggleFullScreenCommand, Mode=OneWay}">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetFullScreenSymbol(ViewModel.Player.IsFullScreen), Mode=OneWay}" />
+                                            <TextBlock Text="{x:Bind GetFullScreenTip(ViewModel.Player.IsFullScreen), Mode=OneWay}" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Flyout>
                         </Button.Flyout>
                         <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="14" Glyph="{StaticResource IconMoreVertical}" />
                     </Button>
@@ -1299,9 +1427,9 @@
                 Visibility="{x:Bind ViewModel.IsProgressPanelVisible, Mode=OneWay}"
                 x:Name="ProgressPanel">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition x:Name="PositionColumn" Width="60" />
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition x:Name="DurationColumn" Width="60" />
                 </Grid.ColumnDefinitions>
                 <Grid
                     x:Name="CommonPositionContainer"
