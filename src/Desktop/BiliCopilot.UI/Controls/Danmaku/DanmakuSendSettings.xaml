@@ -24,6 +24,7 @@
                 <RadioButton
                     x:Name="StandardItem"
                     MinWidth="0"
+                    AutomationProperties.AutomationId="DanmakuStandardSizeRadio"
                     Click="OnSizeItemClick"
                     Content="{ext:Locale Name=Standard}"
                     IsChecked="{x:Bind ViewModel.IsStandardSize, Mode=OneWay}"
@@ -31,6 +32,7 @@
                 <RadioButton
                     x:Name="SmallItem"
                     MinWidth="0"
+                    AutomationProperties.AutomationId="DanmakuSmallSizeRadio"
                     Click="OnSizeItemClick"
                     Content="{ext:Locale Name=Small}"
                     IsChecked="{x:Bind ViewModel.IsStandardSize, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
@@ -40,6 +42,7 @@
         <ComboBox
             x:Name="DanmakuLocationComboBox"
             HorizontalAlignment="Stretch"
+            AutomationProperties.AutomationId="DanmakuLocationComboBox"
             Header="{ext:Locale Name=Location}"
             ItemsSource="{x:Bind ViewModel.Locations, Mode=OneWay}"
             SelectedItem="{x:Bind ViewModel.Location, Mode=TwoWay}">
@@ -62,6 +65,7 @@
                 <TextBox
                     x:Name="DanmakuColorInput"
                     HorizontalAlignment="Stretch"
+                    AutomationProperties.AutomationId="DanmakuColorInput"
                     VerticalAlignment="Stretch"
                     AutomationProperties.Name="{ext:Locale Name=DanmakuColorHex}"
                     LostFocus="OnColorInputLostFocus"
@@ -99,6 +103,7 @@
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
+                            AutomationProperties.AutomationId="{x:Bind Converter={StaticResource ColorTextConverter}, Mode=OneTime}"
                             AutomationProperties.Name="{x:Bind Converter={StaticResource ColorTextConverter}}"
                             Click="OnColorItemClick"
                             DataContext="{x:Bind}"

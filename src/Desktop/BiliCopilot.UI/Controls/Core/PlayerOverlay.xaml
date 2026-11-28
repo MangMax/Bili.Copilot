@@ -361,6 +361,7 @@
                     </Border>
                     <HyperlinkButton
                         Padding="8,2"
+                        AutomationProperties.AutomationId="OpenVipPageButton"
                         AutomationProperties.Name="{ext:Locale Name=OpenVipPage}"
                         Command="{x:Bind ViewModel.OpenVipPageCommand, Mode=OneWay}"
                         Content="{ext:Locale Name=OpenVipPage}"
@@ -491,6 +492,7 @@
                         <base:EmptyHolder.ActionElement>
                             <HyperlinkButton
                                 HorizontalAlignment="Stretch"
+                                AutomationProperties.AutomationId="PlaybackErrorActionButton"
                                 Command="{x:Bind ViewModel.RunPlaybackErrorActionCommand, Mode=OneWay}"
                                 Content="{x:Bind ViewModel.ErrorActionText, Mode=OneWay}"
                                 Visibility="{x:Bind ViewModel.HasErrorAction, Mode=OneWay}" />
@@ -866,6 +868,8 @@
                             </Button>
                         </Grid>
                         <Button
+                            AutomationProperties.AutomationId="ExitCompactOverlayButton"
+                            AutomationProperties.Name="{ext:Locale Name=ExitCompactOverlay}"
                             Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}"
                             Style="{StaticResource LeftEdgeButtonStyle}"
                             ToolTipService.ToolTip="{ext:Locale Name=ExitCompactOverlay}"
@@ -907,6 +911,7 @@
                                 Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, FallbackValue=Collapsed}" />
                             <DropDownButton
                                 x:Name="SourceSelector"
+                                AutomationProperties.AutomationId="SourceSelector"
                                 Margin="12,0,0,0"
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Center"
@@ -939,6 +944,7 @@
                                             <ItemsRepeater.ItemTemplate>
                                                 <DataTemplate x:DataType="items:SourceItemViewModel">
                                                     <Button
+                                                        AutomationProperties.AutomationId="{x:Bind Id, Mode=OneTime}"
                                                         Click="OnSourceItemClick"
                                                         DataContext="{x:Bind}"
                                                         Style="{StaticResource ItemButtonStyle}">
@@ -1055,6 +1061,8 @@
                                 Height="32"
                                 Margin="20,0,0,0"
                                 VerticalAlignment="Center"
+                                AutomationProperties.AutomationId="FullScreenCloseButton"
+                                AutomationProperties.Name="{ext:Locale Name=CloseWindow}"
                                 Click="OnCloseButtonClick"
                                 Style="{StaticResource AccentButtonStyle}"
                                 Visibility="{x:Bind ViewModel.Player.IsFullScreen, Mode=OneWay, FallbackValue=Collapsed}">

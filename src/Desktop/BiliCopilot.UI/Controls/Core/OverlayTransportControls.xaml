@@ -1338,51 +1338,51 @@
                                 Placement="Top"
                                 FlyoutPresenterStyle="{StaticResource PlayerSettingsPresenter}">
                                 <StackPanel MinWidth="144" Spacing="2">
-                                    <Button x:Name="OverflowBackwardAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.SkipBackwardCommand, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                                    <Button x:Name="OverflowBackwardAction" AutomationProperties.AutomationId="OverflowBackwardAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.SkipBackwardCommand, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
                                             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconSeekBackward}" />
                                             <TextBlock Text="{x:Bind ViewModel.BackwardTip, Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="OverflowForwardAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.SkipForwardCommand, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                                    <Button x:Name="OverflowForwardAction" AutomationProperties.AutomationId="OverflowForwardAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.SkipForwardCommand, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsLive, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
                                             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconSeekForward}" />
                                             <TextBlock Text="{x:Bind ViewModel.ForwardTip, Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="OverflowVolumeAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
+                                    <Button x:Name="OverflowVolumeAction" AutomationProperties.AutomationId="OverflowVolumeAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
                                             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconSpeaker2}" />
                                             <TextBlock Text="{ext:Locale Name=CurrentVolume}" />
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="OverflowSpeedAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
+                                    <Button x:Name="OverflowSpeedAction" AutomationProperties.AutomationId="OverflowSpeedAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
                                             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconTopSpeed}" />
                                             <TextBlock Text="{x:Bind GetSpeedText(ViewModel.Player.PlaybackRate), Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
                                     <Border x:Name="OverflowChapterHost" Visibility="Collapsed">
-                                        <Button x:Name="OverflowChapterAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="{x:Bind ViewModel.IsChapterListAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <Button x:Name="OverflowChapterAction" AutomationProperties.AutomationId="OverflowChapterAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="{x:Bind ViewModel.IsChapterListAvailable, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                                             <StackPanel Orientation="Horizontal" Spacing="12">
                                                 <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{StaticResource IconList}" />
                                                 <TextBlock Text="{ext:Locale Name=ChapterList}" />
                                             </StackPanel>
                                         </Button>
                                     </Border>
-                                    <Button x:Name="OverflowCompactOverlayItem" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}">
+                                    <Button x:Name="OverflowCompactOverlayItem" AutomationProperties.AutomationId="OverflowCompactOverlayItem" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.ToggleCompactOverlayCommand, Mode=OneWay}">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
                                             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetCompactOverlaySymbol(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
                                             <TextBlock Text="{x:Bind GetCompactOverlayTip(ViewModel.Player.IsCompactOverlay), Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="PlaybackLayoutMenuItem" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
+                                    <Button x:Name="PlaybackLayoutMenuItem" AutomationProperties.AutomationId="PlaybackLayoutMenuItem" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Visibility="Collapsed">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
                                             <ContentPresenter x:Name="PlaybackLayoutMenuIcon" Width="16" Height="16" Content="Layout" ContentTemplate="{StaticResource PlayerDefaultLayoutIconTemplate}" />
                                             <TextBlock x:Name="PlaybackLayoutMenuText" />
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="OverflowFullScreenAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.ToggleFullScreenCommand, Mode=OneWay}">
+                                    <Button x:Name="OverflowFullScreenAction" AutomationProperties.AutomationId="OverflowFullScreenAction" Style="{StaticResource OverflowActionStyle}" Click="OnOverflowActionClick" Command="{x:Bind ViewModel.ToggleFullScreenCommand, Mode=OneWay}">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
                                             <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" FontSize="16" Glyph="{x:Bind GetFullScreenSymbol(ViewModel.Player.IsFullScreen), Mode=OneWay}" />
                                             <TextBlock Text="{x:Bind GetFullScreenTip(ViewModel.Player.IsFullScreen), Mode=OneWay}" />

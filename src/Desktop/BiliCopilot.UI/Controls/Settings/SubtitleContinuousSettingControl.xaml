@@ -19,13 +19,22 @@
                 x:Name="ShowNextTip"
                 Description="{ext:Locale Name=PlayNextWithoutTipDescription}"
                 Header="{ext:Locale Name=PlayNextWithoutTip}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.PlayNextWithoutTip, Mode=TwoWay}" />
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="PlayNextWithoutTipToggle"
+                    AutomationProperties.Name="{ext:Locale Name=PlayNextWithoutTip}"
+                    IsOn="{x:Bind ViewModel.PlayNextWithoutTip, Mode=TwoWay}" />
             </base:SettingsCard>
             <base:SettingsCard Description="{ext:Locale Name=AutoNextRelatedVideoDescription}" Header="{ext:Locale Name=AutoNextRelatedVideo}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsAutoPlayNextRecommendVideo, Mode=TwoWay}" />
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="AutoNextRelatedVideoToggle"
+                    AutomationProperties.Name="{ext:Locale Name=AutoNextRelatedVideo}"
+                    IsOn="{x:Bind ViewModel.IsAutoPlayNextRecommendVideo, Mode=TwoWay}" />
             </base:SettingsCard>
             <base:SettingsCard Description="{ext:Locale Name=StopWhenEndOfPlaylistDescription}" Header="{ext:Locale Name=StopWhenEndOfPlaylist}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.EndWithPlaylist, Mode=TwoWay}" />
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="EndWithPlaylistToggle"
+                    AutomationProperties.Name="{ext:Locale Name=StopWhenEndOfPlaylist}"
+                    IsOn="{x:Bind ViewModel.EndWithPlaylist, Mode=TwoWay}" />
             </base:SettingsCard>
         </base:SettingsExpander.Items>
     </base:SettingsExpander>

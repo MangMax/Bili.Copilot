@@ -32,7 +32,10 @@
                 Description="{ext:Locale Name=UseIntegrationBehaviorDescription}"
                 Header="{ext:Locale Name=UseIntegrationBehavior}"
                 Visibility="{x:Bind ViewModel.IsSingleWindowMode, Mode=OneWay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.UseIntegrationWhenSinglePlayWindow, Mode=TwoWay}" />
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="UseIntegrationToggle"
+                    AutomationProperties.Name="{ext:Locale Name=UseIntegrationBehavior}"
+                    IsOn="{x:Bind ViewModel.UseIntegrationWhenSinglePlayWindow, Mode=TwoWay}" />
             </base:SettingsCard>
             <base:SettingsCard
                 Header="{ext:Locale Name=PlayerLayoutPreference}"
