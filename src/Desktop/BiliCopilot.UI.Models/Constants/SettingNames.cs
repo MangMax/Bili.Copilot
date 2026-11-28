@@ -67,7 +67,6 @@ public enum SettingNames
     IsAppUpdateNotificationEnabled,
     LastNotifiedAppUpdateVersion,
     PlayWithoutP2P,
-    DefaultPlayerDisplayMode,
     PreferCodec,
     PreferDecode,
     PlayerType,
@@ -102,7 +101,6 @@ public enum SettingNames
     EndWithPlaylist,
     IsGpuChecked,
     IsTopNavBarShown,
-    MTCBehavior,
     IsAIStreamingResponse,
     UseWebPlayerWhenLive,
     LiveDanmakuHighlightKeywords,
@@ -197,4 +195,24 @@ public enum SettingNames
     UpdateAutoDownload,
     UpdateDownloadMode,
     UpdateCheckIntervalHours,
+
+    /// <summary>
+    /// 记忆的上一次播放窗口布局是否为默认布局（供“记忆上次”布局偏好使用）.
+    /// </summary>
+    LastPlayerUseDefaultLayout,
+
+    /// <summary>
+    /// 打开播放窗口时的初始界面布局偏好（对应 PlayerLayoutPreference）.
+    /// </summary>
+    PlayerLayoutPreference,
+
+    /// <summary>
+    /// 打开播放窗口时的初始播放模式偏好（对应 PlayerPresenterModePreference）.
+    /// </summary>
+    PlayerPresenterModePreference,
+
+    /// <summary>
+    /// 记忆的上一次播放窗口模式（对应 PlayerPresenterMode，供“记忆上次”播放模式使用）.
+    /// </summary>
+    LastPlayerPresenterMode,
 }

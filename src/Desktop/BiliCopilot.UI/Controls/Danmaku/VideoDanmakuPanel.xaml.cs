@@ -254,10 +254,10 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         }
     }
 
-    private void OnRequestAddSingleDanmaku(object? sender, string e)
-        => WithRenderer(() => OnRequestAddSingleDanmakuCore(sender, e));
+    private void OnRequestAddSingleDanmaku(object? sender, (string Text, uint? ArgbColor) e)
+        => WithRenderer(() => OnRequestAddSingleDanmakuCore(e.Text, e.ArgbColor));
 
-    private void OnRequestAddSingleDanmakuCore(object? sender, string e)
+    private void OnRequestAddSingleDanmakuCore(string text, uint? sentArgbColor)
     {
         if (!ViewModel.IsShowDanmaku)
         {
@@ -265,7 +265,8 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         }
 
         var location = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuLocation, DanmakuLocation.Scroll);
-        var color = AppToolkit.HexToColor(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuColor, Microsoft.UI.Colors.White.ToString()));
+        Windows.UI.Color? sentColor = sentArgbColor is { } argb ? ArgbColorUtility.ToColor(argb) : null;
+        var color = sentColor ?? AppToolkit.HexToColor(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DanmakuColor, "FFFFFF"));
         var isStandardSize = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.IsDanmakuStandardSize, true);
         var model = new DanmakuItem
         {
@@ -273,7 +274,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             Mode = (DanmakuMode)((int)location),
             TextColor = color,
             BaseFontSize = isStandardSize ? 20 : 24,
-            Text = e,
+            Text = text,
             HasOutline = true,
             HasBorder = true
         };

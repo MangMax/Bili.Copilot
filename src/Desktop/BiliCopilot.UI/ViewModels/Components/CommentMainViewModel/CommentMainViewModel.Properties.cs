@@ -19,6 +19,7 @@ public sealed partial class CommentMainViewModel
     private readonly ICommentService _service;
     private readonly ILogger<CommentMainViewModel> _logger;
 
+    private int _sourceVersion;
     private bool _preventLoadMore;
     private CommentTargetType _targetType;
     private long _offset;

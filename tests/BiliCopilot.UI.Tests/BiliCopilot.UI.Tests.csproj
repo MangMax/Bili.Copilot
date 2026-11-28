@@ -140,6 +140,9 @@
   <!-- 播放会话的生命周期（创建/登记/初始化回滚/释放）与 WinUI 无关，用假会话直接测试。 -->
   <ItemGroup>
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Player/*.cs" Link="Player/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/PlayerPresenterMode.cs" Link="Player/PlayerPresenterMode.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/PlayerLayoutPreference.cs" Link="Player/PlayerLayoutPreference.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI.Models/Constants/PlayerPresenterModePreference.cs" Link="Player/PlayerPresenterModePreference.cs" />
   </ItemGroup>
 
   <!-- Article list refresh and reader identity; adapters only supply the card item, comments/AI and OS surface. -->

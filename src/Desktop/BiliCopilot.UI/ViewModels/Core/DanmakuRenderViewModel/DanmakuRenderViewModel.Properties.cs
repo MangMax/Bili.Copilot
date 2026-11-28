@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -112,5 +112,5 @@ public sealed partial class DanmakuRenderViewModel
     /// <summary>
     /// 请求添加单条弹幕.
     /// </summary>
-    public event EventHandler<string> RequestAddSingleDanmaku;
+    public event EventHandler<(string Text, uint? ArgbColor)> RequestAddSingleDanmaku;
 }

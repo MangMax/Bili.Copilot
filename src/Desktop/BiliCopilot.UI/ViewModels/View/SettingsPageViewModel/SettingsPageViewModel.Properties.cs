@@ -36,9 +36,6 @@ public sealed partial class SettingsPageViewModel
     public partial bool IsAutoPlayNextRecommendVideo { get; set; }
 
     [ObservableProperty]
-    public partial PlayerDisplayMode DefaultPlayerDisplayMode { get; set; }
-
-    [ObservableProperty]
     public partial bool PlayNextWithoutTip { get; set; }
 
     [ObservableProperty]
@@ -55,9 +52,6 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     public partial PreferDecodeType PreferDecode { get; set; }
-
-    [ObservableProperty]
-    public partial MTCBehavior MTCBehavior { get; set; }
 
     [ObservableProperty]
     public partial bool PlayerSpeedEnhancement { get; set; }
@@ -138,9 +132,6 @@ public sealed partial class SettingsPageViewModel
     public partial bool IsWebDavEmpty { get; set; }
 
     [ObservableProperty]
-    public partial List<PlayerDisplayMode> PlayerDisplayModeCollection { get; set; }
-
-    [ObservableProperty]
     public partial List<PreferCodecType> PreferCodecCollection { get; set; }
 
     [ObservableProperty]
@@ -151,9 +142,6 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     public partial List<ExternalPlayerType> ExternalPlayerTypeCollection { get; set; }
-
-    [ObservableProperty]
-    public partial List<MTCBehavior> MTCBehaviorCollection { get; set; }
 
     [ObservableProperty]
     public partial bool UseWebPlayerWhenLive { get; set; }
@@ -274,6 +262,30 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     public partial bool HideMainWindowOnPlay { get; set; }
+
+    /// <summary>
+    /// 播放窗口模式索引（0 单窗口 / 1 独立窗口），与 <see cref="HideMainWindowOnPlay"/> 反向同步.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsSingleWindowMode))]
+    public partial int PlayerWindowModeIndex { get; set; }
+
+    /// <summary>
+    /// 初始布局偏好索引（0 记忆上次 / 1 总是铺满 / 2 总是默认布局）.
+    /// </summary>
+    [ObservableProperty]
+    public partial int PlayerLayoutPreferenceIndex { get; set; }
+
+    /// <summary>
+    /// 初始播放模式索引（0 记忆上次 / 1 总是普通窗口 / 2 总是全屏 / 3 总是小窗）.
+    /// </summary>
+    [ObservableProperty]
+    public partial int StartupPresenterIndex { get; set; }
+
+    /// <summary>
+    /// 是否单窗口模式.
+    /// </summary>
+    public bool IsSingleWindowMode => PlayerWindowModeIndex == 0;
 
     [ObservableProperty]
     public partial string D3D11AdapterName { get; set; }

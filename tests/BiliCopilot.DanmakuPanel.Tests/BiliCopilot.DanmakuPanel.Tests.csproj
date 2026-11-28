@@ -16,5 +16,6 @@
     <Using Include="Microsoft.UI.Xaml" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Controls/Danmaku/VideoDanmakuPanel.xaml.cs" Link="VideoDanmakuPanel.cs" />
     <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/Pure/DanmakuRedrawSession.cs" Link="DanmakuRedrawSession.cs" />
+    <Compile Include="../../src/Desktop/BiliCopilot.UI/Toolkits/Pure/ArgbColorUtility.cs" Link="ArgbColorUtility.cs" />
   </ItemGroup>
 </Project>

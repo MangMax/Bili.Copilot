@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:SettingsPageControlBase
+    x:Class="BiliCopilot.UI.Controls.Settings.PlayerWindowSettingControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="using:BiliCopilot.UI.Extensions"
+    xmlns:local="using:BiliCopilot.UI.Controls.Settings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <base:SettingsExpander Description="{ext:Locale Name=PlaybackWindowDescription}" Header="{ext:Locale Name=SettingsSubsectionPlayerWindow}">
+        <base:SettingsExpander.HeaderIcon>
+            <FontIcon FontFamily="{StaticResource BiliIconsFontFamily}" Glyph="{StaticResource IconVideoPlayPause}" />
+        </base:SettingsExpander.HeaderIcon>
+        <base:SettingsExpander.Items>
+            <base:SettingsCard
+                Header="{ext:Locale Name=PlayerWindowMode}"
+                Description="{ext:Locale Name=PlayerWindowModeDescription}">
+                <ComboBox
+                    MinWidth="140"
+                    AutomationProperties.AutomationId="PlayerWindowMode"
+                    AutomationProperties.Name="{ext:Locale Name=PlayerWindowMode}"
+                    SelectedIndex="{x:Bind ViewModel.PlayerWindowModeIndex, Mode=TwoWay}">
+                    <ComboBoxItem Content="{ext:Locale Name=PlayerWindowModeSingle}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlayerWindowModeIndependent}" />
+                </ComboBox>
+            </base:SettingsCard>
+            <base:SettingsCard
+                x:Name="Integration"
+                Description="{ext:Locale Name=UseIntegrationBehaviorDescription}"
+                Header="{ext:Locale Name=UseIntegrationBehavior}"
+                Visibility="{x:Bind ViewModel.IsSingleWindowMode, Mode=OneWay}">
+                <ToggleSwitch IsOn="{x:Bind ViewModel.UseIntegrationWhenSinglePlayWindow, Mode=TwoWay}" />
+            </base:SettingsCard>
+            <base:SettingsCard
+                Header="{ext:Locale Name=PlayerLayoutPreference}"
+                Description="{ext:Locale Name=PlayerLayoutPreferenceDescription}">
+                <ComboBox
+                    MinWidth="140"
+                    AutomationProperties.AutomationId="PlayerLayoutPreference"
+                    AutomationProperties.Name="{ext:Locale Name=PlayerLayoutPreference}"
+                    SelectedIndex="{x:Bind ViewModel.PlayerLayoutPreferenceIndex, Mode=TwoWay}">
+                    <ComboBoxItem Content="{ext:Locale Name=PlayerLayoutRemember}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlayerLayoutFill}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PlayerLayoutDefault}" />
+                </ComboBox>
+            </base:SettingsCard>
+            <base:SettingsCard
+                Header="{ext:Locale Name=StartupPresenterMode}"
+                Description="{ext:Locale Name=StartupPresenterModeDescription}">
+                <ComboBox
+                    MinWidth="140"
+                    AutomationProperties.AutomationId="StartupPresenterMode"
+                    AutomationProperties.Name="{ext:Locale Name=StartupPresenterMode}"
+                    SelectedIndex="{x:Bind ViewModel.StartupPresenterIndex, Mode=TwoWay}">
+                    <ComboBoxItem Content="{ext:Locale Name=PresenterRemember}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PresenterNormal}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PresenterFullScreen}" />
+                    <ComboBoxItem Content="{ext:Locale Name=PresenterCompactOverlay}" />
+                </ComboBox>
+            </base:SettingsCard>
+            <base:SettingsCard
+                Header="{ext:Locale Name=AutoCompactOverlayRatio}"
+                Description="{ext:Locale Name=AutoCompactOverlayRatioDescription}">
+                <ToggleSwitch
+                    AutomationProperties.AutomationId="AutoCompactOverlayRatioToggle"
+                    AutomationProperties.Name="{ext:Locale Name=AutoCompactOverlayRatio}"
+                    IsOn="{x:Bind ViewModel.AutoCompactOverlayRatio, Mode=TwoWay}" />
+            </base:SettingsCard>
+        </base:SettingsExpander.Items>
+    </base:SettingsExpander>
+</local:SettingsPageControlBase>

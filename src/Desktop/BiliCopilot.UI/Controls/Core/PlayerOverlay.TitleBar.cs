@@ -59,13 +59,22 @@ public sealed partial class PlayerOverlay
 
     private void OnTitleWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
     {
+        if (args.DidPresenterChange)
+        {
+            UpdatePlaybackLayout();
+        }
+
         if (args.DidSizeChange || args.DidPresenterChange || args.DidVisibilityChange)
         {
             UpdateTitleBarLayout();
         }
     }
 
-    private void OnTitleRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => UpdateTitleBarLayout();
+    private void OnTitleRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
+    {
+        UpdateTitleBarLayout();
+        UpdateVideoViewport();
+    }
 
     private void UpdateTitleBarLayout()
     {
@@ -74,7 +83,7 @@ public sealed partial class PlayerOverlay
             return;
         }
 
-        var fullScreen = _titleWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen;
+        var fullScreen = _presentation.Mode == OverlayControlMode.FullScreen;
         var scale = _titleRoot.RasterizationScale;
         // Native size can shrink before the island's next arrange. Use the
         // smaller width so old XAML geometry cannot cover freshly moved buttons.
@@ -82,7 +91,7 @@ public sealed partial class PlayerOverlay
         var layout = PlayerTitleBarLayout.Create(width, HeaderBar.Height, scale,
             fullScreen ? 0 : _titleWindow.TitleBar.LeftInset,
             fullScreen ? 0 : _titleWindow.TitleBar.RightInset,
-            _titleWindow.Presenter.Kind == AppWindowPresenterKind.CompactOverlay);
+            _presentation.Mode is OverlayControlMode.CompactLandscape or OverlayControlMode.CompactPortrait);
         if (layout == _titleLayout)
         {
             return;
@@ -120,7 +129,12 @@ public sealed partial class PlayerOverlay
 
         var regions = _nextTitleRegions;
         regions.Clear();
-        if (ViewModel.IsExtraPanelVisible)
+        if (_presentation.UsesDefaultLayout)
+        {
+            AddElement(HeaderNavigation);
+            AddElement(HeaderActions);
+        }
+        else if (ViewModel.IsExtraPanelVisible)
         {
             AddElement(ExtraPanelContent);
         }

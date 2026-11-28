@@ -8,7 +8,9 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
 using Richasy.WinUIKernel.Share.Base;
+using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace BiliCopilot.UI.Forms;
@@ -22,6 +24,9 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     private readonly CursorGrid _rootGrid;
     private readonly PlayerWindowPresentation _presentation;
     private readonly ILogger<PlayerWindow> _logger;
+    private HWND _videoHost;
+    private Rect? _videoViewportPixels;
+    private bool _captionControlsVisible = true;
     private InputActivationListener _inputActivationListener;
     private bool _xamlSourceDisposed;
     private bool _isFirstActivated = true;
@@ -45,6 +50,8 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         _rootWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
 
         _rootGrid = new CursorGrid();
+        _rootGrid.ActualThemeChanged += OnRootThemeChanged;
+        UpdateWindowBorder();
         _xamlSource = new DesktopWindowXamlSource();
         _xamlSource.Initialize(_rootWindow.Id);
         _xamlSource.SiteBridge.ResizePolicy = ContentSizePolicy.ResizeContentToParentWindow;
@@ -81,10 +88,72 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// </summary>
     public IntPtr Handle => Win32Interop.GetWindowFromWindowId(_rootWindow.Id);
 
+    internal IntPtr VideoHandle
+    {
+        get
+        {
+            if (_videoHost.IsNull)
+            {
+                _videoHost = CreateVideoHost(new(Handle));
+                ResizeVideoHost();
+            }
+
+            return (IntPtr)_videoHost;
+        }
+    }
+
+    private static unsafe HWND CreateVideoHost(HWND parent)
+    {
+        fixed (char* className = "STATIC")
+        {
+            var host = PInvoke.CreateWindowEx(0, className, null,
+                WINDOW_STYLE.WS_CHILD | WINDOW_STYLE.WS_VISIBLE | WINDOW_STYLE.WS_CLIPCHILDREN,
+                0, 0, 0, 0, parent, default, default, null);
+            if (host.IsNull)
+            {
+                throw new System.ComponentModel.Win32Exception();
+            }
+
+            return host;
+        }
+    }
+
+    internal void SetVideoViewport(Rect? pixelBounds)
+    {
+        if (_videoViewportPixels != pixelBounds)
+        {
+            _videoViewportPixels = pixelBounds;
+            UpdateCaptionButtonForeground();
+            ResizeVideoHost();
+        }
+    }
+
+    private void ResizeVideoHost()
+    {
+        if (_videoHost.IsNull || IsClosed || IsDisposed)
+        {
+            return;
+        }
+
+        var fullScreen = _rootWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen;
+        var client = fullScreen ? _rootWindow.Size : _rootWindow.ClientSize;
+        var bounds = _videoViewportPixels ?? new Rect(0, 0, client.Width, client.Height);
+        var left = (int)Math.Floor(bounds.X);
+        var top = (int)Math.Floor(bounds.Y);
+        var width = Math.Min(client.Width, (int)Math.Ceiling(bounds.Right)) - left;
+        var height = Math.Min(client.Height, (int)Math.Ceiling(bounds.Bottom)) - top;
+        // mpv follows its parent HWND. Keep that host below the XAML island, which
+        // provides the transparent controls and danmaku over the rendered video.
+        PInvoke.SetWindowPos(_videoHost, new(1), left, top, Math.Max(1, width), Math.Max(1, height),
+            SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+    }
+
     /// <summary>
     /// XAML 根元素.
     /// </summary>
     public XamlRoot? XamlRoot => _xamlSourceDisposed ? null : _xamlSource?.Content?.XamlRoot;
+
+    internal bool IsTextInputFocused => XamlRoot is { } root && FocusManager.GetFocusedElement(root) is TextBox;
 
     /// <inheritdoc/>
     public ValueTask DisposeAsync()
@@ -191,16 +260,33 @@ public sealed partial class PlayerWindow : IAsyncDisposable
     /// <param name="isVisible"></param>
     public void SetCaptionButtonVisibility(bool isVisible)
     {
-        _rootWindow.TitleBar?.ButtonForegroundColor = isVisible ? Colors.White : "#111111".ToColor();
+        _captionControlsVisible = isVisible;
+        UpdateCaptionButtonForeground();
+    }
+
+    private void OnRootThemeChanged(FrameworkElement sender, object args)
+    {
+        UpdateCaptionButtonForeground();
+        UpdateWindowBorder();
+    }
+
+    private unsafe void UpdateWindowBorder()
+    {
+        // 深色主题用接近 WinUI 默认窗口边框的灰色，浅色主题用白色（0xAARRGGBB）.
+        var color = _rootGrid.ActualTheme == ElementTheme.Dark ? 0x00303030u : uint.MaxValue;
+        _ = PInvoke.DwmSetWindowAttribute(new(Handle), DWMWINDOWATTRIBUTE.DWMWA_BORDER_COLOR, &color, sizeof(uint));
+    }
+
+    private void UpdateCaptionButtonForeground()
+    {
+        var useLightForeground = _videoViewportPixels.HasValue
+            ? _rootGrid.ActualTheme == ElementTheme.Dark
+            : _captionControlsVisible;
+        _rootWindow.TitleBar.ButtonForegroundColor = useLightForeground ? Colors.White : "#111111".ToColor();
     }
 
     public void SetActiveAction(Action<bool> activeChangedAction)
         => _activeChangedAction = activeChangedAction;
-
-    /// <summary>
-    /// 关闭窗口.
-    /// </summary>
-    public void Close() => _rootWindow.Destroy();
 
     /// <summary>
     /// 隱藏光标.
@@ -338,6 +424,7 @@ public sealed partial class PlayerWindow : IAsyncDisposable
         if (args.DidSizeChange || args.DidPresenterChange)
         {
             SyncXamlSourceSize();
+            ResizeVideoHost();
         }
 
         // Initial geometry can change before Show; only the island needs those events.

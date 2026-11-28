@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.SponsorBlock;
 using Microsoft.UI.Xaml.Media;
@@ -40,11 +40,7 @@ internal static class SponsorBlockColorHelper
     /// <param name="argb">0xAARRGGBB 格式的颜色值.</param>
     /// <returns>对应的颜色.</returns>
     public static Color ToColor(uint argb)
-        => Color.FromArgb(
-            (byte)(argb >> 24),
-            (byte)(argb >> 16),
-            (byte)(argb >> 8),
-            (byte)argb);
+        => ArgbColorUtility.ToColor(argb);
 
     /// <summary>
     /// 把 0xAARRGGBB 转换为纯色画刷.
@@ -226,5 +222,5 @@ internal static class SponsorBlockColorHelper
     /// <param name="color">待转换的颜色.</param>
     /// <returns>对应的 0xAARRGGBB 颜色值.</returns>
     public static uint ToArgb(Color color)
-        => ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | color.B;
+        => ArgbColorUtility.ToArgb(color);
 }

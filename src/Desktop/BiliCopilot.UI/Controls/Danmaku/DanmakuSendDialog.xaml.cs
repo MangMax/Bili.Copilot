@@ -16,25 +16,11 @@ public sealed partial class DanmakuSendDialog : ContentDialog
     public static readonly DependencyProperty ViewModelProperty =
         DependencyProperty.Register(nameof(ViewModel), typeof(DanmakuSendViewModel), typeof(DanmakuSendDialog), new PropertyMetadata(default));
 
-    private readonly Action _loadAction;
-
-    public DanmakuSendDialog(DanmakuSendViewModel vm, Action loadAction)
+    public DanmakuSendDialog(DanmakuSendViewModel vm)
     {
         InitializeComponent();
         ViewModel = vm;
-        _loadAction = loadAction;
     }
 
     public string GetInputText() => InputBox.Text.Trim();
-
-    private void OnSizeItemClick(object sender, RoutedEventArgs e)
-        => ViewModel.IsStandardSize = (sender as FrameworkElement).Tag.ToString() == "Standard";
-
-    private void OnColorItemTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
-        => ViewModel.Color = (Windows.UI.Color)(sender as FrameworkElement).DataContext;
-
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        _loadAction();
-    }
 }

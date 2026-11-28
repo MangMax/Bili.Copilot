@@ -110,8 +110,13 @@ public sealed partial class DanmakuRenderViewModel : ViewModelBase
     public void ResetStyle()
         => RequestResetStyle?.Invoke(this, EventArgs.Empty);
 
-    public void AddDanmaku(string text)
-        => RequestAddSingleDanmaku?.Invoke(this, text);
+    /// <summary>
+    /// 添加一条实时弹幕；颜色为 ARGB 打包值，保持本类型与 WinUI 无关以便单元测试.
+    /// </summary>
+    /// <param name="text">弹幕文本.</param>
+    /// <param name="argbColor">ARGB 颜色（0xAARRGGBB），为 <see langword="null"/> 时使用用户配置的颜色.</param>
+    public void AddDanmaku(string text, uint? argbColor = null)
+        => RequestAddSingleDanmaku?.Invoke(this, (text, argbColor));
 
     /// <summary>
     /// 重新从设置读取弹幕样式；进入直播房间时调用，保证与视频弹幕使用同一份配置。

@@ -44,3 +44,12 @@ namespace Windows.System
         public Task<bool> AsTask() => task;
     }
 }
+
+namespace Windows.UI
+{
+    public record struct Color(string Value)
+    {
+        public byte A, R, G, B;
+        public static Color FromArgb(byte a, byte r, byte g, byte b) => new($"#{a:x2}{r:x2}{g:x2}{b:x2}") { A = a, R = r, G = g, B = b };
+    }
+}

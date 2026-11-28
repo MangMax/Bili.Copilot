@@ -3,7 +3,7 @@
 namespace BiliCopilot.UI.Controls.Settings;
 
 /// <summary>
-/// 播放器行为设置控件.
+/// 网络与画质设置控件.
 /// </summary>
 public sealed partial class PlayerBehaviorSettingControl : SettingsPageControlBase
 {

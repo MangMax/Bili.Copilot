@@ -234,16 +234,10 @@
                 <StackPanel.ChildrenTransitions>
                     <RepositionThemeTransition IsStaggeringEnabled="False" />
                 </StackPanel.ChildrenTransitions>
-                <TextBlock
-                    Margin="0,8,0,4"
-                    HorizontalAlignment="Left"
-                    Text="{ext:Locale Name=SettingsSubsectionPlaybackBasic}" />
-                <settings:PlayerControlSettingControl />
+                <settings:PlayerControlSettingControl Margin="0,8,0,0" />
                 <settings:PlayerBehaviorSettingControl />
-                <TextBlock
-                    Margin="0,12,0,4"
-                    HorizontalAlignment="Left"
-                    Text="{ext:Locale Name=SettingsSubsectionPlaybackEngine}" />
+                <settings:SubtitleContinuousSettingControl />
+                <settings:PlayerWindowSettingControl />
                 <settings:MpvExtraSettingControl />
                 <settings:SponsorBlockSettingControl />
             </StackPanel>
