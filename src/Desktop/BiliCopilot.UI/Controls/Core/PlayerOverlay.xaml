@@ -53,6 +53,7 @@
                             <ItemsRepeater.ItemTemplate>
                                 <DataTemplate x:DataType="items:SourceItemViewModel">
                                     <Button
+                                        AutomationProperties.AutomationId="{x:Bind Id, Mode=OneTime}"
                                         Click="OnSourceItemClick"
                                         DataContext="{x:Bind}"
                                         Style="{StaticResource ItemButtonStyle}">
